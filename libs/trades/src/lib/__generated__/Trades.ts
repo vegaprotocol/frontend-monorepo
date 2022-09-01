@@ -1,115 +1,113 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } };
+import { Pagination } from "@vegaprotocol/types";
 
-export type TradesQueryVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-  pagination?: Types.InputMaybe<Types.Pagination>;
-}>;
+// ====================================================
+// GraphQL query operation: Trades
+// ====================================================
 
-
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } } | null };
-
-export type TradesSubSubscriptionVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-}>;
-
-
-export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } }> | null };
-
-export const TradeFieldsFragmentDoc = gql`
-    fragment TradeFields on Trade {
-  id
-  price
-  size
-  createdAt
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-  }
+export interface Trades_market_tradesConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+  /**
+   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * number denominated in the currency of the market. (uint64)
+   * 
+   * Examples:
+   * Currency     Balance  decimalPlaces  Real Balance
+   * GBP              100              0       GBP 100
+   * GBP              100              2       GBP   1.00
+   * GBP              100              4       GBP   0.01
+   * GBP                1              4       GBP   0.0001   (  0.01p  )
+   * 
+   * GBX (pence)      100              0       GBP   1.00     (100p     )
+   * GBX (pence)      100              2       GBP   0.01     (  1p     )
+   * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
+   * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
+   */
+  decimalPlaces: number;
+  /**
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
+   */
+  positionDecimalPlaces: number;
 }
-    `;
-export const TradesDocument = gql`
-    query Trades($marketId: ID!, $pagination: Pagination) {
-  market(id: $marketId) {
-    id
-    tradesConnection(pagination: $pagination) {
-      edges {
-        node {
-          ...TradeFields
-        }
-        cursor
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-    }
-  }
-}
-    ${TradeFieldsFragmentDoc}`;
 
-/**
- * __useTradesQuery__
- *
- * To run a query within a React component, call `useTradesQuery` and pass it any options that fit your needs.
- * When your component renders, `useTradesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTradesQuery({
- *   variables: {
- *      marketId: // value for 'marketId'
- *      pagination: // value for 'pagination'
- *   },
- * });
- */
-export function useTradesQuery(baseOptions: Apollo.QueryHookOptions<TradesQuery, TradesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TradesQuery, TradesQueryVariables>(TradesDocument, options);
-      }
-export function useTradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TradesQuery, TradesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TradesQuery, TradesQueryVariables>(TradesDocument, options);
-        }
-export type TradesQueryHookResult = ReturnType<typeof useTradesQuery>;
-export type TradesLazyQueryHookResult = ReturnType<typeof useTradesLazyQuery>;
-export type TradesQueryResult = Apollo.QueryResult<TradesQuery, TradesQueryVariables>;
-export const TradesSubDocument = gql`
-    subscription TradesSub($marketId: ID!) {
-  trades(marketId: $marketId) {
-    ...TradeFields
-  }
+export interface Trades_market_tradesConnection_edges_node {
+  __typename: "Trade";
+  /**
+   * The hash of the trade data
+   */
+  id: string;
+  /**
+   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
+   */
+  price: string;
+  /**
+   * The number of contracts trades, will always be <= the remaining size of both orders immediately before the trade (uint64)
+   */
+  size: string;
+  /**
+   * RFC3339Nano time for when the trade occurred
+   */
+  createdAt: string;
+  /**
+   * The market the trade occurred on
+   */
+  market: Trades_market_tradesConnection_edges_node_market;
 }
-    ${TradeFieldsFragmentDoc}`;
 
-/**
- * __useTradesSubSubscription__
- *
- * To run a query within a React component, call `useTradesSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useTradesSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTradesSubSubscription({
- *   variables: {
- *      marketId: // value for 'marketId'
- *   },
- * });
- */
-export function useTradesSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<TradesSubSubscription, TradesSubSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<TradesSubSubscription, TradesSubSubscriptionVariables>(TradesSubDocument, options);
-      }
-export type TradesSubSubscriptionHookResult = ReturnType<typeof useTradesSubSubscription>;
-export type TradesSubSubscriptionResult = Apollo.SubscriptionResult<TradesSubSubscription>;
+export interface Trades_market_tradesConnection_edges {
+  __typename: "TradeEdge";
+  node: Trades_market_tradesConnection_edges_node;
+  cursor: string;
+}
+
+export interface Trades_market_tradesConnection_pageInfo {
+  __typename: "PageInfo";
+  startCursor: string;
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface Trades_market_tradesConnection {
+  __typename: "TradeConnection";
+  /**
+   * The trade in this connection
+   */
+  edges: Trades_market_tradesConnection_edges[];
+  /**
+   * The pagination information
+   */
+  pageInfo: Trades_market_tradesConnection_pageInfo;
+}
+
+export interface Trades_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+  tradesConnection: Trades_market_tradesConnection;
+}
+
+export interface Trades {
+  /**
+   * An instrument that is trading on the Vega network
+   */
+  market: Trades_market | null;
+}
+
+export interface TradesVariables {
+  marketId: string;
+  pagination?: Pagination | null;
+}

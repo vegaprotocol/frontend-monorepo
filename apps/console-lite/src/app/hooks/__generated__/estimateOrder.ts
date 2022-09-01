@@ -1,78 +1,64 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type EstimateOrderQueryVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-  partyId: Types.Scalars['ID'];
-  price?: Types.InputMaybe<Types.Scalars['String']>;
-  size: Types.Scalars['String'];
-  side: Types.Side;
-  timeInForce: Types.OrderTimeInForce;
-  expiration?: Types.InputMaybe<Types.Scalars['String']>;
-  type: Types.OrderType;
-}>;
+import { Side, OrderTimeInForce, OrderType } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: EstimateOrder
+// ====================================================
 
-export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string } } };
-
-
-export const EstimateOrderDocument = gql`
-    query EstimateOrder($marketId: ID!, $partyId: ID!, $price: String, $size: String!, $side: Side!, $timeInForce: OrderTimeInForce!, $expiration: String, $type: OrderType!) {
-  estimateOrder(
-    marketId: $marketId
-    partyId: $partyId
-    price: $price
-    size: $size
-    side: $side
-    timeInForce: $timeInForce
-    expiration: $expiration
-    type: $type
-  ) {
-    fee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    marginLevels {
-      initialLevel
-    }
-  }
+export interface EstimateOrder_estimateOrder_fee {
+  __typename: "TradeFee";
+  /**
+   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
+   */
+  makerFee: string;
+  /**
+   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
+   */
+  infrastructureFee: string;
+  /**
+   * The fee paid to the liquidity providers that committed liquidity to the market
+   */
+  liquidityFee: string;
 }
-    `;
 
-/**
- * __useEstimateOrderQuery__
- *
- * To run a query within a React component, call `useEstimateOrderQuery` and pass it any options that fit your needs.
- * When your component renders, `useEstimateOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEstimateOrderQuery({
- *   variables: {
- *      marketId: // value for 'marketId'
- *      partyId: // value for 'partyId'
- *      price: // value for 'price'
- *      size: // value for 'size'
- *      side: // value for 'side'
- *      timeInForce: // value for 'timeInForce'
- *      expiration: // value for 'expiration'
- *      type: // value for 'type'
- *   },
- * });
- */
-export function useEstimateOrderQuery(baseOptions: Apollo.QueryHookOptions<EstimateOrderQuery, EstimateOrderQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EstimateOrderQuery, EstimateOrderQueryVariables>(EstimateOrderDocument, options);
-      }
-export function useEstimateOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EstimateOrderQuery, EstimateOrderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EstimateOrderQuery, EstimateOrderQueryVariables>(EstimateOrderDocument, options);
-        }
-export type EstimateOrderQueryHookResult = ReturnType<typeof useEstimateOrderQuery>;
-export type EstimateOrderLazyQueryHookResult = ReturnType<typeof useEstimateOrderLazyQuery>;
-export type EstimateOrderQueryResult = Apollo.QueryResult<EstimateOrderQuery, EstimateOrderQueryVariables>;
+export interface EstimateOrder_estimateOrder_marginLevels {
+  __typename: "MarginLevels";
+  /**
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   */
+  initialLevel: string;
+}
+
+export interface EstimateOrder_estimateOrder {
+  __typename: "OrderEstimate";
+  /**
+   * The estimated fee if the order was to trade
+   */
+  fee: EstimateOrder_estimateOrder_fee;
+  /**
+   * The margin requirement for this order
+   */
+  marginLevels: EstimateOrder_estimateOrder_marginLevels;
+}
+
+export interface EstimateOrder {
+  /**
+   * return an estimation of the potential cost for a new order
+   */
+  estimateOrder: EstimateOrder_estimateOrder;
+}
+
+export interface EstimateOrderVariables {
+  marketId: string;
+  partyId: string;
+  price?: string | null;
+  size: string;
+  side: Side;
+  timeInForce: OrderTimeInForce;
+  expiration?: string | null;
+  type: OrderType;
+}

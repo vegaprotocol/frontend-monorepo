@@ -1,85 +1,174 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type RewardsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
+import { AccountType } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: Rewards
+// ====================================================
 
-export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardDetails?: Array<{ __typename?: 'RewardPerAssetDetail', totalAmount: string, totalAmountFormatted: string, asset: { __typename?: 'Asset', id: string, symbol: string }, rewards?: Array<{ __typename?: 'Reward', rewardType: Types.AccountType, amount: string, amountFormatted: string, percentageOfTotal: string, receivedAt: string, asset: { __typename?: 'Asset', id: string }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } | null> | null } | null> | null, delegations?: Array<{ __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number }> | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: string | null, end?: string | null, expiry?: string | null } } };
-
-
-export const RewardsDocument = gql`
-    query Rewards($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    rewardDetails {
-      asset {
-        id
-        symbol
-      }
-      rewards {
-        rewardType
-        asset {
-          id
-        }
-        party {
-          id
-        }
-        epoch {
-          id
-        }
-        amount
-        amountFormatted @client
-        percentageOfTotal
-        receivedAt
-      }
-      totalAmount
-      totalAmountFormatted @client
-    }
-    delegations {
-      amount
-      amountFormatted @client
-      epoch
-    }
-  }
-  epoch {
-    id
-    timestamps {
-      start
-      end
-      expiry
-    }
-  }
+export interface Rewards_party_rewardDetails_asset {
+  __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
 }
-    `;
 
-/**
- * __useRewardsQuery__
- *
- * To run a query within a React component, call `useRewardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useRewardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRewardsQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useRewardsQuery(baseOptions: Apollo.QueryHookOptions<RewardsQuery, RewardsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
-      }
-export function useRewardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RewardsQuery, RewardsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RewardsQuery, RewardsQueryVariables>(RewardsDocument, options);
-        }
-export type RewardsQueryHookResult = ReturnType<typeof useRewardsQuery>;
-export type RewardsLazyQueryHookResult = ReturnType<typeof useRewardsLazyQuery>;
-export type RewardsQueryResult = Apollo.QueryResult<RewardsQuery, RewardsQueryVariables>;
+export interface Rewards_party_rewardDetails_rewards_asset {
+  __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
+}
+
+export interface Rewards_party_rewardDetails_rewards_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+}
+
+export interface Rewards_party_rewardDetails_rewards_epoch {
+  __typename: "Epoch";
+  /**
+   * Presumably this is an integer or something. If there's no such thing, disregard
+   */
+  id: string;
+}
+
+export interface Rewards_party_rewardDetails_rewards {
+  __typename: "Reward";
+  /**
+   * The type of reward
+   */
+  rewardType: AccountType;
+  /**
+   * The asset this reward is paid in
+   */
+  asset: Rewards_party_rewardDetails_rewards_asset;
+  /**
+   * Party receiving the reward
+   */
+  party: Rewards_party_rewardDetails_rewards_party;
+  /**
+   * Epoch for which this reward was distributed
+   */
+  epoch: Rewards_party_rewardDetails_rewards_epoch;
+  /**
+   * Amount received for this reward
+   */
+  amount: string;
+  /**
+   * The amount field formatted by the client
+   */
+  amountFormatted: string;
+  /**
+   * Percentage out of the total distributed reward
+   */
+  percentageOfTotal: string;
+  /**
+   * Time at which the rewards was received
+   */
+  receivedAt: string;
+}
+
+export interface Rewards_party_rewardDetails {
+  __typename: "RewardPerAssetDetail";
+  /**
+   * Asset in which the reward was paid
+   */
+  asset: Rewards_party_rewardDetails_asset;
+  /**
+   * A list of rewards received for this asset
+   */
+  rewards: (Rewards_party_rewardDetails_rewards | null)[] | null;
+  /**
+   * The total amount of rewards received for this asset.
+   */
+  totalAmount: string;
+  /**
+   * The total amount field formatted by the client
+   */
+  totalAmountFormatted: string;
+}
+
+export interface Rewards_party_delegations {
+  __typename: "Delegation";
+  /**
+   * Amount delegated
+   */
+  amount: string;
+  /**
+   * The amount field formatted by the client
+   */
+  amountFormatted: string;
+  /**
+   * Epoch of delegation
+   */
+  epoch: number;
+}
+
+export interface Rewards_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+  /**
+   * return reward information
+   */
+  rewardDetails: (Rewards_party_rewardDetails | null)[] | null;
+  delegations: Rewards_party_delegations[] | null;
+}
+
+export interface Rewards_epoch_timestamps {
+  __typename: "EpochTimestamps";
+  /**
+   * RFC3339 timestamp - Vega time of epoch start, null if not started
+   */
+  start: string | null;
+  /**
+   * RFC3339 timestamp - Vega time of epoch end, null if not ended
+   */
+  end: string | null;
+  /**
+   * RFC3339 timestamp - Vega time of epoch expiry
+   */
+  expiry: string | null;
+}
+
+export interface Rewards_epoch {
+  __typename: "Epoch";
+  /**
+   * Presumably this is an integer or something. If there's no such thing, disregard
+   */
+  id: string;
+  /**
+   * Timestamps for start and end of epochs
+   */
+  timestamps: Rewards_epoch_timestamps;
+}
+
+export interface Rewards {
+  /**
+   * An entity that is trading on the Vega network
+   */
+  party: Rewards_party | null;
+  /**
+   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   */
+  epoch: Rewards_epoch;
+}
+
+export interface RewardsVariables {
+  partyId: string;
+}

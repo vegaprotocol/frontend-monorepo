@@ -1,57 +1,66 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type DepositsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+// ====================================================
+// GraphQL query operation: Deposits
+// ====================================================
 
-
-export type DepositsQuery = { __typename?: 'Query', assetsConnection: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } } | null> | null } };
-
-
-export const DepositsDocument = gql`
-    query Deposits {
-  assetsConnection {
-    edges {
-      node {
-        id
-        name
-        symbol
-        decimals
-        source {
-          ... on ERC20 {
-            contractAddress
-          }
-        }
-      }
-    }
-  }
+export interface Deposits_assetsConnection_edges_node_source_BuiltinAsset {
+  __typename: "BuiltinAsset";
 }
-    `;
 
-/**
- * __useDepositsQuery__
- *
- * To run a query within a React component, call `useDepositsQuery` and pass it any options that fit your needs.
- * When your component renders, `useDepositsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDepositsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useDepositsQuery(baseOptions?: Apollo.QueryHookOptions<DepositsQuery, DepositsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DepositsQuery, DepositsQueryVariables>(DepositsDocument, options);
-      }
-export function useDepositsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DepositsQuery, DepositsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DepositsQuery, DepositsQueryVariables>(DepositsDocument, options);
-        }
-export type DepositsQueryHookResult = ReturnType<typeof useDepositsQuery>;
-export type DepositsLazyQueryHookResult = ReturnType<typeof useDepositsLazyQuery>;
-export type DepositsQueryResult = Apollo.QueryResult<DepositsQuery, DepositsQueryVariables>;
+export interface Deposits_assetsConnection_edges_node_source_ERC20 {
+  __typename: "ERC20";
+  /**
+   * The address of the ERC20 contract
+   */
+  contractAddress: string;
+}
+
+export type Deposits_assetsConnection_edges_node_source = Deposits_assetsConnection_edges_node_source_BuiltinAsset | Deposits_assetsConnection_edges_node_source_ERC20;
+
+export interface Deposits_assetsConnection_edges_node {
+  __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
+  /**
+   * The origin source of the asset (e.g: an ERC20 asset)
+   */
+  source: Deposits_assetsConnection_edges_node_source;
+}
+
+export interface Deposits_assetsConnection_edges {
+  __typename: "AssetEdge";
+  node: Deposits_assetsConnection_edges_node;
+}
+
+export interface Deposits_assetsConnection {
+  __typename: "AssetsConnection";
+  /**
+   * The assets
+   */
+  edges: (Deposits_assetsConnection_edges | null)[] | null;
+}
+
+export interface Deposits {
+  /**
+   * The list of all assets in use in the Vega network or the specified asset if ID is provided
+   */
+  assetsConnection: Deposits_assetsConnection;
+}

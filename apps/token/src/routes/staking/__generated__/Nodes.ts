@@ -1,63 +1,91 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type NodesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+import { ValidatorStatus } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: Nodes
+// ====================================================
 
-export type NodesQuery = { __typename?: 'Query', nodes?: Array<{ __typename?: 'Node', avatarUrl?: string | null, id: string, name: string, pubkey: string, stakedTotal: string, stakedTotalFormatted: string, pendingStake: string, pendingStakeFormatted: string, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string, status: Types.ValidatorStatus } }> | null, nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string } | null };
-
-
-export const NodesDocument = gql`
-    query Nodes {
-  nodes {
-    avatarUrl
-    id
-    name
-    pubkey
-    stakedTotal
-    stakedTotalFormatted @client
-    pendingStake
-    pendingStakeFormatted @client
-    rankingScore {
-      rankingScore
-      stakeScore
-      performanceScore
-      votingPower
-      status
-    }
-  }
-  nodeData {
-    stakedTotal
-    stakedTotalFormatted @client
-  }
+export interface Nodes_nodes_rankingScore {
+  __typename: "RankingScore";
+  /**
+   * The ranking score of the validator
+   */
+  rankingScore: string;
+  /**
+   * The stake based score of the validator (no anti-whaling)
+   */
+  stakeScore: string;
+  /**
+   * The performance score of the validator
+   */
+  performanceScore: string;
+  /**
+   * The Tendermint voting power of the validator (uint32)
+   */
+  votingPower: string;
+  /**
+   * The current validation status of the validator
+   */
+  status: ValidatorStatus;
 }
-    `;
 
-/**
- * __useNodesQuery__
- *
- * To run a query within a React component, call `useNodesQuery` and pass it any options that fit your needs.
- * When your component renders, `useNodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useNodesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useNodesQuery(baseOptions?: Apollo.QueryHookOptions<NodesQuery, NodesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<NodesQuery, NodesQueryVariables>(NodesDocument, options);
-      }
-export function useNodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NodesQuery, NodesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<NodesQuery, NodesQueryVariables>(NodesDocument, options);
-        }
-export type NodesQueryHookResult = ReturnType<typeof useNodesQuery>;
-export type NodesLazyQueryHookResult = ReturnType<typeof useNodesLazyQuery>;
-export type NodesQueryResult = Apollo.QueryResult<NodesQuery, NodesQueryVariables>;
+export interface Nodes_nodes {
+  __typename: "Node";
+  avatarUrl: string | null;
+  /**
+   * The node URL eg n01.vega.xyz
+   */
+  id: string;
+  name: string;
+  /**
+   * Public key of the node operator
+   */
+  pubkey: string;
+  /**
+   * Total amount staked on node
+   */
+  stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
+  stakedTotalFormatted: string;
+  /**
+   * Amount of stake on the next epoch
+   */
+  pendingStake: string;
+  /**
+   * The pending staked field formatted by the client
+   */
+  pendingStakeFormatted: string;
+  /**
+   * Ranking scores and status for the validator for the current epoch
+   */
+  rankingScore: Nodes_nodes_rankingScore;
+}
+
+export interface Nodes_nodeData {
+  __typename: "NodeData";
+  /**
+   * Total staked amount across all nodes
+   */
+  stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
+  stakedTotalFormatted: string;
+}
+
+export interface Nodes {
+  /**
+   * all known network nodes
+   */
+  nodes: Nodes_nodes[] | null;
+  /**
+   * returns information about nodes
+   */
+  nodeData: Nodes_nodeData | null;
+}

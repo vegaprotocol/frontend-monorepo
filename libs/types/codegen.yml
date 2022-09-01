@@ -12,7 +12,7 @@ generates:
   libs/**/__generated__:
     preset: near-operation-file
     presetConfig:
-      folder: __generated__
+      folder: __generated___
       extension: .ts
       baseTypesPath: ~@vegaprotocol/types
     plugins:

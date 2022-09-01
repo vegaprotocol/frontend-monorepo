@@ -1,55 +1,54 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type PartyStakeLinkingsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
+import { StakeLinkingStatus } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: PartyStakeLinkings
+// ====================================================
 
-export type PartyStakeLinkingsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', linkings?: Array<{ __typename?: 'StakeLinking', id: string, txHash: string, status: Types.StakeLinkingStatus }> | null } } | null };
-
-
-export const PartyStakeLinkingsDocument = gql`
-    query PartyStakeLinkings($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    stake {
-      linkings {
-        id
-        txHash
-        status
-      }
-    }
-  }
+export interface PartyStakeLinkings_party_stake_linkings {
+  __typename: "StakeLinking";
+  id: string;
+  /**
+   * The transaction hash (ethereum) which initiated the link/unlink
+   */
+  txHash: string;
+  /**
+   * The status of the linking
+   */
+  status: StakeLinkingStatus;
 }
-    `;
 
-/**
- * __usePartyStakeLinkingsQuery__
- *
- * To run a query within a React component, call `usePartyStakeLinkingsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePartyStakeLinkingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePartyStakeLinkingsQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function usePartyStakeLinkingsQuery(baseOptions: Apollo.QueryHookOptions<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>(PartyStakeLinkingsDocument, options);
-      }
-export function usePartyStakeLinkingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>(PartyStakeLinkingsDocument, options);
-        }
-export type PartyStakeLinkingsQueryHookResult = ReturnType<typeof usePartyStakeLinkingsQuery>;
-export type PartyStakeLinkingsLazyQueryHookResult = ReturnType<typeof usePartyStakeLinkingsLazyQuery>;
-export type PartyStakeLinkingsQueryResult = Apollo.QueryResult<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>;
+export interface PartyStakeLinkings_party_stake {
+  __typename: "PartyStake";
+  /**
+   * The list of all stake link/unlink for the party
+   */
+  linkings: PartyStakeLinkings_party_stake_linkings[] | null;
+}
+
+export interface PartyStakeLinkings_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+  /**
+   * The staking information for this Party
+   */
+  stake: PartyStakeLinkings_party_stake;
+}
+
+export interface PartyStakeLinkings {
+  /**
+   * An entity that is trading on the Vega network
+   */
+  party: PartyStakeLinkings_party | null;
+}
+
+export interface PartyStakeLinkingsVariables {
+  partyId: string;
+}

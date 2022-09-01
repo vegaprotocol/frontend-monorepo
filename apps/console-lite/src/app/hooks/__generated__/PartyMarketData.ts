@@ -1,71 +1,118 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type PartyMarketDataQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
+import { AccountType } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: PartyMarketData
+// ====================================================
 
-export type PartyMarketDataQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, decimals: number }, market?: { __typename?: 'Market', id: string } | null }> | null, marginsConnection: { __typename?: 'MarginConnection', edges?: Array<{ __typename?: 'MarginEdge', node: { __typename?: 'MarginLevels', initialLevel: string, maintenanceLevel: string, searchLevel: string, market: { __typename?: 'Market', id: string } } }> | null } } | null };
-
-
-export const PartyMarketDataDocument = gql`
-    query PartyMarketData($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    accounts {
-      type
-      balance
-      asset {
-        id
-        decimals
-      }
-      market {
-        id
-      }
-    }
-    marginsConnection {
-      edges {
-        node {
-          market {
-            id
-          }
-          initialLevel
-          maintenanceLevel
-          searchLevel
-        }
-      }
-    }
-  }
+export interface PartyMarketData_party_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
-    `;
 
-/**
- * __usePartyMarketDataQuery__
- *
- * To run a query within a React component, call `usePartyMarketDataQuery` and pass it any options that fit your needs.
- * When your component renders, `usePartyMarketDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePartyMarketDataQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function usePartyMarketDataQuery(baseOptions: Apollo.QueryHookOptions<PartyMarketDataQuery, PartyMarketDataQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PartyMarketDataQuery, PartyMarketDataQueryVariables>(PartyMarketDataDocument, options);
-      }
-export function usePartyMarketDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PartyMarketDataQuery, PartyMarketDataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PartyMarketDataQuery, PartyMarketDataQueryVariables>(PartyMarketDataDocument, options);
-        }
-export type PartyMarketDataQueryHookResult = ReturnType<typeof usePartyMarketDataQuery>;
-export type PartyMarketDataLazyQueryHookResult = ReturnType<typeof usePartyMarketDataLazyQuery>;
-export type PartyMarketDataQueryResult = Apollo.QueryResult<PartyMarketDataQuery, PartyMarketDataQueryVariables>;
+export interface PartyMarketData_party_accounts_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface PartyMarketData_party_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: PartyMarketData_party_accounts_asset;
+  /**
+   * Market (only relevant to margin accounts)
+   */
+  market: PartyMarketData_party_accounts_market | null;
+}
+
+export interface PartyMarketData_party_marginsConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface PartyMarketData_party_marginsConnection_edges_node {
+  __typename: "MarginLevels";
+  /**
+   * market in which the margin is required for this party
+   */
+  market: PartyMarketData_party_marginsConnection_edges_node_market;
+  /**
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   */
+  initialLevel: string;
+  /**
+   * minimal margin for the position to be maintained in the network (unsigned integer)
+   */
+  maintenanceLevel: string;
+  /**
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   */
+  searchLevel: string;
+}
+
+export interface PartyMarketData_party_marginsConnection_edges {
+  __typename: "MarginEdge";
+  node: PartyMarketData_party_marginsConnection_edges_node;
+}
+
+export interface PartyMarketData_party_marginsConnection {
+  __typename: "MarginConnection";
+  /**
+   * The margin levels in this connection
+   */
+  edges: PartyMarketData_party_marginsConnection_edges[] | null;
+}
+
+export interface PartyMarketData_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+  /**
+   * Collateral accounts relating to a party
+   */
+  accounts: PartyMarketData_party_accounts[] | null;
+  /**
+   * Margin levels for a market
+   */
+  marginsConnection: PartyMarketData_party_marginsConnection;
+}
+
+export interface PartyMarketData {
+  /**
+   * An entity that is trading on the Vega network
+   */
+  party: PartyMarketData_party | null;
+}
+
+export interface PartyMarketDataVariables {
+  partyId: string;
+}

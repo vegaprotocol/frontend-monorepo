@@ -1,68 +1,106 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type MarketPositionsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
+import { AccountType } from "@vegaprotocol/types";
 
+// ====================================================
+// GraphQL query operation: MarketPositions
+// ====================================================
 
-export type MarketPositionsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', decimals: number }, market?: { __typename?: 'Market', id: string } | null }> | null, positionsConnection: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', openVolume: string, market: { __typename?: 'Market', id: string } } }> | null } } | null };
-
-
-export const MarketPositionsDocument = gql`
-    query MarketPositions($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    accounts {
-      type
-      balance
-      asset {
-        decimals
-      }
-      market {
-        id
-      }
-    }
-    positionsConnection {
-      edges {
-        node {
-          openVolume
-          market {
-            id
-          }
-        }
-      }
-    }
-  }
+export interface MarketPositions_party_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
-    `;
 
-/**
- * __useMarketPositionsQuery__
- *
- * To run a query within a React component, call `useMarketPositionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMarketPositionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMarketPositionsQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useMarketPositionsQuery(baseOptions: Apollo.QueryHookOptions<MarketPositionsQuery, MarketPositionsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MarketPositionsQuery, MarketPositionsQueryVariables>(MarketPositionsDocument, options);
-      }
-export function useMarketPositionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketPositionsQuery, MarketPositionsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MarketPositionsQuery, MarketPositionsQueryVariables>(MarketPositionsDocument, options);
-        }
-export type MarketPositionsQueryHookResult = ReturnType<typeof useMarketPositionsQuery>;
-export type MarketPositionsLazyQueryHookResult = ReturnType<typeof useMarketPositionsLazyQuery>;
-export type MarketPositionsQueryResult = Apollo.QueryResult<MarketPositionsQuery, MarketPositionsQueryVariables>;
+export interface MarketPositions_party_accounts_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface MarketPositions_party_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: MarketPositions_party_accounts_asset;
+  /**
+   * Market (only relevant to margin accounts)
+   */
+  market: MarketPositions_party_accounts_market | null;
+}
+
+export interface MarketPositions_party_positionsConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface MarketPositions_party_positionsConnection_edges_node {
+  __typename: "Position";
+  /**
+   * Open volume (uint64)
+   */
+  openVolume: string;
+  /**
+   * Market relating to this position
+   */
+  market: MarketPositions_party_positionsConnection_edges_node_market;
+}
+
+export interface MarketPositions_party_positionsConnection_edges {
+  __typename: "PositionEdge";
+  node: MarketPositions_party_positionsConnection_edges_node;
+}
+
+export interface MarketPositions_party_positionsConnection {
+  __typename: "PositionConnection";
+  /**
+   * The positions in this connection
+   */
+  edges: MarketPositions_party_positionsConnection_edges[] | null;
+}
+
+export interface MarketPositions_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+  /**
+   * Collateral accounts relating to a party
+   */
+  accounts: MarketPositions_party_accounts[] | null;
+  /**
+   * Trading positions relating to a party
+   */
+  positionsConnection: MarketPositions_party_positionsConnection;
+}
+
+export interface MarketPositions {
+  /**
+   * An entity that is trading on the Vega network
+   */
+  party: MarketPositions_party | null;
+}
+
+export interface MarketPositionsVariables {
+  partyId: string;
+}

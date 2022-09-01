@@ -1,113 +1,108 @@
-import * as Types from '@vegaprotocol/types';
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-const defaultOptions = {} as const;
-export type CandleFieldsFragment = { __typename?: 'Candle', datetime: string, high: string, low: string, open: string, close: string, volume: string };
+import { Interval } from "@vegaprotocol/types";
 
-export type CandlesQueryVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-  interval: Types.Interval;
-  since: Types.Scalars['String'];
-}>;
+// ====================================================
+// GraphQL query operation: Candles
+// ====================================================
 
-
-export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candles?: Array<{ __typename?: 'Candle', datetime: string, high: string, low: string, open: string, close: string, volume: string } | null> | null } | null };
-
-export type CandlesSubSubscriptionVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-  interval: Types.Interval;
-}>;
-
-
-export type CandlesSubSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', datetime: string, high: string, low: string, open: string, close: string, volume: string } };
-
-export const CandleFieldsFragmentDoc = gql`
-    fragment CandleFields on Candle {
-  datetime
-  high
-  low
-  open
-  close
-  volume
+export interface Candles_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
+   */
+  code: string;
 }
-    `;
-export const CandlesDocument = gql`
-    query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
-  market(id: $marketId) {
-    id
-    decimalPlaces
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-      }
-    }
-    candles(interval: $interval, since: $since) {
-      ...CandleFields
-    }
-  }
-}
-    ${CandleFieldsFragmentDoc}`;
 
-/**
- * __useCandlesQuery__
- *
- * To run a query within a React component, call `useCandlesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCandlesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCandlesQuery({
- *   variables: {
- *      marketId: // value for 'marketId'
- *      interval: // value for 'interval'
- *      since: // value for 'since'
- *   },
- * });
- */
-export function useCandlesQuery(baseOptions: Apollo.QueryHookOptions<CandlesQuery, CandlesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CandlesQuery, CandlesQueryVariables>(CandlesDocument, options);
-      }
-export function useCandlesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CandlesQuery, CandlesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CandlesQuery, CandlesQueryVariables>(CandlesDocument, options);
-        }
-export type CandlesQueryHookResult = ReturnType<typeof useCandlesQuery>;
-export type CandlesLazyQueryHookResult = ReturnType<typeof useCandlesLazyQuery>;
-export type CandlesQueryResult = Apollo.QueryResult<CandlesQuery, CandlesQueryVariables>;
-export const CandlesSubDocument = gql`
-    subscription CandlesSub($marketId: ID!, $interval: Interval!) {
-  candles(marketId: $marketId, interval: $interval) {
-    ...CandleFields
-  }
+export interface Candles_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of, or reference to, a fully specified instrument.
+   */
+  instrument: Candles_market_tradableInstrument_instrument;
 }
-    ${CandleFieldsFragmentDoc}`;
 
-/**
- * __useCandlesSubSubscription__
- *
- * To run a query within a React component, call `useCandlesSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCandlesSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCandlesSubSubscription({
- *   variables: {
- *      marketId: // value for 'marketId'
- *      interval: // value for 'interval'
- *   },
- * });
- */
-export function useCandlesSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<CandlesSubSubscription, CandlesSubSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<CandlesSubSubscription, CandlesSubSubscriptionVariables>(CandlesSubDocument, options);
-      }
-export type CandlesSubSubscriptionHookResult = ReturnType<typeof useCandlesSubSubscription>;
-export type CandlesSubSubscriptionResult = Apollo.SubscriptionResult<CandlesSubSubscription>;
+export interface Candles_market_candles {
+  __typename: "Candle";
+  /**
+   * RFC3339Nano formatted date and time for the candle
+   */
+  datetime: string;
+  /**
+   * High price (uint64)
+   */
+  high: string;
+  /**
+   * Low price (uint64)
+   */
+  low: string;
+  /**
+   * Open price (uint64)
+   */
+  open: string;
+  /**
+   * Close price (uint64)
+   */
+  close: string;
+  /**
+   * Volume price (uint64)
+   */
+  volume: string;
+}
+
+export interface Candles_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+  /**
+   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * number denominated in the currency of the market. (uint64)
+   * 
+   * Examples:
+   * Currency     Balance  decimalPlaces  Real Balance
+   * GBP              100              0       GBP 100
+   * GBP              100              2       GBP   1.00
+   * GBP              100              4       GBP   0.01
+   * GBP                1              4       GBP   0.0001   (  0.01p  )
+   * 
+   * GBX (pence)      100              0       GBP   1.00     (100p     )
+   * GBX (pence)      100              2       GBP   0.01     (  1p     )
+   * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
+   * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
+   */
+  decimalPlaces: number;
+  /**
+   * An instance of, or reference to, a tradable instrument.
+   */
+  tradableInstrument: Candles_market_tradableInstrument;
+  /**
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   */
+  candles: (Candles_market_candles | null)[] | null;
+}
+
+export interface Candles {
+  /**
+   * An instrument that is trading on the Vega network
+   */
+  market: Candles_market | null;
+}
+
+export interface CandlesVariables {
+  marketId: string;
+  interval: Interval;
+  since: string;
+}
