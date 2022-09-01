@@ -1,0 +1,24 @@
+schema:
+  - libs/types/schema.graphql
+  - apps/trading/client.graphql
+  - apps/token/client.graphql
+documents:
+  - '{apps,libs}/**/*.{ts,tsx,js,jsx,graphql}'
+  - '!{apps,libs}/**/__generated__/*.ts'
+  - '!{apps,libs}/**/generic-data-provider.ts'
+# documents: /Users/vacuum/Projects/vega/frontend-monorepo/apps/explorer/src/app/routes/assets/index.ts
+config:
+  preResolveTypes: true
+  namingConvention: keep
+generates:
+  libs/types/src/__generated__/globalTypes.ts:
+    - typescript
+  libs/**/__generated__:
+    preset: near-operation-file
+    presetConfig:
+      folder: __generated__
+      extension: .ts
+      baseTypesPath: ~@vegaprotocol/types
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
