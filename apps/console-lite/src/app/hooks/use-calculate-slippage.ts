@@ -14,7 +14,7 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const { data } = useOrderBookData({
     variables,
-    throttleMilliseconds: 1000,
+    throttleMilliseconds: 5000,
   });
   const volPriceArr =
     data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
