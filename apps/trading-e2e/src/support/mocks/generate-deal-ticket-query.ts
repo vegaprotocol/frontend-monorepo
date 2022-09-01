@@ -11,7 +11,7 @@ export const generateDealTicketQuery = (
       __typename: 'Market',
       id: 'market-0',
       name: 'ETHBTC Quarterly (30 Jun 2022)',
-      decimalPlaces: 2,
+      decimalPlaces: 5,
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
