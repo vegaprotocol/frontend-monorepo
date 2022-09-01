@@ -27,7 +27,7 @@ export function Dialog({
 }: DialogProps) {
   const wrapperClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded relative inset-x-1/2 top-[10vh] translate-x-[-50%] max-w-[90vw] overflow-y-auto',
+    'z-20 fixed rounded relative top-[10vh] max-w-[90vw] overflow-y-auto',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal

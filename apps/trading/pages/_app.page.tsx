@@ -80,7 +80,6 @@ function AppBody({ Component, pageProps }: AppProps) {
           />
           <RiskNoticeDialog
             dialogOpen={store.vegaRiskNoticeDialog}
-            onCloseDialog={() => store.setVegaRiskNoticeDialog(false)}
             onAcceptRisk={handleAcceptRisk}
           />
         </AppLoader>
