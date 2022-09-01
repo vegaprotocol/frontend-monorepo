@@ -291,8 +291,9 @@ export const Info = ({ market }: InfoProps) => {
           link={
             <>
               <Link
+                target="_blank"
                 className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
-                onClick={() => setOpenLiquidityView(true)}
+                href={`/liquidity/${market.id}`}
               >
                 {t('View liquidity provision table')}
               </Link>

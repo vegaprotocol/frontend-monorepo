@@ -10,7 +10,7 @@ import type { Market_market } from '../../pages/markets/__generated__/Market';
 
 type MarketDataGridProps = {
   grid: {
-    label: string;
+    label: string | ReactNode;
     value?: ReactNode;
     isEstimate?: boolean;
   }[];
@@ -79,8 +79,11 @@ const compileGridData = (market: Market_market) => {
 
   if (isLiquidityMonitoringAuction && market.data?.suppliedStake) {
     grid.push({
-      label: t('Current liquidity'),
-      // @TODO: link this to liquidity view when https://github.com/vegaprotocol/frontend-monorepo/issues/491 is done
+      label: (
+        <Link href={`/liquidity/${market.id}`} target="_blank">
+          {t('Current liquidity')}
+        </Link>
+      ),
       value: formatStake(market.data.suppliedStake, market),
     });
   }

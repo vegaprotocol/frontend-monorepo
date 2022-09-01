@@ -51,10 +51,13 @@ const Row = ({
         <span style={{ wordBreak: 'break-word' }}>
           {isNumber && !unformatted
             ? decimalPlaces
-              ? `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`
+              ? `${addDecimalsFormatNumber(
+                  value,
+                  decimalPlaces
+                )} ${assetSymbol}`
               : asPercentage
-                ? formatNumberPercentage(new BigNumber(value * 100))
-                : `${formatNumber(Number(value))} ${assetSymbol}`
+              ? formatNumberPercentage(new BigNumber(value * 100))
+              : `${formatNumber(Number(value))} ${assetSymbol}`
             : value}
         </span>
       </KeyValueTableRow>

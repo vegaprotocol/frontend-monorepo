@@ -223,10 +223,7 @@ export const formatLiquidityData = ({
           averageEntryValuation,
           assetDecimalPlaces
         ),
-        obligation: addDecimalsFormatNumber(
-          obligation,
-          assetDecimalPlaces // TODO obligation is in ccy - should be same with commitment amount, why decimals??
-        ),
+        obligation: addDecimalsFormatNumber(obligation, assetDecimalPlaces),
         supplied: addDecimalsFormatNumber(supplied, assetDecimalPlaces),
       })
     ),

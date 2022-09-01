@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Link, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 
 import type { AgGridReact } from 'ag-grid-react';
 import { LiquidityTable } from './liquidity-table';
@@ -8,7 +8,6 @@ import { useQuery } from '@apollo/client';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { MyLiquidityProvisionContainer } from './my-liquidity-container';
 import {
   MARKET_LIQUIDITY_QUERY,
   useLiquidityProvision,
@@ -41,9 +40,15 @@ export const LiquidityManager = ({
     'h-full max-h-full',
     'flex flex-col',
     'text-ui-small',
-    'gap-24'
+    'gap-8'
   );
+  const titleClasses =
+    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
 
+  const myLpEdges = useMemo(
+    () => (liquidityProviders || []).filter((e) => e.party === partyId),
+    [liquidityProviders, partyId]
+  );
   const activeEdges = useMemo(
     () =>
       (liquidityProviders || []).filter(
@@ -59,18 +64,23 @@ export const LiquidityManager = ({
     [liquidityProviders]
   );
 
+  const getActiveDefaultId = () => {
+    if (activeEdges?.length) return 'active';
+    else if (inactiveEdges?.length > 0) return 'inactive';
+    return 'active';
+  };
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className={wrapperClasses}>
-        <h5 className="text-h5 font-bold text-black dark:text-white">
+        <Link className={titleClasses} href={`/markets/${marketId}`}>
           {`${code} ${t('liquidity provision')}`}
-        </h5>
+        </Link>
 
         <div>
           <div className="text-ui font-bold text-black dark:text-white">
             {t('Market specification')}
           </div>
-          <div className="grid grid-cols-4 gap-24 mb-10">
+          <div className="grid md:grid-cols-4 grid-cols-2 gap-24">
             <div>
               <div>{t('Target stake')}</div>
               <div>{`${targetStake} ${symbol}`}</div>
@@ -83,18 +93,20 @@ export const LiquidityManager = ({
         </div>
 
         {partyId && (
-          <MyLiquidityProvisionContainer
-            partyId={partyId}
-            data={marketLiquidityData}
-          />
+          <div className="h-[10vh]">
+            <div className="text-ui font-bold text-black dark:text-white mt-10">
+              {t('My liquidity provisions')}
+            </div>
+            <LiquidityTable ref={gridRef} data={myLpEdges} />
+          </div>
         )}
 
-        <div className="h-[50vh]">
+        <div className="h-[30vh]">
           <div className="text-ui font-bold text-black dark:text-white mt-10">
             {t('All parties')}
           </div>
 
-          <Tabs>
+          <Tabs activeDefaultId={getActiveDefaultId()}>
             <Tab id="active" name={t('Active')}>
               <LiquidityTable ref={gridRef} data={activeEdges} />
             </Tab>

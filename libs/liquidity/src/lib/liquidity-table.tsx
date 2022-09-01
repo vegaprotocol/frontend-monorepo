@@ -21,6 +21,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         defaultColDef={{
           flex: 1,
           resizable: true,
+          minWidth: 100,
         }}
         rowData={props.data}
         {...props}

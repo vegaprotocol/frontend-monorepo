@@ -31,12 +31,22 @@ describe('LiquidityTable', () => {
       render(<LiquidityTable data={singleRowData} />);
       await waitFor(async () => {
         const headers = await screen.getAllByRole('columnheader');
-        expect(headers).toHaveLength(4);
+        expect(headers).toHaveLength(9);
         expect(
           headers.map((h) =>
             h.querySelector('[ref="eText"]')?.textContent?.trim()
           )
-        ).toEqual(['Party', 'Average entry valuation', 'Updated', 'Created']);
+        ).toEqual([
+          'Party',
+          'Average entry valuation',
+          'Updated',
+          'Created',
+          'Supplied (siskas)',
+          'Obligation (siskas)',
+          'Share',
+          'Fee',
+          'Status',
+        ]);
       });
     });
   });
