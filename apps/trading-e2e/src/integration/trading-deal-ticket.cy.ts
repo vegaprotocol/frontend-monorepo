@@ -33,6 +33,7 @@ describe('deal ticket orders', () => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
     cy.visit('/markets/market-0');
+    cy.wait('@Market');
     connectVegaWallet();
   });
 

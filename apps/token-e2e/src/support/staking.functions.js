@@ -24,7 +24,9 @@ Cypress.Commands.add('wait_for_begining_of_epoch', () => {
   cy.contains('Waiting for next epoch to start', epochTimeout).should(
     'not.exist'
   );
-  cy.contains('Waiting for next epoch to start', epochTimeout);
+  cy.contains('Waiting for next epoch to start', epochTimeout).should(
+    'be.visible'
+  );
 });
 
 Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
