@@ -25,7 +25,6 @@ import {
 import { Footer } from '../components/footer';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 
-
 const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
 function AppBody({ Component, pageProps }: AppProps) {

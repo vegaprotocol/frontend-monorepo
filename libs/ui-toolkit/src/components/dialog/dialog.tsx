@@ -27,8 +27,8 @@ export function Dialog({
 }: DialogProps) {
   const contentClasses = classNames(
     'fixed relative top-0 left-0 z-20 flex items-center justify-center',
-    'w-full h-full',
-  )
+    'w-full h-full'
+  );
   const wrapperClasses = classNames(
     // Positions the modal in the center of screen
     'z-20 fixed rounded top-[10vh] max-w-[90vw]',
