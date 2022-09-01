@@ -16,7 +16,6 @@ generates:
     preset: near-operation-file
     presetConfig:
       folder: __generated__
-      extension: .ts
       baseTypesPath: ~@vegaprotocol/types
     plugins:
       - typescript-operations
