@@ -25,9 +25,13 @@ export function Dialog({
   intent,
   size = 'small',
 }: DialogProps) {
+  const contentClasses = classNames(
+    'fixed relative top-0 left-0 z-20 flex items-center justify-center',
+    'w-full h-full',
+  )
   const wrapperClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded relative top-[10vh] max-w-[90vw] overflow-y-auto',
+    'z-20 fixed rounded top-[10vh] max-w-[90vw]',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -46,7 +50,7 @@ export function Dialog({
           className="fixed inset-0 bg-black/50 z-10"
           data-testid="dialog-overlay"
         />
-        <DialogPrimitives.Content className="fixed top-0 left-0 z-20 w-full h-full flex items-center justify-center">
+        <DialogPrimitives.Content className={contentClasses}>
           <div className={wrapperClasses}>
             <DialogPrimitives.Close
               className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
