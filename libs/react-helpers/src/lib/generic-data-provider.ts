@@ -9,16 +9,23 @@ import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
 
+interface UpdateData<Data, Delta> {
+  delta?: Delta;
+  insertionData?: Data | null;
+  isUpdate?: boolean;
+  isInsert?: boolean;
+}
 export interface UpdateCallback<Data, Delta> {
-  (arg: {
-    data: Data | null;
-    error?: Error;
-    loading: boolean;
-    pageInfo: PageInfo | null;
-    delta?: Delta;
-    insertionData?: Data | null;
-    totalCount?: number;
-  }): void;
+  (
+    arg: UpdateData<Data, Delta> & {
+      data: Data | null;
+      error?: Error;
+      loading: boolean;
+      loaded: boolean;
+      pageInfo: PageInfo | null;
+      totalCount?: number;
+    }
+  ): void;
 }
 
 export interface Load<Data> {
@@ -44,7 +51,7 @@ export interface Subscribe<Data, Delta> {
     unsubscribe: () => void;
     reload: (forceReset?: boolean) => void;
     flush: () => void;
-    load: Load<Data>;
+    load?: Load<Data>;
   };
 }
 
@@ -124,51 +131,66 @@ export function defaultAppend<Data>(
   return { data, totalCount };
 }
 
-/**
- * @param subscriptionQuery query that will be used for subscription
- * @param update function that will be execued on each onNext, it should update data base on delta, it can reload data provider
- * @param getData transforms received query data to format that will be stored in data provider
- * @param getDelta transforms delta data to format that will be stored in data provider
- * @param fetchPolicy
- * @returns subscribe function
- */
-function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
-  query: Query<QueryData>,
-  subscriptionQuery: Query<SubscriptionData>,
-  update: Update<Data, Delta>,
-  getData: GetData<QueryData, Data>,
-  getDelta: GetDelta<SubscriptionData, Delta>,
+interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
+  query: Query<QueryData>;
+  subscriptionQuery: Query<SubscriptionData>;
+  update: Update<Data, Delta>;
+  getData: GetData<QueryData, Data>;
+  getDelta: GetDelta<SubscriptionData, Delta>;
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount?: GetTotalCount<QueryData>;
     append: Append<Data>;
     first: number;
-  },
-  fetchPolicy: FetchPolicy = 'no-cache'
-): Subscribe<Data, Delta> {
+  };
+  fetchPolicy?: FetchPolicy;
+}
+
+/**
+ * @param subscriptionQuery query that will be used for subscription
+ * @param update function that will be executed on each onNext, it should update data base on delta, it can reload data provider
+ * @param getData transforms received query data to format that will be stored in data provider
+ * @param getDelta transforms delta data to format that will be stored in data provider
+ * @param fetchPolicy
+ * @returns subscribe function
+ */
+function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
+  query,
+  subscriptionQuery,
+  update,
+  getData,
+  getDelta,
+  pagination,
+  fetchPolicy,
+}: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
+  Data,
+  Delta
+> {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
-  let variables: OperationVariables | undefined = undefined;
+  let variables: OperationVariables | undefined;
   let data: Data | null = null;
-  let error: Error | undefined = undefined;
-  let loading = false;
-  let client: ApolloClient<object> | undefined = undefined;
-  let subscription: Subscription | undefined = undefined;
+  let error: Error | undefined;
+  let loading = true;
+  let loaded = false;
+  let client: ApolloClient<object>;
+  let subscription: Subscription | undefined;
   let pageInfo: PageInfo | null = null;
   let totalCount: number | undefined;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
     callback: UpdateCallback<Data, Delta>,
-    updateData?: { delta?: Delta; insertionData?: Data | null }
+    updateData?: UpdateData<Data, Delta>
   ) => {
     callback({
       data,
       error,
       loading,
+      loaded,
       pageInfo,
       totalCount,
       ...updateData,
@@ -176,15 +198,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   };
 
   // notify all callbacks
-  const notifyAll = (updateData?: {
-    delta?: Delta;
-    insertionData?: Data | null;
-  }) => {
+  const notifyAll = (updateData?: UpdateData<Data, Delta>) => {
     callbacks.forEach((callback) => notify(callback, updateData));
   };
 
   const load = async (start?: number, end?: number) => {
-    if (!client || !pagination || !pageInfo || !(data instanceof Array)) {
+    if (!pagination || !pageInfo || !(data instanceof Array)) {
       return Promise.reject();
     }
     const paginationVariables: Pagination = {
@@ -221,7 +240,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         ...variables,
         pagination: paginationVariables,
       },
-      fetchPolicy,
+      fetchPolicy: fetchPolicy || 'no-cache',
     });
     const insertionData = getData(res.data);
     const insertionPageInfo = pagination.getPageInfo(res.data);
@@ -236,7 +255,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     totalCount =
       (pagination.getTotalCount && pagination.getTotalCount(res.data)) ??
       totalCount;
-    notifyAll({ insertionData });
+    notifyAll({ insertionData, isInsert: true });
     return insertionData;
   };
 
@@ -280,6 +299,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           }
         }
       }
+      loaded = true;
     } catch (e) {
       // if error will occur data provider stops subscription
       error = e as Error;
@@ -310,7 +330,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   };
 
   const initialize = async () => {
-    if (subscription || loading) {
+    if (subscription) {
       return;
     }
     loading = true;
@@ -339,7 +359,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
               return;
             }
             data = updatedData;
-            notifyAll({ delta });
+            notifyAll({ delta, isUpdate: true });
           }
         },
         () => reload()
@@ -347,7 +367,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     await initialFetch();
   };
 
-  const reset = (clean = true) => {
+  const reset = () => {
     if (subscription) {
       subscription.unsubscribe();
       subscription = undefined;
@@ -355,6 +375,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     data = null;
     error = undefined;
     loading = false;
+    loaded = false;
     notifyAll();
   };
 
@@ -417,13 +438,13 @@ const memoize = <Data, Delta>(
  * @param pagination pagination related functions { getPageInfo, getTotalCount, append, first }
  * @returns Subscribe<Data, Delta> subscribe function
  * @example
- * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
- *   gql`query MarketMidPrice($marketId: ID!) { market(id: $marketId) { data { midPrice } } }`,
- *   gql`subscription MarketMidPriceSubscription($marketId: ID!) { marketDepthUpdate(marketId: $marketId) { market { data { midPrice } } } }`,
- *   (draft: Draft<Data>, delta: Delta, reload: (forceReset?: boolean) => void) => { draft.midPrice = delta.midPrice }
- *   (data:QueryData) => data.market.data.midPrice
- *   (delta:SubscriptionData) => delta.marketData.market
- *  )
+ * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
+ *   query: gql`query MarketMidPrice($marketId: ID!) { market(id: $marketId) { data { midPrice } } }`,
+ *   subscriptionQuery: gql`subscription MarketMidPriceSubscription($marketId: ID!) { marketDepthUpdate(marketId: $marketId) { market { data { midPrice } } } }`,
+ *   update: (draft: Draft<Data>, delta: Delta, reload: (forceReset?: boolean) => void) => { draft.midPrice = delta.midPrice }
+ *   getData: (data:QueryData) => data.market.data.midPrice
+ *   getDelta: (delta:SubscriptionData) => delta.marketData.market
+ *  })
  *
  * const { unsubscribe, flush, reload } = marketMidPriceProvider(
  *   ({ data, error, loading, delta }) => { ... },
@@ -433,29 +454,142 @@ const memoize = <Data, Delta>(
  *
  */
 export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
-  query: Query<QueryData>,
-  subscriptionQuery: Query<SubscriptionData>,
-  update: Update<Data, Delta>,
-  getData: GetData<QueryData, Data>,
-  getDelta: GetDelta<SubscriptionData, Delta>,
-  pagination?: {
-    getPageInfo: GetPageInfo<QueryData>;
-    getTotalCount?: GetTotalCount<QueryData>;
-    append: Append<Data>;
-    first: number;
-  },
-  fetchPolicy: FetchPolicy = 'no-cache'
+  params: DataProviderParams<QueryData, Data, SubscriptionData, Delta>
 ): Subscribe<Data, Delta> {
   const getInstance = memoize<Data, Delta>(() =>
-    makeDataProviderInternal(
-      query,
-      subscriptionQuery,
-      update,
-      getData,
-      getDelta,
-      pagination,
-      fetchPolicy
-    )
+    makeDataProviderInternal(params)
+  );
+  return (callback, client, variables) =>
+    getInstance(variables)(callback, client, variables);
+}
+
+/**
+ * Dependency subscribe needs to use any as Data and Delta because it's unknown what dependencies will be used.
+ * This effects in parts in combine function has any[] type
+ */
+type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
+export type CombineDerivedData<Data> = (
+  parts: Parameters<DependencyUpdateCallback>['0']['data'][]
+) => Data | null;
+
+function makeDerivedDataProviderInternal<Data>(
+  dependencies: DependencySubscribe[],
+  combineData: CombineDerivedData<Data>
+): Subscribe<Data, never> {
+  let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
+  let client: ApolloClient<object>;
+  const callbacks: UpdateCallback<Data, never>[] = [];
+  let variables: OperationVariables | undefined;
+  const parts: Parameters<DependencyUpdateCallback>['0'][] = [];
+  let data: Data | null = null;
+  let error: Error | undefined;
+  let loading = true;
+  let loaded = false;
+
+  // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
+  const notify = (callback: UpdateCallback<Data, never>) => {
+    callback({
+      data,
+      error,
+      loading,
+      loaded,
+      pageInfo: null,
+    });
+  };
+
+  // notify all callbacks
+  const notifyAll = () =>
+    callbacks.forEach((callback) => {
+      notify(callback);
+    });
+
+  const combine = () => {
+    let newError: Error | undefined;
+    let newLoading = false;
+    let newLoaded = true;
+    dependencies
+      .map((dependency, i) => parts[i])
+      .forEach((part) => {
+        newError = newError || (part && part.error);
+        newLoading = newLoading || !part || part.loading;
+        newLoaded = newLoaded && part && part.loaded;
+      });
+
+    const newData = newLoaded
+      ? combineData(parts.map((part) => part.data))
+      : data;
+    if (
+      newLoading !== loading ||
+      newError !== error ||
+      newLoaded !== loaded ||
+      newData !== data
+    ) {
+      loading = newLoading;
+      error = newError;
+      loaded = newLoaded;
+      data = newData;
+      notifyAll();
+    }
+  };
+
+  const initialize = () => {
+    if (subscriptions) {
+      return;
+    }
+    subscriptions = dependencies.map((dependency, i) =>
+      dependency(
+        (updateData) => {
+          parts[i] = updateData;
+          combine();
+        },
+        client,
+        variables
+      )
+    );
+  };
+
+  // remove callback from list, and unsubscribe if there is no more callbacks registered
+  const unsubscribe = (callback: UpdateCallback<Data, never>) => {
+    callbacks.splice(callbacks.indexOf(callback), 1);
+    if (callbacks.length === 0) {
+      subscriptions?.forEach((subscription) => subscription.unsubscribe());
+      subscriptions = undefined;
+      data = null;
+      error = undefined;
+      loading = true;
+      loaded = false;
+    }
+  };
+
+  return (callback, c, v) => {
+    callbacks.push(callback);
+    if (callbacks.length === 1) {
+      client = c;
+      variables = v;
+      initialize();
+    } else {
+      notify(callback);
+    }
+    return {
+      unsubscribe: () => unsubscribe(callback),
+      reload: (forceReset) =>
+        subscriptions &&
+        subscriptions.forEach((subscription) =>
+          subscription.reload(forceReset)
+        ),
+      flush: () => notify(callback),
+    };
+  };
+}
+
+// Derived data provider has no subscription, hence there is no delta (never)
+export function makeDerivedDataProvider<Data>(
+  dependencies: DependencySubscribe[],
+  combineData: CombineDerivedData<Data>
+): Subscribe<Data, never> {
+  const getInstance = memoize<Data, never>(() =>
+    makeDerivedDataProviderInternal(dependencies, combineData)
   );
   return (callback, client, variables) =>
     getInstance(variables)(callback, client, variables);

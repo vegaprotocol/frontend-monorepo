@@ -112,7 +112,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
-        rowHeight={40}
+        rowHeight={34}
         {...props}
       >
         <AgGridColumn
@@ -122,7 +122,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="size"
-          cellClass="font-mono"
+          cellClass="font-mono text-right"
+          type="rightAligned"
           cellClassRules={{
             'text-vega-green-dark dark:text-vega-green': ({
               data,
@@ -185,7 +186,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Filled')}
           field="remaining"
-          cellClass="font-mono"
+          cellClass="font-mono text-right"
+          type="rightAligned"
           valueFormatter={({
             data,
             value,
@@ -207,7 +209,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="price"
-          cellClass="font-mono"
+          type="rightAligned"
+          cellClass="font-mono text-right"
           valueFormatter={({
             value,
             data,
@@ -277,10 +280,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return (
                 <Button
                   data-testid="edit"
-                  variant="secondary"
                   onClick={() => {
                     setEditOrder(data);
                   }}
+                  size="sm"
                 >
                   {t('Edit')}
                 </Button>
@@ -296,7 +299,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (!data) return null;
             if (isOrderActive(data.status)) {
               return (
-                <Button data-testid="cancel" onClick={() => cancel(data)}>
+                <Button
+                  size="sm"
+                  data-testid="cancel"
+                  onClick={() => cancel(data)}
+                >
                   Cancel
                 </Button>
               );

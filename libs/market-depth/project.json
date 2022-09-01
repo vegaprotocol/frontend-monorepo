@@ -1,5 +1,5 @@
 {
-  "root": "libs/market-depth",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/market-depth/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/market-depth"],
       "options": {
-        "jestConfig": "libs/market-depth/jest.config.js",
+        "jestConfig": "libs/market-depth/jest.config.ts",
         "passWithNoTests": true
       }
     },

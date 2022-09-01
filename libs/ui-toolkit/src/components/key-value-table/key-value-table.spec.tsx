@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-
 import type { KeyValueTableProps } from './key-value-table';
 import { KeyValueTable, KeyValueTableRow } from './key-value-table';
 
@@ -47,14 +46,8 @@ it('Applies numeric class if prop is passed row not inline', () => {
       </KeyValueTableRow>
     </KeyValueTable>
   );
-
-  expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-8 [border-spacing:0] break-all'
-  );
-
-  expect(screen.getByTestId('key-value-table-row')).toHaveClass(
-    ' flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white flex-col items-start'
-  );
+  const row = screen.getByTestId('key-value-table-row');
+  expect(row.children[1]).toHaveClass('font-mono');
 });
 
 it('Applies numeric class if prop is passed row inline', () => {
@@ -67,28 +60,8 @@ it('Applies numeric class if prop is passed row inline', () => {
     </KeyValueTable>
   );
 
-  expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-8 [border-spacing:0] break-all'
-  );
-
-  expect(screen.getByTestId('key-value-table-row')).toHaveClass(
-    'flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white flex-row items-center'
-  );
-});
-
-it('Applies muted class if prop is passed', () => {
-  render(
-    <KeyValueTable {...props} muted={true}>
-      <KeyValueTableRow inline={false}>
-        <span>My label</span>
-        <span>My value</span>
-      </KeyValueTableRow>
-    </KeyValueTable>
-  );
-
-  expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-8 [border-spacing:0] break-all'
-  );
+  const row = screen.getByTestId('key-value-table-row');
+  expect(row.children[1]).toHaveClass('font-mono');
 });
 
 it('Applies id to row if passed', () => {

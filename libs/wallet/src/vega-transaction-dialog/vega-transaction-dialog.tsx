@@ -73,6 +73,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
     return (
       <div data-testid={transaction.status}>
         <p>{transaction.error && formatLabel(transaction.error)}</p>
+        {transaction.details && (
+          <p>{formatLabel(transaction.details.join(', '))}</p>
+        )}
       </div>
     );
   }
@@ -155,13 +158,13 @@ const getTitle = (transaction: VegaTxState) => {
 const getIcon = (transaction: VegaTxState) => {
   switch (transaction.status) {
     case VegaTxStatus.Requested:
-      return <Icon name="hand-up" size={20} />;
+      return <Icon name="hand-up" />;
     case VegaTxStatus.Pending:
       return <Loader size="small" />;
     case VegaTxStatus.Error:
-      return <Icon name="warning-sign" size={20} />;
+      return <Icon name="warning-sign" />;
     case VegaTxStatus.Complete:
-      return <Icon name="tick" size={20} />;
+      return <Icon name="tick" />;
     default:
       return '';
   }

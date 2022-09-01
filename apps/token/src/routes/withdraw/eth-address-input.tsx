@@ -1,9 +1,9 @@
 import {
-  Button,
   Callout,
   FormGroup,
   Intent,
   Input,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -45,13 +45,9 @@ export const EthAddressInput = ({
         required={true}
       />
       <div className="flex justify-center">
-        <Button
-          variant="inline-link"
-          className="text-ui"
-          onClick={() => setUseConnectedWallet(!useConnectedWallet)}
-        >
+        <ButtonLink onClick={() => setUseConnectedWallet(!useConnectedWallet)}>
           {useConnectedWallet ? t('enterAddress') : t('useConnectedWallet')}
-        </Button>
+        </ButtonLink>
       </div>
       {isValid ? null : (
         <Callout intent={Intent.Warning}>{t('invalidAddress')}</Callout>

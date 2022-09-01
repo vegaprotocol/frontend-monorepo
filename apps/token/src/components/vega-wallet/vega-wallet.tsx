@@ -24,7 +24,7 @@ import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -38,14 +38,14 @@ export const VegaWallet = () => {
 
   return (
     <section className="vega-wallet" data-testid="vega-wallet">
-      <WalletCard dark={true}>
+      <WalletCard>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (
             <>
               <div
                 data-testid="wallet-name"
-                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12"
+                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
               >
                 {keypair.name}
               </div>
@@ -77,8 +77,7 @@ const VegaWalletNotConnected = () => {
             isOpen: true,
           })
         }
-        variant="secondary"
-        className="w-full"
+        fill={true}
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
@@ -100,12 +99,10 @@ const VegaWalletAssetList = ({ accounts }: VegaWalletAssetsListProps) => {
   return (
     <>
       <WalletCardHeader>
-        <BulletHeader style={{ border: 'none' }} tag="h2">
-          {t('assets')}
-        </BulletHeader>
+        <BulletHeader tag="h2">{t('assets')}</BulletHeader>
       </WalletCardHeader>
       {accounts.map((a, i) => (
-        <WalletCardAsset key={i} {...a} dark={true} />
+        <WalletCardAsset key={i} {...a} />
       ))}
     </>
   );
@@ -133,11 +130,9 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   }, [currentStakeAvailable, delegations]);
 
   const footer = (
-    <WalletCardActions>
-      <Button
+    <div className="flex justify-end">
+      <ButtonLink
         data-testid="manage-vega-wallet"
-        variant="inline-link"
-        className="mt-4"
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
@@ -146,8 +141,8 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         }
       >
         Manage
-      </Button>
-    </WalletCardActions>
+      </ButtonLink>
+    </div>
   );
 
   return vegaKeys.length ? (
@@ -159,13 +154,12 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         subheading={t('Associated')}
         symbol="VEGA"
         balance={currentStakeAvailable}
-        dark={true}
       />
       <div data-testid="vega-wallet-balance-unstaked">
-        <WalletCardRow label={t('unstaked')} value={unstaked} dark={true} />
+        <WalletCardRow label={t('unstaked')} value={unstaked} />
       </div>
       {delegatedNodes.length ? (
-        <WalletCardRow label={t('stakedValidators')} dark={true} bold={true} />
+        <WalletCardRow label={t('stakedValidators')} />
       ) : null}
       {delegatedNodes.map((d) => (
         <div key={d.nodeId} data-testid="vega-wallet-balance-staked-validators">
@@ -177,7 +171,6 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
                 }`}
                 link={`${Routes.STAKING}/${d.nodeId}`}
                 value={d.currentEpochStake}
-                dark={true}
               />
             </div>
           )}
@@ -189,20 +182,19 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
                 )})`}
                 link={`${Routes.STAKING}/${d.nodeId}`}
                 value={d.nextEpochStake}
-                dark={true}
               />
             </div>
           )}
         </div>
       ))}
       <WalletCardActions>
-        <Link className="flex-1 pr-8" to={Routes.GOVERNANCE}>
-          <Button variant={'secondary'} className="w-full">
+        <Link className="flex-1" to={Routes.GOVERNANCE}>
+          <Button size="sm" fill={true}>
             {t('governance')}
           </Button>
         </Link>
-        <Link className="flex-1 pl-8" to={Routes.STAKING}>
-          <Button variant={'secondary'} className="w-full">
+        <Link className="flex-1" to={Routes.STAKING}>
+          <Button size="sm" fill={true}>
             {t('staking')}
           </Button>
         </Link>

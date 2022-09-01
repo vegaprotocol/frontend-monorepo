@@ -114,9 +114,6 @@ describe('DealTicket', () => {
     // Switch to limit order
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
 
-    // Assert price input shown with default value
-    expect(screen.getByTestId('order-price')).toHaveDisplayValue('0');
-
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(OrderTimeInForce).length

@@ -10,3 +10,4 @@ export * from './lib/transaction-dialog';
 export * from './lib/web3-provider';
 export * from './lib/web3-connect-dialog';
 export * from './lib/web3-wallet-input';
+export * from './lib/web3-container';

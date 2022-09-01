@@ -1,16 +1,20 @@
 import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
+import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   SliderRoot,
   SliderThumb,
   SliderTrack,
   SliderRange,
-  Button,
-  Input,
   FormGroup,
+  Icon,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
+import { InputSetter } from '../input-setter';
+import * as constants from './constants';
 
 interface DealTicketSizeProps {
   step: number;
@@ -26,6 +30,7 @@ interface DealTicketSizeProps {
   fees: string;
   positionDecimalPlaces: number;
   notionalSize: string;
+  slippage: string | null;
 }
 
 const getSizeLabel = (value: number): string => {
@@ -52,10 +57,10 @@ export const DealTicketSize = ({
   positionDecimalPlaces,
   fees,
   notionalSize,
+  slippage,
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
-  const [isInputVisible, setIsInputVisible] = useState(false);
 
   const onInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,44 +83,35 @@ export const DealTicketSize = ({
 
   const onButtonValueChange = useCallback(
     (size: number) => {
-      if (isInputVisible) {
-        setIsInputVisible(false);
-      }
       const newVal = new BigNumber(size)
         .decimalPlaces(positionDecimalPlaces)
         .toNumber();
       onValueChange([newVal]);
       setInputValue(newVal);
     },
-    [isInputVisible, onValueChange, positionDecimalPlaces]
+    [onValueChange, positionDecimalPlaces]
   );
 
-  const toggleInput = useCallback(() => {
-    setIsInputVisible(!isInputVisible);
-  }, [isInputVisible]);
-
-  const onInputEnter = useCallback(
-    (event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.stopPropagation();
-        toggleInput();
-      }
+  const onSliderValueChange = useCallback(
+    (value: number[]) => {
+      setInputValue(value[0]);
+      onValueChange(value);
     },
-    [toggleInput]
+    [onValueChange]
   );
 
   return max === 0 ? (
     <p>Not enough balance to trade</p>
   ) : (
     <div>
-      <div className="flex justify-between text-black dark:text-white mb-8">
+      <div className="flex justify-between text-black dark:text-white mb-2">
         <span data-testid="min-label">{min}</span>
         <span data-testid="max-label">{max}</span>
       </div>
       <SliderRoot
-        className="mb-8"
+        className="mb-2"
         value={[value]}
-        onValueChange={onValueChange}
+        onValueChange={onSliderValueChange}
         step={step}
         min={min}
         max={max}
@@ -128,67 +124,79 @@ export const DealTicketSize = ({
 
       <div
         data-testid="percentage-selector"
-        className="flex w-full justify-between text-black dark:text-white mb-32"
+        className="flex w-full justify-between text-black dark:text-white mb-6"
       >
         {sizeRatios.map((size, index) => {
           const proportionalSize = size ? (size / 100) * max : min;
           return (
-            <Button
-              variant="inline-link"
-              className="no-underline !text-blue"
+            <button
+              className="no-underline hover:underline text-blue"
               onClick={() => onButtonValueChange(proportionalSize)}
+              type="button"
               key={index}
             >
               {getSizeLabel(size)}
-            </Button>
+            </button>
           );
         })}
       </div>
 
       <dl className="text-black dark:text-white">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4">
           <dt>{t('Contracts')}</dt>
           <dd className="flex justify-end w-full">
             <FormGroup
-              className="mb-0 flex items-center"
-              labelClassName="mr-8 sr-only"
+              hideLabel={true}
               label="Enter Size"
               labelFor="trade-size-input"
             >
-              {isInputVisible ? (
-                <>
-                  <Input
-                    id="input-order-size-market"
-                    type="number"
-                    step={step}
-                    min={min}
-                    max={max}
-                    className="w-full"
-                    value={inputValue}
-                    onKeyDown={onInputEnter}
-                    onChange={onInputValueChange}
-                  />
-                  <Button
-                    variant="inline-link"
-                    className="no-underline !text-blue"
-                    onClick={toggleInput}
-                  >
-                    {t('set')}
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="inline-link"
-                  className="no-underline !text-blue"
-                  onClick={toggleInput}
-                >
-                  {value}
-                </Button>
-              )}
+              <InputSetter
+                id="input-order-size-market"
+                type="number"
+                step={step}
+                min={min}
+                max={max}
+                className="w-full"
+                value={inputValue}
+                onChange={onInputValueChange}
+              />
             </FormGroup>
           </dd>
         </div>
       </dl>
+      {slippage && (
+        <dl className="text-black dark:text-white">
+          <div className="flex items-center justify-between mb-8">
+            <dt>{t('Est. Price Impact / Slippage')}</dt>
+            <dd
+              className="flex justify-end gap-x-5"
+              data-testid="price-slippage-value"
+              aria-label={t('Est. Price Impact / Slippage')}
+            >
+              <span
+                className={classNames({
+                  'text-darkerGreen dark:text-lightGreen':
+                    parseFloat(slippage) < 1,
+                  'text-amber':
+                    parseFloat(slippage) >= 1 && parseFloat(slippage) < 5,
+                  'text-vega-red': parseFloat(slippage) >= 5,
+                })}
+              >
+                {slippage}%
+              </span>
+              <Tooltip align="center" description={constants.EST_SLIPPAGE}>
+                <div className="cursor-help" tabIndex={-1}>
+                  <Icon
+                    name={IconNames.ISSUE}
+                    className="block rotate-180"
+                    ariaLabel={constants.EST_SLIPPAGE}
+                  />
+                </div>
+              </Tooltip>
+            </dd>
+          </div>
+        </dl>
+      )}
       <DealTicketEstimates
         quoteName={quoteName}
         fees={fees}

@@ -6,6 +6,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -25,26 +26,26 @@ export const CheckboxItems = () => {
     { label: 'Moving average', state: useState(false) },
     { label: 'Price monitoring bands', state: useState(false) },
   ];
+  console.log(checkboxItems);
 
   return (
-    <div style={{ textAlign: 'center', padding: 50 }}>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="w-[300px]">
-          <span>Select many things</span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[300px]">
-          {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
-            <DropdownMenuCheckboxItem
-              key={label}
-              checked={checked}
-              onCheckedChange={setChecked}
-            >
-              {label}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <span>Select many things</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
+          <DropdownMenuCheckboxItem
+            key={label}
+            checked={checked}
+            onCheckedChange={setChecked}
+          >
+            {label}
+            <DropdownMenuItemIndicator />
+          </DropdownMenuCheckboxItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
@@ -59,19 +60,19 @@ export const RadioItems = () => {
           <span>Open</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem inset onSelect={() => console.log('minimize')}>
+          <DropdownMenuItem onSelect={() => console.log('minimize')}>
             Minimize window
           </DropdownMenuItem>
-          <DropdownMenuItem inset onSelect={() => console.log('zoom')}>
+          <DropdownMenuItem onSelect={() => console.log('zoom')}>
             Zoom
           </DropdownMenuItem>
-          <DropdownMenuItem inset onSelect={() => console.log('smaller')}>
+          <DropdownMenuItem onSelect={() => console.log('smaller')}>
             Smaller
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup value={selected} onValueChange={setSelected}>
             {files.map((file) => (
-              <DropdownMenuRadioItem key={file} inset value={file}>
+              <DropdownMenuRadioItem key={file} value={file}>
                 {file}
               </DropdownMenuRadioItem>
             ))}

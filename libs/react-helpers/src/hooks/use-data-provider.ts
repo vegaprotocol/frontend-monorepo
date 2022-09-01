@@ -59,20 +59,29 @@ export function useDataProvider<Data, Delta>({
     return Promise.reject();
   }, []);
   const callback = useCallback<UpdateCallback<Data, Delta>>(
-    ({ data, error, loading, delta, insertionData, totalCount }) => {
+    ({
+      data,
+      error,
+      loading,
+      delta,
+      insertionData,
+      totalCount,
+      isInsert,
+      isUpdate,
+    }) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
         // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
         if (initialized.current && data) {
-          if (delta && update && update({ delta, data })) {
+          if (isUpdate && update && (!delta || update({ delta, data }))) {
             return;
           }
           if (
-            insertionData &&
+            isInsert &&
             insert &&
-            insert({ insertionData, data, totalCount })
+            (!insertionData || insert({ insertionData, data, totalCount }))
           ) {
             return;
           }

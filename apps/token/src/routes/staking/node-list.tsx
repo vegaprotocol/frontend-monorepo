@@ -65,7 +65,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
     <div className="flex items-center">
       {avatarUrl && (
         <img
-          className="h-24 w-24 rounded-full mr-8"
+          className="h-6 w-6 rounded-full mr-2"
           src={avatarUrl}
           alt={`Avatar icon for ${name}`}
           onError={(e) => (e.currentTarget.style.display = 'none')}
@@ -260,7 +260,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={nodes}>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
-        <div className="mb-20">
+        <div className="mb-8">
           <EpochCountdown
             id={epoch.id}
             startDate={new Date(epoch.timestamps.start)}

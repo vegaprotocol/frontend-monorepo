@@ -54,7 +54,7 @@ export const DealTicketContainer = () => {
       {(data) => {
         const balance = (
           <DealTicketBalance
-            className="mb-16"
+            className="mb-4"
             settlementAsset={
               data.market.tradableInstrument.instrument.product?.settlementAsset
             }
@@ -76,7 +76,7 @@ export const DealTicketContainer = () => {
   );
 
   return (
-    <section className="flex">
+    <section className="flex p-4 md:p-6">
       <section className="w-full md:w-1/2 md:min-w-[500px]">
         {keypair ? container : <ConnectWallet />}
       </section>

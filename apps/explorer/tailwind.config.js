@@ -10,6 +10,8 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: 'class',
-  theme,
+  theme: {
+    extend: theme,
+  },
   plugins: [vegaCustomClasses],
 };

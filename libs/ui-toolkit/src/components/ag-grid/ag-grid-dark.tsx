@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import colors from 'tailwindcss/colors';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
 const agGridDarkVariables = `
   .ag-theme-balham-dark {
-    --ag-background-color: ${theme.colors.black[100]};
-    --ag-border-color: ${theme.colors.white[25]};
-    --ag-header-background-color: ${theme.colors.black[100]};
-    --ag-odd-row-background-color: ${theme.colors.black[100]};
-    --ag-row-border-color:${theme.colors.black[100]};
-    --ag-row-hover-color: ${theme.colors.white[25]};
+    --ag-background-color: ${colors.black};
+    --ag-border-color: ${colors.neutral[700]};
+    --ag-header-background-color: ${colors.black};
+    --ag-odd-row-background-color: ${colors.black};
+    --ag-row-border-color:${colors.black};
+    --ag-row-hover-color: ${colors.neutral[700]};
     --ag-font-size: 12px;
   }
 

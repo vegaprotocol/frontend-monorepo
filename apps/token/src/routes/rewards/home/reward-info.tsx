@@ -59,7 +59,7 @@ export const RewardInfo = ({
   }, [data, rewardAssetId]);
 
   return (
-    <div className="mt-24">
+    <div>
       <p>
         {t('Connected Vega key')}: {currVegaKey.pub}
       </p>
@@ -109,7 +109,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
 
   return (
     <div className="mb-24">
-      <h3 className="text-h5 text-white mb-4">
+      <h3 className="text-lg text-white mb-4">
         {t('Epoch')} {reward.epoch.id}
       </h3>
       <KeyValueTable>

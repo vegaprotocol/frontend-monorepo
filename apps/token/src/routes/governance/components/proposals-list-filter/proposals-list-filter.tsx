@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { Button, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 
 interface ProposalsListFilterProps {
@@ -14,24 +14,22 @@ export const ProposalsListFilter = ({
   const [filterVisible, setFilterVisible] = useState(false);
 
   return (
-    <div data-testid="proposals-list-filter">
+    <div data-testid="proposals-list-filter" className="mb-4">
       {!filterVisible && (
-        <Button
+        <ButtonLink
           onClick={() => setFilterVisible(true)}
-          variant="inline-link"
-          className="pl-0 pb-20"
           data-testid="set-proposals-filter-visible"
         >
           {t('FilterProposals')}
-        </Button>
+        </ButtonLink>
       )}
       {filterVisible && (
         <div data-testid="open-proposals-list-filter">
           <p>{t('FilterProposalsDescription')}</p>
           <FormGroup
-            labelClassName="sr-only"
             label="Filter text input"
             labelFor="filter-input"
+            hideLabel={true}
           >
             <Input
               data-testid="filter-input"

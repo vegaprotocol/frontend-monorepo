@@ -33,7 +33,7 @@ const mockEnvironmentState = {
   VEGA_CONFIG_URL: 'https://vega.xyz/testnet-config.json',
   VEGA_NETWORKS: {
     TESTNET: 'https://testnet.url',
-    STAGNET: 'https://stagnet.url',
+    STAGNET3: 'https://stagnet3.url',
     MAINNET: 'https://mainnet.url',
   },
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
@@ -191,7 +191,6 @@ it.each`
   env                  | etherscanUrl                      | providerUrl
   ${Networks.DEVNET}   | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.TESTNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-  ${Networks.STAGNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.STAGNET3} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.MAINNET}  | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
 `(

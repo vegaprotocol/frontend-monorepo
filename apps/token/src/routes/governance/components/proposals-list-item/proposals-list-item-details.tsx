@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { useVoteInformation } from '../../hooks';
@@ -16,6 +15,7 @@ import {
   ProposalRejectionReasonMapping,
   ProposalState,
 } from '@vegaprotocol/types';
+import Routes from '../../../routes';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -171,21 +171,18 @@ export const ProposalsListItemDetails = ({
   }
 
   return (
-    <div
-      className={classnames(
-        'grid grid-cols-[1fr_auto] items-start gap-4',
-        'mt-4',
-        'text-ui'
-      )}
-    >
+    <div className="grid grid-cols-[1fr_auto] mt-2 items-start gap-2 text-sm">
       <div
-        className="col-start-1 row-start-1 flex items-center gap-4 text-white"
+        className="col-start-1 row-start-1 flex items-center gap-2 text-white"
         data-testid="proposal-status"
       >
         {proposalStatus}
       </div>
       {voteDetails && (
-        <div className="col-start-1 row-start-2" data-testid="vote-details">
+        <div
+          className="col-start-1 row-start-2 text-neutral-500"
+          data-testid="vote-details"
+        >
           {voteDetails}
         </div>
       )}
@@ -199,8 +196,8 @@ export const ProposalsListItemDetails = ({
       )}
       {proposal.id && (
         <div className="col-start-2 row-start-2 justify-self-end">
-          <Link to={proposal.id}>
-            <Button variant="secondary" data-testid="view-proposal-btn">
+          <Link to={`${Routes.GOVERNANCE}/${proposal.id}`}>
+            <Button data-testid="view-proposal-btn" size="sm">
               {t('View')}
             </Button>
           </Link>

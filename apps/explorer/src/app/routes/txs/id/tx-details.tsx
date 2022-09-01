@@ -1,5 +1,5 @@
 import { Routes } from '../../route-names';
-import { Button, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
 import {
   TableWithTbody,
   TableCell,
@@ -61,12 +61,9 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
             startChars={txDetailsTruncateLength}
             endChars={txDetailsTruncateLength}
           />
-          <CopyWithTooltip text="">
-            <Button
-              variant="inline-link"
-              prependIconName="duplicate"
+          <CopyWithTooltip text={txData.tx}>
+            <ButtonLink
               title={t('Copy tx to clipboard')}
-              onClick={() => navigator.clipboard.writeText(txData.tx)}
               data-testid="copy-tx-to-clipboard"
             />
           </CopyWithTooltip>

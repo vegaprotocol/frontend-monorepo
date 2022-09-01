@@ -6,10 +6,10 @@ import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
 import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
 import { generateMarket } from './mocks/generate-market';
+import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import { generateOrders } from './mocks/generate-orders';
 import { generatePositions } from './mocks/generate-positions';
-import { generatePositionsMetrics } from './mocks/generate-positions-metrics';
 import { generateTrades } from './mocks/generate-trades';
 
 export const mockTradingPage = (
@@ -26,10 +26,10 @@ export const mockTradingPage = (
       },
     })
   );
+  aliasQuery(req, 'MarketDepth', generateMarketDepth());
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
-  aliasQuery(req, 'PositionsMetrics', generatePositionsMetrics());
   aliasQuery(
     req,
     'DealTicketQuery',

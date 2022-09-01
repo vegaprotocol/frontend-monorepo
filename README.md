@@ -106,12 +106,12 @@ Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more
 
 ## Docker
 
-The [Dockerfile](./Dockerfile) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
+The [Dockerfile](./dockerfiles) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
 
 You can build any of the containers locally with the following command:
 
 ```bash
-docker build . --build-arg APP=[YOUR APP] --tag=[TAG]
+docker build --dockerfile dockerfiles/Dockerfile.cra . --build-arg APP=[YOUR APP] --tag=[TAG]
 ```
 
 In order to run a container:
@@ -120,6 +120,8 @@ In order to run a container:
 docker run -p 3000:80 [TAG]
 ```
 
+Images ending with `.dist` are to pack locally created transpiled HTML files into nginx container for non-compatible with yarn architectures like M1 Mac
+
 ## Config
 
 As environment variables are build time and not run time in frontend applications. We have built a system which allows for passing run time environment variables, this generates a JSON file that will override the default environment variables that the container was built with (which is always testnet, using the default .env files).
@@ -127,7 +129,7 @@ As environment variables are build time and not run time in frontend application
 In order to override specific environment variables you can pass these to the container like this:
 
 ```bash
-docker run -e NX_VEGA_URL=https://n04.d.vega.xyz/query -p 3000:80 [TAG]
+docker run -e NX_VEGA_URL=https://api.n04.d.vega.xyz/graphql -p 3000:80 [TAG]
 ```
 
 Which will now point the app to use a devnet data node. To see a list of all possible config properties see the readme.md for each app in the app directory.

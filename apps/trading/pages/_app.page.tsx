@@ -14,17 +14,17 @@ import {
   Networks,
 } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
-import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import './styles.css';
 import { useGlobalStore } from '../stores';
 import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
-} from '@vegaprotocol/market-list';
+} from '@vegaprotocol/assets';
+import { Footer } from '../components/footer';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
+
 
 const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
@@ -53,30 +53,17 @@ function AppBody({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="h-full relative text-black-60 dark:text-white-60 z-0 grid grid-rows-[min-content,1fr]">
+      <Head>
+        <title>{t('Welcome to Vega trading!')}</title>
+      </Head>
+      <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
-          <div className="flex items-stretch border-b-[7px] bg-black border-vega-pink dark:border-vega-yellow">
-            <Navbar />
-            <div className="flex items-center gap-4 ml-auto mr-8">
-              <VegaWalletConnectButton
-                setConnectDialog={(open) => {
-                  store.setVegaWalletConnectDialog(open);
-                }}
-                setManageDialog={(open) => {
-                  store.setVegaWalletManageDialog(open);
-                }}
-              />
-              <ThemeSwitcher
-                onToggle={toggleTheme}
-                className="-my-4"
-                sunClassName="text-white"
-              />
-            </div>
-          </div>
-          <main data-testid={pageProps.page} className="dark:bg-black">
+          <Navbar theme={theme} toggleTheme={toggleTheme} />
+          <main data-testid={pageProps.page}>
             {/* @ts-ignore conflict between @types/react and nextjs internal types */}
             <Component {...pageProps} />
           </main>
+          <Footer />
           <VegaConnectDialog
             connectors={Connectors}
             dialogOpen={store.vegaWalletConnectDialog}
@@ -106,26 +93,6 @@ function VegaTradingApp(props: AppProps) {
   return (
     <EnvironmentProvider>
       <VegaWalletProvider>
-        <Head>
-          <link
-            rel="preload"
-            href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
-          <title>{t('Welcome to Vega trading!')}</title>
-          <link
-            rel="icon"
-            type="image/x-icon"
-            href="https://static.vega.xyz/favicon.ico"
-          />
-          <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
-          {['1', 'true'].includes(process.env['NX_USE_ENV_OVERRIDES'] || '') ? (
-            /* eslint-disable-next-line @next/next/no-sync-scripts */
-            <script src="/assets/env-config.js" type="text/javascript" />
-          ) : null}
-        </Head>
         <AppBody {...props} />
       </VegaWalletProvider>
     </EnvironmentProvider>

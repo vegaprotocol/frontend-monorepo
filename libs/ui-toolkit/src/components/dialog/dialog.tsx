@@ -1,7 +1,7 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
-import { getIntentBorder, getIntentShadow } from '../../utils/intent';
+import { getIntentBorder } from '../../utils/intent';
 import { Icon } from '../icon';
 
 import type { ReactNode } from 'react';
@@ -13,8 +13,7 @@ interface DialogProps {
   title?: string;
   icon?: ReactNode;
   intent?: Intent;
-  titleClassNames?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium';
 }
 
 export function Dialog({
@@ -24,20 +23,19 @@ export function Dialog({
   title,
   icon,
   intent,
-  titleClassNames,
-  size = 'medium',
+  size = 'small',
 }: DialogProps) {
   const wrapperClasses = classNames(
-    'relative py-24 max-h-[100%] overflow-y-auto',
+    // Positions the modal in the center of screen
+    'z-20 fixed rounded relative inset-x-1/2 top-[10vh] translate-x-[-50%] max-w-[90vw] overflow-y-auto',
+    // Dimensions
+    'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
-    'dark:bg-black dark:text-white-95 bg-white text-black-95',
-    getIntentShadow(intent),
+    'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'lg:w-[620px] w-full': size === 'small',
-      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'medium',
-      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto w-full':
-        size === 'large',
+      'w-[620px]': size === 'small',
+      'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
 
@@ -51,28 +49,23 @@ export function Dialog({
         <DialogPrimitives.Content className="fixed top-0 left-0 z-20 w-full h-full flex items-center justify-center">
           <div className={wrapperClasses}>
             <DialogPrimitives.Close
-              className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow focus-visible:top-[7px] focus-visible:right-[7px]"
+              className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
               data-testid="dialog-close"
             >
-              <Icon
-                name="cross"
-                className="focus:outline-none focus-visible:outline-none"
-              />
+              <Icon name="cross" />
             </DialogPrimitives.Close>
-            <div className="flex p-12 max-w-full overflow-x-scroll">
-              {icon && <div className="pt-8 fill-current">{icon}</div>}
+            <div className="flex gap-4 max-w-full">
+              {icon && <div className="pt-2 fill-current">{icon}</div>}
               <div data-testid="dialog-content" className="flex-1">
                 {title && (
                   <h1
-                    className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6 ${titleClassNames}`}
+                    className="text-xl uppercase mb-4 pr-2"
                     data-testid="dialog-title"
                   >
                     {title}
                   </h1>
                 )}
-                <div className="text-black-60 dark:text-white-60">
-                  {children}
-                </div>
+                <div>{children}</div>
               </div>
             </div>
           </div>

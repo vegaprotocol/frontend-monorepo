@@ -18,8 +18,8 @@ const navigation = {
 };
 
 Cypress.Commands.add('navigate_to', (page) => {
-  return cy.get(navigation.section).within(() => {
-    cy.get(navigation[page]).click();
+  return cy.get(navigation.section, { timeout: 10000 }).within(() => {
+    cy.get(navigation[page]).click({ force: true });
   });
 });
 

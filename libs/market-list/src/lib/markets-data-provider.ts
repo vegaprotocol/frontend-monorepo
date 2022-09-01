@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketDataSub,
@@ -7,6 +7,25 @@ import type {
   MarketList,
   MarketList_markets,
 } from './__generated__';
+import { useMemo } from 'react';
+import { Interval } from '@vegaprotocol/types';
+import { mapDataToMarketList } from './utils';
+
+export const useMarketList = () => {
+  const since = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
+  const { data, loading, error } = useQuery<MarketList>(MARKET_LIST_QUERY, {
+    variables: { interval: Interval.INTERVAL_I1H, since },
+  });
+
+  return {
+    data: useMemo(() => data && mapDataToMarketList(data), [data]),
+    loading,
+    error,
+  };
+};
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -114,4 +133,10 @@ export const marketsDataProvider = makeDataProvider<
   MarketList_markets[],
   MarketDataSub,
   MarketDataSub_marketData
->(MARKET_LIST_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
+>({
+  query: MARKET_LIST_QUERY,
+  subscriptionQuery: MARKET_DATA_SUB,
+  update,
+  getData,
+  getDelta,
+});

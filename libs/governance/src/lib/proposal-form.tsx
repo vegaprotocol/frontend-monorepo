@@ -12,6 +12,7 @@ import {
   getProposalDialogTitle,
 } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
+import { ProposalState } from '@vegaprotocol/types';
 
 export interface FormFields {
   proposalData: string;
@@ -57,25 +58,36 @@ export const ProposalForm = () => {
           })}
         />
         {errors.proposalData?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger">
             {errors.proposalData?.message}
           </InputError>
         )}
       </FormGroup>
-      <Button
-        variant="primary"
-        type="submit"
-        className="my-20"
-        data-testid="proposal-submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
-      </Button>
-      <TransactionDialog
-        title={getProposalDialogTitle(finalizedProposal?.state)}
-        intent={getProposalDialogIntent(finalizedProposal?.state)}
-        icon={getProposalDialogIcon(finalizedProposal?.state)}
-      />
+      <span className="my-20">
+        <Button
+          variant="primary"
+          type="submit"
+          data-testid="proposal-submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
+        </Button>
+      </span>
+      {finalizedProposal?.rejectionReason ? (
+        <TransactionDialog
+          title={t('Proposal rejected')}
+          intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
+          icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
+        >
+          <p>{finalizedProposal.rejectionReason}</p>
+        </TransactionDialog>
+      ) : (
+        <TransactionDialog
+          title={getProposalDialogTitle(finalizedProposal?.state)}
+          intent={getProposalDialogIntent(finalizedProposal?.state)}
+          icon={getProposalDialogIcon(finalizedProposal?.state)}
+        />
+      )}
     </form>
   );
 };

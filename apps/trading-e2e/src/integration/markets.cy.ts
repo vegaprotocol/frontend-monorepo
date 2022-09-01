@@ -6,6 +6,7 @@ import { mockTradingPage } from '../support/trading';
 describe('markets table', () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'MarketList', generateMarketList());
     });
     cy.visit('/');
@@ -33,10 +34,6 @@ describe('markets table', () => {
   });
 
   it('Able to select market from dropdown', () => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
-
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();
 

@@ -12,18 +12,9 @@ describe('FormGroup', () => {
     expect(screen.getByLabelText('label')).toBeInTheDocument();
   });
 
-  it('should add classes passed in', () => {
-    render(
-      <FormGroup label="label" labelFor="test" className="fighter">
-        <input id="test"></input>
-      </FormGroup>
-    );
-    expect(screen.getByTestId('form-group')).toHaveClass('fighter');
-  });
-
   it('should render children', () => {
     render(
-      <FormGroup label="label" labelFor="test" className="fighter">
+      <FormGroup label="label" labelFor="test">
         <input data-testid="foo" id="test"></input>
       </FormGroup>
     );

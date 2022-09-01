@@ -20,10 +20,8 @@ export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   return (
     <>
       <Heading title={t('pageTitleRejectedProposals')} />
-
       <ProposalsListFilter setFilterString={setFilterString} />
-
-      <section className="mx-[-20px] p-20">
+      <section>
         {proposals.length > 0 ? (
           <ul data-testid="rejected-proposals">
             {proposals.filter(filterPredicate).map((proposal) => (
@@ -31,7 +29,7 @@ export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
             ))}
           </ul>
         ) : (
-          <p className="mt-12 mb-0" data-testid="no-rejected-proposals">
+          <p className="mb-0" data-testid="no-rejected-proposals">
             {t('noRejectedProposals')}
           </p>
         )}

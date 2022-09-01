@@ -55,7 +55,7 @@ export const RedemptionInformation = () => {
   if (!filteredTranches.length) {
     return (
       <section data-testid="redemption-page">
-        <div className="mb-20">
+        <div className="mb-8">
           <p data-testid="redemption-no-balance">
             <Trans
               i18nKey="noVestingTokens"

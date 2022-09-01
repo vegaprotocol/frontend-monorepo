@@ -75,14 +75,14 @@ const SimpleMarketToolbar = ({ data }: Props) => {
   );
 
   return (
-    <div className="w-full max-w-full mb-32 font-alpha">
+    <div className="w-full max-w-full mb-4 font-alpha">
       <ul
         ref={slideContRef}
-        className="grid grid-flow-col auto-cols-min gap-8 relative pb-4 mb-16"
+        className="grid grid-flow-col auto-cols-min gap-4 relative pb-2 mb-2"
         data-testid="market-products-menu"
         aria-label={t('Product type')}
       >
-        <li key="all-markets" className="md:mr-16 whitespace-nowrap">
+        <li key="all-markets" className="md:mr-2 whitespace-nowrap">
           <Link
             to={`/markets${
               params.state && params.state !== MarketState.STATE_ACTIVE
@@ -90,7 +90,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                 : ''
             }`}
             aria-label={t('All markets')}
-            className={classNames('text-h5 pl-0 text-pink hover:opacity-75', {
+            className={classNames('pl-0 text-pink hover:opacity-75', {
               active: !activeNumber,
             })}
           >
@@ -98,13 +98,13 @@ const SimpleMarketToolbar = ({ data }: Props) => {
           </Link>
         </li>
         {products.map((product, i) => (
-          <li key={product} className="mx-16 whitespace-nowrap">
+          <li key={product} className="mx-2 whitespace-nowrap">
             <Link
               to={`/markets/${
                 params.state || MarketState.STATE_ACTIVE
               }/${product}`}
               className={classNames(
-                'text-h5 hover:opacity-75 text-black dark:text-white',
+                'hover:opacity-75 text-black dark:text-white',
                 {
                   active: activeNumber - 1 === i,
                 }
@@ -116,16 +116,16 @@ const SimpleMarketToolbar = ({ data }: Props) => {
           </li>
         ))}
         <li
-          className="absolute bottom-0 h-2 transition-left duration-300 dark:bg-white bg-black"
+          className="absolute bottom-0 h-[2px] transition-left duration-300 dark:bg-white bg-black"
           key="slider"
           style={sliderStyles}
         />
       </ul>
-      <div className="grid gap-8 pb-4 mt-8 md:grid-cols-[min-content,min-content,1fr]">
+      <div className="grid gap-8 pb-4 mt-6 md:grid-cols-[min-content,min-content,1fr]">
         <div className="pb-8">
           <DropdownMenu onOpenChange={(open) => setOpen(open)}>
             <DropdownMenuTrigger
-              className="mr-16 w-auto text-capMenu text-black dark:text-white"
+              className="mr-2 w-auto text-capMenu text-black dark:text-white"
               data-testid="state-trigger"
             >
               <div className="w-full justify-between uppercase inline-flex items-center justify-center box-border">
@@ -137,12 +137,11 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                 <Icon
                   name={IconNames.ARROW_DOWN}
                   className={classNames(
-                    'fill-current ml-8 transition-transform',
+                    'fill-current ml-2 transition-transform',
                     {
                       'rotate-180': isOpen,
                     }
                   )}
-                  size={16}
                 />
               </div>
             </DropdownMenuTrigger>
@@ -151,17 +150,16 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                 <DropdownMenuCheckboxItem
                   className="uppercase text-ui dark:text-white"
                   key={value}
-                  inset
                   checked={
                     value === params.state ||
                     (!params.state && value === MarketState.STATE_ACTIVE)
                   }
                   onCheckedChange={() => onStateChange(value)}
                 >
+                  {text}
                   <DropdownMenuItemIndicator>
                     <Icon name="tick" />
                   </DropdownMenuItemIndicator>
-                  {text}
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuContent>
@@ -172,14 +170,14 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         </div>
         {activeNumber > 0 && (
           <ul
-            className="md:gap-16 gap-12 pb-4 md:ml-16 flex flex-wrap"
+            className="md:gap-6 gap-4 pb-4 md:ml-2 flex flex-wrap"
             data-testid="market-assets-menu"
             aria-label={t('Asset on the market')}
           >
             <li key="all">
               <Link
                 to={`/markets/${params.state}/${params.product}`}
-                className={classNames('uppercase pl-0 md:pl-4 text-capMenu', {
+                className={classNames('uppercase pl-0 md:pl-2 text-capMenu', {
                   'text-deemphasise dark:text-midGrey':
                     params.asset && params.asset !== 'all',
                   'active text-black dark:text-white':
