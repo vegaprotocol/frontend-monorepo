@@ -53,6 +53,9 @@ export interface WithdrawPage_party_accounts {
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
   balance: string;
+  /**
+   * The balance field formatted by the client
+   */
   balanceFormatted: string;
   /**
    * Account type (General, Margin, etc)
