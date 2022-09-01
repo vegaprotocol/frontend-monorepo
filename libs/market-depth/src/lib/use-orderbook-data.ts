@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-data-provider';
@@ -60,16 +60,9 @@ export const useOrderBookData = ({
     };
   }, [data]);
 
-  const dataProps = useMemo(
-    () => ({
-      loading,
-      error,
-    }),
-    [loading, error]
-  );
-
   return {
-    ...dataProps,
+    loading,
+    error,
     data: orderbookData,
   };
 };

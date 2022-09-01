@@ -1,8 +1,13 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, act } from '@testing-library/react';
+import { MarketTradingMode } from '@vegaprotocol/types';
+import type {
+  MarketDepth_market,
+  MarketDepth_market_data,
+} from './__generated__';
 import { useOrderBookData } from './use-orderbook-data';
 
-const mockData = {
+const mockData: MarketDepth_market = {
   __typename: 'Market',
   id: 'marketId',
   decimalPlaces: 5,
@@ -10,7 +15,7 @@ const mockData = {
   data: {
     __typename: 'MarketData',
     staticMidPrice: '7820',
-    marketTradingMode: 'TRADING_MODE_CONTINUOUS',
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
     indicativeVolume: '0',
     indicativePrice: '0',
     bestStaticBidPrice: '7820',
@@ -91,10 +96,10 @@ const mockData = {
   },
 };
 
-let updateMock: ({ data }: { data: any }) => boolean;
+let updateMock: ({ data }: { data: MarketDepth_market }) => boolean;
 
-const mockUseDataProvider = (args: any) => {
-  updateMock = args.update;
+const mockUseDataProvider = ({ update }: { update: () => boolean }) => {
+  updateMock = update;
   return { data: mockData, loading: false, error: false };
 };
 
@@ -103,13 +108,13 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
   useDataProvider: jest.fn((args) => mockUseDataProvider(args)),
 }));
 
-const modMock = (staticMidPrice: string) => {
+const modMock = (staticMidPrice: string): MarketDepth_market => {
   return {
     ...mockData,
     data: {
       ...mockData.data,
       staticMidPrice,
-    },
+    } as MarketDepth_market_data,
   };
 };
 
