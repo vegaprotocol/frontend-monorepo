@@ -7,11 +7,16 @@ import { OrderListContainer } from '@vegaprotocol/orders';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { FillsContainer } from '@vegaprotocol/fills';
 import ConnectWallet from '../wallet-connector';
+import { DepositContainer } from '../deposits';
 
 export const Portfolio = () => {
   const { keypair } = useVegaWallet();
   if (!keypair) {
-    return <ConnectWallet />;
+    return (
+      <section className="xl:w-1/2">
+        <ConnectWallet />
+      </section>
+    );
   }
   return (
     <Tabs>
@@ -26,6 +31,9 @@ export const Portfolio = () => {
       </Tab>
       <Tab id="fills" name={t('Fills')}>
         <FillsContainer />
+      </Tab>
+      <Tab id="deposits" name={t('Deposits')}>
+        <DepositContainer />
       </Tab>
     </Tabs>
   );

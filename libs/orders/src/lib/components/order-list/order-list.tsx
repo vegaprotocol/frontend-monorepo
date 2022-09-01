@@ -112,7 +112,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
-        rowHeight={40}
+        rowHeight={34}
         {...props}
       >
         <AgGridColumn

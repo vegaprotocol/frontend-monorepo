@@ -7,7 +7,6 @@ import {
   PriceFlashCell,
   addDecimalsFormatNumber,
   t,
-  formatLabel,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -16,7 +15,12 @@ import type {
   AgGridReactProps,
   AgReactUiProps,
 } from 'ag-grid-react';
-import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import {
+  MarketTradingMode,
+  AuctionTrigger,
+  MarketTradingModeMapping,
+  AuctionTriggerMapping,
+} from '@vegaprotocol/types';
 import type {
   MarketList_markets,
   MarketList_markets_data,
@@ -79,7 +83,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Trading mode')}
         field="data"
-        minWidth={200}
+        minWidth={170}
         valueFormatter={({
           value,
         }: MarketListTableValueFormatterParams & {
@@ -92,8 +96,9 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
               MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
             trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${formatLabel(market.tradingMode)} - ${trigger.toLowerCase()}`
-            : formatLabel(market?.tradingMode);
+            ? `${MarketTradingModeMapping[market.tradingMode]}
+            - ${AuctionTriggerMapping[trigger]}`
+            : MarketTradingModeMapping[market.tradingMode];
         }}
       />
       <AgGridColumn
