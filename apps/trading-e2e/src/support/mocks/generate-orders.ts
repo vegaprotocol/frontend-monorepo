@@ -133,6 +133,36 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       expiresAt: null,
       rejectionReason: null,
     },
+    {
+      __typename: 'Order',
+      id: '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78',
+      market: {
+        __typename: 'Market',
+        id: 'a316fa51dab97d76a1472c2f22906f4e461728e04355096788165d5b13999ed5',
+        name: 'UNIDAI Monthly (30 Jun 2022)',
+        decimalPlaces: 5,
+        positionDecimalPlaces: 0,
+        tradableInstrument: {
+          __typename: 'TradableInstrument',
+          instrument: {
+            id: '',
+            __typename: 'Instrument',
+            code: 'UNIDAI.MF21',
+          },
+        },
+      },
+      size: '10',
+      type: OrderType.TYPE_LIMIT,
+      status: OrderStatus.STATUS_PARTIALLY_FILLED,
+      side: Side.SIDE_SELL,
+      remaining: '3',
+      price: '100000',
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      createdAt: new Date(2020, 1, 27).toISOString(),
+      updatedAt: null,
+      expiresAt: null,
+      rejectionReason: null,
+    },
   ];
 
   const defaultResult: Orders = {
