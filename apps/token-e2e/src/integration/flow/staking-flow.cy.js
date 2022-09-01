@@ -551,7 +551,12 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains('0.0', txTimeout)
         .should('be.visible');
 
-      cy.get(vegaWallet).within(() => {cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '0.000000000000000000')});
+      cy.get(vegaWallet).within(() => {
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '0.000000000000000000'
+        );
+      });
 
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'not.exist',
@@ -600,7 +605,12 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains('0.0', txTimeout)
         .should('be.visible');
 
-      cy.get(vegaWallet).within(() => {cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '0.000000000000000000')});
+      cy.get(vegaWallet).within(() => {
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '0.000000000000000000'
+        );
+      });
 
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'not.exist',
@@ -643,7 +653,12 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains('2.0', txTimeout)
         .should('be.visible');
 
-      cy.get(vegaWallet).within(() => {cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '2.000000000000000000')});
+      cy.get(vegaWallet).within(() => {
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '2.000000000000000000'
+        );
+      });
 
       cy.get(vegaWalletStakedBalances, txTimeout)
         .should('contain', 2.0, txTimeout)
@@ -794,8 +809,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.staking_page_associate_tokens('6');
 
       cy.get(vegaWallet).within(() => {
-        cy.get(vegaWalletAssociatedBalance, txTimeout)
-          .should('contain', '12.000000000000000000')});     
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          'contain',
+          '12.000000000000000000'
+        );
+      });
 
       cy.get(vegaWalletStakedBalances, txTimeout)
         .should('contain', '4.0', txTimeout)
