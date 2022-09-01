@@ -56,7 +56,7 @@ export const ProposeNewAsset = () => {
             <div data-testid="new-asset-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormTitleField
-                  register={register}
+                  registerField={register}
                   errorMessage={errors?.proposalTitle?.message}
                 />
                 <FormGroup

@@ -57,7 +57,7 @@ export const ProposeNewMarket = () => {
             <div data-testid="new-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormTitleField
-                  register={register}
+                  registerField={register}
                   errorMessage={errors?.proposalTitle?.message}
                 />
                 <FormGroup

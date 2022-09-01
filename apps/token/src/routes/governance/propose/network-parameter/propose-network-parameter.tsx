@@ -56,7 +56,7 @@ export const ProposeNetworkParameter = () => {
             <div data-testid="network-parameter-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormTitleField
-                  register={register}
+                  registerField={register}
                   errorMessage={errors?.proposalTitle?.message}
                 />
                 <FormGroup

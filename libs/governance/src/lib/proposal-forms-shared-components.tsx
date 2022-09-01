@@ -9,22 +9,22 @@ import { ProposalState } from '@vegaprotocol/types';
 import type { ProposalEvent_busEvents_event_Proposal } from './proposals-hooks';
 import type { DialogProps } from '@vegaprotocol/wallet';
 import { useTranslation } from 'react-i18next';
-import type { UseFormRegister } from 'react-hook-form';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 export const ProposalFormMinRequirements = () => {
   const { t } = useTranslation();
   return <p className="mb-4">{t('MinProposalRequirements')}</p>;
 };
 
-interface ProposalFormTitleFieldProps<T extends {proposalTitle: string}> {
-  register: UseFormRegister<T>;
+interface ProposalFormTitleFieldProps {
+  registerField: UseFormRegisterReturn<'proposalTitle'>;
   errorMessage: string | undefined;
 }
 
-export const ProposalFormTitleField = function<T extends {proposalTitle: string}>({
-  register,
+export const ProposalFormTitleField = function ({
+  registerField: register,
   errorMessage,
-}: ProposalFormTitleFieldProps<T>) {
+}: ProposalFormTitleFieldProps) {
   return (
     <FormGroup
       label={t('ProposalTitle')}
@@ -36,9 +36,7 @@ export const ProposalFormTitleField = function<T extends {proposalTitle: string}
         maxLength={100}
         hasError={Boolean(errorMessage)}
         data-testid="proposal-title"
-        {...register('proposalTitle', {
-          required: t('Required'),
-        })}
+        {...register}
       />
       {errorMessage && <InputError intent="danger">{errorMessage}</InputError>}
     </FormGroup>

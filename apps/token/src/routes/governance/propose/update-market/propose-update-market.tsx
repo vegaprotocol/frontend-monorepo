@@ -57,7 +57,9 @@ export const ProposeUpdateMarket = () => {
             <div data-testid="update-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormTitleField
-                  register={register}
+                  registerField={register('proposalTitle', {
+                    required: t('Required'),
+                  })}
                   errorMessage={errors?.proposalTitle?.message}
                 />
                 <FormGroup
