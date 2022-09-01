@@ -23,7 +23,15 @@ export const generateMarkets = (
         close: '',
         open: '',
       },
-      candles: [],
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+        },
+      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -81,7 +89,15 @@ export const generateMarkets = (
         close: '',
         open: '',
       },
-      candles: [],
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+        },
+      ],
       fees: {
         __typename: 'Fees',
         factors: {
