@@ -1,26 +1,20 @@
-import classNames from 'classnames';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAnimateValue } from '../../hooks/use-animate-value';
 import type { BigNumber } from '../../lib/bignumber';
-import { useNumberParts } from '../../lib/format-number';
+import { useNumberParts } from '@vegaprotocol/react-helpers';
 
 interface WalletCardProps {
   children: React.ReactNode;
-  dark?: boolean;
 }
 
-export const WalletCard = ({ dark, children }: WalletCardProps) => {
-  const className = classNames(
-    'text-ui border border-white',
-    'pt-4 pl-8 pr-12 pb-12',
-    {
-      'bg-black text-white': dark,
-      'bg-white text-black': !dark,
-    }
+export const WalletCard = ({ children }: WalletCardProps) => {
+  return (
+    <div className="text-sm border border-neutral-700 p-4 bg-black text-white">
+      {children}
+    </div>
   );
-  return <div className={className}>{children}</div>;
 };
 
 interface WalletCardHeaderProps {
@@ -31,7 +25,7 @@ interface WalletCardHeaderProps {
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
     <div
-      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4"
+      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2 mb-2"
       data-testid="wallet-header"
     >
       {children}
@@ -44,23 +38,19 @@ interface WalletCardContentProps {
 }
 
 export const WalletCardContent = ({ children }: WalletCardContentProps) => {
-  return <div className="mt-8">{children}</div>;
+  return <div>{children}</div>;
 };
 
 export const WalletCardRow = ({
   label,
   link,
   value,
-  dark = false,
   decimals = 18,
-  bold = false,
 }: {
   label: string;
   link?: string;
   decimals?: number;
   value?: BigNumber | null;
-  dark?: boolean;
-  bold?: boolean;
 }) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
   useAnimateValue(ref, value);
@@ -68,9 +58,7 @@ export const WalletCardRow = ({
 
   return (
     <div
-      className={`flex justify-between gap-y-0 gap-x-4 text-ui my-4 p-2 ${
-        dark ? 'text-white-60' : 'text-black'
-      } ${bold && 'font-bold'}`}
+      className="flex justify-between gap-y-0 gap-x-2 text-sm mb-2"
       ref={ref}
     >
       {link ? (
@@ -78,10 +66,7 @@ export const WalletCardRow = ({
           {label}
         </Link>
       ) : (
-        <span
-          className={`max-w-[200px] ${dark ? 'text-white' : 'text-black'}`}
-          data-test-id="associated-key"
-        >
+        <span className="max-w-[200px]" data-test-id="associated-key">
           {label}
         </span>
       )}
@@ -90,12 +75,8 @@ export const WalletCardRow = ({
           className="font-mono flex-1 text-right"
           data-test-id="associated-amount"
         >
-          <span className={dark ? 'text-white' : 'text-black'}>
-            {integers}.
-          </span>
-          <span className={dark ? 'text-white-60' : 'text-black-60'}>
-            {decimalsPlaces}
-          </span>
+          <span>{integers}.</span>
+          <span>{decimalsPlaces}</span>
         </span>
       )}
     </div>
@@ -107,7 +88,7 @@ export const WalletCardActions = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <div className="flex justify-end gap-2 py-2">{children}</div>;
+  return <div className="flex justify-end gap-2 mb-4">{children}</div>;
 };
 
 export interface WalletCardAssetProps {
@@ -117,7 +98,6 @@ export interface WalletCardAssetProps {
   balance: BigNumber;
   decimals: number;
   border?: boolean;
-  dark?: boolean;
   subheading?: string;
 }
 
@@ -128,48 +108,32 @@ export const WalletCardAsset = ({
   balance,
   decimals,
   border,
-  dark,
   subheading,
 }: WalletCardAssetProps) => {
   const [integers, decimalsPlaces] = useNumberParts(balance, decimals);
 
   return (
-    <div className="flex flex-nowrap mt-8 mb-16">
+    <div className="flex flex-nowrap mt-2 mb-4">
       <img
         alt="Vega"
         src={image}
-        className={`inline-block h-[30px] rounded-[50%] border ${
+        className={`inline-block w-6 h-6 mt-2 rounded-full border ${
           border ? 'border-white' : 'border-black'
         }`}
       />
       <div>
         <div
-          className="flex font-medium align-center"
+          className="flex align-center text-base"
           data-testid="currency-title"
         >
-          <h1
-            className={`text-h5 mb-0 px-8 uppercase leading-none ${
-              dark ? 'text-white' : 'text-black'
-            }`}
-          >
-            {name}
-          </h1>
-          <h2
-            className={`text-h5 mb-0 uppercase leading-none ${
-              dark ? 'text-white-60' : 'text-black-60'
-            }`}
-          >
+          <div className="mb-0 px-2 uppercase">{name}</div>
+          <div className="mb-0 uppercase text-neutral-400">
             {subheading || symbol}
-          </h2>
+          </div>
         </div>
-        <div
-          className="px-8 text-h5 basis-full font-mono"
-          data-testid="currency-value"
-        >
+        <div className="px-2 basis-full font-mono" data-testid="currency-value">
           <span>{integers}.</span>
-          <span className={dark ? 'text-white-60' : 'text-black-60'}>
-            {decimalsPlaces}
-          </span>
+          <span className="text-neutral-400">{decimalsPlaces}</span>
         </div>
       </div>
     </div>

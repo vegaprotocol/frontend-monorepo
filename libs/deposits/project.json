@@ -1,5 +1,5 @@
 {
-  "root": "libs/deposits",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deposits/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/deposits"],
       "options": {
-        "jestConfig": "libs/deposits/jest.config.js",
+        "jestConfig": "libs/deposits/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -30,5 +30,8 @@ describe('Portfolio page', () => {
 
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').should('exist');
+
+    cy.getByTestId('Deposits').click();
+    cy.getByTestId('tab-deposits').should('exist');
   });
 });

@@ -2,7 +2,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { sumCirculatingTokens } from './token-details-circulating';
 import type { Tranche } from '@vegaprotocol/smart-contracts';
 
-test('It sums some easy tranches correctly', () => {
+it('It sums some easy tranches correctly', () => {
   const tranches: Partial<Tranche>[] = [
     { total_added: new BigNumber('100'), locked_amount: new BigNumber(0) },
     { total_added: new BigNumber('100'), locked_amount: new BigNumber(0) },
@@ -13,7 +13,7 @@ test('It sums some easy tranches correctly', () => {
   expect(result.toString()).toEqual('300');
 });
 
-test('It sums some longer tranches correctly', () => {
+it('It sums some longer tranches correctly', () => {
   const tranches: Partial<Tranche>[] = [
     {
       total_added: new BigNumber('10000000000'),
@@ -27,7 +27,7 @@ test('It sums some longer tranches correctly', () => {
   expect(result.toString()).toEqual('10000000000');
 });
 
-test('Handles null tranche array', () => {
+it('Handles null tranche array', () => {
   const tranches = null;
 
   const result = sumCirculatingTokens(tranches as unknown as Tranche[]);

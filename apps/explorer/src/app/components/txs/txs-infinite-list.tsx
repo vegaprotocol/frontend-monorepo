@@ -72,9 +72,9 @@ export const TxsInfiniteList = ({
   return (
     <div className={className} data-testid="transactions-list">
       <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full mb-8">
-        <div className="text-h5 font-bold">Txn hash</div>
-        <div className="text-h5 font-bold">Party</div>
-        <div className="text-h5 font-bold pl-2">Type</div>
+        <div className="text-lg font-bold">Txn hash</div>
+        <div className="text-lg font-bold">Party</div>
+        <div className="text-lg font-bold pl-2">Type</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader

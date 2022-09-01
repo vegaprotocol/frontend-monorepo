@@ -17,7 +17,7 @@ const ethStakingBridgeContractAddress = Cypress.env(
 );
 const ethProviderUrl = Cypress.env('ethProviderUrl');
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
-const transactionTimeout = '50000';
+const transactionTimeout = '90000';
 
 before('Vega wallet teardown prep', function () {
   cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
@@ -46,8 +46,8 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
       .invoke('text')
       .then((balance) => {
         if (balance != '0.000000000000000000') {
-          cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
           cy.vega_wallet_teardown_vesting(this.vestingContract);
+          cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
         }
       });
   });

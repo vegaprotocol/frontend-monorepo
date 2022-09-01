@@ -10,4 +10,5 @@ export const Links = {
   DISCORD: 'https://vega.xyz/discord',
   STAKING_GUIDE:
     'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega',
+  GOVERNANCE_PAGE: 'https://vega.xyz/governance',
 };

@@ -15,8 +15,8 @@ import type {
 } from './__generated__/VoteButtons';
 import { VoteState } from './use-user-vote';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
+import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -84,18 +84,16 @@ export const VoteButtons = ({
     if (!keypair) {
       return (
         <>
-          <Button
-            variant="inline-link"
+          <ButtonLink
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
                 isOpen: true,
               })
             }
-            style={{ textDecoration: 'underline', cursor: 'pointer' }}
           >
             {t('connectVegaWallet')}
-          </Button>{' '}
+          </ButtonLink>{' '}
           {t('toVote')}
         </>
       );
@@ -146,14 +144,13 @@ export const VoteButtons = ({
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
         {proposalState === ProposalState.STATE_OPEN ? (
-          <Button
-            variant="inline-link"
+          <ButtonLink
             onClick={() => {
               setChangeVote(true);
             }}
           >
             {t('changeVote')}
-          </Button>
+          </ButtonLink>
         ) : null}
       </p>
     );
@@ -165,15 +162,16 @@ export const VoteButtons = ({
 
   return (
     <div className="flex gap-4">
-      <Button
-        onClick={() => submitVote(VoteValue.VALUE_YES)}
-        className="flex-1"
-      >
-        {t('voteFor')}
-      </Button>
-      <Button onClick={() => submitVote(VoteValue.VALUE_NO)} className="flex-1">
-        {t('voteAgainst')}
-      </Button>
+      <div className="flex-1">
+        <Button onClick={() => submitVote(VoteValue.VALUE_YES)}>
+          {t('voteFor')}
+        </Button>
+      </div>
+      <div className="flex-1">
+        <Button onClick={() => submitVote(VoteValue.VALUE_NO)}>
+          {t('voteAgainst')}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -112,7 +112,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         width: isMobile ? 35 : 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="h-full flex h-full items-center justify-end">
-            <div className="uppercase text-center pr-8">
+            <div className="uppercase text-center pr-2">
               {!isMobile && t('Trade')}
               <Icon
                 name={IconNames.ARROW_TOP_RIGHT}

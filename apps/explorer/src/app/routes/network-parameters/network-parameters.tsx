@@ -7,6 +7,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
+  formatLabel,
   formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -69,7 +70,7 @@ export const NetworkParameterRow = ({
         'group target:bg-vega-pink target:text-white dark:target:bg-vega-yellow dark:target:text-black'
       }
     >
-      {key}
+      {formatLabel(key)}
       {isSyntaxRow ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : isNaN(Number(value)) ? (

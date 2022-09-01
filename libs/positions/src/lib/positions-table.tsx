@@ -203,7 +203,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Mark Price')}
+          headerName={t('Mark price')}
           field="markPrice"
           type="rightAligned"
           cellRendererSelector={(
@@ -236,7 +236,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Entry Price')}
+          headerName={t('Entry price')}
           field="averageEntryPrice"
           headerComponentParams={{
             template:
@@ -276,7 +276,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 data.marketDecimalPlaces
               ),
               value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-              intent: data.lowMarginLevel ? Intent.Danger : undefined,
+              intent: data.lowMarginLevel ? Intent.Warning : undefined,
             };
           }}
         />

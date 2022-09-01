@@ -1,5 +1,6 @@
 import type { Story, Meta } from '@storybook/react';
 import { Input } from '../input';
+import type { FormGroupProps } from './form-group';
 import { FormGroup } from './form-group';
 export default {
   component: FormGroup,
@@ -23,7 +24,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: Story<FormGroupProps> = (args) => (
   <FormGroup {...args}>
     <Input id="labelFor" />
   </FormGroup>
@@ -40,19 +41,4 @@ Error.args = {
   label: 'Label',
   labelFor: 'labelFor',
   hasError: true,
-};
-
-export const WithDescription = Template.bind({});
-WithDescription.args = {
-  label: 'Label',
-  labelFor: 'labelFor',
-  labelDescription: 'with description text',
-};
-
-export const WithDescriptionAndError = Template.bind({});
-WithDescriptionAndError.args = {
-  hasError: true,
-  label: 'Label',
-  labelFor: 'labelFor',
-  labelDescription: 'with description text',
 };

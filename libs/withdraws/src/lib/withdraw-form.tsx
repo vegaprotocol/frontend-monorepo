@@ -84,7 +84,7 @@ export const WithdrawForm = ({
       noValidate={true}
       data-testid="withdraw-form"
     >
-      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -109,16 +109,10 @@ export const WithdrawForm = ({
           )}
         />
         {errors.asset?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.asset.message}
-          </InputError>
+          <InputError intent="danger">{errors.asset.message}</InputError>
         )}
       </FormGroup>
-      <FormGroup
-        label={t('To (Ethereum address)')}
-        labelFor="ethereum-address"
-        className="relative"
-      >
+      <FormGroup label={t('To (Ethereum address)')} labelFor="ethereum-address">
         <Web3WalletInput
           inputProps={{
             id: 'ethereum-address',
@@ -126,17 +120,15 @@ export const WithdrawForm = ({
           }}
         />
         {errors.to?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.to.message}
-          </InputError>
+          <InputError intent="danger">{errors.to.message}</InputError>
         )}
       </FormGroup>
       {selectedAsset && limits && (
-        <div className="mb-20">
+        <div className="mb-6">
           <WithdrawLimits limits={limits} balance={max.balance} />
         </div>
       )}
-      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount">
         <Input
           type="number"
           autoComplete="off"
@@ -176,7 +168,7 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <Button data-testid="submit-withdrawal" type="submit">
+      <Button variant="primary" data-testid="submit-withdrawal" type="submit">
         Submit
       </Button>
     </form>
@@ -192,7 +184,7 @@ const UseButton = ({ children, ...rest }: UseButtonProps) => {
     <button
       {...rest}
       type="button"
-      className="ml-auto text-ui absolute top-0 right-0 underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
     >
       {children}
     </button>

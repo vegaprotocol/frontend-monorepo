@@ -25,13 +25,10 @@ export const JumpTo = ({
 }: JumpToProps) => {
   return (
     <form onSubmit={submitHandler}>
-      <label
-        htmlFor={inputId}
-        className="block uppercase text-h5 font-bold mb-4"
-      >
+      <label htmlFor={inputId} className="block uppercase font-bold mb-2">
         {label}
       </label>
-      <div className="flex">
+      <div className="flex gap-2">
         <Input
           data-testid={inputId}
           id={inputId}
@@ -42,12 +39,7 @@ export const JumpTo = ({
           min={inputMin}
           max={inputMax}
         />
-        <Button
-          data-testid="go-submit"
-          variant="secondary"
-          boxShadow={false}
-          type="submit"
-        >
+        <Button data-testid="go-submit" size="sm" type="submit">
           {t('Go')}
         </Button>
       </div>

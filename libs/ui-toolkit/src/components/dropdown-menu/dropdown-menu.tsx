@@ -1,32 +1,16 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import { Button } from '../button';
+import { Icon } from '../icon';
 
 const itemClass = classNames(
-  'relative',
-  'flex items-center justify-between',
-  'text-ui leading-1',
-  'h-[25px]',
-  'py-0 pr-8',
-  'cursor-default',
-  'hover:cursor-pointer',
+  'relative flex items-center justify-between rounded-sm p-2 text-sm',
+  'cursor-default hover:cursor-pointer',
+  'hover:bg-white dark:hover:bg-neutral-200',
+  'focus:bg-white dark:focus:bg-neutral-200',
   'select-none',
-  'whitespace-nowrap',
-  'focus:bg-vega-highlight-item dark:focus:bg-vega-highlight-item-dark',
-  'focus:text-white dark:focus:text-black',
-  'focus:outline-none'
+  'whitespace-nowrap'
 );
-
-function getItemClasses(inset: boolean, checked?: boolean) {
-  return classNames(
-    itemClass,
-    inset ? 'pl-28' : 'pl-8',
-    checked
-      ? 'bg-vega-highlight-item dark:bg-vega-highlight-item-dark text-white dark:text-black'
-      : 'text-black dark:text-white'
-  );
-}
 
 /**
  * Contains all the parts of a dropdown menu.
@@ -40,22 +24,25 @@ export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
->(({ children, className }, forwardedRef) => (
-  <DropdownMenuPrimitive.Trigger
-    asChild={true}
-    ref={forwardedRef}
-    className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow transition-none hover:bg-white-95 dark:hover:bg-black-80"
-  >
-    <Button
-      variant="secondary"
-      appendIconName="chevron-down"
-      boxShadow={false}
-      className={classNames(className, 'justify-between px-8 font-normal')}
+>(({ className, children, ...props }, forwardedRef) => {
+  const triggerClasses = classNames(
+    'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500',
+    'focus:border-black dark:focus:border-white whitespace-nowrap',
+    className
+  );
+  return (
+    <DropdownMenuPrimitive.Trigger
+      asChild={true}
+      ref={forwardedRef}
+      className={triggerClasses}
+      {...props}
     >
-      {children}
-    </Button>
-  </DropdownMenuPrimitive.Trigger>
-));
+      <button>
+        {children} <Icon name="chevron-down" className="ml-2" />
+      </button>
+    </DropdownMenuPrimitive.Trigger>
+  );
+});
 
 /**
  * Used to group multiple {@link DropdownMenuRadioItem}s.
@@ -72,10 +59,9 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className={classNames(
-      'inline-block box-border border-1 border-black bg-dropdown-bg dark:bg-dropdown-bg-dark',
-      className
-    )}
+    className="min-w-[290px] bg-neutral-200 dark:bg-white p-2 rounded"
+    align="start"
+    sideOffset={10}
   />
 ));
 
@@ -84,14 +70,12 @@ export const DropdownMenuContent = forwardRef<
  */
 export const DropdownMenuItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
-    inset?: boolean;
-  }
->(({ className, inset = false, ...itemProps }, forwardedRef) => (
+  React.ComponentProps<typeof DropdownMenuPrimitive.Item>
+>(({ className, ...itemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(getItemClasses(inset), className)}
+    className={classNames(itemClass, className)}
   />
 ));
 
@@ -100,19 +84,12 @@ export const DropdownMenuItem = forwardRef<
  */
 export const DropdownMenuCheckboxItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem> & {
-    inset?: boolean;
-  }
->(({ className, inset = false, ...checkboxItemProps }, forwardedRef) => (
+  React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>
+>(({ className, ...checkboxItemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(
-      getItemClasses(inset, checkboxItemProps.checked),
-      className,
-      'hover:shadow-inset-black dark:hover:shadow-inset-white',
-      'focus:shadow-inset-black dark:focus:shadow-inset-white'
-    )}
+    className={classNames(itemClass, className)}
   />
 ));
 
@@ -128,7 +105,7 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemprops}
     ref={forwardedRef}
-    className={classNames(getItemClasses(inset), className)}
+    className={classNames(itemClass, className)}
   />
 ));
 
@@ -139,15 +116,14 @@ export const DropdownMenuRadioItem = forwardRef<
 export const DropdownMenuItemIndicator = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.ItemIndicator>,
   React.ComponentProps<typeof DropdownMenuPrimitive.ItemIndicator>
->(({ className, ...itemIndicatorProps }, forwardedRef) => (
+>(({ ...itemIndicatorProps }, forwardedRef) => (
   <DropdownMenuPrimitive.ItemIndicator
     {...itemIndicatorProps}
     ref={forwardedRef}
-    className={classNames(
-      'absolute inline-flex justify-center align-middle left-0 w-24',
-      className
-    )}
-  />
+    className="flex-end"
+  >
+    <Icon name="tick" />
+  </DropdownMenuPrimitive.ItemIndicator>
 ));
 
 /**
@@ -160,6 +136,9 @@ export const DropdownMenuSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames('h-px my-1 mx-2.5 bg-black', className)}
+    className={classNames(
+      'h-px my-1 mx-2 bg-neutral-700 dark:bg-black',
+      className
+    )}
   />
 ));

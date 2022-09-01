@@ -58,21 +58,21 @@ export const ProposalForm = () => {
           })}
         />
         {errors.proposalData?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger">
             {errors.proposalData?.message}
           </InputError>
         )}
       </FormGroup>
-      <Button
-        variant="primary"
-        type="submit"
-        className="my-20"
-        data-testid="proposal-submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
-      </Button>
-
+      <span className="my-20">
+        <Button
+          variant="primary"
+          type="submit"
+          data-testid="proposal-submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
+        </Button>
+      </span>
       {finalizedProposal?.rejectionReason ? (
         <TransactionDialog
           title={t('Proposal rejected')}

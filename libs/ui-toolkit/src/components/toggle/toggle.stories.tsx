@@ -1,18 +1,25 @@
-import type { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { ComponentStory, Meta, Story } from '@storybook/react';
+import type { ToggleProps } from './toggle';
 import { Toggle } from './toggle';
 import { useState } from 'react';
 
 export default {
   component: Toggle,
   title: 'Toggle',
-} as ComponentMeta<typeof Toggle>;
+} as Meta;
+
+const Template: Story<ToggleProps> = (args) => (
+  <form className="w-[300px]">
+    <Toggle {...args} />
+  </form>
+);
 
 export const Controlled: ComponentStory<typeof Toggle> = () => {
   const [checked, setChecked] = useState('test-1');
 
   return (
-    <form>
-      <div className="mb-12">Current checked state: {checked}</div>
+    <form className="w-[600px]">
+      <div className="mb-4">Current checked state: {checked}</div>
       <Toggle
         name="controlled"
         toggles={[
@@ -27,17 +34,12 @@ export const Controlled: ComponentStory<typeof Toggle> = () => {
         ]}
         checkedValue={checked}
         onChange={(e) => setChecked(e.target.value)}
-        className="max-w-[400px]"
       />
     </form>
   );
 };
 
-const UncontrolledTemplate: ComponentStory<typeof Toggle> = (args) => (
-  <Toggle {...args} />
-);
-
-export const Uncontrolled = UncontrolledTemplate.bind({});
+export const Uncontrolled = Template.bind({});
 Uncontrolled.args = {
   name: 'uncontrolled',
   toggles: [
@@ -50,10 +52,9 @@ Uncontrolled.args = {
       value: 'test-2',
     },
   ],
-  className: 'max-w-[400px]',
 };
 
-export const MoreButtons = UncontrolledTemplate.bind({});
+export const MoreButtons = Template.bind({});
 MoreButtons.args = {
   name: 'more',
   toggles: [
@@ -70,5 +71,4 @@ MoreButtons.args = {
       value: 'test-3',
     },
   ],
-  className: 'max-w-[600px]',
 };

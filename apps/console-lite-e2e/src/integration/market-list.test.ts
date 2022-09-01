@@ -95,36 +95,36 @@ describe('market list', () => {
   });
 
   describe('long list of results should be handled properly', () => {
-    it.skip('handles 5000 markets', () => {
+    it('handles 1000 markets', () => {
       cy.viewport(1440, 900);
       cy.mockGQL((req) => {
-        aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(5000));
+        aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(1000));
       });
-      performance.mark('start-5k');
+      performance.mark('start-1k');
       cy.visit('/markets');
       cy.get('.ag-center-cols-container', { timeout: 50000 }).then(() => {
-        performance.mark('end-5k');
-        performance.measure('load-5k', 'start-5k', 'end-5k');
-        const measure = performance.getEntriesByName('load-5k')[0];
+        performance.mark('end-1k');
+        performance.measure('load-1k', 'start-1k', 'end-1k');
+        const measure = performance.getEntriesByName('load-1k')[0];
         expect(measure.duration).lte(20000);
-        cy.log(`Ag-grid 5k load took ${measure.duration} milliseconds.`);
+        cy.log(`Ag-grid 1k load took ${measure.duration} milliseconds.`);
 
-        cy.get('.ag-root').should('have.attr', 'aria-rowcount', '5001');
+        cy.get('.ag-root').should('have.attr', 'aria-rowcount', '1001');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
           .its('length')
-          .then((length) => expect(length).to.be.closeTo(21, 2));
+          .then((length) => expect(length).to.be.closeTo(20, 3));
         cy.get('.ag-cell-label-container').eq(4).click();
         cy.get('body').then(($body) => {
-          for (let i = 0; i < 20; i++) {
-            cy.wrap($body).realPress('Tab', { pressDelay: 300 });
+          for (let i = 0; i < 15; i++) {
+            cy.wrap($body).realPress('Tab', { pressDelay: 100 });
           }
         });
-        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '19');
+        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '14');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
           .its('length')
-          .then((length) => expect(length).to.be.closeTo(31, 2));
+          .then((length) => expect(length).to.be.closeTo(26, 2));
       });
     });
   });

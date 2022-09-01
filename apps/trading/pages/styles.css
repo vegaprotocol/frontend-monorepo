@@ -8,12 +8,13 @@ body,
   @apply h-full;
 }
 
-html > body {
+/* Styles for allotment */
+html {
   --focus-border: theme('colors.vega.pink');
-  --separator-border: theme('colors.black.10');
+  --separator-border: theme('colors.neutral.300');
 }
 
-html.dark > body {
+html.dark {
   --focus-border: theme('colors.vega.yellow');
-  --separator-border: theme('colors.black.70');
+  --separator-border: theme('colors.neutral.700');
 }

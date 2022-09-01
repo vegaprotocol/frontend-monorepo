@@ -32,6 +32,7 @@ import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 import useOrderCloseOut from '../../hooks/use-order-closeout';
 import useOrderMargin from '../../hooks/use-order-margin';
 import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
+import useCalculateSlippage from '../../hooks/use-calculate-slippage';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -93,7 +94,7 @@ export const DealTicketSteps = ({
     price: market?.depth?.lastTrade?.price,
     order,
   });
-
+  const slippage = useCalculateSlippage({ marketId: market.id, order });
   useEffect(() => {
     setMax(
       new BigNumber(maxTrade)
@@ -215,6 +216,7 @@ export const DealTicketSteps = ({
             estCloseOut={estCloseOut}
             fees={fees || emptyString}
             estMargin={estMargin?.margin || emptyString}
+            slippage={slippage}
           />
         ) : (
           'loading...'
@@ -226,9 +228,11 @@ export const DealTicketSteps = ({
       component: (
         <div className="mb-8">
           {invalidText && (
-            <InputError className="mb-8" data-testid="dealticket-error-message">
-              {invalidText}
-            </InputError>
+            <div className="mb-2">
+              <InputError data-testid="dealticket-error-message">
+                {invalidText}
+              </InputError>
+            </div>
           )}
           <ReviewTrade
             market={market}
@@ -259,7 +263,7 @@ export const DealTicketSteps = ({
   ];
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="px-2 py-4">
       <Stepper steps={steps} />
     </form>
   );
