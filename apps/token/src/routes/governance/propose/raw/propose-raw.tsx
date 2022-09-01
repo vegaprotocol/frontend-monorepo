@@ -3,9 +3,12 @@ import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { FormGroup, InputError, TextArea } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
-  ProposalFormSubmitButton,
+  ProposalFormMinRequirements,
+  useProposalSubmit,
+} from '@vegaprotocol/governance';
+import {
+  ProposalFormSubmit,
   ProposalFormTransactionDialog,
 } from '@vegaprotocol/governance';
 
@@ -34,7 +37,7 @@ export const ProposeRaw = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <p>{t('MinProposalRequirements')}</p>
+            <ProposalFormMinRequirements />
             <div data-testid="raw-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup
@@ -66,7 +69,7 @@ export const ProposeRaw = () => {
                     </InputError>
                   )}
                 </FormGroup>
-                <ProposalFormSubmitButton isSubmitting={isSubmitting} />
+                <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
                   TransactionDialog={TransactionDialog}

@@ -155,6 +155,7 @@ export interface ProposalNetworkParameterTerms {
 export interface ProposalFreeformTerms {
   newFreeform: Record<string, never>;
   closingTimestamp: number;
+  validationTimestamp: number;
 }
 
 export interface ProposalNewAssetTerms {

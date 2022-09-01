@@ -645,6 +645,7 @@
   "ProposalTitleText": "Tell people what you are proposing and why (100 characters or less)",
   "ProposalDescription": "Description",
   "ProposalDescriptionText": "Full justification for what you are proposing (20,000 characters or less). Markdown is recommended. When linking to external resources please use IPFS",
-  "ProposalTerms": "Proposal terms as JSON",
+  "ProposalTerms": "Proposal terms",
+  "ProposalTermsText": "JSON format",
   "ProposalReference": "Reference"
 }
