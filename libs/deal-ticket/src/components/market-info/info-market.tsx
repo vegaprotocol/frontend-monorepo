@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import {
@@ -6,7 +5,6 @@ import {
   Splash,
   Accordion,
   Link,
-  Dialog,
 } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
@@ -25,7 +23,6 @@ import type {
   MarketInfoQuery_market,
   MarketInfoQuery_market_candles,
 } from './__generated__/MarketInfoQuery';
-import { LiquidityContainer } from '@vegaprotocol/liquidity';
 import { MarketInfoTable } from './info-key-value-table';
 
 export interface InfoProps {
@@ -72,7 +69,6 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 };
 
 export const Info = ({ market }: InfoProps) => {
-  const [openLiquidityView, setOpenLiquidityView] = useState(false);
   const headerClassName = 'uppercase text-lg mb-4';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
@@ -289,22 +285,13 @@ export const Info = ({ market }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
           link={
-            <>
-              <Link
-                target="_blank"
-                className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
-                href={`/liquidity/${market.id}`}
-              >
-                {t('View liquidity provision table')}
-              </Link>
-              <Dialog
-                open={openLiquidityView}
-                onChange={() => setOpenLiquidityView(!openLiquidityView)}
-                size="medium"
-              >
-                <LiquidityContainer marketId={market.id}></LiquidityContainer>
-              </Dialog>
-            </>
+            <Link
+              target="_blank"
+              className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
+              href={`/liquidity/${market.id}`}
+            >
+              {t('View liquidity provision table')}
+            </Link>
           }
         />
       ),
