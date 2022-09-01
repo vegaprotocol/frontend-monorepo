@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { WithdrawPageContainer } from './withdraw-page-container';
 import { VegaWalletContainer } from '../../../components/vega-wallet-container';
-import { Web3Container } from '../../../components/web3-container';
+import { Web3Container } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 
 const Withdraw = () => {
@@ -24,8 +24,8 @@ const Withdraw = () => {
   return (
     <VegaWalletContainer>
       <Web3Container>
-        <div className="max-w-[420px] p-24 mx-auto">
-          <h1 className="text-h3 mb-12">{t('Withdraw')}</h1>
+        <div className="max-w-[420px] p-8 mx-auto">
+          <h1 className="text-2xl mb-4">{t('Withdraw')}</h1>
           <WithdrawPageContainer assetId={assetId} />
         </div>
       </Web3Container>

@@ -77,7 +77,7 @@ export const TargetedClaim = ({
           onSubmit={claimTargeted}
         />
       ) : (
-        <p className="text-white-60">{t('selectCountryPrompt')}</p>
+        <p>{t('selectCountryPrompt')}</p>
       )}
     </div>
   );

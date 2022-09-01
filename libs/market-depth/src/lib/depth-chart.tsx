@@ -16,73 +16,13 @@ import {
   useState,
   useContext,
 } from 'react';
-import type {
-  MarketDepthSubscription_marketDepthUpdate_buy,
-  MarketDepthSubscription_marketDepthUpdate_sell,
-  MarketDepthSubscription_marketDepthUpdate,
-} from './__generated__/MarketDepthSubscription';
-import type {
-  MarketDepth_market_depth_buy,
-  MarketDepth_market_depth_sell,
-} from './__generated__/MarketDepth';
+import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
 import type { DepthChartProps } from 'pennant';
+import { parseLevel, updateLevels } from './depth-chart-utils';
 
 interface DepthChartManagerProps {
   marketId: string;
 }
-
-interface PriceLevel {
-  price: number;
-  volume: number;
-}
-
-const parseLevel = (
-  priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell,
-  priceDecimalPlaces = 0,
-  volumeDecimalPlaces = 0
-): PriceLevel => ({
-  price: Number(addDecimal(priceLevel.price, priceDecimalPlaces)),
-  volume: Number(addDecimal(priceLevel.volume, volumeDecimalPlaces)),
-});
-
-const updateLevels = (
-  levels: PriceLevel[],
-  updates: (
-    | MarketDepthSubscription_marketDepthUpdate_buy
-    | MarketDepthSubscription_marketDepthUpdate_sell
-  )[],
-  decimalPlaces: number,
-  positionDecimalPlaces: number,
-  reverse = false
-) => {
-  updates.forEach((update) => {
-    const updateLevel = parseLevel(
-      update,
-      decimalPlaces,
-      positionDecimalPlaces
-    );
-    let index = levels.findIndex((level) => level.price === updateLevel.price);
-    if (index !== -1) {
-      if (update.volume === '0') {
-        levels.splice(index, 1);
-      } else {
-        Object.assign(levels[index], updateLevel);
-      }
-    } else if (update.volume !== '0') {
-      index = levels.findIndex((level) =>
-        reverse
-          ? level.price < updateLevel.price
-          : level.price > updateLevel.price
-      );
-      if (index !== -1) {
-        levels.splice(index, 0, updateLevel);
-      } else {
-        levels.push(updateLevel);
-      }
-    }
-  });
-  return levels;
-};
 
 const formatMidPrice = (midPrice: string, decimalPlaces: number) =>
   Number(addDecimal(midPrice, decimalPlaces));

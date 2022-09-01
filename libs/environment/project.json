@@ -1,5 +1,5 @@
 {
-  "root": "libs/environment",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/environment/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/environment"],
       "options": {
-        "jestConfig": "libs/environment/jest.config.js",
+        "jestConfig": "libs/environment/jest.config.ts",
         "passWithNoTests": true
       }
     }

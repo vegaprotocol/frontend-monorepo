@@ -59,17 +59,17 @@ export function EpochCountdown({
   return (
     <div data-testid="epoch-countdown" className="epoch-countdown">
       <div className="flex items-end">
-        <h3 className="flex-1 font-normal mb-4">
+        <h3 className="flex-1">
           {t('Epoch')} {id}
         </h3>
-        <p className="text-ui-small mb-4">
+        <p className="text-sm m-0">
           {endsIn
             ? t('Next epoch in {{endText}}', { endText: endsIn })
             : t('Awaiting next epoch')}
         </p>
       </div>
       <ProgressBar value={progress} />
-      <div className="flex mt-4 text-ui-small">
+      <div className="flex text-sm">
         <p>{format(startDate, DATE_FORMAT_DETAILED)}</p>
         <div className="flex-1 text-center">
           <img

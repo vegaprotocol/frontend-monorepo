@@ -503,27 +503,6 @@ describe('node selection', () => {
     });
   });
 
-  it('has a network error when the selected node is not on the correct network', async () => {
-    act(async () => {
-      // @ts-ignore allow adding a mock return value to mocked module
-      createClient.mockImplementation(() => {
-        return createMockClient({ network: Networks.MAINNET });
-      });
-
-      const { result } = renderHook(() => useEnvironment(), {
-        wrapper: MockWrapper,
-      });
-
-      await waitFor(() => {
-        expect(result.current).toEqual({
-          ...mockEnvironmentState,
-          networkError: ErrorType.INVALID_NETWORK,
-          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
-        });
-      });
-    });
-  });
-
   it('has a network error when the selected node has not ssl available', async () => {
     act(async () => {
       // @ts-ignore allow adding a mock return value to mocked module

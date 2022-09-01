@@ -7,7 +7,7 @@ import {
   PriceFlashCell,
   addDecimalsFormatNumber,
   t,
-  formatLabel,
+  toBigNum,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -16,11 +16,13 @@ import type {
   AgGridReactProps,
   AgReactUiProps,
 } from 'ag-grid-react';
-import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
-import type {
-  MarketList_markets,
-  MarketList_markets_data,
-} from '../../__generated__';
+import {
+  MarketTradingMode,
+  AuctionTrigger,
+  MarketTradingModeMapping,
+  AuctionTriggerMapping,
+} from '@vegaprotocol/types';
+import type { MarketList_markets } from '../../__generated__';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;
@@ -32,6 +34,8 @@ type MarketListTableValueFormatterParams = Omit<
   data: MarketList_markets;
 };
 
+export const getRowId = ({ data }: { data: { id: string } }) => data.id;
+
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -39,11 +43,14 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
     <AgGrid
       style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No markets')}
-      getRowId={({ data }) => data?.id}
+      getRowId={getRowId}
       ref={ref}
       defaultColDef={{
         flex: 1,
         resizable: true,
+        sortable: true,
+        filter: true,
+        filterParams: { buttons: ['reset'] },
       }}
       suppressCellFocus={true}
       components={{ PriceFlashCell }}
@@ -75,21 +82,18 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Trading mode')}
         field="data"
-        minWidth={200}
-        valueFormatter={({
-          value,
-        }: MarketListTableValueFormatterParams & {
-          value?: MarketList_markets_data;
-        }) => {
-          if (!value) return value;
-          const { market, trigger } = value;
+        minWidth={170}
+        valueGetter={({ data }: { data?: MarketList_markets }) => {
+          if (!data?.data) return undefined;
+          const { market, trigger } = data.data;
           return market &&
             market.tradingMode ===
               MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
             trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${formatLabel(market.tradingMode)} - ${trigger.toLowerCase()}`
-            : formatLabel(market?.tradingMode);
+            ? `${MarketTradingModeMapping[market.tradingMode]}
+            - ${AuctionTriggerMapping[trigger]}`
+            : MarketTradingModeMapping[market.tradingMode];
         }}
       />
       <AgGridColumn
@@ -97,47 +101,59 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="data.bestBidPrice"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
-        valueFormatter={({
-          value,
-          data,
-        }: MarketListTableValueFormatterParams & {
-          value?: MarketList_markets_data['bestBidPrice'];
-        }) =>
-          value === undefined
-            ? value
-            : addDecimalsFormatNumber(value, data.decimalPlaces)
+        filter="agNumberColumnFilter"
+        valueGetter={({ data }: { data?: MarketList_markets }) => {
+          return data?.data?.bestBidPrice === undefined
+            ? undefined
+            : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
+        }}
+        valueFormatter={({ data }: MarketListTableValueFormatterParams) =>
+          data?.data?.bestBidPrice === undefined
+            ? undefined
+            : addDecimalsFormatNumber(
+                data.data.bestBidPrice,
+                data.decimalPlaces
+              )
         }
       />
       <AgGridColumn
         headerName={t('Best offer')}
         field="data.bestOfferPrice"
         type="rightAligned"
-        valueFormatter={({
-          value,
-          data,
-        }: MarketListTableValueFormatterParams & {
-          value?: MarketList_markets_data['bestOfferPrice'];
-        }) =>
-          value === undefined
-            ? value
-            : addDecimalsFormatNumber(value, data.decimalPlaces)
-        }
         cellRenderer="PriceFlashCell"
+        filter="agNumberColumnFilter"
+        valueGetter={({ data }: { data?: MarketList_markets }) => {
+          return data?.data?.bestOfferPrice === undefined
+            ? undefined
+            : toBigNum(
+                data?.data?.bestOfferPrice,
+                data.decimalPlaces
+              ).toNumber();
+        }}
+        valueFormatter={({ data }: MarketListTableValueFormatterParams) =>
+          data?.data?.bestOfferPrice === undefined
+            ? undefined
+            : addDecimalsFormatNumber(
+                data.data.bestOfferPrice,
+                data.decimalPlaces
+              )
+        }
       />
       <AgGridColumn
         headerName={t('Mark price')}
         field="data.markPrice"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
-        valueFormatter={({
-          value,
-          data,
-        }: MarketListTableValueFormatterParams & {
-          value?: MarketList_markets_data['markPrice'];
-        }) =>
-          value === undefined
-            ? value
-            : addDecimalsFormatNumber(value, data.decimalPlaces)
+        filter="agNumberColumnFilter"
+        valueGetter={({ data }: { data?: MarketList_markets }) => {
+          return data?.data?.markPrice === undefined
+            ? undefined
+            : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
+        }}
+        valueFormatter={({ data }: MarketListTableValueFormatterParams) =>
+          data?.data?.bestOfferPrice === undefined
+            ? undefined
+            : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)
         }
       />
       <AgGridColumn headerName={t('Description')} field="name" />

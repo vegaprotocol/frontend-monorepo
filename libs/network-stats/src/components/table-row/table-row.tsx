@@ -25,14 +25,14 @@ export const TableRow = ({
   );
   return (
     <Tooltip description={description} align="start">
-      <tr className="border">
-        <td data-testid="stats-title" className="py-4 px-8">
+      <tr className="border border-black dark:border-white">
+        <td data-testid="stats-title" className="py-2 px-4">
           {title}
         </td>
-        <td data-testid="stats-value" className="py-4 px-8 text-right">
+        <td data-testid="stats-value" className="py-2 px-4 text-right">
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </td>
-        <td className="py-4 px-8">
+        <td className="py-2 px-4">
           <Indicator variant={variant} />
         </td>
       </tr>

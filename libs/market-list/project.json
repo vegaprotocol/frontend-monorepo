@@ -1,5 +1,5 @@
 {
-  "root": "libs/market-list",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/market-list/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/market-list"],
       "options": {
-        "jestConfig": "libs/market-list/jest.config.js",
+        "jestConfig": "libs/market-list/jest.config.ts",
         "passWithNoTests": true
       }
     }

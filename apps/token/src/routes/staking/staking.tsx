@@ -15,13 +15,13 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 
   return (
     <>
-      <section className="mb-20">
+      <section className="mb-8">
         <Callout
           intent={Intent.Primary}
           iconName="help"
           title={t('stakingDescriptionTitle')}
         >
-          <ol className="mb-20">
+          <ol className="mb-4">
             <li>
               {t('stakingDescription1')}{' '}
               <Link to="/staking/associate" className="underline">
@@ -38,13 +38,12 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
             target="_blank"
             data-testid="staking-guide-link"
           >
-            <Button variant="secondary">{t('readMoreStaking')}</Button>
+            <Button>{t('readMoreStaking')}</Button>
           </UTLink>
         </Callout>
       </section>
-
       <section>
-        <h2 className="text-h4 uppercase">{t('Nodes')}</h2>
+        <h2 className="text-2xl uppercase">{t('Nodes')}</h2>
         <NodeList data-testid="node-list" epoch={data?.epoch} />
       </section>
     </>

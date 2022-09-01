@@ -20,8 +20,15 @@ export const totalFees = (fees: MarketList_markets_fees_factors) => {
   );
 };
 
-export const mapDataToMarketList = ({ markets }: MarketList) =>
-  orderBy(
+export const mapDataToMarketList = ({ markets }: MarketList) => {
+  const tradingModesOrdering = [
+    MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    MarketTradingMode.TRADING_MODE_NO_TRADING,
+  ];
+  const orderedMarkets = orderBy(
     markets
       ?.filter(
         (m) =>
@@ -42,6 +49,12 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
     ['open', 'id'],
     ['asc', 'asc']
   );
+  return orderedMarkets.sort(
+    (a, b) =>
+      tradingModesOrdering.indexOf(a.tradingMode) -
+      tradingModesOrdering.indexOf(b.tradingMode)
+  );
+};
 
 export const calcCandleLow = (m: MarketList_markets): string | undefined => {
   return m.candles

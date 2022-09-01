@@ -68,7 +68,11 @@ const Home = ({ name }: RouteChildProps) => {
           )}
         </p>
         <Link to={Routes.VESTING}>
-          <Button variant="secondary" data-testid="check-vesting-page-btn">
+          <Button
+            variant="primary"
+            size="md"
+            data-testid="check-vesting-page-btn"
+          >
             {t('Check to see if you can redeem unlocked VEGA tokens')}
           </Button>
         </Link>
@@ -106,7 +110,7 @@ const Home = ({ name }: RouteChildProps) => {
           </Link>
         </p>
       </HomeSection>
-      <div className="flex gap-40">
+      <div className="flex gap-12">
         <div className="flex-1">
           <HomeSection>
             <h2>{t('Staking')}</h2>
@@ -117,10 +121,7 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
             <p>
               <Link to={Routes.STAKING}>
-                <Button
-                  variant="secondary"
-                  data-testid="staking-button-on-homepage"
-                >
+                <Button size="md" data-testid="staking-button-on-homepage">
                   {t('Nominate a validator')}
                 </Button>
               </Link>
@@ -137,10 +138,7 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
             <p>
               <Link to={Routes.GOVERNANCE}>
-                <Button
-                  variant="secondary"
-                  data-testid="governance-button-on-homepage"
-                >
+                <Button size="md" data-testid="governance-button-on-homepage">
                   {t('View Governance proposals')}
                 </Button>
               </Link>
@@ -155,5 +153,5 @@ const Home = ({ name }: RouteChildProps) => {
 export default Home;
 
 export const HomeSection = ({ children }: { children: React.ReactNode }) => {
-  return <section className="mb-28">{children}</section>;
+  return <section className="mb-8">{children}</section>;
 };

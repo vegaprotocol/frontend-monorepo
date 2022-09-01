@@ -11,8 +11,8 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    ...theme,
     extend: {
+      ...theme,
       backgroundImage: {
         clouds: "url('./images/clouds.png')",
         banner: "url('./images/banner.png')",

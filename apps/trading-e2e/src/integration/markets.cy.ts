@@ -1,18 +1,19 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
-import { generateMarketList } from '../support/mocks/generate-market-list';
+import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
 describe('markets table', () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'MarketList', generateMarketList());
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+      aliasQuery(req, 'MarketList', generateMarkets());
     });
-    cy.visit('/');
-    cy.wait('@MarketList', { timeout: 5000 });
   });
 
   it('renders markets correctly', () => {
+    cy.visit('/');
+    cy.wait('@MarketList');
     cy.get('[data-testid^="market-link-"]')
       .should('not.be.empty')
       .and('have.attr', 'href');
@@ -24,6 +25,8 @@ describe('markets table', () => {
   });
 
   it('renders market list drop down', () => {
+    cy.visit('/');
+    cy.wait('@MarketList');
     openMarketDropDown();
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('trading-mode').should('not.be.empty');
@@ -33,10 +36,8 @@ describe('markets table', () => {
   });
 
   it('Able to select market from dropdown', () => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
-
+    cy.visit('/');
+    cy.wait('@MarketList');
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();
 
@@ -44,6 +45,22 @@ describe('markets table', () => {
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
     verifyMarketSummaryDisplayed();
+  });
+
+  it('Settlement expiry is displayed', () => {
+    cy.visit('/markets/market-0');
+    cy.wait('@Market');
+
+    cy.getByTestId('trading-expiry')
+      .should('have.text', 'Not time-based')
+      .realHover();
+    cy.getByTestId('expiry-tool-tip').should(
+      'contain.text',
+      'This market expires when triggered by its oracle, not on a set date.'
+    );
+    cy.getByTestId('link')
+      .should('have.attr', 'href')
+      .and('include', 'https://explorer.fairground.wtf/');
   });
 
   it('Auction conditions are displayed', () => {
@@ -57,10 +74,6 @@ describe('markets table', () => {
       'Est uncrossing price',
       'Est uncrossing vol',
     ];
-
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
 
     cy.visit('/markets/market-0');
     cy.wait('@Market');

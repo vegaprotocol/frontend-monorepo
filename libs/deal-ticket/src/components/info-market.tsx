@@ -57,9 +57,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   return (
     <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <div className={'overflow-auto h-full'}>
-          <Info market={data.market} />
-        </div>
+        <Info market={data.market} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -70,8 +68,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 };
 
 export const Info = ({ market }: InfoProps) => {
-  const headerClassName =
-    'text-h5 font-medium uppercase text-black dark:text-white';
+  const headerClassName = 'uppercase text-lg mb-4';
   const dayVolume = calcCandleVolume(market);
   const marketDataPanels = [
     {
@@ -85,7 +82,7 @@ export const Info = ({ market }: InfoProps) => {
             }}
             asPercentage={true}
           />
-          <p className="text-ui-small">
+          <p className="text-sm">
             {t(
               'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
             )}
@@ -276,12 +273,12 @@ export const Info = ({ market }: InfoProps) => {
   ];
 
   return (
-    <div className="p-16 flex flex-col gap-32">
-      <div className="flex flex-col gap-12">
+    <div className="p-4">
+      <div className="mb-4">
         <p className={headerClassName}>{t('Market data')}</p>
         <Accordion panels={marketDataPanels} />
       </div>
-      <div className="flex flex-col gap-12">
+      <div>
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>
@@ -406,27 +403,21 @@ const Row = ({
 }: RowProps) => {
   const isNumber = typeof value === 'number' || !isNaN(Number(value));
   const isPrimitive = typeof value === 'string' || isNumber;
-  const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
   if (isPrimitive) {
     return (
-      <KeyValueTableRow
-        key={field}
-        inline={isPrimitive}
-        muted={true}
-        noBorder={true}
-        dtClassName={className}
-        ddClassName={className}
-      >
+      <KeyValueTableRow key={field} inline={isPrimitive} noBorder={true}>
         <Tooltip description={tooltipMapping[field]} align="start">
           <div tabIndex={-1}>{startCase(t(field))}</div>
         </Tooltip>
-        {isNumber && !unformatted
-          ? decimalPlaces
-            ? addDecimalsFormatNumber(value, decimalPlaces)
-            : asPercentage
-            ? formatNumberPercentage(new BigNumber(value * 100))
-            : formatNumber(Number(value))
-          : value}
+        <span style={{ wordBreak: 'break-word' }}>
+          {isNumber && !unformatted
+            ? decimalPlaces
+              ? addDecimalsFormatNumber(value, decimalPlaces)
+              : asPercentage
+              ? formatNumberPercentage(new BigNumber(value * 100))
+              : formatNumber(Number(value))
+            : value}
+        </span>
       </KeyValueTableRow>
     );
   }
@@ -449,7 +440,7 @@ export const MarketInfoTable = ({
   omits = ['__typename'],
 }: MarketInfoTableProps) => {
   return (
-    <KeyValueTable muted={true}>
+    <KeyValueTable>
       {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
         <Row
           key={key}

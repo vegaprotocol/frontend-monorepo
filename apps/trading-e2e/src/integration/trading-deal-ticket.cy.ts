@@ -33,6 +33,7 @@ describe('deal ticket orders', () => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
     cy.visit('/markets/market-0');
+    cy.wait('@Market');
     connectVegaWallet();
   });
 
@@ -67,7 +68,7 @@ describe('deal ticket orders', () => {
       price: '200',
       timeInForce: 'TIME_IN_FORCE_GTC',
     };
-    testOrder(order, { price: '20000' });
+    testOrder(order, { price: '20000000' });
   });
 
   it('successfully places limit sell order', () => {
@@ -79,7 +80,7 @@ describe('deal ticket orders', () => {
       price: '50000',
       timeInForce: 'TIME_IN_FORCE_GFN',
     };
-    testOrder(order, { price: '5000000' });
+    testOrder(order, { price: '5000000000' });
   });
 
   it('successfully places GTT limit buy order', () => {
@@ -93,7 +94,7 @@ describe('deal ticket orders', () => {
       expiresAt: '2022-01-01T00:00',
     };
     testOrder(order, {
-      price: '100',
+      price: '100000',
       expiresAt:
         new Date(order.expiresAt as string).getTime().toString() + '000000',
     });
