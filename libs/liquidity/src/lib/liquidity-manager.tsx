@@ -1,5 +1,11 @@
 import { useRef, useMemo } from 'react';
-import { AsyncRenderer, Link, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  ResizableGrid,
+  ResizableGridPanel,
+  Tab,
+  Tabs,
+} from '@vegaprotocol/ui-toolkit';
 
 import type { AgGridReact } from 'ag-grid-react';
 import { LiquidityTable } from './liquidity-table';
@@ -69,56 +75,57 @@ export const LiquidityManager = ({
     else if (inactiveEdges?.length > 0) return 'inactive';
     return 'active';
   };
+  const itemClass =
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+  const itemHeading = 'text-neutral-400';
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
-      <div className={wrapperClasses}>
-        <Link className={titleClasses} href={`/markets/${marketId}`}>
-          {`${code} ${t('liquidity provision')}`}
-        </Link>
-
-        <div>
-          <div className="text-ui font-bold text-black dark:text-white">
-            {t('Market specification')}
+      <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
+        <div className="xl:flex xl:gap-4  items-start">
+          <div className="px-4 mb-2 xl:mb-0">
+            <a className={titleClasses} href={`/markets/${marketId}`}>
+              {`${code} ${t('liquidity provision')}`}
+            </a>
           </div>
-          <div className="grid grid-cols-4 gap-24">
-            <div>
-              <div>{t('Target stake')}</div>
+          <div className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs ">
+            <div className={itemClass}>
+              <div className={itemHeading}>{t('Target stake')}</div>
               <div>{`${targetStake} ${symbol}`}</div>
             </div>
-            <div>
-              <div>{t('Supplied stake')}</div>
+            <div className={itemClass}>
+              <div className={itemHeading}>{t('Supplied stake')}</div>
               <div>{`${suppliedStake} ${symbol}`}</div>
             </div>
-            <div className="col-span-2">
-              <div>{t('Market ID')}</div>
+            <div className={classNames('col-span-2', itemClass)}>
+              <div className={itemHeading}>{t('Market ID')}</div>
               <div style={{ wordBreak: 'break-word' }}>{marketId}</div>
             </div>
           </div>
         </div>
-
-        {partyId && (
-          <div className="h-[10vh]">
-            <div className="text-ui font-bold text-black dark:text-white mt-10">
-              {t('My liquidity provisions')}
-            </div>
-            <LiquidityTable ref={gridRef} data={myLpEdges} />
-          </div>
-        )}
-
-        <div className="h-[30vh]">
-          <div className="text-ui font-bold text-black dark:text-white mt-10">
-            {t('All parties')}
-          </div>
-
-          <Tabs activeDefaultId={getActiveDefaultId()}>
-            <Tab id="active" name={t('Active')}>
-              <LiquidityTable ref={gridRef} data={activeEdges} />
-            </Tab>
-            <Tab id="inactive" name={t('Inactive')}>
-              <LiquidityTable ref={gridRef} data={inactiveEdges} />
-            </Tab>
-          </Tabs>
-        </div>
+      </header>
+      <div className={wrapperClasses}>
+        <ResizableGrid vertical={true}>
+          {partyId && (
+            <ResizableGridPanel preferredSize={300} minSize={50}>
+              <Tabs activeDefaultId="myLP">
+                <Tab id="myLP" name={t('My liquidity provision')}>
+                  <LiquidityTable ref={gridRef} data={myLpEdges} />
+                </Tab>
+                <Tab children={undefined} id={''} name={''} hidden={true} />
+              </Tabs>
+            </ResizableGridPanel>
+          )}
+          <ResizableGridPanel preferredSize={300} minSize={50}>
+            <Tabs activeDefaultId={getActiveDefaultId()}>
+              <Tab id="active" name={t('Active')}>
+                <LiquidityTable ref={gridRef} data={activeEdges} />
+              </Tab>
+              <Tab id="inactive" name={t('Inactive')}>
+                <LiquidityTable ref={gridRef} data={inactiveEdges} />
+              </Tab>
+            </Tabs>
+          </ResizableGridPanel>
+        </ResizableGrid>
       </div>
     </AsyncRenderer>
   );

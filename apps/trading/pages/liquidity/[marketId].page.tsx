@@ -9,7 +9,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
   if (marketId)
     return (
-      <div className="my-5 md:mx-20">
+      <div className="h-full grid grid-rows-[min-content_1fr]">
         <LiquidityContainer marketId={marketId} />
       </div>
     );
