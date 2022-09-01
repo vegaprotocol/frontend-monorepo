@@ -1,0 +1,14 @@
+query PartyBalanceQuery($partyId: ID!) {
+  party(id: $partyId) {
+    accounts {
+      type
+      balance
+      asset {
+        id
+        symbol
+        name
+        decimals
+      }
+    }
+  }
+}

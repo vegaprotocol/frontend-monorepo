@@ -1,0 +1,11 @@
+module.exports = {
+  client: {
+    service: {
+      name: 'vega',
+      url:
+        process.env.GRAPHQL_SCHEMA_PATH || 'https://api.n07.testnet.vega.xyz/graphql',
+    },
+    includes: ['../../{apps,libs}/**/*.{ts,tsx,js,jsx,graphql}'],
+    excludes: ['**/generic-data-provider.ts'],
+  },
+};

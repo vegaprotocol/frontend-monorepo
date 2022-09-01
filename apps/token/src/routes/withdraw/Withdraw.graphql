@@ -1,0 +1,55 @@
+query WithdrawPage($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accounts {
+      balance
+      balanceFormatted @client
+      type
+      asset {
+        id
+        name
+        symbol
+        decimals
+        source {
+          __typename
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+    }
+    withdrawals {
+      id
+      amount
+      asset {
+        id
+        symbol
+        decimals
+      }
+      status
+      createdTimestamp
+      withdrawnTimestamp
+      txHash
+      details {
+        ... on Erc20WithdrawalDetails {
+          receiverAddress
+        }
+      }
+    }
+  }
+  assetsConnection {
+    edges {
+      node {
+        id
+        symbol
+        name
+        decimals
+        source {
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+query NetworkStats {
+  nodeData {
+    stakedTotal
+    totalNodes
+    inactiveNodes
+    validatingNodes
+    uptime
+  }
+  statistics {
+    status
+    blockHeight
+    blockDuration
+    backlogLength
+    txPerBlock
+    tradesPerSecond
+    ordersPerSecond
+    averageOrdersPerBlock
+    vegaTime
+    appVersion
+    chainVersion
+    chainId
+  }
+}

@@ -1,0 +1,17 @@
+query DepositPage {
+  assetsConnection {
+    edges {
+      node {
+        id
+        symbol
+        name
+        decimals
+        source {
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+    }
+  }
+}
