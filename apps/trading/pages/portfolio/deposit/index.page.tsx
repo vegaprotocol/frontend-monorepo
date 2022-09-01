@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Web3Container } from '../../../components/web3-container';
+import { Web3Container } from '@vegaprotocol/web3';
 import { DepositContainer } from './deposit-container';
 
 const Deposit = () => {

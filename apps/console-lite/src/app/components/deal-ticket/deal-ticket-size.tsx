@@ -7,13 +7,13 @@ import {
   SliderThumb,
   SliderTrack,
   SliderRange,
-  Input,
   FormGroup,
   Icon,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
+import { InputSetter } from '../input-setter';
 import * as constants from './constants';
 
 interface DealTicketSizeProps {
@@ -61,7 +61,6 @@ export const DealTicketSize = ({
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
-  const [isInputVisible, setIsInputVisible] = useState(false);
 
   const onInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,30 +83,21 @@ export const DealTicketSize = ({
 
   const onButtonValueChange = useCallback(
     (size: number) => {
-      if (isInputVisible) {
-        setIsInputVisible(false);
-      }
       const newVal = new BigNumber(size)
         .decimalPlaces(positionDecimalPlaces)
         .toNumber();
       onValueChange([newVal]);
       setInputValue(newVal);
     },
-    [isInputVisible, onValueChange, positionDecimalPlaces]
+    [onValueChange, positionDecimalPlaces]
   );
 
-  const toggleInput = useCallback(() => {
-    setIsInputVisible(!isInputVisible);
-  }, [isInputVisible]);
-
-  const onInputEnter = useCallback(
-    (event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.stopPropagation();
-        toggleInput();
-      }
+  const onSliderValueChange = useCallback(
+    (value: number[]) => {
+      setInputValue(value[0]);
+      onValueChange(value);
     },
-    [toggleInput]
+    [onValueChange]
   );
 
   return max === 0 ? (
@@ -121,7 +111,7 @@ export const DealTicketSize = ({
       <SliderRoot
         className="mb-2"
         value={[value]}
-        onValueChange={onValueChange}
+        onValueChange={onSliderValueChange}
         step={step}
         min={min}
         max={max}
@@ -160,36 +150,16 @@ export const DealTicketSize = ({
               label="Enter Size"
               labelFor="trade-size-input"
             >
-              {isInputVisible ? (
-                <div className="flex items-center">
-                  <Input
-                    id="input-order-size-market"
-                    type="number"
-                    step={step}
-                    min={min}
-                    max={max}
-                    className="w-full"
-                    value={inputValue}
-                    onKeyDown={onInputEnter}
-                    onChange={onInputValueChange}
-                  />
-                  <button
-                    className="no-underline hover:underline text-blue ml-2"
-                    type="button"
-                    onClick={toggleInput}
-                  >
-                    {t('set')}
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="no-underline hover:underline text-blue"
-                  onClick={toggleInput}
-                  type="button"
-                >
-                  {value}
-                </button>
-              )}
+              <InputSetter
+                id="input-order-size-market"
+                type="number"
+                step={step}
+                min={min}
+                max={max}
+                className="w-full"
+                value={inputValue}
+                onChange={onInputValueChange}
+              />
             </FormGroup>
           </dd>
         </div>
