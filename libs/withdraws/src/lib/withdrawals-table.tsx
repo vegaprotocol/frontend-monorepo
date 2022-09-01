@@ -239,7 +239,9 @@ const VerificationStatus = ({ state }: { state: VerifyState }) => {
     );
     return (
       <>
-        <p>{t('Amount over delay threshold')}</p>
+        <p className="mb-2">
+          {t("The amount you're withdrawing has triggered a time delay")}
+        </p>
         <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
       </>
     );
