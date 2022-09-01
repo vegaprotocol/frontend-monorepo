@@ -18,9 +18,6 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
   });
   const volPriceArr =
     data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
-
-  console.log('volPriceArr', volPriceArr);
-
   if (volPriceArr.length) {
     const decimals = data?.decimalPlaces ?? 0;
     const positionDecimals = data?.positionDecimalPlaces ?? 0;
