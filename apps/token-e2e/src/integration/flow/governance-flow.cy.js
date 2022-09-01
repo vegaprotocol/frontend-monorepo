@@ -850,9 +850,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
       cy.get(voteButtons).contains(vote).click();
       cy.contains('Casting vote...').should('be.visible');
-      cy.contains('Casting vote...', txTimeout).should(
-        'not.exist'
-      );
+      cy.contains('Casting vote...', txTimeout).should('not.exist');
 
       // below section temporary until #1090 fixed Casting vote in vegacapsule always says:
       // Something went wrong, and your vote was not seen by the network - despite vote success
@@ -865,18 +863,17 @@ context('Governance flow - with eth and vega wallets connected', function () {
     });
 
     Cypress.Commands.add('wait_for_proposal', () => {
-      // This is a bit of a crazy function but in short after posting a proposal 
-      // And waiting for the sync to update there can still be a few seconds before the 
+      // This is a bit of a crazy function but in short after posting a proposal
+      // And waiting for the sync to update there can still be a few seconds before the
       // Proposal appears in the list
       cy.navigate_to('staking');
       cy.wait_for_spinner();
       cy.wait_for_begining_of_epoch();
-      cy.contains('Waiting for next epoch to start', {timeout : 11000}).should(
+      cy.contains('Waiting for next epoch to start', { timeout: 11000 }).should(
         'not.exist'
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
     });
-
   });
 });

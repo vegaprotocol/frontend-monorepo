@@ -144,7 +144,8 @@ export const VoteButtons = ({
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
         {proposalState === ProposalState.STATE_OPEN ? (
-          <ButtonLink data-testid="change-vote-button"
+          <ButtonLink
+            data-testid="change-vote-button"
             onClick={() => {
               setChangeVote(true);
             }}
