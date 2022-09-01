@@ -9,6 +9,7 @@ import {
   OrderType,
 } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
+import { Link } from '@vegaprotocol/ui-toolkit';
 
 export interface OrderFeedbackProps {
   transaction: VegaTxState;
@@ -60,8 +61,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         {transaction.txHash && (
           <div>
             <p className={labelClass}>{t('Transaction')}</p>
-            <a
-              className="underline"
+            <Link
               style={{ wordBreak: 'break-word' }}
               data-testid="tx-block-explorer"
               href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
@@ -69,7 +69,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
               rel="noreferrer"
             >
               {transaction.txHash}
-            </a>
+            </Link>
           </div>
         )}
 

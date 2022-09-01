@@ -80,7 +80,7 @@ export const LiquidityManager = ({
           <div className="text-ui font-bold text-black dark:text-white">
             {t('Market specification')}
           </div>
-          <div className="grid md:grid-cols-4 grid-cols-2 gap-24">
+          <div className="grid grid-cols-4 gap-24">
             <div>
               <div>{t('Target stake')}</div>
               <div>{`${targetStake} ${symbol}`}</div>
@@ -88,6 +88,10 @@ export const LiquidityManager = ({
             <div>
               <div>{t('Supplied stake')}</div>
               <div>{`${suppliedStake} ${symbol}`}</div>
+            </div>
+            <div className="col-span-2">
+              <div>{t('Market ID')}</div>
+              <div style={{ wordBreak: 'break-word' }}>{marketId}</div>
             </div>
           </div>
         </div>
