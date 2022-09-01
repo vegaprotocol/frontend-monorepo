@@ -143,10 +143,10 @@ const LazyGovernanceProposeNewMarket = React.lazy(
     )
 );
 
-const LazyGovernanceProposeChangeMarket = React.lazy(
+const LazyGovernanceProposeUpdateMarket = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/change-market'
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/update-market'
     )
 );
 
@@ -283,8 +283,8 @@ const routerConfig = [
         element: <LazyGovernanceProposeNewMarket />,
       },
       {
-        path: 'propose/change-market',
-        element: <LazyGovernanceProposeChangeMarket />,
+        path: 'propose/update-market',
+        element: <LazyGovernanceProposeUpdateMarket />,
       },
       { path: 'propose/new-asset', element: <LazyGovernanceProposeNewAsset /> },
       { path: 'propose/freeform', element: <LazyGovernanceProposeFreeform /> },

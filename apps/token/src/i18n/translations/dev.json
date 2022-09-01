@@ -633,12 +633,18 @@
   "ProposalTypeQuestion": "What type of proposal would you like to make?",
   "NetworkParameterProposal": "Network parameter proposal",
   "NewMarketProposal": "New market proposal",
-  "ChangeMarketProposal": "Change market proposal",
+  "UpdateMarketProposal": "Update market proposal",
   "NewAssetProposal": "New asset proposal",
   "NewFreeformProposal": "New freeform proposal",
   "RawProposal": "Raw proposal",
   "MinProposalRequirements": "You must have at least 1 VEGA associated to make a proposal",
   "totalSupply": "Total Supply",
   "viaWallet": "via wallet",
-  "viaContract": "via vesting"
+  "viaContract": "via vesting",
+  "ProposalTitle": "Title",
+  "ProposalTitleText": "Tell people what you are proposing and why (100 characters or less)",
+  "ProposalDescription": "Description",
+  "ProposalDescriptionText": "Full justification for what you are proposing (20,000 characters or less). Markdown is recommended. When linking to external resources please use IPFS",
+  "ProposalTerms": "Proposal terms as JSON",
+  "ProposalReference": "Reference"
 }

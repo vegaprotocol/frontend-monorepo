@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import {
+  ProposalFormMinRequirements,
   ProposalFormSubmitButton,
-  ProposalFormTitleField,
   ProposalFormTransactionDialog,
   useProposalSubmit,
+  ProposalFormTitleField,
 } from '@vegaprotocol/governance';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
@@ -14,46 +15,46 @@ import {
   InputError,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import type { ProposalNewAssetTerms } from '@vegaprotocol/wallet';
+import type { ProposalUpdateMarketTerms } from '@vegaprotocol/wallet';
 
-export interface NewAssetProposalFormFields {
+export interface UpdateMarketProposalFormFields {
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;
   proposalReference: string;
 }
 
-export const ProposeNewAsset = () => {
+export const ProposeUpdateMarket = () => {
   const { t } = useTranslation();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<NewAssetProposalFormFields>();
+  } = useForm<UpdateMarketProposalFormFields>();
   const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: NewAssetProposalFormFields) => {
+  const onSubmit = async (fields: UpdateMarketProposalFormFields) => {
     await submit({
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
       },
       terms: {
-        newAsset: {
+        updateMarket: {
           ...JSON.parse(fields.proposalTerms),
         },
-      } as ProposalNewAssetTerms,
+      } as ProposalUpdateMarketTerms,
     });
   };
 
   return (
     <>
-      <Heading title={t('NewAssetProposal')} />
+      <Heading title={t('UpdateMarketProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
-            <p>{t('MinProposalRequirements')}</p>
-            <div data-testid="new-asset-proposal-form">
+            <ProposalFormMinRequirements />
+            <div data-testid="update-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormTitleField
                   register={register}

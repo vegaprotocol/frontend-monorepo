@@ -7,11 +7,11 @@ import { Links } from '../../../config';
 
 export const Propose = () => {
   const { t } = useTranslation();
-  const linkStyles = classnames('block underline mb-8');
+  const linkStyles = classnames('block underline mb-2');
 
   return (
     <>
-      <section className="pb-20">
+      <section className="pb-6">
         <Heading title={t('NewProposal')} />
         <p>
           {t('words words words read more on')}{' '}
@@ -46,10 +46,10 @@ export const Propose = () => {
           </li>
           <li>
             <Link
-              to={`${Routes.GOVERNANCE}/propose/change-market`}
+              to={`${Routes.GOVERNANCE}/propose/update-market`}
               className={linkStyles}
             >
-              Change market
+              Update market
             </Link>
           </li>
           <li>
