@@ -55,7 +55,7 @@ type InputAppend = NoPrepend &
 
 type AffixProps = InputPrepend | InputAppend;
 
-type InputProps = InputRootProps & AffixProps;
+export type InputProps = InputRootProps & AffixProps;
 
 export const inputStyle = ({
   style,
