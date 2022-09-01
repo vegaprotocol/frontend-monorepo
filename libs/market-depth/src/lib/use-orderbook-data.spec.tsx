@@ -35,30 +35,6 @@ const mockData: MarketDepth_market = {
         volume: '25631',
         numberOfOrders: '4',
       },
-      {
-        __typename: 'PriceLevel',
-        price: '7862',
-        volume: '19222',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7863',
-        volume: '12814',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7905',
-        volume: '6376',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '8116',
-        volume: '2',
-        numberOfOrders: '2',
-      },
     ],
     buy: [
       {
@@ -66,30 +42,6 @@ const mockData: MarketDepth_market = {
         price: '7820',
         volume: '28',
         numberOfOrders: '1',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7800',
-        volume: '25826',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7799',
-        volume: '19373',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7798',
-        volume: '12917',
-        numberOfOrders: '4',
-      },
-      {
-        __typename: 'PriceLevel',
-        price: '7776',
-        volume: '6480',
-        numberOfOrders: '4',
       },
     ],
     sequenceNumber: '1661857812317962664',
