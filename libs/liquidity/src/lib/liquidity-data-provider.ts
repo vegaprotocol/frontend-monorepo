@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
-import { useNetworkParameter } from '@vegaprotocol/web3';
+import { useNetworkParam } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import { SISKA_NETWORK_PARAMETER } from './liquidity-manager';
 import type {
@@ -103,9 +103,7 @@ export const useLiquidityProvision = ({
   partyId?: string;
   marketId?: string;
 }) => {
-  const { data: stakeToCcySiskas } = useNetworkParameter([
-    SISKA_NETWORK_PARAMETER,
-  ]);
+  const { data: stakeToCcySiskas } = useNetworkParam(SISKA_NETWORK_PARAMETER);
   const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
   const { data, loading, error } = useQuery<MarketLiquidity>(
     MARKET_LIQUIDITY_QUERY,
