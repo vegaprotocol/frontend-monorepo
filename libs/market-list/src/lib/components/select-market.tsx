@@ -150,7 +150,7 @@ export const SelectMarketPopover = ({
       trigger={
         <span className={triggerClasses}>
           {marketName}
-          <Icon name="chevron-down" className={iconClass} />
+          <Icon name="chevron-down" className={iconClass} size={6} />
         </span>
       }
     >
