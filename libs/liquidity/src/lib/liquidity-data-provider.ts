@@ -3,11 +3,12 @@ import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
-import { SISKA_NETWORK_PARAMETER } from './liquidity-manager';
 import type {
   MarketLiquidity,
   MarketLiquidity_market_data_liquidityProviderFeeShare,
 } from './__generated__';
+
+const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
 const MARKET_LIQUIDITY_QUERY = gql`
   query MarketLiquidity($marketId: ID!, $partyId: String) {
