@@ -34,7 +34,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { useGlobalStore } from '../../stores';
-import NextLink from 'next/link';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -227,7 +226,6 @@ const TradeHeader = ({ market }: { market: Market_market }) => {
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-  const hasExpiry = market.marketTimestamps.close !== null;
 
   const onSelect = (marketId: string) => {
     if (marketId && store.marketId !== marketId) {

@@ -47,13 +47,11 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         <div>
           <p className={labelClass}>{t(`Size`)}</p>
           <p>
-            {
-              <Size
-                value={order.size}
-                side={order.side}
-                positionDecimalPlaces={order.market.positionDecimalPlaces}
-              />
-            }
+            <Size
+              value={order.size}
+              side={order.side}
+              positionDecimalPlaces={order.market.positionDecimalPlaces}
+            />
           </p>
         </div>
       </div>
