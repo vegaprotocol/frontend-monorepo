@@ -12,7 +12,6 @@ type MarketDataGridProps = {
   grid: {
     label: string | ReactNode;
     value?: ReactNode;
-    isEstimate?: boolean;
   }[];
 };
 
@@ -20,12 +19,11 @@ const MarketDataGrid = ({ grid }: MarketDataGridProps) => {
   return (
     <>
       {grid.map(
-        ({ label, value, isEstimate }, index) =>
+        ({ label, value }, index) =>
           value && (
             <div key={index} className="grid grid-cols-2">
               <span data-testid="tooltip-label">{label}</span>
-              <span data-testid="tooltip-value">
-                {isEstimate && <span className="ml-[-0.625em]">{'~'}</span>}
+              <span data-testid="tooltip-value" className="text-right">
                 {value}
               </span>
             </div>
@@ -65,8 +63,7 @@ const compileGridData = (market: Market_market) => {
       label: isLiquidityMonitoringAuction
         ? t('Est auction end')
         : t('Auction end'),
-      value: getDateTimeFormat().format(new Date(market.data.auctionEnd)),
-      isEstimate: isLiquidityMonitoringAuction ? true : false,
+      value: '~' + getDateTimeFormat().format(new Date(market.data.auctionEnd)),
     });
   }
 
@@ -91,22 +88,24 @@ const compileGridData = (market: Market_market) => {
   if (market.data?.indicativePrice) {
     grid.push({
       label: t('Est uncrossing price'),
-      value: addDecimalsFormatNumber(
-        market.data.indicativePrice,
-        market.positionDecimalPlaces
-      ),
-      isEstimate: true,
+      value:
+        '~' +
+        addDecimalsFormatNumber(
+          market.data.indicativePrice,
+          market.positionDecimalPlaces
+        ),
     });
   }
 
   if (market.data?.indicativeVolume) {
     grid.push({
       label: t('Est uncrossing vol'),
-      value: addDecimalsFormatNumber(
-        market.data.indicativeVolume,
-        market.positionDecimalPlaces
-      ),
-      isEstimate: true,
+      value:
+        '~' +
+        addDecimalsFormatNumber(
+          market.data.indicativeVolume,
+          market.positionDecimalPlaces
+        ),
     });
   }
 
@@ -131,7 +130,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
     case MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <>
-          <p className="mb-16">
+          <p className="mb-4">
             <span>
               {t(
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
@@ -153,7 +152,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <>
-              <p data-testid="tooltip-market-info" className="mb-16">
+              <p data-testid="tooltip-market-info" className="mb-4">
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -173,7 +172,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <>
-              <p className="mb-16">
+              <p className="mb-4">
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}

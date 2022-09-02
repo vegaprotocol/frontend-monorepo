@@ -4,7 +4,8 @@ import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
-import classNames from 'classnames';
+import { Header, HeaderStat } from '../../components/header';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useMemo } from 'react';
 
@@ -23,9 +24,6 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     loading,
     error,
   } = useLiquidityProvision({ marketId });
-
-  const titleClasses =
-    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
 
   const myLpEdges = useMemo(
     () => liquidityProviders.filter((e) => e.party === partyId),
@@ -53,35 +51,26 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     return 'active';
   };
 
-  const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
-      <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
-        <div className="xl:flex xl:gap-4  items-start">
-          <div className="px-4 mb-2 xl:mb-0">
-            <a className={titleClasses} href={`/markets/${marketId}`}>
+      <div className="h-full grid grid-rows-[min-content_1fr]">
+        <Header
+          title={
+            <Link href={`/markets/${marketId}`}>
               {`${code} ${t('liquidity provision')}`}
-            </a>
-          </div>
-          <div className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs ">
-            <div className={itemClass}>
-              <div className={itemHeading}>{t('Target stake')}</div>
-              <div>{`${targetStake} ${symbol}`}</div>
-            </div>
-            <div className={itemClass}>
-              <div className={itemHeading}>{t('Supplied stake')}</div>
-              <div>{`${suppliedStake} ${symbol}`}</div>
-            </div>
-            <div className={classNames('col-span-2', itemClass)}>
-              <div className={itemHeading}>{t('Market ID')}</div>
-              <div style={{ wordBreak: 'break-word' }}>{marketId}</div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div className="h-[80vh]">
+            </Link>
+          }
+        >
+          <HeaderStat heading={t('Target stake')}>
+            <div>{`${targetStake} ${symbol}`}</div>
+          </HeaderStat>
+          <HeaderStat heading={t('Supplied stake')}>
+            <div>{`${suppliedStake} ${symbol}`}</div>
+          </HeaderStat>
+          <HeaderStat heading={t('Market ID')}>
+            <div className="break-word">{marketId}</div>
+          </HeaderStat>
+        </Header>
         <Tabs active={getActiveDefaultId()}>
           <Tab id="myLP" name={t('My liquidity provision')} hidden={!partyId}>
             <LiquidityTable ref={gridRef} data={myLpEdges} />
