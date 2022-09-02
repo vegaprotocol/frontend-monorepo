@@ -9,15 +9,10 @@ import {
 
 import type { AgGridReact } from 'ag-grid-react';
 import { LiquidityTable } from './liquidity-table';
-import type { MarketLiquidity } from './__generated__/MarketLiquidity';
-import { useQuery } from '@apollo/client';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import {
-  MARKET_LIQUIDITY_QUERY,
-  useLiquidityProvision,
-} from './liquidity-data-provider';
+import { useLiquidityProvision } from './liquidity-data-provider';
 
 export const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
@@ -32,22 +27,11 @@ export const LiquidityManager = ({
 }: LiquidityManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const {
-    data: marketLiquidityData,
+    data: { liquidityProviders, suppliedStake, targetStake, code, symbol },
     loading,
     error,
-  } = useQuery<MarketLiquidity>(MARKET_LIQUIDITY_QUERY, {
-    variables: useMemo(() => ({ marketId }), [marketId]),
-  });
+  } = useLiquidityProvision({ marketId });
 
-  const { liquidityProviders, suppliedStake, targetStake, code, symbol } =
-    useLiquidityProvision({ data: marketLiquidityData });
-
-  const wrapperClasses = classNames(
-    'h-full max-h-full',
-    'flex flex-col',
-    'text-ui-small',
-    'gap-8'
-  );
   const titleClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
 
@@ -71,6 +55,7 @@ export const LiquidityManager = ({
   );
 
   const getActiveDefaultId = () => {
+    if (myLpEdges?.length > 0) return 'myLP';
     if (activeEdges?.length) return 'active';
     else if (inactiveEdges?.length > 0) return 'inactive';
     return 'active';
@@ -103,20 +88,17 @@ export const LiquidityManager = ({
           </div>
         </div>
       </header>
-      <div className={wrapperClasses}>
+      <div>
         <ResizableGrid vertical={true}>
-          {partyId && (
-            <ResizableGridPanel preferredSize={300} minSize={50}>
-              <Tabs activeDefaultId="myLP">
-                <Tab id="myLP" name={t('My liquidity provision')}>
-                  <LiquidityTable ref={gridRef} data={myLpEdges} />
-                </Tab>
-                <Tab children={undefined} id={''} name={''} hidden={true} />
-              </Tabs>
-            </ResizableGridPanel>
-          )}
           <ResizableGridPanel preferredSize={300} minSize={50}>
-            <Tabs activeDefaultId={getActiveDefaultId()}>
+            <Tabs active={getActiveDefaultId()}>
+              <Tab
+                id="myLP"
+                name={t('My liquidity provision')}
+                hidden={!partyId}
+              >
+                <LiquidityTable ref={gridRef} data={myLpEdges} />
+              </Tab>
               <Tab id="active" name={t('Active')}>
                 <LiquidityTable ref={gridRef} data={activeEdges} />
               </Tab>

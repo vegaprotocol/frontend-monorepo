@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   t,
   addDecimalsFormatNumber,
@@ -18,7 +17,7 @@ import { tooltipMapping } from './tooltip-mapping';
 
 interface RowProps {
   field: string;
-  value: any;
+  value: string | number;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -36,6 +35,19 @@ const Row = ({
   const isNumber = typeof value === 'number' || !isNaN(Number(value));
   const isPrimitive = typeof value === 'string' || isNumber;
   const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
+  let formattedValue = value;
+  if (isNumber && !unformatted) {
+    if (decimalPlaces) {
+      formattedValue = `${addDecimalsFormatNumber(
+        value,
+        decimalPlaces
+      )} ${assetSymbol}`;
+    } else if (asPercentage && value) {
+      formattedValue = formatNumberPercentage(new BigNumber(value).times(100));
+    } else {
+      formattedValue = `${formatNumber(Number(value))} ${assetSymbol}`;
+    }
+  }
   if (isPrimitive) {
     return (
       <KeyValueTableRow
@@ -48,18 +60,7 @@ const Row = ({
         <Tooltip description={tooltipMapping[field]} align="start">
           <div tabIndex={-1}>{startCase(t(field))}</div>
         </Tooltip>
-        <span style={{ wordBreak: 'break-word' }}>
-          {isNumber && !unformatted
-            ? decimalPlaces
-              ? `${addDecimalsFormatNumber(
-                  value,
-                  decimalPlaces
-                )} ${assetSymbol}`
-              : asPercentage
-              ? formatNumberPercentage(new BigNumber(value * 100))
-              : `${formatNumber(Number(value))} ${assetSymbol}`
-            : value}
-        </span>
+        <span style={{ wordBreak: 'break-word' }}>{formattedValue}</span>
       </KeyValueTableRow>
     );
   }
@@ -67,7 +68,7 @@ const Row = ({
 };
 
 export interface MarketInfoTableProps {
-  data: any;
+  data: unknown;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -88,17 +89,18 @@ export const MarketInfoTable = ({
   return (
     <>
       <KeyValueTable>
-        {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
-          <Row
-            key={key}
-            field={key}
-            value={value}
-            decimalPlaces={decimalPlaces}
-            assetSymbol={assetSymbol}
-            asPercentage={asPercentage}
-            unformatted={unformatted || key.toLowerCase().includes('volume')}
-          />
-        ))}
+        {typeof data === 'object' &&
+          Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
+            <Row
+              key={key}
+              field={key}
+              value={value}
+              decimalPlaces={decimalPlaces}
+              assetSymbol={assetSymbol}
+              asPercentage={asPercentage}
+              unformatted={unformatted || key.toLowerCase().includes('volume')}
+            />
+          ))}
       </KeyValueTable>
       {link}
     </>

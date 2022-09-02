@@ -285,11 +285,7 @@ export const Info = ({ market }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
           link={
-            <Link
-              target="_blank"
-              className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
-              href={`/liquidity/${market.id}`}
-            >
+            <Link target="_blank" href={`/liquidity/${market.id}`}>
               {t('View liquidity provision table')}
             </Link>
           }
@@ -313,7 +309,6 @@ export const Info = ({ market }: InfoProps) => {
             <Link
               target="_blank"
               href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
-              className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
             >
               {t('View full oracle details')}
             </Link>

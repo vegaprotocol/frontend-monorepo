@@ -1,9 +1,28 @@
 import { forwardRef } from 'react';
-import { dateValueFormatter, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  dateValueFormatter,
+  formatNumberPercentage,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { LiquidityProvision } from './liquidity-data-provider';
+import type { ValueFormatterParams } from 'ag-grid-community';
+import BigNumber from 'bignumber.js';
+import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
+
+const assetDecimalsFormatter = ({ value, data }: ValueFormatterParams) => {
+  if (!value) return '-';
+  return addDecimalsFormatNumber(value, data.assetDecimalPlaces);
+};
+
+const percentageFormatter = ({ value }: ValueFormatterParams) => {
+  if (!value) return '-';
+  return formatNumberPercentage(new BigNumber(value).times(100), 4) || '-';
+};
 
 export interface LiquidityTableProps {
   data: LiquidityProvision[];
@@ -31,29 +50,46 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerName={t('Commitment')}
           field="commitmentAmount"
           type="rightAligned"
+          valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
           headerName={t('Share')}
           field="equityLikeShare"
           type="rightAligned"
+          valueFormatter={percentageFormatter}
         />
-        <AgGridColumn headerName={t('Fee')} field="fee" type="rightAligned" />
+        <AgGridColumn
+          headerName={t('Fee')}
+          field="fee"
+          type="rightAligned"
+          valueFormatter={percentageFormatter}
+        />
         <AgGridColumn
           headerName={t('Average entry valuation')}
           field="averageEntryValuation"
           type="rightAligned"
+          valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
           headerName={t('Obligation (siskas)')}
           field="obligation"
           type="rightAligned"
+          valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
           headerName={t('Supplied (siskas)')}
           field="supplied"
           type="rightAligned"
+          valueFormatter={assetDecimalsFormatter}
         />
-        <AgGridColumn headerName={t('Status')} field="status" />
+        <AgGridColumn
+          headerName={t('Status')}
+          field="status"
+          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+            if (!value) return value;
+            return LiquidityProvisionStatusMapping[value];
+          }}
+        />
         <AgGridColumn
           headerName={t('Created')}
           field="createdAt"

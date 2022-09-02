@@ -5,10 +5,10 @@ import { Children, isValidElement, useState } from 'react';
 
 interface TabsProps {
   children: ReactElement<TabProps>[];
-  activeDefaultId?: string;
+  active?: string;
 }
 
-export const Tabs = ({ children, activeDefaultId }: TabsProps) => {
+export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
   const [activeTab, setActiveTab] = useState<string>(() => {
     return activeDefaultId ?? children[0].props.id;
   });
