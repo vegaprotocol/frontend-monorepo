@@ -10,9 +10,7 @@ describe('market info is displayed', () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
-    cy.visit('/markets/market-0', {
-      headers: { 'Accept-Encoding': 'gzip, deflate' },
-    });
+    cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
   });
