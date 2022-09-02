@@ -7,9 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import {
-  EnvironmentProvider,
-} from '@vegaprotocol/environment';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader } from '../components/app-loader';
 import { RiskNoticeDialog } from '../components/risk-notice-dialog';

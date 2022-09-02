@@ -9,7 +9,7 @@ export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
 export const RiskNoticeDialog = () => {
   const store = useGlobalStore();
-  const { VEGA_ENV } = useEnvironment()
+  const { VEGA_ENV } = useEnvironment();
 
   useEffect(() => {
     const isRiskAccepted = LocalStorage.getItem(RISK_ACCEPTED_KEY) === 'true';
@@ -25,7 +25,11 @@ export const RiskNoticeDialog = () => {
   };
 
   return (
-    <Dialog open={store.vegaRiskNoticeDialog} title={t('WARNING')} size="medium">
+    <Dialog
+      open={store.vegaRiskNoticeDialog}
+      title={t('WARNING')}
+      size="medium"
+    >
       <h4 className="text-xl mb-2 mt-4">
         {t('Regulation may apply to use of this app')}
       </h4>
