@@ -31,7 +31,7 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../order-data-provider/__generated__';
+import type { OrderFields } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;

@@ -11,6 +11,10 @@ module.exports = {
       '../../apps/token/client.graphql',
       '../../apps/trading/client.graphql',
     ],
-    excludes: ['**/generic-data-provider.ts', '../../libs/assets'],
+    excludes: [
+      '**/generic-data-provider.ts',
+      '**/__generated___/*',
+      '../../libs/assets'
+    ],
   },
 };

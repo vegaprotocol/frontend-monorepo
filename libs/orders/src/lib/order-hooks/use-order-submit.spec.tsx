@@ -15,10 +15,7 @@ import {
 import type { ReactNode } from 'react';
 import type { Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
-import type {
-  OrderEvent,
-  OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
