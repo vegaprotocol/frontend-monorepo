@@ -488,23 +488,27 @@ function makeDerivedDataProviderInternal<Data>(
   let loaded = false;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
-  const notify = (callback: UpdateCallback<Data, never>) => {
+  const notify = (
+    callback: UpdateCallback<Data, never>,
+    updateData?: UpdateData<Data, never>
+  ) => {
     callback({
       data,
       error,
       loading,
       loaded,
       pageInfo: null,
+      ...updateData,
     });
   };
 
   // notify all callbacks
-  const notifyAll = () =>
+  const notifyAll = (updateData?: UpdateData<Data, never>) =>
     callbacks.forEach((callback) => {
-      notify(callback);
+      notify(callback, updateData);
     });
 
-  const combine = () => {
+  const combine = (isUpdate = false) => {
     let newError: Error | undefined;
     let newLoading = false;
     let newLoaded = true;
@@ -529,7 +533,7 @@ function makeDerivedDataProviderInternal<Data>(
       error = newError;
       loaded = newLoaded;
       data = newData;
-      notifyAll();
+      notifyAll({ isUpdate });
     }
   };
 
@@ -541,7 +545,7 @@ function makeDerivedDataProviderInternal<Data>(
       dependency(
         (updateData) => {
           parts[i] = updateData;
-          combine();
+          combine(updateData.isUpdate);
         },
         client,
         variables
