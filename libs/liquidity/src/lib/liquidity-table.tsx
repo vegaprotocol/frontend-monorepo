@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import {
   addDecimalsFormatNumber,
-  dateValueFormatter,
   formatNumberPercentage,
+  getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -22,6 +22,13 @@ const assetDecimalsFormatter = ({ value, data }: ValueFormatterParams) => {
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
   return formatNumberPercentage(new BigNumber(value).times(100), 4) || '-';
+};
+
+const dateValueFormatter = ({ value }: { value?: string | null }) => {
+  if (!value) {
+    return '-';
+  }
+  return getDateTimeFormat().format(new Date(value));
 };
 
 export interface LiquidityTableProps {
