@@ -10,14 +10,14 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
-import omit from 'lodash/omit';
 import startCase from 'lodash/startCase';
 import type { ReactNode } from 'react';
 import { tooltipMapping } from './tooltip-mapping';
 
 interface RowProps {
   field: string;
-  value: string | number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -68,7 +68,8 @@ const Row = ({
 };
 
 export interface MarketInfoTableProps {
-  data: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -89,8 +90,9 @@ export const MarketInfoTable = ({
   return (
     <>
       <KeyValueTable>
-        {typeof data === 'object' &&
-          Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
+        {Object.entries(data)
+          .filter(([key]) => !omits.includes(key))
+          .map(([key, value]) => (
             <Row
               key={key}
               field={key}
