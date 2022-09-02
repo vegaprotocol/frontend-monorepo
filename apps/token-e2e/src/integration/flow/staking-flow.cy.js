@@ -55,7 +55,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       }
     );
 
-    // 1002-STKE-004
     it('Able to stake against a validator - using vega from wallet', function () {
       cy.staking_page_associate_tokens('3');
 
@@ -297,7 +296,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     // 1002-STKE-041
-    it.only('Able to remove part of a stake against a validator', function () {
+    it('Able to remove part of a stake against a validator', function () {
       cy.staking_page_associate_tokens('4');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -670,6 +669,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
+      // 1002-STKE-004
       cy.staking_page_associate_tokens('3');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -705,6 +705,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
+      // 1002-STKE-004
       cy.staking_page_associate_tokens('3', { type: 'contract' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -740,6 +741,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
+      // 1002-STKE-004
       cy.staking_page_associate_tokens('3', { type: 'wallet' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -775,6 +777,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
+      // 1002-STKE-004
       cy.staking_page_associate_tokens('6');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
