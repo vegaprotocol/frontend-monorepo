@@ -30,7 +30,7 @@ function AppBody({ Component, pageProps }: AppProps) {
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
-        <title>{t('Welcome to Vega trading!')}</title>
+        <title>{t('Welcome to Vega trading, let me know if you need some training! - rhyming titles are now paving the way to the future')}</title>
       </Head>
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
