@@ -158,7 +158,7 @@ export const Info = ({ market }: InfoProps) => {
       'decimalPlaces',
       'positionDecimalPlaces',
       'tradingMode',
-      'id' as 'marketId'
+      'id'
     ),
     state: MarketStateMapping[market.state],
   };
@@ -170,7 +170,6 @@ export const Info = ({ market }: InfoProps) => {
           data={{
             ...keyDetails,
             marketID: keyDetails.id,
-            id: undefined,
             tradingMode:
               keyDetails.tradingMode &&
               MarketTradingModeMapping[keyDetails.tradingMode],
