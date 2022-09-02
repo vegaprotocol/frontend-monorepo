@@ -14,6 +14,8 @@ import {
   t,
   formatNumber,
   getDateTimeFormat,
+  signedNumberCssClass,
+  signedNumberCssClassRules,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -74,14 +76,14 @@ export interface PriceCellProps {
 export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   return valueFormatted ? (
     <>
-      <div className="flex justify-between leading-tight">
+      <div className="flex justify-between leading-tight font-mono">
         <div>{valueFormatted.low}</div>
         <div>{valueFormatted.high}</div>
       </div>
       <ProgressBar
         value={valueFormatted.value}
         intent={valueFormatted.intent}
-        className="mt-4"
+        className="mt-2"
       />
     </>
   ) : null;
@@ -102,14 +104,10 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   }
   const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
     valueFormatted;
-  const isShortPosition = openVolume.startsWith('-');
   return valueFormatted ? (
     <div className="leading-tight font-mono">
       <div
-        className={classNames('text-right', {
-          'text-vega-green-dark dark:text-vega-green': !isShortPosition,
-          'text-vega-red-dark dark:text-vega-red': isShortPosition,
-        })}
+        className={classNames('text-right', signedNumberCssClass(openVolume))}
       >
         {volumePrefix(
           addDecimalsFormatNumber(openVolume, positionDecimalPlaces)
@@ -131,7 +129,11 @@ const ButtonCell = ({
   onClick: (position: Position) => void;
   data: Position;
 }) => {
-  return <Button onClick={() => onClick(data)}>{t('Close')}</Button>;
+  return (
+    <Button onClick={() => onClick(data)} size="sm">
+      {t('Close')}
+    </Button>
+  );
 };
 
 const EmptyCell = () => '';
@@ -164,10 +166,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             if (!value) {
               return undefined;
             }
-            // split market name into two parts, 'Part1 (Part2)'
-            const matches = value.match(/^(.*)\((.*)\)\s*$/);
+            // split market name into two parts, 'Part1 (Part2)' or 'Part1 - Part2'
+            const matches = value.match(/^(.*)(\((.*)\)| - (.*))\s*$/);
             if (matches) {
-              return [matches[1].trim(), matches[2].trim()];
+              return [matches[1].trim(), matches[3].trim()];
             }
             return [value];
           }}
@@ -334,18 +336,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Realised PNL')}
           field="realisedPNL"
           type="rightAligned"
-          cellClassRules={{
-            'text-vega-green-dark dark:text-vega-green': ({
-              value,
-            }: {
-              value: string;
-            }) => value && BigInt(value) > 0,
-            'text-vega-red-dark dark:text-vega-red': ({
-              value,
-            }: {
-              value: string;
-            }) => value && BigInt(value) < 0,
-          }}
+          cellClassRules={signedNumberCssClassRules}
           valueFormatter={({
             value,
             data,
@@ -363,18 +354,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Unrealised PNL')}
           field="unrealisedPNL"
           type="rightAligned"
-          cellClassRules={{
-            'text-vega-green-dark dark:text-vega-green': ({
-              value,
-            }: {
-              value: string;
-            }) => value && BigInt(value) > 0,
-            'text-vega-red-dark dark:text-vega-red': ({
-              value,
-            }: {
-              value: string;
-            }) => value && BigInt(value) < 0,
-          }}
+          cellClassRules={signedNumberCssClassRules}
           valueFormatter={({
             value,
             data,

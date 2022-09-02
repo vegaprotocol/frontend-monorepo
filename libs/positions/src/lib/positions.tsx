@@ -82,13 +82,15 @@ export const Positions = memo(
     };
     return (
       <AsyncRenderer loading={loading} error={error} data={data}>
-        <div className="text-black dark:text-white p-8">
-          <h4 className="text-h4 font-bold">
+        <div className="p-2">
+          <h4 className="text-lg">
             {assetSymbol} {t('markets')}
           </h4>
           <p>
             {assetSymbol} {t('balance')}:
-            <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
+            <span className="pl-1 font-mono">
+              <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
+            </span>
           </p>
         </div>
         <PositionsTable

@@ -1,6 +1,11 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  t,
+  positiveClassNames,
+  negativeClassNames,
+} from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,
   OrderStatus,
@@ -49,8 +54,8 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p
             className={
               order.side === Side.SIDE_BUY
-                ? 'text-vega-green-dark dark:text-vega-green'
-                : 'text-vega-red-dark dark:text-vega-red'
+                ? positiveClassNames
+                : negativeClassNames
             }
           >
             {`${
