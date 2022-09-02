@@ -11,7 +11,7 @@ const singleRow: Position = {
   currentLeverage: 1.1,
   marketDecimalPlaces: 1,
   positionDecimalPlaces: 0,
-  assetDecimals: 2,
+  decimals: 2,
   totalBalance: '123456',
   assetSymbol: 'BTC',
   liquidationPrice: '83', // 8.3

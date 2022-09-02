@@ -197,7 +197,7 @@ describe('getMetrics', () => {
     expect(metrics[0].currentLeverage).toBeCloseTo(1.02);
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
-    expect(metrics[0].assetDecimals).toEqual(5);
+    expect(metrics[0].decimals).toEqual(5);
     expect(metrics[0].liquidationPrice).toEqual('169990');
     expect(metrics[0].lowMarginLevel).toEqual(false);
     expect(metrics[0].markPrice).toEqual('9431775');
@@ -222,7 +222,7 @@ describe('getMetrics', () => {
     expect(metrics[1].currentLeverage).toBeCloseTo(0.097);
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);
-    expect(metrics[1].assetDecimals).toEqual(5);
+    expect(metrics[1].decimals).toEqual(5);
     expect(metrics[1].liquidationPrice).toEqual('9830750');
     expect(metrics[1].lowMarginLevel).toEqual(false);
     expect(metrics[1].markPrice).toEqual('869762');

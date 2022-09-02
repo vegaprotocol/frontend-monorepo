@@ -2,6 +2,7 @@ import { Side } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '../format';
+import { negativeClassNames, positiveClassNames } from './cell-class-rules';
 
 export const Size = ({
   value,
@@ -16,8 +17,8 @@ export const Size = ({
     <span
       data-testid="size"
       className={classNames('text-right', {
-        'text-dark-green dark:text-vega-green': side === Side.SIDE_BUY,
-        'text-red dark:text-vega-red': side === Side.SIDE_SELL,
+        [positiveClassNames]: side === Side.SIDE_BUY,
+        [negativeClassNames]: side === Side.SIDE_SELL,
       })}
     >
       {side === Side.SIDE_BUY ? '+' : side === Side.SIDE_SELL ? '-' : ''}
