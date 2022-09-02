@@ -47,13 +47,16 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
   }, []);
-
-  const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: useMemo(
-      () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
-      [marketId, yTimestamp]
-    ),
-  });
+  const variables = useMemo(
+    () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
+    [marketId, yTimestamp]
+  );
+  const { data, loading, error } = useQuery<MarketInfoQuery>(
+    MARKET_INFO_QUERY,
+    {
+      variables,
+    }
+  );
 
   return (
     <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
