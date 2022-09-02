@@ -36,19 +36,19 @@ export const LiquidityManager = ({
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
 
   const myLpEdges = useMemo(
-    () => (liquidityProviders || []).filter((e) => e.party === partyId),
+    () => liquidityProviders.filter((e) => e.party === partyId),
     [liquidityProviders, partyId]
   );
   const activeEdges = useMemo(
     () =>
-      (liquidityProviders || []).filter(
+      liquidityProviders.filter(
         (e) => e.status === LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]
   );
   const inactiveEdges = useMemo(
     () =>
-      (liquidityProviders || []).filter(
+      liquidityProviders.filter(
         (e) => e.status !== LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]

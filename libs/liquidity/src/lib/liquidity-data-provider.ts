@@ -86,7 +86,7 @@ export interface LiquidityProvision {
 }
 
 export interface LiquidityData {
-  liquidityProviders?: LiquidityProvision[];
+  liquidityProviders: LiquidityProvision[];
   suppliedStake?: string | null;
   targetStake?: string | null;
   code?: string;
