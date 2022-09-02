@@ -15,7 +15,6 @@ import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
-import { Footer } from '../components/footer';
 import Head from 'next/head';
 
 function AppBody({ Component, pageProps }: AppProps) {
@@ -39,7 +38,6 @@ function AppBody({ Component, pageProps }: AppProps) {
             {/* @ts-ignore conflict between @types/react and nextjs internal types */}
             <Component {...pageProps} />
           </main>
-          <Footer />
           <VegaConnectDialog
             connectors={Connectors}
             dialogOpen={store.vegaWalletConnectDialog}
