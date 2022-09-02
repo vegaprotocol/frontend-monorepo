@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import React from 'react';
-
+import { signedNumberCssClass } from '@vegaprotocol/react-helpers';
 import { Arrow } from '../arrows/arrow';
 
 export interface PriceChangeCellProps {
@@ -36,20 +36,13 @@ export const priceChange = (candles: string[]) => {
     : 0;
 };
 
-const priceChangeClassNames = (value: number | bigint) =>
-  value === 0
-    ? 'text-black dark:text-white'
-    : value > 0
-    ? `text-vega-green-dark dark:text-vega-green `
-    : `text-vega-red-dark dark:text-vega-red`;
-
 export const PriceCellChange = React.memo(
   ({ candles, decimalPlaces }: PriceChangeCellProps) => {
     const change = priceChange(candles);
     const changePercentage = priceChangePercentage(candles);
     return (
       <span
-        className={`${priceChangeClassNames(
+        className={`${signedNumberCssClass(
           change
         )} flex items-center gap-2 justify-end`}
       >
