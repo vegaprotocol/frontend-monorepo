@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 
-interface LoaderProps {
+export interface LoaderProps {
   size?: 'small' | 'large';
   forceTheme?: 'dark' | 'light';
 }
@@ -21,10 +21,11 @@ export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
     'bg-black': forceTheme === 'light',
-    'w-16 h-16': size === 'large',
+    'w-[10px] h-[10px]': size === 'large',
     'w-[5px] h-[5px]': size === 'small',
   });
-  const wrapperClasses = size === 'small' ? 'w-[15px] h-[15px]' : 'w-64 h-64';
+  const wrapperClasses =
+    size === 'small' ? 'w-[15px] h-[15px]' : 'w-[50px] h-[50px]';
   const items = size === 'small' ? 9 : 16;
 
   return (

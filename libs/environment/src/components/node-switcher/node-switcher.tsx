@@ -15,10 +15,9 @@ import {
   getIsFormDisabled,
   getErrorType,
   getErrorByType,
-  getHasInvalidChain,
 } from '../../utils/validate-node';
 import { CUSTOM_NODE_KEY } from '../../types';
-import type { Configuration, NodeData, ErrorType, Networks } from '../../types';
+import type { Configuration, NodeData, ErrorType } from '../../types';
 import { LayoutRow } from './layout-row';
 import { NodeError } from './node-error';
 import { NodeStats } from './node-stats';
@@ -34,9 +33,8 @@ const getDefaultNode = (urls: string[], currentUrl?: string) => {
   return currentUrl && urls.includes(currentUrl) ? currentUrl : undefined;
 };
 
-const getHighestBlock = (env: Networks, state: Record<string, NodeData>) => {
+const getHighestBlock = (state: Record<string, NodeData>) => {
   return Object.keys(state).reduce((acc, node) => {
-    if (getHasInvalidChain(env, state[node].chain.value)) return acc;
     const value = Number(state[node].block.value);
     return value ? Math.max(acc, value) : acc;
   }, 0);
@@ -56,7 +54,7 @@ export const NodeSwitcher = ({
     getDefaultNode(config.hosts, VEGA_URL)
   );
   const { state, clients, updateNodeUrl, updateNodeBlock } = useNodes(config);
-  const highestBlock = getHighestBlock(VEGA_ENV, state);
+  const highestBlock = getHighestBlock(state);
 
   const customUrl = state[CUSTOM_NODE_KEY]?.url;
 
