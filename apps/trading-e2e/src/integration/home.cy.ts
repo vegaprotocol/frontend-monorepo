@@ -1,7 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import type { MarketList } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
-import { generateMarketList } from '../support/mocks/generate-market-list';
 import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
@@ -9,17 +7,10 @@ describe('home', () => {
   const selectMarketOverlay = 'select-market-list';
 
   describe('default market found', () => {
-    let marketsLanding: MarketList;
-    let marketList: MarketList;
-
     beforeEach(() => {
-      marketList = generateMarketList();
-      marketsLanding = marketList;
-
       // Mock markets query that is triggered by home page to find default market
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketList', marketsLanding);
-        aliasQuery(req, 'MarketList', marketList);
+        aliasQuery(req, 'MarketList', generateMarkets());
 
         // Mock all market page queries
         mockTradingPage(req, MarketState.STATE_ACTIVE);
@@ -69,34 +60,14 @@ describe('home', () => {
     it('redirects to a the market list page if no sensible default is found', () => {
       // Mock markets query that is triggered by home page to find default market
       cy.mockGQL((req) => {
-        aliasQuery(
-          req,
-          'MarketsLanding',
-          generateMarketList({
-            markets: [
-              {
-                marketTimestamps: {
-                  __typename: 'MarketTimestamps',
-                  open: '',
-                },
-              },
-              {
-                marketTimestamps: {
-                  __typename: 'MarketTimestamps',
-                  open: '',
-                },
-              },
-            ],
-          })
-        );
-        aliasQuery(req, 'Markets', generateMarkets());
+        aliasQuery(req, 'MarketList', { markets: [] });
 
         // Mock all market page queries
         mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
 
       cy.visit('/');
-      cy.url().should('include', '/markets');
+      cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });
 });

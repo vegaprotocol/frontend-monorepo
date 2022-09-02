@@ -285,45 +285,6 @@ describe('Node switcher', () => {
     );
   });
 
-  it('disables selecting a node when it is on an incorrect network', () => {
-    const mockUrl = 'https://mock.url';
-    const mockConfig = {
-      hosts: [mockUrl],
-    };
-
-    // @ts-ignore Typescript doesn't recognise mocked instances
-    useNodes.mockImplementation((config: Configuration) => {
-      const nodeState = getValidNodeState(Networks.TESTNET, mockUrl);
-      return {
-        state: {
-          [mockUrl]: {
-            ...nodeState,
-            chain: {
-              ...nodeState.chain,
-              value: `some-network-id`,
-            },
-          },
-        },
-        clients: createMockClients(config.hosts),
-        updateNodeUrl: jest.fn(),
-        updateNodeBlock: jest.fn(),
-      };
-    });
-
-    render(
-      <MockedProvider mocks={[statsQueryMock]}>
-        <NodeSwitcher config={mockConfig} onConnect={onConnect} />
-      </MockedProvider>
-    );
-
-    expect(screen.getByRole('radio', { name: mockUrl })).toHaveAttribute(
-      'disabled'
-    );
-    expect(screen.getByRole('button', { name: 'Connect' })).toHaveAttribute(
-      'disabled'
-    );
-  });
-
   it('allows connecting to a valid node', () => {
     render(<NodeSwitcher config={{ hosts: HOSTS }} onConnect={onConnect} />);
 
@@ -583,56 +544,9 @@ describe('Node switcher', () => {
     expect(screen.getByText(error?.headline ?? '')).toBeInTheDocument();
   });
 
-  it('disables selecting a custom node when it is on an incorrect network', () => {
-    const mockUrl = 'https://mock.url';
-    const updateNodeUrlMock = jest.fn();
-
-    // @ts-ignore Typescript doesn't recognise mocked instances
-    useNodes.mockImplementation(
-      mockNodesImplementation(updateNodeUrlMock, (env, url) => {
-        const nodeState = getValidNodeState(env, url);
-        return {
-          ...nodeState,
-          chain: {
-            ...nodeState.chain,
-            value: 'network-chain-id',
-          },
-        };
-      })
-    );
-
-    render(
-      <MockedProvider mocks={[statsQueryMock]}>
-        <NodeSwitcher config={{ hosts: [] }} onConnect={onConnect} />
-      </MockedProvider>
-    );
-
-    fireEvent.click(screen.getByRole('radio', { name: 'Other' }));
-    fireEvent.change(screen.getByRole('textbox'), {
-      target: {
-        value: mockUrl,
-      },
-    });
-    fireEvent.click(screen.getByRole('link', { name: 'Check' }));
-
-    expect(screen.getByRole('button', { name: 'Connect' })).toHaveAttribute(
-      'disabled'
-    );
-
-    const error = getErrorByType(
-      ErrorType.INVALID_NETWORK,
-      Networks.TESTNET,
-      mockUrl
-    );
-
-    expect(error?.headline).not.toBeNull();
-    expect(screen.getByText(error?.headline ?? '')).toBeInTheDocument();
-  });
-
   it.each`
     description                                       | errorType
     ${'the node has an invalid url'}                  | ${ErrorType.INVALID_URL}
-    ${'the node is on an invalid network'}            | ${ErrorType.INVALID_NETWORK}
     ${'the node has an ssl issue'}                    | ${ErrorType.SSL_ERROR}
     ${'the node cannot be reached'}                   | ${ErrorType.CONNECTION_ERROR}
     ${'none of the config nodes can be connected to'} | ${ErrorType.CONNECTION_ERROR_ALL}

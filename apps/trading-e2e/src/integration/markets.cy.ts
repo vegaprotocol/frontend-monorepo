@@ -1,13 +1,13 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
-import { generateMarketList } from '../support/mocks/generate-market-list';
+import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
 describe('markets table', () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
-      aliasQuery(req, 'MarketList', generateMarketList());
+      aliasQuery(req, 'MarketList', generateMarkets());
     });
   });
 

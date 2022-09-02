@@ -12,10 +12,6 @@ export const getIsNodeLoading = (node?: NodeData): boolean => {
   );
 };
 
-export const getHasInvalidChain = (env: Networks, chain = '') => {
-  return !chain.split('-').includes(env.toLowerCase());
-};
-
 export const getIsInvalidUrl = (url: string) => {
   try {
     new URL(url);
@@ -29,7 +25,6 @@ export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
   return (
     !!data &&
     (getIsNodeLoading(data) ||
-      getHasInvalidChain(env, data.chain.value) ||
       getIsInvalidUrl(data.url) ||
       data.chain.hasError ||
       data.responseTime.hasError ||
@@ -61,11 +56,6 @@ export const getErrorByType = (
       return {
         headline: t('Error: invalid url'),
         message: t(url ? `${url} is not a valid url.` : ''),
-      };
-    case ErrorType.INVALID_NETWORK:
-      return {
-        headline: t(`Error: incorrect network`),
-        message: t(`This node is not on the ${env} network.`),
       };
     case ErrorType.SSL_ERROR:
       return {
@@ -120,10 +110,6 @@ export const getErrorType = (env: Networks, data?: NodeData) => {
       data.block.hasError
     ) {
       return ErrorType.CONNECTION_ERROR;
-    }
-
-    if (!data.chain.isLoading && getHasInvalidChain(env, data.chain.value)) {
-      return ErrorType.INVALID_NETWORK;
     }
 
     if (data.ssl.hasError) {
