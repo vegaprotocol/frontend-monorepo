@@ -9,7 +9,7 @@ describe('vega wallet', () => {
 
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
-    cy.visit('/portfolio', { headers: { 'Accept-Encoding': 'gzip, deflate' } });
+    cy.visit('/portfolio');
     cy.get('main[data-testid="portfolio"]').should('exist');
   });
 

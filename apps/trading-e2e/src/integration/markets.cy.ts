@@ -1,13 +1,10 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
-import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
 describe('markets table', () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
-      aliasQuery(req, 'MarketList', generateMarkets());
     });
   });
 
@@ -45,6 +42,26 @@ describe('markets table', () => {
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
     verifyMarketSummaryDisplayed();
+  });
+
+  it('Able to open and sort full market list - market page', () => {
+    const ExpectedSortedMarkets = [
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'ETHBTC.QM21',
+      'SOLUSD',
+    ];
+    cy.visit('/');
+    cy.wait('@MarketList');
+    cy.getByTestId('link').should('have.attr', 'href', '/markets').click();
+    cy.url().should('eq', Cypress.config('baseUrl') + '/markets');
+    cy.contains('AAPL.MF21').should('be.visible');
+    cy.contains('Market').click(); // sort by market name
+    for (let i = 0; i < ExpectedSortedMarkets.length; i++) {
+      cy.get(`[row-index=${i}]`)
+        .find('[col-id="tradableInstrument.instrument.code"]')
+        .should('have.text', ExpectedSortedMarkets[i]);
+    }
   });
 
   it('Settlement expiry is displayed', () => {
