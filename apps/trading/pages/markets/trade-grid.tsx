@@ -124,7 +124,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const itemClass =
     'min-w-min w-[120px] whitespace-nowrap py-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
+  const itemHeading = 'text-neutral-500 dark:text-neutral-400';
 
   const store = useGlobalStore();
   const onSelect = (marketId: string) => {
