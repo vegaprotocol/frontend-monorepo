@@ -24,10 +24,10 @@ describe('NetworkParametersTable', () => {
     );
     const rows = screen.getAllByTestId('key-value-table-row');
     expect(rows[0].children[0]).toHaveTextContent(
-      'Market fee factors infrastructure fee'
+      'market.fee.factors.infrastructureFee'
     );
     expect(rows[1].children[0]).toHaveTextContent(
-      'Market liquidity provision min lp stake quantum multiple'
+      'market.liquidityProvision.minLpStakeQuantumMultiple'
     );
     expect(rows[0].children[1]).toHaveTextContent('0.0005');
     expect(rows[1].children[1]).toHaveTextContent('1');
@@ -54,10 +54,10 @@ describe('NetworkParametersTable', () => {
     );
     const rows = screen.getAllByTestId('key-value-table-row');
     expect(rows[0].children[0]).toHaveTextContent(
-      'Market fee factors infrastructure fee'
+      'market.fee.factors.infrastructureFee'
     );
     expect(rows[1].children[0]).toHaveTextContent(
-      'Market liquidity provision min lp stake quantum multiple'
+      'market.liquidityProvision.minLpStakeQuantumMultiple'
     );
     expect(rows[0].children[1]).toHaveTextContent('0.0005');
     expect(rows[1].children[1]).toHaveTextContent('1');
