@@ -138,7 +138,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
       <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4 mb-2 xl:mb-0">
+        <div className="pr-4 mb-2 xl:mb-0">
           <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
         </div>
         <div
