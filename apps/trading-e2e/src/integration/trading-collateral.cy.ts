@@ -6,7 +6,9 @@ beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
-  cy.visit('/markets/market-0');
+  cy.visit('/markets/market-0', {
+    headers: { 'Accept-Encoding': 'gzip, deflate' },
+  });
 });
 
 describe('collateral', () => {

@@ -67,7 +67,7 @@ describe('fills', () => {
   });
 
   it('renders fills on portfolio page', () => {
-    cy.visit('/portfolio');
+    cy.visit('/portfolio', { headers: { 'Accept-Encoding': 'gzip, deflate' } });
     cy.get('main[data-testid="portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Connect your Vega wallet');

@@ -9,7 +9,7 @@ describe('markets table', () => {
   });
 
   it('renders markets correctly', () => {
-    cy.visit('/');
+    cy.visit('/', { headers: { 'Accept-Encoding': 'gzip, deflate' } });
     cy.wait('@MarketList');
     cy.get('[data-testid^="market-link-"]')
       .should('not.be.empty')

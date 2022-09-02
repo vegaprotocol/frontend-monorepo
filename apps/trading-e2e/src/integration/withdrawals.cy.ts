@@ -11,7 +11,9 @@ describe('withdrawals', () => {
       aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
     });
-    cy.visit('/portfolio/withdrawals');
+    cy.visit('/portfolio/withdrawals', {
+      headers: { 'Accept-Encoding': 'gzip, deflate' },
+    });
 
     // Withdraw page requires vega wallet connection
     connectVegaWallet();

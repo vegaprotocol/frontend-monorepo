@@ -32,7 +32,9 @@ describe('deal ticket orders', () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
-    cy.visit('/markets/market-0');
+    cy.visit('/markets/market-0', {
+      headers: { 'Accept-Encoding': 'gzip, deflate' },
+    });
     cy.wait('@Market');
     connectVegaWallet();
   });

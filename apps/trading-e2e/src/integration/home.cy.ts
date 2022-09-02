@@ -11,7 +11,7 @@ describe('home', () => {
         // Mock all market page queries
         mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
-      cy.visit('/');
+      cy.visit('/', { headers: { 'Accept-Encoding': 'gzip, deflate' } });
       cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
 
       // Overlay should be shown
