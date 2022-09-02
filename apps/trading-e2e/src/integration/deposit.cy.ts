@@ -11,7 +11,9 @@ describe('deposit form validation', () => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'AssetsConnection', generateDepositPage());
     });
-    cy.visit('/portfolio/deposit');
+    cy.visit('/portfolio/deposit', {
+      headers: { 'Accept-Encoding': 'gzip, deflate' },
+    });
 
     cy.wait('@AssetsConnection');
     // Deposit page requires connection Ethereum wallet first
