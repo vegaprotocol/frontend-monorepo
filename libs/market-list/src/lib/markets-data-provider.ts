@@ -6,7 +6,7 @@ import type {
   MarketDataSub_marketData,
   MarketList,
   MarketList_markets,
-} from './__generated__';
+} from './';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';

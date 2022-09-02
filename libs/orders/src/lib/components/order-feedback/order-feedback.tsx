@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
+import type { OrderEvent_busEvents_event_Order } from '../../';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,

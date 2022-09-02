@@ -18,7 +18,7 @@ import { useOrderSubmit } from './use-order-submit';
 import type {
   OrderEvent,
   OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+} from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';

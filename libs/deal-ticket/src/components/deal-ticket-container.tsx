@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
 import { t } from '@vegaprotocol/react-helpers';
-import type { DealTicketQuery_market, DealTicketQuery } from './__generated__';
+import type { DealTicketQuery_market, DealTicketQuery } from './';
 
 const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {

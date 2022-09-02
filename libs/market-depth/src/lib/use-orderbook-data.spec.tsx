@@ -4,7 +4,7 @@ import { MarketTradingMode } from '@vegaprotocol/types';
 import type {
   MarketDepth_market,
   MarketDepth_market_data,
-} from './__generated__';
+} from './';
 import { useOrderBookData } from './use-orderbook-data';
 
 const mockData: MarketDepth_market = {
