@@ -298,20 +298,19 @@ const TradeHeader = ({ market }: { market: Market_market }) => {
             : '-'}
         </div>
       </HeaderStat>
-      {symbol && (
-        <HeaderStat heading={t('Settlement asset')}>
-          <div data-testid="settlement-asset">
-            <ButtonLink
-              onClick={() => {
-                setAssetDetailsDialogOpen(true);
-                setAssetDetailsDialogSymbol(symbol);
-              }}
-            >
-              {symbol}
-            </ButtonLink>
-          </div>
-        </HeaderStat>
-      )}
+
+      <HeaderStat heading={t('Settlement asset')}>
+        <div data-testid="settlement-asset">
+          <ButtonLink
+            onClick={() => {
+              setAssetDetailsDialogOpen(true);
+              setAssetDetailsDialogSymbol(symbol);
+            }}
+          >
+            {symbol}
+          </ButtonLink>
+        </div>
+      </HeaderStat>
     </Header>
   );
 };

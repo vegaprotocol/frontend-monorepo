@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react';
-import { Children, cloneElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { Children } from 'react';
+import { cloneElement } from 'react';
 
 interface TradeMarketHeaderProps {
   title: ReactNode;
-  children: ReactNode;
+  children: ReactElement[];
 }
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
@@ -18,7 +19,9 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
         >
           {Children.map(children, (child, index) => {
-            return cloneElement(child, { id: `header-stat-${index}` });
+            return cloneElement(child, {
+              id: `header-stat-${index}`,
+            });
           })}
         </div>
       </div>
