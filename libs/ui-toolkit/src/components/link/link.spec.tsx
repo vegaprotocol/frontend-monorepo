@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import exp from 'constants';
 import { ExternalLink, Link } from '.';
 
 describe('Link', () => {
