@@ -11,10 +11,13 @@ jobs:
   master:
     name: Test and lint - main
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      actions: 'read'
     if: ${{ github.event_name != 'pull_request' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
@@ -24,7 +27,7 @@ jobs:
           main-branch-name: master
       - name: Use Node.js 16
         id: Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
       - name: Install root dependencies
@@ -40,10 +43,13 @@ jobs:
   pr:
     name: Test and lint - PR
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      actions: 'read'
     if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
@@ -52,7 +58,7 @@ jobs:
           main-branch-name: master
       - name: Use Node.js 16
         id: Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
       - name: Install root dependencies
