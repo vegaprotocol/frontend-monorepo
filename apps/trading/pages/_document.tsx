@@ -17,6 +17,11 @@ export default function Document() {
           href="https://static.vega.xyz/favicon.ico"
         />
         <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
+        <script
+          src="https://static.vega.xyz/theme.js"
+          type="text/javascript"
+          async
+        />
         {['1', 'true'].includes(process.env['NX_USE_ENV_OVERRIDES'] || '') ? (
           /* eslint-disable-next-line @next/next/no-sync-scripts */
           <script src="/assets/env-config.js" type="text/javascript" />

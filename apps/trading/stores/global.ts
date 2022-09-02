@@ -9,6 +9,8 @@ interface GlobalStore {
   setVegaNetworkSwitcherDialog: (isOpen: boolean) => void;
   landingDialog: boolean;
   setLandingDialog: (isOpen: boolean) => void;
+  vegaRiskNoticeDialog: boolean;
+  setVegaRiskNoticeDialog: (isOpen: boolean) => void;
   marketId: string | null;
   setMarketId: (marketId: string) => void;
 }
@@ -29,6 +31,10 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   landingDialog: false,
   setLandingDialog: (isOpen: boolean) => {
     set({ landingDialog: isOpen });
+  },
+  vegaRiskNoticeDialog: false,
+  setVegaRiskNoticeDialog: (isOpen: boolean) => {
+    set({ vegaRiskNoticeDialog: isOpen });
   },
   marketId: null,
   setMarketId: (id: string) => {

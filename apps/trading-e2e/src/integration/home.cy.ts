@@ -1,38 +1,19 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import type { MarketList } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
-import { generateMarketList } from '../support/mocks/generate-market-list';
-import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
 describe('home', () => {
   const selectMarketOverlay = 'select-market-list';
 
   describe('default market found', () => {
-    let marketsLanding: MarketList;
-    let marketList: MarketList;
-
-    beforeEach(() => {
-      marketList = generateMarketList();
-      marketsLanding = marketList;
-
-      // Mock markets query that is triggered by home page to find default market
+    it('redirects to a default market with the landing dialog open', () => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketList', marketsLanding);
-        aliasQuery(req, 'MarketList', marketList);
-
         // Mock all market page queries
         mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
-
       cy.visit('/');
-      cy.contains('Loading...').should('be.visible');
-      cy.contains('Loading...').should('not.exist');
-
       cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
-    });
 
-    it.skip('redirects to a default market with the landing dialog open', () => {
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
       cy.contains('Select a market to get started').should('be.visible');
@@ -62,6 +43,7 @@ describe('home', () => {
       // the choose market overlay is no longer showing
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
+      cy.url().should('eq', Cypress.config().baseUrl + '/markets/market-0');
     });
   });
 
@@ -69,34 +51,11 @@ describe('home', () => {
     it('redirects to a the market list page if no sensible default is found', () => {
       // Mock markets query that is triggered by home page to find default market
       cy.mockGQL((req) => {
-        aliasQuery(
-          req,
-          'MarketsLanding',
-          generateMarketList({
-            markets: [
-              {
-                marketTimestamps: {
-                  __typename: 'MarketTimestamps',
-                  open: '',
-                },
-              },
-              {
-                marketTimestamps: {
-                  __typename: 'MarketTimestamps',
-                  open: '',
-                },
-              },
-            ],
-          })
-        );
-        aliasQuery(req, 'Markets', generateMarkets());
-
-        // Mock all market page queries
-        mockTradingPage(req, MarketState.STATE_ACTIVE);
+        aliasQuery(req, 'MarketList', { markets: [] });
       });
 
       cy.visit('/');
-      cy.url().should('include', '/markets');
+      cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });
 });
