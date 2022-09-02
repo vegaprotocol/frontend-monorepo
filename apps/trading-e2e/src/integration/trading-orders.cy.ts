@@ -2,11 +2,15 @@ import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
-beforeEach(() => {
+before(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
   cy.visit('/markets/market-0');
+  cy.getByTestId('Orders').click();
+  cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
+
+  connectVegaWallet();
 });
 
 describe('orders', () => {
@@ -18,13 +22,8 @@ describe('orders', () => {
   const orderPrice = 'price';
   const orderTimeInForce = 'timeInForce';
   const orderCreatedAt = 'createdAt';
-
-  beforeEach(() => {
-    cy.getByTestId('Orders').click();
-    cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
-
-    connectVegaWallet();
-  });
+  const cancelOrderBtn = 'cancel';
+  const editOrderBtn = 'edit';
 
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
@@ -62,13 +61,26 @@ describe('orders', () => {
         cy.wrap($dateTime).invoke('text').should('not.be.empty');
       });
 
-      cy.getByTestId('cancel')
+      cy.getByTestId(cancelOrderBtn)
         .should('be.visible')
         .and('have.length.at.least', 1);
 
-      cy.getByTestId('edit')
+      cy.getByTestId(editOrderBtn)
         .should('be.visible')
         .and('have.length.at.least', 1);
+    });
+  });
+
+  it('partially filled orders should not show close/edit buttons', () => {
+    cy.getByTestId('tab-orders').should('be.visible');
+    cy.get('[row-index="4"]').within(() => {
+      cy.get(`[col-id='${orderStatus}']`).should(
+        'have.text',
+        'PartiallyFilled'
+      );
+      cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
+      cy.getByTestId(cancelOrderBtn).should('not.exist');
+      cy.getByTestId(editOrderBtn).should('not.exist');
     });
   });
 
@@ -78,11 +90,12 @@ describe('orders', () => {
       'TSLA.QM21',
       'BTCUSD.MF21',
       'UNIDAI.MF21',
+      'UNIDAI.MF21',
     ];
 
     cy.getByTestId('tab-orders')
       .get(`[col-id='${orderSymbol}']`)
-      .should('have.length.at.least', 3)
+      .should('have.length.at.least', 4)
       .each(($symbol, index) => {
         if (index != 0) {
           cy.wrap($symbol).should('have.text', expectedOrderList[index - 1]);
