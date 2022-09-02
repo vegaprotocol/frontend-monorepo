@@ -285,26 +285,21 @@ export const Info = ({ market }: InfoProps) => {
     {
       title: t('Proposal'),
       content: (
-        <>
-          <p>
-            <ExternalLink
-              href={generatePath(Links.PROPOSAL_PAGE, {
-                tokenUrl: VEGA_TOKEN_URL,
-                proposalId: market.proposal?.id || '',
-              })}
-              title={
-                market.proposal?.rationale.title ||
-                market.proposal?.rationale.description ||
-                ''
-              }
-            >
-              {t('View governance proposal')}
-            </ExternalLink>
-          </p>
-          <p className="opacity-50">
-            {t('Proposal may not be available after chain reset.')}
-          </p>
-        </>
+        <p>
+          <ExternalLink
+            href={generatePath(Links.PROPOSAL_PAGE, {
+              tokenUrl: VEGA_TOKEN_URL,
+              proposalId: market.proposal?.id || '',
+            })}
+            title={
+              market.proposal?.rationale.title ||
+              market.proposal?.rationale.description ||
+              ''
+            }
+          >
+            {t('View governance proposal')}
+          </ExternalLink>
+        </p>
       ),
     },
   ];
