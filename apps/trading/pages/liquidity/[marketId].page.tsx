@@ -1,13 +1,7 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import {
-  AsyncRenderer,
-  ResizableGrid,
-  ResizableGridPanel,
-  Tab,
-  Tabs,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import classNames from 'classnames';
@@ -87,26 +81,18 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           </div>
         </div>
       </header>
-      <div>
-        <ResizableGrid vertical={true}>
-          <ResizableGridPanel preferredSize={300} minSize={50}>
-            <Tabs active={getActiveDefaultId()}>
-              <Tab
-                id="myLP"
-                name={t('My liquidity provision')}
-                hidden={!partyId}
-              >
-                <LiquidityTable ref={gridRef} data={myLpEdges} />
-              </Tab>
-              <Tab id="active" name={t('Active')}>
-                <LiquidityTable ref={gridRef} data={activeEdges} />
-              </Tab>
-              <Tab id="inactive" name={t('Inactive')}>
-                <LiquidityTable ref={gridRef} data={inactiveEdges} />
-              </Tab>
-            </Tabs>
-          </ResizableGridPanel>
-        </ResizableGrid>
+      <div className="h-[80vh]">
+        <Tabs active={getActiveDefaultId()}>
+          <Tab id="myLP" name={t('My liquidity provision')} hidden={!partyId}>
+            <LiquidityTable ref={gridRef} data={myLpEdges} />
+          </Tab>
+          <Tab id="active" name={t('Active')}>
+            <LiquidityTable ref={gridRef} data={activeEdges} />
+          </Tab>
+          <Tab id="inactive" name={t('Inactive')}>
+            <LiquidityTable ref={gridRef} data={inactiveEdges} />
+          </Tab>
+        </Tabs>
       </div>
     </AsyncRenderer>
   );
