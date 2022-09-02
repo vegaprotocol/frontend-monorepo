@@ -1,17 +1,31 @@
+import { useEffect } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Button } from '@vegaprotocol/ui-toolkit';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { useEnvironment, Networks } from '@vegaprotocol/environment';
+import { useGlobalStore } from '../../stores';
 
-type RiskNoticeDialogProps = {
-  dialogOpen: boolean;
-  onAcceptRisk: () => void;
-};
+export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
-export const RiskNoticeDialog = ({
-  dialogOpen,
-  onAcceptRisk,
-}: RiskNoticeDialogProps) => {
+export const RiskNoticeDialog = () => {
+  const store = useGlobalStore();
+  const { VEGA_ENV } = useEnvironment()
+
+  useEffect(() => {
+    const isRiskAccepted = LocalStorage.getItem(RISK_ACCEPTED_KEY) === 'true';
+    if (!isRiskAccepted && VEGA_ENV === Networks.MAINNET) {
+      store.setVegaRiskNoticeDialog(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.setVegaRiskNoticeDialog, VEGA_ENV]);
+
+  const handleAcceptRisk = () => {
+    store.setVegaRiskNoticeDialog(false);
+    LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
+  };
+
   return (
-    <Dialog open={dialogOpen} title={t('WARNING')} size="medium">
+    <Dialog open={store.vegaRiskNoticeDialog} title={t('WARNING')} size="medium">
       <h4 className="text-xl mb-2 mt-4">
         {t('Regulation may apply to use of this app')}
       </h4>
@@ -28,7 +42,7 @@ export const RiskNoticeDialog = ({
           'The public blockchain services accessible via this decentralised application are operated by third parties and may carry significant risks including the potential loss of all funds that you deposit or hold with these services. Technical risks include the risk of loss in the event of the failure or compromise of the public blockchain infrastructure or smart contracts that provide any services you use. Financial risks include but are not limited to losses due to volatility, excessive leverage, low liquidity, and your own lack of understanding of the services you use. By using this decentralised application you accept that it is your responsibility to ensure that you understand any services you use and the technical and financial risks inherent in your use. Do not risk what you cannot afford to lose.'
         )}
       </p>
-      <Button onClick={onAcceptRisk}>{t('I understand, Continue')}</Button>
+      <Button onClick={handleAcceptRisk}>{t('I understand, Continue')}</Button>
     </Dialog>
   );
 };
