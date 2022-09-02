@@ -264,7 +264,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={330}
               minSize={300}
             >
               <TradeGridChild>
@@ -280,7 +280,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={430}
               minSize={200}
             >
               <TradeGridChild>
@@ -298,7 +298,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="33%"
+          preferredSize="25%"
           minSize={50}
         >
           <TradeGridChild>
