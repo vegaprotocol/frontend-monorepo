@@ -99,10 +99,12 @@ export const useWithdrawals = () => {
   }, [keypair?.pub, subscribeToMore]);
 
   const withdrawals = useMemo(() => {
+    if (!data?.party?.withdrawalsConnection?.edges) {
+      return [];
+    }
+
     return orderBy(
-      compact(data?.party?.withdrawalsConnection.edges).map(
-        (edge) => edge.node
-      ),
+      compact(data.party.withdrawalsConnection.edges).map((edge) => edge.node),
       'createdTimestamp',
       'desc'
     );
