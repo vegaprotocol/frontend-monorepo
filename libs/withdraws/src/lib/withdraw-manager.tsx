@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
-import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
@@ -11,9 +10,10 @@ import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { captureException } from '@sentry/react';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useWithdrawStore } from './withdraw-store';
+import type { AssetFields } from './__generated__/AssetFields';
 
 export interface WithdrawManagerProps {
-  assets: Asset[];
+  assets: AssetFields[];
   accounts: Account[];
   submit: (args: WithdrawalArgs) => void;
 }

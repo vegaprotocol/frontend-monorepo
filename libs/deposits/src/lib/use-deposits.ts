@@ -31,7 +31,7 @@ const DEPOSIT_FRAGMENT = gql`
 
 const DEPOSITS_QUERY = gql`
   ${DEPOSIT_FRAGMENT}
-  query Deposits($partyId: ID!) {
+  query DepositsQuery($partyId: ID!) {
     party(id: $partyId) {
       id
       depositsConnection {

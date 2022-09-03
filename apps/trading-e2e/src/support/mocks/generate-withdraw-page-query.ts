@@ -2,7 +2,7 @@ import { AccountType } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateWithdrawPageQuery = (
+export const generateWithdrawFormQuery = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override?: PartialDeep<any>
 ) => {

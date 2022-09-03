@@ -1,7 +1,10 @@
+import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
+import type { WithdrawFormQuery } from './__generated__/WithdrawFormQuery';
 
 export const ASSET_FRAGMENT = gql`
   fragment AssetFields on Asset {
@@ -35,8 +38,12 @@ const WITHDRAW_FORM_QUERY = gql`
         }
       }
     }
-    assets {
-      ...AssetFields
+    assetsConnection {
+      edges {
+        node {
+          ...AssetFields
+        }
+      }
     }
   }
 `;
@@ -50,9 +57,20 @@ export const WithdrawFormContainer = ({
   partyId,
   submit,
 }: WithdrawFormContainerProps) => {
-  const { data, loading, error } = useQuery(WITHDRAW_FORM_QUERY, {
-    variables: { partyId },
-  });
+  const { data, loading, error } = useQuery<WithdrawFormQuery>(
+    WITHDRAW_FORM_QUERY,
+    {
+      variables: { partyId },
+    }
+  );
+
+  const assets = useMemo(() => {
+    if (!data?.assetsConnection.edges) {
+      return [];
+    }
+
+    return compact(data.assetsConnection.edges).map((e) => e.node);
+  }, [data]);
 
   if (loading || !data) {
     return <div>{t('Loading...')}</div>;
@@ -64,7 +82,7 @@ export const WithdrawFormContainer = ({
 
   return (
     <WithdrawManager
-      assets={data.assets}
+      assets={assets}
       accounts={data.party?.accounts || []}
       submit={submit}
     />

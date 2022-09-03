@@ -13,6 +13,7 @@ export const WithdrawalsContainer = () => {
   const { withdrawals, loading, error } = useWithdrawals();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
+  console.log('render');
   return (
     <Web3Container>
       <VegaWalletContainer>
@@ -21,7 +22,10 @@ export const WithdrawalsContainer = () => {
             <h4 className="text-lg text-black dark:text-white">
               {t('Withdrawals')}
             </h4>
-            <Button onClick={() => setWithdrawDialog(true)}>
+            <Button
+              onClick={() => setWithdrawDialog(true)}
+              data-testid="withdraw-dialog-button"
+            >
               {t('Withdraw')}
             </Button>
           </header>
