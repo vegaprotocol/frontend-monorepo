@@ -5,6 +5,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
 import type { Dispatch, SetStateAction } from 'react';
+import { NetworkSwitcher } from '@vegaprotocol/environment';
 
 interface ThemeToggleProps {
   theme: 'light' | 'dark';
@@ -27,14 +28,17 @@ export const Header = ({
   );
   return (
     <header className={headerClasses}>
-      <Link to={Routes.HOME}>
-        <h1
-          className="text-3xl font-alpha uppercase calt mb-0"
-          data-testid="explorer-header"
-        >
-          {t('Vega Explorer')}
-        </h1>
-      </Link>
+      <div className="flex h-full items-center sm:items-stretch gap-4">
+        <Link to={Routes.HOME}>
+          <h1
+            className="text-3xl font-alpha uppercase calt mb-0"
+            data-testid="explorer-header"
+          >
+            {t('Vega Explorer')}
+          </h1>
+        </Link>
+        <NetworkSwitcher />
+      </div>
       <button
         data-testid="open-menu"
         className="md:hidden"
