@@ -135,7 +135,7 @@ export const WithdrawForm = ({
           )}
         </FormGroup>
         {selectedAsset && threshold && (
-          <div className="mb-2">
+          <div className="mb-4">
             <WithdrawLimits
               amount={amount}
               threshold={threshold}
