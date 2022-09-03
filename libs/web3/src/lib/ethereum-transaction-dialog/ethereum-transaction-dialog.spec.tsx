@@ -59,7 +59,7 @@ it('Opens when tx starts and closes if the user rejects the tx', () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it('Doesn\t repoen if user dismissed the dialog', () => {
+it("Doesn't repoen if user dismissed the dialog", () => {
   const { container, rerender } = render(
     generateJsx({ transaction: { status: EthTxStatus.Pending } })
   );

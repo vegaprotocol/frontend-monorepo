@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { isEthereumError } from '../ethereum-error';
+import { EthereumError, isEthereumError } from '../ethereum-error';
 import type { EthTxState, TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
@@ -57,9 +57,7 @@ export const TransactionContent = ({
 
     if (isEthereumError(error)) {
       errorMessage = error.reason;
-    }
-
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       errorMessage = error.message;
     }
 

@@ -24,7 +24,7 @@ const generateJsx = (props: WithdrawalsTableProps) => (
   </MockedProvider>
 );
 
-describe('renders the corerct columsn', () => {
+describe('renders the correct columns', () => {
   it('incomplete withdrawal', async () => {
     const withdrawal = generateWithdrawal();
     await act(async () => {
@@ -48,7 +48,7 @@ describe('renders the corerct columsn', () => {
       addDecimalsFormatNumber(withdrawal.amount, withdrawal.asset.decimals),
       '123456\u2026123456',
       getDateTimeFormat().format(new Date(withdrawal.createdTimestamp)),
-      '',
+      '-',
       WithdrawalStatusMapping[withdrawal.status],
     ];
     cells.forEach((cell, i) => {
@@ -104,9 +104,7 @@ describe('StatusCell', () => {
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Open')).toBeInTheDocument();
-    fireEvent.click(
-      screen.getByText('Click to complete', { selector: 'button' })
-    );
+    fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
     expect(mockComplete).toHaveBeenCalled();
   });
 
