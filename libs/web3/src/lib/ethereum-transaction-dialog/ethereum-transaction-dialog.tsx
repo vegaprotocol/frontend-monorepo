@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { EthereumError, isEthereumError } from '../ethereum-error';
+import { isEthereumError } from '../ethereum-error';
 import type { EthTxState, TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
