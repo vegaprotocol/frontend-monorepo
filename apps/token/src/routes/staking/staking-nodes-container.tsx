@@ -84,7 +84,8 @@ export const StakingNodesContainer = ({
   const { data, loading, error, refetch } = useQuery<StakingQueryResult>(
     STAKING_QUERY,
     {
-      variables: { partyId: keypair?.pub || '' },
+      variables: { partyId: keypair || '' },
+      skip: !keypair,
     }
   );
 

@@ -84,11 +84,11 @@ export const DealTicketSteps = ({
   const estMargin = useOrderMargin({
     order,
     market,
-    partyId: keypair?.pub || '',
+    partyId: keypair || '',
   });
 
   const maxTrade = useMaximumPositionSize({
-    partyId: keypair?.pub || '',
+    partyId: keypair || '',
     accounts: partyData?.party?.accounts || [],
     marketId: market.id,
     settlementAssetId:

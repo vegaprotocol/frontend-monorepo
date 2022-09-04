@@ -163,7 +163,7 @@ export const SelectMarketPopover = ({
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        {marketsLoading || (keypair?.pub && positionsLoading) ? (
+        {marketsLoading || (keypair && positionsLoading) ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
             Loading market data

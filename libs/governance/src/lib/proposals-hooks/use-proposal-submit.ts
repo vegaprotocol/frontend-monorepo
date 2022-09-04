@@ -25,7 +25,7 @@ export const useProposalSubmit = () => {
 
       try {
         const res = await send({
-          pubKey: keypair.pub,
+          pubKey: keypair,
           propagate: true,
           proposalSubmission: proposal,
         });
@@ -33,7 +33,7 @@ export const useProposalSubmit = () => {
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForProposalEvent(resId, keypair.pub, (p) => {
+            waitForProposalEvent(resId, keypair, (p) => {
               setFinalizedProposal(p);
               setComplete();
             });

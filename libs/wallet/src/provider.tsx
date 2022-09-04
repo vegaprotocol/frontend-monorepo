@@ -1,7 +1,7 @@
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { VegaKeyExtended, VegaWalletContextShape } from '.';
+import type { VegaWalletContextShape } from '.';
 import type { VegaConnector } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage-keys';
@@ -19,7 +19,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   });
 
   // Keypair objects retrieved from the connector
-  const [keypairs, setKeypairs] = useState<VegaKeyExtended[] | null>(null);
+  const [keypairs, setKeypairs] = useState<string[] | null>(null);
 
   // Reference to the current connector instance
   const connector = useRef<VegaConnector | null>(null);
@@ -28,28 +28,27 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     async (c: VegaConnector) => {
       connector.current = c;
       try {
+        const sessionActive = await connector.current.sessionActive();
+
+        if (!sessionActive) {
+          console.log('no session');
+          return false;
+        }
+
         const res = await connector.current.connect();
 
         if (!res) {
-          return null;
+          return false;
         }
 
-        const publicKeysWithName = res.map((pk) => {
-          const nameMeta = pk.meta?.find((m) => m.key === 'name');
-          return {
-            ...pk,
-            name: nameMeta?.value ? nameMeta.value : t('None'),
-          };
-        });
-
-        setKeypairs(publicKeysWithName);
+        setKeypairs(res);
         if (publicKey === null) {
-          setPublicKey(publicKeysWithName[0].pub);
+          setPublicKey(res[0]);
         }
 
-        return publicKeysWithName;
+        return true;
       } catch (err) {
-        return null;
+        return false;
       }
     },
     [publicKey]
@@ -79,7 +78,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   // Current selected keypair derived from publicKey state
   const keypair = useMemo(() => {
-    const found = keypairs?.find((x) => x.pub === publicKey);
+    const found = keypairs?.find((pk) => pk === publicKey);
 
     if (found) {
       return found;

@@ -13,12 +13,12 @@ interface FormFields {
 
 interface RestConnectorFormProps {
   connector: RestConnector;
-  onAuthenticate: () => void;
+  onConnect: (connector: RestConnector) => void;
 }
 
 export function RestConnectorForm({
   connector,
-  onAuthenticate,
+  onConnect,
 }: RestConnectorFormProps) {
   const [error, setError] = useState('');
   const { VEGA_WALLET_URL } = useEnvironment();
@@ -42,7 +42,7 @@ export function RestConnectorForm({
       });
 
       if (res.success) {
-        onAuthenticate();
+        onConnect(connector);
       } else {
         setError(res.error || authFailedMessage);
       }

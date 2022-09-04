@@ -1,5 +1,4 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +21,7 @@ export const AssociatePage = ({
   ethereumConfig,
 }: {
   address: string;
-  vegaKey: VegaKeyExtended;
+  vegaKey: string;
   ethereumConfig: EthereumConfig;
 }) => {
   const { t } = useTranslation();
@@ -46,12 +45,12 @@ export const AssociatePage = ({
   } = useAddStake(
     address,
     amount,
-    vegaKey.pub,
+    vegaKey,
     selectedStakingMethod,
     ethereumConfig.confirmations
   );
 
-  const linking = usePollForStakeLinking(vegaKey.pub, txState.txData.hash);
+  const linking = usePollForStakeLinking(vegaKey, txState.txData.hash);
 
   const {
     appState: { walletBalance, totalVestedBalance, totalLockedBalance },
@@ -81,7 +80,7 @@ export const AssociatePage = ({
     return (
       <AssociateTransaction
         amount={amount}
-        vegaKey={vegaKey.pub}
+        vegaKey={vegaKey}
         state={txState}
         dispatch={txDispatch}
         requiredConfirmations={ethereumConfig.confirmations}

@@ -42,7 +42,7 @@ export const useOrderEdit = (order: Order | null) => {
 
       try {
         await send({
-          pubKey: keypair.pub,
+          pubKey: keypair,
           propagate: true,
           orderAmendment: {
             orderId: order.id,
@@ -56,7 +56,7 @@ export const useOrderEdit = (order: Order | null) => {
           },
         });
 
-        waitForOrderEvent(order.id, keypair.pub, (updatedOrder) => {
+        waitForOrderEvent(order.id, keypair, (updatedOrder) => {
           setUpdatedOrder(updatedOrder);
           setComplete();
         });

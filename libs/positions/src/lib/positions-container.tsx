@@ -14,5 +14,5 @@ export const PositionsContainer = () => {
     );
   }
 
-  return <PositionsManager partyId={keypair.pub} />;
+  return <PositionsManager partyId={keypair} />;
 };

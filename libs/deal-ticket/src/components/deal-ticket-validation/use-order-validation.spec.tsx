@@ -1,9 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  VegaWalletContextShape,
-  VegaKeyExtended,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import {
   MarketState,
   MarketStateMapping,
@@ -44,11 +41,7 @@ const market = {
 };
 
 const defaultWalletContext = {
-  keypair: {
-    name: 'keypair0',
-    tainted: false,
-    pub: '111111__111111',
-  } as VegaKeyExtended,
+  keypair: '111111__111111',
   keypairs: [],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),

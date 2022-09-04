@@ -10,5 +10,5 @@ export const OrderListContainer = () => {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
 
-  return <OrderListManager partyId={keypair.pub} />;
+  return <OrderListManager partyId={keypair} />;
 };

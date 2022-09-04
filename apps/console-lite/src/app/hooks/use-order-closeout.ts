@@ -61,15 +61,15 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
     CLOSEOUT_PRICE_QUERY,
     {
       pollInterval: 5000,
-      variables: { partyId: keypair?.pub || '' },
-      skip: !keypair?.pub,
+      variables: { partyId: keypair || '' },
+      skip: !keypair,
     }
   );
 
   const markPriceData = useMarketData(market.id);
   const marketPositions = useMarketPositions({
     marketId: market.id,
-    partyId: keypair?.pub || '',
+    partyId: keypair || '',
   });
 
   const marginMaintenanceLevel = new BigNumber(

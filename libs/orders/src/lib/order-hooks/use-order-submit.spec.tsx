@@ -1,8 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import type {
-  VegaKeyExtended,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   MarketState,
@@ -62,7 +59,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -97,7 +94,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -144,9 +141,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
 describe('useOrderSubmit', () => {
   it('should submit a correctly formatted order on GTT', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const keypair = '0x123';
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [keypair],
@@ -166,7 +161,7 @@ describe('useOrderSubmit', () => {
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
-      pubKey: keypair.pub,
+      pubKey: keypair,
       propagate: true,
       orderSubmission: {
         type: OrderType.TYPE_LIMIT,
@@ -242,9 +237,7 @@ describe('useOrderSubmit', () => {
 
   it('should not sendTx side is not specified', async () => {
     const mockSendTx = jest.fn();
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const keypair = '0x123';
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [keypair],

@@ -34,7 +34,7 @@ it('Not connected', () => {
 });
 
 it('Connected', () => {
-  const keypair = { pub: '123456__123456', name: 'test' };
+  const keypair = '123456__123456';
   render(
     generateJsx(
       { keypair, keypairs: [keypair] } as VegaWalletContextShape,
@@ -43,9 +43,7 @@ it('Connected', () => {
   );
 
   const button = screen.getByRole('button');
-  expect(button).toHaveTextContent(
-    `${keypair.name}: ${truncateByChars(keypair.pub)}`
-  );
+  expect(button).toHaveTextContent(truncateByChars(keypair));
   fireEvent.click(button);
   expect(props.setConnectDialog).not.toHaveBeenCalled();
 });

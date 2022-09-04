@@ -81,23 +81,23 @@ export const useWithdrawals = () => {
     Withdrawals,
     WithdrawalsVariables
   >(WITHDRAWALS_QUERY, {
-    variables: { partyId: keypair?.pub || '' },
-    skip: !keypair?.pub,
+    variables: { partyId: keypair || '' },
+    skip: !keypair,
   });
 
   useEffect(() => {
-    if (!keypair?.pub) return;
+    if (!keypair) return;
 
     const unsub = subscribeToMore<WithdrawalEvent, WithdrawalEventVariables>({
       document: WITHDRAWAL_BUS_EVENT_SUB,
-      variables: { partyId: keypair.pub },
+      variables: { partyId: keypair },
       updateQuery,
     });
 
     return () => {
       unsub();
     };
-  }, [keypair?.pub, subscribeToMore]);
+  }, [keypair, subscribeToMore]);
 
   const withdrawals = useMemo(() => {
     if (!data?.party?.withdrawalsConnection?.edges) {

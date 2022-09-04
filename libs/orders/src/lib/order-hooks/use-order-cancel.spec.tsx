@@ -3,10 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import type {
-  VegaKeyExtended,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { useOrderCancel } from './use-order-cancel';
 import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -26,7 +23,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -61,7 +58,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -131,9 +128,7 @@ describe('useOrderCancel', () => {
 
   it('should cancel a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const keypair = '0x123';
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [keypair],
@@ -149,7 +144,7 @@ describe('useOrderCancel', () => {
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
-      pubKey: keypair.pub,
+      pubKey: keypair,
       propagate: true,
       orderCancellation: args,
     });

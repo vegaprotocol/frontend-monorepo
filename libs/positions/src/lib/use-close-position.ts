@@ -30,7 +30,7 @@ export const useClosePosition = () => {
 
       try {
         const res = await send({
-          pubKey: keypair.pub,
+          pubKey: keypair,
           propagate: true,
           orderCancellation: {
             marketId: position.marketId,
@@ -41,7 +41,7 @@ export const useClosePosition = () => {
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForPositionEvent(resId, keypair.pub, () => {
+            waitForPositionEvent(resId, keypair, () => {
               setComplete();
             });
           }

@@ -1,6 +1,5 @@
 import type { z } from 'zod';
 import type { GetKeysSchema, TransactionResponseSchema } from './connectors';
-import type { IterableElement } from 'type-fest';
 import type {
   OrderTimeInForce,
   OrderType,
@@ -255,7 +254,6 @@ export type TransactionSubmission =
 
 export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 export type GetKeysResponse = z.infer<typeof GetKeysSchema>;
-export type VegaKey = IterableElement<GetKeysResponse['keys']>;
 
 export type TransactionError =
   | {

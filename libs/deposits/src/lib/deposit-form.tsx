@@ -207,7 +207,7 @@ export const DepositForm = ({
             {errors.to.message}
           </InputError>
         )}
-        {keypair?.pub && (
+        {keypair && (
           <UseButton
             onClick={() => {
               setValue('to', keypair.pub);

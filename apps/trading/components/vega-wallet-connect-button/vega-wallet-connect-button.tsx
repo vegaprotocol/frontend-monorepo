@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -33,19 +32,18 @@ export const VegaWalletConnectButton = ({
           data-testid="manage-vega-wallet"
           onClick={() => setDropdownOpen((curr) => !curr)}
         >
-          <span className="uppercase">{keypair.name}</span>:{' '}
-          {truncateByChars(keypair.pub)}
+          {truncateByChars(keypair)}
         </DropdownMenuTrigger>
         <DropdownMenuContent onInteractOutside={() => setDropdownOpen(false)}>
           <div className="min-w-[340px]" data-testid="keypair-list">
             <DropdownMenuRadioGroup
-              value={keypair.pub}
+              value={keypair}
               onValueChange={(value) => {
                 selectPublicKey(value);
               }}
             >
               {keypairs.map((kp) => (
-                <KeypairItem key={kp.pub} kp={kp} />
+                <KeypairItem key={kp} kp={kp} />
               ))}
             </DropdownMenuRadioGroup>
             <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
@@ -68,7 +66,7 @@ export const VegaWalletConnectButton = ({
   );
 };
 
-const KeypairItem = ({ kp }: { kp: VegaKeyExtended }) => {
+const KeypairItem = ({ kp }: { kp: string }) => {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line
@@ -86,14 +84,13 @@ const KeypairItem = ({ kp }: { kp: VegaKeyExtended }) => {
   }, [copied]);
 
   return (
-    <DropdownMenuRadioItem key={kp.pub} value={kp.pub}>
-      <div className="flex-1 mr-2" data-testid={`key-${kp.pub}`}>
+    <DropdownMenuRadioItem key={kp} value={kp}>
+      <div className="flex-1 mr-2" data-testid={`key-${kp}`}>
         <span className="mr-2">
-          <span className="uppercase">{kp.name}</span>:{' '}
-          <span>{truncateByChars(kp.pub)}</span>
+          <span>{truncateByChars(kp)}</span>
         </span>
         <span>
-          <CopyToClipboard text={kp.pub} onCopy={() => setCopied(true)}>
+          <CopyToClipboard text={kp} onCopy={() => setCopied(true)}>
             <button
               data-testid="copy-vega-public-key"
               onClick={(e) => e.stopPropagation()}

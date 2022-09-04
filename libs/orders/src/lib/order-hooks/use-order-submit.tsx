@@ -115,7 +115,7 @@ export const useOrderSubmit = () => {
 
       try {
         const res = await send({
-          pubKey: keypair.pub,
+          pubKey: keypair,
           propagate: true,
           orderSubmission: {
             ...order,
@@ -134,7 +134,7 @@ export const useOrderSubmit = () => {
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForOrderEvent(resId, keypair.pub, (order) => {
+            waitForOrderEvent(resId, keypair, (order) => {
               setFinalizedOrder(order);
               setComplete();
             });

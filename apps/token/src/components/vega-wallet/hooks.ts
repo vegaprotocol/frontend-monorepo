@@ -86,13 +86,13 @@ export const usePollForDelegations = () => {
     let interval: any;
     let mounted = true;
 
-    if (keypair?.pub) {
+    if (keypair) {
       // start polling for delegation
       interval = setInterval(() => {
         client
           .query<Delegations, DelegationsVariables>({
             query: DELEGATIONS_QUERY,
-            variables: { partyId: keypair.pub },
+            variables: { partyId: keypair },
             fetchPolicy: 'network-only',
           })
           .then((res) => {
@@ -229,7 +229,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, keypair?.pub, t, vegaToken.address]);
+  }, [client, keypair, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

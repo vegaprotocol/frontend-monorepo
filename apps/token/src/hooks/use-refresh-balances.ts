@@ -29,8 +29,8 @@ export const useRefreshBalances = (address: string) => {
           vesting.user_stats(address),
           token.allowance(address, config.staking_bridge_contract.address),
           // Refresh connected vega key balances as well if we are connected to a vega key
-          keypair?.pub ? staking.stake_balance(address, keypair.pub) : null,
-          keypair?.pub ? vesting.stake_balance(address, keypair.pub) : null,
+          keypair ? staking.stake_balance(address, keypair) : null,
+          keypair ? vesting.stake_balance(address, keypair) : null,
         ]);
 
       const balance = toBigNum(b, decimals);
@@ -56,7 +56,7 @@ export const useRefreshBalances = (address: string) => {
     address,
     decimals,
     appDispatch,
-    keypair?.pub,
+    keypair,
     staking,
     token,
     vesting,

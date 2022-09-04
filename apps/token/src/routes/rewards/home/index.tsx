@@ -69,8 +69,8 @@ export const RewardsIndex = () => {
   const { keypair, keypairs } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
-    variables: { partyId: keypair?.pub },
-    skip: !keypair?.pub,
+    variables: { partyId: keypair },
+    skip: !keypair,
   });
   const { params } = useNetworkParams([
     NetworkParams.reward_asset,

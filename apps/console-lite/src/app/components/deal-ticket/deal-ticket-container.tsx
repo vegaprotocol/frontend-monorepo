@@ -42,8 +42,8 @@ export const DealTicketContainer = () => {
   const { data: partyData, loading } = useQuery<PartyBalanceQuery>(
     PARTY_BALANCE_QUERY,
     {
-      variables: { partyId: keypair?.pub },
-      skip: !keypair?.pub,
+      variables: { partyId: keypair },
+      skip: !keypair,
     }
   );
 
@@ -63,7 +63,7 @@ export const DealTicketContainer = () => {
               data.market.tradableInstrument.instrument.product?.settlementAsset
             }
             accounts={partyData?.party?.accounts || []}
-            isWalletConnected={!!keypair?.pub}
+            isWalletConnected={!!keypair}
           />
         );
 

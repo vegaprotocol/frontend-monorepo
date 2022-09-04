@@ -1,8 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import type {
-  VegaKeyExtended,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
@@ -28,7 +25,7 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -63,7 +60,7 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.keypair || '',
       },
     },
     result: {
@@ -110,9 +107,7 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const keypair = '0x123';
     const order = generateOrder({
       price: '123456789',
       market: { decimalPlaces: 2 },
@@ -128,7 +123,7 @@ describe('useOrderEdit', () => {
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
-      pubKey: keypair.pub,
+      pubKey: keypair,
       propagate: true,
       orderAmendment: {
         orderId: order.id,

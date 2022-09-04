@@ -1,4 +1,3 @@
-import type { VegaKey } from '../wallet-types';
 import type {
   TransactionSubmission,
   TransactionResponse,
@@ -8,8 +7,11 @@ export interface VegaConnector {
   /** Description of how to use this connector */
   description: string;
 
+  sessionActive(): Promise<boolean>;
+  startSession(): Promise<any>;
+
   /** Connect to wallet and return keys */
-  connect(): Promise<VegaKey[] | null>;
+  connect(): Promise<string[] | null>;
 
   /** Disconnect from wallet */
   disconnect(): Promise<void>;

@@ -40,7 +40,7 @@ export const useOrderCancel = () => {
 
       try {
         await send({
-          pubKey: keypair.pub,
+          pubKey: keypair,
           propagate: true,
           orderCancellation: {
             orderId: args.orderId,
@@ -48,7 +48,7 @@ export const useOrderCancel = () => {
           },
         });
 
-        waitForOrderEvent(args.orderId, keypair.pub, (cancelledOrder) => {
+        waitForOrderEvent(args.orderId, keypair, (cancelledOrder) => {
           setCancelledOrder(cancelledOrder);
           setComplete();
         });

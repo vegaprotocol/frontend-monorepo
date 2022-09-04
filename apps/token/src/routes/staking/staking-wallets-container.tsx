@@ -2,7 +2,6 @@ import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ConnectToVega } from './connect-to-vega';
 
@@ -15,7 +14,7 @@ export const StakingWalletsContainer = ({
   needsVega?: boolean;
   children: (data: {
     address: string;
-    currVegaKey: VegaKeyExtended | null;
+    currVegaKey: string | null;
   }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();

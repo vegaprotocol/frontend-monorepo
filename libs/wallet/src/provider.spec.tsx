@@ -1,5 +1,4 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { VegaKey } from './wallet-types';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
@@ -30,13 +29,13 @@ const TestComponent = () => {
       >
         Disconnect
       </button>
-      <p data-testid="current-keypair">{keypair?.pub}</p>
+      <p data-testid="current-keypair">{keypair}</p>
       {keypairs?.length ? (
         <ul data-testid="keypair-list">
           {keypairs.map((kp) => (
             // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-            <li key={kp.pub} onClick={() => selectPublicKey(kp.pub)}>
-              {kp.pub}
+            <li key={kp} onClick={() => selectPublicKey(kp)}>
+              {kp}
             </li>
           ))}
         </ul>

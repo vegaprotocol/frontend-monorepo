@@ -44,8 +44,8 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     VoteButtonsQueryResult,
     VoteButtonsVariables
   >(VOTE_BUTTONS_QUERY, {
-    variables: { partyId: keypair?.pub || '' },
-    skip: !keypair?.pub,
+    variables: { partyId: keypair || '' },
+    skip: !keypair,
   });
 
   if (loading) return null;

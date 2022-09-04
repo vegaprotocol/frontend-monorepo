@@ -55,7 +55,7 @@ export function useUserVote(
   // Find the users vote everytime yes or no votes change
   const userVote = useMemo(() => {
     if (keypair) {
-      return getUserVote(keypair.pub, yes, no);
+      return getUserVote(keypair, yes, no);
     }
     return null;
   }, [keypair, yes, no]);
@@ -97,7 +97,7 @@ export function useUserVote(
 
     try {
       const variables = {
-        pubKey: keypair.pub,
+        pubKey: keypair
         propagate: true,
         voteSubmission: {
           value: value,

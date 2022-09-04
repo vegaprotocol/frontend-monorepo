@@ -22,7 +22,6 @@ import {
 } from '../wallet-card';
 import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
@@ -42,20 +41,12 @@ export const VegaWallet = () => {
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (
-            <>
-              <div
-                data-testid="wallet-name"
-                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
-              >
-                {keypair.name}
-              </div>
-              <span
-                data-testid="vega-account-truncated"
-                className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
-              >
-                {truncateMiddle(keypair.pub)}
-              </span>
-            </>
+            <div
+              data-testid="vega-account-truncated"
+              className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
+            >
+              {truncateMiddle(keypair)}
+            </div>
           )}
         </WalletCardHeader>
         <WalletCardContent>{child}</WalletCardContent>
@@ -109,7 +100,7 @@ const VegaWalletAssetList = ({ accounts }: VegaWalletAssetsListProps) => {
 };
 
 interface VegaWalletConnectedProps {
-  vegaKeys: VegaKeyExtended[];
+  vegaKeys: string[];
 }
 
 const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {

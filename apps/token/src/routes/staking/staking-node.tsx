@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
@@ -26,7 +25,7 @@ export const StakingNodeContainer = () => {
 };
 
 interface StakingNodeProps {
-  vegaKey: VegaKeyExtended | null;
+  vegaKey: string;
   data?: StakingQueryResult;
 }
 
@@ -125,7 +124,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
           <section>
             <StakingForm
-              pubkey={vegaKey.pub}
+              pubkey={vegaKey}
               nodeId={nodeInfo.id}
               nodeName={nodeInfo.name}
               availableStakeToAdd={unstaked}

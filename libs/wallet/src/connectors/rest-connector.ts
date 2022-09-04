@@ -82,6 +82,10 @@ export class RestConnector implements VegaConnector {
     }
   }
 
+  async sessionActive() {
+    return Boolean(this.token);
+  }
+
   async authenticate(
     url: string,
     params: {
@@ -136,7 +140,7 @@ export class RestConnector implements VegaConnector {
 
       const data = GetKeysSchema.parse(res.data);
 
-      return data.keys;
+      return data.keys.map((k) => k.pub);
     } catch (err) {
       // keysGet failed, its likely that the session has expired so remove the token from storage
       this.clearConfig();

@@ -69,7 +69,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
 
   React.useEffect(() => {
     if (account && keypair) {
-      setAssociatedBalances(account, keypair.pub);
+      setAssociatedBalances(account, keypair);
     }
   }, [setAssociatedBalances, account, keypair]);
 

@@ -54,7 +54,7 @@ export const CandlesChartContainer = ({
   const [studies, setStudies] = useState<Study[]>([]);
 
   const dataSource = useMemo(() => {
-    return new VegaDataSource(client, marketId, keypair?.pub);
+    return new VegaDataSource(client, marketId, keypair);
   }, [client, marketId, keypair]);
 
   return (

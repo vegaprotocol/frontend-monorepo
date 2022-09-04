@@ -31,7 +31,7 @@ export const VegaWalletConnectButton = ({
         onClick={handleClick}
         className="ml-auto inline-block text-ui-small font-mono hover:underline"
       >
-        {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
+        {isConnected ? truncateByChars(keypair) : 'Connect Vega wallet'}
       </button>
     </span>
   );
