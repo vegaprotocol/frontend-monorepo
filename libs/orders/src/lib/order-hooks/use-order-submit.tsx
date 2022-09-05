@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { OrderEvent_busEvents_event_Order } from './__generated__';
+import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
