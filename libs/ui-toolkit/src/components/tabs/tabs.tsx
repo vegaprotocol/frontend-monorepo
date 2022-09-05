@@ -30,9 +30,9 @@ export const Tabs = ({ children }: TabsProps) => {
               'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-600',
               'text-black dark:text-white',
               'uppercase',
-              'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0',
+              'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0 after:tracking-wider',
               {
-                'font-light': !isActive,
+                'font-light tracking-wider': !isActive,
               }
             );
             const borderClass = classNames(

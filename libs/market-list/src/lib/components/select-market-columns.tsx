@@ -470,9 +470,9 @@ export const columnsPositionMarkets = (
         <p
           className={
             market.openVolume.includes('+')
-              ? 'text-vega-green'
+              ? 'text-vega-green-dark dark:text-vega-green'
               : market.openVolume.includes('-')
-              ? 'text-vega-red'
+              ? 'text-vega-red-dark dark:text-vega-red'
               : ''
           }
         >

@@ -37,7 +37,7 @@ export const SelectMarketTableRow = ({
 }) => {
   return (
     <tr
-      className={`hover:bg-black/10 dark:hover:bg-white/20 cursor-pointer relative h-[34px]`}
+      className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer relative h-[34px]`}
     >
       {columns.map(({ value, className, dataTestId, onlyOnDetailed }, i) => {
         if (!onlyOnDetailed || detailed === onlyOnDetailed) {
