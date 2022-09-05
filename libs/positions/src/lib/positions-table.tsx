@@ -149,7 +149,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         }}
       />
       <AgGridColumn
-        headerName={t('Amount')}
+        headerName={t('Size')}
         field="openVolume"
         type="rightAligned"
         cellRenderer={AmountCell}

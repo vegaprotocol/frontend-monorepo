@@ -14,7 +14,7 @@ import type { Trades_market_tradesConnection_edges_node } from './__generated__/
 import BigNumber from 'bignumber.js';
 
 export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
-export const DOWN_CLASS = 'text-vega-red';
+export const DOWN_CLASS = 'text-vega-red-dark dark:text-vega-red';
 
 const changeCellClass =
   (dataKey: string) =>
