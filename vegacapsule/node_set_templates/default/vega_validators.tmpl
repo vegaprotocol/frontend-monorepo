@@ -1,0 +1,30 @@
+[Admin]
+  [Admin.Server]
+    SocketPath = "/tmp/vega-{{.NodeNumber}}.sock"
+    Enabled = true
+
+[API]
+	Port = 30{{.NodeNumber}}2
+	[API.REST]
+			Port = 30{{.NodeNumber}}3
+
+[Blockchain]
+	[Blockchain.Tendermint]
+		RPCAddr = "tcp://127.0.0.1:266{{.NodeNumber}}7"
+	[Blockchain.Null]
+		Port = 31{{.NodeNumber}}1
+
+[EvtForward]
+	Level = "Info"
+	RetryRate = "1s"
+	{{if .FaucetPublicKey}}
+	BlockchainQueueAllowlist = ["{{ .FaucetPublicKey }}"]
+	{{end}}
+
+[Ethereum]
+  RPCEndpoint = "{{.ETHEndpoint}}"
+
+[Processor]
+	[Processor.Ratelimit]
+		Requests = 10000
+		PerNBlocks = 1

@@ -26,7 +26,6 @@ import {
   PriceCellChange,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import { Header, HeaderStat } from '../../components/header';
 import {
   addDecimalsFormatNumber,
   getDateFormat,
@@ -60,6 +59,184 @@ const TradingViews = {
 
 type TradingView = keyof typeof TradingViews;
 
+type ExpiryLabelProps = {
+  market: Market_market;
+};
+
+const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
+  if (market.marketTimestamps.close === null) {
+    return <>{t('Not time-based')}</>;
+  }
+
+  const closeDate = new Date(market.marketTimestamps.close);
+  const isExpired = Date.now() - closeDate.valueOf() > 0;
+  const expiryDate = getDateFormat().format(closeDate);
+
+  return <>{`${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`}</>;
+};
+
+type ExpiryTooltipContentProps = {
+  market: Market_market;
+  explorerUrl?: string;
+};
+
+const ExpiryTooltipContent = ({
+  market,
+  explorerUrl,
+}: ExpiryTooltipContentProps) => {
+  if (market.marketTimestamps.close === null) {
+    const oracleId =
+      market.tradableInstrument.instrument.product
+        .oracleSpecForTradingTermination?.id;
+
+    return (
+      <>
+        <p data-testid="expiry-tool-tip" className="mb-2">
+          {t(
+            'This market expires when triggered by its oracle, not on a set date.'
+          )}
+        </p>
+        {explorerUrl && oracleId && (
+          <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
+            {t('View oracle specification')}
+          </Link>
+        )}
+      </>
+    );
+  }
+
+  return null;
+};
+
+interface TradeMarketHeaderProps {
+  market: Market_market;
+}
+
+export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
+  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+    useAssetDetailsDialogStore();
+  const { update } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
+
+  const onSelect = (marketId: string) => {
+    if (marketId && marketId !== marketId) {
+      update({ marketId });
+    }
+  };
+
+  const candlesClose: string[] = (market?.candles || [])
+    .map((candle) => candle?.close)
+    .filter((c): c is CandleClose => c !== null);
+  const hasExpiry = market.marketTimestamps.close !== null;
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
+
+  const itemClass =
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+  const itemHeading = 'text-neutral-400';
+
+  return (
+    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
+      <div className="xl:flex xl:gap-4  items-start">
+        <div className="px-4 mb-2 xl:mb-0">
+          <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+        </div>
+        <div
+          data-testid="market-summary"
+          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
+        >
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Expiry')}</div>
+            <Tooltip
+              align="start"
+              description={
+                <ExpiryTooltipContent
+                  market={market}
+                  explorerUrl={VEGA_EXPLORER_URL}
+                />
+              }
+            >
+              <div
+                data-testid="trading-expiry"
+                className={classNames({
+                  'underline decoration-dashed': !hasExpiry,
+                })}
+              >
+                <ExpiryLabel market={market} />
+              </div>
+            </Tooltip>
+          </div>
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Change (24h)')}</div>
+            <PriceCellChange
+              candles={candlesClose}
+              decimalPlaces={market.decimalPlaces}
+            />
+          </div>
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Volume')}</div>
+            <div data-testid="trading-volume">
+              {market.data && market.data.indicativeVolume !== '0'
+                ? addDecimalsFormatNumber(
+                    market.data.indicativeVolume,
+                    market.positionDecimalPlaces
+                  )
+                : '-'}
+            </div>
+          </div>
+
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Trading mode')}</div>
+            <Tooltip
+              align="start"
+              description={<TradingModeTooltip market={market} />}
+            >
+              <div data-testid="trading-mode">
+                {market.tradingMode ===
+                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+                market.data?.trigger &&
+                market.data.trigger !==
+                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+                  ? `${MarketTradingModeMapping[market.tradingMode]}
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                  : MarketTradingModeMapping[market.tradingMode]}
+              </div>
+            </Tooltip>
+          </div>
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Price')}</div>
+            <div data-testid="mark-price">
+              {market.data && market.data.markPrice !== '0'
+                ? addDecimalsFormatNumber(
+                    market.data.markPrice,
+                    market.decimalPlaces
+                  )
+                : '-'}
+            </div>
+          </div>
+          {symbol && (
+            <div className={itemClass}>
+              <div className={itemHeading}>{t('Settlement asset')}</div>
+              <div data-testid="trading-mode">
+                <ButtonLink
+                  onClick={() => {
+                    setAssetDetailsDialogOpen(true);
+                    setAssetDetailsDialogSymbol(symbol);
+                  }}
+                >
+                  {symbol}
+                </ButtonLink>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
 interface TradeGridProps {
   market: Market_market;
 }
@@ -67,7 +244,7 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeHeader market={market} />
+      <TradeMarketHeader market={market} />
       <ResizableGrid vertical={true}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
           <ResizableGrid proportionalLayout={false} minSize={200}>
@@ -185,7 +362,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeHeader market={market} />
+      <TradeMarketHeader market={market} />
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (
@@ -214,150 +391,4 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       </div>
     </div>
   );
-};
-
-const TradeHeader = ({ market }: { market: Market_market }) => {
-  const { VEGA_EXPLORER_URL } = useEnvironment();
-  const store = useGlobalStore();
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
-  const candlesClose: string[] = (market?.candles || [])
-    .map((candle) => candle?.close)
-    .filter((c): c is CandleClose => c !== null);
-  const symbol =
-    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-
-  const onSelect = (marketId: string) => {
-    if (marketId && store.marketId !== marketId) {
-      store.setMarketId(marketId);
-    }
-  };
-
-  return (
-    <Header
-      title={
-        <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
-      }
-    >
-      <HeaderStat heading={t('Expiry')}>
-        <Tooltip
-          align="start"
-          description={
-            <ExpiryTooltipContent
-              market={market}
-              explorerUrl={VEGA_EXPLORER_URL}
-            />
-          }
-        >
-          <div data-testid="trading-expiry">
-            <ExpiryLabel market={market} />
-          </div>
-        </Tooltip>
-      </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')}>
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={market.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat heading={t('Volume')}>
-        <div data-testid="trading-volume">
-          {market.data && market.data.indicativeVolume !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.indicativeVolume,
-                market.positionDecimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-      <HeaderStat heading={t('Trading mode')}>
-        <Tooltip
-          align="start"
-          description={<TradingModeTooltip market={market} />}
-        >
-          <div data-testid="trading-mode">
-            {market.tradingMode ===
-              MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-            market.data?.trigger &&
-            market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-              ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-              : MarketTradingModeMapping[market.tradingMode]}
-          </div>
-        </Tooltip>
-      </HeaderStat>
-      <HeaderStat heading={t('Price')}>
-        <div data-testid="mark-price">
-          {market.data && market.data.markPrice !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.markPrice,
-                market.decimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-
-      <HeaderStat heading={t('Settlement asset')}>
-        <div data-testid="settlement-asset">
-          <ButtonLink
-            onClick={() => {
-              setAssetDetailsDialogOpen(true);
-              setAssetDetailsDialogSymbol(symbol);
-            }}
-          >
-            {symbol}
-          </ButtonLink>
-        </div>
-      </HeaderStat>
-    </Header>
-  );
-};
-
-type ExpiryLabelProps = {
-  market: Market_market;
-};
-
-const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  if (market.marketTimestamps.close === null) {
-    return <>{t('Not time-based')}</>;
-  }
-
-  const closeDate = new Date(market.marketTimestamps.close);
-  const isExpired = Date.now() - closeDate.valueOf() > 0;
-  const expiryDate = getDateFormat().format(closeDate);
-
-  return <>{`${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`}</>;
-};
-
-type ExpiryTooltipContentProps = {
-  market: Market_market;
-  explorerUrl?: string;
-};
-
-const ExpiryTooltipContent = ({
-  market,
-  explorerUrl,
-}: ExpiryTooltipContentProps) => {
-  if (market.marketTimestamps.close === null) {
-    const oracleId =
-      market.tradableInstrument.instrument.product
-        .oracleSpecForTradingTermination?.id;
-
-    return (
-      <>
-        <p data-testid="expiry-tool-tip" className="mb-2">
-          {t(
-            'This market expires when triggered by its oracle, not on a set date.'
-          )}
-        </p>
-        {explorerUrl && oracleId && (
-          <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
-            {t('View oracle specification')}
-          </Link>
-        )}
-      </>
-    );
-  }
-
-  return null;
 };

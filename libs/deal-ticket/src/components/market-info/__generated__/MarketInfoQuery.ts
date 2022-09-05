@@ -9,6 +9,34 @@ import { Interval, MarketState, MarketTradingMode, AccountType, AuctionTrigger }
 // GraphQL query operation: MarketInfoQuery
 // ====================================================
 
+export interface MarketInfoQuery_market_proposal_rationale {
+  __typename: "ProposalRationale";
+  /**
+   * Title to be used to give a short description of the proposal in lists.
+   * This is to be between 0 and 100 unicode characters.
+   * This is mandatory for all proposals.
+   */
+  title: string;
+  /**
+   * Description to show a short title / something in case the link goes offline.
+   * This is to be between 0 and 20k unicode characters.
+   * This is mandatory for all proposals.
+   */
+  description: string;
+}
+
+export interface MarketInfoQuery_market_proposal {
+  __typename: "Proposal";
+  /**
+   * Proposal ID that is filled by Vega once proposal reaches the network
+   */
+  id: string | null;
+  /**
+   * Rationale behind the proposal
+   */
+  rationale: MarketInfoQuery_market_proposal_rationale;
+}
+
 export interface MarketInfoQuery_market_accounts_asset {
   __typename: "Asset";
   /**
@@ -438,14 +466,14 @@ export interface MarketInfoQuery_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -467,6 +495,10 @@ export interface MarketInfoQuery_market {
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
+  /**
+   * The proposal that initiated this market
+   */
+  proposal: MarketInfoQuery_market_proposal | null;
   /**
    * Get account for a party or market
    */

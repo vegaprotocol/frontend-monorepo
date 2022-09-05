@@ -17,13 +17,20 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
-import { useEnvironment } from '@vegaprotocol/environment';
 import type {
   MarketInfoQuery,
   MarketInfoQuery_market,
   MarketInfoQuery_market_candles,
 } from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+
+import { generatePath } from 'react-router-dom';
+import { useEnvironment } from '@vegaprotocol/environment';
+
+const Links = {
+  PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
+};
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -72,7 +79,8 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 };
 
 export const Info = ({ market }: InfoProps) => {
-  const headerClassName = 'uppercase text-lg mb-4';
+  const { VEGA_TOKEN_URL } = useEnvironment();
+  const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market.tradableInstrument.instrument.product?.settlementAsset.symbol;
@@ -287,9 +295,9 @@ export const Info = ({ market }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
           link={
-            <Link target="_blank" href={`/liquidity/${market.id}`}>
+            <ExternalLink href={`/liquidity/${market.id}`}>
               {t('View liquidity provision table')}
-            </Link>
+            </ExternalLink>
           }
         />
       ),
@@ -308,14 +316,36 @@ export const Info = ({ market }: InfoProps) => {
                 .oracleSpecForTradingTermination.id,
           }}
           link={
-            <Link
-              target="_blank"
+            <ExternalLink
               href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
             >
               {t('View full oracle details')}
-            </Link>
+            </ExternalLink>
           }
         />
+      ),
+    },
+  ];
+
+  const marketGovPanels = [
+    {
+      title: t('Proposal'),
+      content: (
+        <p>
+          <ExternalLink
+            href={generatePath(Links.PROPOSAL_PAGE, {
+              tokenUrl: VEGA_TOKEN_URL,
+              proposalId: market.proposal?.id || '',
+            })}
+            title={
+              market.proposal?.rationale.title ||
+              market.proposal?.rationale.description ||
+              ''
+            }
+          >
+            {t('View governance proposal')}
+          </ExternalLink>
+        </p>
       ),
     },
   ];
@@ -326,10 +356,16 @@ export const Info = ({ market }: InfoProps) => {
         <p className={headerClassName}>{t('Market data')}</p>
         <Accordion panels={marketDataPanels} />
       </div>
-      <div>
+      <div className="mb-4">
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>
+      {VEGA_TOKEN_URL && market.proposal?.id && (
+        <div>
+          <p className={headerClassName}>{t('Market governance')}</p>
+          <Accordion panels={marketGovPanels} />
+        </div>
+      )}
     </div>
   );
 };
