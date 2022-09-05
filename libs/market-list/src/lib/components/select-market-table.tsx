@@ -7,7 +7,7 @@ export const SelectMarketTableHeader = ({
   headers = columnHeaders,
 }) => {
   return (
-    <tr className="sticky top-0 z-10 border-b border-neutral-300 dark:border-neutral-700 bg-inherit">
+    <tr className="sticky top-0 z-10 border-b border-neutral-300 dark:border-neutral-600 bg-inherit">
       {headers.map(({ value, className, onlyOnDetailed }, i) => {
         const thClass = classNames(
           'font-normal text-neutral-500 dark:text-neutral-400',

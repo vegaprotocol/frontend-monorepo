@@ -19,7 +19,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
     ? `/markets/${store.marketId}`
     : '/markets';
   return (
-    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
+    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-400 bg-black">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

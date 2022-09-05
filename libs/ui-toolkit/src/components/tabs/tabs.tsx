@@ -18,7 +18,7 @@ export const Tabs = ({ children }: TabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="border-b border-neutral-300 dark:border-neutral-700">
+      <div className="border-b border-neutral-300 dark:border-neutral-600">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -27,9 +27,13 @@ export const Tabs = ({ children }: TabsProps) => {
             if (!isValidElement(child)) return null;
             const isActive = child.props.id === activeTab;
             const triggerClass = classNames(
-              'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-700',
+              'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-600',
               'text-black dark:text-white',
-              'uppercase'
+              'uppercase',
+              'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0',
+              {
+                'font-light': !isActive,
+              }
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',

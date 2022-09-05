@@ -66,7 +66,7 @@ export const KeyValueTableRow = ({
   const dlClassName = classNames(
     'flex gap-1 flex-wrap justify-between py-1 text-sm',
     {
-      'border-b border-neutral-300 dark:border-neutral-700': !noBorder,
+      'border-b border-neutral-300 dark:border-neutral-600': !noBorder,
     },
     { 'flex-col items-start': !inline },
     { 'flex-row items-center': inline },

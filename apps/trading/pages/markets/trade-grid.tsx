@@ -123,7 +123,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap py-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+    'min-w-min w-[120px] whitespace-nowrap py-3 px-4 border-l border-neutral-300 dark:border-neutral-600';
   const itemHeading = 'text-neutral-500 dark:text-neutral-400';
 
   const store = useGlobalStore();
@@ -136,7 +136,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const hasExpiry = market.marketTimestamps.close !== null;
 
   return (
-    <header className="w-screen xl:px-4 border-b border-neutral-300 dark:border-neutral-700">
+    <header className="w-screen xl:px-4 border-b border-neutral-300 dark:border-neutral-600">
       <div className="xl:flex xl:gap-4  items-start">
         <div className="py-3">
           <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
@@ -332,7 +332,10 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
     <section className="h-full">
       <AutoSizer>
         {({ width, height }) => (
-          <div style={{ width, height }} className="overflow-auto">
+          <div
+            style={{ width, height }}
+            className="overflow-auto border-[1px] dark:border-neutral-600"
+          >
             {children}
           </div>
         )}
@@ -368,7 +371,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-600">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('p-4 min-w-[100px] capitalize', {
