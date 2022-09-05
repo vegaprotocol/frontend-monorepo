@@ -13,7 +13,7 @@ import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { Trades_market_tradesConnection_edges_node } from './__generated__/Trades';
 import BigNumber from 'bignumber.js';
 
-export const UP_CLASS = 'text-vega-green';
+export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
 export const DOWN_CLASS = 'text-vega-red';
 
 const changeCellClass =
