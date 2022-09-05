@@ -8,6 +8,13 @@ export const MARKET_INFO_QUERY = gql`
       decimalPlaces
       positionDecimalPlaces
       state
+      proposal {
+        id
+        rationale {
+          title
+          description
+        }
+      }
       accounts {
         type
         asset {
@@ -16,13 +23,6 @@ export const MARKET_INFO_QUERY = gql`
         balance
       }
       tradingMode
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
       fees {
         factors {
           makerFee
@@ -43,13 +43,6 @@ export const MARKET_INFO_QUERY = gql`
         market
         short
         long
-      }
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
       }
       data {
         market {
