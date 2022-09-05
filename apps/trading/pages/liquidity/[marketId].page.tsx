@@ -47,7 +47,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const enum LiquidityTabs {
     Active = 'active',
     Inactive = 'inactive',
-    MyLiquidityProvision  = 'myLP',
+    MyLiquidityProvision = 'myLP',
   }
 
   const getActiveDefaultId = () => {
@@ -78,7 +78,11 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           </HeaderStat>
         </Header>
         <Tabs active={getActiveDefaultId()}>
-          <Tab id={LiquidityTabs.MyLiquidityProvision} name={t('My liquidity provision')} hidden={!partyId}>
+          <Tab
+            id={LiquidityTabs.MyLiquidityProvision}
+            name={t('My liquidity provision')}
+            hidden={!partyId}
+          >
             <LiquidityTable ref={gridRef} data={myLpEdges} />
           </Tab>
           <Tab id={LiquidityTabs.Active} name={t('Active')}>
