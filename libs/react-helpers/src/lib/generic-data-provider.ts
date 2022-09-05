@@ -133,10 +133,10 @@ export function defaultAppend<Data>(
 
 interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
   query: Query<QueryData>;
-  subscriptionQuery: Query<SubscriptionData>;
-  update: Update<Data, Delta>;
+  subscriptionQuery?: Query<SubscriptionData>;
+  update?: Update<Data, Delta>;
   getData: GetData<QueryData, Data>;
-  getDelta: GetDelta<SubscriptionData, Delta>;
+  getDelta?: GetDelta<SubscriptionData, Delta>;
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount?: GetTotalCount<QueryData>;
@@ -291,7 +291,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
         }
       }
       // if there was some updates received from subscription during initial query loading apply them on just received data
-      if (data && updateQueue && updateQueue.length > 0) {
+      if (update && data && updateQueue && updateQueue.length > 0) {
         while (updateQueue.length) {
           const delta = updateQueue.shift();
           if (delta) {
@@ -339,31 +339,33 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
     if (!client) {
       return;
     }
-    subscription = client
-      .subscribe<SubscriptionData>({
-        query: subscriptionQuery,
-        variables,
-        fetchPolicy,
-      })
-      .subscribe(
-        ({ data: subscriptionData }) => {
-          if (!subscriptionData) {
-            return;
-          }
-          const delta = getDelta(subscriptionData);
-          if (loading || !data) {
-            updateQueue.push(delta);
-          } else {
-            const updatedData = update(data, delta, reload);
-            if (updatedData === data) {
+    if (subscriptionQuery && getDelta && update) {
+      subscription = client
+        .subscribe<SubscriptionData>({
+          query: subscriptionQuery,
+          variables,
+          fetchPolicy,
+        })
+        .subscribe(
+          ({ data: subscriptionData }) => {
+            if (!subscriptionData) {
               return;
             }
-            data = updatedData;
-            notifyAll({ delta, isUpdate: true });
-          }
-        },
-        () => reload()
-      );
+            const delta = getDelta(subscriptionData);
+            if (loading || !data) {
+              updateQueue.push(delta);
+            } else {
+              const updatedData = update(data, delta, reload);
+              if (updatedData === data) {
+                return;
+              }
+              data = updatedData;
+              notifyAll({ delta, isUpdate: true });
+            }
+          },
+          () => reload()
+        );
+    }
     await initialFetch();
   };
 
@@ -470,7 +472,8 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
 export type CombineDerivedData<Data> = (
-  parts: Parameters<DependencyUpdateCallback>['0']['data'][]
+  parts: Parameters<DependencyUpdateCallback>['0']['data'][],
+  variables?: OperationVariables
 ) => Data | null;
 
 function makeDerivedDataProviderInternal<Data>(
@@ -521,7 +524,10 @@ function makeDerivedDataProviderInternal<Data>(
       });
 
     const newData = newLoaded
-      ? combineData(parts.map((part) => part.data))
+      ? combineData(
+          parts.map((part) => part.data),
+          variables
+        )
       : data;
     if (
       newLoading !== loading ||

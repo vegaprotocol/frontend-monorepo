@@ -1,11 +1,8 @@
-import produce from 'immer';
 import { gql, useQuery } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
-  MarketDataSub,
-  MarketDataSub_marketData,
-  MarketList,
-  MarketList_markets,
+  Markets,
+  Markets_marketsConnection_edges_node,
 } from './__generated__';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
@@ -16,7 +13,7 @@ export const useMarketList = () => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
   }, []);
-  const { data, loading, error } = useQuery<MarketList>(MARKET_LIST_QUERY, {
+  const { data, loading, error } = useQuery<Markets>(MARKET_LIST_QUERY, {
     variables: { interval: Interval.INTERVAL_I1H, since },
   });
 
@@ -28,115 +25,68 @@ export const useMarketList = () => {
 };
 
 const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketDataFields on MarketData {
-    market {
-      id
-      state
-      tradingMode
+  fragment MarketFields on Market {
+    id
+    name
+    decimalPlaces
+    positionDecimalPlaces
+    state
+    tradingMode
+    fees {
+      factors {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
     }
-    bestBidPrice
-    bestOfferPrice
-    markPrice
-    trigger
-    indicativeVolume
-  }
-`;
-
-export const MARKET_LIST_QUERY = gql`
-  query MarketList($interval: Interval!, $since: String!) {
-    markets {
-      id
-      name
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
         }
-      }
-      data {
-        market {
-          id
-          state
-          tradingMode
-        }
-        bestBidPrice
-        bestOfferPrice
-        markPrice
-        trigger
-        indicativeVolume
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              settlementAsset {
-                symbol
-              }
+        product {
+          ... on Future {
+            settlementAsset {
+              symbol
             }
           }
         }
       }
-      marketTimestamps {
-        open
-        close
-      }
-      candles(interval: $interval, since: $since) {
-        open
-        close
-        high
-        low
-      }
+    }
+    marketTimestamps {
+      open
+      close
     }
   }
 `;
 
-const MARKET_DATA_SUB = gql`
+export const MARKET_LIST_QUERY = gql`
   ${MARKET_DATA_FRAGMENT}
-  subscription MarketDataSub {
-    marketData {
-      ...MarketDataFields
+  query Markets {
+    marketsConnection {
+      edges {
+        node {
+          ...MarketFields
+        }
+      }
     }
   }
 `;
 
-const update = (
-  data: MarketList_markets[],
-  delta: MarketDataSub_marketData
-) => {
-  return produce(data, (draft) => {
-    const index = draft.findIndex((m) => m.id === delta.market.id);
-    if (index !== -1) {
-      draft[index].data = delta;
-    }
-    // @TODO - else push new market to draft
-  });
-};
-
-const getData = (responseData: MarketList): MarketList_markets[] | null =>
-  responseData.markets;
-const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
-  subscriptionData.marketData;
+const getData = (
+  responseData: Markets
+): Markets_marketsConnection_edges_node[] | null =>
+  responseData.marketsConnection.edges.map((edge) => edge.node);
 
 export const marketsDataProvider = makeDataProvider<
-  MarketList,
-  MarketList_markets[],
-  MarketDataSub,
-  MarketDataSub_marketData
+  Markets,
+  Markets_marketsConnection_edges_node[],
+  never,
+  never
 >({
   query: MARKET_LIST_QUERY,
-  subscriptionQuery: MARKET_DATA_SUB,
-  update,
   getData,
-  getDelta,
 });
