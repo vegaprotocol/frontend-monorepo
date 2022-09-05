@@ -17,7 +17,7 @@ export const DealTicketManager = ({
   children,
 }: DealTicketManagerProps) => {
   const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit(market);
+    useOrderSubmit();
 
   return (
     <>

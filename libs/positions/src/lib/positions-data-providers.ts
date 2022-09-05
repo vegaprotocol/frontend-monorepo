@@ -24,7 +24,7 @@ export interface Position {
   averageEntryPrice: string;
   capitalUtilisation: number;
   currentLeverage: number;
-  assetDecimals: number;
+  decimals: number;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   totalBalance: string;
@@ -133,7 +133,12 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market.id;
     });
-    if (!marginAccount || !marginLevel || !marketData) {
+    if (
+      !marginAccount ||
+      !marginLevel ||
+      !marketData ||
+      position.node.openVolume === '0'
+    ) {
       return;
     }
     const generalAccount = accounts?.find(
@@ -141,7 +146,7 @@ export const getMetrics = (
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
-    const assetDecimals = marginAccount.asset.decimals;
+    const decimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
     const openVolume = toBigNum(
@@ -149,13 +154,10 @@ export const getMetrics = (
       positionDecimalPlaces
     );
 
-    const marginAccountBalance = toBigNum(
-      marginAccount.balance ?? 0,
-      assetDecimals
-    );
+    const marginAccountBalance = toBigNum(marginAccount.balance ?? 0, decimals);
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
-      assetDecimals
+      decimals
     );
     const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
@@ -180,19 +182,19 @@ export const getMetrics = (
       marketDecimalPlaces
     );
 
-    const searchPrice = openVolume.isEqualTo(0)
-      ? markPrice
-      : marginSearch
-          .minus(marginAccountBalance)
-          .dividedBy(openVolume)
-          .plus(markPrice);
-    const liquidationPrice = openVolume.isEqualTo(0)
-      ? markPrice
-      : marginMaintenance
-          .minus(marginAccountBalance)
-          .minus(generalAccountBalance)
-          .dividedBy(openVolume)
-          .plus(markPrice);
+    const searchPrice = marginSearch
+      .minus(marginAccountBalance)
+      .dividedBy(openVolume)
+      .plus(markPrice);
+
+    const liquidationPrice = BigNumber.maximum(
+      0,
+      marginMaintenance
+        .minus(marginAccountBalance)
+        .minus(generalAccountBalance)
+        .dividedBy(openVolume)
+        .plus(markPrice)
+    );
 
     const lowMarginLevel =
       marginAccountBalance.isLessThan(
@@ -206,9 +208,9 @@ export const getMetrics = (
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,
       positionDecimalPlaces,
-      assetDecimals,
+      decimals,
       assetSymbol: marginLevel.asset.symbol,
-      totalBalance: totalBalance.multipliedBy(10 ** assetDecimals).toFixed(),
+      totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       liquidationPrice: liquidationPrice
         .multipliedBy(10 ** marketDecimalPlaces)

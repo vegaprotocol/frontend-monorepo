@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
@@ -9,6 +10,7 @@ import {
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader } from '../components/app-loader';
+import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import './styles.css';
 import { useGlobalStore } from '../stores';
 import {
@@ -16,7 +18,6 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { Footer } from '../components/footer';
-import Head from 'next/head';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
@@ -54,6 +55,7 @@ function AppBody({ Component, pageProps }: AppProps) {
             open={isAssetDetailsDialogOpen}
             onChange={(open) => setAssetDetailsDialogOpen(open)}
           />
+          <RiskNoticeDialog />
         </AppLoader>
       </div>
     </ThemeContext.Provider>

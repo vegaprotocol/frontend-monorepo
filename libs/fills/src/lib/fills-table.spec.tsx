@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
@@ -141,82 +141,78 @@ describe('FillsTable', () => {
   });
 
   it('should format cells correctly for seller fill', async () => {
-    act(async () => {
-      const partyId = 'party-id';
-      const buyerFill = generateFill({
-        ...defaultFill,
-        seller: {
-          id: partyId,
-        },
-        aggressor: Side.SIDE_SELL,
-        sellerFee: {
-          makerFee: '1',
-          infrastructureFee: '1',
-          liquidityFee: '1',
-        },
-      });
-
-      render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
-      await waitForGridToBeInTheDOM();
-      await waitForDataToHaveLoaded();
-
-      const cells = screen.getAllByRole('gridcell');
-      const expectedValues = [
-        buyerFill.market.name,
-        '-3.00000',
-        '1.00 BTC',
-        '3.00 BTC',
-        'Taker',
-        '0.03 BTC',
-        getDateTimeFormat().format(new Date(buyerFill.createdAt)),
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
-      });
-
-      const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-      expect(amountCell).toHaveClass('text-vega-red');
+    const partyId = 'party-id';
+    const buyerFill = generateFill({
+      ...defaultFill,
+      seller: {
+        id: partyId,
+      },
+      aggressor: Side.SIDE_SELL,
+      sellerFee: {
+        makerFee: '1',
+        infrastructureFee: '1',
+        liquidityFee: '1',
+      },
     });
+
+    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
+
+    const cells = screen.getAllByRole('gridcell');
+    const expectedValues = [
+      buyerFill.market.name,
+      '-3.00000',
+      '1.00 BTC',
+      '3.00 BTC',
+      'Taker',
+      '0.03 BTC',
+      getDateTimeFormat().format(new Date(buyerFill.createdAt)),
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
+    });
+
+    const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
+    expect(amountCell).toHaveClass('text-vega-red-dark');
   });
 
   it('should render correct maker or taker role', async () => {
-    act(async () => {
-      const partyId = 'party-id';
-      const takerFill = generateFill({
-        seller: {
-          id: partyId,
-        },
-        aggressor: Side.SIDE_SELL,
-      });
-
-      const { rerender } = render(
-        <FillsTable partyId={partyId} rowData={[takerFill]} />
-      );
-      await waitForGridToBeInTheDOM();
-      await waitForDataToHaveLoaded();
-
-      expect(
-        screen
-          .getAllByRole('gridcell')
-          .find((c) => c.getAttribute('col-id') === 'aggressor')
-      ).toHaveTextContent('Taker');
-
-      const makerFill = generateFill({
-        seller: {
-          id: partyId,
-        },
-        aggressor: Side.SIDE_BUY,
-      });
-
-      rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
-      await waitForGridToBeInTheDOM();
-      await waitForDataToHaveLoaded();
-
-      expect(
-        screen
-          .getAllByRole('gridcell')
-          .find((c) => c.getAttribute('col-id') === 'aggressor')
-      ).toHaveTextContent('Maker');
+    const partyId = 'party-id';
+    const takerFill = generateFill({
+      seller: {
+        id: partyId,
+      },
+      aggressor: Side.SIDE_SELL,
     });
+
+    const { rerender } = render(
+      <FillsTable partyId={partyId} rowData={[takerFill]} />
+    );
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
+
+    expect(
+      screen
+        .getAllByRole('gridcell')
+        .find((c) => c.getAttribute('col-id') === 'aggressor')
+    ).toHaveTextContent('Taker');
+
+    const makerFill = generateFill({
+      seller: {
+        id: partyId,
+      },
+      aggressor: Side.SIDE_BUY,
+    });
+
+    rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
+
+    expect(
+      screen
+        .getAllByRole('gridcell')
+        .find((c) => c.getAttribute('col-id') === 'aggressor')
+    ).toHaveTextContent('Maker');
   });
 });
