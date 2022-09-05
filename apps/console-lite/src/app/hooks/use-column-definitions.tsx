@@ -93,7 +93,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
       {
         colId: 'status',
         headerName: t('Status'),
-        field: 'data.market.state',
+        field: 'state',
         headerClass: 'uppercase',
         minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
