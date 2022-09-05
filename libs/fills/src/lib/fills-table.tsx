@@ -48,7 +48,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
-            return classNames('text-right', {
+            return classNames('font-mono text-right', {
               'text-vega-green-dark dark:text-vega-green':
                 data?.buyer.id === partyId,
               'text-vega-red-dark dark:text-vega-red': data?.seller.id,
@@ -61,12 +61,14 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field="price"
           valueFormatter={formatPrice}
           type="rightAligned"
+          cellClass="font-mono text-right"
         />
         <AgGridColumn
           headerName={t('Filled value')}
           field="price"
           valueFormatter={formatTotal}
           type="rightAligned"
+          cellClass="font-mono text-right"
         />
         <AgGridColumn
           headerName={t('Role')}
@@ -78,6 +80,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field="market.tradableInstrument.instrument.product"
           valueFormatter={formatFee(partyId)}
           type="rightAligned"
+          cellClass="font-mono text-right"
         />
         <AgGridColumn
           headerName={t('Date')}

@@ -52,9 +52,9 @@ export const CumulativeVol = React.memo(
     ) : null;
 
     const volume = indicativeVolume ? (
-      <span className="relative">({indicativeVolume})</span>
+      <span className="relative font-mono">({indicativeVolume})</span>
     ) : (
-      <span className="relative">
+      <span className="relative font-mono">
         {ask ? ask : null}
         {ask && bid ? '/' : null}
         {bid ? bid : null}

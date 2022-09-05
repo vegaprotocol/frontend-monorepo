@@ -63,7 +63,7 @@ export interface PriceCellProps {
 export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   return valueFormatted ? (
     <>
-      <div className="flex justify-between leading-tight">
+      <div className="flex justify-between leading-tight font-mono">
         <div>{valueFormatted.low}</div>
         <div>{valueFormatted.high}</div>
       </div>
@@ -152,6 +152,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Size')}
         field="openVolume"
         type="rightAligned"
+        cellClass="font-mono"
         cellRenderer={AmountCell}
         valueFormatter={({
           value,

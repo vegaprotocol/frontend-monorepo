@@ -175,7 +175,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
           </div>
           <div className={itemClass}>
             <div className={itemHeading}>{t('Volume')}</div>
-            <div data-testid="trading-volume">
+            <div data-testid="trading-volume" className="font-mono">
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
                     market.data.indicativeVolume,
@@ -205,7 +205,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
           </div>
           <div className={itemClass}>
             <div className={itemHeading}>{t('Price')}</div>
-            <div data-testid="mark-price">
+            <div data-testid="mark-price" className="font-mono">
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
                     market.data.markPrice,
