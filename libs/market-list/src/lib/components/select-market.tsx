@@ -168,7 +168,7 @@ export const SelectMarketPopover = ({
             {keypair &&
               positionMarkets?.markets &&
               positionMarkets.markets.length > 0 && (
-                <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+                <table className="relative text-sm w-full whitespace-nowrap">
                   <TableTitle>{t('My markets')}</TableTitle>
                   <SelectAllMarketsTableBody
                     data={positionMarkets.markets}
@@ -180,7 +180,7 @@ export const SelectMarketPopover = ({
                   />
                 </table>
               )}
-            <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+            <table className="relative text-sm w-full whitespace-nowrap">
               <TableTitle>{t('All markets')}</TableTitle>
               <SelectAllMarketsTableBody
                 data={data}
