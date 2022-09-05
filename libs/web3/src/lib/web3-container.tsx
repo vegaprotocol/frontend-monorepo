@@ -1,15 +1,13 @@
-import { AsyncRenderer, Button, Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  Web3Provider,
-  Web3ConnectDialog,
-  useEthereumConfig,
-} from '@vegaprotocol/web3';
-import { useWeb3React } from '@web3-react/core';
 import type { ReactNode } from 'react';
 import { useEffect, useState, useMemo } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { AsyncRenderer, Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { createConnectors } from '../../lib/web3-connectors';
+import { Web3Provider } from './web3-provider';
+import { useEthereumConfig } from './use-ethereum-config';
+import { Web3ConnectDialog } from './web3-connect-dialog';
+import { createConnectors } from './web3-connectors';
 
 interface Web3ContainerProps {
   children: ReactNode;
@@ -23,6 +21,7 @@ export const Web3Container = ({ children }: Web3ContainerProps) => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config?.chain_id));
     }
+    return null;
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   return (
     <AsyncRenderer data={config} loading={loading} error={error}>
@@ -108,6 +107,7 @@ export const Web3Content = ({
     );
   }
 
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 };
 

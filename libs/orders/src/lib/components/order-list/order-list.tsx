@@ -8,7 +8,13 @@ import {
   OrderTimeInForceMapping,
   OrderRejectionReasonMapping,
 } from '@vegaprotocol/types';
-import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  getDateTimeFormat,
+  t,
+  positiveClassNames,
+  negativeClassNames,
+} from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -112,7 +118,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
-        rowHeight={40}
+        rowHeight={34}
         {...props}
       >
         <AgGridColumn
@@ -125,12 +131,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            'text-vega-green-dark dark:text-vega-green': ({
+            [positiveClassNames]: ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
             }) => data?.side === Side.SIDE_BUY,
-            'text-vega-red-dark dark:text-vega-red': ({
+            [negativeClassNames]: ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;

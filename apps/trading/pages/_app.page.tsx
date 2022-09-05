@@ -1,14 +1,12 @@
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import {
-  VegaConnectDialog,
-  VegaManageDialog,
-  VegaWalletProvider,
-} from '@vegaprotocol/wallet';
+import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader } from '../components/app-loader';
+import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import './styles.css';
 import { useGlobalStore } from '../stores';
 import {
@@ -16,10 +14,12 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { Footer } from '../components/footer';
-import Head from 'next/head';
 
 function AppBody({ Component, pageProps }: AppProps) {
-  const store = useGlobalStore();
+  const { connectDialog, update } = useGlobalStore((store) => ({
+    connectDialog: store.connectDialog,
+    update: store.update,
+  }));
   const {
     isAssetDetailsDialogOpen,
     assetDetailsDialogSymbol,
@@ -42,18 +42,15 @@ function AppBody({ Component, pageProps }: AppProps) {
           <Footer />
           <VegaConnectDialog
             connectors={Connectors}
-            dialogOpen={store.vegaWalletConnectDialog}
-            setDialogOpen={(open) => store.setVegaWalletConnectDialog(open)}
-          />
-          <VegaManageDialog
-            dialogOpen={store.vegaWalletManageDialog}
-            setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
+            dialogOpen={connectDialog}
+            setDialogOpen={(open) => update({ connectDialog: open })}
           />
           <AssetDetailsDialog
             assetSymbol={assetDetailsDialogSymbol}
             open={isAssetDetailsDialogOpen}
             onChange={(open) => setAssetDetailsDialogOpen(open)}
           />
+          <RiskNoticeDialog />
         </AppLoader>
       </div>
     </ThemeContext.Provider>

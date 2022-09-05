@@ -10,7 +10,6 @@ export const CUSTOM_NODE_KEY = 'custom';
 
 export enum ErrorType {
   INVALID_URL,
-  INVALID_NETWORK,
   SSL_ERROR,
   CONNECTION_ERROR,
   CONNECTION_ERROR_ALL,

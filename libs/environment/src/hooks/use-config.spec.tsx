@@ -69,13 +69,17 @@ describe('useConfig hook', () => {
       ...mockEnvironment,
       VEGA_CONFIG_URL: undefined,
     };
-    const { result } = renderHook(() => useConfig(mockEnvWithoutUrl, onError));
+    const { result } = renderHook(() =>
+      useConfig({ environment: mockEnvWithoutUrl }, onError)
+    );
 
     expect(result.current.config).toBe(undefined);
   });
 
   it('fetches configuration from the provided url', async () => {
-    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
+    const { result } = renderHook(() =>
+      useConfig({ environment: mockEnvironment }, onError)
+    );
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
@@ -85,7 +89,7 @@ describe('useConfig hook', () => {
 
   it('caches the configuration', async () => {
     const { result: firstResult } = renderHook(() =>
-      useConfig(mockEnvironment, onError)
+      useConfig({ environment: mockEnvironment }, onError)
     );
 
     await waitFor(() => {
@@ -94,7 +98,7 @@ describe('useConfig hook', () => {
     });
 
     const { result: secondResult } = renderHook(() =>
-      useConfig(mockEnvironment, onError)
+      useConfig({ environment: mockEnvironment }, onError)
     );
 
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -105,7 +109,9 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     global.fetch.mockImplementation(() => Promise.reject());
 
-    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
+    const { result } = renderHook(() =>
+      useConfig({ environment: mockEnvironment }, onError)
+    );
 
     await waitFor(() => {
       expect(result.current.config).toEqual({ hosts: [] });
@@ -122,11 +128,31 @@ describe('useConfig hook', () => {
       })
     );
 
-    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
+    const { result } = renderHook(() =>
+      useConfig({ environment: mockEnvironment }, onError)
+    );
 
     await waitFor(() => {
       expect(result.current.config).toBe(undefined);
       expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_VALIDATION_ERROR);
+    });
+  });
+
+  it('returns the default config without getting it from the network when provided', async () => {
+    const defaultConfig = { hosts: ['https://default.url'] };
+    const { result } = renderHook(() =>
+      useConfig(
+        {
+          environment: mockEnvironment,
+          defaultConfig,
+        },
+        onError
+      )
+    );
+
+    await waitFor(() => {
+      expect(result.current.config).toBe(defaultConfig);
+      expect(global.fetch).not.toHaveBeenCalled();
     });
   });
 });

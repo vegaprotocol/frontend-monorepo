@@ -1,42 +1,26 @@
-import { gql, useQuery } from '@apollo/client';
+import { useMarketList } from '@vegaprotocol/market-list';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import orderBy from 'lodash/orderBy';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useGlobalStore } from '../stores';
-import type { MarketsLanding } from './__generated__/MarketsLanding';
-
-const MARKETS_QUERY = gql`
-  query MarketsLanding {
-    markets {
-      id
-      tradingMode
-      state
-      marketTimestamps {
-        open
-      }
-    }
-  }
-`;
-
-const getMarketList = ({ markets = [] }: MarketsLanding) => {
-  return orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
-};
 
 export function Index() {
   const { replace } = useRouter();
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
-  const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
-  const setLandingDialog = useGlobalStore((state) => state.setLandingDialog);
+  const { data, error, loading } = useMarketList();
+  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
+    riskNoticeDialog: store.riskNoticeDialog,
+    update: store.update,
+  }));
 
   useEffect(() => {
-    if (data) {
-      const marketId = getMarketList(data)[0]?.id;
+    update({ landingDialog: true });
 
-      // If a default market is found, go to it with the landing dialog open
+    if (data) {
+      const marketId = data[0]?.id;
+
       if (marketId) {
-        setLandingDialog(true);
         replace(`/markets/${marketId}`);
       }
       // Fallback to the markets list page
@@ -44,7 +28,7 @@ export function Index() {
         replace('/markets');
       }
     }
-  }, [data, replace, setLandingDialog]);
+  }, [data, replace, riskNoticeDialog, update]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

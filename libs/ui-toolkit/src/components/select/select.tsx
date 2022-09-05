@@ -2,7 +2,7 @@ import type { SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon } from '..';
-import { defaultFormElement } from '../../utils/shared';
+import { defaultSelectElement } from '../../utils/shared';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
@@ -18,7 +18,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         {...props}
         className={classNames(
-          defaultFormElement(hasError),
+          defaultSelectElement(hasError),
           className,
           'appearance-none rounded-md'
         )}
