@@ -30,7 +30,7 @@ import type {
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useNetworkParam } from '@vegaprotocol/web3';
+import { useNetworkParam } from '@vegaprotocol/react-helpers';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {

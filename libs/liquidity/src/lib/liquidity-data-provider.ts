@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
-import { useNetworkParam } from '@vegaprotocol/web3';
+import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import type {
   MarketLiquidity,

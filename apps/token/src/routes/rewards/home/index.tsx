@@ -18,7 +18,7 @@ import {
 import type { Rewards } from './__generated__/Rewards';
 import { RewardInfo } from './reward-info';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useNetworkParams } from '@vegaprotocol/web3';
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
 
 export const REWARDS_QUERY = gql`
   query Rewards($partyId: ID!) {

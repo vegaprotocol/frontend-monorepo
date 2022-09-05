@@ -32,32 +32,6 @@ export const NETWORK_PARAMS_QUERY = gql`
   }
 `;
 
-export const useNetworkParam = (param: string) => {
-  const { data, loading, error } = useQuery<NetworkParamsQuery, never>(
-    NETWORK_PARAMS_QUERY
-  );
-  const foundParams = data?.networkParameters?.filter((p) => param === p.key);
-  return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
-    loading,
-    error,
-  };
-};
-
-export const useNetworkParams = (params: string[]) => {
-  const { data, loading, error } = useQuery<NetworkParamsQuery, never>(
-    NETWORK_PARAMS_QUERY
-  );
-  const foundParams = data?.networkParameters
-    ?.filter((p) => params.includes(p.key))
-    .sort((a, b) => params.indexOf(a.key) - params.indexOf(b.key));
-  return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
-    loading,
-    error,
-  };
-};
-
 export const useEthereumConfig = () => {
   const { data, loading, error } =
     useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);

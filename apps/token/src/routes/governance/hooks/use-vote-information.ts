@@ -1,4 +1,4 @@
-import { useNetworkParams } from '@vegaprotocol/web3';
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
 import { NetworkParams } from '../../../config';
