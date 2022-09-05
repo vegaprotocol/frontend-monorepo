@@ -64,10 +64,10 @@ export const ProposalFormEnactmentDeadline = function ({
         </div>
         <div className="flex items-center gap-4 text-sm">
           <ButtonLink onClick={() => setInputValue(minEnactHours)}>
-            Use min
+            {t('UseMin')}
           </ButtonLink>
           <ButtonLink onClick={() => setInputValue(maxEnactHours)}>
-            Use max
+            {t('UseMax')}
           </ButtonLink>
         </div>
       </div>

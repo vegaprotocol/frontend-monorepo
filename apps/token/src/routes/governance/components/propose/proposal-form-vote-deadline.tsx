@@ -60,10 +60,10 @@ export const ProposalFormVoteDeadline = function ({
         </div>
         <div className="flex items-center gap-4 text-sm">
           <ButtonLink onClick={() => setInputValue(minVoteHours)}>
-            Use min
+            {t('UseMin')}
           </ButtonLink>
           <ButtonLink onClick={() => setInputValue(maxVoteHours)}>
-            Use max
+            {t('UseMax')}
           </ButtonLink>
         </div>
       </div>

@@ -32,7 +32,7 @@ export const ProposalFormTerms = function ({
           target="_blank"
           className="underline"
         >
-          proposals guide
+          {t('ProposalsGuide')}
         </Link>
       </div>
       <TextArea

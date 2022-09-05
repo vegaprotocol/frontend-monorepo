@@ -38,7 +38,6 @@ export function useNetworkParamWithKeys(params: string[]) {
       ? data?.networkParameters
       : data?.networkParameters?.filter((p) => params.includes(p.key));
 
-  // if foundParams length is greater than 0, sort params by key property
   const sortedParams =
     foundParams && foundParams.length > 0
       ? [...foundParams].sort((a, b) => {
