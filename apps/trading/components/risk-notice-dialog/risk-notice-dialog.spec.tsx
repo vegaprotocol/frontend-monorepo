@@ -7,7 +7,7 @@ beforeEach(() => {
   localStorage.clear();
   useGlobalStore.setState((state) => ({
     ...state,
-    vegaRiskNoticeDialog: false,
+    riskNoticeDialog: false,
   }));
 });
 

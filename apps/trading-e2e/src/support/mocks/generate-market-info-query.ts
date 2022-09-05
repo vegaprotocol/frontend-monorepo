@@ -20,6 +20,15 @@ export const generateMarketInfoQuery = (
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      proposal: {
+        __typename: 'Proposal',
+        id: 'market-0',
+        rationale: {
+          __typename: 'ProposalRationale',
+          title: 'ETHBTC',
+          description: '',
+        },
+      },
       accounts: [
         {
           type: AccountType.ACCOUNT_TYPE_INSURANCE,
