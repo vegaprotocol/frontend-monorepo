@@ -866,12 +866,11 @@ export const generateSimpleMarkets = () => {
 export const generateLongListMarkets = (count: number) => {
   const markets = [];
   for (let i = 0; i < count; i++) {
-    const { id, name, state } = protoMarket;
+    const { id, name } = protoMarket;
     markets.push({
       ...protoMarket,
       id: id + i,
       name: name + i,
-      state,
     });
   }
   return { markets };
