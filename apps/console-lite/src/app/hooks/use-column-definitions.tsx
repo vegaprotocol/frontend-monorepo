@@ -98,8 +98,8 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="uppercase flex h-full items-center justify-center">
-            <div className="border text-center px-2 md:px-8 leading-4 md:leading-6">
-              {MARKET_STATES_MAP[data.data?.market.state || '']}
+            <div className="border text-center px-2 md:px-6 leading-4 md:leading-6">
+              {MARKET_STATES_MAP[data.state || '']}
             </div>
           </div>
         ),
