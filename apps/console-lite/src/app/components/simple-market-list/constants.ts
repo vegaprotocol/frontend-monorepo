@@ -195,3 +195,5 @@ export const ROW_CLASS_RULES = {
   'cursor-pointer': ({ data }: { data: SimpleMarkets_markets }) =>
     IS_MARKET_TRADABLE(data || {}),
 };
+
+export const LARGE_SCREENS = ['xl', 'xxl'];

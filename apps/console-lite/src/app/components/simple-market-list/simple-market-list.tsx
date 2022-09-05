@@ -130,7 +130,7 @@ const SimpleMarketList = () => {
   );
 
   const shouldSuppressHorizontalScroll = useMemo(() => {
-    return !isMobile && screenSize in { xl: '', xxl: '' };
+    return !isMobile && constants.LARGE_SCREENS.includes(screenSize);
   }, [isMobile, screenSize]);
 
   return (
