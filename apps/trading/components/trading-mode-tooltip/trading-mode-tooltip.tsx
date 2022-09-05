@@ -150,7 +150,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <>
-              <p data-testid="tooltip-market-info" className="mb-16">
+              <p data-testid="tooltip-market-info" className="mb-4">
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -170,7 +170,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <>
-              <p className="mb-16">
+              <p className="mb-4">
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}

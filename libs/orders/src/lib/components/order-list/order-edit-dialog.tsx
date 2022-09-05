@@ -78,7 +78,7 @@ export const OrderEditDialog = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
