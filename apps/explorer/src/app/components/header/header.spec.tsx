@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { Header } from './header';
 import { MemoryRouter } from 'react-router-dom';
 
+jest.mock('@vegaprotocol/environment');
+
 jest.mock('../search', () => ({
   Search: () => <div data-testid="search">OrderList</div>,
 }));
