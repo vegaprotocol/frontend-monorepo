@@ -8,28 +8,27 @@ import { useGlobalStore } from '../../stores';
 export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
 export const RiskNoticeDialog = () => {
-  const store = useGlobalStore();
+  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
+    riskNoticeDialog: store.riskNoticeDialog,
+    update: store.update,
+  }));
   const { VEGA_ENV } = useEnvironment();
 
   useEffect(() => {
     const isRiskAccepted = LocalStorage.getItem(RISK_ACCEPTED_KEY) === 'true';
     if (!isRiskAccepted && VEGA_ENV === Networks.MAINNET) {
-      store.setVegaRiskNoticeDialog(true);
+      update({ riskNoticeDialog: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.setVegaRiskNoticeDialog, VEGA_ENV]);
+  }, [update, VEGA_ENV]);
 
   const handleAcceptRisk = () => {
-    store.setVegaRiskNoticeDialog(false);
+    update({ riskNoticeDialog: false });
     LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
   };
 
   return (
-    <Dialog
-      open={store.vegaRiskNoticeDialog}
-      title={t('WARNING')}
-      size="medium"
-    >
+    <Dialog open={riskNoticeDialog} title={t('WARNING')} size="medium">
       <h4 className="text-xl mb-2 mt-4">
         {t('Regulation may apply to use of this app')}
       </h4>
