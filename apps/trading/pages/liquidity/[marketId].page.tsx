@@ -44,11 +44,17 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     [liquidityProviders]
   );
 
+  const enum LiquidityTabs {
+    Active = 'active',
+    Inactive = 'inactive',
+    MyLiquidityProvision  = 'myLP',
+  }
+
   const getActiveDefaultId = () => {
-    if (myLpEdges?.length > 0) return 'myLP';
-    if (activeEdges?.length) return 'active';
-    else if (inactiveEdges?.length > 0) return 'inactive';
-    return 'active';
+    if (myLpEdges?.length > 0) return LiquidityTabs.MyLiquidityProvision;
+    if (activeEdges?.length) return LiquidityTabs.Active;
+    else if (inactiveEdges?.length > 0) return LiquidityTabs.Inactive;
+    return LiquidityTabs.Active;
   };
 
   return (
@@ -72,13 +78,13 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           </HeaderStat>
         </Header>
         <Tabs active={getActiveDefaultId()}>
-          <Tab id="myLP" name={t('My liquidity provision')} hidden={!partyId}>
+          <Tab id={LiquidityTabs.MyLiquidityProvision} name={t('My liquidity provision')} hidden={!partyId}>
             <LiquidityTable ref={gridRef} data={myLpEdges} />
           </Tab>
-          <Tab id="active" name={t('Active')}>
+          <Tab id={LiquidityTabs.Active} name={t('Active')}>
             <LiquidityTable ref={gridRef} data={activeEdges} />
           </Tab>
-          <Tab id="inactive" name={t('Inactive')}>
+          <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
             <LiquidityTable ref={gridRef} data={inactiveEdges} />
           </Tab>
         </Tabs>
