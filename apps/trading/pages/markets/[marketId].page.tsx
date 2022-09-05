@@ -123,7 +123,7 @@ const MarketPage = ({ id }: { id?: string }) => {
               <TradePanels market={market} />
             )}
             <SelectMarketDialog
-              dialogOpen={store.landingDialog}
+              dialogOpen={store.landingDialog && !store.vegaRiskNoticeDialog}
               setDialogOpen={(isOpen: boolean) =>
                 store.setLandingDialog(isOpen)
               }

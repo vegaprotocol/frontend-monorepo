@@ -8,6 +8,7 @@ import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
 import { generateMarket } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
+import { generateMarkets } from './mocks/generate-markets';
 import { generateOrders } from './mocks/generate-orders';
 import { generatePositions } from './mocks/generate-positions';
 import { generateTrades } from './mocks/generate-trades';
@@ -26,6 +27,7 @@ export const mockTradingPage = (
       },
     })
   );
+  aliasQuery(req, 'MarketList', generateMarkets());
   aliasQuery(req, 'MarketDepth', generateMarketDepth());
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
