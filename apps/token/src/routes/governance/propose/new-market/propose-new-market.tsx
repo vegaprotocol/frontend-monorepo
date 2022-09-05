@@ -1,20 +1,31 @@
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
-  ProposalFormDescription,
-  ProposalFormMinRequirements,
-  ProposalFormReference,
-  ProposalFormSubmit,
-  ProposalFormTerms,
-  ProposalFormTitle,
-  ProposalFormTransactionDialog,
   useProposalSubmit,
+  getClosingTimestamp,
+  getEnactmentTimestamp,
 } from '@vegaprotocol/governance';
+import {
+  ProposalFormMinRequirements,
+  ProposalFormTitle,
+  ProposalFormDescription,
+  ProposalFormTerms,
+  ProposalFormSubmit,
+  ProposalFormTransactionDialog,
+  ProposalFormVoteDeadline,
+  ProposalFormEnactmentDeadline,
+  ProposalFormSubheader,
+} from '../../components/propose';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useForm } from 'react-hook-form';
+import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
+import { NetworkParams } from '../../../../config';
 import type { ProposalNewMarketTerms } from '@vegaprotocol/wallet';
 
 export interface NewMarketProposalFormFields {
+  proposalVoteDeadline: number;
+  proposalEnactmentDeadline: number;
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;
@@ -22,6 +33,34 @@ export interface NewMarketProposalFormFields {
 }
 
 export const ProposeNewMarket = () => {
+  const {
+    data: networkParamsData,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParamWithKeys([
+    NetworkParams.GOV_NEW_MARKET_MIN_CLOSE,
+    NetworkParams.GOV_NEW_MARKET_MAX_CLOSE,
+    NetworkParams.GOV_NEW_MARKET_MIN_ENACT,
+    NetworkParams.GOV_NEW_MARKET_MAX_ENACT,
+    NetworkParams.GOV_NEW_MARKET_MIN_PROPOSER_BALANCE,
+  ]);
+
+  const minVoteDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_CLOSE
+  )?.value;
+  const maxVoteDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_CLOSE
+  )?.value;
+  const minEnactmentDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_ENACT
+  )?.value;
+  const maxEnactmentDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_ENACT
+  )?.value;
+  const minProposerBalance = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_PROPOSER_BALANCE
+  )?.value;
+
   const { t } = useTranslation();
   const {
     register,
@@ -40,19 +79,56 @@ export const ProposeNewMarket = () => {
         newMarket: {
           ...JSON.parse(fields.proposalTerms),
         },
+        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        enactmentTimestamp: getEnactmentTimestamp(
+          fields.proposalVoteDeadline,
+          fields.proposalEnactmentDeadline
+        ),
       } as ProposalNewMarketTerms,
     });
   };
 
   return (
-    <>
+    <AsyncRenderer
+      loading={networkParamsLoading}
+      error={networkParamsError}
+      data={networkParamsData}
+    >
       <Heading title={t('NewMarketProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements />
+            <ProposalFormMinRequirements value={minProposerBalance} />
             <div data-testid="new-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
+                <ProposalFormSubheader>
+                  {t('ProposalVoteAndEnactmentTitle')}
+                </ProposalFormSubheader>
+
+                <ProposalFormVoteDeadline
+                  register={register('proposalVoteDeadline', {
+                    required: t('Required'),
+                  })}
+                  errorMessage={errors?.proposalVoteDeadline?.message}
+                  minClose={minVoteDeadline as string}
+                  maxClose={maxVoteDeadline as string}
+                />
+
+                <div className="mt-[-10px]">
+                  <ProposalFormEnactmentDeadline
+                    register={register('proposalEnactmentDeadline', {
+                      required: t('Required'),
+                    })}
+                    errorMessage={errors?.proposalEnactmentDeadline?.message}
+                    minEnact={minEnactmentDeadline as string}
+                    maxEnact={maxEnactmentDeadline as string}
+                  />
+                </div>
+
+                <ProposalFormSubheader>
+                  {t('ProposalRationale')}
+                </ProposalFormSubheader>
+
                 <ProposalFormTitle
                   registerField={register('proposalTitle', {
                     required: t('Required'),
@@ -66,6 +142,8 @@ export const ProposeNewMarket = () => {
                   })}
                   errorMessage={errors?.proposalDescription?.message}
                 />
+
+                <ProposalFormSubheader>{t('NewMarket')}</ProposalFormSubheader>
 
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
@@ -84,11 +162,6 @@ export const ProposeNewMarket = () => {
                   errorMessage={errors?.proposalTerms?.message}
                 />
 
-                <ProposalFormReference
-                  registerField={register('proposalReference')}
-                  errorMessage={errors?.proposalReference?.message}
-                />
-
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
@@ -99,6 +172,6 @@ export const ProposeNewMarket = () => {
           </>
         )}
       </VegaWalletContainer>
-    </>
+    </AsyncRenderer>
   );
 };

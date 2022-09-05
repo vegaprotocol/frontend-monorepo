@@ -1,16 +1,14 @@
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { FormGroup, InputError, TextArea } from '@vegaprotocol/ui-toolkit';
-import { useForm } from 'react-hook-form';
+import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
   ProposalFormMinRequirements,
-  useProposalSubmit,
-} from '@vegaprotocol/governance';
-import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
-} from '@vegaprotocol/governance';
+} from '../../components/propose';
 
 export interface RawProposalFormFields {
   rawProposalData: string;

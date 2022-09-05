@@ -1,20 +1,27 @@
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
-  ProposalFormDescription,
-  ProposalFormMinRequirements,
-  ProposalFormReference,
-  ProposalFormSubmit,
-  ProposalFormTerms,
-  ProposalFormTitle,
-  ProposalFormTransactionDialog,
+  getClosingTimestamp,
   useProposalSubmit,
 } from '@vegaprotocol/governance';
+import {
+  ProposalFormSubheader,
+  ProposalFormMinRequirements,
+  ProposalFormTitle,
+  ProposalFormDescription,
+  ProposalFormSubmit,
+  ProposalFormTransactionDialog,
+  ProposalFormVoteDeadline,
+} from '../../components/propose';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useForm } from 'react-hook-form';
+import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
+import { NetworkParams } from '../../../../config';
 import type { ProposalFreeformTerms } from '@vegaprotocol/wallet';
 
 export interface FreeformProposalFormFields {
+  proposalVoteDeadline: number;
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;
@@ -22,6 +29,26 @@ export interface FreeformProposalFormFields {
 }
 
 export const ProposeFreeform = () => {
+  const {
+    data: networkParamsData,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParamWithKeys([
+    NetworkParams.GOV_FREEFORM_MIN_CLOSE,
+    NetworkParams.GOV_FREEFORM_MAX_CLOSE,
+    NetworkParams.GOV_FREEFORM_MIN_PROPOSER_BALANCE,
+  ]);
+
+  const minVoteDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_CLOSE
+  )?.value;
+  const maxVoteDeadline = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_FREEFORM_MAX_CLOSE
+  )?.value;
+  const minProposerBalance = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_PROPOSER_BALANCE
+  )?.value;
+
   const { t } = useTranslation();
   const {
     register,
@@ -38,19 +65,41 @@ export const ProposeFreeform = () => {
       },
       terms: {
         newFreeform: {},
+        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
       } as ProposalFreeformTerms,
     });
   };
 
   return (
-    <>
+    <AsyncRenderer
+      loading={networkParamsLoading}
+      error={networkParamsError}
+      data={networkParamsData}
+    >
       <Heading title={t('NewFreeformProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements />
+            <ProposalFormMinRequirements value={minProposerBalance} />
             <div data-testid="freeform-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
+                <ProposalFormSubheader>
+                  {t('ProposalVoteTitle')}
+                </ProposalFormSubheader>
+
+                <ProposalFormVoteDeadline
+                  register={register('proposalVoteDeadline', {
+                    required: t('Required'),
+                  })}
+                  errorMessage={errors?.proposalVoteDeadline?.message}
+                  minClose={minVoteDeadline as string}
+                  maxClose={maxVoteDeadline as string}
+                />
+
+                <ProposalFormSubheader>
+                  {t('ProposalRationale')}
+                </ProposalFormSubheader>
+
                 <ProposalFormTitle
                   registerField={register('proposalTitle', {
                     required: t('Required'),
@@ -63,26 +112,7 @@ export const ProposeFreeform = () => {
                   })}
                   errorMessage={errors?.proposalDescription?.message}
                 />
-                <ProposalFormTerms
-                  registerField={register('proposalTerms', {
-                    required: t('Required'),
-                    validate: {
-                      validateJson: (value) => {
-                        try {
-                          JSON.parse(value);
-                          return true;
-                        } catch (e) {
-                          return t('Must be valid JSON');
-                        }
-                      },
-                    },
-                  })}
-                  errorMessage={errors?.proposalTerms?.message}
-                />
-                <ProposalFormReference
-                  registerField={register('proposalReference')}
-                  errorMessage={errors?.proposalReference?.message}
-                />
+
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
@@ -93,6 +123,6 @@ export const ProposeFreeform = () => {
           </>
         )}
       </VegaWalletContainer>
-    </>
+    </AsyncRenderer>
   );
 };
