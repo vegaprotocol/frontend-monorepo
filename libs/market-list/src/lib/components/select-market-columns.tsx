@@ -18,10 +18,7 @@ import Link from 'next/link';
 import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketList_markets,
-  MarketList_markets_fees_factors,
-} from '../__generated__/MarketList';
+import type { Market, MarketData, Candle } from '../';
 import isNil from 'lodash/isNil';
 
 export const cellClassNames = 'px-2 py-1 first:text-left text-right capitalize';
@@ -171,7 +168,9 @@ export const columnHeaders: Column[] = [
 ];
 
 export const columns = (
-  market: MarketList_markets,
+  market: Market,
+  marketData: MarketData,
+  candles: Candle[],
   onSelect: (id: string) => void
 ) => {
   const candlesClose = market.candles

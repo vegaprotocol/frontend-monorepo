@@ -41,32 +41,25 @@ const MARKET_CANDLES_SUB = gql`
   }
 `;
 
-const update = (
-  data: MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node[],
-  delta: MarketCandlesSub_candles
-) => {
+export type Candle =
+  MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node;
+
+const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
   return data && delta
     ? [
         ...data,
         {
           ...delta,
           __typename: 'CandleNode',
-        } as MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node,
+        } as Candle,
       ]
     : data;
 };
 
-const getData = (
-  responseData: MarketCandles
-):
-  | MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node[]
-  | null =>
+const getData = (responseData: MarketCandles): Candle[] | null =>
   responseData.marketsConnection.edges[0].node.candlesConnection.edges
     ?.filter((edge) => edge?.node)
-    .map(
-      (edge) =>
-        edge?.node as MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node
-    ) || null;
+    .map((edge) => edge?.node as Candle) || null;
 
 const getDelta = (
   subscriptionData: MarketCandlesSub
@@ -74,7 +67,7 @@ const getDelta = (
 
 export const marketCandlesDataProvider = makeDataProvider<
   MarketCandles,
-  MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node[],
+  Candle[],
   MarketCandlesSub,
   MarketCandlesSub_candles
 >({

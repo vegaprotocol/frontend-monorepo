@@ -8,6 +8,8 @@ import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
+export type Market = Markets_marketsConnection_edges_node;
+
 export const useMarketList = () => {
   const since = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
@@ -76,14 +78,12 @@ export const MARKET_LIST_QUERY = gql`
   }
 `;
 
-const getData = (
-  responseData: Markets
-): Markets_marketsConnection_edges_node[] | null =>
+const getData = (responseData: Markets): Market[] | null =>
   responseData.marketsConnection.edges.map((edge) => edge.node);
 
 export const marketsDataProvider = makeDataProvider<
   Markets,
-  Markets_marketsConnection_edges_node[],
+  Market[],
   never,
   never
 >({

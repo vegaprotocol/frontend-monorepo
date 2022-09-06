@@ -14,24 +14,7 @@ import type {
 const MARKET_DEPTH_QUERY = gql`
   query MarketDepth($marketId: ID!) {
     market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      data {
-        staticMidPrice
-        marketTradingMode
-        indicativeVolume
-        indicativePrice
-        bestStaticBidPrice
-        bestStaticOfferPrice
-        market {
-          id
-        }
-      }
       depth {
-        lastTrade {
-          price
-        }
         sell {
           price
           volume
@@ -49,23 +32,8 @@ const MARKET_DEPTH_QUERY = gql`
 `;
 
 export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
-  subscription MarketDepthSubscription($marketId: ID!) {
-    marketDepthUpdate(marketId: $marketId) {
-      market {
-        id
-        positionDecimalPlaces
-        data {
-          staticMidPrice
-          marketTradingMode
-          indicativeVolume
-          indicativePrice
-          bestStaticBidPrice
-          bestStaticOfferPrice
-          market {
-            id
-          }
-        }
-      }
+  subscription MarketDepthSubscription($id: ID!) {
+    marketsDepthUpdate(marketIds: [$id]) {
       sell {
         price
         volume
@@ -77,6 +45,7 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
         numberOfOrders
       }
       sequenceNumber
+      previousSequenceNumber
     }
   }
 `;

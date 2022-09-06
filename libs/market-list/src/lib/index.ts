@@ -4,4 +4,4 @@ export * from './utils';
 export * from './markets-data-provider';
 export * from './market-candles-data-provider';
 export * from './markets-candles-data-provider';
-export * from './markets-data-data-provider';
+export * from './market-data-data-provider';

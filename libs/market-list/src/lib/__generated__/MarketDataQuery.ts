@@ -6,10 +6,10 @@
 import { AuctionTrigger, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: MarketData
+// GraphQL query operation: MarketDataQuery
 // ====================================================
 
-export interface MarketData_markets_data_market {
+export interface MarketDataQuery_marketsConnection_edges_node_data_market {
   __typename: "Market";
   /**
    * Market ID
@@ -17,12 +17,12 @@ export interface MarketData_markets_data_market {
   id: string;
 }
 
-export interface MarketData_markets_data {
+export interface MarketDataQuery_marketsConnection_edges_node_data {
   __typename: "MarketData";
   /**
    * market of the associated mark price
    */
-  market: MarketData_markets_data_market;
+  market: MarketDataQuery_marketsConnection_edges_node_data_market;
   /**
    * the highest price level on an order book for buy orders.
    */
@@ -65,17 +65,31 @@ export interface MarketData_markets_data {
   bestStaticOfferPrice: string;
 }
 
-export interface MarketData_markets {
+export interface MarketDataQuery_marketsConnection_edges_node {
   __typename: "Market";
   /**
    * marketData for the given market
    */
-  data: MarketData_markets_data | null;
+  data: MarketDataQuery_marketsConnection_edges_node_data | null;
 }
 
-export interface MarketData {
+export interface MarketDataQuery_marketsConnection_edges {
+  __typename: "MarketEdge";
+  node: MarketDataQuery_marketsConnection_edges_node;
+}
+
+export interface MarketDataQuery_marketsConnection {
+  __typename: "MarketConnection";
   /**
-   * One or more instruments that are trading on the VEGA network
+   * The markets in this connection
    */
-  markets: MarketData_markets[] | null;
+  edges: MarketDataQuery_marketsConnection_edges[];
+}
+
+export interface MarketDataQuery {
+  marketsConnection: MarketDataQuery_marketsConnection;
+}
+
+export interface MarketDataQueryVariables {
+  id: string;
 }
