@@ -1,17 +1,12 @@
 import * as Sentry from '@sentry/react';
 import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from './vega-connector';
+import type { ConnectorConfig, VegaConnector } from './vega-connector';
 import type { TransactionError, TransactionSubmission } from '../wallet-types';
 import { z } from 'zod';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
-interface RestConnectorConfig {
-  token: string | null;
-  connector: 'rest';
-  url: string | null;
-}
 
 enum Endpoints {
   Auth = 'auth/token',
@@ -201,11 +196,11 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  private setConfig(cfg: RestConnectorConfig) {
+  private setConfig(cfg: ConnectorConfig) {
     LocalStorage.setItem(this.configKey, JSON.stringify(cfg));
   }
 
-  private getConfig(): RestConnectorConfig | null {
+  private getConfig(): ConnectorConfig | null {
     const cfg = LocalStorage.getItem(this.configKey);
     if (cfg) {
       try {

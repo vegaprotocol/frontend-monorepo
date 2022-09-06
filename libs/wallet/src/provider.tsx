@@ -24,35 +24,24 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   // Reference to the current connector instance
   const connector = useRef<VegaConnector | null>(null);
 
-  const connect = useCallback(
-    async (c: VegaConnector) => {
-      connector.current = c;
-      try {
-        const sessionActive = await connector.current.sessionActive();
+  const connect = useCallback(async (c: VegaConnector) => {
+    connector.current = c;
+    try {
+      const keys = await connector.current.connect();
 
-        if (!sessionActive) {
-          console.log('no session');
-          return false;
-        }
-
-        const res = await connector.current.connect();
-
-        if (!res) {
-          return false;
-        }
-
-        setKeypairs(res);
-        if (publicKey === null) {
-          setPublicKey(res[0]);
-        }
-
-        return true;
-      } catch (err) {
-        return false;
+      if (keys?.length) {
+        setKeypairs(keys);
+        setPublicKey(keys[0]);
+        return keys;
+      } else {
+        return null;
       }
-    },
-    [publicKey]
-  );
+    } catch (err) {
+      console.log('FAILED');
+      console.error(err);
+      return null;
+    }
+  }, []);
 
   const disconnect = useCallback(async () => {
     try {

@@ -1,7 +1,10 @@
 import { useVegaWallet, WALLET_CONFIG } from './';
 import { useEffect, useState } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import type { VegaConnector } from './connectors/vega-connector';
+import type {
+  ConnectorConfig,
+  VegaConnector,
+} from './connectors/vega-connector';
 
 export function useEagerConnect(Connectors: {
   [connector: string]: VegaConnector;
@@ -12,7 +15,7 @@ export function useEagerConnect(Connectors: {
   useEffect(() => {
     const attemptConnect = async () => {
       const cfg = LocalStorage.getItem(WALLET_CONFIG);
-      let cfgObj: { connector: 'rest'; token: string } | null;
+      let cfgObj: ConnectorConfig | null;
 
       try {
         cfgObj = cfg ? JSON.parse(cfg) : null;
@@ -20,11 +23,14 @@ export function useEagerConnect(Connectors: {
         cfgObj = null;
       }
 
+      console.log(cfgObj);
+
       // No stored config, or config was malformed
       if (!cfgObj || !cfgObj.connector) {
         setConnecting(false);
         return;
       }
+      console.log(cfgObj, Connectors);
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to

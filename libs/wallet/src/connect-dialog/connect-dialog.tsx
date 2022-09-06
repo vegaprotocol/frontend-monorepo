@@ -19,23 +19,14 @@ export function VegaConnectDialog({
   dialogOpen,
   setDialogOpen,
 }: VegaConnectDialogProps) {
-  const { connect } = useVegaWallet();
-
   // Selected connector, we need to show the auth form if the rest connector (which is
   // currently the only way to connect) is selected.
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
 
-  const handleConnect = useCallback(
-    async (connector: VegaConnector) => {
-      setSelectedConnector(connector);
-      const success = await connect(connector);
-      if (success) {
-        setDialogOpen(false);
-      }
-    },
-    [connect, setDialogOpen]
-  );
+  const onConnect = useCallback(() => {
+    setDialogOpen(false);
+  }, [setDialogOpen]);
 
   return (
     <Dialog
@@ -50,7 +41,7 @@ export function VegaConnectDialog({
       title={t('Connect Vega wallet')}
     >
       {selectedConnector !== null ? (
-        <SelectedForm connector={selectedConnector} onConnect={handleConnect} />
+        <SelectedForm connector={selectedConnector} onConnect={onConnect} />
       ) : (
         <ul
           className="flex flex-col justify-center gap-4 items-start"
@@ -60,7 +51,7 @@ export function VegaConnectDialog({
             <li key={key} className="mb-2 last:mb-0">
               <button
                 key={key}
-                onClick={() => handleConnect(connector)}
+                onClick={() => setSelectedConnector(connector)}
                 className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow underline"
               >
                 {t(`${key} provider`)}
@@ -79,24 +70,14 @@ const SelectedForm = ({
   onConnect,
 }: {
   connector: VegaConnector;
-  onConnect: (connector: VegaConnector) => void;
+  onConnect: () => void;
 }) => {
   if (connector instanceof RestConnector) {
-    return (
-      <RestConnectorForm
-        connector={connector}
-        onConnect={() => onConnect(connector)}
-      />
-    );
+    return <RestConnectorForm connector={connector} onConnect={onConnect} />;
   }
 
   if (connector instanceof JsonRpcConnector) {
-    return (
-      <JsonRpcConnectorForm
-        connector={connector}
-        onConnect={() => onConnect(connector)}
-      />
-    );
+    return <JsonRpcConnectorForm connector={connector} onConnect={onConnect} />;
   }
 
   return <div>Unknown connector</div>;

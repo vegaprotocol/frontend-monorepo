@@ -4,6 +4,7 @@ import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { RestConnector } from '.';
+import { useVegaWallet } from './use-vega-wallet';
 
 interface FormFields {
   url: string;
@@ -20,6 +21,7 @@ export function RestConnectorForm({
   connector,
   onConnect,
 }: RestConnectorFormProps) {
+  const { connect } = useVegaWallet();
   const [error, setError] = useState('');
   const { VEGA_WALLET_URL } = useEnvironment();
   const {
@@ -42,6 +44,7 @@ export function RestConnectorForm({
       });
 
       if (res.success) {
+        await connect(connector);
         onConnect(connector);
       } else {
         setError(res.error || authFailedMessage);

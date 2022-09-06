@@ -1,6 +1,6 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
+import { useVegaWallet } from './use-vega-wallet';
 
 type Status =
   | 'idle'
@@ -16,19 +16,20 @@ export const JsonRpcConnectorForm = ({
   onConnect,
 }: {
   connector: JsonRpcConnector;
-  onConnect: (connector: JsonRpcConnector) => void;
+  onConnect: () => void;
 }) => {
+  const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<Error | null>(null);
 
-  const connect = async () => {
+  const attempConnect = useCallback(async () => {
     try {
       setStatus('connecting');
 
-      const connect = await connector.startSession();
+      const startConnect = await connector.connectWallet();
 
-      if ('error' in connect) {
-        handleError(connect.error);
+      if ('error' in startConnect) {
+        handleError(startConnect.error);
         return;
       }
 
@@ -49,7 +50,8 @@ export const JsonRpcConnectorForm = ({
         }
       }
 
-      onConnect(connector);
+      await connect(connector);
+      onConnect();
     } catch (err) {
       console.log(err);
       if (err instanceof Error) {
@@ -61,7 +63,7 @@ export const JsonRpcConnectorForm = ({
       }
       setStatus('error');
     }
-  };
+  }, [connector, connect, onConnect]);
 
   const handleError = (error: {
     message: string;
@@ -72,12 +74,14 @@ export const JsonRpcConnectorForm = ({
     setStatus('error');
   };
 
+  useEffect(() => {
+    if (status === 'idle') {
+      attempConnect();
+    }
+  }, [status, attempConnect]);
+
   if (status === 'idle') {
-    return (
-      <Button variant="primary" onClick={connect}>
-        Start
-      </Button>
-    );
+    return null;
   }
 
   return <Connecting status={status} error={error} />;
