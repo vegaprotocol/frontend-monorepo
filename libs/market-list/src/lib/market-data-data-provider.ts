@@ -54,19 +54,14 @@ const MARKET_DATA_SUB = gql`
 
 export type MarketData = MarketDataQuery_marketsConnection_edges_node_data;
 
-const update = (
-  data: MarketDataQuery_marketsConnection_edges_node_data,
-  delta: MarketDataSub_marketsData
-) => {
+const update = (data: MarketData, delta: MarketDataSub_marketsData) => {
   return produce(data, (draft) => {
     const { marketId, __typename, ...marketData } = delta;
     Object.assign(draft, marketData);
   });
 };
 
-const getData = (
-  responseData: MarketDataQuery
-): MarketDataQuery_marketsConnection_edges_node_data | null =>
+const getData = (responseData: MarketDataQuery): MarketData | null =>
   responseData.marketsConnection.edges[0].node.data || null;
 
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketsData =>
@@ -74,7 +69,7 @@ const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketsData =>
 
 export const marketsDataDataProvider = makeDataProvider<
   MarketDataQuery,
-  MarketDataQuery_marketsConnection_edges_node_data,
+  MarketData,
   MarketDataSub,
   MarketDataSub_marketsData
 >({

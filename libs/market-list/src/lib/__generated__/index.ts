@@ -6,3 +6,4 @@ export * from './MarketDataSub';
 export * from './MarketFields';
 export * from './Markets';
 export * from './MarketsCandles';
+export * from './MarketsDataQuery';

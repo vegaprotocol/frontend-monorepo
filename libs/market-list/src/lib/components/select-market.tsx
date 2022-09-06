@@ -17,7 +17,7 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { MarketList_markets } from '../__generated__';
+import type { Market } from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions } from '@vegaprotocol/positions';
 import { POSITIONS_QUERY } from '@vegaprotocol/positions';
@@ -31,7 +31,7 @@ export const SelectMarketLandingTable = ({
   data,
   onSelect,
 }: {
-  data: MarketList_markets[] | undefined;
+  data: Market[] | undefined;
   onSelect: (id: string) => void;
 }) => {
   return (

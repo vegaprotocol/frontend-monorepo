@@ -173,7 +173,7 @@ export const columns = (
   candles: Candle[],
   onSelect: (id: string) => void
 ) => {
-  const candlesClose = market.candles
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const handleKeyPress = (
@@ -206,11 +206,11 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
-      value: market.data?.markPrice ? (
+      value: marketData?.markPrice ? (
         <PriceCell
-          value={Number(market.data?.markPrice)}
+          value={Number(marketData?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.data?.markPrice.toString(),
+            marketData?.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -239,7 +239,7 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
-      value: market.candles && (
+      value: candles && (
         <Sparkline
           width={100}
           height={20}
@@ -286,10 +286,10 @@ export const columns = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData?.trigger &&
+        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                     - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -297,9 +297,9 @@ export const columns = (
     },
     {
       value:
-        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
+        marketData?.indicativeVolume && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
+              marketData.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',
@@ -324,10 +324,12 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: MarketList_markets & { openVolume: string },
+  market: Market & { openVolume: string },
+  marketData: MarketData,
+  candles: Candle[],
   onSelect: (id: string) => void
 ) => {
-  const candlesClose = market.candles
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = calcCandleLow(market);
@@ -360,11 +362,11 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.data?.markPrice ? (
+      value: marketData?.markPrice ? (
         <PriceCell
-          value={Number(market.data.markPrice)}
+          value={Number(marketData.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.data.markPrice.toString(),
+            marketData.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -439,10 +441,10 @@ export const columnsPositionMarkets = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData?.trigger &&
+        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                     - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -450,9 +452,9 @@ export const columnsPositionMarkets = (
     },
     {
       value:
-        market.data && market.data.indicativeVolume !== '0'
+        marketData && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
+              marketData.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',
@@ -488,7 +490,7 @@ export const columnsPositionMarkets = (
 const FeesCell = ({
   feeFactors,
 }: {
-  feeFactors: MarketList_markets_fees_factors;
+  feeFactors: Market['fees']['factors'];
 }) => (
   <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
     <span>{totalFees(feeFactors) ?? '-'}</span>
@@ -498,7 +500,7 @@ const FeesCell = ({
 export const FeesBreakdown = ({
   feeFactors,
 }: {
-  feeFactors?: MarketList_markets_fees_factors;
+  feeFactors?: Market['fees']['factors'];
 }) => {
   if (!feeFactors) return null;
   return (
