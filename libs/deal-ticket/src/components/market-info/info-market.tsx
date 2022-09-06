@@ -164,7 +164,6 @@ export const Info = ({ market }: InfoProps) => {
     ),
     state: MarketStateMapping[market.state],
   };
-  console.log(keyDetails);
   const marketSpecPanels = [
     {
       title: t('Key details'),
