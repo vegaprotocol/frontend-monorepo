@@ -1,81 +1,104 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+import * as Types from '@vegaprotocol/types/types';
 
-import { AccountType } from "@vegaprotocol/types";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+const defaultOptions = {} as const;
+export type AccountFieldsFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
 
-// ====================================================
-// GraphQL query operation: Accounts
-// ====================================================
+export type AccountsQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
 
-export interface Accounts_party_accounts_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-  /**
-   * Market full name
-   */
-  name: string;
+
+export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } }> | null } | null };
+
+export type AccountEventsSubscriptionVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
+
+
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } };
+
+export const AccountFieldsFragmentDoc = gql`
+    fragment AccountFields on Account {
+  type
+  balance
+  market {
+    id
+    name
+  }
+  asset {
+    id
+    symbol
+    decimals
+  }
 }
-
-export interface Accounts_party_accounts_asset {
-  __typename: "Asset";
-  /**
-   * The ID of the asset
-   */
-  id: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
-   */
-  decimals: number;
+    `;
+export const AccountsDocument = gql`
+    query Accounts($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accounts {
+      ...AccountFields
+    }
+  }
 }
+    ${AccountFieldsFragmentDoc}`;
 
-export interface Accounts_party_accounts {
-  __typename: "Account";
-  /**
-   * Account type (General, Margin, etc)
-   */
-  type: AccountType;
-  /**
-   * Balance as string - current account balance (approx. as balances can be updated several times per second)
-   */
-  balance: string;
-  /**
-   * Market (only relevant to margin accounts)
-   */
-  market: Accounts_party_accounts_market | null;
-  /**
-   * Asset, the 'currency'
-   */
-  asset: Accounts_party_accounts_asset;
+/**
+ * __useAccountsQuery__
+ *
+ * To run a query within a React component, call `useAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountsQuery({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useAccountsQuery(baseOptions: Apollo.QueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+      }
+export function useAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+        }
+export type AccountsQueryHookResult = ReturnType<typeof useAccountsQuery>;
+export type AccountsLazyQueryHookResult = ReturnType<typeof useAccountsLazyQuery>;
+export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
+export const AccountEventsDocument = gql`
+    subscription AccountEvents($partyId: ID!) {
+  accounts(partyId: $partyId) {
+    ...AccountFields
+  }
 }
+    ${AccountFieldsFragmentDoc}`;
 
-export interface Accounts_party {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
-  /**
-   * Collateral accounts relating to a party
-   */
-  accounts: Accounts_party_accounts[] | null;
-}
-
-export interface Accounts {
-  /**
-   * An entity that is trading on the Vega network
-   */
-  party: Accounts_party | null;
-}
-
-export interface AccountsVariables {
-  partyId: string;
-}
+/**
+ * __useAccountEventsSubscription__
+ *
+ * To run a query within a React component, call `useAccountEventsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useAccountEventsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountEventsSubscription({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useAccountEventsSubscription(baseOptions: Apollo.SubscriptionHookOptions<AccountEventsSubscription, AccountEventsSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<AccountEventsSubscription, AccountEventsSubscriptionVariables>(AccountEventsDocument, options);
+      }
+export type AccountEventsSubscriptionHookResult = ReturnType<typeof useAccountEventsSubscription>;
+export type AccountEventsSubscriptionResult = Apollo.SubscriptionResult<AccountEventsSubscription>;
