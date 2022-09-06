@@ -33,7 +33,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/network-parameter`}
               className={linkStyles}
             >
-              Network parameter
+              {t('NetworkParameter')}
             </Link>
           </li>
           <li>
@@ -41,7 +41,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/new-market`}
               className={linkStyles}
             >
-              New market
+              {t('NewMarket')}
             </Link>
           </li>
           <li>
@@ -49,7 +49,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/update-market`}
               className={linkStyles}
             >
-              Update market
+              {t('UpdateMarket')}
             </Link>
           </li>
           <li>
@@ -57,7 +57,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/new-asset`}
               className={linkStyles}
             >
-              New asset
+              {t('NewAsset')}
             </Link>
           </li>
           <li>
@@ -65,7 +65,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/freeform`}
               className={linkStyles}
             >
-              Freeform
+              {t('Freeform')}
             </Link>
           </li>
           <li>
@@ -73,7 +73,7 @@ export const Propose = () => {
               to={`${Routes.GOVERNANCE}/propose/raw`}
               className={linkStyles}
             >
-              Let me choose (raw proposal)
+              {t('RawProposal')}
             </Link>
           </li>
         </ul>
