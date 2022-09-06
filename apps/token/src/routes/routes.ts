@@ -4,7 +4,6 @@ export default {
   CLAIM: '/claim',
   STAKING: '/staking',
   REWARDS: '/rewards',
-  WITHDRAW: '/withdraw',
   WITHDRAWALS: '/withdrawals',
   GOVERNANCE: '/governance',
   VESTING: '/vesting',

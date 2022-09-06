@@ -10,13 +10,17 @@ import * as web3 from '@vegaprotocol/web3';
 import * as sentry from '@sentry/react';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
-jest.mock('@vegaprotocol/web3', () => ({
-  useBridgeContract: jest.fn().mockReturnValue({
-    withdraw_asset: jest.fn(),
-    isNewContract: true,
-  }),
-  useEthereumTransaction: jest.fn(),
-}));
+jest.mock('@vegaprotocol/web3', () => {
+  const orig = jest.requireActual('@vegaprotocol/web3');
+  return {
+    ...orig,
+    useBridgeContract: jest.fn().mockReturnValue({
+      withdraw_asset: jest.fn(),
+      isNewContract: true,
+    }),
+    useEthereumTransaction: jest.fn(),
+  };
+});
 
 function setup(mocks?: MockedResponse[]) {
   const wrapper = ({ children }: { children: ReactNode }) => (

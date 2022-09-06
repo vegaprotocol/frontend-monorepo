@@ -12,7 +12,7 @@ const navigation = {
   vesting: '[href="/vesting"]',
   staking: '[href="/staking"]',
   rewards: '[href="/rewards"]',
-  withdraw: '[href="/withdraw"]',
+  withdrawals: '[href="/withdrawals"]',
   governance: '[href="/governance"]',
   pageSpinner: '[data-testid="splash-loader"]',
 };
