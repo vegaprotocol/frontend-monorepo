@@ -71,6 +71,18 @@ export const generateAccounts = (
             decimals: 5,
           },
         },
+        {
+          __typename: 'Account',
+          type: AccountType.ACCOUNT_TYPE_GENERAL,
+          balance: '100000000',
+          market: null,
+          asset: {
+            __typename: 'Asset',
+            id: 'asset-0',
+            symbol: 'AST0',
+            decimals: 5,
+          },
+        },
       ],
     },
   };
