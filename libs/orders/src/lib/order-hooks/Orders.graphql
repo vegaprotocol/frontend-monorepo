@@ -1,0 +1,78 @@
+fragment OrderFields on Order {
+  id
+  market {
+    id
+    name
+    decimalPlaces
+    positionDecimalPlaces
+    tradableInstrument {
+      instrument {
+        id
+        code
+      }
+    }
+  }
+  type
+  side
+  size
+  status
+  rejectionReason
+  price
+  timeInForce
+  remaining
+  expiresAt
+  createdAt
+  updatedAt
+}
+
+query Orders($partyId: ID!, $pagination: Pagination) {
+  party(id: $partyId) {
+    id
+    ordersConnection(pagination: $pagination) {
+      edges {
+        node {
+          ...OrderFields
+        }
+        cursor
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+}
+
+subscription OrderSub($partyId: ID!) {
+  orders(partyId: $partyId) {
+    ...OrderFields
+  }
+}
+
+subscription OrderEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
+    type
+    event {
+      ... on Order {
+        type
+        id
+        status
+        rejectionReason
+        createdAt
+        size
+        price
+        timeInForce
+        expiresAt
+        side
+        market {
+          id
+          name
+          decimalPlaces
+          positionDecimalPlaces
+        }
+      }
+    }
+  }
+}

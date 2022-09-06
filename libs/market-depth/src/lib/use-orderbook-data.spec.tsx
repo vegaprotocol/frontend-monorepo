@@ -1,10 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, act } from '@testing-library/react';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import type {
-  MarketDepth_market,
-  MarketDepth_market_data,
-} from './__generated__';
+import type { MarketDepth_market, MarketDepth_market_data } from './';
 import { useOrderBookData } from './use-orderbook-data';
 
 const mockData: MarketDepth_market = {

@@ -1,0 +1,6 @@
+query NetworkParametersQuery {
+  networkParameters {
+    key
+    value
+  }
+}

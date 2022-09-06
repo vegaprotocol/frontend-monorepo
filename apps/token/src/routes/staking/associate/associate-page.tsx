@@ -92,7 +92,7 @@ export const AssociatePage = ({
 
   return (
     <section data-testid="associate">
-      <div className="mb-24">
+      <div className="mb-6">
         <Callout>
           <p data-testid="associate-information1">{t('associateInfo1')}</p>
           <p className="mb-0" data-testid="associate-information2">

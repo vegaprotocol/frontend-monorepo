@@ -3,9 +3,14 @@ module.exports = {
     service: {
       name: 'vega',
       url:
-        process.env.NX_VEGA_URL || 'https://api.n07.testnet.vega.xyz/graphql',
+        process.env.GRAPHQL_SCHEMA_PATH ||
+        'https://api.n07.testnet.vega.xyz/graphql',
     },
-    includes: ['../../{apps,libs}/**/*.{ts,tsx,js,jsx,graphql}'],
-    excludes: ['**/generic-data-provider.ts'],
+    includes: [
+      '../../{apps,libs}/**/*.{ts,tsx,js,jsx}',
+      '../../apps/token/client.graphql',
+      '../../apps/trading/client.graphql',
+    ],
+    excludes: ['**/generic-data-provider.ts', '**/__generated___/*'],
   },
 };

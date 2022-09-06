@@ -67,6 +67,9 @@ export interface Rewards_party_rewardDetails_rewards {
    * Amount received for this reward
    */
   amount: string;
+  /**
+   * The amount field formatted by the client
+   */
   amountFormatted: string;
   /**
    * Percentage out of the total distributed reward
@@ -92,6 +95,9 @@ export interface Rewards_party_rewardDetails {
    * The total amount of rewards received for this asset.
    */
   totalAmount: string;
+  /**
+   * The total amount field formatted by the client
+   */
   totalAmountFormatted: string;
 }
 
@@ -101,6 +107,9 @@ export interface Rewards_party_delegations {
    * Amount delegated
    */
   amount: string;
+  /**
+   * The amount field formatted by the client
+   */
   amountFormatted: string;
   /**
    * Epoch of delegation
