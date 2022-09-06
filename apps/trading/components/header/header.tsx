@@ -1,3 +1,4 @@
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { ReactElement, ReactNode } from 'react';
 import { Children } from 'react';
 import { cloneElement } from 'react';
@@ -33,10 +34,12 @@ export const HeaderStat = ({
   children,
   heading,
   id,
+  description,
 }: {
   children: ReactNode;
   heading: string;
   id?: string;
+  description?: string;
 }) => {
   const itemClass =
     'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
@@ -44,9 +47,11 @@ export const HeaderStat = ({
 
   return (
     <div className={itemClass}>
-      <div id={id} className={itemHeading}>
-        {heading}
-      </div>
+      <Tooltip description={description}>
+        <div id={id} className={itemHeading}>
+          {heading}
+        </div>
+      </Tooltip>
       <div aria-labelledby={id}>{children}</div>
     </div>
   );

@@ -5,9 +5,9 @@ import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useMemo } from 'react';
+import { tooltipMapping } from '@vegaprotocol/market-info';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
@@ -61,10 +61,16 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header title={`${code} ${t('liquidity provision')}`}>
-          <HeaderStat heading={t('Target stake')}>
+          <HeaderStat
+            heading={t('Target stake')}
+            description={tooltipMapping['targetStake']}
+          >
             <div>{`${targetStake} ${symbol}`}</div>
           </HeaderStat>
-          <HeaderStat heading={t('Supplied stake')}>
+          <HeaderStat
+            heading={t('Supplied stake')}
+            description={tooltipMapping['suppliedStake']}
+          >
             <div>{`${suppliedStake} ${symbol}`}</div>
           </HeaderStat>
           <HeaderStat heading={t('Market ID')}>

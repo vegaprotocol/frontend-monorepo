@@ -24,7 +24,6 @@ import type {
 } from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -84,7 +83,7 @@ export const MarketInfoContainer = ({
 };
 
 export const Info = ({ market, onSelect }: InfoProps) => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
+  const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
@@ -163,7 +162,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         ),
       })),
   ];
-  const { VEGA_EXPLORER_URL } = useEnvironment();
   const keyDetails = {
     ...pick(
       market,

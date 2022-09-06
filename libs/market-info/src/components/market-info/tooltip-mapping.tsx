@@ -100,4 +100,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
   scalingFactor: t(
     'The scaling between the liquidity demand estimate, based on open interest and target stake.'
   ),
+  targetStake: t('The amount of stake targeted for this market.'),
+  suppliedStake: t('The amount of stake supplied for this market.'),
+  marketValueProxy: t('The market value proxy for this market.'),
 };
