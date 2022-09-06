@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Splash,
+  Accordion,
+  Link,
+} from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
@@ -29,6 +34,7 @@ const Links = {
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
+  onSelect: (id: string) => void;
 }
 
 export const calcCandleVolume = (
@@ -43,8 +49,12 @@ export const calcCandleVolume = (
 
 export interface MarketInfoContainerProps {
   marketId: string;
+  onSelect: (id: string) => void;
 }
-export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+export const MarketInfoContainer = ({
+  marketId,
+  onSelect,
+}: MarketInfoContainerProps) => {
   const yTimestamp = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
@@ -63,7 +73,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   return (
     <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <Info market={data.market} />
+        <Info market={data.market} onSelect={onSelect} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -73,7 +83,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   );
 };
 
-export const Info = ({ market }: InfoProps) => {
+export const Info = ({ market, onSelect }: InfoProps) => {
   const { VEGA_TOKEN_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
@@ -225,16 +235,6 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Risk factors'),
-      content: (
-        <MarketInfoTable
-          data={market.riskFactors}
-          unformatted={true}
-          omits={['market', '__typename']}
-        />
-      ),
-    },
-    {
       title: t('Risk model'),
       content: (
         <MarketInfoTable
@@ -289,9 +289,9 @@ export const Info = ({ market }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
           link={
-            <ExternalLink href={`/liquidity/${market.id}`}>
+            <Link onClick={() => onSelect(market.id)}>
               {t('View liquidity provision table')}
-            </ExternalLink>
+            </Link>
           }
         />
       ),

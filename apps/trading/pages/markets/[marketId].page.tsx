@@ -84,10 +84,19 @@ const MarketPage = ({ id }: { id?: string }) => {
       update: store.update,
     })
   );
+  const { update: updateStore } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
 
   // Default to first marketId query item if found
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
+
+  const onSelect = (id: string) => {
+    if (id && id !== marketId) {
+      updateStore({ marketId: id });
+    }
+  };
 
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
@@ -129,20 +138,16 @@ const MarketPage = ({ id }: { id?: string }) => {
         return (
           <>
             {w > 960 ? (
-              <TradeGrid market={market} />
+              <TradeGrid market={market} onSelect={onSelect} />
             ) : (
-              <TradePanels market={market} />
+              <TradePanels market={market} onSelect={onSelect} />
             )}
             <SelectMarketDialog
               dialogOpen={landingDialog && !riskNoticeDialog}
               setDialogOpen={(isOpen: boolean) =>
                 update({ landingDialog: isOpen })
               }
-              onSelect={(marketId: string) => {
-                if (marketId && marketId !== marketId) {
-                  update({ marketId });
-                }
-              }}
+              onSelect={onSelect}
             />
           </>
         );

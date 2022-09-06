@@ -43,7 +43,10 @@ const formatStake = (value: string, market: Market_market) => {
   return `${formattedValue} ${asset}`;
 };
 
-const compileGridData = (market: Market_market) => {
+const compileGridData = (
+  market: Market_market,
+  onSelect?: (id: string) => void
+) => {
   const grid: MarketDataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
     market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
@@ -80,7 +83,7 @@ const compileGridData = (market: Market_market) => {
   if (isLiquidityMonitoringAuction && market.data?.suppliedStake) {
     grid.push({
       label: (
-        <Link href={`/liquidity/${market.id}`} target="_blank">
+        <Link onClick={() => onSelect && onSelect(market.id)}>
           {t('Current liquidity')}
         </Link>
       ),
@@ -117,9 +120,13 @@ const compileGridData = (market: Market_market) => {
 
 type TradingModeTooltipProps = {
   market: Market_market;
+  onSelect?: (marketId: string) => void;
 };
 
-export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
+export const TradingModeTooltip = ({
+  market,
+  onSelect,
+}: TradingModeTooltipProps) => {
   switch (market.tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
@@ -168,7 +175,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
                   {t('Find out more')}
                 </Link>
               </p>
-              <MarketDataGrid grid={compileGridData(market)} />
+              <MarketDataGrid grid={compileGridData(market, onSelect)} />
             </>
           );
         }

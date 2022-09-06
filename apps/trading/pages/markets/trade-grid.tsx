@@ -32,7 +32,6 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
-import { useGlobalStore } from '../../stores';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -43,6 +42,7 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
+import { useRouter } from 'next/router';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -110,21 +110,16 @@ const ExpiryTooltipContent = ({
 
 interface TradeMarketHeaderProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
+export const TradeMarketHeader = ({
+  market,
+  onSelect,
+}: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
-  }));
-
-  const onSelect = (marketId: string) => {
-    if (marketId && marketId !== marketId) {
-      update({ marketId });
-    }
-  };
 
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
@@ -136,6 +131,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const itemClass =
     'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
   const itemHeading = 'text-neutral-400';
+  const { push } = useRouter();
 
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
@@ -191,7 +187,15 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
             <div className={itemHeading}>{t('Trading mode')}</div>
             <Tooltip
               align="start"
-              description={<TradingModeTooltip market={market} />}
+              description={
+                <TradingModeTooltip
+                  market={market}
+                  onSelect={(marketId: string) => {
+                    onSelect(marketId);
+                    push(`/liquidity/${marketId}`);
+                  }}
+                />
+              }
             >
               <div data-testid="trading-mode">
                 {market.tradingMode ===
@@ -239,12 +243,14 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
 
 interface TradeGridProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradeGrid = ({ market }: TradeGridProps) => {
+export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
+  const { push } = useRouter();
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} />
+      <TradeMarketHeader market={market} onSelect={onSelect} />
       <ResizableGrid vertical={true}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
           <ResizableGrid proportionalLayout={false} minSize={200}>
@@ -275,7 +281,13 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                     <TradingViews.Ticket marketId={market.id} />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info marketId={market.id} />
+                    <TradingViews.Info
+                      marketId={market.id}
+                      onSelect={(id: string) => {
+                        onSelect(id);
+                        push(`/liquidity/${id}`);
+                      }}
+                    />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
@@ -345,9 +357,11 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 
 interface TradePanelsProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradePanels = ({ market }: TradePanelsProps) => {
+export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
+  const { push } = useRouter();
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
@@ -357,12 +371,20 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component marketId={market.id} />;
+    return (
+      <Component
+        marketId={market.id}
+        onSelect={(id: string) => {
+          onSelect(id);
+          push(`/liquidity/${id}`);
+        }}
+      />
+    );
   };
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} />
+      <TradeMarketHeader market={market} onSelect={onSelect} />
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

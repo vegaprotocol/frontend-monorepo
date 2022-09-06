@@ -60,13 +60,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
-        <Header
-          title={
-            <Link href={`/markets/${marketId}`}>
-              {`${code} ${t('liquidity provision')}`}
-            </Link>
-          }
-        >
+        <Header title={`${code} ${t('liquidity provision')}`}>
           <HeaderStat heading={t('Target stake')}>
             <div>{`${targetStake} ${symbol}`}</div>
           </HeaderStat>
