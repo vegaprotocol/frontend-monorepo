@@ -1,7 +1,5 @@
-import {
-  DealTicketContainer,
-  MarketInfoContainer,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';

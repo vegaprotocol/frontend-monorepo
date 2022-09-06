@@ -1,4 +1,4 @@
-import type { MarketInfoQuery } from '@vegaprotocol/deal-ticket';
+import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 import {
   AccountType,
   AuctionTrigger,
