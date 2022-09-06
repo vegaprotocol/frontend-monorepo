@@ -130,7 +130,11 @@ const ButtonCell = ({
   data: Position;
 }) => {
   return (
-    <Button onClick={() => onClick(data)} size="sm">
+    <Button
+      data-testid="close-position"
+      onClick={() => onClick(data)}
+      size="sm"
+    >
       {t('Close')}
     </Button>
   );
