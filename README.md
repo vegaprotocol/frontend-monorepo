@@ -140,6 +140,17 @@ Coming soon! You will be able to run the containers within Vega Capsule.
 
 You can run against a local instance of Vega Capsule today by using the .env.capsule present in the apps.
 
+If you wish to run E2E tests for Token and Block Explorer (other areas to be added soon)
+
+- Vegacapsule must be used in order for these tests to succeed, the vegacapsule repo README.md file contains the steps required to set this up, it must be installed globally.
+- However we start the capsule network a little differently to how it is laid out in those instructions:
+
+In order to run the bootstrap command to generate and start a new network, we must do so using the following:
+
+```bash
+vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl
+```
+
 # 📑 License
 
 [MIT](./LICENSE)

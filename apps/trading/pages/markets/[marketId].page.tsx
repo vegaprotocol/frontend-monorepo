@@ -9,8 +9,8 @@ import React, { useEffect, useState } from 'react';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
-
 import type { Market, MarketVariables } from './__generated__/Market';
+
 // Top level page query
 const MARKET_QUERY = gql`
   query Market($marketId: ID!, $interval: Interval!, $since: String!) {
@@ -77,7 +77,13 @@ const MARKET_QUERY = gql`
 const MarketPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
   const { w } = useWindowSize();
-  const store = useGlobalStore();
+  const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
+    (store) => ({
+      landingDialog: store.landingDialog,
+      riskNoticeDialog: store.riskNoticeDialog,
+      update: store.update,
+    })
+  );
 
   // Default to first marketId query item if found
   const marketId =
@@ -123,13 +129,13 @@ const MarketPage = ({ id }: { id?: string }) => {
               <TradePanels market={market} />
             )}
             <SelectMarketDialog
-              dialogOpen={store.landingDialog && !store.vegaRiskNoticeDialog}
+              dialogOpen={landingDialog && !riskNoticeDialog}
               setDialogOpen={(isOpen: boolean) =>
-                store.setLandingDialog(isOpen)
+                update({ landingDialog: isOpen })
               }
               onSelect={(marketId: string) => {
-                if (marketId && store.marketId !== marketId) {
-                  store.setMarketId(marketId);
+                if (marketId && marketId !== marketId) {
+                  update({ marketId });
                 }
               }}
             />

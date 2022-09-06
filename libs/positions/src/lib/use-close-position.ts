@@ -15,7 +15,7 @@ export const useClosePosition = () => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    TransactionDialog,
+    Dialog,
   } = useVegaTransaction();
 
   const reset = useCallback(() => {
@@ -57,7 +57,7 @@ export const useClosePosition = () => {
 
   return {
     transaction,
-    TransactionDialog,
+    Dialog,
     submit,
     reset,
   };

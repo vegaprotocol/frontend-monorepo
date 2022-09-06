@@ -27,7 +27,7 @@ const useMarketsFilterData = (
         : params.state
         ? params.state
         : MarketState.STATE_ACTIVE;
-    if (state && state !== item.data?.market.state) {
+    if (state && state !== item.state) {
       return false;
     }
     return true;

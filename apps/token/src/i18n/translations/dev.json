@@ -452,7 +452,7 @@
   "withdrawFormAmountLabel": "How much would you like to withdraw?",
   "withdrawFormSubmitButtonIdle": "Withdraw {{amount}} {{symbol}} tokens",
   "withdrawFormSubmitButtonPending": "Preparing",
-  "withdrawalsTitle": "Incomplete withdrawals",
+  "withdrawalsTitle": "Withdrawals",
   "withdrawalsText": "These withdrawals need to be completed with an Ethereum transaction.",
   "withdrawalsNone": "You don't have any pending withdrawals.",
   "withdrawalsCompleteButton": "Finish withdrawal",

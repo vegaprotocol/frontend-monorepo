@@ -143,13 +143,6 @@ const LazyContracts = React.lazy(
     )
 );
 
-const LazyWithdraw = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-withdraw", webpackPrefetch: true */ './withdraw'
-    )
-);
-
 const LazyWithdrawals = React.lazy(
   () =>
     import(
@@ -200,11 +193,6 @@ const routerConfig = [
     path: Routes.REWARDS,
     name: 'Rewards',
     component: LazyRewards,
-  },
-  {
-    path: Routes.WITHDRAW,
-    name: 'Withdraw',
-    component: LazyWithdraw,
   },
   {
     path: Routes.WITHDRAWALS,
