@@ -21,7 +21,6 @@ export const PROPOSAL_QUERY = gql`
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
-  console.log(params);
   const { data, loading, error, refetch } = useQuery<
     ProposalQueryResult,
     ProposalVariables
