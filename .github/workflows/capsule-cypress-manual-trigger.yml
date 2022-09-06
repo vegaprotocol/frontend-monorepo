@@ -128,13 +128,6 @@ jobs:
       ## Run some tests
       ######
 
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-
       - name: Install root dependencies
         run: yarn install
 
