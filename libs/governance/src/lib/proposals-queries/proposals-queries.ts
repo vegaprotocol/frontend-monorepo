@@ -1,5 +1,8 @@
+import compact from 'lodash/compact';
+import filter from 'lodash/filter';
+import flow from 'lodash/flow';
+import orderBy from 'lodash/orderBy';
 import { ProposalState } from '@vegaprotocol/types';
-import { compact, filter, flow, orderBy } from 'lodash';
 
 type Proposal = {
   __typename: 'Proposal';
