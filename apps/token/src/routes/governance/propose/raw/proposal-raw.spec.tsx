@@ -8,11 +8,11 @@ import {
   ProposalRejectionReason,
   ProposalState,
 } from '@vegaprotocol/types';
-import { ProposalForm } from './proposal-form';
-import { PROPOSAL_EVENT_SUB } from './proposals-hooks';
-import type { ProposalEvent } from './proposals-hooks/__generated__/ProposalEvent';
+import { ProposeRaw } from './propose-raw';
+import { PROPOSAL_EVENT_SUB } from '@vegaprotocol/governance';
+import type { ProposalEvent } from '@vegaprotocol/governance';
 
-describe('ProposalForm', () => {
+describe('Raw proposal form', () => {
   const pubkey = '0x123';
   const mockProposalEvent: MockedResponse<ProposalEvent> = {
     request: {
@@ -53,7 +53,7 @@ describe('ProposalForm', () => {
             } as unknown as VegaWalletContextShape
           }
         >
-          <ProposalForm />
+          <ProposeRaw />
         </VegaWalletContext.Provider>
       </MockedProvider>
     );

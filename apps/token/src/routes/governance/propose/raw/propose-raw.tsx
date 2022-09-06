@@ -31,7 +31,7 @@ export const ProposeRaw = () => {
 
   return (
     <>
-      <Heading title={t('RawProposal')} />
+      <Heading title={t('NewRawProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
