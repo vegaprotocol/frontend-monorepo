@@ -112,13 +112,6 @@ jobs:
       ## Run some tests
       ######
 
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          ref: master
-          fetch-depth: 0
-
       - name: Install root dependencies
         run: yarn install
 
