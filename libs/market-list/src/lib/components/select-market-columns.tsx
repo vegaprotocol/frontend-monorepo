@@ -3,6 +3,7 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   PriceCell,
+  signedNumberCssClass,
   t,
 } from '@vegaprotocol/react-helpers';
 import {
@@ -169,8 +170,8 @@ export const columnHeaders: Column[] = [
 
 export const columns = (
   market: Market,
-  marketData: MarketData,
-  candles: Candle[],
+  marketData: MarketData | undefined,
+  candles: Candle[] | undefined,
   onSelect: (id: string) => void
 ) => {
   const candlesClose = candles
@@ -184,8 +185,8 @@ export const columns = (
       return onSelect(id);
     }
   };
-  const candleLow = calcCandleLow(market);
-  const candleHigh = calcCandleHigh(market);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
   const selectMarketColumns: Column[] = [
     {
       value: (
@@ -324,16 +325,17 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: Market & { openVolume: string },
-  marketData: MarketData,
-  candles: Candle[],
-  onSelect: (id: string) => void
+  market: Market,
+  marketData: MarketData | undefined,
+  candles: Candle[] | undefined,
+  onSelect: (id: string) => void,
+  openVolume?: string
 ) => {
   const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = calcCandleLow(market);
-  const candleHigh = calcCandleHigh(market);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -468,17 +470,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: (
-        <p
-          className={
-            market.openVolume.includes('+')
-              ? 'text-vega-green'
-              : market.openVolume.includes('-')
-              ? 'text-vega-red'
-              : ''
-          }
-        >
-          {market.openVolume}
-        </p>
+        <p className={signedNumberCssClass(openVolume || '')}>{openVolume}</p>
       ),
       className: `${cellClassNames} hidden xxl:table-cell`,
       onlyOnDetailed: true,

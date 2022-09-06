@@ -253,7 +253,7 @@ export const update = (
   });
 };
 
-export const positionDataProvider = makeDataProvider<
+export const positionsDataProvider = makeDataProvider<
   Positions,
   Positions_party,
   PositionsSubscription,
@@ -268,7 +268,7 @@ export const positionDataProvider = makeDataProvider<
 });
 
 export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
-  [positionDataProvider, accountsDataProvider],
+  [positionsDataProvider, accountsDataProvider],
   ([positions, accounts]) => {
     return sortBy(
       getMetrics(

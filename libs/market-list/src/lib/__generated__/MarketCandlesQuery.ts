@@ -6,10 +6,10 @@
 import { Interval } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: MarketCandles
+// GraphQL query operation: MarketCandlesQuery
 // ====================================================
 
-export interface MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node {
+export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node {
   __typename: "CandleNode";
   /**
    * High price (uint64)
@@ -33,45 +33,45 @@ export interface MarketCandles_marketsConnection_edges_node_candlesConnection_ed
   volume: string;
 }
 
-export interface MarketCandles_marketsConnection_edges_node_candlesConnection_edges {
+export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges {
   __typename: "CandleEdge";
-  node: MarketCandles_marketsConnection_edges_node_candlesConnection_edges_node;
+  node: MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node;
 }
 
-export interface MarketCandles_marketsConnection_edges_node_candlesConnection {
+export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnection {
   __typename: "CandleDataConnection";
   /**
    * The candles
    */
-  edges: (MarketCandles_marketsConnection_edges_node_candlesConnection_edges | null)[] | null;
+  edges: (MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges | null)[] | null;
 }
 
-export interface MarketCandles_marketsConnection_edges_node {
+export interface MarketCandlesQuery_marketsConnection_edges_node {
   __typename: "Market";
   /**
    * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candlesConnection: MarketCandles_marketsConnection_edges_node_candlesConnection;
+  candlesConnection: MarketCandlesQuery_marketsConnection_edges_node_candlesConnection;
 }
 
-export interface MarketCandles_marketsConnection_edges {
+export interface MarketCandlesQuery_marketsConnection_edges {
   __typename: "MarketEdge";
-  node: MarketCandles_marketsConnection_edges_node;
+  node: MarketCandlesQuery_marketsConnection_edges_node;
 }
 
-export interface MarketCandles_marketsConnection {
+export interface MarketCandlesQuery_marketsConnection {
   __typename: "MarketConnection";
   /**
    * The markets in this connection
    */
-  edges: MarketCandles_marketsConnection_edges[];
+  edges: MarketCandlesQuery_marketsConnection_edges[];
 }
 
-export interface MarketCandles {
-  marketsConnection: MarketCandles_marketsConnection;
+export interface MarketCandlesQuery {
+  marketsConnection: MarketCandlesQuery_marketsConnection;
 }
 
-export interface MarketCandlesVariables {
+export interface MarketCandlesQueryVariables {
   interval: Interval;
   since: string;
   marketId: string;

@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client';
-import { t, volumePrefix } from '@vegaprotocol/react-helpers';
+import { t, volumePrefix, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
   Icon,
@@ -8,6 +7,7 @@ import {
   Link,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
+
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import type { Column } from './select-market-columns';
@@ -17,10 +17,14 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { Market } from '../';
+import type { Market, MarketData, MarketCandles, Candle } from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { Positions } from '@vegaprotocol/positions';
-import { POSITIONS_QUERY } from '@vegaprotocol/positions';
+import type {
+  Positions_party,
+  PositionsSubscription_positions,
+  Positions_party_positionsConnection_edges_node,
+} from '@vegaprotocol/positions';
+import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
@@ -28,10 +32,14 @@ import {
 import { useMarketList } from '../markets-data-provider';
 
 export const SelectMarketLandingTable = ({
-  data,
+  markets,
+  marketsData,
+  marketsCandles,
   onSelect,
 }: {
-  data: Market[] | undefined;
+  markets: Market[] | undefined;
+  marketsData: MarketData[] | undefined;
+  marketsCandles: MarketCandles[] | undefined;
   onSelect: (id: string) => void;
 }) => {
   return (
@@ -45,11 +53,20 @@ export const SelectMarketLandingTable = ({
             <SelectMarketTableHeader />
           </thead>
           <tbody>
-            {data?.map((market, i) => (
+            {markets?.map((market, i) => (
               <SelectMarketTableRow
                 key={i}
                 detailed={false}
-                columns={columns(market, onSelect)}
+                columns={columns(
+                  market,
+                  marketsData?.find(
+                    (marketData) => marketData.market.id === market.id
+                  ),
+                  marketsCandles?.find(
+                    (marketCandles) => marketCandles.marketId === market.id
+                  )?.candles,
+                  onSelect
+                )}
               />
             ))}
           </tbody>
@@ -61,31 +78,52 @@ export const SelectMarketLandingTable = ({
 };
 
 export const SelectAllMarketsTableBody = ({
-  data,
+  markets,
+  marketsData,
+  marketsCandles,
+  positions,
   onSelect,
   headers = columnHeaders,
-  tableColumns = (market) => columns(market, onSelect),
+  tableColumns = (market, marketData, candles) =>
+    columns(market, marketData, candles, onSelect),
 }: {
-  data?: MarketList_markets[];
+  markets: Market[] | undefined;
+  marketsData: MarketData[] | undefined;
+  marketsCandles: MarketCandles[] | undefined;
+  positions?: Positions_party_positionsConnection_edges_node[];
   title?: string;
   onSelect: (id: string) => void;
   headers?: Column[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tableColumns?: (market: any) => Column[];
+  tableColumns?: (
+    market: Market,
+    marketData: MarketData | undefined,
+    candles: Candle[] | undefined,
+    openVolume?: string
+  ) => Column[];
 }) => {
-  if (!data) return null;
+  if (!markets) return null;
   return (
     <>
       <thead className="bg-neutral-200 dark:bg-neutral-800">
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
-      {/* Border styles required to create space between tbody elements margin/padding dont work */}
+      {/* Border styles required to create space between tbody elements margin/padding don't work */}
       <tbody className="border-b-[10px] border-transparent">
-        {data?.map((market, i) => (
+        {markets?.map((market, i) => (
           <SelectMarketTableRow
             key={i}
             detailed={true}
-            columns={tableColumns(market)}
+            columns={tableColumns(
+              market,
+              marketsData?.find(
+                (marketData) => marketData.market.id === market.id
+              ),
+              marketsCandles?.find(
+                (marketCandles) => marketCandles.marketId === market.id
+              )?.candles,
+              positions &&
+                positions.find((p) => p.market.id === market.id)?.openVolume
+            )}
           />
         ))}
       </tbody>
@@ -106,35 +144,14 @@ export const SelectMarketPopover = ({
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data: marketDataPositions, loading: positionsLoading } =
-    useQuery<Positions>(POSITIONS_QUERY, {
-      variables,
-      skip: !keypair?.pub,
-    });
-
-  const positionMarkets = useMemo(
-    () => ({
-      markets:
-        data
-          ?.filter((market) =>
-            marketDataPositions?.party?.positionsConnection.edges?.find(
-              (edge) => edge.node.market.id === market.id
-            )
-          )
-          .map((market) => {
-            const position =
-              marketDataPositions?.party?.positionsConnection.edges?.find(
-                (edge) => edge.node.market.id === market.id
-              )?.node;
-            return {
-              ...market,
-              openVolume:
-                position?.openVolume && volumePrefix(position.openVolume),
-            };
-          }) || null,
-    }),
-    [data, marketDataPositions]
-  );
+  const { data: party, loading: positionsLoading } = useDataProvider<
+    Positions_party,
+    PositionsSubscription_positions
+  >({
+    dataProvider: positionsDataProvider,
+    update: () => false,
+    variables,
+  });
 
   const onSelectMarket = (marketId: string) => {
     onSelect(marketId);
@@ -142,6 +159,15 @@ export const SelectMarketPopover = ({
   };
 
   const iconClass = open ? 'rotate-180' : '';
+  const markets = useMemo(
+    () =>
+      data?.markets?.filter((market) =>
+        party?.positionsConnection.edges?.find(
+          (edge) => edge.node.market.id === market.id
+        )
+      ),
+    [data, party]
+  );
 
   return (
     <Popover
@@ -165,25 +191,36 @@ export const SelectMarketPopover = ({
           </div>
         ) : (
           <>
-            {keypair &&
-              positionMarkets?.markets &&
-              positionMarkets.markets.length > 0 && (
-                <table className="relative text-sm w-full whitespace-nowrap -mx-2">
-                  <TableTitle>{t('My markets')}</TableTitle>
-                  <SelectAllMarketsTableBody
-                    data={positionMarkets.markets}
-                    onSelect={onSelectMarket}
-                    headers={columnHeadersPositionMarkets}
-                    tableColumns={(market) =>
-                      columnsPositionMarkets(market, onSelectMarket)
-                    }
-                  />
-                </table>
-              )}
+            {keypair && (party?.positionsConnection.edges?.length ?? 0) > 0 ? (
+              <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+                <TableTitle>{t('My markets')}</TableTitle>
+                <SelectAllMarketsTableBody
+                  markets={markets}
+                  marketsData={data?.marketsData}
+                  marketsCandles={data?.marketsCandles}
+                  positions={party?.positionsConnection.edges
+                    ?.filter((edge) => edge.node)
+                    .map((edge) => edge.node)}
+                  onSelect={onSelectMarket}
+                  headers={columnHeadersPositionMarkets}
+                  tableColumns={(market, marketData, candles, openVolume) =>
+                    columnsPositionMarkets(
+                      market,
+                      marketData,
+                      candles,
+                      onSelectMarket,
+                      openVolume
+                    )
+                  }
+                />
+              </table>
+            ) : null}
             <table className="relative text-sm w-full whitespace-nowrap -mx-2">
               <TableTitle>{t('All markets')}</TableTitle>
               <SelectAllMarketsTableBody
-                data={data}
+                markets={data?.markets}
+                marketsData={data?.marketsData}
+                marketsCandles={data?.marketsCandles}
                 onSelect={onSelectMarket}
               />
             </table>
@@ -256,5 +293,12 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
     );
   }
 
-  return <SelectMarketLandingTable data={data} onSelect={onSelect} />;
+  return (
+    <SelectMarketLandingTable
+      markets={data?.markets}
+      marketsData={data?.marketsData}
+      marketsCandles={data?.marketsCandles}
+      onSelect={onSelect}
+    />
+  );
 };
