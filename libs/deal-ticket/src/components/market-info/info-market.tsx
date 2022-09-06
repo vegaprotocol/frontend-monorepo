@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Splash,
-  Accordion,
-  Link,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
