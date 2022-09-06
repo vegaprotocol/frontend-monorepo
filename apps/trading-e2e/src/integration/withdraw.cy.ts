@@ -1,7 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-import { generateWithdrawPageQuery } from '../support/mocks/generate-withdraw-page-query';
+import { generateWithdrawFormQuery } from '../support/mocks/generate-withdraw-page-query';
+import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 describe('withdraw', () => {
@@ -16,10 +17,13 @@ describe('withdraw', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
-      aliasQuery(req, 'WithdrawPageQuery', generateWithdrawPageQuery());
+      aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+      aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
     });
-    cy.visit('/portfolio/withdraw');
+
+    cy.visit('/portfolio');
+    cy.getByTestId('Withdrawals').click();
 
     // Withdraw page requires vega wallet connection
     connectVegaWallet();
@@ -27,15 +31,14 @@ describe('withdraw', () => {
     // It also requires connection Ethereum wallet
     connectEthereumWallet();
 
-    cy.wait('@WithdrawPageQuery');
-    cy.contains('Withdraw');
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
+    });
+    cy.getByTestId('withdraw-dialog-button').click();
+    cy.wait('@WithdrawFormQuery');
   });
 
   it('form validation', () => {
-    // Prompts that there are incomplete withdrawals
-    cy.contains('You have incomplete withdrawals');
-    cy.getByTestId('complete-withdrawals-prompt').should('exist');
-
     cy.getByTestId(submitWithdrawBtn).click();
 
     cy.getByTestId(formFieldError).should('contain.text', 'Required');
@@ -82,9 +85,8 @@ describe('withdraw', () => {
     cy.getByTestId(submitWithdrawBtn).click();
     cy.getByTestId('dialog-title').should(
       'have.text',
-      'Withdrawal transaction pending'
+      'Awaiting network confirmation'
     );
-    cy.getByTestId('dialog-text').should('have.text', 'Awaiting transaction');
   });
 
   it.skip('creates a withdrawal on submit'); // Needs capsule

@@ -6,10 +6,10 @@
 import { AccountType } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: WithdrawPageQuery
+// GraphQL query operation: WithdrawFormQuery
 // ====================================================
 
-export interface WithdrawPageQuery_party_withdrawals {
+export interface WithdrawFormQuery_party_withdrawals {
   __typename: "Withdrawal";
   /**
    * The Vega internal ID of the withdrawal
@@ -21,7 +21,7 @@ export interface WithdrawPageQuery_party_withdrawals {
   txHash: string | null;
 }
 
-export interface WithdrawPageQuery_party_accounts_asset {
+export interface WithdrawFormQuery_party_accounts_asset {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -33,7 +33,7 @@ export interface WithdrawPageQuery_party_accounts_asset {
   symbol: string;
 }
 
-export interface WithdrawPageQuery_party_accounts {
+export interface WithdrawFormQuery_party_accounts {
   __typename: "Account";
   /**
    * Account type (General, Margin, etc)
@@ -46,10 +46,10 @@ export interface WithdrawPageQuery_party_accounts {
   /**
    * Asset, the 'currency'
    */
-  asset: WithdrawPageQuery_party_accounts_asset;
+  asset: WithdrawFormQuery_party_accounts_asset;
 }
 
-export interface WithdrawPageQuery_party {
+export interface WithdrawFormQuery_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -58,18 +58,18 @@ export interface WithdrawPageQuery_party {
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawals: WithdrawPageQuery_party_withdrawals[] | null;
+  withdrawals: WithdrawFormQuery_party_withdrawals[] | null;
   /**
    * Collateral accounts relating to a party
    */
-  accounts: WithdrawPageQuery_party_accounts[] | null;
+  accounts: WithdrawFormQuery_party_accounts[] | null;
 }
 
-export interface WithdrawPageQuery_assetsConnection_edges_node_source_BuiltinAsset {
+export interface WithdrawFormQuery_assetsConnection_edges_node_source_BuiltinAsset {
   __typename: "BuiltinAsset";
 }
 
-export interface WithdrawPageQuery_assetsConnection_edges_node_source_ERC20 {
+export interface WithdrawFormQuery_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -77,9 +77,9 @@ export interface WithdrawPageQuery_assetsConnection_edges_node_source_ERC20 {
   contractAddress: string;
 }
 
-export type WithdrawPageQuery_assetsConnection_edges_node_source = WithdrawPageQuery_assetsConnection_edges_node_source_BuiltinAsset | WithdrawPageQuery_assetsConnection_edges_node_source_ERC20;
+export type WithdrawFormQuery_assetsConnection_edges_node_source = WithdrawFormQuery_assetsConnection_edges_node_source_BuiltinAsset | WithdrawFormQuery_assetsConnection_edges_node_source_ERC20;
 
-export interface WithdrawPageQuery_assetsConnection_edges_node {
+export interface WithdrawFormQuery_assetsConnection_edges_node {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -100,33 +100,33 @@ export interface WithdrawPageQuery_assetsConnection_edges_node {
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
-  source: WithdrawPageQuery_assetsConnection_edges_node_source;
+  source: WithdrawFormQuery_assetsConnection_edges_node_source;
 }
 
-export interface WithdrawPageQuery_assetsConnection_edges {
+export interface WithdrawFormQuery_assetsConnection_edges {
   __typename: "AssetEdge";
-  node: WithdrawPageQuery_assetsConnection_edges_node;
+  node: WithdrawFormQuery_assetsConnection_edges_node;
 }
 
-export interface WithdrawPageQuery_assetsConnection {
+export interface WithdrawFormQuery_assetsConnection {
   __typename: "AssetsConnection";
   /**
    * The assets
    */
-  edges: (WithdrawPageQuery_assetsConnection_edges | null)[] | null;
+  edges: (WithdrawFormQuery_assetsConnection_edges | null)[] | null;
 }
 
-export interface WithdrawPageQuery {
+export interface WithdrawFormQuery {
   /**
    * An entity that is trading on the Vega network
    */
-  party: WithdrawPageQuery_party | null;
+  party: WithdrawFormQuery_party | null;
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: WithdrawPageQuery_assetsConnection;
+  assetsConnection: WithdrawFormQuery_assetsConnection;
 }
 
-export interface WithdrawPageQueryVariables {
+export interface WithdrawFormQueryVariables {
   partyId: string;
 }

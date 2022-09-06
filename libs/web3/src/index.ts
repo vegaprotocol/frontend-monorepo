@@ -6,7 +6,7 @@ export * from './lib/use-token-decimals';
 export * from './lib/use-ethereum-config';
 export * from './lib/use-ethereum-read-contract';
 export * from './lib/use-ethereum-transaction';
-export * from './lib/transaction-dialog';
+export * from './lib/ethereum-transaction-dialog';
 export * from './lib/web3-provider';
 export * from './lib/web3-connect-dialog';
 export * from './lib/web3-wallet-input';

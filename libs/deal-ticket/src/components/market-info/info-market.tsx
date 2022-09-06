@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Splash,
-  Accordion,
-  Link,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
@@ -165,11 +160,11 @@ export const Info = ({ market }: InfoProps) => {
       'name',
       'decimalPlaces',
       'positionDecimalPlaces',
-      'tradingMode',
-      'id'
+      'tradingMode'
     ),
     state: MarketStateMapping[market.state],
   };
+  console.log(keyDetails);
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -177,7 +172,7 @@ export const Info = ({ market }: InfoProps) => {
         <MarketInfoTable
           data={{
             ...keyDetails,
-            marketID: keyDetails.id,
+            marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&
               MarketTradingModeMapping[keyDetails.tradingMode],

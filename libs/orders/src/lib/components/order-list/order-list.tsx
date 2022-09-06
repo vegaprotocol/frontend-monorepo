@@ -62,7 +62,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           ref={ref}
           setEditOrder={setEditOrder}
         />
-        <orderCancel.TransactionDialog
+        <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
         >
@@ -70,15 +70,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             transaction={orderCancel.transaction}
             order={orderCancel.cancelledOrder}
           />
-        </orderCancel.TransactionDialog>
-        <orderEdit.TransactionDialog
+        </orderCancel.Dialog>
+        <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
         >
           <OrderFeedback
             transaction={orderEdit.transaction}
             order={orderEdit.updatedOrder}
           />
-        </orderEdit.TransactionDialog>
+        </orderEdit.Dialog>
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}

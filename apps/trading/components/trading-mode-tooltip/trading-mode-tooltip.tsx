@@ -59,11 +59,14 @@ const compileGridData = (market: Market_market) => {
   }
 
   if (market.data?.auctionEnd) {
+    const endDate = getDateTimeFormat().format(
+      new Date(market.data.auctionEnd)
+    );
     grid.push({
       label: isLiquidityMonitoringAuction
         ? t('Est auction end')
         : t('Auction end'),
-      value: '~' + getDateTimeFormat().format(new Date(market.data.auctionEnd)),
+      value: isLiquidityMonitoringAuction ? `~${endDate}` : endDate,
     });
   }
 

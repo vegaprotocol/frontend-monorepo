@@ -1,36 +1,50 @@
-import orderBy from 'lodash/orderBy';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
-import { useWithdrawals, WithdrawalsTable } from '@vegaprotocol/withdraws';
-import Link from 'next/link';
+import {
+  useWithdrawals,
+  WithdrawalDialogs,
+  WithdrawalsTable,
+} from '@vegaprotocol/withdraws';
 import { t } from '@vegaprotocol/react-helpers';
+import { useState } from 'react';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { Web3Container } from '@vegaprotocol/web3';
 
 export const WithdrawalsContainer = () => {
-  const { data, loading, error } = useWithdrawals();
+  const { withdrawals, loading, error } = useWithdrawals();
+  const [withdrawDialog, setWithdrawDialog] = useState(false);
 
+  console.log('render');
   return (
-    <AsyncRenderer
-      data={data}
-      loading={loading}
-      error={error}
-      render={(data) => {
-        const withdrawals = orderBy(
-          data.party?.withdrawals || [],
-          (w) => new Date(w.createdTimestamp).getTime(),
-          'desc'
-        );
-        return (
-          <div className="grid grid-cols-[1fr_min-content] gap-4 h-full">
-            <WithdrawalsTable withdrawals={withdrawals} />
-            <div className="p-4">
-              <Link href="/portfolio/withdraw" passHref={true}>
-                <Button size="md" data-testid="start-withdrawal">
-                  {t('Withdraw')}
-                </Button>
-              </Link>
-            </div>
+    <Web3Container>
+      <VegaWalletContainer>
+        <div className="h-full grid grid-rows-[min-content_1fr]">
+          <header className="flex justify-between items-center p-4">
+            <h4 className="text-lg text-black dark:text-white">
+              {t('Withdrawals')}
+            </h4>
+            <Button
+              onClick={() => setWithdrawDialog(true)}
+              data-testid="withdraw-dialog-button"
+            >
+              {t('Withdraw')}
+            </Button>
+          </header>
+          <div>
+            <AsyncRenderer
+              data={withdrawals}
+              loading={loading}
+              error={error}
+              render={(data) => {
+                return <WithdrawalsTable withdrawals={data} />;
+              }}
+            />
           </div>
-        );
-      }}
-    />
+        </div>
+        <WithdrawalDialogs
+          withdrawDialog={withdrawDialog}
+          setWithdrawDialog={setWithdrawDialog}
+        />
+      </VegaWalletContainer>
+    </Web3Container>
   );
 };
