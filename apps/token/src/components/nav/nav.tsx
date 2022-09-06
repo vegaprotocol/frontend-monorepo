@@ -224,7 +224,7 @@ const NavLinks = ({
     { route: Routes.VESTING, text: t('Vesting') },
     { route: Routes.STAKING, text: t('Staking') },
     { route: Routes.REWARDS, text: t('Rewards') },
-    { route: Routes.WITHDRAW, text: t('Withdraw') },
+    { route: Routes.WITHDRAWALS, text: t('Withdraw') },
     { route: Routes.GOVERNANCE, text: t('Governance') },
   ];
   const navClasses = classNames('flex', {

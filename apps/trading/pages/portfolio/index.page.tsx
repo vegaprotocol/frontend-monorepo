@@ -1,4 +1,3 @@
-import { Web3Container } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
@@ -67,14 +66,12 @@ const Portfolio = () => {
                 </VegaWalletContainer>
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>
-                <DepositsContainer />
+                <VegaWalletContainer>
+                  <DepositsContainer />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="withdrawals" name={t('Withdrawals')}>
-                <Web3Container>
-                  <VegaWalletContainer>
-                    <WithdrawalsContainer />
-                  </VegaWalletContainer>
-                </Web3Container>
+                <WithdrawalsContainer />
               </Tab>
             </Tabs>
           </PortfolioGridChild>

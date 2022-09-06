@@ -117,23 +117,26 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const candlesClose: string[] = (market?.candles || [])
-    .map((candle) => candle?.close)
-    .filter((c): c is CandleClose => c !== null);
-  const symbol =
-    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-  const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
+  const { update } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
 
-  const store = useGlobalStore();
   const onSelect = (marketId: string) => {
-    if (marketId && store.marketId !== marketId) {
-      store.setMarketId(marketId);
+    if (marketId && marketId !== marketId) {
+      update({ marketId });
     }
   };
 
+  const candlesClose: string[] = (market?.candles || [])
+    .map((candle) => candle?.close)
+    .filter((c): c is CandleClose => c !== null);
   const hasExpiry = market.marketTimestamps.close !== null;
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
+
+  const itemClass =
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+  const itemHeading = 'text-neutral-400';
 
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">

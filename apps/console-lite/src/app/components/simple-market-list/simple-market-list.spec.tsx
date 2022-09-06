@@ -66,11 +66,7 @@ describe('SimpleMarketList', () => {
     const data = [
       {
         id: '1',
-        data: {
-          market: {
-            state: MarketState.STATE_ACTIVE,
-          },
-        },
+        state: MarketState.STATE_ACTIVE,
         tradableInstrument: {
           instrument: {
             product: {
@@ -86,11 +82,7 @@ describe('SimpleMarketList', () => {
       },
       {
         id: '2',
-        data: {
-          market: {
-            state: MarketState.STATE_ACTIVE,
-          },
-        },
+        state: MarketState.STATE_ACTIVE,
         tradableInstrument: {
           instrument: {
             product: {
