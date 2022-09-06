@@ -2,8 +2,8 @@ const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
 const warning = '[data-testid="callout"]';
 
 context('Withdraw Page - verify elements on page', function () {
-  before('navigate to withdraw page', function () {
-    cy.visit('/').navigate_to('withdraw');
+  before('navigate to withdrawals page', function () {
+    cy.visit('/').navigate_to('withdrawals');
   });
 
   describe('with wallets disconnected', function () {
