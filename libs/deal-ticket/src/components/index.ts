@@ -1,4 +1,6 @@
-export * from './__generated__';
+export * from './__generated__/DealTicketQuery';
+export * from './__generated__/MarketInfoQuery';
+export * from './__generated__/MarketNames';
 export * from './deal-ticket-amount';
 export * from './deal-ticket-container';
 export * from './deal-ticket-limit-amount';

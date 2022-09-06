@@ -22,7 +22,7 @@ import {
   MarketTradingModeMapping,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
-import type { MarketList_markets } from '../../__generated__';
+import type { MarketList_markets } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;

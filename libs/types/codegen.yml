@@ -1,0 +1,29 @@
+schema:
+  - ${GRAPHQL_SCHEMA_PATH}
+  - apps/trading/client.graphql
+  - apps/token/client.graphql
+documents: '{apps,libs}/**/*.graphql'
+config:
+  preResolveTypes: true
+  namingConvention: keep
+generates:
+  libs/types/src/__generated__/types.ts:
+    - typescript
+  libs/**/__generated__:
+    preset: near-operation-file
+    presetConfig:
+      folder: __generated___
+      extension: .ts
+      baseTypesPath: ~@vegaprotocol/types/types
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
+  apps/**/__generated__:
+    preset: near-operation-file
+    presetConfig:
+      folder: __generated___
+      extension: .ts
+      baseTypesPath: ~@vegaprotocol/types/types
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo

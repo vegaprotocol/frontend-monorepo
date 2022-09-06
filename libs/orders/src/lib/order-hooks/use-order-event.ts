@@ -5,7 +5,7 @@ import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from './__generated__';
+} from './';
 import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderEvent = () => {

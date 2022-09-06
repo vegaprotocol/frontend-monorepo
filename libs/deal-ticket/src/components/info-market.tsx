@@ -20,7 +20,7 @@ import {
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
+import type { MarketInfoQuery, MarketInfoQuery_market } from './';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';

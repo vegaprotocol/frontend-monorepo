@@ -49,11 +49,17 @@ export interface Nodes_nodes {
    * Total amount staked on node
    */
   stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
   stakedTotalFormatted: string;
   /**
    * Amount of stake on the next epoch
    */
   pendingStake: string;
+  /**
+   * The pending staked field formatted by the client
+   */
   pendingStakeFormatted: string;
   /**
    * Ranking scores and status for the validator for the current epoch
@@ -67,6 +73,9 @@ export interface Nodes_nodeData {
    * Total staked amount across all nodes
    */
   stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
   stakedTotalFormatted: string;
 }
 
