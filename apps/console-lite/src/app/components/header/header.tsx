@@ -12,7 +12,7 @@ const Header = () => {
   } = useContext(LocalContext);
   return (
     <div
-      className="flex items-stretch pr-6 py-6 bg-black text-neutral-400 border-b border-neutral-300 dark:border-neutral-700"
+      className="flex items-stretch pr-6 py-6 bg-black text-neutral-400"
       data-testid="header"
     >
       <Logo />

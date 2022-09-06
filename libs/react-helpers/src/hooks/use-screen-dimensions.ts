@@ -7,7 +7,7 @@ type Screen = keyof typeof theme.screens;
 
 interface Props {
   isMobile: boolean;
-  screen: Screen;
+  screenSize: Screen;
   width: number;
 }
 
@@ -17,7 +17,7 @@ export const useScreenDimensions = (): Props => {
     () => ({
       width,
       isMobile: width < parseInt(theme.screens.md),
-      screen: Object.entries(theme.screens).reduce((agg: Screen, entry) => {
+      screenSize: Object.entries(theme.screens).reduce((agg: Screen, entry) => {
         if (width > parseInt(entry[1])) {
           agg = entry[0] as Screen;
         }
