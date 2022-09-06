@@ -26,13 +26,9 @@ beforeEach(() => {
   props = {
     assets,
     min: new BigNumber(0.00001),
-    max: {
-      balance: new BigNumber(100),
-      threshold: new BigNumber(200),
-    },
-    limits: {
-      max: new BigNumber(200),
-    },
+    balance: new BigNumber(100),
+    threshold: new BigNumber(200),
+    delay: 100,
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
     submitWithdraw: jest.fn().mockReturnValue(Promise.resolve()),
@@ -112,6 +108,7 @@ describe('Withdrawal form', () => {
         asset: props.assets[0].id,
         amount: '4000000',
         receiverAddress: MOCK_ETH_ADDRESS,
+        availableTimestamp: null,
       });
     });
   });
@@ -123,7 +120,7 @@ describe('Withdrawal form', () => {
     fireEvent.click(screen.getByText('Use maximum'));
 
     expect(screen.getByLabelText('Amount')).toHaveValue(
-      Number(props.max.balance.toFixed(asset.decimals))
+      Number(props.balance.toFixed(asset.decimals))
     );
   });
 });

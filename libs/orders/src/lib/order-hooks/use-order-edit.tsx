@@ -22,7 +22,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    TransactionDialog,
+    Dialog,
   } = useVegaTransaction();
 
   const waitForOrderEvent = useOrderEvent();
@@ -71,7 +71,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
   return {
     transaction,
     updatedOrder,
-    TransactionDialog,
+    Dialog,
     edit,
     reset,
   };

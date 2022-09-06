@@ -16,7 +16,7 @@ const getSymbols = (positions: Position[]) =>
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const assetSymbols = useRef<string[] | undefined>();
-  const { submit, TransactionDialog } = useClosePosition();
+  const { submit, Dialog } = useClosePosition();
   const onClose = useCallback(
     (position: Position) => {
       submit(position);
@@ -55,9 +55,9 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
             />
           ))}
       </AsyncRenderer>
-      <TransactionDialog>
+      <Dialog>
         <p>Your position was not closed! This is still not implemented. </p>
-      </TransactionDialog>
+      </Dialog>
     </>
   );
 };

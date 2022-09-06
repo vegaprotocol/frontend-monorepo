@@ -3,8 +3,8 @@ import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import { EthereumError } from '../ethereum-error';
 import { EthTxStatus } from '../use-ethereum-transaction';
-import type { TransactionDialogProps } from './transaction-dialog';
-import { TransactionDialog } from './transaction-dialog';
+import type { EthereumTransactionDialogProps } from './ethereum-transaction-dialog';
+import { EthereumTransactionDialog } from './ethereum-transaction-dialog';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({
@@ -12,11 +12,11 @@ jest.mock('@web3-react/core', () => ({
   }),
 }));
 
-let props: TransactionDialogProps;
+let props: EthereumTransactionDialogProps;
 
 beforeEach(() => {
   props = {
-    name: 'test',
+    title: 'test',
     onChange: jest.fn(),
     transaction: {
       status: EthTxStatus.Default,
@@ -29,9 +29,11 @@ beforeEach(() => {
   };
 });
 
-const generateJsx = (moreProps?: PartialDeep<TransactionDialogProps>) => {
+const generateJsx = (
+  moreProps?: PartialDeep<EthereumTransactionDialogProps>
+) => {
   const mergedProps = merge(props, moreProps);
-  return <TransactionDialog {...mergedProps} />;
+  return <EthereumTransactionDialog {...mergedProps} />;
 };
 
 it('Opens when tx starts and closes if the user rejects the tx', () => {
@@ -57,7 +59,7 @@ it('Opens when tx starts and closes if the user rejects the tx', () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it('Doesn\t repoen if user dismissed the dialog', () => {
+it("Doesn't repoen if user dismissed the dialog", () => {
   const { container, rerender } = render(
     generateJsx({ transaction: { status: EthTxStatus.Pending } })
   );
@@ -87,7 +89,7 @@ it('Dialog states', () => {
       transaction: { status: EthTxStatus.Pending, confirmations: 0 },
     })
   );
-  expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
+  expect(screen.getByText(`${props.title} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(
     screen.getByText('Awaiting Ethereum transaction 0/1 confirmations...')
@@ -100,7 +102,7 @@ it('Dialog states', () => {
       transaction: { status: EthTxStatus.Complete, confirmations: 1 },
     })
   );
-  expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
+  expect(screen.getByText(`${props.title} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(screen.getByText('Ethereum transaction complete')).toBeInTheDocument();
 
@@ -113,7 +115,7 @@ it('Dialog states', () => {
       },
     })
   );
-  expect(screen.getByText(`${props.name} complete`)).toBeInTheDocument();
+  expect(screen.getByText(`${props.title} complete`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(screen.getByText('Transaction confirmed')).toBeInTheDocument();
 
@@ -128,6 +130,6 @@ it('Dialog states', () => {
       },
     })
   );
-  expect(screen.getByText(`${props.name} failed`)).toBeInTheDocument();
+  expect(screen.getByText(`${props.title} failed`)).toBeInTheDocument();
   expect(screen.getByText(`Error: ${reason}`)).toBeInTheDocument();
 });
