@@ -23,6 +23,7 @@ function AppBody({ Component, pageProps }: AppProps) {
   const {
     isAssetDetailsDialogOpen,
     assetDetailsDialogSymbol,
+    assetDetailsDialogTrigger,
     setAssetDetailsDialogOpen,
   } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
@@ -47,6 +48,7 @@ function AppBody({ Component, pageProps }: AppProps) {
           />
           <AssetDetailsDialog
             assetSymbol={assetDetailsDialogSymbol}
+            trigger={assetDetailsDialogTrigger || null}
             open={isAssetDetailsDialogOpen}
             onChange={(open) => setAssetDetailsDialogOpen(open)}
           />

@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
-import { SelectMarketDialog } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { ColumnKind, SelectMarketDialog } from '@vegaprotocol/market-list';
 import { t } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -91,6 +92,7 @@ const MarketPage = ({ id }: { id?: string }) => {
   const { update: updateStore } = useGlobalStore((store) => ({
     update: store.update,
   }));
+  const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   // Default to first marketId query item if found
   const marketId =
@@ -152,6 +154,11 @@ const MarketPage = ({ id }: { id?: string }) => {
                 update({ landingDialog: isOpen })
               }
               onSelect={onSelect}
+              onCellClick={(e, kind, value) => {
+                if (value && kind === ColumnKind.Asset) {
+                  openAssetDetailsDialog(value, e.target as HTMLElement);
+                }
+              }}
             />
           </>
         );
