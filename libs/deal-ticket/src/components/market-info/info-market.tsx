@@ -165,11 +165,11 @@ export const Info = ({ market }: InfoProps) => {
       'name',
       'decimalPlaces',
       'positionDecimalPlaces',
-      'tradingMode',
-      'id'
+      'tradingMode'
     ),
     state: MarketStateMapping[market.state],
   };
+  console.log(keyDetails);
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -177,7 +177,7 @@ export const Info = ({ market }: InfoProps) => {
         <MarketInfoTable
           data={{
             ...keyDetails,
-            marketID: keyDetails.id,
+            marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&
               MarketTradingModeMapping[keyDetails.tradingMode],
