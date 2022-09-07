@@ -8,12 +8,13 @@ import type {
 } from './__generated__/MarketDepth';
 import type {
   MarketDepthSubscription,
-  MarketDepthSubscription_marketDepthUpdate,
+  MarketDepthSubscription_marketsDepthUpdate,
 } from './__generated__/MarketDepthSubscription';
 
 const MARKET_DEPTH_QUERY = gql`
   query MarketDepth($marketId: ID!) {
     market(id: $marketId) {
+      id
       depth {
         sell {
           price
@@ -32,8 +33,9 @@ const MARKET_DEPTH_QUERY = gql`
 `;
 
 export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
-  subscription MarketDepthSubscription($id: ID!) {
-    marketsDepthUpdate(marketIds: [$id]) {
+  subscription MarketDepthSubscription($marketId: ID!) {
+    marketsDepthUpdate(marketIds: [$marketId]) {
+      marketId
       sell {
         price
         volume
@@ -54,35 +56,38 @@ const sequenceNumbers: Record<string, number> = {};
 
 const update: Update<
   MarketDepth_market,
-  MarketDepthSubscription_marketDepthUpdate
-> = (data, delta, reload) => {
-  if (delta.market.id !== data.id) {
-    return data;
+  MarketDepthSubscription_marketsDepthUpdate[]
+> = (data, deltas, reload) => {
+  for (const delta of deltas) {
+    console.log(delta.previousSequenceNumber, delta.sequenceNumber);
+    if (delta.marketId !== data.id) {
+      return data;
+    }
+    const sequenceNumber = Number(delta.sequenceNumber);
+    if (sequenceNumber <= sequenceNumbers[delta.marketId]) {
+      return data;
+    }
+    /*
+      if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
+        sequenceNumbers[delta.market.id] = 0;
+        reload();
+        return;
+      }
+      */
+    sequenceNumbers[delta.marketId] = sequenceNumber;
+    const updatedData = {
+      ...data,
+      depth: { ...data.depth },
+    };
+    if (delta.buy) {
+      updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
+    }
+    if (delta.sell) {
+      updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
+    }
+    return updatedData;
   }
-  const sequenceNumber = Number(delta.sequenceNumber);
-  if (sequenceNumber <= sequenceNumbers[delta.market.id]) {
-    return data;
-  }
-  /*
-  if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
-    sequenceNumbers[delta.market.id] = 0;
-    reload();
-    return;
-  }
-  */
-  sequenceNumbers[delta.market.id] = sequenceNumber;
-  const updatedData = {
-    ...data,
-    data: delta.market.data,
-    depth: { ...data.depth },
-  };
-  if (delta.buy) {
-    updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
-  }
-  if (delta.sell) {
-    updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
-  }
-  return updatedData;
+  return data;
 };
 
 const getData = (responseData: MarketDepth) => {
@@ -94,9 +99,9 @@ const getData = (responseData: MarketDepth) => {
   return responseData.market;
 };
 const getDelta = (subscriptionData: MarketDepthSubscription) =>
-  subscriptionData.marketDepthUpdate;
+  subscriptionData.marketsDepthUpdate;
 
-export const marketDepthDataProvider = makeDataProvider({
+export const marketDepthProvider = makeDataProvider({
   query: MARKET_DEPTH_QUERY,
   subscriptionQuery: MARKET_DEPTH_SUBSCRIPTION_QUERY,
   update,
@@ -104,4 +109,4 @@ export const marketDepthDataProvider = makeDataProvider({
   getDelta,
 });
 
-export default marketDepthDataProvider;
+export default marketDepthProvider;

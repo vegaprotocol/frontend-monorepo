@@ -69,7 +69,7 @@ const getDelta = (
   subscriptionData: MarketCandlesSub
 ): MarketCandlesSub_candles => subscriptionData.candles;
 
-export const marketCandlesDataProvider = makeDataProvider<
+export const marketCandlesProvider = makeDataProvider<
   MarketCandlesQuery,
   Candle[],
   MarketCandlesSub,

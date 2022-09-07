@@ -47,7 +47,7 @@ const getData = (responseData: MarketsCandlesQuery): MarketCandles[] | null =>
       ),
   })) || null;
 
-export const marketsCandlesDataProvider = makeDataProvider<
+export const marketsCandlesProvider = makeDataProvider<
   MarketsCandlesQuery,
   MarketCandles[],
   never,

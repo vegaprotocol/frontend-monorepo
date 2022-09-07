@@ -1,4 +1,4 @@
-import { activeMarketsDataProvider } from '@vegaprotocol/market-list';
+import { activeMarketsProvider } from '@vegaprotocol/market-list';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useDataProvider({
-    dataProvider: activeMarketsDataProvider,
+    dataProvider: activeMarketsProvider,
     update: () => true,
   });
   const { vegaRiskNoticeDialog, setLandingDialog } = useGlobalStore(

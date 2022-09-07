@@ -29,7 +29,7 @@ import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
-import { useMarketList } from '../markets-data-provider';
+import { useMarketList } from '../markets-provider';
 
 export const SelectMarketLandingTable = ({
   markets,
