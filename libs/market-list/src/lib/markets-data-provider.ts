@@ -110,15 +110,15 @@ export const marketListDataProvider = makeDerivedDataProvider<MarketsListData>(
 
 export type MarketWithData = Market & { data?: MarketData };
 
-export const marketWithDataProvider = makeDerivedDataProvider<MarketWithData[]>(
-  [activeMarketsDataProvider, marketsDataDataProvider],
-  (parts) =>
-    (parts[0] as Market[]).map((market) => ({
-      ...market,
-      data: (parts[1] as MarketData[]).find(
-        (data) => data.market.id === market.id
-      ),
-    }))
+export const marketsWithDataProvider = makeDerivedDataProvider<
+  MarketWithData[]
+>([activeMarketsDataProvider, marketsDataDataProvider], (parts) =>
+  (parts[0] as Market[]).map((market) => ({
+    ...market,
+    data: (parts[1] as MarketData[]).find(
+      (data) => data.market.id === market.id
+    ),
+  }))
 );
 
 export const useMarketList = () => {
