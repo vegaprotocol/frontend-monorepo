@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
@@ -26,12 +27,12 @@ export function Dialog({
   size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
-    'fixed relative top-0 left-0 z-20 flex items-center justify-center',
+    'fixed top-0 left-0 z-20 flex items-center justify-center overflow-scroll',
     'w-full h-full'
   );
   const wrapperClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded top-[10vh] max-w-[90vw]',
+    'z-20 relative rounded top-[10vh] max-w-[90vw]',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -42,6 +43,14 @@ export function Dialog({
       'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
+
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [open]);
 
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
