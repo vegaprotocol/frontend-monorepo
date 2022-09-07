@@ -24,7 +24,7 @@ on:
 jobs:
   manual:
     name: Run capsule tests -- manual trigger
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04-16core
     env:
       GO111MODULE: 'on'
       GOPROXY: ${{ secrets.GO_PROXY }}
