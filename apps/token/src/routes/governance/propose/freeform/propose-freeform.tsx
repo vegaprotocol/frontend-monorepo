@@ -84,19 +84,6 @@ export const ProposeFreeform = () => {
             <div data-testid="freeform-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>
-                  {t('ProposalVoteTitle')}
-                </ProposalFormSubheader>
-
-                <ProposalFormVoteDeadline
-                  register={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalVoteDeadline?.message}
-                  minClose={minVoteDeadline as string}
-                  maxClose={maxVoteDeadline as string}
-                />
-
-                <ProposalFormSubheader>
                   {t('ProposalRationale')}
                 </ProposalFormSubheader>
 
@@ -111,6 +98,19 @@ export const ProposeFreeform = () => {
                     required: t('Required'),
                   })}
                   errorMessage={errors?.proposalDescription?.message}
+                />
+
+                <ProposalFormSubheader>
+                  {t('ProposalVoteTitle')}
+                </ProposalFormSubheader>
+
+                <ProposalFormVoteDeadline
+                  register={register('proposalVoteDeadline', {
+                    required: t('Required'),
+                  })}
+                  errorMessage={errors?.proposalVoteDeadline?.message}
+                  minClose={minVoteDeadline as string}
+                  maxClose={maxVoteDeadline as string}
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />

@@ -105,30 +105,6 @@ export const ProposeNetworkParameter = () => {
             <div data-testid="network-parameter-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>
-                  {t('ProposalVoteAndEnactmentTitle')}
-                </ProposalFormSubheader>
-
-                <ProposalFormVoteDeadline
-                  register={register('proposalVoteDeadline', {
-                    required: t('Required'),
-                  })}
-                  errorMessage={errors?.proposalVoteDeadline?.message}
-                  minClose={minVoteDeadline as string}
-                  maxClose={maxVoteDeadline as string}
-                />
-
-                <div className="mt-[-10px]">
-                  <ProposalFormEnactmentDeadline
-                    register={register('proposalEnactmentDeadline', {
-                      required: t('Required'),
-                    })}
-                    errorMessage={errors?.proposalEnactmentDeadline?.message}
-                    minEnact={minEnactmentDeadline as string}
-                    maxEnact={maxEnactmentDeadline as string}
-                  />
-                </div>
-
-                <ProposalFormSubheader>
                   {t('ProposalRationale')}
                 </ProposalFormSubheader>
 
@@ -191,6 +167,30 @@ export const ProposeNetworkParameter = () => {
                       </InputError>
                     )}
                   </FormGroup>
+                </div>
+
+                <ProposalFormSubheader>
+                  {t('ProposalVoteAndEnactmentTitle')}
+                </ProposalFormSubheader>
+
+                <ProposalFormVoteDeadline
+                  register={register('proposalVoteDeadline', {
+                    required: t('Required'),
+                  })}
+                  errorMessage={errors?.proposalVoteDeadline?.message}
+                  minClose={minVoteDeadline as string}
+                  maxClose={maxVoteDeadline as string}
+                />
+
+                <div className="mt-[-10px]">
+                  <ProposalFormEnactmentDeadline
+                    register={register('proposalEnactmentDeadline', {
+                      required: t('Required'),
+                    })}
+                    errorMessage={errors?.proposalEnactmentDeadline?.message}
+                    minEnact={minEnactmentDeadline as string}
+                    maxEnact={maxEnactmentDeadline as string}
+                  />
                 </div>
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
