@@ -1,17 +1,10 @@
-import {
-  Button,
-  Dialog,
-  FormGroup,
-  Input,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Dialog, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { JsonRpcConnector } from '../connectors';
 import { RestConnector } from '../connectors';
 import { RestConnectorForm } from '../rest-connector-form';
-import { useVegaWallet } from '../use-vega-wallet';
 import { JsonRpcConnectorForm } from '../json-rpc-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -32,7 +25,7 @@ export function VegaConnectDialog({
   // currently the only way to connect) is selected.
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
-  const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL);
+  const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
 
   const onConnect = useCallback(() => {
     setDialogOpen(false);
@@ -48,7 +41,7 @@ export function VegaConnectDialog({
         }
         setDialogOpen(open);
       }}
-      title={t('Connect Vega wallet')}
+      title={t('Connect')}
     >
       {selectedConnector !== null ? (
         <SelectedForm
@@ -64,6 +57,7 @@ export function VegaConnectDialog({
           onSelect={setSelectedConnector}
         />
       )}
+      <footer className="border-t mt-4 pt-4">Some footer content</footer>
     </Dialog>
   );
 }
@@ -92,12 +86,12 @@ const ConnectorList = ({
         </FormGroup>
       ) : (
         <p className="mb-4">
-          Change wallet location?{' '}
+          Or{' '}
           <button
             className="underline"
             onClick={() => setLocationInputExpanded(true)}
           >
-            Change
+            enter a custom wallet location
           </button>
         </p>
       )}

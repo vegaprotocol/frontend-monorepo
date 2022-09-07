@@ -1,9 +1,11 @@
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 
 type Status =
   | 'idle'
+  | 'gettingChainId'
   | 'connecting'
   | 'gettingPerms'
   | 'requestingPerms'
@@ -20,15 +22,28 @@ export const JsonRpcConnectorForm = ({
   onConnect: () => void;
   walletUrl: string;
 }) => {
+  const foo = useEnvironment();
+  console.log(foo);
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<Error | null>(null);
 
   const attempConnect = useCallback(async () => {
     try {
-      setStatus('connecting');
+      setStatus('gettingChainId');
 
-      const startConnect = await connector.connectWallet(walletUrl);
+      const result = await connector.getChainId(walletUrl);
+
+      if (result.result.chainID !== appChainId) {
+        handleError({
+          message: 'Invalid chain',
+          data: `chain id: ${result.result.chainID} does not match application chain id: ${appChainId}`,
+        });
+        return;
+      }
+
+      setStatus('connecting');
+      const startConnect = await connector.connectWallet();
 
       if ('error' in startConnect) {
         handleError(startConnect.error);

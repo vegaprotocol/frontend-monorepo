@@ -20,9 +20,12 @@ export class JsonRpcConnector implements VegaConnector {
     }
   }
 
-  async connectWallet(url: string) {
+  getChainId(url: string) {
     this.url = url;
+    return this.request('session.get_chain_id', {});
+  }
 
+  async connectWallet() {
     const result = await this.request('session.connect_wallet', {
       hostname: window.location.host,
     });
@@ -87,6 +90,7 @@ export class JsonRpcConnector implements VegaConnector {
     return result;
   }
 
+  // TODO: Ensure this is working with returned signature
   // @ts-ignore v2 wallet api return types differ from v1
   async sendTx(payload: TransactionSubmission) {
     const cfg = this.getConfig();
@@ -117,6 +121,7 @@ export class JsonRpcConnector implements VegaConnector {
   }
 
   request(method: string, params: object) {
+    console.log(this.url);
     return fetch(`${this.url}/api/${VERSION}/requests`, {
       method: 'post',
       body: JSON.stringify({
