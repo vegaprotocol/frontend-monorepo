@@ -1,10 +1,13 @@
+import { ethers } from 'ethers';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
+import type { TransactionSubmission } from '../wallet-types';
 import type { ConnectorConfig, VegaConnector } from './vega-connector';
+
+const VERSION = 'v2';
 
 export class JsonRpcConnector implements VegaConnector {
   configKey = WALLET_CONFIG;
-  description = 'V2 Vega wallet';
   url: string | null = null;
   token: string | null = null;
   id = 0;
@@ -17,7 +20,9 @@ export class JsonRpcConnector implements VegaConnector {
     }
   }
 
-  async connectWallet() {
+  async connectWallet(url: string) {
+    this.url = url;
+
     const result = await this.request('session.connect_wallet', {
       hostname: window.location.host,
     });
@@ -61,10 +66,15 @@ export class JsonRpcConnector implements VegaConnector {
   async connect() {
     const cfg = this.getConfig();
     if (!cfg) return null;
-    const keys = await this.request('session.list_keys', {
-      token: cfg.token,
-    });
-    return keys.result.keys;
+    try {
+      const keys = await this.request('session.list_keys', {
+        token: cfg.token,
+      });
+
+      return keys.result.keys;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async disconnect() {
@@ -78,23 +88,36 @@ export class JsonRpcConnector implements VegaConnector {
   }
 
   // @ts-ignore v2 wallet api return types differ from v1
-  async sendTx(payload: any) {
+  async sendTx(payload: TransactionSubmission) {
     const cfg = this.getConfig();
     if (!cfg) return null;
+
+    const tx = {
+      ...payload,
+    };
+
+    // Prune fields to create valid encoded transaction
+    /*
+    delete tx['pubKey'];
+    delete tx['propagate'];
+    */
+
+    const encodedTransaction = ethers.utils.base64.encode(
+      ethers.utils.toUtf8Bytes(JSON.stringify(tx))
+    );
+
     const res = await this.request('session.send_transaction', {
       token: cfg.token,
-      publicKey: payload.publicKey,
+      publicKey: payload.pubKey,
       sendingMode: 'TYPE_SYNC',
-      encodedTransaction: payload.encodedTransaction,
+      encodedTransaction,
     });
-
-    console.log(res);
 
     return res;
   }
 
   request(method: string, params: object) {
-    return fetch('http://localhost:1789/api/v2/requests', {
+    return fetch(`${this.url}/api/${VERSION}/requests`, {
       method: 'post',
       body: JSON.stringify({
         jsonrpc: '2.0',

@@ -1,4 +1,3 @@
-import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
@@ -7,7 +6,6 @@ import type { RestConnector } from '.';
 import { useVegaWallet } from './use-vega-wallet';
 
 interface FormFields {
-  url: string;
   wallet: string;
   passphrase: string;
 }
@@ -15,30 +13,27 @@ interface FormFields {
 interface RestConnectorFormProps {
   connector: RestConnector;
   onConnect: (connector: RestConnector) => void;
+  walletUrl: string;
 }
 
 export function RestConnectorForm({
   connector,
   onConnect,
+  walletUrl,
 }: RestConnectorFormProps) {
   const { connect } = useVegaWallet();
   const [error, setError] = useState('');
-  const { VEGA_WALLET_URL } = useEnvironment();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>({
-    defaultValues: {
-      url: VEGA_WALLET_URL,
-    },
-  });
+  } = useForm<FormFields>();
 
   async function onSubmit(fields: FormFields) {
     const authFailedMessage = t('Authentication failed');
     try {
       setError('');
-      const res = await connector.authenticate(fields.url, {
+      const res = await connector.authenticate(walletUrl, {
         wallet: fields.wallet,
         passphrase: fields.passphrase,
       });
@@ -51,7 +46,7 @@ export function RestConnectorForm({
       }
     } catch (err) {
       if (err instanceof TypeError) {
-        setError(t(`Wallet not running at ${fields.url}`));
+        setError(t(`Wallet not running at ${walletUrl}`));
       } else if (err instanceof Error) {
         setError(authFailedMessage);
       } else {
@@ -62,16 +57,6 @@ export function RestConnectorForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
-      <FormGroup label={t('Url')} labelFor="url">
-        <Input
-          {...register('url', { required: t('Required') })}
-          id="url"
-          type="text"
-        />
-        {errors.url?.message && (
-          <InputError intent="danger">{errors.url.message}</InputError>
-        )}
-      </FormGroup>
       <FormGroup label={t('Wallet')} labelFor="wallet">
         <Input
           {...register('wallet', { required: t('Required') })}

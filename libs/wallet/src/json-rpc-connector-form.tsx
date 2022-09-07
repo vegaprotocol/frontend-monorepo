@@ -14,9 +14,11 @@ type Status =
 export const JsonRpcConnectorForm = ({
   connector,
   onConnect,
+  walletUrl,
 }: {
   connector: JsonRpcConnector;
   onConnect: () => void;
+  walletUrl: string;
 }) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
@@ -26,7 +28,7 @@ export const JsonRpcConnectorForm = ({
     try {
       setStatus('connecting');
 
-      const startConnect = await connector.connectWallet();
+      const startConnect = await connector.connectWallet(walletUrl);
 
       if ('error' in startConnect) {
         handleError(startConnect.error);
@@ -53,7 +55,6 @@ export const JsonRpcConnectorForm = ({
       await connect(connector);
       onConnect();
     } catch (err) {
-      console.log(err);
       if (err instanceof Error) {
         setError(err);
       } else if (typeof err === 'string') {
@@ -63,7 +64,7 @@ export const JsonRpcConnectorForm = ({
       }
       setStatus('error');
     }
-  }, [connector, connect, onConnect]);
+  }, [connector, connect, onConnect, walletUrl]);
 
   const handleError = (error: {
     message: string;

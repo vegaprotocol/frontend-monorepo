@@ -5,6 +5,8 @@ import type { ConnectorConfig, VegaConnector } from './vega-connector';
 import type { TransactionError, TransactionSubmission } from '../wallet-types';
 import { z } from 'zod';
 
+const VERSION = 'v1';
+
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
 
@@ -65,7 +67,6 @@ export const GetKeysSchema = z.object({
  */
 export class RestConnector implements VegaConnector {
   configKey = WALLET_CONFIG;
-  description = 'Connects using REST to a running Vega wallet service';
   url: string | null = null;
   token: string | null = null;
 
@@ -254,13 +255,16 @@ export class RestConnector implements VegaConnector {
     details?: string;
   }> {
     try {
-      const fetchResult = await fetch(`${this.url}/${endpoint}`, {
-        ...options,
-        headers: {
-          ...options.headers,
-          'Content-Type': 'application/json',
-        },
-      });
+      const fetchResult = await fetch(
+        `${this.url}/api/${VERSION}/${endpoint}`,
+        {
+          ...options,
+          headers: {
+            ...options.headers,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!fetchResult.ok) {
         const errorData = await fetchResult.json();

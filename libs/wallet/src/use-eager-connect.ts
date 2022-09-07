@@ -23,14 +23,11 @@ export function useEagerConnect(Connectors: {
         cfgObj = null;
       }
 
-      console.log(cfgObj);
-
       // No stored config, or config was malformed
       if (!cfgObj || !cfgObj.connector) {
         setConnecting(false);
         return;
       }
-      console.log(cfgObj, Connectors);
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to
@@ -54,7 +51,9 @@ export function useEagerConnect(Connectors: {
       }
     };
 
-    attemptConnect();
+    if (typeof window !== 'undefined') {
+      attemptConnect();
+    }
   }, [connect, Connectors]);
 
   return connecting;

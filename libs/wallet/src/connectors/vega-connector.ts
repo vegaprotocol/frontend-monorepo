@@ -10,9 +10,6 @@ export interface ConnectorConfig {
 }
 
 export interface VegaConnector {
-  /** Description of how to use this connector */
-  description: string;
-
   /** Connect to wallet and return keys */
   connect(): Promise<string[] | null>;
 
@@ -20,5 +17,5 @@ export interface VegaConnector {
   disconnect(): Promise<void>;
 
   /** Send a TX to the network. Only support order submission for now */
-  sendTx: (payload: any) => Promise<any>;
+  sendTx: (payload: TransactionSubmission) => Promise<any>;
 }
