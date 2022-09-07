@@ -16,7 +16,7 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 
 const rejectedProposalClosesNextWeek = generateProposal({
   id: 'rejected1',
-  state: ProposalState.Open,
+  state: ProposalState.STATE_OPEN,
   party: {
     id: 'bvcx',
   },
@@ -28,7 +28,7 @@ const rejectedProposalClosesNextWeek = generateProposal({
 
 const rejectedProposalClosedLastMonth = generateProposal({
   id: 'rejected2',
-  state: ProposalState.Rejected,
+  state: ProposalState.STATE_REJECTED,
   terms: {
     closingDatetime: lastMonth.toString(),
     enactmentDatetime: lastMonth.toString(),
