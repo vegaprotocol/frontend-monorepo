@@ -16,7 +16,6 @@ const MARKET_QUERY = gql`
   query Market($marketId: ID!, $interval: Interval!, $since: String!) {
     market(id: $marketId) {
       id
-      name
       tradingMode
       state
       decimalPlaces

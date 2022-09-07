@@ -28,16 +28,17 @@ import type {
 } from './__generated__/MarketNames';
 import { IconNames } from '@blueprintjs/icons';
 import { MarketState } from '@vegaprotocol/types';
+import _ from 'lodash';
 
 export const MARKET_NAMES_QUERY = gql`
   query MarketNames {
     markets {
       id
-      name
       state
       tradableInstrument {
         instrument {
           code
+          name
           metadata {
             tags
           }
@@ -70,7 +71,9 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const [skip, setSkip] = useState(true);
   const [results, setResults] = useState<MarketNames_markets[]>([]);
   const [showPane, setShowPane] = useState(false);
-  const [lookup, setLookup] = useState(market.name || '');
+  const [lookup, setLookup] = useState(
+    market.tradableInstrument.instrument.name || ''
+  );
   const [dialogContent, setDialogContent] = useState<React.ReactNode | null>(
     null
   );
@@ -102,10 +105,13 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleMarketSelect = useCallback(
-    ({ id, name }: { id: string; name: string }) => {
-      setLookup(name);
+    (market: {
+      id: string;
+      tradableInstrument: { instrument: { name: string } };
+    }) => {
+      setLookup(market.tradableInstrument.instrument.name);
       setShowPane(false);
-      setMarket(id);
+      setMarket(market.id);
       inputRef.current?.focus();
     },
     [setLookup, setShowPane, setMarket, inputRef]
@@ -142,7 +148,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
           break;
         default:
           setShowPane(false);
-          setLookup(market.name);
+          setLookup(market.tradableInstrument.instrument.name);
       }
     },
     [results, handleMarketSelect]
@@ -159,7 +165,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   const handleOnBlur = useCallback(() => {
     if (!lookup && !showPane) {
-      setLookup(market.name);
+      setLookup(market.tradableInstrument.instrument.name);
     }
   }, [market, lookup, showPane, setLookup]);
 
@@ -173,11 +179,17 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     (isOpen: boolean) => {
       setShowPane(isOpen);
       if (!isOpen) {
-        setLookup(lookup || market.name);
+        setLookup(lookup || market.tradableInstrument.instrument.name);
         inputRef.current?.focus();
       }
     },
-    [setShowPane, lookup, setLookup, market.name, inputRef]
+    [
+      setShowPane,
+      lookup,
+      setLookup,
+      market.tradableInstrument.instrument.name,
+      inputRef,
+    ]
   );
 
   const selectorContent = useMemo(() => {
@@ -235,7 +247,11 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
                 onClick={() => handleMarketSelect(market)}
                 onKeyDown={(e) => handleItemKeyDown(e, market, i)}
               >
-                {ItemRenderer ? <ItemRenderer market={market} /> : market.name}
+                {ItemRenderer ? (
+                  <ItemRenderer market={market} />
+                ) : (
+                  market.tradableInstrument.instrument.name
+                )}
               </div>
             ))}
           </div>
@@ -262,7 +278,9 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       data?.markets?.filter(
         (item: MarketNames_markets) =>
           item.state === MarketState.STATE_ACTIVE &&
-          item.name.match(new RegExp(escapeRegExp(lookup), 'i'))
+          item.tradableInstrument.instrument.name.match(
+            new RegExp(escapeRegExp(lookup), 'i')
+          )
       ) || []
     );
   }, [data, lookup]);

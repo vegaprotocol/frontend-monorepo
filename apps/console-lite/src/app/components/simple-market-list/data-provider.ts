@@ -14,11 +14,11 @@ export const MARKETS_QUERY = gql`
   query SimpleMarkets($CandleSince: String!) {
     markets {
       id
-      name
       state
       tradableInstrument {
         instrument {
           code
+          name
           metadata {
             tags
           }

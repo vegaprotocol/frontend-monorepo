@@ -315,7 +315,7 @@ export const columns = (
       dataTestId: 'taker-fee',
     },
     {
-      value: market.name,
+      value: market.tradableInstrument.instrument.name,
       className: `${cellClassNames} hidden xxl:block`,
       onlyOnDetailed: true,
       dataTestId: 'market-name',

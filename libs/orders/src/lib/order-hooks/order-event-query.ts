@@ -18,7 +18,11 @@ export const ORDER_EVENT_SUB = gql`
           side
           market {
             id
-            name
+            tradableInstrument {
+              instrument {
+                name
+              }
+            }
             decimalPlaces
             positionDecimalPlaces
           }
