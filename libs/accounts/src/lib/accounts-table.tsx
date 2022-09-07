@@ -14,22 +14,22 @@ import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { Accounts_party_accounts } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountType } from '@vegaprotocol/types';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 
 interface AccountsTableProps {
-  data: Accounts_party_accounts[] | null;
+  data: AccountFieldsFragment[] | null;
 }
 
 interface AccountsTableValueFormatterParams extends ValueFormatterParams {
-  data: Accounts_party_accounts;
+  data: AccountFieldsFragment;
 }
 
 export const getGroupId = (
-  data: Accounts_party_accounts & SummaryRow,
+  data: AccountFieldsFragment & SummaryRow,
   columnApi: ColumnApi
 ) => {
   if (data.__summaryRow) {
@@ -44,9 +44,9 @@ export const getGroupId = (
 };
 
 export const getGroupSummaryRow = (
-  data: Accounts_party_accounts[],
+  data: AccountFieldsFragment[],
   columnApi: ColumnApi
-): Partial<Accounts_party_accounts & SummaryRow> | null => {
+): Partial<AccountFieldsFragment & SummaryRow> | null => {
   if (!data.length) {
     return null;
   }
@@ -67,8 +67,8 @@ export const getGroupSummaryRow = (
 const comparator = (
   valueA: string,
   valueB: string,
-  nodeA: { data: Accounts_party_accounts & SummaryRow },
-  nodeB: { data: Accounts_party_accounts & SummaryRow },
+  nodeA: { data: AccountFieldsFragment & SummaryRow },
+  nodeB: { data: AccountFieldsFragment & SummaryRow },
   isInverted: boolean
 ) => {
   if (valueA < valueB) {
