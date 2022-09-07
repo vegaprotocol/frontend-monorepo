@@ -389,7 +389,7 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (
-            <div style={{ width, height }} className="overflow-y-auto">
+            <div style={{ width, height }} className="overflow-auto">
               {renderView()}
             </div>
           )}
