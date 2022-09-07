@@ -53,6 +53,7 @@ export const ENV = {
   vegaUrl: windowOrDefault('NX_VEGA_URL'),
   restUrl: windowOrDefault('NX_VEGA_REST'),
   urlConnect: TRUTHY.includes(windowOrDefault('NX_ETH_URL_CONNECT')),
+  docsUrl: windowOrDefault('NX_DOCS_URL'),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   flags: {

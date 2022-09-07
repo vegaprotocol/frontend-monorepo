@@ -2,8 +2,9 @@ import Routes from '../../routes';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { ENV } from '../../../config';
 import { Heading } from '../../../components/heading';
-import { Links } from '../../../config';
+import { ProposalDocsLink } from '../components/propose';
 
 export const Propose = () => {
   const { t } = useTranslation();
@@ -13,16 +14,7 @@ export const Propose = () => {
     <>
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
-        <p>
-          {t('words words words read more on')}{' '}
-          <Link
-            to={Links.PROPOSALS_GUIDE}
-            target="_blank"
-            className="underline"
-          >
-            {Links.PROPOSALS_GUIDE}
-          </Link>{' '}
-        </p>
+        <ProposalDocsLink url={ENV.docsUrl} />
       </section>
 
       <section>

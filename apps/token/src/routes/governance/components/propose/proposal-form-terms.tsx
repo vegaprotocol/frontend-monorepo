@@ -1,11 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import {
-  FormGroup,
-  InputError,
-  Link,
-  TextArea,
-} from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../../../config';
+import { FormGroup, InputError, TextArea } from '@vegaprotocol/ui-toolkit';
+import { ENV } from '../../../../config';
+import { ProposalDocsLink } from './proposal-docs-link';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface ProposalFormTermsProps {
@@ -26,14 +22,7 @@ export const ProposalFormTerms = function ({
       labelFor="proposal-terms"
     >
       <div className="mt-[-4px] mb-2 text-sm font-light">
-        {`${t('ProposalTermsText')} `}
-        <Link
-          href={Links.PROPOSALS_GUIDE}
-          target="_blank"
-          className="underline"
-        >
-          {t('ProposalsGuide')}
-        </Link>
+        <ProposalDocsLink url={ENV.docsUrl} />
       </div>
       <TextArea
         id="proposal-terms"

@@ -1,3 +1,4 @@
+export * from './proposal-docs-link';
 export * from './proposal-form-subheader';
 export * from './proposal-form-min-requirements';
 export * from './proposal-form-title';
