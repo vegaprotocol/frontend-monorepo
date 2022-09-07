@@ -36,3 +36,11 @@ export const maxSafe = (max: BigNumber) => (value: string) => {
   }
   return true;
 };
+
+export const isJsonObject = (str: string) => {
+  try {
+    return JSON.parse(str) && Object.keys(JSON.parse(str)).length > 0;
+  } catch (e) {
+    return false;
+  }
+};

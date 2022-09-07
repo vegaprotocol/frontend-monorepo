@@ -672,6 +672,8 @@
   "MarketId": "Market ID",
   "ProposeUpdateMarketChanges": "terms.changes (JSON format)",
   "SelectAParameterToChange": "Select a parameter to change",
+  "SelectParameter": "Select parameter",
+  "CurrentValue": "Current value",
   "NewProposedValue": "New proposed value",
   "MoreProposalsInfo": "To see Explorer data on proposals visit",
   "MoreNetParamsInfo": "To see Explorer data on network params visit",

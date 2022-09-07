@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
+import { isJsonObject } from '@vegaprotocol/react-helpers';
 import {
   useProposalSubmit,
   getClosingTimestamp,
@@ -22,6 +24,7 @@ import {
   InputError,
   Link,
   Select,
+  SyntaxHighlighter,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -29,6 +32,27 @@ import { VegaWalletContainer } from '../../../../components/vega-wallet-containe
 import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
 import { NetworkParams } from '../../../../config';
 import type { ProposalNetworkParameterTerms } from '@vegaprotocol/wallet';
+
+interface SelectedNetworkParamCurrentValueProps {
+  value: string;
+}
+
+const SelectedNetworkParamCurrentValue = ({
+  value,
+}: SelectedNetworkParamCurrentValueProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="mb-4">
+      <p className="text-sm text-white">{t('CurrentValue')}</p>
+      {isJsonObject(value) ? (
+        <SyntaxHighlighter data={JSON.parse(value)} />
+      ) : (
+        <SyntaxHighlighter data={value} />
+      )}
+    </div>
+  );
+};
 
 export interface NetworkParameterProposalFormFields {
   proposalVoteDeadline: number;
@@ -41,6 +65,10 @@ export interface NetworkParameterProposalFormFields {
 }
 
 export const ProposeNetworkParameter = () => {
+  const [selectedNetworkParam, setSelectedNetworkParam] = useState<
+    string | undefined
+  >(undefined);
+
   const {
     data: networkParamsData,
     loading: networkParamsLoading,
@@ -156,7 +184,10 @@ export const ProposeNetworkParameter = () => {
                     {...register('proposalNetworkParameterKey', {
                       required: t('Required'),
                     })}
+                    onChange={(e) => setSelectedNetworkParam(e.target.value)}
+                    value={selectedNetworkParam}
                   >
+                    <option value="">{t('SelectParameter')}</option>
                     {networkParamsData?.map(({ key }) => (
                       <option key={key} value={key}>
                         {key}
@@ -170,24 +201,34 @@ export const ProposeNetworkParameter = () => {
                   )}
                 </FormGroup>
 
-                <div className="mt-[-10px]">
-                  <FormGroup
-                    label={t('NewProposedValue')}
-                    labelFor="proposal-parameter-value"
-                  >
-                    <TextArea
-                      id="proposal-parameter-value"
-                      {...register('proposalNetworkParameterValue', {
-                        required: t('Required'),
-                      })}
+                {selectedNetworkParam && (
+                  <div className="mt-[-10px]">
+                    <SelectedNetworkParamCurrentValue
+                      value={
+                        networkParamsData?.find(
+                          ({ key }) => key === selectedNetworkParam
+                        )?.value || ''
+                      }
                     />
-                    {errors?.proposalNetworkParameterValue?.message && (
-                      <InputError intent="danger">
-                        {errors?.proposalNetworkParameterValue?.message}
-                      </InputError>
-                    )}
-                  </FormGroup>
-                </div>
+
+                    <FormGroup
+                      label={t('NewProposedValue')}
+                      labelFor="proposal-parameter-value"
+                    >
+                      <TextArea
+                        id="proposal-parameter-value"
+                        {...register('proposalNetworkParameterValue', {
+                          required: t('Required'),
+                        })}
+                      />
+                      {errors?.proposalNetworkParameterValue?.message && (
+                        <InputError intent="danger">
+                          {errors?.proposalNetworkParameterValue?.message}
+                        </InputError>
+                      )}
+                    </FormGroup>
+                  </div>
+                )}
 
                 <ProposalFormSubheader>
                   {t('ProposalVoteAndEnactmentTitle')}
