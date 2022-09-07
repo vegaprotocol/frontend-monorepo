@@ -5,6 +5,14 @@ import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import { markets as filterData } from './mocks/market-filters.json';
+import * as Router from 'react-router-dom';
+
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate,
+}));
 
 describe('SimpleMarketToolbar', () => {
   const WrappedCompForTest = () => {
@@ -126,6 +134,66 @@ describe('SimpleMarketToolbar', () => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
         '/markets/Pending/Future/tEURO'
       );
+    });
+  });
+
+  it('stateChange callback should work well', () => {
+    jest.spyOn(Router, 'useParams').mockReturnValue({
+      asset: 'asset1',
+      product: 'product1',
+      state: 'state1',
+    });
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+      </MockedProvider>,
+      { wrapper: BrowserRouter }
+    );
+    fireEvent.click(screen.getByTestId('state-trigger'));
+    waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Suspended'));
+
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        '/markets/STATE_SUSPENDED/product1/asset1'
+      );
+    });
+  });
+
+  it('stateChange callback should call navigate with url with state only', () => {
+    jest.spyOn(Router, 'useParams').mockReturnValue({});
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+      </MockedProvider>,
+      { wrapper: BrowserRouter }
+    );
+    fireEvent.click(screen.getByTestId('state-trigger'));
+    waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Closed'));
+
+      expect(mockedNavigate).toHaveBeenCalledWith('/markets/STATE_CLOSED');
+    });
+  });
+
+  it('stateChange callback should call navigate with no asset', () => {
+    jest.spyOn(Router, 'useParams').mockReturnValue({
+      product: 'product1',
+      asset: 'all',
+      state: 'state1',
+    });
+    render(
+      <MockedProvider mocks={[]} addTypename={false}>
+        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+      </MockedProvider>,
+      { wrapper: BrowserRouter }
+    );
+    fireEvent.click(screen.getByTestId('state-trigger'));
+    waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('All'));
+      expect(mockedNavigate).toHaveBeenCalledWith('/markets');
     });
   });
 });
