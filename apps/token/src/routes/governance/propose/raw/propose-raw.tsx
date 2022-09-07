@@ -35,7 +35,6 @@ export const ProposeRaw = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements />
             <div data-testid="raw-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGroup
