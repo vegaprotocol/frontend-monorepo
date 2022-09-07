@@ -10,6 +10,7 @@ describe('markets table', () => {
 
   it('renders markets correctly', () => {
     cy.visit('/');
+    cy.wait('@Market');
     cy.wait('@MarketList');
     cy.get('[data-testid^="market-link-"]')
       .should('not.be.empty')
