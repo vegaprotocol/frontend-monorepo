@@ -70,6 +70,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
+          "printenv",
           "cp apps/token/netlify.toml netlify.toml",
           "nx build token"
         ]
