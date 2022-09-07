@@ -42,6 +42,7 @@ const MARKET_LIQUIDITY_QUERY = gql`
       tradableInstrument {
         instrument {
           code
+          name
           product {
             ... on Future {
               settlementAsset {
@@ -161,6 +162,7 @@ export const useLiquidityProvision = ({
     decimalPlaces: data?.market?.decimalPlaces,
     positionDecimalPlaces: data?.market?.positionDecimalPlaces,
     code: data?.market?.tradableInstrument.instrument.code,
+    name: data?.market?.tradableInstrument.instrument.name,
     assetDecimalPlaces:
       data?.market?.tradableInstrument.instrument.product.settlementAsset
         .decimals,

@@ -12,9 +12,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
       <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4 mb-2 xl:mb-0 sm:text-lg md:text-xl lg:text-2xl">
-          {title}
-        </div>
+        <div className="px-4 mb-2">{title}</div>
         <div
           data-testid="market-summary"
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "

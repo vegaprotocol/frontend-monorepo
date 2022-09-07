@@ -10,7 +10,7 @@ import { useRef, useMemo } from 'react';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { keypair } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
@@ -24,7 +24,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       liquidityProviders,
       suppliedStake,
       targetStake,
-      code,
+      name,
       symbol,
       assetDecimalPlaces,
     },
@@ -67,7 +67,13 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={liquidityProviders}>
       <div className="h-full grid grid-rows-[min-content_1fr]">
-        <Header title={`${code} ${t('liquidity provision')}`}>
+        <Header
+          title={
+            <button onClick={() => push(`/markets/${marketId}`)}>{`${name} ${t(
+              'liquidity provision'
+            )}`}</button>
+          }
+        >
           <HeaderStat
             heading={t('Target stake')}
             description={tooltipMapping['targetStake']}
@@ -104,13 +110,28 @@ const LiquidityPage = ({ id }: { id?: string }) => {
             name={t('My liquidity provision')}
             hidden={!partyId}
           >
-            <LiquidityTable ref={gridRef} data={myLpEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={myLpEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
           <Tab id={LiquidityTabs.Active} name={t('Active')}>
-            <LiquidityTable ref={gridRef} data={activeEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={activeEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
           <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
-            <LiquidityTable ref={gridRef} data={inactiveEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={inactiveEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
         </Tabs>
       </div>

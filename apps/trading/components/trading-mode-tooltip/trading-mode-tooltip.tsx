@@ -36,7 +36,7 @@ const MarketDataGrid = ({ grid }: MarketDataGridProps) => {
 const formatStake = (value: string, market: Market_market) => {
   const formattedValue = addDecimalsFormatNumber(
     value,
-    market.positionDecimalPlaces
+    market.tradableInstrument.instrument.product.settlementAsset.decimals
   );
   const asset =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;

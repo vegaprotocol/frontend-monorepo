@@ -56,6 +56,7 @@ const MARKET_QUERY = gql`
                 id
                 symbol
                 name
+                decimals
               }
             }
           }
