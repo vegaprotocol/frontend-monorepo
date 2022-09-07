@@ -86,7 +86,9 @@ export const generateMarketInfoQuery = (
           id: '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
         },
         markPrice: '5749',
-        indicativeVolume: '0',
+        suppliedStake: '56767',
+        marketValueProxy: '677678',
+        targetStake: '56789',
         bestBidVolume: '5',
         bestOfferVolume: '1',
         bestStaticBidVolume: '5',
@@ -146,6 +148,7 @@ export const generateMarketInfoQuery = (
               id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
               symbol: 'tBTC',
               name: 'tBTC TEST',
+              decimals: 1,
             },
             oracleSpecForSettlementPrice: {
               __typename: 'OracleSpec',

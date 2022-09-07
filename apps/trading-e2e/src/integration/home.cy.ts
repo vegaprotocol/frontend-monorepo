@@ -55,6 +55,7 @@ describe('home', () => {
       });
 
       cy.visit('/');
+      cy.wait('@MarketList');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

@@ -8,6 +8,7 @@ export const MARKET_INFO_QUERY = gql`
       decimalPlaces
       positionDecimalPlaces
       state
+      tradingMode
       proposal {
         id
         rationale {
@@ -49,15 +50,18 @@ export const MARKET_INFO_QUERY = gql`
           id
         }
         markPrice
-        indicativeVolume
         bestBidVolume
         bestOfferVolume
         bestStaticBidVolume
         bestStaticOfferVolume
-        openInterest
         bestBidPrice
         bestOfferPrice
         trigger
+        openInterest
+        suppliedStake
+        openInterest
+        targetStake
+        marketValueProxy
         priceMonitoringBounds {
           minValidPrice
           maxValidPrice
@@ -94,6 +98,7 @@ export const MARKET_INFO_QUERY = gql`
                 id
                 symbol
                 name
+                decimals
               }
               oracleSpecForSettlementPrice {
                 id
