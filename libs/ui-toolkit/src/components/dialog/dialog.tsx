@@ -46,9 +46,9 @@ export function Dialog({
 
   useEffect(() => {
     if (open) {
-      document.body.classList.add('overflow-hidden')
+      document.body.classList.add('overflow-hidden');
     } else {
-      document.body.classList.remove('overflow-hidden')
+      document.body.classList.remove('overflow-hidden');
     }
   }, [open]);
 
@@ -61,12 +61,14 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <div className={wrapperClasses}>
-            <DialogPrimitives.Close
-              className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
-              data-testid="dialog-close"
-            >
-              <Icon name="cross" />
-            </DialogPrimitives.Close>
+            {onChange && (
+              <DialogPrimitives.Close
+                className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
+                data-testid="dialog-close"
+              >
+                <Icon name="cross" />
+              </DialogPrimitives.Close>
+            )}
             <div className="flex gap-4 max-w-full">
               {icon && <div className="pt-2 fill-current">{icon}</div>}
               <div data-testid="dialog-content" className="flex-1">
