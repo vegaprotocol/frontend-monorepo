@@ -9,7 +9,7 @@ import React, {
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { gql, useQuery } from '@apollo/client';
 import classNames from 'classnames';
-import type { DealTicketQuery_market } from './__generated__';
+import type { DealTicketQuery_market } from './';
 import {
   ButtonLink,
   Icon,

@@ -15,10 +15,7 @@ import {
 import type { ReactNode } from 'react';
 import type { Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
-import type {
-  OrderEvent,
-  OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
@@ -60,10 +57,7 @@ const defaultWalletContext = {
   connector: null,
 };
 
-function setup(
-  context?: Partial<VegaWalletContextShape>,
-  market = defaultMarket
-) {
+function setup(context?: Partial<VegaWalletContextShape>) {
   const mocks: MockedResponse<OrderEvent> = {
     request: {
       query: ORDER_EVENT_SUB,
@@ -144,7 +138,7 @@ function setup(
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
-  return renderHook(() => useOrderSubmit(market), { wrapper });
+  return renderHook(() => useOrderSubmit(), { wrapper });
 }
 
 describe('useOrderSubmit', () => {
@@ -164,11 +158,11 @@ describe('useOrderSubmit', () => {
       size: '10',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
       side: Side.SIDE_BUY,
-      price: '1234567.89',
-      expiration: new Date('2022-01-01'),
+      price: '123456789',
+      expiresAt: new Date('2022-01-01'),
     };
     await act(async () => {
-      result.current.submit(order);
+      result.current.submit({ ...order, marketId: defaultMarket.id });
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
@@ -176,14 +170,12 @@ describe('useOrderSubmit', () => {
       propagate: true,
       orderSubmission: {
         type: OrderType.TYPE_LIMIT,
-        marketId: defaultMarket.id, // Market provided from hook argument
-        size: '100', // size adjusted based on positionDecimalPlaces
+        marketId: defaultMarket.id,
+        size: '10',
         side: Side.SIDE_BUY,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
-        price: '123456789', // Decimal removed
-        expiresAt: order.expiration
-          ? toNanoSeconds(order.expiration)
-          : undefined,
+        price: '123456789',
+        expiresAt: order.expiresAt ? toNanoSeconds(order.expiresAt) : undefined,
       },
     });
   });

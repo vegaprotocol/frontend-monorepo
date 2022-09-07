@@ -43,6 +43,12 @@ FullWidth.args = {
   icon: 'search',
 };
 
+export const ExtraSmall = Template.bind({});
+Small.args = {
+  children: 'Button text',
+  size: 'xs',
+};
+
 export const Small = Template.bind({});
 Small.args = {
   children: 'Button text',

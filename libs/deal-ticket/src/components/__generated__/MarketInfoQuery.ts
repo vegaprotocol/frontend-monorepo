@@ -9,6 +9,34 @@ import { Interval, MarketState, AccountType, MarketTradingMode, AuctionTrigger }
 // GraphQL query operation: MarketInfoQuery
 // ====================================================
 
+export interface MarketInfoQuery_market_proposal_rationale {
+  __typename: "ProposalRationale";
+  /**
+   * Title to be used to give a short description of the proposal in lists.
+   * This is to be between 0 and 100 unicode characters.
+   * This is mandatory for all proposals.
+   */
+  title: string;
+  /**
+   * Description to show a short title / something in case the link goes offline.
+   * This is to be between 0 and 20k unicode characters.
+   * This is mandatory for all proposals.
+   */
+  description: string;
+}
+
+export interface MarketInfoQuery_market_proposal {
+  __typename: "Proposal";
+  /**
+   * Proposal ID that is filled by Vega once proposal reaches the network
+   */
+  id: string | null;
+  /**
+   * Rationale behind the proposal
+   */
+  rationale: MarketInfoQuery_market_proposal_rationale;
+}
+
 export interface MarketInfoQuery_market_accounts_asset {
   __typename: "Asset";
   /**
@@ -451,6 +479,10 @@ export interface MarketInfoQuery_market {
    * Current state of the market
    */
   state: MarketState;
+  /**
+   * The proposal that initiated this market
+   */
+  proposal: MarketInfoQuery_market_proposal | null;
   /**
    * Get account for a party or market
    */

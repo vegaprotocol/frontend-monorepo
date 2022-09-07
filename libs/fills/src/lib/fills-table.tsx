@@ -4,6 +4,8 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   getDateTimeFormat,
+  positiveClassNames,
+  negativeClassNames,
   t,
 } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
@@ -48,10 +50,9 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
-            return classNames('font-mono text-right', {
-              'text-vega-green-dark dark:text-vega-green':
-                data?.buyer.id === partyId,
-              'text-vega-red-dark dark:text-vega-red': data?.seller.id,
+            return classNames('text-right', {
+              [positiveClassNames]: data?.buyer.id === partyId,
+              [negativeClassNames]: data?.seller.id,
             });
           }}
           valueFormatter={formatSize(partyId)}

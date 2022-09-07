@@ -14,5 +14,9 @@ export default async function build(
   const { env, ...nextOptions } = options;
   await setup(env, context, 'tools/executors/next/build');
 
-  return await nextBuildExecutor(nextOptions, context);
+  try {
+    return await nextBuildExecutor(nextOptions, context);
+  } catch (err) {
+    console.error(err);
+  }
 }

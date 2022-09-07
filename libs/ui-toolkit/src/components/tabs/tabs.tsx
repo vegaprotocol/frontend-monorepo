@@ -32,7 +32,7 @@ export const Tabs = ({ children }: TabsProps) => {
               'uppercase',
               'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0 after:tracking-wider',
               {
-                'font-light tracking-wider': !isActive,
+                'font-light tracking-wider dark:text-neutral-400': !isActive,
               }
             );
             const borderClass = classNames(

@@ -1,0 +1,8 @@
+query MarketMarkPrice($marketId: ID!) {
+  market(id: $marketId) {
+    decimalPlaces
+    data {
+      markPrice
+    }
+  }
+}

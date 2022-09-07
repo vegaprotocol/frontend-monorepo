@@ -3,6 +3,7 @@
 /dist
 /coverage
 __generated__
+__generated___
 
 apps/static/src/assets/devnet-tranches.json
 apps/static/src/assets/mainnet-tranches.json

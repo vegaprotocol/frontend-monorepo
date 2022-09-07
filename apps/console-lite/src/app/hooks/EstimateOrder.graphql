@@ -1,0 +1,30 @@
+query EstimateOrder(
+  $marketId: ID!
+  $partyId: ID!
+  $price: String
+  $size: String!
+  $side: Side!
+  $timeInForce: OrderTimeInForce!
+  $expiration: String
+  $type: OrderType!
+) {
+  estimateOrder(
+    marketId: $marketId
+    partyId: $partyId
+    price: $price
+    size: $size
+    side: $side
+    timeInForce: $timeInForce
+    expiration: $expiration
+    type: $type
+  ) {
+    fee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    marginLevels {
+      initialLevel
+    }
+  }
+}

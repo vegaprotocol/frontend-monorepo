@@ -1,0 +1,28 @@
+query PartyMarketData($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accounts {
+      type
+      balance
+      asset {
+        id
+        decimals
+      }
+      market {
+        id
+      }
+    }
+    marginsConnection {
+      edges {
+        node {
+          market {
+            id
+          }
+          initialLevel
+          maintenanceLevel
+          searchLevel
+        }
+      }
+    }
+  }
+}

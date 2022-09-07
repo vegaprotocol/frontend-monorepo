@@ -15,6 +15,9 @@ export interface Staking_party_stake {
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
+  /**
+   * The currently available stake formatted by the client
+   */
   currentStakeAvailableFormatted: string;
 }
 
@@ -32,6 +35,9 @@ export interface Staking_party_delegations {
    * Amount delegated
    */
   amount: string;
+  /**
+   * The amount field formatted by the client
+   */
   amountFormatted: string;
   /**
    * Epoch of delegation
@@ -159,9 +165,21 @@ export interface Staking_nodes {
    * Amount of stake on the next epoch
    */
   pendingStake: string;
+  /**
+   * The stakes by operator field formatted by the client
+   */
   stakedByOperatorFormatted: string;
+  /**
+   * The stakes by delegates field formatted by the client
+   */
   stakedByDelegatesFormatted: string;
+  /**
+   * The total staked field formatted by the client
+   */
   stakedTotalFormatted: string;
+  /**
+   * The pending staked field formatted by the client
+   */
   pendingStakeFormatted: string;
   epochData: Staking_nodes_epochData | null;
   status: NodeStatus;
@@ -177,6 +195,9 @@ export interface Staking_nodeData {
    * Total staked amount across all nodes
    */
   stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
   stakedTotalFormatted: string;
   /**
    * Total number of nodes

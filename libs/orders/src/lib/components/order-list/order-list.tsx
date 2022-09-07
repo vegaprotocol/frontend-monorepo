@@ -8,7 +8,13 @@ import {
   OrderTimeInForceMapping,
   OrderRejectionReasonMapping,
 } from '@vegaprotocol/types';
-import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  getDateTimeFormat,
+  t,
+  positiveClassNames,
+  negativeClassNames,
+} from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -31,7 +37,7 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../order-data-provider/__generated__';
+import type { OrderFields } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
@@ -56,7 +62,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           ref={ref}
           setEditOrder={setEditOrder}
         />
-        <orderCancel.TransactionDialog
+        <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
         >
@@ -64,15 +70,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             transaction={orderCancel.transaction}
             order={orderCancel.cancelledOrder}
           />
-        </orderCancel.TransactionDialog>
-        <orderEdit.TransactionDialog
+        </orderCancel.Dialog>
+        <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
         >
           <OrderFeedback
             transaction={orderEdit.transaction}
             order={orderEdit.updatedOrder}
           />
-        </orderEdit.TransactionDialog>
+        </orderEdit.Dialog>
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}
@@ -125,12 +131,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            'text-vega-green-dark dark:text-vega-green': ({
+            [positiveClassNames]: ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
             }) => data?.side === Side.SIDE_BUY,
-            'text-vega-red-dark dark:text-vega-red': ({
+            [negativeClassNames]: ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
@@ -283,7 +289,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
                   onClick={() => {
                     setEditOrder(data);
                   }}
-                  size="sm"
+                  size="xs"
                 >
                   {t('Edit')}
                 </Button>
@@ -300,7 +306,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (isOrderActive(data.status)) {
               return (
                 <Button
-                  size="sm"
+                  size="xs"
                   data-testid="cancel"
                   onClick={() => cancel(data)}
                 >

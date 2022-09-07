@@ -1,0 +1,34 @@
+fragment AccountFields on Account {
+  type
+  balance
+  market {
+    id
+    name
+  }
+  asset {
+    id
+    symbol
+    decimals
+  }
+}
+
+query Accounts($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accountsConnection {
+      edges {
+        node {
+          type
+          balance
+        }
+      }
+    }
+  }
+}
+
+subscription AccountSubscribe($partyId: ID!) {
+  accounts(partyId: $partyId) {
+    type
+    balance
+  }
+}

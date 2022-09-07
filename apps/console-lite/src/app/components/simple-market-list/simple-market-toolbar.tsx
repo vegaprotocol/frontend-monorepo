@@ -75,7 +75,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
   );
 
   return (
-    <div className="w-full max-w-full mb-4 font-alpha">
+    <div className="w-full max-w-full mb-2 md:mb-8 font-alpha">
       <ul
         ref={slideContRef}
         className="grid grid-flow-col auto-cols-min gap-4 relative pb-2 mb-2"
@@ -121,8 +121,8 @@ const SimpleMarketToolbar = ({ data }: Props) => {
           style={sliderStyles}
         />
       </ul>
-      <div className="grid gap-8 pb-4 mt-6 md:grid-cols-[min-content,min-content,1fr]">
-        <div className="pb-8">
+      <div className="grid gap-4 pb-2 mt-2 md:mt-6 md:grid-cols-[min-content,min-content,1fr]">
+        <div className="pb-2">
           <DropdownMenu onOpenChange={(open) => setOpen(open)}>
             <DropdownMenuTrigger
               className="mr-2 w-auto text-capMenu text-black dark:text-white"
@@ -148,7 +148,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
             <DropdownMenuContent>
               {STATES_FILTER.map(({ value, text }) => (
                 <DropdownMenuCheckboxItem
-                  className="uppercase text-ui dark:text-white"
+                  className="uppercase text-ui"
                   key={value}
                   checked={
                     value === params.state ||
@@ -170,7 +170,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         </div>
         {activeNumber > 0 && (
           <ul
-            className="md:gap-6 gap-4 pb-4 md:ml-2 flex flex-wrap"
+            className="md:gap-x-6 gap-x-4 gap-y-1 pb-2 md:ml-2 flex flex-wrap"
             data-testid="market-assets-menu"
             aria-label={t('Asset on the market')}
           >

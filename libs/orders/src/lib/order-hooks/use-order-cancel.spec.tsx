@@ -8,10 +8,7 @@ import type {
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { useOrderCancel } from './use-order-cancel';
-import type {
-  OrderEvent,
-  OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 
 const defaultWalletContext = {
