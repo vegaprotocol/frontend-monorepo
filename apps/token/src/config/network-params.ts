@@ -50,4 +50,5 @@ export const NetworkParams = {
   GOV_FREEFORM_MIN_PROPOSER_BALANCE:
     'governance.proposal.freeform.minProposerBalance',
   VALIDATOR_DELEGATION_MIN_AMOUNT: 'validators.delegation.minAmount',
+  SPAM_PROTECTION_PROPOSAL_MIN_TOKENS: 'spam.protection.proposal.min.tokens',
 };

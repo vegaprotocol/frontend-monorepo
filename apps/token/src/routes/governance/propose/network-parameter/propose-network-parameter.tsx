@@ -60,6 +60,9 @@ export const ProposeNetworkParameter = () => {
   const minProposerBalance = networkParamsData?.find(
     ({ key }) => key === NetworkParams.GOV_UPDATE_NET_PARAM_MIN_PROPOSER_BALANCE
   )?.value;
+  const minSpamBalance = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
+  )?.value;
 
   const { t } = useTranslation();
   const {
@@ -101,7 +104,10 @@ export const ProposeNetworkParameter = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements value={minProposerBalance} />
+            <ProposalFormMinRequirements
+              minProposerBalance={minProposerBalance}
+              spamProtectionMin={minSpamBalance}
+            />
             <div data-testid="network-parameter-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>

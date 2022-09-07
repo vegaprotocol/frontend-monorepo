@@ -60,6 +60,9 @@ export const ProposeNewAsset = () => {
   const minProposerBalance = networkParamsData?.find(
     ({ key }) => key === NetworkParams.GOV_ASSET_MIN_PROPOSER_BALANCE
   )?.value;
+  const minSpamBalance = networkParamsData?.find(
+    ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
+  )?.value;
 
   const { t } = useTranslation();
   const {
@@ -98,7 +101,10 @@ export const ProposeNewAsset = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements value={minProposerBalance} />
+            <ProposalFormMinRequirements
+              minProposerBalance={minProposerBalance}
+              spamProtectionMin={minSpamBalance}
+            />
             <div data-testid="new-asset-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>
