@@ -113,7 +113,7 @@ describe('SimpleMarketList', () => {
   it('should be properly rendered with some data', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]} addTypename>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -134,7 +134,7 @@ describe('SimpleMarketList', () => {
   it('update should return proper boolean value', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]} addTypename>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -177,7 +177,7 @@ describe('SimpleMarketList', () => {
   it('click on row should be properly handled', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]} addTypename>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -207,7 +207,7 @@ describe('SimpleMarketList', () => {
     mockData = [];
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]} addTypename>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
