@@ -43,6 +43,7 @@ interface Props {
   price: string;
   fees: string;
   notionalSize: string;
+  slippage: number;
 }
 
 export default ({
@@ -55,6 +56,7 @@ export default ({
   fees,
   price,
   notionalSize,
+  slippage,
 }: Props) => {
   const { data: tagsData } = useQuery<MarketTags, MarketTagsVariables>(
     MARKET_TAGS_QUERY,
@@ -105,6 +107,7 @@ export default ({
         fees={fees}
         estCloseOut={estCloseOut}
         notionalSize={notionalSize}
+        slippage={slippage.toString()}
       />
 
       <div className="mt-12 max-w-sm">
