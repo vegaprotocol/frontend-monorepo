@@ -1,8 +1,8 @@
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
 import { NetworkParams } from '../../../config';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { useNetworkParam } from '../../../hooks/use-network-param';
 import { BigNumber } from '../../../lib/bignumber';
 import { addDecimal } from '../../../lib/decimals';
 import type {
@@ -16,7 +16,7 @@ const useProposalNetworkParams = ({
 }: {
   proposal: Proposals_proposals;
 }) => {
-  const { data, loading } = useNetworkParam([
+  const { data, loading } = useNetworkParams([
     NetworkParams.GOV_UPDATE_MARKET_REQUIRED_MAJORITY,
     NetworkParams.GOV_UPDATE_MARKET_REQUIRED_PARTICIPATION,
     NetworkParams.GOV_NEW_MARKET_REQUIRED_MAJORITY,

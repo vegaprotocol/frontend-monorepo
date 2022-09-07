@@ -1,5 +1,6 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { generateAccounts } from '../support/mocks/generate-accounts';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 import { generateWithdrawFormQuery } from '../support/mocks/generate-withdraw-page-query';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
@@ -20,6 +21,7 @@ describe('withdraw', () => {
       aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
+      aliasQuery(req, 'Accounts', generateAccounts());
     });
 
     cy.visit('/portfolio');

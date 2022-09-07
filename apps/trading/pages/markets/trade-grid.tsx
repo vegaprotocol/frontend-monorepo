@@ -1,48 +1,47 @@
-import 'allotment/dist/style.css';
 import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import {
-  addDecimalsFormatNumber,
-  getDateFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
-import {
-  AuctionTrigger,
-  AuctionTriggerMapping,
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
-import type { CandleClose } from '@vegaprotocol/types';
-import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
 import {
   Tab,
   Tabs,
+  ResizableGrid,
+  ResizableGridPanel,
+  ButtonLink,
+  Tooltip,
   PriceCellChange,
   Link,
-  Tooltip,
-  ResizableGrid,
-  ButtonLink,
-  ResizableGridPanel,
 } from '@vegaprotocol/ui-toolkit';
+import {
+  addDecimalsFormatNumber,
+  getDateFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
+import { SelectMarketPopover } from '@vegaprotocol/market-list';
+import { useGlobalStore } from '../../stores';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { CandleClose } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  AuctionTriggerMapping,
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {

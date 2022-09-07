@@ -83,7 +83,7 @@ describe('OrderFeedback', () => {
       '1.00'
     );
     expect(screen.getByText('Size').nextElementSibling).toHaveTextContent(
-      `+ 200`
+      `+200`
     );
   });
 });
