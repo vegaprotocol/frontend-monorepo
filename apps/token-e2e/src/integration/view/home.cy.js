@@ -3,7 +3,7 @@ const navHome = '[href="/"]';
 const navVesting = '[href="/vesting"]';
 const navStaking = '[href="/staking"]';
 const navRewards = '[href="/rewards"]';
-const navWithdraw = '[href="/withdraw"]';
+const navWithdraw = '[href="/withdrawals"]';
 const navGovernance = '[href="/governance"]';
 
 const tokenDetailsTable = '.token-details';

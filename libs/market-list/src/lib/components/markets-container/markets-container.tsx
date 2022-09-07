@@ -10,7 +10,7 @@ import type {
   MarketList_markets,
   MarketList_markets_data,
   MarketDataSub_marketData,
-} from '../../__generated__';
+} from '../../';
 import { marketsDataProvider as dataProvider } from '../../markets-data-provider';
 import { Interval, MarketState } from '@vegaprotocol/types';
 

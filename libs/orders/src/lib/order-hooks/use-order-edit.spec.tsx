@@ -6,10 +6,7 @@ import type {
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
-import type {
-  OrderEvent,
-  OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';

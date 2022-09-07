@@ -1,37 +1,21 @@
 import create from 'zustand';
 
 interface GlobalStore {
-  vegaWalletConnectDialog: boolean;
-  setVegaWalletConnectDialog: (isOpen: boolean) => void;
-  vegaWalletManageDialog: boolean;
-  setVegaWalletManageDialog: (isOpen: boolean) => void;
-  vegaNetworkSwitcherDialog: boolean;
-  setVegaNetworkSwitcherDialog: (isOpen: boolean) => void;
+  connectDialog: boolean;
+  networkSwitcherDialog: boolean;
   landingDialog: boolean;
-  setLandingDialog: (isOpen: boolean) => void;
+  riskNoticeDialog: boolean;
   marketId: string | null;
-  setMarketId: (marketId: string) => void;
+  update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
 }
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
-  vegaWalletConnectDialog: false,
-  setVegaWalletConnectDialog: (isOpen: boolean) => {
-    set({ vegaWalletConnectDialog: isOpen });
-  },
-  vegaWalletManageDialog: false,
-  setVegaWalletManageDialog: (isOpen: boolean) => {
-    set({ vegaWalletManageDialog: isOpen });
-  },
-  vegaNetworkSwitcherDialog: false,
-  setVegaNetworkSwitcherDialog: (isOpen: boolean) => {
-    set({ vegaNetworkSwitcherDialog: isOpen });
-  },
+  connectDialog: false,
+  networkSwitcherDialog: false,
   landingDialog: false,
-  setLandingDialog: (isOpen: boolean) => {
-    set({ landingDialog: isOpen });
-  },
+  riskNoticeDialog: false,
   marketId: null,
-  setMarketId: (id: string) => {
-    set({ marketId: id });
+  update: (state) => {
+    set(state);
   },
 }));

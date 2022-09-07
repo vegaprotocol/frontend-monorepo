@@ -1,6 +1,12 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import type { CSSProperties } from 'react';
+import type {
+  ValueFormatterParams,
+  ValueGetterParams,
+  ICellRendererParams,
+  CellRendererSelectorResult,
+} from 'ag-grid-community';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -8,6 +14,8 @@ import {
   t,
   formatNumber,
   getDateTimeFormat,
+  signedNumberCssClass,
+  signedNumberCssClassRules,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -15,7 +23,7 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -29,6 +37,8 @@ export interface Datasource extends IDatasource {
 interface Props extends AgGridReactProps {
   rowData?: Position[] | null;
   datasource?: Datasource;
+  onClose?: (data: Position) => void;
+  style?: CSSProperties;
 }
 
 type PositionsTableValueFormatterParams = Omit<
@@ -43,12 +53,15 @@ export interface MarketNameCellProps {
 }
 
 export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
-  return valueFormatted ? (
-    <div className="leading-tight">
-      <div>{valueFormatted[0]}</div>
-      {valueFormatted[1] ? <div>{valueFormatted[1]}</div> : null}
-    </div>
-  ) : null;
+  if (valueFormatted && valueFormatted[1]) {
+    return (
+      <div className="leading-tight">
+        <div>{valueFormatted[0]}</div>
+        <div>{valueFormatted[1]}</div>
+      </div>
+    );
+  }
+  return (valueFormatted && valueFormatted[0]) || undefined;
 };
 
 export interface PriceCellProps {
@@ -70,7 +83,7 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
       <ProgressBar
         value={valueFormatted.value}
         intent={valueFormatted.intent}
-        className="mt-4"
+        className="mt-2"
       />
     </>
   ) : null;
@@ -91,14 +104,10 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   }
   const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
     valueFormatted;
-  const isShortPosition = openVolume.startsWith('-');
   return valueFormatted ? (
-    <div className="leading-tight">
+    <div className="leading-tight font-mono">
       <div
-        className={classNames('text-right', {
-          'text-vega-green-dark dark:text-vega-green': !isShortPosition,
-          'text-vega-red-dark dark:text-vega-red': isShortPosition,
-        })}
+        className={classNames('text-right', signedNumberCssClass(openVolume))}
       >
         {volumePrefix(
           addDecimalsFormatNumber(openVolume, positionDecimalPlaces)
@@ -113,235 +122,281 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 
 AmountCell.displayName = 'AmountCell';
 
-export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
+const ButtonCell = ({
+  onClick,
+  data,
+}: {
+  onClick: (position: Position) => void;
+  data: Position;
+}) => {
   return (
-    <AgGrid
-      style={{ width: '100%', height: '100%' }}
-      overlayNoRowsTemplate="No positions"
-      getRowId={getRowId}
-      rowHeight={34}
-      ref={ref}
-      defaultColDef={{
-        flex: 1,
-        resizable: true,
-      }}
-      components={{ PriceFlashCell, ProgressBarCell }}
-      {...props}
-    >
-      <AgGridColumn
-        headerName={t('Market')}
-        field="marketName"
-        cellRenderer={MarketNameCell}
-        valueFormatter={({
-          value,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['marketName'];
-        }) => {
-          if (!value) {
-            return undefined;
-          }
-          // split market name into two parts, 'Part1 (Part2)'
-          const matches = value.match(/^(.*)\((.*)\)\s*$/);
-          if (matches) {
-            return [matches[1].trim(), matches[2].trim()];
-          }
-          return [value];
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Size')}
-        field="openVolume"
-        type="rightAligned"
-        cellClass="font-mono"
-        cellRenderer={AmountCell}
-        valueFormatter={({
-          value,
-          data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['openVolume'];
-        }): AmountCellProps['valueFormatted'] => {
-          if (!value || !data) {
-            return undefined;
-          }
-          return data;
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Mark price')}
-        field="markPrice"
-        type="rightAligned"
-        cellRenderer="PriceFlashCell"
-        valueFormatter={({
-          value,
-          data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['markPrice'];
-        }) => {
-          if (!data) {
-            return undefined;
-          }
-          if (
-            data.marketTradingMode ===
-            MarketTradingMode.TRADING_MODE_OPENING_AUCTION
-          ) {
-            return '-';
-          }
-          return addDecimalsFormatNumber(
-            value.toString(),
-            data.marketDecimalPlaces
-          );
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Entry price')}
-        field="averageEntryPrice"
-        headerComponentParams={{
-          template:
-            '<div class="ag-cell-label-container" role="presentation">' +
-            `  <span>${t('Liquidation price (est)')}</span>` +
-            '  <span ref="eText" class="ag-header-cell-text"></span>' +
-            '</div>',
-        }}
-        flex={2}
-        cellRenderer="ProgressBarCell"
-        valueFormatter={({
-          data,
-        }: PositionsTableValueFormatterParams):
-          | PriceCellProps['valueFormatted']
-          | undefined => {
-          if (!data) {
-            return undefined;
-          }
-          const min = BigInt(data.averageEntryPrice);
-          const max = BigInt(data.liquidationPrice);
-          const mid = BigInt(data.markPrice);
-          const range = max - min;
-          return {
-            low: addDecimalsFormatNumber(
-              min.toString(),
-              data.marketDecimalPlaces
-            ),
-            high: addDecimalsFormatNumber(
-              max.toString(),
-              data.marketDecimalPlaces
-            ),
-            value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-            intent: data.lowMarginLevel ? Intent.Warning : undefined,
-          };
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Leverage')}
-        field="currentLeverage"
-        type="rightAligned"
-        cellRenderer="PriceFlashCell"
-        valueFormatter={({
-          value,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['currentLeverage'];
-        }) =>
-          value === undefined ? undefined : formatNumber(value.toString(), 1)
-        }
-      />
-      <AgGridColumn
-        headerName={t('Margin allocated')}
-        field="capitalUtilisation"
-        type="rightAligned"
-        flex={2}
-        cellRenderer="ProgressBarCell"
-        valueFormatter={({
-          data,
-          value,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['capitalUtilisation'];
-        }): PriceCellProps['valueFormatted'] | undefined => {
-          if (!data) {
-            return undefined;
-          }
-          return {
-            low: `${formatNumber(value, 2)}%`,
-            high: addDecimalsFormatNumber(
-              data.totalBalance,
-              data.assetDecimals
-            ),
-            value: Number(value),
-          };
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Realised PNL')}
-        field="realisedPNL"
-        type="rightAligned"
-        cellClassRules={{
-          'text-vega-green-dark dark:text-vega-green': ({
-            value,
-          }: {
-            value: string;
-          }) => value && BigInt(value) > 0,
-          'text-vega-red-dark dark:text-vega-red': ({
-            value,
-          }: {
-            value: string;
-          }) => value && BigInt(value) < 0,
-        }}
-        valueFormatter={({
-          value,
-          data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['realisedPNL'];
-        }) =>
-          value === undefined
-            ? undefined
-            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
-        }
-        cellRenderer="PriceFlashCell"
-        headerTooltip={t('P&L excludes any fees paid.')}
-      />
-      <AgGridColumn
-        headerName={t('Unrealised PNL')}
-        field="unrealisedPNL"
-        type="rightAligned"
-        cellClassRules={{
-          'text-vega-green-dark dark:text-vega-green': ({
-            value,
-          }: {
-            value: string;
-          }) => value && BigInt(value) > 0,
-          'text-vega-red-dark dark:text-vega-red': ({
-            value,
-          }: {
-            value: string;
-          }) => value && BigInt(value) < 0,
-        }}
-        valueFormatter={({
-          value,
-          data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['unrealisedPNL'];
-        }) =>
-          value === undefined
-            ? undefined
-            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
-        }
-        cellRenderer="PriceFlashCell"
-      />
-      <AgGridColumn
-        headerName={t('Updated')}
-        field="updatedAt"
-        type="rightAligned"
-        valueFormatter={({
-          value,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['updatedAt'];
-        }) => {
-          if (!value) {
-            return value;
-          }
-          return getDateTimeFormat().format(new Date(value));
-        }}
-      />
-    </AgGrid>
+    <Button onClick={() => onClick(data)} size="xs">
+      {t('Close')}
+    </Button>
   );
-});
+};
+
+const EmptyCell = () => '';
+
+export const PositionsTable = forwardRef<AgGridReact, Props>(
+  ({ onClose, ...props }, ref) => {
+    return (
+      <AgGrid
+        style={{ width: '100%', height: '100%' }}
+        overlayNoRowsTemplate="No positions"
+        getRowId={getRowId}
+        rowHeight={34}
+        ref={ref}
+        defaultColDef={{
+          flex: 1,
+          resizable: true,
+        }}
+        components={{ PriceFlashCell, ProgressBarCell }}
+        {...props}
+      >
+        <AgGridColumn
+          headerName={t('Market')}
+          field="marketName"
+          cellRenderer={MarketNameCell}
+          valueFormatter={({
+            value,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['marketName'];
+          }) => {
+            if (!value) {
+              return undefined;
+            }
+            // split market name into two parts, 'Part1 (Part2)' or 'Part1 - Part2'
+            const matches = value.match(/^(.*)(\((.*)\)| - (.*))\s*$/);
+            if (matches) {
+              return [matches[1].trim(), matches[3].trim()];
+            }
+            return [value];
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Size')}
+          field="openVolume"
+          valueGetter={({ node, data }: ValueGetterParams) => {
+            return node?.rowPinned ? data?.notional : data?.openVolume;
+          }}
+          type="rightAligned"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? PriceFlashCell : AmountCell,
+            };
+          }}
+          valueFormatter={({
+            value,
+            data,
+            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['openVolume'];
+          }): AmountCellProps['valueFormatted'] | string => {
+            if (!value || !data) {
+              return undefined;
+            }
+            if (node?.rowPinned) {
+              return addDecimalsFormatNumber(value, data.decimals);
+            }
+            return data;
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Mark price')}
+          field="markPrice"
+          type="rightAligned"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+            };
+          }}
+          valueFormatter={({
+            value,
+            data,
+            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['markPrice'];
+          }) => {
+            if (!data || !value || node?.rowPinned) {
+              return undefined;
+            }
+            if (
+              data.marketTradingMode ===
+              MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+            ) {
+              return '-';
+            }
+            return addDecimalsFormatNumber(
+              value.toString(),
+              data.marketDecimalPlaces
+            );
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Entry price')}
+          field="averageEntryPrice"
+          headerComponentParams={{
+            template:
+              '<div class="ag-cell-label-container" role="presentation">' +
+              `  <span>${t('Liquidation price (est)')}</span>` +
+              '  <span ref="eText" class="ag-header-cell-text"></span>' +
+              '</div>',
+          }}
+          flex={2}
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+            };
+          }}
+          valueFormatter={({
+            data,
+            node,
+          }: PositionsTableValueFormatterParams):
+            | PriceCellProps['valueFormatted']
+            | undefined => {
+            if (!data || node?.rowPinned) {
+              return undefined;
+            }
+            const min = BigInt(data.averageEntryPrice);
+            const max = BigInt(data.liquidationPrice);
+            const mid = BigInt(data.markPrice);
+            const range = max - min;
+            return {
+              low: addDecimalsFormatNumber(
+                min.toString(),
+                data.marketDecimalPlaces
+              ),
+              high: addDecimalsFormatNumber(
+                max.toString(),
+                data.marketDecimalPlaces
+              ),
+              value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
+              intent: data.lowMarginLevel ? Intent.Warning : undefined,
+            };
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Leverage')}
+          field="currentLeverage"
+          type="rightAligned"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+            };
+          }}
+          valueFormatter={({
+            value,
+            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['currentLeverage'];
+          }) =>
+            value === undefined ? undefined : formatNumber(value.toString(), 1)
+          }
+        />
+        <AgGridColumn
+          headerName={t('Margin allocated')}
+          field="capitalUtilisation"
+          type="rightAligned"
+          flex={2}
+          cellRenderer="ProgressBarCell"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+            };
+          }}
+          valueFormatter={({
+            data,
+            value,
+            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['capitalUtilisation'];
+          }): PriceCellProps['valueFormatted'] | undefined => {
+            if (!data || node?.rowPinned) {
+              return undefined;
+            }
+            return {
+              low: `${formatNumber(value, 2)}%`,
+              high: addDecimalsFormatNumber(data.totalBalance, data.decimals),
+              value: Number(value),
+            };
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Realised PNL')}
+          field="realisedPNL"
+          type="rightAligned"
+          cellClassRules={signedNumberCssClassRules}
+          valueFormatter={({
+            value,
+            data,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['realisedPNL'];
+          }) =>
+            value === undefined
+              ? undefined
+              : addDecimalsFormatNumber(value.toString(), data.decimals)
+          }
+          cellRenderer="PriceFlashCell"
+          headerTooltip={t('P&L excludes any fees paid.')}
+        />
+        <AgGridColumn
+          headerName={t('Unrealised PNL')}
+          field="unrealisedPNL"
+          type="rightAligned"
+          cellClassRules={signedNumberCssClassRules}
+          valueFormatter={({
+            value,
+            data,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['unrealisedPNL'];
+          }) =>
+            value === undefined
+              ? undefined
+              : addDecimalsFormatNumber(value.toString(), data.decimals)
+          }
+          cellRenderer="PriceFlashCell"
+        />
+        <AgGridColumn
+          headerName={t('Updated')}
+          field="updatedAt"
+          type="rightAligned"
+          valueFormatter={({
+            value,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['updatedAt'];
+          }) => {
+            if (!value) {
+              return value;
+            }
+            return getDateTimeFormat().format(new Date(value));
+          }}
+        />
+        {onClose ? (
+          <AgGridColumn
+            cellRendererSelector={(
+              params: ICellRendererParams
+            ): CellRendererSelectorResult => {
+              return {
+                component: params.node.rowPinned ? EmptyCell : ButtonCell,
+              };
+            }}
+            cellRendererParams={{ onClick: onClose }}
+          />
+        ) : null}
+      </AgGrid>
+    );
+  }
+);
 
 export default PositionsTable;

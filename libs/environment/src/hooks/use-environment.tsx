@@ -12,9 +12,16 @@ import {
   getIsNodeLoading,
 } from '../utils/validate-node';
 import { ErrorType } from '../types';
-import type { Environment, Networks, RawEnvironment, NodeData } from '../types';
+import type {
+  Environment,
+  Networks,
+  RawEnvironment,
+  NodeData,
+  Configuration,
+} from '../types';
 
 type EnvironmentProviderProps = {
+  config?: Configuration;
   definitions?: Partial<RawEnvironment>;
   children?: ReactNode;
 };
@@ -37,6 +44,7 @@ const hasFailedLoading = (env: Networks, node: NodeData) =>
   getErrorType(env, node) !== null;
 
 export const EnvironmentProvider = ({
+  config: defaultConfig,
   definitions,
   children,
 }: EnvironmentProviderProps) => {
@@ -45,15 +53,18 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { loading, config } = useConfig(environment, (errorType) => {
-    if (!environment.VEGA_URL) {
-      setNetworkError(errorType);
-      setNodeSwitcherOpen(true);
-    } else {
-      const error = getErrorByType(errorType, environment.VEGA_ENV);
-      error && console.warn(error.headline);
+  const { loading, config } = useConfig(
+    { environment, defaultConfig },
+    (errorType) => {
+      if (!environment.VEGA_URL) {
+        setNetworkError(errorType);
+        setNodeSwitcherOpen(true);
+      } else {
+        const error = getErrorByType(errorType, environment.VEGA_ENV);
+        error && console.warn(error.headline);
+      }
     }
-  });
+  );
   const { state: nodes, clients } = useNodes(config);
   const nodeKeys = Object.keys(nodes);
 

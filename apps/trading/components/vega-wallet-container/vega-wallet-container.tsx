@@ -9,7 +9,7 @@ interface VegaWalletContainerProps {
 }
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
-  const store = useGlobalStore();
+  const { update } = useGlobalStore((store) => ({ update: store.update }));
   const { keypair } = useVegaWallet();
 
   if (!keypair) {
@@ -20,7 +20,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
             {t('Connect your Vega wallet')}
           </p>
           <Button
-            onClick={() => store.setVegaWalletConnectDialog(true)}
+            onClick={() => update({ connectDialog: true })}
             data-testid="vega-wallet-connect"
           >
             {t('Connect')}

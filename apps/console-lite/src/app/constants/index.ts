@@ -10,7 +10,7 @@ export const TRADABLE_STATES = {
 };
 
 export const IS_MARKET_TRADABLE = (market: SimpleMarkets_markets) =>
-  Boolean((market.data?.market.state ?? '') in TRADABLE_STATES && market?.id);
+  Boolean((market.state ?? '') in TRADABLE_STATES && market?.id);
 
 export const MARKET_STATES_MAP: Record<MarketState | '', string> = {
   [MarketState.STATE_ACTIVE]: t('Active'),

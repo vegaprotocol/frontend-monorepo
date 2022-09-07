@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  addDecimalsFormatNumber,
+  removeDecimal,
+} from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -51,10 +55,15 @@ export const DealTicket = ({
   const onSubmit = useCallback(
     (order: Order) => {
       if (!isDisabled) {
-        submit(order);
+        submit({
+          ...order,
+          price:
+            order.price && removeDecimal(order.price, market.decimalPlaces),
+          size: removeDecimal(order.size, market.positionDecimalPlaces),
+        });
       }
     },
-    [isDisabled, submit]
+    [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
   return (
@@ -111,7 +120,7 @@ export const DealTicket = ({
       {orderType === OrderType.TYPE_LIMIT &&
         orderTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
-            name="expiration"
+            name="expiresAt"
             control={control}
             render={({ field }) => (
               <ExpirySelector value={field.value} onSelect={field.onChange} />

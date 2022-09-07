@@ -13,6 +13,9 @@ export interface NodeData_nodeData {
    * Total staked amount across all nodes
    */
   stakedTotal: string;
+  /**
+   * The total staked field formatted by the client
+   */
   stakedTotalFormatted: string;
 }
 

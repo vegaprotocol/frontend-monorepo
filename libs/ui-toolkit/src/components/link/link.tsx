@@ -1,5 +1,7 @@
+import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import type { ReactNode, AnchorHTMLAttributes } from 'react';
+import { Icon } from '../icon';
 
 type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   children?: ReactNode;
@@ -27,5 +29,27 @@ export const Link = ({ className, children, ...props }: LinkProps) => {
     </a>
   );
 };
-
 Link.displayName = 'Link';
+
+export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
+  <Link
+    className={classNames(className, 'inline-flex items-baseline')}
+    {...props}
+    target="_blank"
+    data-testid="external-link"
+  >
+    {typeof children === 'string' ? (
+      <>
+        <span
+          className={classNames({ underline: typeof children === 'string' })}
+        >
+          {children}
+        </span>
+        <Icon size={3} name={IconNames.SHARE} className="ml-1" />
+      </>
+    ) : (
+      children
+    )}
+  </Link>
+);
+ExternalLink.displayName = 'ExternalLink';

@@ -34,6 +34,9 @@ export class CollateralBridge {
   get_withdraw_threshold(assetSource: string) {
     return this.contract.get_withdraw_threshold(assetSource);
   }
+  default_withdraw_delay() {
+    return this.contract.default_withdraw_delay();
+  }
   withdraw_asset(
     assetSource: string,
     amount: string,

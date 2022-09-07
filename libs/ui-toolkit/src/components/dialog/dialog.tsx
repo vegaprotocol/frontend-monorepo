@@ -26,8 +26,12 @@ export function Dialog({
   size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
+    'fixed relative top-0 left-0 z-20 flex items-center justify-center',
+    'w-full h-full'
+  );
+  const wrapperClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded inset-x-1/2 top-[10vh] translate-x-[-50%]',
+    'z-20 fixed rounded top-[10vh] max-w-[90vw]',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -38,6 +42,7 @@ export function Dialog({
       'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
+
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
@@ -46,24 +51,26 @@ export function Dialog({
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content className={contentClasses}>
-          <DialogPrimitives.Close
-            className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
-            data-testid="dialog-close"
-          >
-            <Icon name="cross" />
-          </DialogPrimitives.Close>
-          <div className="flex gap-4 max-w-full">
-            {icon && <div className="fill-current">{icon}</div>}
-            <div data-testid="dialog-content" className="flex-1">
-              {title && (
-                <h1
-                  className="text-xl uppercase mb-4 pr-2"
-                  data-testid="dialog-title"
-                >
-                  {title}
-                </h1>
-              )}
-              <div>{children}</div>
+          <div className={wrapperClasses}>
+            <DialogPrimitives.Close
+              className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
+              data-testid="dialog-close"
+            >
+              <Icon name="cross" />
+            </DialogPrimitives.Close>
+            <div className="flex gap-4 max-w-full">
+              {icon && <div className="fill-current">{icon}</div>}
+              <div data-testid="dialog-content" className="flex-1">
+                {title && (
+                  <h1
+                    className="text-xl uppercase mb-4 pr-2"
+                    data-testid="dialog-title"
+                  >
+                    {title}
+                  </h1>
+                )}
+                <div>{children}</div>
+              </div>
             </div>
           </div>
         </DialogPrimitives.Content>

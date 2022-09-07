@@ -1,0 +1,6 @@
+query NodeData {
+  nodeData {
+    stakedTotal
+    stakedTotalFormatted @client
+  }
+}

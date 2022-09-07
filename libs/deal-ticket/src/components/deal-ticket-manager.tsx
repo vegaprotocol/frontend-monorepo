@@ -16,8 +16,7 @@ export const DealTicketManager = ({
   market,
   children,
 }: DealTicketManagerProps) => {
-  const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
   return (
     <>
@@ -33,13 +32,13 @@ export const DealTicketManager = ({
           }
         />
       )}
-      <TransactionDialog
+      <Dialog
         title={getOrderDialogTitle(finalizedOrder?.status)}
         intent={getOrderDialogIntent(finalizedOrder?.status)}
         icon={getOrderDialogIcon(finalizedOrder?.status)}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
-      </TransactionDialog>
+      </Dialog>
     </>
   );
 };

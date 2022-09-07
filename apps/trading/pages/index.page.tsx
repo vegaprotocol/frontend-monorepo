@@ -9,15 +9,18 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useMarketList();
-  const setLandingDialog = useGlobalStore((state) => state.setLandingDialog);
+  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
+    riskNoticeDialog: store.riskNoticeDialog,
+    update: store.update,
+  }));
 
   useEffect(() => {
+    update({ landingDialog: true });
+
     if (data) {
       const marketId = data[0]?.id;
 
-      // If a default market is found, go to it with the landing dialog open
       if (marketId) {
-        setLandingDialog(true);
         replace(`/markets/${marketId}`);
       }
       // Fallback to the markets list page
@@ -25,7 +28,7 @@ export function Index() {
         replace('/markets');
       }
     }
-  }, [data, replace, setLandingDialog]);
+  }, [data, replace, riskNoticeDialog, update]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

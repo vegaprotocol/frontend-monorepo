@@ -46,13 +46,18 @@ const getCachedConfig = (env: Networks, envUrl?: string) => {
   return undefined;
 };
 
+type UseConfigOptions = {
+  environment: EnvironmentWithOptionalUrl;
+  defaultConfig?: Configuration;
+};
+
 export const useConfig = (
-  environment: EnvironmentWithOptionalUrl,
+  { environment, defaultConfig }: UseConfigOptions,
   onError: (errorType: ErrorType) => void
 ) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<Configuration | undefined>(
-    getCachedConfig(environment.VEGA_ENV, environment.VEGA_URL)
+    defaultConfig ?? getCachedConfig(environment.VEGA_ENV, environment.VEGA_URL)
   );
 
   useEffect(() => {

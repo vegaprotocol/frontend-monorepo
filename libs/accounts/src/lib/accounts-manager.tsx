@@ -25,7 +25,7 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
     ({ delta }: { delta: AccountSubscribe_accounts }) => {
       const update: Accounts_party_accounts[] = [];
       const add: Accounts_party_accounts[] = [];
-      if (!gridRef.current) {
+      if (!gridRef.current?.api) {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(getId(delta));

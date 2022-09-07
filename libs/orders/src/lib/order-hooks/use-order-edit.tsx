@@ -1,7 +1,7 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
-import type { OrderEvent_busEvents_event_Order } from './__generated__';
+import type { OrderEvent_busEvents_event_Order } from './';
 import * as Sentry from '@sentry/react';
 import type { OrderFields } from '../components';
 import { useOrderEvent } from './use-order-event';
@@ -22,7 +22,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    TransactionDialog,
+    Dialog,
   } = useVegaTransaction();
 
   const waitForOrderEvent = useOrderEvent();
@@ -71,7 +71,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
   return {
     transaction,
     updatedOrder,
-    TransactionDialog,
+    Dialog,
     edit,
     reset,
   };

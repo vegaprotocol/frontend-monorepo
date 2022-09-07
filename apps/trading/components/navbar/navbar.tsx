@@ -14,10 +14,11 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
-  const store = useGlobalStore();
-  const tradingPath = store.marketId
-    ? `/markets/${store.marketId}`
-    : '/markets';
+  const { marketId, update } = useGlobalStore((store) => ({
+    marketId: store.marketId,
+    update: store.update,
+  }));
+  const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
   return (
     <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-400 bg-black">
       <div className="flex gap-4 mr-4 items-center h-full">
@@ -49,9 +50,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
           fixedBg="dark"
         />
         <VegaWalletConnectButton
-          setConnectDialog={(open) => {
-            store.setVegaWalletConnectDialog(open);
-          }}
+          setConnectDialog={(open) => update({ connectDialog: open })}
         />
       </div>
     </div>
