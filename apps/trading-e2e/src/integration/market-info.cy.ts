@@ -1,8 +1,4 @@
-import {
-  MarketState,
-  MarketStateMapping,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
+import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
 const marketInfoBtn = 'Info';
