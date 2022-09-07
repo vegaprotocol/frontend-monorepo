@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
@@ -26,12 +27,12 @@ export function Dialog({
   size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
-    'fixed relative top-0 left-0 z-20 flex items-center justify-center',
+    'fixed top-0 left-0 z-20 flex items-center justify-center overflow-scroll',
     'w-full h-full'
   );
   const wrapperClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded top-[10vh] max-w-[90vw]',
+    'z-20 relative rounded top-[10vh] max-w-[90vw]',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -43,6 +44,14 @@ export function Dialog({
     }
   );
 
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }, [open]);
+
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
@@ -52,12 +61,14 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <div className={wrapperClasses}>
-            <DialogPrimitives.Close
-              className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
-              data-testid="dialog-close"
-            >
-              <Icon name="cross" />
-            </DialogPrimitives.Close>
+            {onChange && (
+              <DialogPrimitives.Close
+                className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
+                data-testid="dialog-close"
+              >
+                <Icon name="cross" />
+              </DialogPrimitives.Close>
+            )}
             <div className="flex gap-4 max-w-full">
               {icon && <div className="pt-2 fill-current">{icon}</div>}
               <div data-testid="dialog-content" className="flex-1">
