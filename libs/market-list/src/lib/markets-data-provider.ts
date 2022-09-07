@@ -8,8 +8,10 @@ import type {
   Markets,
   Markets_marketsConnection_edges_node,
 } from './__generated__';
-import { marketsDataDataProvider, marketsCandlesDataProvider } from './';
-import type { MarketData, MarketCandles } from './';
+import { marketsDataDataProvider } from './markets-data-data-provider';
+import { marketsCandlesDataProvider } from './markets-candles-data-provider';
+import type { MarketData } from './market-data-data-provider';
+import type { MarketCandles } from './markets-candles-data-provider';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';

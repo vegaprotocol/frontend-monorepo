@@ -67,7 +67,7 @@ const getData = (responseData: MarketDataQuery): MarketData | null =>
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketsData =>
   subscriptionData.marketsData[0];
 
-export const marketsDataDataProvider = makeDataProvider<
+export const marketDataDataProvider = makeDataProvider<
   MarketDataQuery,
   MarketData,
   MarketDataSub,

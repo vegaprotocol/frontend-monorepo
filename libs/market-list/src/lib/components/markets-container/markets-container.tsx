@@ -1,5 +1,5 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { MarketListTable, getRowId } from './market-list-table';
+import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-data-provider';
