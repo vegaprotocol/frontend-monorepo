@@ -65,6 +65,60 @@ export const generatePositions = (
       },
     },
     {
+      __typename: 'Position',
+      realisedPNL: '100',
+      openVolume: '20',
+      unrealisedPNL: '895000',
+      averageEntryPrice: '8509338',
+      updatedAt: '2022-07-28T15:09:34.441143Z',
+      marginsConnection: {
+        __typename: 'MarginConnection',
+        edges: [
+          {
+            __typename: 'MarginEdge',
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+              },
+              asset: {
+                __typename: 'Asset',
+                symbol: 'tDAI',
+              },
+            },
+          },
+        ],
+      },
+      market: {
+        id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+        name: 'AAVEDAI Monthly (30 Jun 2022)',
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        data: {
+          markPrice: '8649338',
+          __typename: 'MarketData',
+          market: {
+            __typename: 'Market',
+            id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+          },
+        },
+        decimalPlaces: 5,
+        positionDecimalPlaces: 0,
+        tradableInstrument: {
+          instrument: {
+            name: 'AAVEDAI Monthly (30 Jun 2022)',
+            __typename: 'Instrument',
+          },
+          __typename: 'TradableInstrument',
+        },
+        __typename: 'Market',
+      },
+    },
+    {
       realisedPNL: '0',
       openVolume: '1',
       unrealisedPNL: '-22519',
