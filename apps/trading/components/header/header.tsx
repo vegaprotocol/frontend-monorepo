@@ -39,7 +39,7 @@ export const HeaderStat = ({
   children: ReactNode;
   heading: string;
   id?: string;
-  description?: string;
+  description?: string | ReactNode;
 }) => {
   const itemClass =
     'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';

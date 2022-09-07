@@ -1,5 +1,5 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
-import { t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -20,7 +20,14 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
   const {
-    data: { liquidityProviders, suppliedStake, targetStake, code, symbol },
+    data: {
+      liquidityProviders,
+      suppliedStake,
+      targetStake,
+      code,
+      symbol,
+      assetDecimalPlaces,
+    },
     loading,
     error,
   } = useLiquidityProvision({ marketId });
@@ -65,13 +72,27 @@ const LiquidityPage = ({ id }: { id?: string }) => {
             heading={t('Target stake')}
             description={tooltipMapping['targetStake']}
           >
-            <div>{`${targetStake} ${symbol}`}</div>
+            <div>
+              {targetStake
+                ? `${addDecimalsFormatNumber(
+                    targetStake,
+                    assetDecimalPlaces ?? 0
+                  )} ${symbol}`
+                : '-'}
+            </div>
           </HeaderStat>
           <HeaderStat
             heading={t('Supplied stake')}
             description={tooltipMapping['suppliedStake']}
           >
-            <div>{`${suppliedStake} ${symbol}`}</div>
+            <div>
+              {suppliedStake
+                ? `${addDecimalsFormatNumber(
+                    suppliedStake,
+                    assetDecimalPlaces ?? 0
+                  )} ${symbol}`
+                : '-'}
+            </div>
           </HeaderStat>
           <HeaderStat heading={t('Market ID')}>
             <div className="break-word">{marketId}</div>
