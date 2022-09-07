@@ -5,6 +5,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
 } from '@vegaprotocol/governance';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormMinRequirements,
   ProposalFormTitle,
@@ -16,7 +17,7 @@ import {
   ProposalFormEnactmentDeadline,
   ProposalFormSubheader,
 } from '../../components/propose';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
@@ -43,6 +44,7 @@ export const ProposeNewMarket = () => {
     NetworkParams.GOV_NEW_MARKET_MIN_ENACT,
     NetworkParams.GOV_NEW_MARKET_MAX_ENACT,
     NetworkParams.GOV_NEW_MARKET_MIN_PROPOSER_BALANCE,
+    NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
   ]);
 
   const minVoteDeadline = networkParamsData?.find(
@@ -64,6 +66,7 @@ export const ProposeNewMarket = () => {
     ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
   )?.value;
 
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -105,6 +108,17 @@ export const ProposeNewMarket = () => {
               minProposerBalance={minProposerBalance}
               spamProtectionMin={minSpamBalance}
             />
+
+            {VEGA_EXPLORER_URL && (
+              <p className="text-sm">
+                {t('MoreMarketsInfo')}{' '}
+                <Link
+                  href={`${VEGA_EXPLORER_URL}/markets`}
+                  target="_blank"
+                >{`${VEGA_EXPLORER_URL}/markets`}</Link>
+              </p>
+            )}
+
             <div data-testid="new-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>

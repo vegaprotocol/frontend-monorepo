@@ -7,6 +7,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
 } from '@vegaprotocol/governance';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormSubheader,
   ProposalFormMinRequirements,
@@ -24,6 +25,7 @@ import {
   InputError,
   KeyValueTable,
   KeyValueTableRow,
+  Link,
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -72,6 +74,7 @@ export const ProposeUpdateMarket = () => {
     NetworkParams.GOV_UPDATE_MARKET_MIN_ENACT,
     NetworkParams.GOV_UPDATE_MARKET_MAX_ENACT,
     NetworkParams.GOV_UPDATE_MARKET_MIN_PROPOSER_BALANCE,
+    NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
   ]);
 
   const {
@@ -124,6 +127,7 @@ export const ProposeUpdateMarket = () => {
     undefined
   );
 
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -168,6 +172,17 @@ export const ProposeUpdateMarket = () => {
               minProposerBalance={minProposerBalance}
               spamProtectionMin={minSpamBalance}
             />
+
+            {VEGA_EXPLORER_URL && (
+              <p className="text-sm">
+                {t('MoreMarketsInfo')}{' '}
+                <Link
+                  href={`${VEGA_EXPLORER_URL}/markets`}
+                  target="_blank"
+                >{`${VEGA_EXPLORER_URL}/markets`}</Link>
+              </p>
+            )}
+
             <div data-testid="update-market-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>

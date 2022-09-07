@@ -4,6 +4,7 @@ import {
   getClosingTimestamp,
   useProposalSubmit,
 } from '@vegaprotocol/governance';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormSubheader,
   ProposalFormMinRequirements,
@@ -13,7 +14,7 @@ import {
   ProposalFormTransactionDialog,
   ProposalFormVoteDeadline,
 } from '../../components/propose';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
@@ -37,6 +38,7 @@ export const ProposeFreeform = () => {
     NetworkParams.GOV_FREEFORM_MIN_CLOSE,
     NetworkParams.GOV_FREEFORM_MAX_CLOSE,
     NetworkParams.GOV_FREEFORM_MIN_PROPOSER_BALANCE,
+    NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
   ]);
 
   const minVoteDeadline = networkParamsData?.find(
@@ -52,6 +54,7 @@ export const ProposeFreeform = () => {
     ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
   )?.value;
 
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -87,6 +90,17 @@ export const ProposeFreeform = () => {
               minProposerBalance={minProposerBalance}
               spamProtectionMin={minSpamBalance}
             />
+
+            {VEGA_EXPLORER_URL && (
+              <p className="text-sm">
+                {t('MoreProposalsInfo')}{' '}
+                <Link
+                  href={`${VEGA_EXPLORER_URL}/governance`}
+                  target="_blank"
+                >{`${VEGA_EXPLORER_URL}/governance`}</Link>
+              </p>
+            )}
+
             <div data-testid="freeform-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>

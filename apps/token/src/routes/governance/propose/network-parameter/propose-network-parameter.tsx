@@ -5,6 +5,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
 } from '@vegaprotocol/governance';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormSubheader,
   ProposalFormMinRequirements,
@@ -18,9 +19,10 @@ import {
 import {
   AsyncRenderer,
   FormGroup,
-  TextArea,
   InputError,
+  Link,
   Select,
+  TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
@@ -64,6 +66,7 @@ export const ProposeNetworkParameter = () => {
     ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
   )?.value;
 
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -108,6 +111,17 @@ export const ProposeNetworkParameter = () => {
               minProposerBalance={minProposerBalance}
               spamProtectionMin={minSpamBalance}
             />
+
+            {VEGA_EXPLORER_URL && (
+              <p className="text-sm">
+                {t('MoreNetParamsInfo')}{' '}
+                <Link
+                  href={`${VEGA_EXPLORER_URL}/network-parameters`}
+                  target="_blank"
+                >{`${VEGA_EXPLORER_URL}/network-parameters`}</Link>
+              </p>
+            )}
+
             <div data-testid="network-parameter-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>
