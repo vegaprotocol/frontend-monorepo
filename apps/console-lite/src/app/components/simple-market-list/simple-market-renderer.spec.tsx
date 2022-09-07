@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import MarketNameRenderer from './simple-market-renderer';
 import type { MarketNames_markets } from '@vegaprotocol/deal-ticket';
 import { MarketState } from '@vegaprotocol/types';
