@@ -22,6 +22,7 @@ const schemaObject = {
   VEGA_ENV: z.nativeEnum(Networks),
   VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_TOKEN_URL: z.optional(z.string()),
+  VEGA_DOCS_URL: z.optional(z.string()),
   VEGA_NETWORKS: z
     .object(
       Object.keys(Networks).reduce(

@@ -2,11 +2,12 @@ import Routes from '../../routes';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ENV } from '../../../config';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
 import { ProposalDocsLink } from '../components/propose';
 
 export const Propose = () => {
+  const { VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const linkStyles = classnames('block underline mb-2');
 
@@ -14,7 +15,7 @@ export const Propose = () => {
     <>
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
-        <ProposalDocsLink url={ENV.docsUrl} />
+        {VEGA_DOCS_URL && <ProposalDocsLink url={VEGA_DOCS_URL} />}
       </section>
 
       <section>
