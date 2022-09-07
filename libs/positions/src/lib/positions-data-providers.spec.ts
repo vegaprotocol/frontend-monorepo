@@ -32,8 +32,14 @@ const accounts: Accounts = {
         balance: '33353727',
         market: {
           __typename: 'Market',
-          name: 'AAVEDAI Monthly (30 Jun 2022)',
           id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
+          tradableInstrument: {
+            __typename: 'TradableInstrument',
+            instrument: {
+              __typename: 'Instrument',
+              name: 'AAVEDAI Monthly (30 Jun 2022)',
+            },
+          },
         },
       },
       {
@@ -48,8 +54,14 @@ const accounts: Accounts = {
         balance: '3274050',
         market: {
           __typename: 'Market',
-          name: 'UNIDAI Monthly (30 Jun 2022)',
           id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+          tradableInstrument: {
+            __typename: 'TradableInstrument',
+            instrument: {
+              __typename: 'Instrument',
+              name: 'UNIDAI Monthly (30 Jun 2022)',
+            },
+          },
         },
       },
     ],
@@ -97,7 +109,6 @@ const data: Positions = {
             },
             market: {
               __typename: 'Market',
-              name: 'AAVEDAI Monthly (30 Jun 2022)',
               id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
               decimalPlaces: 5,
               tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -155,7 +166,6 @@ const data: Positions = {
             market: {
               __typename: 'Market',
               id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-              name: 'UNIDAI Monthly (30 Jun 2022)',
               decimalPlaces: 5,
               tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
               positionDecimalPlaces: 0,

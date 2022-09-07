@@ -53,7 +53,7 @@ export const OrderEditDialog = ({
         {order.market && (
           <div>
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${order.market.name}`)}</p>
+            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === OrderType.TYPE_LIMIT && order.market && (

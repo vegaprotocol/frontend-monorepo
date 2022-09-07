@@ -17,7 +17,9 @@ const MarketNameRenderer = ({ market, isMobile }: Props) => {
         )}
       />
       <div className="col-span-2 uppercase justify-start text-black dark:text-white text-ui-small md:text-market self-end">
-        {isMobile ? market.tradableInstrument.instrument.code : market.name}{' '}
+        {isMobile
+          ? market.tradableInstrument.instrument.code
+          : market.tradableInstrument.instrument.name}{' '}
         <SimpleMarketExpires
           tags={market.tradableInstrument.instrument.metadata.tags}
         />

@@ -151,7 +151,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         />
         <AgGridColumn
           headerName={t('Market')}
-          field="market.name"
+          field="market.tradableInstrument.instrument.name"
           valueFormatter="value || '—'"
         />
         <AgGridColumn

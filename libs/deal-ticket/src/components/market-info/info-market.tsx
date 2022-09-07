@@ -155,13 +155,7 @@ export const Info = ({ market }: InfoProps) => {
   ];
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const keyDetails = {
-    ...pick(
-      market,
-      'name',
-      'decimalPlaces',
-      'positionDecimalPlaces',
-      'tradingMode'
-    ),
+    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
     state: MarketStateMapping[market.state],
   };
   const marketSpecPanels = [
@@ -170,7 +164,7 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...keyDetails,
+            name: market.tradableInstrument.instrument.name,
             marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&

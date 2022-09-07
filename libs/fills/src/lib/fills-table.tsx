@@ -44,7 +44,10 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         getRowId={({ data }) => data?.id}
         {...props}
       >
-        <AgGridColumn headerName={t('Market')} field="market.name" />
+        <AgGridColumn
+          headerName={t('Market')}
+          field="market.tradableInstrument.instrument.name"
+        />
         <AgGridColumn
           headerName={t('Size')}
           type="rightAligned"

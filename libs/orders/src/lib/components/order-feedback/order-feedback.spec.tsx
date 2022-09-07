@@ -74,7 +74,7 @@ describe('OrderFeedback', () => {
     );
     expect(screen.getByText('Market').nextElementSibling).toHaveTextContent(
       // eslint-disable-next-line
-      order.market!.name
+      order.market!.tradableInstrument.instrument.name
     );
     expect(screen.getByText('Status').nextElementSibling).toHaveTextContent(
       OrderStatusMapping[order.status]

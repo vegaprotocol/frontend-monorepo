@@ -8,7 +8,6 @@ const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       state
@@ -16,6 +15,7 @@ const DEAL_TICKET_QUERY = gql`
       tradableInstrument {
         instrument {
           id
+          name
           product {
             ... on Future {
               quoteName

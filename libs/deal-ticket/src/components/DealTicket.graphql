@@ -9,6 +9,7 @@ query DealTicketQuery($marketId: ID!) {
     tradableInstrument {
       instrument {
         id
+        name
         product {
           ... on Future {
             quoteName

@@ -9,7 +9,13 @@ const singleRow: Accounts_party_accounts = {
   balance: '125600000',
   market: {
     __typename: 'Market',
-    name: 'BTCUSD Monthly (30 Jun 2022)',
+    tradableInstrument: {
+      __typename: 'TradableInstrument',
+      instrument: {
+        __typename: 'Instrument',
+        name: 'BTCUSD Monthly (30 Jun 2022)',
+      },
+    },
     id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
   },
   asset: {

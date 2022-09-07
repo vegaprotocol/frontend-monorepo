@@ -29,7 +29,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         {order.market && (
           <div>
             <p className={labelClass}>{t(`Market`)}</p>
-            <p>{t(`${order.market.name}`)}</p>
+            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         <div>
