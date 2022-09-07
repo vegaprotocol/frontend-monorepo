@@ -179,7 +179,7 @@ export const DealTicketSteps = ({
           ItemRenderer={MarketNameRenderer}
         />
       ),
-      value: market.name,
+      value: market.tradableInstrument.instrument.name,
     },
     {
       label: t('Select Direction'),

@@ -4,7 +4,6 @@ export const MARKET_INFO_QUERY = gql`
   query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
     market(id: $marketId) {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       state

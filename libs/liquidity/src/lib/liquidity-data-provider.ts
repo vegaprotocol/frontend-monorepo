@@ -96,6 +96,7 @@ export interface LiquidityData {
   decimalPlaces?: number;
   positionDecimalPlaces?: number;
   assetDecimalPlaces?: number;
+  name?: string;
 }
 
 export const useLiquidityProvision = ({

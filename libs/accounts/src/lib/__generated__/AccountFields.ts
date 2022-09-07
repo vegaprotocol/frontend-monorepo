@@ -9,6 +9,22 @@ import { AccountType } from "@vegaprotocol/types";
 // GraphQL fragment: AccountFields
 // ====================================================
 
+export interface AccountFields_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+}
+
+export interface AccountFields_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of, or reference to, a fully specified instrument.
+   */
+  instrument: AccountFields_market_tradableInstrument_instrument;
+}
+
 export interface AccountFields_market {
   __typename: "Market";
   /**
@@ -16,9 +32,9 @@ export interface AccountFields_market {
    */
   id: string;
   /**
-   * Market full name
+   * An instance of, or reference to, a tradable instrument.
    */
-  name: string;
+  tradableInstrument: AccountFields_market_tradableInstrument;
 }
 
 export interface AccountFields_asset {

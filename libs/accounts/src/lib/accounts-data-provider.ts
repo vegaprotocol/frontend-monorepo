@@ -17,7 +17,11 @@ const ACCOUNTS_FRAGMENT = gql`
     balance
     market {
       id
-      name
+      tradableInstrument {
+        instrument {
+          name
+        }
+      }
     }
     asset {
       id

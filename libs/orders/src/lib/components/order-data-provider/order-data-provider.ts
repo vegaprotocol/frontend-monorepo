@@ -19,13 +19,13 @@ const ORDER_FRAGMENT = gql`
     id
     market {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
           code
+          name
         }
       }
     }

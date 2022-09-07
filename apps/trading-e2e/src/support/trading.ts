@@ -22,7 +22,11 @@ export const mockTradingPage = (
     'Market',
     generateMarket({
       market: {
-        name: `${state.toUpperCase()} MARKET`,
+        tradableInstrument: {
+          instrument: {
+            name: `${state.toUpperCase()} MARKET`,
+          },
+        },
         state: state,
       },
     })

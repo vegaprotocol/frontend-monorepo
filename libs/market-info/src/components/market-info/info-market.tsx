@@ -163,13 +163,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       })),
   ];
   const keyDetails = {
-    ...pick(
-      market,
-      'name',
-      'decimalPlaces',
-      'positionDecimalPlaces',
-      'tradingMode'
-    ),
+    ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
     state: MarketStateMapping[market.state],
   };
   const marketSpecPanels = [
@@ -178,7 +172,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...keyDetails,
+            name: market.tradableInstrument.instrument.name,
             marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&

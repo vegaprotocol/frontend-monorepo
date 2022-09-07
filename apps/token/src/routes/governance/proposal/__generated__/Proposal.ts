@@ -9,6 +9,22 @@ import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol
 // GraphQL query operation: Proposal
 // ====================================================
 
+export interface Proposal_proposal_rationale {
+  __typename: "ProposalRationale";
+  /**
+   * Title to be used to give a short description of the proposal in lists.
+   * This is to be between 0 and 100 unicode characters.
+   * This is mandatory for all proposals.
+   */
+  title: string;
+  /**
+   * Description to show a short title / something in case the link goes offline.
+   * This is to be between 0 and 20k unicode characters.
+   * This is mandatory for all proposals.
+   */
+  description: string;
+}
+
 export interface Proposal_proposal_party {
   __typename: "Party";
   /**
@@ -55,14 +71,6 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument {
 
 export interface Proposal_proposal_terms_change_NewMarket {
   __typename: "NewMarket";
-  /**
-   * Decimal places used for the new market, sets the smallest price increment on the book
-   */
-  decimalPlaces: number;
-  /**
-   * Metadata for this instrument, tags
-   */
-  metadata: string[] | null;
   /**
    * New market instrument configuration
    */
@@ -146,8 +154,8 @@ export interface Proposal_proposal_terms {
   change: Proposal_proposal_terms_change;
 }
 
-export interface Proposal_proposal_votes_yes_votes_party_stake {
-  __typename: "PartyStake";
+export interface Proposal_proposal_votes_yes_votes_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
@@ -163,7 +171,7 @@ export interface Proposal_proposal_votes_yes_votes_party {
   /**
    * The staking information for this Party
    */
-  stake: Proposal_proposal_votes_yes_votes_party_stake;
+  stakingSummary: Proposal_proposal_votes_yes_votes_party_stakingSummary;
 }
 
 export interface Proposal_proposal_votes_yes_votes {
@@ -198,8 +206,8 @@ export interface Proposal_proposal_votes_yes {
   votes: Proposal_proposal_votes_yes_votes[] | null;
 }
 
-export interface Proposal_proposal_votes_no_votes_party_stake {
-  __typename: "PartyStake";
+export interface Proposal_proposal_votes_no_votes_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
@@ -215,7 +223,7 @@ export interface Proposal_proposal_votes_no_votes_party {
   /**
    * The staking information for this Party
    */
-  stake: Proposal_proposal_votes_no_votes_party_stake;
+  stakingSummary: Proposal_proposal_votes_no_votes_party_stakingSummary;
 }
 
 export interface Proposal_proposal_votes_no_votes {
@@ -269,6 +277,10 @@ export interface Proposal_proposal {
    */
   id: string | null;
   /**
+   * Rationale behind the proposal
+   */
+  rationale: Proposal_proposal_rationale;
+  /**
    * A UUID reference to aid tracking proposals on Vega
    */
   reference: string;
@@ -285,13 +297,13 @@ export interface Proposal_proposal {
    */
   rejectionReason: ProposalRejectionReason | null;
   /**
-   * Error details of the rejectionReason
-   */
-  errorDetails: string | null;
-  /**
    * Party that prepared the proposal
    */
   party: Proposal_proposal_party;
+  /**
+   * Error details of the rejectionReason
+   */
+  errorDetails: string | null;
   /**
    * Terms of the proposal
    */

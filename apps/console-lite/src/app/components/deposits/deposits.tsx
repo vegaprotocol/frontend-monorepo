@@ -1,11 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { t } from '@vegaprotocol/react-helpers';
+import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
-import { assetsConnectionToAssets } from '@vegaprotocol/react-helpers';
 import type { Deposits } from './__generated__/Deposits';
 
 const DEPOSITS_QUERY = gql`
@@ -17,6 +16,7 @@ const DEPOSITS_QUERY = gql`
           name
           symbol
           decimals
+          status
           source {
             ... on ERC20 {
               contractAddress
@@ -40,7 +40,7 @@ export const DepositContainer = () => {
     skip: !keypair?.pub,
   });
 
-  const assets = assetsConnectionToAssets(data?.assetsConnection);
+  const assets = getEnabledAssets(data);
 
   return (
     <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>

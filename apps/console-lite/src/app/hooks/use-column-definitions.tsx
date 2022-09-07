@@ -22,7 +22,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         headerName: t('Markets'),
         headerClass: 'uppercase',
         minWidth: isMobile ? 160 : 350,
-        field: 'name',
+        field: 'tradableInstrument.instrument.name',
         cellClass: 'overflow-visible',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
           <MarketNameRenderer market={data} isMobile={isMobile} />

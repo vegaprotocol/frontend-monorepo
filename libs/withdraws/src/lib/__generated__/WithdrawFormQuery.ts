@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType, AssetStatus } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: WithdrawFormQuery
@@ -97,6 +97,10 @@ export interface WithdrawFormQuery_assetsConnection_edges_node {
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
+  /**
+   * The status of the asset in the Vega network
+   */
+  status: AssetStatus;
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
