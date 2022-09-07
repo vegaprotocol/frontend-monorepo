@@ -182,7 +182,6 @@ export const DealTicketSteps = ({
             .toString();
 
           setValue('price', bestAskPrice);
-          setSlippageValue(value);
 
           if (orderType === OrderType.TYPE_MARKET) {
             setValue('type', OrderType.TYPE_LIMIT);
@@ -192,6 +191,7 @@ export const DealTicketSteps = ({
           setValue('price', market?.depth?.lastTrade?.price);
         }
       }
+      setSlippageValue(value);
     },
     [
       market.decimalPlaces,

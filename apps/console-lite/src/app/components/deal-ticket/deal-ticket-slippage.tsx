@@ -17,7 +17,7 @@ interface DealTicketSlippageProps {
 
 export const DealTicketSlippage = ({
   value,
-  step = 0.1,
+  step = 0.01,
   min = 0,
   max = 50,
   onValueChange,
@@ -60,7 +60,7 @@ export const DealTicketSlippage = ({
         intent={Intent.None}
         title={t('Transaction Settings')}
       >
-        <div>
+        <div data-testid="slippage-dialog">
           {formLabel}
           <InputSetter
             id="input-order-slippage"
