@@ -18,7 +18,7 @@ import {
 import {
   AsyncRenderer,
   FormGroup,
-  Input,
+  TextArea,
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
@@ -161,7 +161,7 @@ export const ProposeNetworkParameter = () => {
                     label={t('NewProposedValue')}
                     labelFor="proposal-parameter-value"
                   >
-                    <Input
+                    <TextArea
                       id="proposal-parameter-value"
                       {...register('proposalNetworkParameterValue', {
                         required: t('Required'),
