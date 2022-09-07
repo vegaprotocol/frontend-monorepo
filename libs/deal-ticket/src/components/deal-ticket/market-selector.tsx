@@ -28,7 +28,6 @@ import type {
 } from './__generated__/MarketNames';
 import { IconNames } from '@blueprintjs/icons';
 import { MarketState } from '@vegaprotocol/types';
-import _ from 'lodash';
 
 export const MARKET_NAMES_QUERY = gql`
   query MarketNames {
