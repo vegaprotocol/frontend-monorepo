@@ -98,7 +98,9 @@ describe('fills', () => {
     cy.getByTestId('tab-fills').should('be.visible');
 
     cy.getByTestId('tab-fills')
-      .get('[role="gridcell"][col-id="market.name"]')
+      .get(
+        '[role="gridcell"][col-id="market.tradableInstrument.instrument.name"]'
+      )
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');
       });

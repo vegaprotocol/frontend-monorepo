@@ -164,7 +164,6 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...keyDetails,
             name: market.tradableInstrument.instrument.name,
             marketID: market.id,
             tradingMode:

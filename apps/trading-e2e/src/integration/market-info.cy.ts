@@ -52,7 +52,7 @@ describe('market info is displayed', () => {
   it('key details displayed', () => {
     cy.getByTestId(marketTitle).contains('Key details').click();
 
-    validateMarketDataRow(0, 'Name', 'ETHBTC Quarterly (30 Jun 2022)');
+    validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
     validateMarketDataRow(1, 'Decimal Places', '2');
     validateMarketDataRow(2, 'Position Decimal Places', '0');
     validateMarketDataRow(
