@@ -31,6 +31,12 @@ export type EnvironmentState = Environment & {
   setNodeSwitcherOpen: () => void;
 };
 
+declare global {
+  interface Window {
+    _ENV?: any;
+  }
+}
+
 const EnvironmentContext = createContext({} as EnvironmentState);
 
 const hasLoaded = (env: Networks, node: NodeData) =>
@@ -69,6 +75,7 @@ export const EnvironmentProvider = ({
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {
+    window._ENV = environment
     if (!environment.VEGA_URL) {
       const successfulNodeKey = nodeKeys.find((key) =>
         hasLoaded(environment.VEGA_ENV, nodes[key])
