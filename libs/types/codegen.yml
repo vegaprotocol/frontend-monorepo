@@ -9,7 +9,7 @@ config:
 generates:
   libs/types/src/__generated__/types.ts:
     - typescript
-  libs/**/__generated__:
+  libs/**:
     preset: near-operation-file
     presetConfig:
       folder: __generated___
@@ -18,7 +18,7 @@ generates:
     plugins:
       - typescript-operations
       - typescript-react-apollo
-  apps/**/__generated__:
+  apps/**:
     preset: near-operation-file
     presetConfig:
       folder: __generated___

@@ -14,7 +14,9 @@ module.exports = {
     excludes: [
       '**/generic-data-provider.ts',
       '**/__generated___/*',
-      '../../libs/assets',
+      '../../libs/accounts/**',
+      '../../libs/assets/**',
+      '../../libs/candles-chart/**',
     ],
   },
 };

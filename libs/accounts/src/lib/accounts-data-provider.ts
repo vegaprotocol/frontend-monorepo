@@ -1,5 +1,8 @@
 import produce from 'immer';
-import { AccountsDocument, AccountEventsDocument } from './__generated__/Accounts';
+import {
+  AccountsDocument,
+  AccountEventsDocument,
+} from './__generated__/Accounts';
 import type {
   AccountFieldsFragment,
   AccountsQuery,
@@ -7,9 +10,8 @@ import type {
 } from './__generated__/Accounts';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
-export const getId = (
-  data: AccountFieldsFragment,
-) => `${data.type}-${data.asset.symbol}-${data.market?.id ?? 'null'}`;
+export const getId = (data: AccountFieldsFragment) =>
+  `${data.type}-${data.asset.symbol}-${data.market?.id ?? 'null'}`;
 
 const update = (
   data: AccountFieldsFragment[],
@@ -26,9 +28,11 @@ const update = (
   });
 };
 
-const getData = (responseData: AccountsQuery): AccountFieldsFragment[] | null => {
+const getData = (
+  responseData: AccountsQuery
+): AccountFieldsFragment[] | null => {
   return responseData.party?.accounts ?? null;
-}
+};
 
 const getDelta = (
   subscriptionData: AccountEventsSubscription

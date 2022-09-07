@@ -5,7 +5,10 @@ import { Interval as PennantInterval } from 'pennant';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { ChartDocument } from './__generated__/Chart';
 import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
-import { CandlesDocument, CandlesEventsDocument } from './__generated__/Candles';
+import {
+  CandlesDocument,
+  CandlesEventsDocument,
+} from './__generated__/Candles';
 import type {
   CandlesQuery,
   CandlesQueryVariables,
@@ -78,13 +81,15 @@ export class VegaDataSource implements DataSource {
    */
   async onReady() {
     try {
-      const { data } = await this.client.query<ChartQuery, ChartQueryVariables>({
-        query: ChartDocument,
-        variables: {
-          marketId: this.marketId,
-        },
-        fetchPolicy: 'no-cache',
-      });
+      const { data } = await this.client.query<ChartQuery, ChartQueryVariables>(
+        {
+          query: ChartDocument,
+          variables: {
+            marketId: this.marketId,
+          },
+          fetchPolicy: 'no-cache',
+        }
+      );
 
       if (data && data.market && data.market.data) {
         this._decimalPlaces = data.market.decimalPlaces;
@@ -125,7 +130,10 @@ export class VegaDataSource implements DataSource {
    */
   async query(interval: PennantInterval, from: string) {
     try {
-      const { data } = await this.client.query<CandlesQuery, CandlesQueryVariables>({
+      const { data } = await this.client.query<
+        CandlesQuery,
+        CandlesQueryVariables
+      >({
         query: CandlesDocument,
         variables: {
           marketId: this.marketId,
@@ -158,7 +166,10 @@ export class VegaDataSource implements DataSource {
     interval: PennantInterval,
     onSubscriptionData: (data: Candle) => void
   ) {
-    const res = this.client.subscribe<CandlesEventsSubscription, CandlesEventsSubscriptionVariables>({
+    const res = this.client.subscribe<
+      CandlesEventsSubscription,
+      CandlesEventsSubscriptionVariables
+    >({
       query: CandlesEventsDocument,
       variables: {
         marketId: this.marketId,
@@ -183,7 +194,10 @@ export class VegaDataSource implements DataSource {
   }
 }
 
-function parseCandle(candle: CandleFieldsFragment, decimalPlaces: number): Candle {
+function parseCandle(
+  candle: CandleFieldsFragment,
+  decimalPlaces: number
+): Candle {
   return {
     date: new Date(candle.datetime),
     high: Number(addDecimal(candle.high, decimalPlaces)),

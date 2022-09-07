@@ -1,9 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
-import {
-  AssetDetailsDialog,
-} from './asset-details-dialog';
-import { AssetsConnectionDocument } from './__generated__/Assets'
+import { AssetDetailsDialog } from './asset-details-dialog';
+import { AssetsConnectionDocument } from './__generated__/Assets';
 
 const mockedData = {
   data: {
