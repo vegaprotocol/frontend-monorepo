@@ -231,6 +231,7 @@ export const ProposeUpdateMarket = () => {
                     })}
                     onChange={(e) => setSelectedMarket(e.target.value)}
                   >
+                    <option value="">{t('SelectMarket')}</option>
                     {sortedMarkets.map((market) => (
                       <option value={market.id} key={market.id}>
                         {market.tradableInstrument.instrument.name}

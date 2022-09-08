@@ -675,6 +675,7 @@
   "ProposeUpdateMarketChanges": "terms.changes (JSON format)",
   "SelectAParameterToChange": "Select a parameter to change",
   "SelectParameter": "Select parameter",
+  "SelectMarket": "Select market",
   "CurrentValue": "Current value",
   "NewProposedValue": "New proposed value",
   "MoreProposalsInfo": "To see Explorer data on proposals visit",
