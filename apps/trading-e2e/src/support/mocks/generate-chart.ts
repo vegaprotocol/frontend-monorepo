@@ -1,9 +1,11 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { ChartQuery } from '@vegaprotocol/candles-chart';
-import { Schema } from '@vegaprotocol/types'
+import { Schema } from '@vegaprotocol/types';
 
-export const generateChart = (override?: PartialDeep<ChartQuery>): ChartQuery => {
+export const generateChart = (
+  override?: PartialDeep<ChartQuery>
+): ChartQuery => {
   const priceMonitoringBound: Schema.PriceMonitoringBounds = {
     minValidPrice: '16256291',
     maxValidPrice: '18296869',

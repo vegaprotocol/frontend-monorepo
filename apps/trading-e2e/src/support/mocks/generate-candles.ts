@@ -5,7 +5,9 @@ import type {
   CandleFieldsFragment,
 } from '@vegaprotocol/candles-chart';
 
-export const generateCandles = (override?: PartialDeep<CandlesQuery>): CandlesQuery => {
+export const generateCandles = (
+  override?: PartialDeep<CandlesQuery>
+): CandlesQuery => {
   const candles: CandleFieldsFragment[] = [
     {
       datetime: '2022-04-06T09:15:00Z',
