@@ -18,7 +18,7 @@ const Withdrawals = () => {
     <>
       <Heading title={t('withdrawalsTitle')} />
       <VegaWalletContainer>
-        {(currVegaKey) => <WithdrawPendingContainer />}
+        {() => <WithdrawPendingContainer />}
       </VegaWalletContainer>
     </>
   );
@@ -49,11 +49,12 @@ const WithdrawPendingContainer = () => {
   return (
     <>
       <header className="flex items-start justify-between">
-        <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
+        <div>
+          <p>{t('withdrawalsText')}</p>
+          <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
+        </div>
         <Button onClick={() => setWithdrawDialog(true)}>Withdraw</Button>
       </header>
-      <p>{t('withdrawalsText')}</p>
-      <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
       <div className="w-full h-[500px]">
         <WithdrawalsTable withdrawals={withdrawals} />
       </div>
