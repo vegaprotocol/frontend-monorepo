@@ -4,6 +4,7 @@ import { mockTradingPage } from '../support/trading';
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
+const externalLink = 'external-link';
 
 describe('market info is displayed', () => {
   before(() => {
@@ -25,9 +26,9 @@ describe('market info is displayed', () => {
 
   it('market price', () => {
     cy.getByTestId(marketTitle).contains('Market price').click();
-    validateMarketDataRow(0, 'Mark Price', '57.49');
-    validateMarketDataRow(1, 'Best Bid Price', '6,817.65');
-    validateMarketDataRow(2, 'Best Offer Price', '6,817.69');
+    validateMarketDataRow(0, 'Mark Price', '0.05749');
+    validateMarketDataRow(1, 'Best Bid Price', '6.81765 ');
+    validateMarketDataRow(2, 'Best Offer Price', '6.81769 ');
   });
 
   it('market volume displayed', () => {
@@ -71,11 +72,7 @@ describe('market info is displayed', () => {
 
     validateMarketDataRow(0, 'Name', 'tBTC TEST');
     validateMarketDataRow(1, 'Symbol', 'tBTC');
-    validateMarketDataRow(
-      2,
-      'Asset ID',
-      '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c'
-    );
+    validateMarketDataRow(2, 'Asset ID', 'market-0');
   });
 
   it('metadata displayed', () => {
@@ -114,9 +111,9 @@ describe('market info is displayed', () => {
   it('price monitoring bound displayed', () => {
     cy.getByTestId(marketTitle).contains('Price monitoring bound 1').click();
 
-    validateMarketDataRow(0, 'Min Valid Price', '6,547.01');
-    validateMarketDataRow(1, 'Max Valid Price', '7,973.23');
-    validateMarketDataRow(2, 'Reference Price', '7,226.25');
+    validateMarketDataRow(0, 'Min Valid Price', '6.54701 ');
+    validateMarketDataRow(1, 'Max Valid Price', '7.97323 ');
+    validateMarketDataRow(2, 'Reference Price', '7.22625 ');
   });
 
   it('liquidity monitoring parameters displayed', () => {
@@ -127,6 +124,21 @@ describe('market info is displayed', () => {
     validateMarketDataRow(0, 'Triggering Ratio', '0');
     validateMarketDataRow(1, 'Time Window', '3,600');
     validateMarketDataRow(2, 'Scaling Factor', '10');
+  });
+
+  it('liquidity displayed', () => {
+    // cy.getByTestId(marketTitle).contains('Liquidity').last().click();
+    cy.getByTestId('accordion-toggle').eq(14).click();
+
+    validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
+    validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
+    validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
+
+    cy.getByTestId(externalLink).should(
+      'have.attr',
+      'href',
+      '/liquidity/market-0'
+    );
   });
 
   it('oracle displayed', () => {
@@ -148,6 +160,22 @@ describe('market info is displayed', () => {
       'Termination Oracle',
       'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
     );
+
+    cy.getByTestId(externalLink)
+      .should('have.attr', 'href')
+      .and('contain', 'https://explorer.fairground.wtf/oracles');
+  });
+
+  it('proposal displayed', () => {
+    cy.getByTestId(marketTitle).contains('Proposal').click();
+
+    cy.getByTestId(externalLink)
+      .should('have.text', 'View governance proposal')
+      .and(
+        'have.attr',
+        'href',
+        'https://token.fairground.wtf/governance/market-0'
+      );
   });
 
   afterEach('close toggle', () => {
