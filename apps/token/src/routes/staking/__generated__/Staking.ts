@@ -148,7 +148,7 @@ export interface Staking_nodes {
   /**
    * Ethereum public key of the node
    */
-  ethereumAdddress: string;
+  ethereumAddress: string;
   /**
    * The amount of stake the node has put up themselves
    */

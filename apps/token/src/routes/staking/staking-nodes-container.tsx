@@ -38,7 +38,7 @@ export const STAKING_QUERY = gql`
       pubkey
       infoUrl
       location
-      ethereumAdddress
+      ethereumAddress
       stakedByOperator
       stakedByDelegates
       stakedTotal

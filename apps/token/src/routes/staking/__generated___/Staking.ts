@@ -8,7 +8,7 @@ export type StakingQueryVariables = Types.Exact<{
 }>;
 
 
-export type StakingQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', currentStakeAvailable: string, currentStakeAvailableFormatted: string }, delegations?: Array<{ __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } }> | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: string | null, end?: string | null, expiry?: string | null } }, nodes?: Array<{ __typename?: 'Node', id: string, name: string, pubkey: string, infoUrl: string, location: string, ethereumAdddress: string, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, stakedByOperatorFormatted: string, stakedByDelegatesFormatted: string, stakedTotalFormatted: string, pendingStakeFormatted: string, status: Types.NodeStatus, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } }> | null, nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string, totalNodes: number, inactiveNodes: number, validatingNodes: number, uptime: number } | null };
+export type StakingQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', currentStakeAvailable: string, currentStakeAvailableFormatted: string }, delegations?: Array<{ __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } }> | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: string | null, end?: string | null, expiry?: string | null } }, nodes?: Array<{ __typename?: 'Node', id: string, name: string, pubkey: string, infoUrl: string, location: string, ethereumAddress: string, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, stakedByOperatorFormatted: string, stakedByDelegatesFormatted: string, stakedTotalFormatted: string, pendingStakeFormatted: string, status: Types.NodeStatus, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } }> | null, nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string, totalNodes: number, inactiveNodes: number, validatingNodes: number, uptime: number } | null };
 
 
 export const StakingDocument = gql`
@@ -42,7 +42,7 @@ export const StakingDocument = gql`
     pubkey
     infoUrl
     location
-    ethereumAdddress
+    ethereumAddress
     stakedByOperator
     stakedByDelegates
     stakedTotal
