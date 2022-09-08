@@ -49,29 +49,38 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   );
 
   const update = useCallback(
-    ({ delta }: { delta: MarketDepthSubscription_marketsDepthUpdate }) => {
+    ({
+      delta: deltas,
+    }: {
+      delta: MarketDepthSubscription_marketsDepthUpdate[];
+    }) => {
       if (!dataRef.current.rows) {
         return false;
       }
-      if (deltaRef.current) {
-        if (delta.sell) {
-          if (deltaRef.current.sell) {
-            deltaRef.current.sell.push(...delta.sell);
-          } else {
-            deltaRef.current.sell = delta.sell;
-          }
+      for (const delta of deltas) {
+        if (delta.marketId !== marketId) {
+          continue;
         }
-        if (delta.buy) {
-          if (deltaRef.current.buy) {
-            deltaRef.current.buy.push(...delta.buy);
-          } else {
-            deltaRef.current.buy = delta.buy;
+        if (deltaRef.current) {
+          if (delta.sell) {
+            if (deltaRef.current.sell) {
+              deltaRef.current.sell.push(...delta.sell);
+            } else {
+              deltaRef.current.sell = delta.sell;
+            }
           }
+          if (delta.buy) {
+            if (deltaRef.current.buy) {
+              deltaRef.current.buy.push(...delta.buy);
+            } else {
+              deltaRef.current.buy = delta.buy;
+            }
+          }
+        } else {
+          deltaRef.current = delta;
         }
-      } else {
-        deltaRef.current = delta;
+        updateOrderbookData.current();
       }
-      updateOrderbookData.current();
       return true;
     },
     // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change
@@ -80,9 +89,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
 
   const { data, error, loading, flush } = useDataProvider({
     dataProvider: marketDepthProvider,
-    update: () => true,
+    update,
     variables,
   });
+
+  const marketUpdate = useCallback(() => true, []);
 
   const {
     data: market,
@@ -90,9 +101,14 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     loading: marketLoading,
   } = useDataProvider({
     dataProvider: marketProvider,
-    update: () => true,
+    update: marketUpdate,
     variables,
   });
+
+  const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
+    marketDataRef.current = data;
+    return true;
+  }, []);
 
   const {
     data: marketData,
@@ -100,10 +116,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     loading: marketDataLoading,
   } = useDataProvider({
     dataProvider: marketDataProvider,
-    update: ({ data }) => {
-      marketDataRef.current = data;
-      return true;
-    },
+    update: marketDataUpdate,
     variables,
   });
 
@@ -135,6 +148,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     resolutionRef.current = resolution;
     flush();
   }, [resolution, flush]);
+
+  console.log({ loading, marketDataLoading, marketLoading });
 
   return (
     <AsyncRenderer

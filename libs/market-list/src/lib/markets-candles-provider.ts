@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketsCandlesQuery,
-  MarketsCandlesQuery_marketsConnection_edges_node,
-  MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node,
+  MarketsCandlesQuery_marketsConnection_edges_node as Market,
+  MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
 } from './__generated__';
 
 export const MARKETS_CANDLES_QUERY = gql`
@@ -30,10 +30,8 @@ export const MARKETS_CANDLES_QUERY = gql`
 `;
 
 export interface MarketCandles {
-  marketId: MarketsCandlesQuery_marketsConnection_edges_node['id'];
-  candles:
-    | MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node[]
-    | undefined;
+  marketId: Market['id'];
+  candles: Candle[] | undefined;
 }
 
 const getData = (responseData: MarketsCandlesQuery): MarketCandles[] | null =>
@@ -41,10 +39,7 @@ const getData = (responseData: MarketsCandlesQuery): MarketCandles[] | null =>
     marketId: edge.node.id,
     candles: edge.node.candlesConnection.edges
       ?.filter((edge) => edge?.node)
-      .map(
-        (edge) =>
-          edge?.node as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node
-      ),
+      .map((edge) => edge?.node as Candle),
   })) || null;
 
 export const marketsCandlesProvider = makeDataProvider<

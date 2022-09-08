@@ -151,6 +151,7 @@ export const SelectMarketPopover = ({
     dataProvider: positionsDataProvider,
     update: () => false,
     variables,
+    skip: !keypair,
   });
 
   const onSelectMarket = (marketId: string) => {

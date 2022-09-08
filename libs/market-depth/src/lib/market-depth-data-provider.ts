@@ -59,9 +59,8 @@ const update: Update<
   MarketDepthSubscription_marketsDepthUpdate[]
 > = (data, deltas, reload) => {
   for (const delta of deltas) {
-    console.log(delta.previousSequenceNumber, delta.sequenceNumber);
     if (delta.marketId !== data.id) {
-      return data;
+      continue;
     }
     const sequenceNumber = Number(delta.sequenceNumber);
     if (sequenceNumber <= sequenceNumbers[delta.marketId]) {

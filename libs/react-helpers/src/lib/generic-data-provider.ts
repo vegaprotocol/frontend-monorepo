@@ -270,6 +270,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy,
+        errorPolicy: 'ignore',
       });
       data = getData(res.data);
       if (data && pagination) {

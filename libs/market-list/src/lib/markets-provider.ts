@@ -12,7 +12,7 @@ import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
@@ -128,10 +128,11 @@ export const useMarketList = () => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
   }, []);
+  const update = useCallback(() => true, []);
   const { data, loading, error } = useDataProvider<MarketsListData, never>({
     dataProvider: marketListProvider,
     variables: { interval: Interval.INTERVAL_I1H, since },
-    update: () => true,
+    update,
   });
 
   return {
