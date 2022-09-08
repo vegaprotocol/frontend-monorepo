@@ -18,7 +18,7 @@ const NODES_QUERY = gql`
       avatarUrl
       pubkey
       tmPubkey
-      ethereumAddress
+      ethereumAdddress
       location
       stakedByOperator
       stakedByDelegates

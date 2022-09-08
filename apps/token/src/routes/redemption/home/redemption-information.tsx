@@ -74,10 +74,10 @@ export const RedemptionInformation = () => {
 
   return (
     <section data-testid="redemption-page">
-      <div className="mb-12">
+      <div className="mb-2">
         <AddLockedTokenAddress />
       </div>
-      <p className="mb-24" data-testid="redemption-description">
+      <p className="mb-6" data-testid="redemption-description">
         {t(
           '{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.',
           {
@@ -87,7 +87,7 @@ export const RedemptionInformation = () => {
           }
         )}
       </p>
-      <div className="mb-24">
+      <div className="mb-6">
         <VestingTable
           associated={lien}
           locked={totalLockedBalance}
