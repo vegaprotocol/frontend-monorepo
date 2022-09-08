@@ -1,8 +1,4 @@
-import {
-  MarketState,
-  MarketStateMapping,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
+import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
 const marketInfoBtn = 'Info';
@@ -52,16 +48,13 @@ describe('market info is displayed', () => {
   it('key details displayed', () => {
     cy.getByTestId(marketTitle).contains('Key details').click();
 
-    validateMarketDataRow(0, 'Name', 'ETHBTC Quarterly (30 Jun 2022)');
-    validateMarketDataRow(1, 'Decimal Places', '2');
-    validateMarketDataRow(2, 'Position Decimal Places', '0');
+    validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
+    validateMarketDataRow(1, 'Market ID', 'market-0');
     validateMarketDataRow(
-      3,
+      2,
       'Trading Mode',
       MarketTradingModeMapping.TRADING_MODE_CONTINUOUS
     );
-    validateMarketDataRow(4, 'State', MarketStateMapping.STATE_ACTIVE);
-    validateMarketDataRow(5, 'Market ID', 'market-0');
   });
 
   it('instrument displayed', () => {

@@ -6,15 +6,15 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { addDecimal } from '../../../lib/decimals';
 import type {
-  Proposal_proposal_votes_no_votes,
-  Proposal_proposal_votes_yes_votes,
-} from '../proposal/__generated__/Proposal';
-import type { Proposals_proposals } from '../proposals/__generated__/Proposals';
+  ProposalFields,
+  ProposalFields_votes_no_votes,
+  ProposalFields_votes_yes_votes,
+} from '../__generated__/ProposalFields';
 
 const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: Proposals_proposals;
+  proposal: ProposalFields;
 }) => {
   const { data, loading } = useNetworkParams([
     NetworkParams.GOV_UPDATE_MARKET_REQUIRED_MAJORITY,
@@ -82,7 +82,7 @@ const useProposalNetworkParams = ({
 export const useVoteInformation = ({
   proposal,
 }: {
-  proposal: Proposals_proposals;
+  proposal: ProposalFields;
 }) => {
   const {
     appState: { totalSupply },
@@ -105,10 +105,10 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalNoVotes = proposal.votes.no.votes.reduce(
-      (prevValue: BigNumber, newValue: Proposal_proposal_votes_no_votes) => {
-        return new BigNumber(newValue.party.stake.currentStakeAvailable).plus(
-          prevValue
-        );
+      (prevValue: BigNumber, newValue: ProposalFields_votes_no_votes) => {
+        return new BigNumber(
+          newValue.party.stakingSummary.currentStakeAvailable
+        ).plus(prevValue);
       },
       new BigNumber(0)
     );
@@ -120,10 +120,10 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalYesVotes = proposal.votes.yes.votes.reduce(
-      (prevValue: BigNumber, newValue: Proposal_proposal_votes_yes_votes) => {
-        return new BigNumber(newValue.party.stake.currentStakeAvailable).plus(
-          prevValue
-        );
+      (prevValue: BigNumber, newValue: ProposalFields_votes_yes_votes) => {
+        return new BigNumber(
+          newValue.party.stakingSummary.currentStakeAvailable
+        ).plus(prevValue);
       },
       new BigNumber(0)
     );

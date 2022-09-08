@@ -92,6 +92,10 @@ export interface FillFields_market_tradableInstrument_instrument {
    */
   code: string;
   /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
   product: FillFields_market_tradableInstrument_instrument_product;
@@ -111,10 +115,6 @@ export interface FillFields_market {
    * Market ID
    */
   id: string;
-  /**
-   * Market full name
-   */
-  name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)

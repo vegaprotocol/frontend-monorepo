@@ -9,6 +9,22 @@ import { AccountType } from "@vegaprotocol/types";
 // GraphQL query operation: Accounts
 // ====================================================
 
+export interface Accounts_party_accounts_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+}
+
+export interface Accounts_party_accounts_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of, or reference to, a fully specified instrument.
+   */
+  instrument: Accounts_party_accounts_market_tradableInstrument_instrument;
+}
+
 export interface Accounts_party_accounts_market {
   __typename: "Market";
   /**
@@ -16,9 +32,9 @@ export interface Accounts_party_accounts_market {
    */
   id: string;
   /**
-   * Market full name
+   * An instance of, or reference to, a tradable instrument.
    */
-  name: string;
+  tradableInstrument: Accounts_party_accounts_market_tradableInstrument;
 }
 
 export interface Accounts_party_accounts_asset {

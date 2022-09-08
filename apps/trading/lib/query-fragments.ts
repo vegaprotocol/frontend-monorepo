@@ -6,6 +6,7 @@ export const ASSET_FRAGMENT = gql`
     symbol
     name
     decimals
+    status
     source {
       ... on ERC20 {
         contractAddress

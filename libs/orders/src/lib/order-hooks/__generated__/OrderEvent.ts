@@ -13,6 +13,22 @@ export interface OrderEvent_busEvents_event_TimeUpdate {
   __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "Withdrawal" | "OracleSpec" | "LiquidityProvision";
 }
 
+export interface OrderEvent_busEvents_event_Order_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+}
+
+export interface OrderEvent_busEvents_event_Order_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of, or reference to, a fully specified instrument.
+   */
+  instrument: OrderEvent_busEvents_event_Order_market_tradableInstrument_instrument;
+}
+
 export interface OrderEvent_busEvents_event_Order_market {
   __typename: "Market";
   /**
@@ -20,9 +36,9 @@ export interface OrderEvent_busEvents_event_Order_market {
    */
   id: string;
   /**
-   * Market full name
+   * An instance of, or reference to, a tradable instrument.
    */
-  name: string;
+  tradableInstrument: OrderEvent_busEvents_event_Order_market_tradableInstrument;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)

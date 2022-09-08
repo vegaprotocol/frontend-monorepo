@@ -27,6 +27,7 @@ const WITHDRAWAL_FRAGMENT = gql`
       name
       symbol
       decimals
+      status
       source {
         ... on ERC20 {
           contractAddress

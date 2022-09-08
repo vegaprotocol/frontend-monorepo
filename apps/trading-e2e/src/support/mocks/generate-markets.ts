@@ -13,7 +13,6 @@ export const generateMarkets = (
   const markets: MarketList_markets[] = [
     {
       id: 'market-0',
-      name: 'ACTIVE MARKET',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -59,7 +58,7 @@ export const generateMarkets = (
         instrument: {
           id: '',
           code: 'BTCUSD.MF21',
-          name: '',
+          name: 'ACTIVE MARKET',
           metadata: {
             __typename: 'InstrumentMetadata',
             tags: [],
@@ -79,7 +78,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-1',
-      name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -124,7 +122,7 @@ export const generateMarkets = (
       tradableInstrument: {
         instrument: {
           id: 'SOLUSD',
-          name: 'SOL/USD',
+          name: 'SUSPENDED MARKET',
           code: 'SOLUSD',
           metadata: {
             __typename: 'InstrumentMetadata',
@@ -145,7 +143,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-2',
-      name: 'Apple Monthly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -211,7 +208,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-3',
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,

@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { assetsConnectionToAssets, t } from '@vegaprotocol/react-helpers';
+import { getAssets, t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
@@ -39,7 +39,7 @@ export const ASSETS_QUERY = gql`
 const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
 
-  const assets = assetsConnectionToAssets(data?.assetsConnection);
+  const assets = getAssets(data);
 
   return (
     <section>

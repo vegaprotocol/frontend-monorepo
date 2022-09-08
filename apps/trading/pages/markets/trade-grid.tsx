@@ -141,7 +141,10 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
       <div className="xl:flex xl:gap-4  items-start">
         <div className="px-4 mb-2 xl:mb-0">
-          <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+          <SelectMarketPopover
+            marketName={market.tradableInstrument.instrument.name}
+            onSelect={onSelect}
+          />
         </div>
         <div
           data-testid="market-summary"

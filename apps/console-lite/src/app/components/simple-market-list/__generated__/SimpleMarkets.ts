@@ -44,6 +44,10 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument {
    */
   code: string;
   /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
    * Metadata for this instrument
    */
   metadata: SimpleMarkets_markets_tradableInstrument_instrument_metadata;
@@ -79,10 +83,6 @@ export interface SimpleMarkets_markets {
    * Market ID
    */
   id: string;
-  /**
-   * Market full name
-   */
-  name: string;
   /**
    * Current state of the market
    */

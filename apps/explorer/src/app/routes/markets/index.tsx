@@ -11,7 +11,6 @@ const MARKETS_QUERY = gql`
   query MarketsQuery {
     markets {
       id
-      name
       fees {
         factors {
           makerFee
@@ -154,7 +153,9 @@ const Markets = () => {
       {data?.markets
         ? data.markets.map((m) => (
             <React.Fragment key={m.id}>
-              <SubHeading data-testid="markets-header">{m.name}</SubHeading>
+              <SubHeading data-testid="markets-header">
+                {m.tradableInstrument.instrument.name}
+              </SubHeading>
               <SyntaxHighlighter data={m} />
             </React.Fragment>
           ))

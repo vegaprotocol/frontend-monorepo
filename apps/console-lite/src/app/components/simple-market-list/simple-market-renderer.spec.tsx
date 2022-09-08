@@ -7,11 +7,11 @@ import MarketNameRenderer from './simple-market-renderer';
 describe('SimpleMarketRenderer', () => {
   const market = {
     id: 'marketId',
-    name: 'Market Name',
     state: MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
         code: 'Market code',
+        name: 'Market Name',
         product: {
           quoteName: 'Quote name',
         },

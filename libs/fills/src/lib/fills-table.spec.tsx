@@ -28,11 +28,11 @@ describe('FillsTable', () => {
       price: '100',
       size: '300000',
       market: {
-        name: 'test market',
         decimalPlaces: 2,
         positionDecimalPlaces: 5,
         tradableInstrument: {
           instrument: {
+            name: 'test market',
             product: {
               settlementAsset: {
                 decimals: 2,
@@ -87,7 +87,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.name,
+      buyerFill.market.tradableInstrument.instrument.name,
       '+3.00000',
       '1.00 BTC',
       '3.00 BTC',
@@ -124,7 +124,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.name,
+      buyerFill.market.tradableInstrument.instrument.name,
       '+3.00000',
       '1.00 BTC',
       '3.00 BTC',
@@ -161,7 +161,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.name,
+      buyerFill.market.tradableInstrument.instrument.name,
       '-3.00000',
       '1.00 BTC',
       '3.00 BTC',

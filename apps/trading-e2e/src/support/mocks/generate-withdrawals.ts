@@ -1,4 +1,4 @@
-import { WithdrawalStatus } from '@vegaprotocol/types';
+import { AssetStatus, WithdrawalStatus } from '@vegaprotocol/types';
 import type { Withdrawals } from '@vegaprotocol/withdraws';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -30,6 +30,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
                 name: 'asset-0 name',
                 symbol: 'AST0',
                 decimals: 5,
+                status: AssetStatus.STATUS_ENABLED,
                 source: {
                   __typename: 'ERC20',
                   contractAddress: '0x123',
@@ -59,6 +60,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
                 name: 'asset-0 name',
                 symbol: 'AST0',
                 decimals: 5,
+                status: AssetStatus.STATUS_ENABLED,
                 source: {
                   __typename: 'ERC20',
                   contractAddress: '0x123',

@@ -46,7 +46,6 @@ export const MARKET_LIST_QUERY = gql`
   query MarketList($interval: Interval!, $since: String!) {
     markets {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       state

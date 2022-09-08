@@ -22,7 +22,11 @@ const fills = [
       infrastructureFee: '5000',
     },
     market: {
-      name: 'Apples Daily v3',
+      tradableInstrument: {
+        instrument: {
+          name: 'Apples Daily v3',
+        },
+      },
       positionDecimalPlaces: 2,
     },
   }),
@@ -37,7 +41,11 @@ const fills = [
     id: '3',
     aggressor: Side.SIDE_SELL,
     market: {
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
+      tradableInstrument: {
+        instrument: {
+          name: 'ETHBTC Quarterly (30 Jun 2022)',
+        },
+      },
     },
     buyer: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),
@@ -90,7 +98,9 @@ describe('fills', () => {
     cy.getByTestId('tab-fills').should('be.visible');
 
     cy.getByTestId('tab-fills')
-      .get('[role="gridcell"][col-id="market.name"]')
+      .get(
+        '[role="gridcell"][col-id="market.tradableInstrument.instrument.name"]'
+      )
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');
       });
