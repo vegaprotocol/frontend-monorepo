@@ -9,7 +9,7 @@ on:
 jobs:
   nightly:
     name: Run capsule tests -- nightly
-    runs-on: ubuntu-20.04-16core
+    runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
     steps:
