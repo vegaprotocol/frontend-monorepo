@@ -1,17 +1,22 @@
-import type { Asset } from '@vegaprotocol/react-helpers';
-import { AccountType, WithdrawalStatus } from '@vegaprotocol/types';
+import type { Asset, AssetWithStatus } from '@vegaprotocol/react-helpers';
+import {
+  AccountType,
+  AssetStatus,
+  WithdrawalStatus,
+} from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { Account } from './types';
 import type { Withdrawals_party_withdrawalsConnection_edges_node } from './__generated__/Withdrawals';
 
 export const generateAsset = (override?: PartialDeep<Asset>) => {
-  const defaultAsset: Asset = {
+  const defaultAsset: AssetWithStatus = {
     __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 5,
+    status: AssetStatus.STATUS_ENABLED,
     source: {
       __typename: 'ERC20',
       contractAddress: 'contract-address',
@@ -47,6 +52,7 @@ export const generateWithdrawal = (
         id: 'asset-id',
         symbol: 'asset-symbol',
         decimals: 2,
+        status: AssetStatus.STATUS_ENABLED,
         source: {
           __typename: 'ERC20',
           contractAddress: '0x123',

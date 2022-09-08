@@ -12,7 +12,6 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
   const defaultResult: Market = {
     market: {
       id: 'market-0',
-      name: 'ACTIVE MARKET',
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       state: MarketState.STATE_ACTIVE,
       decimalPlaces: 5,
@@ -39,7 +38,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
       tradableInstrument: {
         instrument: {
           id: 'BTCUSD.MF21',
-          name: 'BTCUSD Monthly',
+          name: 'ACTIVE MARKET',
           code: 'BTCUSD.MF21',
           metadata: {
             tags: [

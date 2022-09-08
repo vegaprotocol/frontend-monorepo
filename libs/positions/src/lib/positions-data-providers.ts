@@ -72,7 +72,6 @@ const POSITION_FIELDS = gql`
     }
     market {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       tradingMode
@@ -202,7 +201,7 @@ export const getMetrics = (
       ) && generalAccountBalance.isLessThan(marginInitial.minus(marginSearch));
 
     metrics.push({
-      marketName: market.name,
+      marketName: market.tradableInstrument.instrument.name,
       averageEntryPrice: position.node.averageEntryPrice,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),

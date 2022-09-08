@@ -20,6 +20,7 @@ import type {
 } from './__generated__/WithdrawalEvent';
 import { WITHDRAWAL_BUS_EVENT_SUB } from './use-withdrawals';
 import { WithdrawalStatus } from '@vegaprotocol/types';
+import { AssetStatus } from '@vegaprotocol/types/types';
 
 function setup(
   vegaWalletContext: Partial<VegaWalletContextShape>,
@@ -73,6 +74,7 @@ beforeEach(() => {
       name: 'asset-name',
       symbol: 'asset-symbol',
       decimals: 2,
+      status: AssetStatus.STATUS_ENABLED,
       source: {
         __typename: 'ERC20',
         contractAddress: '0x123',

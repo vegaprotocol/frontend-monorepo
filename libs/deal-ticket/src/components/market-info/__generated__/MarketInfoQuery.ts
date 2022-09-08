@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, AccountType, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode, AccountType, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
@@ -192,10 +192,6 @@ export interface MarketInfoQuery_market_data {
    */
   markPrice: string;
   /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
-   */
-  indicativeVolume: string;
-  /**
    * the aggregated volume being bid at the best bid price.
    */
   bestBidVolume: string;
@@ -212,10 +208,6 @@ export interface MarketInfoQuery_market_data {
    */
   bestStaticOfferVolume: string;
   /**
-   * the sum of the size of all positions greater than 0.
-   */
-  openInterest: string;
-  /**
    * the highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
@@ -227,6 +219,22 @@ export interface MarketInfoQuery_market_data {
    * what triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
+  /**
+   * the sum of the size of all positions greater than 0.
+   */
+  openInterest: string;
+  /**
+   * the supplied stake for the market
+   */
+  suppliedStake: string | null;
+  /**
+   * the amount of stake targeted for this market
+   */
+  targetStake: string | null;
+  /**
+   * the market value proxy
+   */
+  marketValueProxy: string;
   /**
    * a list of valid price ranges per associated trigger
    */
@@ -287,6 +295,10 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
    * The full name of the asset (e.g: Great British Pound)
    */
   name: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {
@@ -448,20 +460,16 @@ export interface MarketInfoQuery_market {
    */
   id: string;
   /**
-   * Market full name
-   */
-  name: string;
-  /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -480,6 +488,10 @@ export interface MarketInfoQuery_market {
    */
   state: MarketState;
   /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
+  /**
    * The proposal that initiated this market
    */
   proposal: MarketInfoQuery_market_proposal | null;
@@ -487,10 +499,6 @@ export interface MarketInfoQuery_market {
    * Get account for a party or market
    */
   accounts: MarketInfoQuery_market_accounts[] | null;
-  /**
-   * Current mode of execution of the market
-   */
-  tradingMode: MarketTradingMode;
   /**
    * Fees related data
    */

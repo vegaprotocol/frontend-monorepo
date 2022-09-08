@@ -1,24 +1,28 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import { shorten } from '@vegaprotocol/react-helpers';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
-export const ProposalHeader = ({
-  proposal,
-}: {
-  proposal: Proposals_proposals;
-}) => {
+export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
-  let headerText: string;
-  let detailsOne: ReactNode;
-  let detailsTwo: ReactNode;
+  let details: ReactNode;
+
+  let title = proposal.rationale.title.trim();
+  let description = proposal.rationale.description.trim();
+  if (title.length === 0 && description.length > 0) {
+    title = description;
+    description = '';
+  }
+
+  const titleContent = shorten(title, 100);
+  const descriptionContent = shorten(description, 60);
 
   switch (change.__typename) {
     case 'NewMarket': {
-      headerText = `${t('New market')}: ${change.instrument.name}`;
-      detailsOne = (
+      details = (
         <>
           {t('Code')}: {change.instrument.code}.{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
@@ -36,12 +40,11 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateMarket': {
-      headerText = `${t('Market change')}: ${change.marketId}`;
+      details = `${t('Market change')}: ${change.marketId}`;
       break;
     }
     case 'NewAsset': {
-      headerText = `${t('New asset')}: ${change.name}`;
-      detailsOne = (
+      details = (
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
@@ -57,8 +60,7 @@ export const ProposalHeader = ({
     }
     case 'UpdateNetworkParameter': {
       const parametersClasses = 'font-mono leading-none';
-      headerText = `${t('Network parameter')}`;
-      detailsOne = (
+      details = (
         <>
           <span className={`${parametersClasses} mr-2`}>
             {change.networkParameter.key}
@@ -72,44 +74,34 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      // When rationale exists (https://github.com/vegaprotocol/frontend-monorepo/issues/824):
-      // const description = proposal.rationale.description.trim();
-      // const headerMaxLength = 100;
-      // const descriptionOneMaxLength = 60;
-      // const headerOverflow = description.length > headerMaxLength;
-      // const descriptionOneOverflow =
-      //   description.length > headerMaxLength + descriptionOneMaxLength;
-      //
-      // headerText = `${description.substring(0, headerMaxLength - 1).trim()}${
-      //   headerOverflow ? '…' : ''
-      // }`;
-      // detailsOne = headerOverflow
-      //   ? `${description
-      //       .substring(
-      //         headerMaxLength - 1,
-      //         headerMaxLength + descriptionOneMaxLength - 1
-      //       )
-      //       .trim()}${descriptionOneOverflow ? '…' : ''}`
-      //   : '';
-      // detailsTwo = `${proposal.id}`;
-      headerText = proposal.id
-        ? `${t('Freeform proposal')}: ${proposal.id.trim()}`
-        : `${t('Unknown proposal')}`;
+      details = `${proposal.id}`;
 
       break;
-    }
-    default: {
-      headerText = `${t('Unknown proposal')}`;
     }
   }
 
   return (
     <div className="text-sm mb-2">
-      <header data-testid="proposal-header">
-        <h2 className="text-lg mx-0 mt-0 mb-1 font-semibold">{headerText}</h2>
+      <header data-testid="proposal-title">
+        <h2
+          {...(title && title.length > titleContent.length && { title: title })}
+          className="text-lg mx-0 mt-0 mb-1 font-semibold"
+        >
+          {titleContent || t('Unknown proposal')}
+        </h2>
       </header>
-      {detailsOne && <div data-testid="proposal-details-one">{detailsOne}</div>}
-      {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}
+      {descriptionContent && (
+        <div
+          className="mb-4"
+          {...(description.length > descriptionContent.length && {
+            title: description,
+          })}
+          data-testid="proposal-description"
+        >
+          {descriptionContent}
+        </div>
+      )}
+      {details && <div data-testid="proposal-details">{details}</div>}
     </div>
   );
 };

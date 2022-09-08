@@ -17,23 +17,24 @@ export enum AccountTypeMapping {
   ACCOUNT_TYPE_SETTLEMENT = 'Settlement',
 }
 
+/**
+ * Status of a liquidity provision order
+ */
+export enum LiquidityProvisionStatusMapping {
+  STATUS_ACTIVE = 'Active',
+  STATUS_CANCELLED = 'Cancelled',
+  STATUS_PENDING = 'Pending',
+  STATUS_REJECTED = 'Rejected',
+  STATUS_STOPPED = 'Stopped',
+  STATUS_UNDEPLOYED = 'Undeployed',
+}
+
 export enum AuctionTriggerMapping {
   AUCTION_TRIGGER_BATCH = 'batch',
   AUCTION_TRIGGER_LIQUIDITY = 'liquidity',
   AUCTION_TRIGGER_OPENING = 'opening',
   AUCTION_TRIGGER_PRICE = 'price',
   AUCTION_TRIGGER_UNSPECIFIED = 'unspecified',
-}
-
-/**
- * Comparator describes the type of comparison.
- */
-export enum ConditionOperatorMapping {
-  OPERATOR_EQUALS = 'EQUALS',
-  OPERATOR_GREATER_THAN = 'GREATER_THAN',
-  OPERATOR_GREATER_THAN_OR_EQUAL = 'GREATER_THAN_OR_EQUAL',
-  OPERATOR_LESS_THAN = 'LESS_THAN',
-  OPERATOR_LESS_THAN_OR_EQUAL = 'LESS_THAN_OR_EQUAL',
 }
 
 /**
@@ -201,7 +202,7 @@ export enum ProposalRejectionReasonMapping {
   PROPOSAL_ERROR_INVALID_SHAPE = 'Invalid shape',
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = 'Majority threshold not reached',
   PROPOSAL_ERROR_MARKET_MISSING_LIQUIDITY_COMMITMENT = 'Market missing liquidity commitment',
-  PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD = 'Missing builtin asset field',
+  PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD = 'Missing built-in asset field',
   PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT = 'Missing commitment amount',
   PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS = 'Missing ERC20 contract address',
   PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY = 'Network parameter invalid key',

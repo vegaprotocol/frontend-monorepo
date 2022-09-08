@@ -6,18 +6,18 @@ const defaultOptions = {} as const;
 export type MarketNamesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type MarketNamesQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, name: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string } } } }> | null };
+export type MarketNamesQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string } } } }> | null };
 
 
 export const MarketNamesDocument = gql`
     query MarketNames {
   markets {
     id
-    name
     state
     tradableInstrument {
       instrument {
         code
+        name
         metadata {
           tags
         }

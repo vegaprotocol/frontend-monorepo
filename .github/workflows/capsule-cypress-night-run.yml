@@ -9,7 +9,7 @@ on:
 jobs:
   nightly:
     name: Run capsule tests -- nightly
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04-16core
     env:
       GO111MODULE: 'on'
     steps:
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vega
-          ref: develop
+          ref: v0.54.0
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 

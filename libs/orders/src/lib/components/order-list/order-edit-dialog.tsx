@@ -2,8 +2,9 @@ import {
   t,
   addDecimalsFormatNumber,
   toDecimal,
+  Size,
 } from '@vegaprotocol/react-helpers';
-import { OrderType, Side } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
 import {
   FormGroup,
   Input,
@@ -52,7 +53,7 @@ export const OrderEditDialog = ({
         {order.market && (
           <div>
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${order.market.name}`)}</p>
+            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === OrderType.TYPE_LIMIT && order.market && (
@@ -64,16 +65,15 @@ export const OrderEditDialog = ({
           </div>
         )}
         <div>
-          <p className={headerClassName}>{t(`Remaining size`)}</p>
-          <p
-            className={
-              order.side === Side.SIDE_BUY
-                ? 'text-dark-green dark:text-vega-green'
-                : 'text-red dark:text-vega-red'
+          <p className={headerClassName}>{t(`Size`)}</p>
+          <p>
+            {
+              <Size
+                value={order.size}
+                side={order.side}
+                positionDecimalPlaces={order.market.positionDecimalPlaces}
+              />
             }
-          >
-            {order.side === Side.SIDE_BUY ? '+' : '-'}
-            {order.size}
           </p>
         </div>
       </div>

@@ -1,6 +1,5 @@
-import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
-import { t } from '@vegaprotocol/react-helpers';
+import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
@@ -12,6 +11,7 @@ export const ASSET_FRAGMENT = gql`
     symbol
     name
     decimals
+    status
     source {
       ... on ERC20 {
         contractAddress
@@ -69,7 +69,7 @@ export const WithdrawFormContainer = ({
       return [];
     }
 
-    return compact(data.assetsConnection.edges).map((e) => e.node);
+    return getEnabledAssets(data);
   }, [data]);
 
   if (loading || !data) {
