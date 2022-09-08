@@ -16,12 +16,10 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps {
   voteErrorMessage: string | undefined;
   voteMinClose: string;
   voteMaxClose: string;
-  enactmentRegister:
-    | UseFormRegisterReturn<'proposalEnactmentDeadline'>
-    | undefined;
-  enactmentErrorMessage: string | undefined;
-  enactmentMinClose: string | undefined;
-  enactmentMaxClose: string | undefined;
+  enactmentRegister?: UseFormRegisterReturn<'proposalEnactmentDeadline'>;
+  enactmentErrorMessage?: string;
+  enactmentMinClose?: string;
+  enactmentMaxClose?: string;
 }
 
 export const ProposalFormVoteAndEnactmentDeadline = function ({

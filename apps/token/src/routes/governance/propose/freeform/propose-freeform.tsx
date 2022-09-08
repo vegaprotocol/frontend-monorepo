@@ -138,10 +138,6 @@ export const ProposeFreeform = () => {
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
                   voteMinClose={minVoteDeadline as string}
                   voteMaxClose={maxVoteDeadline as string}
-                  enactmentRegister={undefined}
-                  enactmentErrorMessage={undefined}
-                  enactmentMinClose={undefined}
-                  enactmentMaxClose={undefined}
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
