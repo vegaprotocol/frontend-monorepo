@@ -3,21 +3,21 @@ import * as Types from '@vegaprotocol/types/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AccountFieldsFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
+export type AccountFieldsFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
 
 export type AccountsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } }> | null } | null };
+export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } }> | null } | null };
 
 export type AccountEventsSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, name: string } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } };
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } };
 
 export const AccountFieldsFragmentDoc = gql`
     fragment AccountFields on Account {
@@ -25,7 +25,11 @@ export const AccountFieldsFragmentDoc = gql`
   balance
   market {
     id
-    name
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
   }
   asset {
     id

@@ -3,7 +3,11 @@ fragment AccountFields on Account {
   balance
   market {
     id
-    name
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
   }
   asset {
     id
