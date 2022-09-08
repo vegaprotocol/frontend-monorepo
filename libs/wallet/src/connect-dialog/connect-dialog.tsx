@@ -67,7 +67,6 @@ export function VegaConnectDialog({
         }
         setDialogOpen(open);
       }}
-      title={t('Connect')}
     >
       {content}
     </Dialog>

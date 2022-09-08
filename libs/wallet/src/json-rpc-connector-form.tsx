@@ -34,15 +34,15 @@ export const JsonRpcConnectorForm = ({
       connector.url = walletUrl;
       setStatus('gettingChainId');
 
-      const chainIdResult = await connector.getChainId();
+      // const chainIdResult = await connector.getChainId();
 
-      if (chainIdResult.chainID !== appChainId) {
-        setError(
-          `Invalid chain chain id: ${chainIdResult.chainID} does not match application chain id: ${appChainId}`
-        );
-        setStatus('error');
-        return;
-      }
+      // if (chainIdResult.chainID !== appChainId) {
+      //   setError(
+      //     `Invalid chain chain id: ${chainIdResult.chainID} does not match application chain id: ${appChainId}`
+      //   );
+      //   setStatus('error');
+      //   return;
+      // }
 
       setStatus('connecting');
       await connector.connectWallet();
