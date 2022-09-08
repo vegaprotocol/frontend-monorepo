@@ -39,10 +39,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsFormatNumber(
-        value,
-        assetDecimalPlaces ?? 0
-      )} ${symbol}`;
+      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0)}`;
     };
     return (
       <AgGrid
@@ -66,7 +63,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerTooltip={t('The ID of the party making this commitment.')}
         />
         <AgGridColumn
-          headerName={t('Commitment')}
+          headerName={t(`Commitment (${symbol})`)}
           field="commitmentAmount"
           type="rightAligned"
           headerTooltip={t(
@@ -75,7 +72,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
-          headerName={t('Equity-like share')}
+          headerName={t('Share')}
           field="equityLikeShare"
           type="rightAligned"
           headerTooltip={t(
@@ -84,7 +81,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           valueFormatter={percentageFormatter}
         />
         <AgGridColumn
-          headerName={t('Fee factor')}
+          headerName={t('Fee')}
           headerTooltip={t(
             'Nominated liquidity fee factor, which is an input to the calculation of maker fees on the market, as per setting fees and rewarding liquidity providers.'
           )}
