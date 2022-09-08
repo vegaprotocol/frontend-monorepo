@@ -18,6 +18,7 @@ describe('withdraw', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
+      aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
       aliasQuery(req, 'Accounts', generateAccounts());
