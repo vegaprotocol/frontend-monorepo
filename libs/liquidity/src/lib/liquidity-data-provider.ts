@@ -22,13 +22,9 @@ const MARKET_LIQUIDITY_QUERY = gql`
             id
             party {
               id
-              accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-                edges {
-                  node {
-                    type
-                    balance
-                  }
-                }
+              accounts(marketId: $marketId, type: Bond) {
+                type
+                balance
               }
             }
             createdAt

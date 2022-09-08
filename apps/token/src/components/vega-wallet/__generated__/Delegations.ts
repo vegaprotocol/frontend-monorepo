@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Delegations
@@ -20,7 +20,7 @@ export interface Delegations_epoch {
 export interface Delegations_party_delegations_node {
   __typename: "Node";
   /**
-   * The node URL eg n01.vega.xyz
+   * The node url eg n01.vega.xyz
    */
   id: string;
   name: string;
@@ -65,7 +65,7 @@ export interface Delegations_party_accounts_asset_source_BuiltinAsset {
 export interface Delegations_party_accounts_asset_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -79,11 +79,11 @@ export interface Delegations_party_accounts_asset {
    */
   name: string;
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
   /**
@@ -91,7 +91,7 @@ export interface Delegations_party_accounts_asset {
    */
   symbol: string;
   /**
-   * The origin source of the asset (e.g: an ERC20 asset)
+   * The origin source of the asset (e.g: an erc20 asset)
    */
   source: Delegations_party_accounts_asset_source;
 }
@@ -131,11 +131,11 @@ export interface Delegations_party {
 
 export interface Delegations {
   /**
-   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Delegations_epoch;
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: Delegations_party | null;
 }

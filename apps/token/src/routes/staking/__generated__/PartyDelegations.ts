@@ -10,7 +10,7 @@
 export interface PartyDelegations_party_delegations_node {
   __typename: "Node";
   /**
-   * The node URL eg n01.vega.xyz
+   * The node url eg n01.vega.xyz
    */
   id: string;
 }
@@ -54,11 +54,11 @@ export interface PartyDelegations_epoch {
 
 export interface PartyDelegations {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: PartyDelegations_party | null;
   /**
-   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: PartyDelegations_epoch;
 }

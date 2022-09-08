@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType, AssetStatus } from "@vegaprotocol/types";
+import { AccountType, AssetStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: WithdrawFormQuery
@@ -12,7 +12,7 @@ import { AccountType, AssetStatus } from "@vegaprotocol/types";
 export interface WithdrawFormQuery_party_withdrawals {
   __typename: "Withdrawal";
   /**
-   * The Vega internal ID of the withdrawal
+   * The Vega internal id of the withdrawal
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface WithdrawFormQuery_party_withdrawals {
 export interface WithdrawFormQuery_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -72,7 +72,7 @@ export interface WithdrawFormQuery_assetsConnection_edges_node_source_BuiltinAss
 export interface WithdrawFormQuery_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -82,7 +82,7 @@ export type WithdrawFormQuery_assetsConnection_edges_node_source = WithdrawFormQ
 export interface WithdrawFormQuery_assetsConnection_edges_node {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -94,15 +94,15 @@ export interface WithdrawFormQuery_assetsConnection_edges_node {
    */
   name: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
   /**
-   * The status of the asset in the Vega network
+   * The status of the asset in the vega network
    */
   status: AssetStatus;
   /**
-   * The origin source of the asset (e.g: an ERC20 asset)
+   * The origin source of the asset (e.g: an erc20 asset)
    */
   source: WithdrawFormQuery_assetsConnection_edges_node_source;
 }
@@ -122,11 +122,11 @@ export interface WithdrawFormQuery_assetsConnection {
 
 export interface WithdrawFormQuery {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: WithdrawFormQuery_party | null;
   /**
-   * The list of all assets in use in the Vega network or the specified asset if ID is provided
+   * The list of all assets in use in the vega network or the specified asset if id is provided
    */
   assetsConnection: WithdrawFormQuery_assetsConnection;
 }

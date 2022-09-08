@@ -1,3 +1,5 @@
+import { AssetStatus } from '@vegaprotocol/types';
+
 export interface ERC20AssetSource {
   __typename: 'ERC20';
   contractAddress: string;
@@ -14,13 +16,6 @@ export interface Asset {
   name: string;
   decimals: number;
   source: ERC20AssetSource | BuiltinAssetSource;
-}
-
-export enum AssetStatus {
-  STATUS_ENABLED = 'STATUS_ENABLED',
-  STATUS_PENDING_LISTING = 'STATUS_PENDING_LISTING',
-  STATUS_PROPOSED = 'STATUS_PROPOSED',
-  STATUS_REJECTED = 'STATUS_REJECTED',
 }
 
 export interface AssetWithStatus extends Asset {
@@ -62,4 +57,4 @@ export const getEnabledAssets = (
   data?.assetsConnection?.edges
     ?.filter((e) => e && e?.node)
     .map((e) => (e as AssetEdge<AssetWithStatus>).node)
-    .filter((a) => a.status === AssetStatus.STATUS_ENABLED) || [];
+    .filter((a) => a.status === AssetStatus.Enabled) || [];

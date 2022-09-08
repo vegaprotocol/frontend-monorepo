@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode } from "@vegaprotocol/types";
+import { MarketTradingMode } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: PositionsSubscription
@@ -32,15 +32,15 @@ export interface PositionsSubscription_positions_marginsConnection_edges_node {
    */
   market: PositionsSubscription_positions_marginsConnection_edges_node_market;
   /**
-   * minimal margin for the position to be maintained in the network (unsigned integer)
+   * minimal margin for the position to be maintained in the network (unsigned int actually)
    */
   maintenanceLevel: string;
   /**
-   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned int actually)
    */
   searchLevel: string;
   /**
-   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
    */
   initialLevel: string;
   /**
@@ -78,7 +78,7 @@ export interface PositionsSubscription_positions_market_tradableInstrument_instr
 export interface PositionsSubscription_positions_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of, or reference to, a fully specified instrument.
+   * An instance of or reference to a fully specified instrument.
    */
   instrument: PositionsSubscription_positions_market_tradableInstrument_instrument;
 }
@@ -94,11 +94,11 @@ export interface PositionsSubscription_positions_market_data_market {
 export interface PositionsSubscription_positions_market_data {
   __typename: "MarketData";
   /**
-   * the mark price (an unsigned integer)
+   * the mark price (actually an unsigned int)
    */
   markPrice: string;
   /**
-   * market ID of the associated mark price
+   * market id of the associated mark price
    */
   market: PositionsSubscription_positions_market_data_market;
 }
@@ -111,7 +111,7 @@ export interface PositionsSubscription_positions_market {
   id: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the market. (uint64)
+   * number denominated in the currency of the Market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -127,10 +127,9 @@ export interface PositionsSubscription_positions_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
-   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -138,7 +137,7 @@ export interface PositionsSubscription_positions_market {
    */
   tradingMode: MarketTradingMode;
   /**
-   * An instance of, or reference to, a tradable instrument.
+   * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: PositionsSubscription_positions_market_tradableInstrument;
   /**
@@ -170,7 +169,7 @@ export interface PositionsSubscription_positions {
    */
   updatedAt: string | null;
   /**
-   * Margins of the party for the given position
+   * margins of the party for the given position
    */
   marginsConnection: PositionsSubscription_positions_marginsConnection;
   /**

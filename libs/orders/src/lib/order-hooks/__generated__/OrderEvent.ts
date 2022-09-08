@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, OrderType, OrderStatus, OrderRejectionReason, OrderTimeInForce, Side } from "@vegaprotocol/types";
+import { BusEventType, OrderType, OrderStatus, OrderRejectionReason, OrderTimeInForce, Side } from "./../../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: OrderEvent
@@ -24,7 +24,7 @@ export interface OrderEvent_busEvents_event_Order_market_tradableInstrument_inst
 export interface OrderEvent_busEvents_event_Order_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of, or reference to, a fully specified instrument.
+   * An instance of or reference to a fully specified instrument.
    */
   instrument: OrderEvent_busEvents_event_Order_market_tradableInstrument_instrument;
 }
@@ -36,12 +36,12 @@ export interface OrderEvent_busEvents_event_Order_market {
    */
   id: string;
   /**
-   * An instance of, or reference to, a tradable instrument.
+   * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: OrderEvent_busEvents_event_Order_market_tradableInstrument;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the market. (uint64)
+   * number denominated in the currency of the Market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -57,10 +57,9 @@ export interface OrderEvent_busEvents_event_Order_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
-   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
 }
@@ -110,7 +109,7 @@ export interface OrderEvent_busEvents_event_Order {
   /**
    * The market the order is trading on (probably stored internally as a hash of the market details)
    */
-  market: OrderEvent_busEvents_event_Order_market;
+  market: OrderEvent_busEvents_event_Order_market | null;
 }
 
 export type OrderEvent_busEvents_event = OrderEvent_busEvents_event_TimeUpdate | OrderEvent_busEvents_event_Order;
@@ -118,7 +117,7 @@ export type OrderEvent_busEvents_event = OrderEvent_busEvents_event_TimeUpdate |
 export interface OrderEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * the type of event
+   * the type of event we're dealing with
    */
   type: BusEventType;
   /**

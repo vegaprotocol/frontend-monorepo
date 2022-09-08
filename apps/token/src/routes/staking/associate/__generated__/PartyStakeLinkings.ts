@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { StakeLinkingStatus } from "@vegaprotocol/types";
+import { StakeLinkingStatus } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: PartyStakeLinkings
@@ -44,7 +44,7 @@ export interface PartyStakeLinkings_party {
 
 export interface PartyStakeLinkings {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: PartyStakeLinkings_party | null;
 }

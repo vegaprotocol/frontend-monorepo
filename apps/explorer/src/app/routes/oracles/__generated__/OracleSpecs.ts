@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OracleSpecStatus, PropertyKeyType, ConditionOperator } from "@vegaprotocol/types";
+import { OracleSpecStatus, PropertyKeyType, ConditionOperator } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: OracleSpecs
@@ -61,7 +61,7 @@ export interface OracleSpecs_oracleSpecs {
    */
   status: OracleSpecStatus;
   /**
-   * ID is a hash generated from the OracleSpec data.
+   * id is a hash generated from the OracleSpec data.
    */
   id: string;
   /**

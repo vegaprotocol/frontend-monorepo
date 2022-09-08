@@ -11,19 +11,19 @@ export const getProposalDialogTitle = (
   }
 
   switch (status) {
-    case ProposalState.STATE_OPEN:
+    case ProposalState.Open:
       return t('Proposal submitted');
-    case ProposalState.STATE_WAITING_FOR_NODE_VOTE:
+    case ProposalState.WaitingForNodeVote:
       return t('Proposal waiting for node vote');
-    case ProposalState.STATE_PASSED:
+    case ProposalState.Passed:
       return t('Proposal passed');
-    case ProposalState.STATE_ENACTED:
+    case ProposalState.Enacted:
       return t('Proposal enacted');
-    case ProposalState.STATE_DECLINED:
+    case ProposalState.Declined:
       return t('Proposal declined');
-    case ProposalState.STATE_REJECTED:
+    case ProposalState.Rejected:
       return t('Proposal rejected');
-    case ProposalState.STATE_FAILED:
+    case ProposalState.Failed:
       return t('Proposal failed');
     default:
       return t('Submission failed');
@@ -38,15 +38,15 @@ export const getProposalDialogIntent = (
   }
 
   switch (status) {
-    case ProposalState.STATE_PASSED:
-    case ProposalState.STATE_ENACTED:
+    case ProposalState.Passed:
+    case ProposalState.Enacted:
       return Intent.Success;
-    case ProposalState.STATE_OPEN:
-    case ProposalState.STATE_WAITING_FOR_NODE_VOTE:
+    case ProposalState.Open:
+    case ProposalState.WaitingForNodeVote:
       return Intent.None;
-    case ProposalState.STATE_REJECTED:
-    case ProposalState.STATE_FAILED:
-    case ProposalState.STATE_DECLINED:
+    case ProposalState.Rejected:
+    case ProposalState.Failed:
+    case ProposalState.Declined:
       return Intent.Danger;
     default:
       return;
@@ -61,12 +61,12 @@ export const getProposalDialogIcon = (
   }
 
   switch (status) {
-    case ProposalState.STATE_PASSED:
-    case ProposalState.STATE_ENACTED:
+    case ProposalState.Passed:
+    case ProposalState.Enacted:
       return <Icon name="tick" />;
-    case ProposalState.STATE_REJECTED:
-    case ProposalState.STATE_FAILED:
-    case ProposalState.STATE_DECLINED:
+    case ProposalState.Rejected:
+    case ProposalState.Failed:
+    case ProposalState.Declined:
       return <Icon name="error" />;
     default:
       return;

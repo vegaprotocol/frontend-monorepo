@@ -64,7 +64,7 @@ export function useUserVote(
       setVoteState(VoteState.NotCast);
     } else {
       setVoteState(
-        userVote.value === VoteValue.VALUE_YES ? VoteState.Yes : VoteState.No
+        userVote.value === VoteValue.Yes ? VoteState.Yes : VoteState.No
       );
     }
   }, [userVote]);

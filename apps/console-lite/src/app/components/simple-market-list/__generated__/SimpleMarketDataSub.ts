@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState } from "@vegaprotocol/types";
+import { MarketState } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: SimpleMarketDataSub
@@ -24,7 +24,7 @@ export interface SimpleMarketDataSub_marketData_market {
 export interface SimpleMarketDataSub_marketData {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * market id of the associated mark price
    */
   market: SimpleMarketDataSub_marketData_market;
 }

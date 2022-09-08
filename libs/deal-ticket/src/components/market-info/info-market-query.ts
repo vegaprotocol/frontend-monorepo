@@ -11,7 +11,6 @@ export const MARKET_INFO_QUERY = gql`
       proposal {
         id
         rationale {
-          title
           description
         }
       }

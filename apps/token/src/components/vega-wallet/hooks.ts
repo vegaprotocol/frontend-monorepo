@@ -115,7 +115,7 @@ export const usePollForDelegations = () => {
             const accounts = res.data.party?.accounts || [];
             setAccounts(
               accounts
-                .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+                .filter((a) => a.type === AccountType.General)
                 .map((a) => {
                   const isVega =
                     isAssetTypeERC20(a.asset) &&

@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Proposals
@@ -17,8 +17,8 @@ export interface Proposals_proposals_party {
   id: string;
 }
 
-export interface Proposals_proposals_terms_change_UpdateAsset {
-  __typename: "UpdateAsset" | "NewFreeform";
+export interface Proposals_proposals_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface Proposals_proposals_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
@@ -56,7 +56,7 @@ export interface Proposals_proposals_terms_change_NewMarket_instrument {
 export interface Proposals_proposals_terms_change_NewMarket {
   __typename: "NewMarket";
   /**
-   * Decimal places used for the new market, sets the smallest price increment on the book
+   * Decimal places used for the new market
    */
   decimalPlaces: number;
   /**
@@ -85,7 +85,7 @@ export interface Proposals_proposals_terms_change_NewAsset_source_BuiltinAsset {
 export interface Proposals_proposals_terms_change_NewAsset_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -103,7 +103,7 @@ export interface Proposals_proposals_terms_change_NewAsset {
    */
   symbol: string;
   /**
-   * The source of the new asset
+   * the source of the new Asset
    */
   source: Proposals_proposals_terms_change_NewAsset_source;
 }
@@ -125,7 +125,7 @@ export interface Proposals_proposals_terms_change_UpdateNetworkParameter {
   networkParameter: Proposals_proposals_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type Proposals_proposals_terms_change = Proposals_proposals_terms_change_UpdateAsset | Proposals_proposals_terms_change_NewMarket | Proposals_proposals_terms_change_UpdateMarket | Proposals_proposals_terms_change_NewAsset | Proposals_proposals_terms_change_UpdateNetworkParameter;
+export type Proposals_proposals_terms_change = Proposals_proposals_terms_change_NewFreeform | Proposals_proposals_terms_change_NewMarket | Proposals_proposals_terms_change_UpdateMarket | Proposals_proposals_terms_change_NewAsset | Proposals_proposals_terms_change_UpdateNetworkParameter;
 
 export interface Proposals_proposals_terms {
   __typename: "ProposalTerms";
@@ -137,9 +137,8 @@ export interface Proposals_proposals_terms {
   /**
    * RFC3339Nano time and date when this proposal is executed (if passed). Note that it has to be after closing date time.
    * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
-   * Note: Optional as free form proposals do not require it.
    */
-  enactmentDatetime: string | null;
+  enactmentDatetime: string;
   /**
    * Actual change being introduced by the proposal - action the proposal triggers if passed and enacted.
    */
@@ -185,15 +184,15 @@ export interface Proposals_proposals_votes_yes_votes {
 export interface Proposals_proposals_votes_yes {
   __typename: "ProposalVoteSide";
   /**
-   * Total number of governance tokens from the votes cast for this side
+   * Total tokens of governance token from the votes casted for this side
    */
   totalTokens: string;
   /**
-   * Total number of votes cast for this side
+   * Total number of votes casted for this side
    */
   totalNumber: string;
   /**
-   * All votes cast for this side
+   * All votes casted for this side
    */
   votes: Proposals_proposals_votes_yes_votes[] | null;
 }
@@ -237,15 +236,15 @@ export interface Proposals_proposals_votes_no_votes {
 export interface Proposals_proposals_votes_no {
   __typename: "ProposalVoteSide";
   /**
-   * Total number of governance tokens from the votes cast for this side
+   * Total tokens of governance token from the votes casted for this side
    */
   totalTokens: string;
   /**
-   * Total number of votes cast for this side
+   * Total number of votes casted for this side
    */
   totalNumber: string;
   /**
-   * All votes cast for this side
+   * All votes casted for this side
    */
   votes: Proposals_proposals_votes_no_votes[] | null;
 }
@@ -265,11 +264,11 @@ export interface Proposals_proposals_votes {
 export interface Proposals_proposals {
   __typename: "Proposal";
   /**
-   * Proposal ID that is filled by Vega once proposal reaches the network
+   * Proposal ID that is filled by VEGA once proposal reaches the network
    */
   id: string | null;
   /**
-   * A UUID reference to aid tracking proposals on Vega
+   * A UUID reference to aid tracking proposals on VEGA
    */
   reference: string;
   /**
@@ -304,7 +303,7 @@ export interface Proposals_proposals {
 
 export interface Proposals {
   /**
-   * All governance proposals in the Vega network
+   * All governance proposals in the VEGA network
    */
   proposals: Proposals_proposals[] | null;
 }

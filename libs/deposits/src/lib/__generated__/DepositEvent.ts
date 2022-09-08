@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DepositStatus } from "@vegaprotocol/types";
+import { DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: DepositEvent
@@ -16,7 +16,7 @@ export interface DepositEvent_busEvents_event_TimeUpdate {
 export interface DepositEvent_busEvents_event_Deposit {
   __typename: "Deposit";
   /**
-   * The Vega internal ID of the deposit
+   * The Vega internal id of the deposit
    */
   id: string;
   /**

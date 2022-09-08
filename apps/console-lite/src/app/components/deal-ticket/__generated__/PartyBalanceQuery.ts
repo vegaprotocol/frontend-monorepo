@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: PartyBalanceQuery
@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface PartyBalanceQuery_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface PartyBalanceQuery_party_accounts_asset {
    */
   name: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
 }
@@ -55,7 +55,7 @@ export interface PartyBalanceQuery_party {
 
 export interface PartyBalanceQuery {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: PartyBalanceQuery_party | null;
 }

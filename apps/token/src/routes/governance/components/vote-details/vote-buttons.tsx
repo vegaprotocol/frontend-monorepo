@@ -77,7 +77,7 @@ export const VoteButtons = ({
   const [changeVote, setChangeVote] = React.useState(false);
 
   const cantVoteUI = React.useMemo(() => {
-    if (proposalState !== ProposalState.STATE_OPEN) {
+    if (proposalState !== ProposalState.Open) {
       return t('youDidNotVote');
     }
 
@@ -143,7 +143,7 @@ export const VoteButtons = ({
         {voteDatetime ? (
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
-        {proposalState === ProposalState.STATE_OPEN ? (
+        {proposalState === ProposalState.Open ? (
           <ButtonLink
             data-testid="change-vote-button"
             onClick={() => {
@@ -164,12 +164,12 @@ export const VoteButtons = ({
   return (
     <div className="flex gap-4" data-testid="vote-buttons">
       <div className="flex-1">
-        <Button onClick={() => submitVote(VoteValue.VALUE_YES)}>
+        <Button onClick={() => submitVote(VoteValue.Yes)}>
           {t('voteFor')}
         </Button>
       </div>
       <div className="flex-1">
-        <Button onClick={() => submitVote(VoteValue.VALUE_NO)}>
+        <Button onClick={() => submitVote(VoteValue.No)}>
           {t('voteAgainst')}
         </Button>
       </div>

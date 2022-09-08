@@ -34,7 +34,7 @@ export interface NetworkStats_nodeData {
 export interface NetworkStats_statistics {
   __typename: "Statistics";
   /**
-   * Status of the Vega application connection with the chain
+   * Status of the vega application connection with the chain
    */
   status: string;
   /**
@@ -70,7 +70,7 @@ export interface NetworkStats_statistics {
    */
   vegaTime: string;
   /**
-   * Version of the Vega node (semver)
+   * Version of the vega node (semver)
    */
   appVersion: string;
   /**
@@ -78,7 +78,7 @@ export interface NetworkStats_statistics {
    */
   chainVersion: string;
   /**
-   * Current chain ID
+   * Current chain id
    */
   chainId: string;
 }
@@ -89,7 +89,7 @@ export interface NetworkStats {
    */
   nodeData: NetworkStats_nodeData | null;
   /**
-   * get statistics about the Vega node
+   * get statistics about the vega node
    */
   statistics: NetworkStats_statistics;
 }

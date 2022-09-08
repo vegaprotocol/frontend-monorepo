@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, ProposalState, ProposalRejectionReason } from "@vegaprotocol/types";
+import { BusEventType, ProposalState, ProposalRejectionReason } from "./../../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: ProposalEvent
@@ -16,11 +16,11 @@ export interface ProposalEvent_busEvents_event_TimeUpdate {
 export interface ProposalEvent_busEvents_event_Proposal {
   __typename: "Proposal";
   /**
-   * Proposal ID that is filled by Vega once proposal reaches the network
+   * Proposal ID that is filled by VEGA once proposal reaches the network
    */
   id: string | null;
   /**
-   * A UUID reference to aid tracking proposals on Vega
+   * A UUID reference to aid tracking proposals on VEGA
    */
   reference: string;
   /**
@@ -42,7 +42,7 @@ export type ProposalEvent_busEvents_event = ProposalEvent_busEvents_event_TimeUp
 export interface ProposalEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * the type of event
+   * the type of event we're dealing with
    */
   type: BusEventType;
   /**

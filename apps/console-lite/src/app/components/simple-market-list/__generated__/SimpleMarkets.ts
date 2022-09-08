@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState } from "@vegaprotocol/types";
+import { MarketState } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: SimpleMarkets
@@ -60,7 +60,7 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument {
 export interface SimpleMarkets_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of, or reference to, a fully specified instrument.
+   * An instance of or reference to a fully specified instrument.
    */
   instrument: SimpleMarkets_markets_tradableInstrument_instrument;
 }
@@ -88,11 +88,11 @@ export interface SimpleMarkets_markets {
    */
   state: MarketState;
   /**
-   * An instance of, or reference to, a tradable instrument.
+   * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: SimpleMarkets_markets_tradableInstrument;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by params
    */
   candles: (SimpleMarkets_markets_candles | null)[] | null;
 }

@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: ProposalsQuery
@@ -17,8 +17,8 @@ export interface ProposalsQuery_proposals_party {
   id: string;
 }
 
-export interface ProposalsQuery_proposals_terms_change_UpdateAsset {
-  __typename: "UpdateAsset" | "NewFreeform";
+export interface ProposalsQuery_proposals_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewMarket_instrument {
@@ -53,7 +53,7 @@ export interface ProposalsQuery_proposals_terms_change_NewAsset_source_BuiltinAs
 export interface ProposalsQuery_proposals_terms_change_NewAsset_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -67,7 +67,7 @@ export interface ProposalsQuery_proposals_terms_change_NewAsset {
    */
   symbol: string;
   /**
-   * The source of the new asset
+   * the source of the new Asset
    */
   source: ProposalsQuery_proposals_terms_change_NewAsset_source;
 }
@@ -89,7 +89,7 @@ export interface ProposalsQuery_proposals_terms_change_UpdateNetworkParameter {
   networkParameter: ProposalsQuery_proposals_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type ProposalsQuery_proposals_terms_change = ProposalsQuery_proposals_terms_change_UpdateAsset | ProposalsQuery_proposals_terms_change_NewMarket | ProposalsQuery_proposals_terms_change_UpdateMarket | ProposalsQuery_proposals_terms_change_NewAsset | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
+export type ProposalsQuery_proposals_terms_change = ProposalsQuery_proposals_terms_change_NewFreeform | ProposalsQuery_proposals_terms_change_NewMarket | ProposalsQuery_proposals_terms_change_UpdateMarket | ProposalsQuery_proposals_terms_change_NewAsset | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
 
 export interface ProposalsQuery_proposals_terms {
   __typename: "ProposalTerms";
@@ -101,9 +101,8 @@ export interface ProposalsQuery_proposals_terms {
   /**
    * RFC3339Nano time and date when this proposal is executed (if passed). Note that it has to be after closing date time.
    * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
-   * Note: Optional as free form proposals do not require it.
    */
-  enactmentDatetime: string | null;
+  enactmentDatetime: string;
   /**
    * Actual change being introduced by the proposal - action the proposal triggers if passed and enacted.
    */
@@ -149,15 +148,15 @@ export interface ProposalsQuery_proposals_votes_yes_votes {
 export interface ProposalsQuery_proposals_votes_yes {
   __typename: "ProposalVoteSide";
   /**
-   * Total number of governance tokens from the votes cast for this side
+   * Total tokens of governance token from the votes casted for this side
    */
   totalTokens: string;
   /**
-   * Total number of votes cast for this side
+   * Total number of votes casted for this side
    */
   totalNumber: string;
   /**
-   * All votes cast for this side
+   * All votes casted for this side
    */
   votes: ProposalsQuery_proposals_votes_yes_votes[] | null;
 }
@@ -201,15 +200,15 @@ export interface ProposalsQuery_proposals_votes_no_votes {
 export interface ProposalsQuery_proposals_votes_no {
   __typename: "ProposalVoteSide";
   /**
-   * Total number of governance tokens from the votes cast for this side
+   * Total tokens of governance token from the votes casted for this side
    */
   totalTokens: string;
   /**
-   * Total number of votes cast for this side
+   * Total number of votes casted for this side
    */
   totalNumber: string;
   /**
-   * All votes cast for this side
+   * All votes casted for this side
    */
   votes: ProposalsQuery_proposals_votes_no_votes[] | null;
 }
@@ -229,11 +228,11 @@ export interface ProposalsQuery_proposals_votes {
 export interface ProposalsQuery_proposals {
   __typename: "Proposal";
   /**
-   * Proposal ID that is filled by Vega once proposal reaches the network
+   * Proposal ID that is filled by VEGA once proposal reaches the network
    */
   id: string | null;
   /**
-   * A UUID reference to aid tracking proposals on Vega
+   * A UUID reference to aid tracking proposals on VEGA
    */
   reference: string;
   /**
@@ -264,7 +263,7 @@ export interface ProposalsQuery_proposals {
 
 export interface ProposalsQuery {
   /**
-   * All governance proposals in the Vega network
+   * All governance proposals in the VEGA network
    */
   proposals: ProposalsQuery_proposals[] | null;
 }

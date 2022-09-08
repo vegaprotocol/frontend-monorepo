@@ -35,7 +35,7 @@ export const CurrentProposalStatus = ({
       addSuffix: true,
     });
 
-  if (proposal.state === ProposalState.STATE_OPEN) {
+  if (proposal.state === ProposalState.Open) {
     if (willPass) {
       return (
         <>
@@ -54,9 +54,9 @@ export const CurrentProposalStatus = ({
   }
 
   if (
-    proposal.state === ProposalState.STATE_FAILED ||
-    proposal.state === ProposalState.STATE_DECLINED ||
-    proposal.state === ProposalState.STATE_REJECTED
+    proposal.state === ProposalState.Failed ||
+    proposal.state === ProposalState.Declined ||
+    proposal.state === ProposalState.Rejected
   ) {
     if (!participationMet) {
       return (
@@ -87,8 +87,8 @@ export const CurrentProposalStatus = ({
     );
   }
   if (
-    proposal.state === ProposalState.STATE_ENACTED ||
-    proposal.state === ProposalState.STATE_PASSED
+    proposal.state === ProposalState.Enacted ||
+    proposal.state === ProposalState.Passed
   ) {
     return (
       <>
@@ -96,7 +96,7 @@ export const CurrentProposalStatus = ({
         <StatusPass>&nbsp;{proposal.state}</StatusPass>
         <span>
           &nbsp;
-          {proposal.state === ProposalState.STATE_ENACTED
+          {proposal.state === ProposalState.Enacted
             ? daysEnactedAgo
             : daysClosedAgo}
           .
@@ -105,7 +105,7 @@ export const CurrentProposalStatus = ({
     );
   }
 
-  if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
+  if (proposal.state === ProposalState.WaitingForNodeVote) {
     return (
       <span>{t('subjectToFurtherActions', { daysAgo: daysClosedAgo })}</span>
     );

@@ -33,9 +33,7 @@ export const WithdrawManager = ({
     async (id: string) => {
       const asset = assets.find((a) => a.id === id);
       const account = accounts.find(
-        (a) =>
-          a.type === AccountType.ACCOUNT_TYPE_GENERAL &&
-          a.asset.id === asset?.id
+        (a) => a.type === AccountType.General && a.asset.id === asset?.id
       );
       const balance =
         account && asset

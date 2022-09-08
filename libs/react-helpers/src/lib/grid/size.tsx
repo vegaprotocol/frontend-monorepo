@@ -17,11 +17,11 @@ export const Size = ({
     <span
       data-testid="size"
       className={classNames('text-right', {
-        [positiveClassNames]: side === Side.SIDE_BUY,
-        [negativeClassNames]: side === Side.SIDE_SELL,
+        [positiveClassNames]: side === Side.Buy,
+        [negativeClassNames]: side === Side.Sell,
       })}
     >
-      {side === Side.SIDE_BUY ? '+' : side === Side.SIDE_SELL ? '-' : ''}
+      {side === Side.Buy ? '+' : side === Side.Sell ? '-' : ''}
       {addDecimalsFormatNumber(value, positionDecimalPlaces)}
     </span>
   );

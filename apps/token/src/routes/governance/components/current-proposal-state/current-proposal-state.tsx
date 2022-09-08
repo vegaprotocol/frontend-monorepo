@@ -10,14 +10,14 @@ export const CurrentProposalState = ({
   let className = 'text-white';
 
   if (
-    state === ProposalState.STATE_DECLINED ||
-    state === ProposalState.STATE_FAILED ||
-    state === ProposalState.STATE_REJECTED
+    state === ProposalState.Declined ||
+    state === ProposalState.Failed ||
+    state === ProposalState.Rejected
   ) {
     className = 'text-danger';
   } else if (
-    state === ProposalState.STATE_ENACTED ||
-    state === ProposalState.STATE_PASSED
+    state === ProposalState.Enacted ||
+    state === ProposalState.Passed
   ) {
     className = 'text-white';
   }

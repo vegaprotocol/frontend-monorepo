@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL fragment: AccountFields
@@ -20,7 +20,7 @@ export interface AccountFields_market_tradableInstrument_instrument {
 export interface AccountFields_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of, or reference to, a fully specified instrument.
+   * An instance of or reference to a fully specified instrument.
    */
   instrument: AccountFields_market_tradableInstrument_instrument;
 }
@@ -32,7 +32,7 @@ export interface AccountFields_market {
    */
   id: string;
   /**
-   * An instance of, or reference to, a tradable instrument.
+   * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: AccountFields_market_tradableInstrument;
 }
@@ -40,7 +40,7 @@ export interface AccountFields_market {
 export interface AccountFields_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -48,7 +48,7 @@ export interface AccountFields_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
 }

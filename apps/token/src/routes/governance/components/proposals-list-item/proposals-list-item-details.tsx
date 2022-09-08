@@ -11,10 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import {
-  ProposalRejectionReasonMapping,
-  ProposalState,
-} from '@vegaprotocol/types';
+import { ProposalState } from '@vegaprotocol/types';
 import Routes from '../../../routes';
 
 const MajorityNotReached = () => {
@@ -55,7 +52,7 @@ export const ProposalsListItemDetails = ({
   let voteStatus: ReactNode;
 
   switch (state) {
-    case ProposalState.STATE_ENACTED: {
+    case ProposalState.Enacted: {
       proposalStatus = (
         <>
           {t('voteState_Enacted')} <Icon name={'tick'} />
@@ -71,7 +68,7 @@ export const ProposalsListItemDetails = ({
       );
       break;
     }
-    case ProposalState.STATE_PASSED: {
+    case ProposalState.Passed: {
       proposalStatus = (
         <>
           {t('voteState_Passed')} <Icon name={'tick'} />
@@ -89,7 +86,7 @@ export const ProposalsListItemDetails = ({
       );
       break;
     }
-    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
+    case ProposalState.WaitingForNodeVote: {
       proposalStatus = (
         <>
           {t('voteState_WaitingForNodeVote')} <Icon name={'time'} />
@@ -107,7 +104,7 @@ export const ProposalsListItemDetails = ({
       );
       break;
     }
-    case ProposalState.STATE_OPEN: {
+    case ProposalState.Open: {
       proposalStatus = (
         <>
           {t('voteState_Open')} <Icon name={'hand'} />
@@ -145,7 +142,7 @@ export const ProposalsListItemDetails = ({
         ));
       break;
     }
-    case ProposalState.STATE_DECLINED: {
+    case ProposalState.Declined: {
       proposalStatus = (
         <>
           {t('voteState_Declined')} <Icon name={'cross'} />
@@ -156,16 +153,14 @@ export const ProposalsListItemDetails = ({
         (!majorityMet && <MajorityNotReached />);
       break;
     }
-    case ProposalState.STATE_REJECTED: {
+    case ProposalState.Rejected: {
       proposalStatus = (
         <>
           <StatusFail>{t('voteState_Rejected')}</StatusFail>{' '}
           <Icon name={'warning-sign'} />
         </>
       );
-      voteStatus = proposal.rejectionReason && (
-        <>{t(ProposalRejectionReasonMapping[proposal.rejectionReason])}</>
-      );
+      voteStatus = proposal.rejectionReason && proposal.rejectionReason;
       break;
     }
   }

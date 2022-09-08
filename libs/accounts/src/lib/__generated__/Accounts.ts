@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Accounts
@@ -20,7 +20,7 @@ export interface Accounts_party_accounts_market_tradableInstrument_instrument {
 export interface Accounts_party_accounts_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of, or reference to, a fully specified instrument.
+   * An instance of or reference to a fully specified instrument.
    */
   instrument: Accounts_party_accounts_market_tradableInstrument_instrument;
 }
@@ -32,7 +32,7 @@ export interface Accounts_party_accounts_market {
    */
   id: string;
   /**
-   * An instance of, or reference to, a tradable instrument.
+   * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: Accounts_party_accounts_market_tradableInstrument;
 }
@@ -40,7 +40,7 @@ export interface Accounts_party_accounts_market {
 export interface Accounts_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -48,7 +48,7 @@ export interface Accounts_party_accounts_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
 }
@@ -87,7 +87,7 @@ export interface Accounts_party {
 
 export interface Accounts {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: Accounts_party | null;
 }

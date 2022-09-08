@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { WithdrawalStatus, AssetStatus } from "@vegaprotocol/types";
+import { WithdrawalStatus, AssetStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: WithdrawalEvent
@@ -20,7 +20,7 @@ export interface WithdrawalEvent_busEvents_event_Withdrawal_asset_source_Builtin
 export interface WithdrawalEvent_busEvents_event_Withdrawal_asset_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -30,7 +30,7 @@ export type WithdrawalEvent_busEvents_event_Withdrawal_asset_source = Withdrawal
 export interface WithdrawalEvent_busEvents_event_Withdrawal_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -42,15 +42,15 @@ export interface WithdrawalEvent_busEvents_event_Withdrawal_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
   /**
-   * The status of the asset in the Vega network
+   * The status of the asset in the vega network
    */
   status: AssetStatus;
   /**
-   * The origin source of the asset (e.g: an ERC20 asset)
+   * The origin source of the asset (e.g: an erc20 asset)
    */
   source: WithdrawalEvent_busEvents_event_Withdrawal_asset_source;
 }
@@ -66,7 +66,7 @@ export interface WithdrawalEvent_busEvents_event_Withdrawal_details {
 export interface WithdrawalEvent_busEvents_event_Withdrawal {
   __typename: "Withdrawal";
   /**
-   * The Vega internal ID of the withdrawal
+   * The Vega internal id of the withdrawal
    */
   id: string;
   /**
@@ -86,7 +86,7 @@ export interface WithdrawalEvent_busEvents_event_Withdrawal {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the withdrawal was finalised
+   * RFC3339Nano time at which the withdrawal was finalized
    */
   withdrawnTimestamp: string | null;
   /**

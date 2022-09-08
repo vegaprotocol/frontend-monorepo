@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NodeStatus } from "@vegaprotocol/types";
+import { NodeStatus } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: NodesQuery
@@ -28,33 +28,33 @@ export interface NodesQuery_nodes_epochData {
 export interface NodesQuery_nodes {
   __typename: "Node";
   /**
-   * The node URL eg n01.vega.xyz
+   * The node url eg n01.vega.xyz
    */
   id: string;
   name: string;
   /**
-   * URL from which you can get more info about the node.
+   * URL where I can find out more info on the node. Will this be possible?
    */
   infoUrl: string;
   avatarUrl: string | null;
   /**
-   * Public key of the node operator
+   * Pubkey of the node operator
    */
   pubkey: string;
   /**
-   * Tendermint public key of the node
+   * Public key of Tendermint
    */
   tmPubkey: string;
   /**
    * Ethereum public key of the node
    */
-  ethereumAddress: string;
+  ethereumAdddress: string;
   /**
    * Country code for the location of the node
    */
   location: string;
   /**
-   * The amount of stake the node has put up themselves
+   * The amount the node has put up themselves
    */
   stakedByOperator: string;
   /**

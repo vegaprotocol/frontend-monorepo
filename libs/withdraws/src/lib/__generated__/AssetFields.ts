@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AssetStatus } from "@vegaprotocol/types";
+import { AssetStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL fragment: AssetFields
@@ -16,7 +16,7 @@ export interface AssetFields_source_BuiltinAsset {
 export interface AssetFields_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the ERC20 contract
+   * The address of the erc20 contract
    */
   contractAddress: string;
 }
@@ -26,7 +26,7 @@ export type AssetFields_source = AssetFields_source_BuiltinAsset | AssetFields_s
 export interface AssetFields {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -38,15 +38,15 @@ export interface AssetFields {
    */
   name: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
   /**
-   * The status of the asset in the Vega network
+   * The status of the asset in the vega network
    */
   status: AssetStatus;
   /**
-   * The origin source of the asset (e.g: an ERC20 asset)
+   * The origin source of the asset (e.g: an erc20 asset)
    */
   source: AssetFields_source;
 }

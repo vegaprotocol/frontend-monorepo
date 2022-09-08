@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: PartyMarketData
@@ -12,11 +12,11 @@ import { AccountType } from "@vegaprotocol/types";
 export interface PartyMarketData_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
 }
@@ -64,15 +64,15 @@ export interface PartyMarketData_party_marginsConnection_edges_node {
    */
   market: PartyMarketData_party_marginsConnection_edges_node_market;
   /**
-   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
    */
   initialLevel: string;
   /**
-   * minimal margin for the position to be maintained in the network (unsigned integer)
+   * minimal margin for the position to be maintained in the network (unsigned int actually)
    */
   maintenanceLevel: string;
   /**
-   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned int actually)
    */
   searchLevel: string;
 }
@@ -101,14 +101,14 @@ export interface PartyMarketData_party {
    */
   accounts: PartyMarketData_party_accounts[] | null;
   /**
-   * Margin levels for a market
+   * Margin level for a market
    */
   marginsConnection: PartyMarketData_party_marginsConnection;
 }
 
 export interface PartyMarketData {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: PartyMarketData_party | null;
 }

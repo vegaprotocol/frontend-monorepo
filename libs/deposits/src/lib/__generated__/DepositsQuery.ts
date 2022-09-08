@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DepositStatus } from "@vegaprotocol/types";
+import { DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: DepositsQuery
@@ -12,7 +12,7 @@ import { DepositStatus } from "@vegaprotocol/types";
 export interface DepositsQuery_party_depositsConnection_edges_node_asset {
   __typename: "Asset";
   /**
-   * The ID of the asset
+   * The id of the asset
    */
   id: string;
   /**
@@ -20,7 +20,7 @@ export interface DepositsQuery_party_depositsConnection_edges_node_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The precision of the asset
    */
   decimals: number;
 }
@@ -28,7 +28,7 @@ export interface DepositsQuery_party_depositsConnection_edges_node_asset {
 export interface DepositsQuery_party_depositsConnection_edges_node {
   __typename: "Deposit";
   /**
-   * The Vega internal ID of the deposit
+   * The Vega internal id of the deposit
    */
   id: string;
   /**
@@ -48,7 +48,7 @@ export interface DepositsQuery_party_depositsConnection_edges_node {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the deposit was finalised
+   * RFC3339Nano time at which the deposit was finalized
    */
   creditedTimestamp: string | null;
   /**
@@ -84,7 +84,7 @@ export interface DepositsQuery_party {
 
 export interface DepositsQuery {
   /**
-   * An entity that is trading on the Vega network
+   * An entity that is trading on the VEGA network
    */
   party: DepositsQuery_party | null;
 }

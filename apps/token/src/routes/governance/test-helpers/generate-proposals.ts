@@ -17,7 +17,7 @@ export function generateProposal(
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
     reference: 'ref' + faker.datatype.uuid(),
-    state: ProposalState.STATE_OPEN,
+    state: ProposalState.Open,
     datetime: faker.date.past().toISOString(),
     rejectionReason: null,
     errorDetails: null,
@@ -29,14 +29,14 @@ export function generateProposal(
       __typename: 'ProposalTerms',
       closingDatetime:
         !override.state || // defaults to Open
-        override.state === ProposalState.STATE_OPEN ||
-        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
+        override.state === ProposalState.Open ||
+        override.state === ProposalState.WaitingForNodeVote
           ? faker.date.soon().toISOString()
           : faker.date.past().toISOString(),
       enactmentDatetime:
         !override.state || // defaults to Open
-        override.state === ProposalState.STATE_OPEN ||
-        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
+        override.state === ProposalState.Open ||
+        override.state === ProposalState.WaitingForNodeVote
           ? faker.date.future().toISOString()
           : faker.date.past().toISOString(),
       change: {
@@ -80,7 +80,7 @@ export const generateYesVotes = (
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
-        value: VoteValue.VALUE_YES,
+        value: VoteValue.Yes,
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
@@ -115,7 +115,7 @@ export const generateNoVotes = (
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
-        value: VoteValue.VALUE_NO,
+        value: VoteValue.No,
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',

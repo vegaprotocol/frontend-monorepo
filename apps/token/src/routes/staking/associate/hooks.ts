@@ -110,8 +110,7 @@ export const usePollForStakeLinking = (
 
           const matchingLinking = linkings?.find((l) => {
             return (
-              l.txHash === txHash &&
-              l.status === StakeLinkingStatus.STATUS_ACCEPTED
+              l.txHash === txHash && l.status === StakeLinkingStatus.Accepted
             );
           });
 
