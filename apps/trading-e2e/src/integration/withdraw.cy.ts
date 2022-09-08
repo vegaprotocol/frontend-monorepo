@@ -18,7 +18,6 @@ describe('withdraw', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
       aliasQuery(req, 'Accounts', generateAccounts());
@@ -83,6 +82,18 @@ describe('withdraw', () => {
       },
     });
     cy.get(assetSelectField).select('Asset 0');
+    cy.getByTestId('balance-available')
+      .should('contain.text', 'Balance available')
+      .find('td')
+      .should('have.text', '1000');
+    cy.getByTestId('withdrawal-threshold')
+      .should('contain.text', 'Delayed withdrawal threshold')
+      .find('td')
+      .should('contain.text', '1m+');
+    cy.getByTestId('delay-time')
+      .should('contain.text', 'Delay time')
+      .find('td')
+      .should('have.text', 'None');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.getByTestId('dialog-title').should(
