@@ -4,14 +4,14 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Proposal } from '../components/proposal';
-import { PROPOSAL_FRAGMENT } from '../proposal-fragment';
+import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
 import type {
   Proposal as ProposalQueryResult,
   ProposalVariables,
 } from './__generated__/Proposal';
 
 export const PROPOSAL_QUERY = gql`
-  ${PROPOSAL_FRAGMENT}
+  ${PROPOSALS_FRAGMENT}
   query Proposal($proposalId: ID!) {
     proposal(id: $proposalId) {
       ...ProposalFields

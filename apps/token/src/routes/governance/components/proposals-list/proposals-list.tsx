@@ -4,20 +4,20 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
+import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 import { Links } from '../../../../config';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
-  proposals: ProposalFields[];
+  proposals: Proposals_proposals[];
 }
 
 interface SortedProposalsProps {
-  open: ProposalFields[];
-  closed: ProposalFields[];
+  open: Proposals_proposals[];
+  closed: Proposals_proposals[];
 }
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
@@ -39,7 +39,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: ProposalFields) =>
+  const filterPredicate = (p: Proposals_proposals) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 

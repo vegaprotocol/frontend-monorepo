@@ -12,11 +12,11 @@ import {
   nextWeek,
   lastMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 const rejectedProposalClosesNextWeek = generateProposal({
   id: 'rejected1',
-  state: ProposalState.STATE_OPEN,
+  state: ProposalState.Open,
   party: {
     id: 'bvcx',
   },
@@ -28,14 +28,14 @@ const rejectedProposalClosesNextWeek = generateProposal({
 
 const rejectedProposalClosedLastMonth = generateProposal({
   id: 'rejected2',
-  state: ProposalState.STATE_REJECTED,
+  state: ProposalState.Rejected,
   terms: {
     closingDatetime: lastMonth.toString(),
     enactmentDatetime: lastMonth.toString(),
   },
 });
 
-const renderComponent = (proposals: ProposalNode[]) => (
+const renderComponent = (proposals: Proposals_proposals[]) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>

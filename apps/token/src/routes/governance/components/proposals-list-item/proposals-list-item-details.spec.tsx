@@ -26,10 +26,10 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 const renderComponent = (
-  proposal: ProposalNode,
+  proposal: Proposals_proposals,
   mock = networkParamsQueryMock
 ) => (
   <Router>
@@ -173,8 +173,8 @@ describe('Proposals list item details', () => {
                   party: {
                     __typename: 'Party',
                     id: mockPubkey,
-                    stakingSummary: {
-                      __typename: 'StakingSummary',
+                    stake: {
+                      __typename: 'PartyStake',
                       currentStakeAvailable: '1000',
                     },
                   },
@@ -211,8 +211,8 @@ describe('Proposals list item details', () => {
                   party: {
                     __typename: 'Party',
                     id: mockPubkey,
-                    stakingSummary: {
-                      __typename: 'StakingSummary',
+                    stake: {
+                      __typename: 'PartyStake',
                       currentStakeAvailable: '1000',
                     },
                   },

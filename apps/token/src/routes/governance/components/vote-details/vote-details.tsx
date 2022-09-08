@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { useUserVote } from './use-user-vote';
 import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;

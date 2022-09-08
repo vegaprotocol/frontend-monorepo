@@ -16,11 +16,6 @@ export function generateProposal(
   const defaultProposal: ProposalFields = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
-    rationale: {
-      __typename: 'ProposalRationale',
-      title: '',
-      description: '',
-    },
     reference: 'ref' + faker.datatype.uuid(),
     state: ProposalState.STATE_OPEN,
     datetime: faker.date.past().toISOString(),
@@ -89,8 +84,8 @@ export const generateYesVotes = (
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
-          stakingSummary: {
-            __typename: 'StakingSummary',
+          stake: {
+            __typename: 'PartyStake',
             currentStakeAvailable: fixedTokenValue
               ? fixedTokenValue.toString()
               : faker.datatype
@@ -124,8 +119,8 @@ export const generateNoVotes = (
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
-          stakingSummary: {
-            __typename: 'StakingSummary',
+          stake: {
+            __typename: 'PartyStake',
             currentStakeAvailable: fixedTokenValue
               ? fixedTokenValue.toString()
               : faker.datatype

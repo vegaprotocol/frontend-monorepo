@@ -1,25 +1,23 @@
 import { gql } from '@apollo/client';
 
-export const PROPOSAL_FRAGMENT = gql`
+export const PROPOSALS_FRAGMENT = gql`
   fragment ProposalFields on Proposal {
     id
-    rationale {
-      title
-      description
-    }
     reference
     state
     datetime
     rejectionReason
+    errorDetails
     party {
       id
     }
-    errorDetails
     terms {
       closingDatetime
       enactmentDatetime
       change {
         ... on NewMarket {
+          decimalPlaces
+          metadata
           instrument {
             name
             code
@@ -39,9 +37,11 @@ export const PROPOSAL_FRAGMENT = gql`
           symbol
           source {
             ... on BuiltinAsset {
+              __typename
               maxFaucetAmountMint
             }
             ... on ERC20 {
+              __typename
               contractAddress
             }
           }
@@ -62,7 +62,7 @@ export const PROPOSAL_FRAGMENT = gql`
           value
           party {
             id
-            stakingSummary {
+            stake {
               currentStakeAvailable
             }
           }
@@ -76,7 +76,7 @@ export const PROPOSAL_FRAGMENT = gql`
           value
           party {
             id
-            stakingSummary {
+            stake {
               currentStakeAvailable
             }
           }
