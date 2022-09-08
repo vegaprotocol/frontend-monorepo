@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { ChartQuery } from '@vegaprotocol/candles-chart';
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 export const generateChart = (
   override?: PartialDeep<ChartQuery>
