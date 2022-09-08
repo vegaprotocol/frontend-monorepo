@@ -1,6 +1,6 @@
 import { Button, Dialog, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useStatsQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { JsonRpcConnector } from '../connectors';
 import { RestConnector } from '../connectors';
@@ -26,10 +26,36 @@ export function VegaConnectDialog({
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
+  // const { data, loading, error } = useStatsQuery();
 
   const onConnect = useCallback(() => {
     setDialogOpen(false);
   }, [setDialogOpen]);
+
+  let content = null;
+
+  // if (error) {
+  //   content = <div>Could not fetch chain Id</div>;
+  // } else if (loading || !data) {
+  //   content = <div>Fetching chain Id</div>;
+  // } else {
+  content =
+    selectedConnector !== null ? (
+      <SelectedForm
+        connector={selectedConnector}
+        onConnect={onConnect}
+        walletUrl={walletUrl}
+        // appChainId={data.statistics.chainId}
+      />
+    ) : (
+      <ConnectorList
+        walletUrl={walletUrl}
+        setWalletUrl={setWalletUrl}
+        connectors={connectors}
+        onSelect={setSelectedConnector}
+      />
+    );
+  // }
 
   return (
     <Dialog
@@ -43,21 +69,7 @@ export function VegaConnectDialog({
       }}
       title={t('Connect')}
     >
-      {selectedConnector !== null ? (
-        <SelectedForm
-          connector={selectedConnector}
-          onConnect={onConnect}
-          walletUrl={walletUrl}
-        />
-      ) : (
-        <ConnectorList
-          walletUrl={walletUrl}
-          setWalletUrl={setWalletUrl}
-          connectors={connectors}
-          onSelect={setSelectedConnector}
-        />
-      )}
-      <footer className="border-t mt-4 pt-4">Some footer content</footer>
+      {content}
     </Dialog>
   );
 }
@@ -117,10 +129,12 @@ const SelectedForm = ({
   connector,
   onConnect,
   walletUrl,
+  appChainId,
 }: {
   connector: VegaConnector;
   onConnect: () => void;
   walletUrl: string;
+  appChainId?: string;
 }) => {
   if (connector instanceof RestConnector) {
     return (
@@ -138,6 +152,7 @@ const SelectedForm = ({
         connector={connector}
         onConnect={onConnect}
         walletUrl={walletUrl}
+        appChainId={appChainId}
       />
     );
   }

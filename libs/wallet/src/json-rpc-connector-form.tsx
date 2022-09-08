@@ -1,6 +1,7 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Loader } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
+import { JsonRpcError } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 
 type Status =
@@ -17,78 +18,55 @@ export const JsonRpcConnectorForm = ({
   connector,
   onConnect,
   walletUrl,
+  appChainId,
 }: {
   connector: JsonRpcConnector;
   onConnect: () => void;
   walletUrl: string;
+  appChainId?: string;
 }) => {
-  const foo = useEnvironment();
-  console.log(foo);
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const attempConnect = useCallback(async () => {
     try {
+      connector.url = walletUrl;
       setStatus('gettingChainId');
 
-      const result = await connector.getChainId(walletUrl);
+      const chainIdResult = await connector.getChainId();
 
-      if (result.result.chainID !== appChainId) {
-        handleError({
-          message: 'Invalid chain',
-          data: `chain id: ${result.result.chainID} does not match application chain id: ${appChainId}`,
-        });
+      if (chainIdResult.chainID !== appChainId) {
+        setError(
+          `Invalid chain chain id: ${chainIdResult.chainID} does not match application chain id: ${appChainId}`
+        );
+        setStatus('error');
         return;
       }
 
       setStatus('connecting');
-      const startConnect = await connector.connectWallet();
-
-      if ('error' in startConnect) {
-        handleError(startConnect.error);
-        return;
-      }
+      await connector.connectWallet();
 
       setStatus('gettingPerms');
-      const perms = await connector.getPermissions();
+      const permsResult = await connector.getPermissions();
 
-      if ('error' in perms) {
-        handleError(perms.error);
-        return;
-      }
-
-      if (perms.result.permissions.public_keys === 'none') {
+      if (permsResult.permissions.public_keys === 'none') {
         setStatus('requestingPerms');
-        const reqPerms = await connector.requestPermissions();
-        if ('error' in reqPerms) {
-          handleError(reqPerms.error);
-          return;
-        }
+        await connector.requestPermissions();
       }
 
       await connect(connector);
+
       onConnect();
     } catch (err) {
       if (err instanceof Error) {
-        setError(err);
-      } else if (typeof err === 'string') {
-        setError(new Error(err));
+        setError(err.message);
       } else {
-        setError(new Error('Something went wrong'));
+        setError('Something went wrong');
       }
       setStatus('error');
     }
-  }, [connector, connect, onConnect, walletUrl]);
-
-  const handleError = (error: {
-    message: string;
-    code?: number;
-    data: string;
-  }) => {
-    setError(new Error(`${error.message} ${error.code}: ${error.data}`));
-    setStatus('error');
-  };
+  }, [connector, connect, onConnect, walletUrl, appChainId]);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -108,10 +86,10 @@ const Connecting = ({
   error,
 }: {
   status: Status;
-  error: Error | null;
+  error: string | null;
 }) => {
   if (status === 'error') {
-    return <p>{error ? error.message : 'Something went wrong'}</p>;
+    return <p>{error ? error : 'Something went wrong'}</p>;
   }
 
   if (status === 'connected') {
@@ -138,13 +116,13 @@ const Connecting = ({
     );
   }
 
-  // if (status === 'gettingChain') {
-  //   return (
-  //     <div className="flex items-center gap-4">
-  //       <Loader size="small" /> Verifying chain
-  //     </div>
-  //   );
-  // }
+  if (status === 'gettingChainId') {
+    return (
+      <div className="flex items-center gap-4">
+        <Loader size="small" /> Verifying chain
+      </div>
+    );
+  }
 
   return <div>Shouldn't get here: {status}</div>;
 };

@@ -1640,10 +1640,10 @@ export type NewAsset = {
   __typename?: 'NewAsset';
   /** The precision of the asset */
   decimals: Scalars['Int'];
+  /** The minimum stake to become a liquidity provider for any market using this asset for settlement */
+  minLpStake: Scalars['String'];
   /** The full name of the asset (e.g: Great British Pound) */
   name: Scalars['String'];
-  /** The minimum economically meaningful amount of this specific asset */
-  quantum: Scalars['String'];
   /** The source of the new asset */
   source: AssetSource;
   /** The symbol of the asset (e.g: GBP) */
@@ -4421,7 +4421,7 @@ export enum TransferStatus {
   STATUS_STOPPED = 'STATUS_STOPPED'
 }
 
-/** A proposal to update an asset's details */
+/** A new asset proposal change */
 export type UpdateAsset = {
   __typename?: 'UpdateAsset';
   /** The asset to update */

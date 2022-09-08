@@ -1,10 +1,7 @@
-import { useVegaWallet, WALLET_CONFIG } from './';
+import { useVegaWallet } from './';
 import { useEffect, useState } from 'react';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
-import type {
-  ConnectorConfig,
-  VegaConnector,
-} from './connectors/vega-connector';
+import type { VegaConnector } from './connectors/vega-connector';
+import { getConfig } from './storage';
 
 export function useEagerConnect(Connectors: {
   [connector: string]: VegaConnector;
@@ -14,38 +11,31 @@ export function useEagerConnect(Connectors: {
 
   useEffect(() => {
     const attemptConnect = async () => {
-      const cfg = LocalStorage.getItem(WALLET_CONFIG);
-      let cfgObj: ConnectorConfig | null;
-
-      try {
-        cfgObj = cfg ? JSON.parse(cfg) : null;
-      } catch {
-        cfgObj = null;
-      }
+      const cfg = getConfig();
 
       // No stored config, or config was malformed
-      if (!cfgObj || !cfgObj.connector) {
+      if (!cfg || !cfg.connector) {
         setConnecting(false);
         return;
       }
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to
-      const connector = Connectors[cfgObj.connector];
+      const connector = Connectors[cfg.connector];
 
       // Developer hasn't provided this connector
       if (!connector) {
         setConnecting(false);
         console.error(
-          `Can't eager connect, connector: ${cfgObj.connector} not found`
+          `Can't eager connect, connector: ${cfg.connector} not found`
         );
         return;
       }
 
       try {
-        await connect(Connectors[cfgObj.connector]);
+        await connect(Connectors[cfg.connector]);
       } catch {
-        console.warn(`Failed to connect with connector: ${cfgObj.connector}`);
+        console.warn(`Failed to connect with connector: ${cfg.connector}`);
       } finally {
         setConnecting(false);
       }

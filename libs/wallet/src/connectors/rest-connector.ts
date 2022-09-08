@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/react';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
-import { WALLET_CONFIG } from '../storage-keys';
-import type { ConnectorConfig, VegaConnector } from './vega-connector';
+import { clearConfig, getConfig, setConfig } from '../storage';
+import type { VegaConnector } from './vega-connector';
 import type { TransactionError, TransactionSubmission } from '../wallet-types';
 import { z } from 'zod';
 
@@ -66,12 +65,11 @@ export const GetKeysSchema = z.object({
  * Connector for using the Vega Wallet Service rest api, requires authentication to get a session token
  */
 export class RestConnector implements VegaConnector {
-  configKey = WALLET_CONFIG;
   url: string | null = null;
   token: string | null = null;
 
   constructor() {
-    const cfg = this.getConfig();
+    const cfg = getConfig();
     if (cfg) {
       this.token = cfg.token;
       this.url = cfg.url;
@@ -108,7 +106,7 @@ export class RestConnector implements VegaConnector {
       const data = AuthTokenSchema.parse(res.data);
 
       // Store the token, and other things for later
-      this.setConfig({
+      setConfig({
         connector: 'rest',
         token: data.token,
         url: this.url,
@@ -139,7 +137,7 @@ export class RestConnector implements VegaConnector {
       return data.keys.map((k) => k.pub);
     } catch (err) {
       // keysGet failed, its likely that the session has expired so remove the token from storage
-      this.clearConfig();
+      clearConfig();
       return null;
     }
   }
@@ -157,7 +155,7 @@ export class RestConnector implements VegaConnector {
     } finally {
       // Always clear config, if authTokenDelete fails the user still tried to
       // connect so clear the config (and containing token) from storage
-      this.clearConfig();
+      clearConfig();
     }
   }
 
@@ -195,27 +193,6 @@ export class RestConnector implements VegaConnector {
       Sentry.captureException(err);
       return null;
     }
-  }
-
-  private setConfig(cfg: ConnectorConfig) {
-    LocalStorage.setItem(this.configKey, JSON.stringify(cfg));
-  }
-
-  private getConfig(): ConnectorConfig | null {
-    const cfg = LocalStorage.getItem(this.configKey);
-    if (cfg) {
-      try {
-        return JSON.parse(cfg);
-      } catch {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  private clearConfig() {
-    LocalStorage.removeItem(this.configKey);
   }
 
   /** Parse more complex error object into a single string */

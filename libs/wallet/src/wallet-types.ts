@@ -252,7 +252,9 @@ export type TransactionSubmission =
   | OrderAmendmentBody
   | ProposalSubmissionBody;
 
-export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
+export type TransactionResponse =
+  | z.infer<typeof TransactionResponseSchema>
+  | TransactionError;
 export type GetKeysResponse = z.infer<typeof GetKeysSchema>;
 
 export type TransactionError =

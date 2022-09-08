@@ -1,100 +1,189 @@
 import { ethers } from 'ethers';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
-import { WALLET_CONFIG } from '../storage-keys';
+import { z } from 'zod';
+import { clearConfig, getConfig, setConfig } from '../storage';
 import type { TransactionSubmission } from '../wallet-types';
-import type { ConnectorConfig, VegaConnector } from './vega-connector';
+import type { VegaConnector } from './vega-connector';
 
 const VERSION = 'v2';
 
+enum Methods {
+  ConnectWallet = 'session.connect_wallet',
+  DisconnectWallet = 'session.disconnect_wallet',
+  GetPermissions = 'session.get_permissions',
+  RequestPermisssions = 'session.request_permissions',
+  ListKeys = 'session.list_keys',
+  SendTransaction = 'session.send_transaction',
+  GetChainId = 'session.get_chain_id',
+}
+
+const BaseSchema = z.object({
+  id: z.string(),
+  jsonrpc: z.literal('2.0'),
+});
+
+const ConnectWalletSchema = BaseSchema.extend({
+  result: z.object({
+    token: z.string(),
+  }),
+});
+
+const ListKeysSchema = BaseSchema.extend({
+  result: z.object({
+    keys: z.array(z.string()),
+  }),
+});
+
+const GetChainIdSchema = BaseSchema.extend({
+  result: z.object({
+    chainID: z.string(),
+  }),
+});
+
+const GetPermissionsSchema = BaseSchema.extend({
+  result: z.object({
+    permissions: z.object({
+      public_keys: z.enum(['none', 'read', 'write']),
+    }),
+  }),
+});
+
+const RequestPermissionsSchema = BaseSchema.extend({
+  result: z.object({
+    permissions: z.object({
+      public_keys: z.enum(['none', 'read', 'write']),
+    }),
+  }),
+});
+
+const SendTransactionSchema = BaseSchema.extend({
+  result: z.object({
+    receivedAt: z.string(),
+    sentAt: z.string(),
+    transactionHash: z.string(),
+  }),
+});
+
+const ErrorSchema = BaseSchema.extend({
+  error: z.object({
+    message: z.string(),
+    data: z.string(),
+    code: z.number(),
+  }),
+});
+
+type Response =
+  | z.infer<typeof ConnectWalletSchema>
+  | z.infer<typeof ListKeysSchema>
+  | z.infer<typeof GetChainIdSchema>
+  | z.infer<typeof GetPermissionsSchema>
+  | z.infer<typeof RequestPermissionsSchema>
+  | z.infer<typeof SendTransactionSchema>
+  | z.infer<typeof ErrorSchema>;
+
+const Errors = {
+  NO_TOKEN: new Error('No token'),
+};
+
 export class JsonRpcConnector implements VegaConnector {
-  configKey = WALLET_CONFIG;
   url: string | null = null;
   token: string | null = null;
-  id = 0;
+  reqId = 0;
 
   constructor() {
-    const cfg = this.getConfig();
+    const cfg = getConfig();
     if (cfg) {
       this.token = cfg.token;
       this.url = cfg.url;
     }
   }
 
-  getChainId(url: string) {
-    this.url = url;
-    return this.request('session.get_chain_id', {});
+  async getChainId() {
+    const result = await this.request(Methods.GetChainId);
+    this.verifyResponse(result);
+    const data = GetChainIdSchema.parse(result);
+    return data.result;
   }
 
   async connectWallet() {
-    const result = await this.request('session.connect_wallet', {
+    const result = await this.request(Methods.ConnectWallet, {
       hostname: window.location.host,
     });
-
-    if ('error' in result) {
-      return result;
-    } else {
-      this.setConfig({
-        token: result.result.token,
-        connector: 'jsonRpc',
-        url: this.url,
-      });
-      return result;
-    }
+    this.verifyResponse(result);
+    const data = ConnectWalletSchema.parse(result);
+    // store token and other config for eager connect and subsequent requests
+    setConfig({
+      token: data.result.token,
+      connector: 'jsonRpc',
+      url: this.url,
+    });
+    return data.result;
   }
 
   async getPermissions() {
-    const cfg = this.getConfig();
-    if (!cfg) return null;
-
-    const perms = await this.request('session.get_permissions', {
+    const cfg = getConfig();
+    if (!cfg?.token) {
+      throw Errors.NO_TOKEN;
+    }
+    const result = await this.request(Methods.GetPermissions, {
       token: cfg.token,
     });
-
-    return perms;
+    this.verifyResponse(result);
+    const data = GetPermissionsSchema.parse(result);
+    return data.result;
   }
 
   async requestPermissions() {
-    const cfg = this.getConfig();
-    if (!cfg) return null;
-    const reqPerms = await this.request('session.request_permissions', {
+    const cfg = getConfig();
+    if (!cfg?.token) {
+      throw Errors.NO_TOKEN;
+    }
+    const result = await this.request(Methods.RequestPermisssions, {
       token: cfg.token,
       requestedPermissions: {
         public_keys: 'read',
       },
     });
-
-    return reqPerms;
+    this.verifyResponse(result);
+    const data = RequestPermissionsSchema.parse(result);
+    return data.result;
   }
 
+  // connect actually calling list_keys here, not to be confused with connect_wallet
+  // which retrieves the session token
   async connect() {
-    const cfg = this.getConfig();
-    if (!cfg) return null;
-    try {
-      const keys = await this.request('session.list_keys', {
-        token: cfg.token,
-      });
-
-      return keys.result.keys;
-    } catch (err) {
-      console.error(err);
+    const cfg = getConfig();
+    if (!cfg?.token) {
+      throw Errors.NO_TOKEN;
     }
+    const result = await this.request(Methods.ListKeys, {
+      token: cfg.token,
+    });
+    this.verifyResponse(result);
+    const data = ListKeysSchema.parse(result);
+    return data.result.keys;
   }
 
   async disconnect() {
-    const cfg = this.getConfig();
-    if (!cfg) return null;
-    const result = await this.request('session.disconnect_wallet', {
-      token: cfg.token,
-    });
-    LocalStorage.removeItem(this.configKey);
-    return result;
+    const cfg = getConfig();
+
+    if (cfg?.token) {
+      await this.request(Methods.DisconnectWallet, {
+        token: cfg.token,
+      });
+    }
+
+    clearConfig();
   }
 
   // TODO: Ensure this is working with returned signature
   // @ts-ignore v2 wallet api return types differ from v1
-  async sendTx(payload: TransactionSubmission) {
-    const cfg = this.getConfig();
-    if (!cfg) return null;
+  async sendTx(
+    payload: TransactionSubmission
+  ): Promise<z.infer<typeof SendTransactionSchema>> {
+    const cfg = getConfig();
+    if (!cfg?.token) {
+      throw Errors.NO_TOKEN;
+    }
 
     const tx = {
       ...payload,
@@ -110,7 +199,7 @@ export class JsonRpcConnector implements VegaConnector {
       ethers.utils.toUtf8Bytes(JSON.stringify(tx))
     );
 
-    const res = await this.request('session.send_transaction', {
+    const res = await this.request(Methods.SendTransaction, {
       token: cfg.token,
       publicKey: payload.pubKey,
       sendingMode: 'TYPE_SYNC',
@@ -120,15 +209,14 @@ export class JsonRpcConnector implements VegaConnector {
     return res;
   }
 
-  request(method: string, params: object) {
-    console.log(this.url);
+  private request(method: Methods, params?: object) {
     return fetch(`${this.url}/api/${VERSION}/requests`, {
       method: 'post',
       body: JSON.stringify({
         jsonrpc: '2.0',
         method,
         params,
-        id: `${this.id++}`,
+        id: `${this.reqId++}`,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -136,20 +224,11 @@ export class JsonRpcConnector implements VegaConnector {
     }).then((res) => res.json());
   }
 
-  private setConfig(cfg: ConnectorConfig) {
-    LocalStorage.setItem(this.configKey, JSON.stringify(cfg));
-  }
-
-  private getConfig(): ConnectorConfig | null {
-    const cfg = LocalStorage.getItem(this.configKey);
-    if (cfg) {
-      try {
-        return JSON.parse(cfg);
-      } catch {
-        return null;
-      }
-    } else {
-      return null;
+  private verifyResponse(result: Response) {
+    if ('error' in result) {
+      throw new Error(
+        `${result.error.message} (${result.error.code}): ${result.error.data}`
+      );
     }
   }
 }

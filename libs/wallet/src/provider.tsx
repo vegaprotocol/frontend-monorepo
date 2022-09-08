@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import type { VegaWalletContextShape } from '.';
 import type { VegaConnector } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
-import { WALLET_KEY } from './storage-keys';
+import { WALLET_KEY } from './storage';
 import type { TransactionSubmission } from './wallet-types';
 
 interface VegaWalletProviderProps {
