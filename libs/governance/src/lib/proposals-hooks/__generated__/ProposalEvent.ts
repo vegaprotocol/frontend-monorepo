@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, ProposalState, ProposalRejectionReason } from "./../../../../../types/src/__generated__/globalTypes";
+import { BusEventType, ProposalState, ProposalRejectionReason } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL subscription operation: ProposalEvent
