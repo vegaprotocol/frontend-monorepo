@@ -123,10 +123,11 @@ const SimpleMarketToolbar = ({ data }: Props) => {
       </ul>
       <div className="grid gap-4 pb-2 mt-2 md:mt-6 md:grid-cols-[min-content,min-content,1fr]">
         <div className="pb-2">
-          <DropdownMenu onOpenChange={(open) => setOpen(open)}>
+          <DropdownMenu open={isOpen} onOpenChange={(open) => setOpen(open)}>
             <DropdownMenuTrigger
               className="mr-2 w-auto text-capMenu text-black dark:text-white"
               data-testid="state-trigger"
+              onClick={() => setOpen(!isOpen)}
             >
               <div className="w-full justify-between uppercase inline-flex items-center justify-center box-border">
                 {STATES_FILTER.find(
