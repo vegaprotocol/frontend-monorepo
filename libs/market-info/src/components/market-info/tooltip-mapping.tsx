@@ -7,7 +7,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'Maker portion of the fee is transferred to the non-aggressive, or passive party in the trade (the maker, as opposed to the taker).'
   ),
   liquidityFee: t(
-    'Liquidity portion of the fee is paid to market makers for providing liquidity, and is transferred to the liquidity fee pool for the market.'
+    'Liquidity portion of the fee is paid to liquidity providers, and is transferred to the liquidity fee pool for the market.'
   ),
   infrastructureFee: t(
     'Fees paid to validators as a reward for running the infrastructure of the network.'
@@ -103,6 +103,5 @@ export const tooltipMapping: Record<string, ReactNode> = {
   targetStake: t(
     `The market's liquidity requirement which is derived from the maximum open interest observed over a rolling time window.`
   ),
-  suppliedStake: t('The amount of stake supplied for this market.'),
-  marketValueProxy: t('The market value proxy for this market.'),
+  suppliedStake: t('The current amount of liquidity supplied for this market.'),
 };

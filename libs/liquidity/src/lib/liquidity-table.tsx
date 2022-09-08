@@ -60,14 +60,16 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         <AgGridColumn
           headerName={t('Party')}
           field="party"
-          headerTooltip={t('The ID of the party making this commitment.')}
+          headerTooltip={t(
+            'The public key of the party making this commitment.'
+          )}
         />
         <AgGridColumn
           headerName={t(`Commitment (${symbol})`)}
           field="commitmentAmount"
           type="rightAligned"
           headerTooltip={t(
-            'The commitment amount which represents the amount of settlement asset for this market.'
+            'The amount committed to the market by this liquidity provider.'
           )}
           valueFormatter={assetDecimalsFormatter}
         />
@@ -76,14 +78,14 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="equityLikeShare"
           type="rightAligned"
           headerTooltip={t(
-            'The equity-like share of liquidity fee specific to each liquidity provider.'
+            'The equity-like share of liquidity of the market, specific to each liquidity provider.'
           )}
           valueFormatter={percentageFormatter}
         />
         <AgGridColumn
-          headerName={t('Fee')}
+          headerName={t('Proposed fee')}
           headerTooltip={t(
-            'Nominated liquidity fee factor, which is an input to the calculation of maker fees on the market, as per setting fees and rewarding liquidity providers.'
+            'The fee percentage (per trade) proposed by each liquidity provider.'
           )}
           field="fee"
           type="rightAligned"
@@ -94,24 +96,24 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="averageEntryValuation"
           type="rightAligned"
           headerTooltip={t(
-            'The average entry valuation of the liquidity provider or the market.'
+            'The average entry valuation of this liquidity provision for the market.'
           )}
           minWidth={160}
           valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
-          headerName={t('Obligation (siskas)')}
+          headerName={t('Obligation')}
           field="obligation"
           type="rightAligned"
           headerTooltip={t(
-            'The liquidity provider’s obligation to the market, calculated as the liquidity commitment amount times the stake_to_ccy_siskas network parameter.'
+            'The liquidity provider’s obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
           valueFormatter={assetDecimalsFormatter}
         />
         <AgGridColumn
-          headerName={t('Supplied (siskas)')}
+          headerName={t('Supplied')}
           headerTooltip={t(
-            'The amount of the settlement asset supplied by the liquidity provider, calculated as the bond account balance times the stake_to_ccy_siskas network parameter.'
+            'The amount of the settlement asset supplied for liquidity by this provider, calculated as the bond account balance multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
           field="supplied"
           type="rightAligned"
