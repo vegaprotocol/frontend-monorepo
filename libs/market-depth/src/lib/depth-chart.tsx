@@ -7,7 +7,7 @@ import {
   ThemeContext,
   getNumberFormat,
 } from '@vegaprotocol/react-helpers';
-import dataProvider from './market-depth-data-provider';
+import dataProvider from './market-depth-provider';
 import {
   useCallback,
   useEffect,
@@ -16,7 +16,13 @@ import {
   useState,
   useContext,
 } from 'react';
-import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
+import type { MarketData } from '@vegaprotocol/market-list';
+import type {
+  MarketDepthSubscription_marketsDepthUpdate,
+  MarketDepthSubscription_marketsDepthUpdate_sell,
+  MarketDepthSubscription_marketsDepthUpdate_buy,
+} from './__generated__/MarketDepthSubscription';
 import type { DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
 
@@ -33,46 +39,80 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const theme = useContext(ThemeContext);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
-  const [decimalPlaces, setDecimalPlaces] = useState<number>(0);
-  const [positionDecimalPlaces, setPositionDecimalPlaces] = useState<number>(0);
   const dataRef = useRef<DepthData | null>(null);
-  const setDepthDataThrottledRef = useRef(throttle(setDepthData, 1000));
+  const marketDataRef = useRef<MarketData | null>(null);
+  const deltaRef = useRef<{
+    sell: MarketDepthSubscription_marketsDepthUpdate_sell[];
+    buy: MarketDepthSubscription_marketsDepthUpdate_buy[];
+  }>({
+    sell: [],
+    buy: [],
+  });
 
-  // Apply updates to the table
-  const update = useCallback(
-    ({ delta }: { delta: MarketDepthSubscription_marketDepthUpdate }) => {
-      if (!dataRef.current) {
-        return false;
+  const updateDepthData = useRef(
+    throttle(() => {
+      if (!dataRef.current || !marketDataRef.current || !market) {
+        return;
       }
       dataRef.current = {
         ...dataRef.current,
-        midPrice: delta.market.data?.staticMidPrice
-          ? formatMidPrice(delta.market.data?.staticMidPrice, decimalPlaces)
+        midPrice: marketDataRef.current?.staticMidPrice
+          ? formatMidPrice(
+              marketDataRef.current?.staticMidPrice,
+              market.decimalPlaces
+            )
           : undefined,
         data: {
-          buy: delta.buy
+          buy: deltaRef.current.buy
             ? updateLevels(
                 dataRef.current.data.buy,
-                delta.buy,
-                decimalPlaces,
-                positionDecimalPlaces,
+                deltaRef.current.buy,
+                market.decimalPlaces,
+                market.positionDecimalPlaces,
                 true
               )
             : dataRef.current.data.buy,
-          sell: delta.sell
+          sell: deltaRef.current.sell
             ? updateLevels(
                 dataRef.current.data.sell,
-                delta.sell,
-                decimalPlaces,
-                positionDecimalPlaces
+                deltaRef.current.sell,
+                market.decimalPlaces,
+                market.positionDecimalPlaces
               )
             : dataRef.current.data.sell,
         },
       };
-      setDepthDataThrottledRef.current(dataRef.current);
+      deltaRef.current.buy = [];
+      deltaRef.current.sell = [];
+      setDepthData(dataRef.current);
+    }, 1000)
+  );
+
+  // Apply updates to the table
+  const update = useCallback(
+    ({
+      delta: deltas,
+    }: {
+      delta: MarketDepthSubscription_marketsDepthUpdate[];
+    }) => {
+      if (!dataRef.current) {
+        return false;
+      }
+      for (const delta of deltas) {
+        if (delta.marketId !== marketId) {
+          continue;
+        }
+        if (delta.sell) {
+          deltaRef.current.sell.push(...delta.sell);
+        }
+        if (delta.buy) {
+          deltaRef.current.buy.push(...delta.buy);
+        }
+        updateDepthData.current();
+      }
       return true;
     },
-    [decimalPlaces, positionDecimalPlaces]
+    [marketId, updateDepthData]
   );
 
   const { data, error, loading } = useDataProvider({
@@ -81,53 +121,88 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     variables,
   });
 
+  const marketUpdate = useCallback(() => true, []);
+
+  const {
+    data: market,
+    error: marketError,
+    loading: marketLoading,
+  } = useDataProvider({
+    dataProvider: marketProvider,
+    update: marketUpdate,
+    variables,
+  });
+
+  const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
+    marketDataRef.current = data;
+    return true;
+  }, []);
+
+  const {
+    data: marketData,
+    error: marketDataError,
+    loading: marketDataLoading,
+  } = useDataProvider({
+    dataProvider: marketDataProvider,
+    update: marketDataUpdate,
+    variables,
+  });
+
+  marketDataRef.current = marketData;
+
   useEffect(() => {
+    if (!marketData || !market || !data) {
+      return;
+    }
     if (!data) {
       dataRef.current = null;
       setDepthData(dataRef.current);
       return;
     }
     dataRef.current = {
-      midPrice: data.data?.staticMidPrice
-        ? formatMidPrice(data.data?.staticMidPrice, data.decimalPlaces)
+      midPrice: marketData.staticMidPrice
+        ? formatMidPrice(marketData.staticMidPrice, market.decimalPlaces)
         : undefined,
       data: {
         buy:
           data.depth.buy?.map((priceLevel) =>
             parseLevel(
               priceLevel,
-              data.decimalPlaces,
-              data.positionDecimalPlaces
+              market.decimalPlaces,
+              market.positionDecimalPlaces
             )
           ) ?? [],
         sell:
           data.depth.sell?.map((priceLevel) =>
             parseLevel(
               priceLevel,
-              data.decimalPlaces,
-              data.positionDecimalPlaces
+              market.decimalPlaces,
+              market.positionDecimalPlaces
             )
           ) ?? [],
       },
     };
     setDepthData(dataRef.current);
-    setDecimalPlaces(data.decimalPlaces);
-    setPositionDecimalPlaces(data.positionDecimalPlaces);
-  }, [data]);
+  }, [data, marketData, market]);
 
   const volumeFormat = useCallback(
     (volume: number) =>
-      getNumberFormat(data?.positionDecimalPlaces || 0).format(volume),
-    [data?.positionDecimalPlaces]
+      getNumberFormat(market?.positionDecimalPlaces || 0).format(volume),
+    [market?.positionDecimalPlaces]
   );
 
   const priceFormat = useCallback(
-    (price: number) => getNumberFormat(data?.decimalPlaces || 0).format(price),
-    [data?.decimalPlaces]
+    (price: number) =>
+      getNumberFormat(market?.decimalPlaces || 0).format(price),
+    [market?.decimalPlaces]
   );
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading || marketLoading || marketDataLoading}
+      error={error || marketError || marketDataError}
+      data={data}
+    >
       {depthData && (
         <DepthChart
           {...depthData}

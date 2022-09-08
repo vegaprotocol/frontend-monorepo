@@ -2,11 +2,15 @@ import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import marketDepthProvider from './market-depth-data-provider';
+import marketDepthProvider from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { MarketDepthSubscription_marketsDepthUpdate } from './__generated__/MarketDepthSubscription';
+import type {
+  MarketDepthSubscription_marketsDepthUpdate,
+  MarketDepthSubscription_marketsDepthUpdate_sell,
+  MarketDepthSubscription_marketsDepthUpdate_buy,
+} from './__generated__/MarketDepthSubscription';
 import {
   compactRows,
   updateCompactedRows,
@@ -27,23 +31,30 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
   const marketDataRef = useRef<MarketData | null>(null);
-  const deltaRef = useRef<MarketDepthSubscription_marketsDepthUpdate>();
+  const deltaRef = useRef<{
+    sell: MarketDepthSubscription_marketsDepthUpdate_sell[];
+    buy: MarketDepthSubscription_marketsDepthUpdate_buy[];
+  }>({
+    sell: [],
+    buy: [],
+  });
   const updateOrderbookData = useRef(
     throttle(() => {
-      if (!deltaRef.current) {
-        return;
-      }
       dataRef.current = {
         ...marketDataRef.current,
         ...mapMarketData(marketDataRef.current, resolutionRef.current),
-        rows: updateCompactedRows(
-          dataRef.current.rows ?? [],
-          deltaRef.current.sell,
-          deltaRef.current.buy,
-          resolutionRef.current
-        ),
+        rows:
+          deltaRef.current.buy.length || deltaRef.current.sell.length
+            ? updateCompactedRows(
+                dataRef.current.rows ?? [],
+                deltaRef.current.sell,
+                deltaRef.current.buy,
+                resolutionRef.current
+              )
+            : dataRef.current.rows,
       };
-      deltaRef.current = undefined;
+      deltaRef.current.buy = [];
+      deltaRef.current.sell = [];
       setOrderbookData(dataRef.current);
     }, 1000)
   );
@@ -61,30 +72,17 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         if (delta.marketId !== marketId) {
           continue;
         }
-        if (deltaRef.current) {
-          if (delta.sell) {
-            if (deltaRef.current.sell) {
-              deltaRef.current.sell.push(...delta.sell);
-            } else {
-              deltaRef.current.sell = delta.sell;
-            }
-          }
-          if (delta.buy) {
-            if (deltaRef.current.buy) {
-              deltaRef.current.buy.push(...delta.buy);
-            } else {
-              deltaRef.current.buy = delta.buy;
-            }
-          }
-        } else {
-          deltaRef.current = delta;
+        if (delta.sell) {
+          deltaRef.current.sell.push(...delta.sell);
+        }
+        if (delta.buy) {
+          deltaRef.current.buy.push(...delta.buy);
         }
         updateOrderbookData.current();
       }
       return true;
     },
-    // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change
-    []
+    [marketId, updateOrderbookData]
   );
 
   const { data, error, loading, flush } = useDataProvider({
@@ -107,6 +105,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
 
   const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
     marketDataRef.current = data;
+    updateOrderbookData.current();
     return true;
   }, []);
 
@@ -148,8 +147,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     resolutionRef.current = resolution;
     flush();
   }, [resolution, flush]);
-
-  console.log({ loading, marketDataLoading, marketLoading });
 
   return (
     <AsyncRenderer
