@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +13,7 @@ import {
   ProposalFormDescription,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
-  ProposalFormVoteDeadline,
+  ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -41,18 +42,28 @@ export const ProposeFreeform = () => {
     NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
   ]);
 
-  const minVoteDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_CLOSE
-  )?.value;
-  const maxVoteDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_FREEFORM_MAX_CLOSE
-  )?.value;
-  const minProposerBalance = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_PROPOSER_BALANCE
-  )?.value;
-  const minSpamBalance = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
-  )?.value;
+  const {
+    minVoteDeadline,
+    maxVoteDeadline,
+    minProposerBalance,
+    minSpamBalance,
+  } = useMemo(
+    () => ({
+      minVoteDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_CLOSE
+      )?.value,
+      maxVoteDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_FREEFORM_MAX_CLOSE
+      )?.value,
+      minProposerBalance: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_FREEFORM_MIN_PROPOSER_BALANCE
+      )?.value,
+      minSpamBalance: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
+      )?.value,
+    }),
+    [networkParamsData]
+  );
 
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -120,17 +131,17 @@ export const ProposeFreeform = () => {
                   errorMessage={errors?.proposalDescription?.message}
                 />
 
-                <ProposalFormSubheader>
-                  {t('ProposalVoteTitle')}
-                </ProposalFormSubheader>
-
-                <ProposalFormVoteDeadline
-                  register={register('proposalVoteDeadline', {
+                <ProposalFormVoteAndEnactmentDeadline
+                  voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
-                  errorMessage={errors?.proposalVoteDeadline?.message}
-                  minClose={minVoteDeadline as string}
-                  maxClose={maxVoteDeadline as string}
+                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                  voteMinClose={minVoteDeadline as string}
+                  voteMaxClose={maxVoteDeadline as string}
+                  enactmentRegister={undefined}
+                  enactmentErrorMessage={undefined}
+                  enactmentMinClose={undefined}
+                  enactmentMaxClose={undefined}
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />

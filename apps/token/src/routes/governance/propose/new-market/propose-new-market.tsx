@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -13,9 +14,8 @@ import {
   ProposalFormTerms,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
-  ProposalFormVoteDeadline,
-  ProposalFormEnactmentDeadline,
   ProposalFormSubheader,
+  ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -47,24 +47,36 @@ export const ProposeNewMarket = () => {
     NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
   ]);
 
-  const minVoteDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_CLOSE
-  )?.value;
-  const maxVoteDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_CLOSE
-  )?.value;
-  const minEnactmentDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_ENACT
-  )?.value;
-  const maxEnactmentDeadline = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_ENACT
-  )?.value;
-  const minProposerBalance = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_PROPOSER_BALANCE
-  )?.value;
-  const minSpamBalance = networkParamsData?.find(
-    ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
-  )?.value;
+  const {
+    minVoteDeadline,
+    maxVoteDeadline,
+    minEnactmentDeadline,
+    maxEnactmentDeadline,
+    minProposerBalance,
+    minSpamBalance,
+  } = useMemo(
+    () => ({
+      minVoteDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_CLOSE
+      )?.value,
+      maxVoteDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_CLOSE
+      )?.value,
+      minEnactmentDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_ENACT
+      )?.value,
+      maxEnactmentDeadline: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MAX_ENACT
+      )?.value,
+      minProposerBalance: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.GOV_NEW_MARKET_MIN_PROPOSER_BALANCE
+      )?.value,
+      minSpamBalance: networkParamsData?.find(
+        ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
+      )?.value,
+    }),
+    [networkParamsData]
+  );
 
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -158,29 +170,22 @@ export const ProposeNewMarket = () => {
                   errorMessage={errors?.proposalTerms?.message}
                 />
 
-                <ProposalFormSubheader>
-                  {t('ProposalVoteAndEnactmentTitle')}
-                </ProposalFormSubheader>
-
-                <ProposalFormVoteDeadline
-                  register={register('proposalVoteDeadline', {
+                <ProposalFormVoteAndEnactmentDeadline
+                  voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
-                  errorMessage={errors?.proposalVoteDeadline?.message}
-                  minClose={minVoteDeadline as string}
-                  maxClose={maxVoteDeadline as string}
+                  voteErrorMessage={errors?.proposalVoteDeadline?.message}
+                  voteMinClose={minVoteDeadline as string}
+                  voteMaxClose={maxVoteDeadline as string}
+                  enactmentRegister={register('proposalEnactmentDeadline', {
+                    required: t('Required'),
+                  })}
+                  enactmentErrorMessage={
+                    errors?.proposalEnactmentDeadline?.message
+                  }
+                  enactmentMinClose={minEnactmentDeadline as string}
+                  enactmentMaxClose={maxEnactmentDeadline as string}
                 />
-
-                <div className="mt-[-10px]">
-                  <ProposalFormEnactmentDeadline
-                    register={register('proposalEnactmentDeadline', {
-                      required: t('Required'),
-                    })}
-                    errorMessage={errors?.proposalEnactmentDeadline?.message}
-                    minEnact={minEnactmentDeadline as string}
-                    maxEnact={maxEnactmentDeadline as string}
-                  />
-                </div>
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog

@@ -665,6 +665,8 @@
   "ProposalVoteAndEnactmentTitle": "Vote deadline and enactment",
   "ProposalVoteDeadline": "Time till voting closes",
   "ProposalEnactmentDeadline": "Time till enactment (after vote close)",
+  "ThisWillSetVotingDeadlineTo": "This will set the voting deadline to",
+  "ThisWillSetEnactmentDeadlineTo": "This will set the enactment deadline to",
   "Hours": "hours",
   "SelectAMarketToChange": "Select a market to change",
   "MarketName": "Market name",

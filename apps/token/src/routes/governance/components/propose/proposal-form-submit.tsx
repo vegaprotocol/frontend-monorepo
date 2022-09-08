@@ -10,7 +10,7 @@ export const ProposalFormSubmit = ({
 }: ProposalFormSubmitProps) => {
   const { t } = useTranslation();
   return (
-    <span className="my-20">
+    <div className="mt-10 my-20">
       <Button
         variant="primary"
         type="submit"
@@ -19,6 +19,6 @@ export const ProposalFormSubmit = ({
       >
         {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
       </Button>
-    </span>
+    </div>
   );
 };
