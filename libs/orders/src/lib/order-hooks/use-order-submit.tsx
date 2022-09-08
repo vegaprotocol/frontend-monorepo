@@ -114,9 +114,7 @@ export const useOrderSubmit = () => {
       setFinalizedOrder(null);
 
       try {
-        const res = await send({
-          pubKey: keypair,
-          propagate: true,
+        const res = await send(keypair, {
           orderSubmission: {
             ...order,
             price:

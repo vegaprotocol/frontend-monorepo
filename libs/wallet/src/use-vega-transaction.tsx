@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
+import type { Transaction } from './connectors';
 
 export interface DialogProps {
   children?: JSX.Element;
@@ -58,7 +58,7 @@ export const useVegaTransaction = () => {
   }, [setTransaction]);
 
   const send = useCallback(
-    async (tx: TransactionSubmission) => {
+    async (pubKey: string, tx: Transaction) => {
       setTransaction({
         error: null,
         details: null,
@@ -68,7 +68,7 @@ export const useVegaTransaction = () => {
         dialogOpen: true,
       });
 
-      const res = await sendTx(tx);
+      const res = await sendTx(pubKey, tx);
 
       if (res === null) {
         // User rejected

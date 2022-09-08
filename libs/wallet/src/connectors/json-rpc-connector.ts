@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
-import type { TransactionSubmission } from '../wallet-types';
-import type { VegaConnector } from './vega-connector';
+import type { Transaction, VegaConnector } from './vega-connector';
 
 const VERSION = 'v2';
 
@@ -14,6 +13,12 @@ enum Methods {
   ListKeys = 'session.list_keys',
   SendTransaction = 'session.send_transaction',
   GetChainId = 'session.get_chain_id',
+}
+
+export interface TransactionResponse {
+  txHash: string;
+  receivedAt: string;
+  sentAt: string;
 }
 
 const BaseSchema = z.object({
@@ -175,33 +180,19 @@ export class JsonRpcConnector implements VegaConnector {
     clearConfig();
   }
 
-  // TODO: Ensure this is working with returned signature
-  // @ts-ignore v2 wallet api return types differ from v1
-  async sendTx(
-    payload: TransactionSubmission
-  ): Promise<z.infer<typeof SendTransactionSchema>> {
+  async sendTx(pubKey: string, transaction: Transaction) {
     const cfg = getConfig();
     if (!cfg?.token) {
       throw Errors.NO_TOKEN;
     }
 
-    const tx = {
-      ...payload,
-    };
-
-    // Prune fields to create valid encoded transaction
-    /*
-    delete tx['pubKey'];
-    delete tx['propagate'];
-    */
-
     const encodedTransaction = ethers.utils.base64.encode(
-      ethers.utils.toUtf8Bytes(JSON.stringify(tx))
+      ethers.utils.toUtf8Bytes(JSON.stringify(transaction))
     );
 
     const res = await this.request(Methods.SendTransaction, {
       token: cfg.token,
-      publicKey: payload.pubKey,
+      publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
       encodedTransaction,
     });

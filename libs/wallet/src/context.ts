@@ -1,5 +1,9 @@
 import { createContext } from 'react';
-import type { VegaConnector } from './connectors';
+import type {
+  Transaction,
+  TransactionResponse,
+  VegaConnector,
+} from './connectors';
 
 export interface VegaWalletContextShape {
   /** The current select public key */
@@ -21,7 +25,10 @@ export interface VegaWalletContextShape {
   connector: VegaConnector | null;
 
   /** Send a transaction to the network, only order submissions for now */
-  sendTx: (payload: any) => Promise<any>;
+  sendTx: (
+    pubKey: string,
+    transaction: Transaction
+  ) => Promise<TransactionResponse>;
 }
 
 export const VegaWalletContext = createContext<

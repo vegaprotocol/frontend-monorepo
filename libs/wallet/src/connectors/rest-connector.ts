@@ -1,8 +1,20 @@
 import * as Sentry from '@sentry/react';
 import { clearConfig, getConfig, setConfig } from '../storage';
-import type { VegaConnector } from './vega-connector';
-import type { TransactionError, TransactionSubmission } from '../wallet-types';
+import type { Transaction, VegaConnector } from './vega-connector';
 import { z } from 'zod';
+import { t } from '@vegaprotocol/react-helpers';
+
+type TransactionError =
+  | {
+      errors: {
+        [key: string]: string[];
+      };
+      details?: string[];
+    }
+  | {
+      error: string;
+      details?: string[];
+    };
 
 const VERSION = 'v1';
 
@@ -159,8 +171,13 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body: TransactionSubmission) {
+  async sendTx(pubKey: string, transaction: Transaction) {
     try {
+      const body = {
+        pubKey,
+        propagate: true,
+        ...transaction,
+      };
       const res = await this.request(Endpoints.Command, {
         method: 'post',
         body: JSON.stringify(body),
@@ -188,7 +205,11 @@ export class RestConnector implements VegaConnector {
 
       const data = TransactionResponseSchema.parse(res.data);
 
-      return data;
+      return {
+        txHash: data.txHash,
+        receivedAt: data.receivedAt,
+        sentAt: data.sentAt,
+      };
     } catch (err) {
       Sentry.captureException(err);
       return null;
