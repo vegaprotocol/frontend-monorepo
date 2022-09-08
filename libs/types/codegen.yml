@@ -14,7 +14,7 @@ generates:
     presetConfig:
       folder: __generated___
       extension: .ts
-      baseTypesPath: ~@vegaprotocol/types/types
+      baseTypesPath: ~@vegaprotocol/types
     plugins:
       - typescript-operations
       - typescript-react-apollo
@@ -23,7 +23,7 @@ generates:
     presetConfig:
       folder: __generated___
       extension: .ts
-      baseTypesPath: ~@vegaprotocol/types/types
+      baseTypesPath: ~@vegaprotocol/types
     plugins:
       - typescript-operations
       - typescript-react-apollo
