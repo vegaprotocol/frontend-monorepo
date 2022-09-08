@@ -1,9 +1,15 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
+import { marketProvider } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import type { Order } from '@vegaprotocol/orders';
 import { BigNumber } from 'bignumber.js';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  toBigNum,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
 
 interface Props {
   marketId: string;
@@ -16,11 +22,17 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
     variables,
     throttleMilliseconds: 5000,
   });
+  const update = useCallback(() => true, []);
+  const { data: market } = useDataProvider<Market, never>({
+    dataProvider: marketProvider,
+    update,
+    variables,
+  });
   const volPriceArr =
     data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
-  if (volPriceArr.length) {
-    const decimals = data?.decimalPlaces ?? 0;
-    const positionDecimals = data?.positionDecimalPlaces ?? 0;
+  if (volPriceArr.length && market) {
+    const decimals = market.decimalPlaces ?? 0;
+    const positionDecimals = market.positionDecimalPlaces ?? 0;
     const bestPrice = toBigNum(volPriceArr[0].price, decimals);
     const { size } = order;
     let descSize = new BigNumber(size);
