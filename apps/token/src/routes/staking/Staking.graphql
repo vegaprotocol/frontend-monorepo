@@ -28,7 +28,7 @@ query Staking($partyId: ID!) {
     pubkey
     infoUrl
     location
-    ethereumAddress
+    ethereumAdddress
     stakedByOperator
     stakedByDelegates
     stakedTotal
