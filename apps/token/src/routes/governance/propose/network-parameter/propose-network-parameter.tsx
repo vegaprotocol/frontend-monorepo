@@ -20,6 +20,7 @@ import {
 import {
   AsyncRenderer,
   FormGroup,
+  Input,
   InputError,
   Link,
   Select,
@@ -47,7 +48,7 @@ const SelectedNetworkParamCurrentValue = ({
       {isJsonObject(value) ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : (
-        <SyntaxHighlighter data={value} />
+        <Input value={value} readOnly />
       )}
     </div>
   );
