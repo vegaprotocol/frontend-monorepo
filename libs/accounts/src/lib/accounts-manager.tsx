@@ -3,8 +3,7 @@ import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider, addSummaryRows } from '@vegaprotocol/react-helpers';
-import type { AccountSubscribe_accounts } from './__generated__/AccountSubscribe';
-import type { Accounts_party_accounts } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated__/Accounts';
 
 import type { AgGridReact } from 'ag-grid-react';
 import {
@@ -22,17 +21,17 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
-    ({ delta }: { delta: AccountSubscribe_accounts }) => {
-      const update: Accounts_party_accounts[] = [];
-      const add: Accounts_party_accounts[] = [];
+    ({ delta }: { delta: AccountFieldsFragment }) => {
+      const update: AccountFieldsFragment[] = [];
+      const add: AccountFieldsFragment[] = [];
       if (!gridRef.current?.api) {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(getId(delta));
       if (rowNode) {
-        const updatedData = produce<Accounts_party_accounts>(
+        const updatedData = produce<AccountFieldsFragment>(
           rowNode.data,
-          (draft: Accounts_party_accounts) => {
+          (draft: AccountFieldsFragment) => {
             merge(draft, delta);
           }
         );
@@ -62,8 +61,8 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
     [gridRef]
   );
   const { data, error, loading } = useDataProvider<
-    Accounts_party_accounts[],
-    AccountSubscribe_accounts
+    AccountFieldsFragment[],
+    AccountFieldsFragment
   >({ dataProvider: accountsDataProvider, update, variables });
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
