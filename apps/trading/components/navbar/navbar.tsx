@@ -5,7 +5,7 @@ import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { ThemeSwitcher, VLogo } from '@vegaprotocol/ui-toolkit';
+import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 
 interface NavbarProps {
