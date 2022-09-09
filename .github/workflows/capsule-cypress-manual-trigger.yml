@@ -12,7 +12,7 @@ on:
         options:
           - explorer-e2e
           - console-lite-e2e
-          - stats-e2e 
+          - stats-e2e
           - token-e2e
           - trading-e2e
       includeFlows:
