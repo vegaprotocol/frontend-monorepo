@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-data-provider';
-import type { MarketDepth_market } from './';
+import type { MarketDepthQuery } from './__generated__/MarketDepth';
 
 interface Props {
   variables: { marketId: string };
@@ -13,10 +13,10 @@ export const useOrderBookData = ({
   variables,
   throttleMilliseconds = 1000,
 }: Props) => {
-  const [orderbookData, setOrderbookData] = useState<MarketDepth_market | null>(
-    null
-  );
-  const dataRef = useRef<MarketDepth_market | null>(null);
+  const [orderbookData, setOrderbookData] = useState<
+    MarketDepthQuery['market'] | null
+  >(null);
+  const dataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const updateOrderbookData = useRef(
     throttle(() => {
       if (!dataRef.current) {
@@ -27,7 +27,7 @@ export const useOrderBookData = ({
   );
 
   const update = useCallback(
-    ({ data }: { data: MarketDepth_market | null }) => {
+    ({ data }: { data: MarketDepthQuery['market'] | null }) => {
       if (!data) {
         return false;
       }

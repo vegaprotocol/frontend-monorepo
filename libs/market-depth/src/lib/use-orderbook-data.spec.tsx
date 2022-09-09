@@ -1,10 +1,13 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, act } from '@testing-library/react';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import type { MarketDepth_market, MarketDepth_market_data } from './';
+import type {
+  MarketDepthQuery,
+  MarketDepthDataFieldsFragment,
+} from './__generated__/MarketDepth';
 import { useOrderBookData } from './use-orderbook-data';
 
-const mockData: MarketDepth_market = {
+const mockData: MarketDepthQuery['market'] = {
   __typename: 'Market',
   id: 'marketId',
   decimalPlaces: 5,
@@ -45,7 +48,7 @@ const mockData: MarketDepth_market = {
   },
 };
 
-let updateMock: ({ data }: { data: MarketDepth_market }) => boolean;
+let updateMock: ({ data }: { data: MarketDepthQuery['market'] }) => boolean;
 
 const mockUseDataProvider = ({ update }: { update: () => boolean }) => {
   updateMock = update;
@@ -57,13 +60,13 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
   useDataProvider: jest.fn((args) => mockUseDataProvider(args)),
 }));
 
-const modMock = (staticMidPrice: string): MarketDepth_market => {
+const modMock = (staticMidPrice: string): MarketDepthQuery['market'] => {
   return {
     ...mockData,
     data: {
       ...mockData.data,
       staticMidPrice,
-    } as MarketDepth_market_data,
+    } as MarketDepthDataFieldsFragment,
   };
 };
 
