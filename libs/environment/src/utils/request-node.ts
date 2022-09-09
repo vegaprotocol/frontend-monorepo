@@ -1,23 +1,8 @@
-import { gql } from '@apollo/client';
 import createClient from './apollo-client';
-import type { Statistics } from './__generated__/Statistics';
-
-export const STATS_QUERY = gql`
-  query Statistics {
-    statistics {
-      chainId
-      blockHeight
-    }
-  }
-`;
-
-export const TIME_UPDATE_SUBSCRIPTION = gql`
-  subscription BlockTime {
-    busEvents(types: TimeUpdate, batchSize: 1) {
-      eventId
-    }
-  }
-`;
+import { StatisticsDocument } from './__generated__/Statistics';
+import { BlockTimeDocument } from './__generated__/BusEvents';
+import type { StatisticsQuery } from './__generated__/Statistics';
+import type { BlockTimeSubscription } from './__generated__/BusEvents';
 
 type Callbacks = {
   onStatsSuccess: (data: Statistics) => void;
@@ -46,8 +31,8 @@ export const requestNode = (
   const client = createClient(url);
 
   client
-    .query<Statistics>({
-      query: STATS_QUERY,
+    .query<StatisticsQuery>({
+      query: StatisticsDocument,
     })
     .then((res) => {
       onStatsSuccess(res.data);
@@ -58,7 +43,7 @@ export const requestNode = (
 
   const subscription = client
     .subscribe({
-      query: TIME_UPDATE_SUBSCRIPTION,
+      query: BlockTimeDocument,
       errorPolicy: 'all',
     })
     .subscribe({
