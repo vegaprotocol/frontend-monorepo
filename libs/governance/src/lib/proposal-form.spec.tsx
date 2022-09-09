@@ -9,14 +9,14 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import { ProposalForm } from './proposal-form';
-import { PROPOSAL_EVENT_SUB } from './proposals-hooks';
-import type { ProposalEvent } from './proposals-hooks/__generated__/ProposalEvent';
+import { ProposalEventDocument } from './proposals-hooks';
+import type { ProposalEventSubscription } from './proposals-hooks/__generated__/Proposal';
 
 describe('ProposalForm', () => {
   const pubkey = '0x123';
-  const mockProposalEvent: MockedResponse<ProposalEvent> = {
+  const mockProposalEvent: MockedResponse<ProposalEventSubscription> = {
     request: {
-      query: PROPOSAL_EVENT_SUB,
+      query: ProposalEventDocument,
       variables: {
         partyId: pubkey,
       },
