@@ -1,92 +1,25 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
-import type {
-  MarketDepth,
-  MarketDepth_market,
+import {
+  MarketDepthDocument,
+  MarketDepthEventDocument,
 } from './__generated__/MarketDepth';
 import type {
-  MarketDepthSubscription,
-  MarketDepthSubscription_marketDepthUpdate,
-} from './__generated__/MarketDepthSubscription';
-
-const MARKET_DEPTH_QUERY = gql`
-  query MarketDepth($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      data {
-        staticMidPrice
-        marketTradingMode
-        indicativeVolume
-        indicativePrice
-        bestStaticBidPrice
-        bestStaticOfferPrice
-        market {
-          id
-        }
-      }
-      depth {
-        lastTrade {
-          price
-        }
-        sell {
-          price
-          volume
-          numberOfOrders
-        }
-        buy {
-          price
-          volume
-          numberOfOrders
-        }
-        sequenceNumber
-      }
-    }
-  }
-`;
-
-export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
-  subscription MarketDepthSubscription($marketId: ID!) {
-    marketDepthUpdate(marketId: $marketId) {
-      market {
-        id
-        positionDecimalPlaces
-        data {
-          staticMidPrice
-          marketTradingMode
-          indicativeVolume
-          indicativePrice
-          bestStaticBidPrice
-          bestStaticOfferPrice
-          market {
-            id
-          }
-        }
-      }
-      sell {
-        price
-        volume
-        numberOfOrders
-      }
-      buy {
-        price
-        volume
-        numberOfOrders
-      }
-      sequenceNumber
-    }
-  }
-`;
+  MarketDepthQuery,
+  MarketDepthEventSubscription,
+} from './__generated__/MarketDepth';
 
 const sequenceNumbers: Record<string, number> = {};
 
 const update: Update<
-  MarketDepth_market,
-  MarketDepthSubscription_marketDepthUpdate
+  MarketDepthQuery['market'],
+  MarketDepthEventSubscription['marketDepthUpdate']
 > = (data, delta, reload) => {
+  if (!data) {
+    return null
+  }
+
   if (delta.market.id !== data.id) {
     return data;
   }
@@ -116,7 +49,7 @@ const update: Update<
   return updatedData;
 };
 
-const getData = (responseData: MarketDepth) => {
+const getData = (responseData: MarketDepthQuery) => {
   if (responseData.market?.id) {
     sequenceNumbers[responseData.market.id] = Number(
       responseData.market.depth.sequenceNumber
@@ -124,12 +57,12 @@ const getData = (responseData: MarketDepth) => {
   }
   return responseData.market;
 };
-const getDelta = (subscriptionData: MarketDepthSubscription) =>
+const getDelta = (subscriptionData: MarketDepthEventSubscription) =>
   subscriptionData.marketDepthUpdate;
 
 export const marketDepthDataProvider = makeDataProvider({
-  query: MARKET_DEPTH_QUERY,
-  subscriptionQuery: MARKET_DEPTH_SUBSCRIPTION_QUERY,
+  query: MarketDepthDocument,
+  subscriptionQuery: MarketDepthEventDocument,
   update,
   getData,
   getDelta,

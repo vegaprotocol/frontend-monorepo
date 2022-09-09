@@ -1,16 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import { VolumeType } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode } from '@vegaprotocol/types';
-import type {
-  MarketDepth_market_depth_sell,
-  MarketDepth_market_depth_buy,
-  MarketDepth_market_data,
-} from './__generated__/MarketDepth';
-import type {
-  MarketDepthSubscription_marketDepthUpdate_sell,
-  MarketDepthSubscription_marketDepthUpdate_buy,
-  MarketDepthSubscription_marketDepthUpdate_market_data,
-} from './__generated__/MarketDepthSubscription';
+import { Schema } from '@vegaprotocol/types';
+import type { MarketDepthDataFieldsFragment } from './__generated__/MarketDepth';
 
 export interface CumulativeVol {
   bid: number;
@@ -33,7 +24,7 @@ export interface OrderbookRowData {
 type PartialOrderbookRowData = Pick<OrderbookRowData, 'price' | 'ask' | 'bid'>;
 
 export type OrderbookData = Partial<
-  Omit<MarketDepth_market_data, '__typename' | 'market'>
+  Omit<Schema.MarketData, '__typename' | 'market'>
 > & { rows: OrderbookRowData[] | null };
 
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
@@ -104,31 +95,15 @@ export const createRow = (
 
 const mapRawData =
   (dataType: VolumeType.ask | VolumeType.bid) =>
-  (
-    data:
-      | MarketDepth_market_depth_sell
-      | MarketDepthSubscription_marketDepthUpdate_sell
-      | MarketDepth_market_depth_buy
-      | MarketDepthSubscription_marketDepthUpdate_buy
-  ): PartialOrderbookRowData =>
+  (data: Schema.PriceLevel): PartialOrderbookRowData =>
     createPartialRow(data.price, Number(data.volume), dataType);
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
 export const compactRows = (
-  sell:
-    | (
-        | MarketDepth_market_depth_sell
-        | MarketDepthSubscription_marketDepthUpdate_sell
-      )[]
-    | null,
-  buy:
-    | (
-        | MarketDepth_market_depth_buy
-        | MarketDepthSubscription_marketDepthUpdate_buy
-      )[]
-    | null,
+  sell: Schema.PriceLevel[] | null,
+  buy: Schema.PriceLevel[] | null,
   resolution: number
 ) => {
   // map raw sell data to OrderbookData
@@ -198,9 +173,7 @@ export const compactRows = (
 const partiallyUpdateCompactedRows = (
   dataType: VolumeType,
   data: OrderbookRowData[],
-  delta:
-    | MarketDepthSubscription_marketDepthUpdate_sell
-    | MarketDepthSubscription_marketDepthUpdate_buy,
+  delta: Schema.PriceLevel,
   resolution: number,
   modifiedIndex: number
 ): [number, OrderbookRowData[]] => {
@@ -255,8 +228,8 @@ const partiallyUpdateCompactedRows = (
  */
 export const updateCompactedRows = (
   rows: OrderbookRowData[],
-  sell: MarketDepthSubscription_marketDepthUpdate_sell[] | null,
-  buy: MarketDepthSubscription_marketDepthUpdate_buy[] | null,
+  sell: Schema.PriceLevel[] | null,
+  buy: Schema.PriceLevel[] | null,
   resolution: number
 ) => {
   let sellModifiedIndex = -1;
@@ -320,10 +293,7 @@ export const updateCompactedRows = (
 };
 
 export const mapMarketData = (
-  data:
-    | MarketDepth_market_data
-    | MarketDepthSubscription_marketDepthUpdate_market_data
-    | null,
+  data: MarketDepthDataFieldsFragment | null,
   resolution: number
 ) => ({
   staticMidPrice:
@@ -345,11 +315,8 @@ export const mapMarketData = (
  * @returns
  */
 export const updateLevels = (
-  draft: (MarketDepth_market_depth_buy | MarketDepth_market_depth_sell)[],
-  updates: (
-    | MarketDepthSubscription_marketDepthUpdate_buy
-    | MarketDepthSubscription_marketDepthUpdate_sell
-  )[]
+  draft: (Schema.PriceLevel | Schema.PriceLevel)[],
+  updates: Schema.PriceLevel[]
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
@@ -399,7 +366,7 @@ export const generateMockData = ({
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
-  const sell: MarketDepth_market_depth_sell[] = matrix.map((row, i) => ({
+  const sell: Schema.PriceLevel[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= 1).toString(),
     volume: (numberOfSellRows - i + 1).toString(),
@@ -407,7 +374,7 @@ export const generateMockData = ({
   }));
   price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
-  const buy: MarketDepth_market_depth_buy[] = matrix.map((row, i) => ({
+  const buy: Schema.PriceLevel[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= 1).toString(),
     volume: (i + 2).toString(),
@@ -424,8 +391,8 @@ export const generateMockData = ({
         staticMidPrice: '',
         marketTradingMode:
           overlap > 0
-            ? MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-            : MarketTradingMode.TRADING_MODE_CONTINUOUS,
+            ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+            : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         bestStaticBidPrice: bestStaticBidPrice.toString(),
         bestStaticOfferPrice: bestStaticOfferPrice.toString(),
         indicativePrice: indicativePrice?.toString() ?? '',

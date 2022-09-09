@@ -1,18 +1,22 @@
+fragment MarketDepthDataFields on MarketData {
+  staticMidPrice
+  marketTradingMode
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+  market {
+    id
+  }
+}
+
 query MarketDepth($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
     data {
-      staticMidPrice
-      marketTradingMode
-      indicativeVolume
-      indicativePrice
-      bestStaticBidPrice
-      bestStaticOfferPrice
-      market {
-        id
-      }
+      ...MarketDepthDataFields
     }
     depth {
       lastTrade {
@@ -33,21 +37,13 @@ query MarketDepth($marketId: ID!) {
   }
 }
 
-subscription MarketDepthSubscription($marketId: ID!) {
+subscription MarketDepthEvent($marketId: ID!) {
   marketDepthUpdate(marketId: $marketId) {
     market {
       id
       positionDecimalPlaces
       data {
-        staticMidPrice
-        marketTradingMode
-        indicativeVolume
-        indicativePrice
-        bestStaticBidPrice
-        bestStaticOfferPrice
-        market {
-          id
-        }
+        ...MarketDepthDataFields
       }
     }
     sell {
