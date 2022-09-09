@@ -7,10 +7,10 @@ import type {
 
 export interface VegaWalletContextShape {
   /** The current select public key */
-  keypair: string | null;
+  pubKey: string | null;
 
   /** Public keys stored in users wallet */
-  keypairs: string[] | null;
+  pubKeys: string[] | null;
 
   /** Calls connect on the supplied connector, storing the returned keys  */
   connect: (connector: VegaConnector) => Promise<string[] | null>;

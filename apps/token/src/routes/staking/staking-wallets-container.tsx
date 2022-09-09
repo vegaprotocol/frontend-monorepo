@@ -19,7 +19,7 @@ export const StakingWalletsContainer = ({
 }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   if (!account && needsEthereum) {
     return (
@@ -30,7 +30,7 @@ export const StakingWalletsContainer = ({
     );
   }
 
-  if (!keypair && needsVega) {
+  if (!pubKey && needsVega) {
     return (
       <>
         <EthConnectPrompt>
@@ -42,5 +42,5 @@ export const StakingWalletsContainer = ({
     );
   }
 
-  return children({ address: account || '', currVegaKey: keypair });
+  return children({ address: account || '', currVegaKey: pubKey });
 };

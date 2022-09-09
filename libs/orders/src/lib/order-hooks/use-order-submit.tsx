@@ -85,7 +85,7 @@ export const getOrderDialogIcon = (
 };
 
 export const useOrderSubmit = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const {
     send,
@@ -107,14 +107,14 @@ export const useOrderSubmit = () => {
 
   const submit = useCallback(
     async (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!keypair || !order.side) {
+      if (!pubKey || !order.side) {
         return;
       }
 
       setFinalizedOrder(null);
 
       try {
-        const res = await send(keypair, {
+        const res = await send(pubKey, {
           orderSubmission: {
             ...order,
             price:
@@ -132,7 +132,7 @@ export const useOrderSubmit = () => {
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForOrderEvent(resId, keypair, (order) => {
+            waitForOrderEvent(resId, pubKey, (order) => {
               setFinalizedOrder(order);
               setComplete();
             });
@@ -144,7 +144,7 @@ export const useOrderSubmit = () => {
         return;
       }
     },
-    [keypair, send, setComplete, waitForOrderEvent]
+    [pubKey, send, setComplete, waitForOrderEvent]
   );
 
   return {

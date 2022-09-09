@@ -4,11 +4,11 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderListManager } from './order-list-manager';
 
 export const OrderListContainer = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
-  if (!keypair) {
+  if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
 
-  return <OrderListManager partyId={keypair} />;
+  return <OrderListManager partyId={pubKey} />;
 };

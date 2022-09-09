@@ -27,12 +27,12 @@ import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
-  const { keypair, keypairs } = useVegaWallet();
+  const { pubKey, pubKeys } = useVegaWallet();
 
-  const child = !keypairs ? (
+  const child = !pubKeys ? (
     <VegaWalletNotConnected />
   ) : (
-    <VegaWalletConnected vegaKeys={keypairs} />
+    <VegaWalletConnected vegaKeys={pubKeys} />
   );
 
   return (
@@ -40,12 +40,12 @@ export const VegaWallet = () => {
       <WalletCard>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
-          {keypair && (
+          {pubKey && (
             <div
               data-testid="vega-account-truncated"
               className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
             >
-              {truncateMiddle(keypair)}
+              {truncateMiddle(pubKey)}
             </div>
           )}
         </WalletCardHeader>

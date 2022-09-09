@@ -22,7 +22,7 @@ export const useCreateWithdraw = () => {
     null
   );
 
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { transaction, send, setComplete, reset, Dialog } =
     useVegaTransaction();
 
@@ -30,15 +30,13 @@ export const useCreateWithdraw = () => {
 
   const submit = useCallback(
     async (withdrawal: WithdrawalArgs) => {
-      if (!keypair) {
+      if (!pubKey) {
         return;
       }
 
       setAvailableTimestamp(withdrawal.availableTimestamp);
 
-      const res = await send({
-        pubKey: keypair.pub,
-        propagate: true,
+      const res = await send(pubKey, {
         withdrawSubmission: {
           amount: withdrawal.amount,
           asset: withdrawal.asset,
@@ -53,14 +51,14 @@ export const useCreateWithdraw = () => {
       if (res?.signature) {
         const id = determineId(res.signature);
 
-        const withdrawal = await waitForWithdrawal(id, keypair.pub);
+        const withdrawal = await waitForWithdrawal(id, pubKey);
         setWithdrawal(withdrawal);
         const approval = await waitForWithdrawalApproval(withdrawal.id);
         setApproval(approval);
         setComplete();
       }
     },
-    [keypair, send, waitForWithdrawal, waitForWithdrawalApproval, setComplete]
+    [pubKey, send, waitForWithdrawal, waitForWithdrawalApproval, setComplete]
   );
 
   return {

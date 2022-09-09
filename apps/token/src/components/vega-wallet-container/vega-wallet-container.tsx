@@ -14,10 +14,10 @@ interface VegaWalletContainerProps {
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <p>
         <Button
@@ -35,5 +35,5 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
     );
   }
 
-  return children(keypair);
+  return children(pubKey);
 };

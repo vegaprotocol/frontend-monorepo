@@ -74,8 +74,8 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
-      keypair: pubKey,
-      keypairs: pubKeys,
+      pubKey,
+      pubKeys,
       selectPublicKey,
       connect,
       disconnect,

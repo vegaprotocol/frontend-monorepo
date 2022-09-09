@@ -7,7 +7,7 @@ import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import type { ProposalEvent_busEvents_event_Proposal } from './__generated__/ProposalEvent';
 
 export const useProposalSubmit = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const waitForProposalEvent = useProposalEvent(transaction);
@@ -17,23 +17,21 @@ export const useProposalSubmit = () => {
 
   const submit = useCallback(
     async (proposal: ProposalSubmission) => {
-      if (!keypair || !proposal) {
+      if (!pubKey || !proposal) {
         return;
       }
 
       setFinalizedProposal(null);
 
       try {
-        const res = await send({
-          pubKey: keypair,
-          propagate: true,
+        const res = await send(pubKey, {
           proposalSubmission: proposal,
         });
 
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForProposalEvent(resId, keypair, (p) => {
+            waitForProposalEvent(resId, pubKey, (p) => {
               setFinalizedProposal(p);
               setComplete();
             });
@@ -45,7 +43,7 @@ export const useProposalSubmit = () => {
         return;
       }
     },
-    [keypair, send, setComplete, waitForProposalEvent]
+    [pubKey, send, setComplete, waitForProposalEvent]
   );
 
   return {

@@ -76,28 +76,28 @@ export const WITHDRAWAL_BUS_EVENT_SUB = gql`
 `;
 
 export const useWithdrawals = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { data, loading, error, subscribeToMore } = useQuery<
     Withdrawals,
     WithdrawalsVariables
   >(WITHDRAWALS_QUERY, {
-    variables: { partyId: keypair || '' },
-    skip: !keypair,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
   });
 
   useEffect(() => {
-    if (!keypair) return;
+    if (!pubKey) return;
 
     const unsub = subscribeToMore<WithdrawalEvent, WithdrawalEventVariables>({
       document: WITHDRAWAL_BUS_EVENT_SUB,
-      variables: { partyId: keypair },
+      variables: { partyId: pubKey },
       updateQuery,
     });
 
     return () => {
       unsub();
     };
-  }, [keypair, subscribeToMore]);
+  }, [pubKey, subscribeToMore]);
 
   const withdrawals = useMemo(() => {
     if (!data?.party?.withdrawalsConnection?.edges) {

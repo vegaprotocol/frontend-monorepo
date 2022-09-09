@@ -7,8 +7,8 @@ import {
   Link,
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { useCallback, useState } from 'react';
-import { t, useStatsQuery } from '@vegaprotocol/react-helpers';
+import { useState } from 'react';
+import { t } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { JsonRpcConnector } from '../connectors';
 import { RestConnector } from '../connectors';
@@ -51,7 +51,6 @@ const ConnectDialogContainer = ({
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
-  // const { data, loading, error } = useStatsQuery();
 
   return (
     <>

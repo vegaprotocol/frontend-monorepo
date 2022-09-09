@@ -121,15 +121,15 @@ export const SelectMarketPopover = ({
 }) => {
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
-  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const { data: party, loading: positionsLoading } = useDataProvider({
     dataProvider: positionsDataProvider,
     noUpdate: true,
     variables,
-    skip: !keypair,
+    skip: !pubKey,
   });
 
   const onSelectMarket = (marketId: string) => {
@@ -163,14 +163,14 @@ export const SelectMarketPopover = ({
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        {marketsLoading || (keypair && positionsLoading) ? (
+        {marketsLoading || (pubKey && positionsLoading) ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
             Loading market data
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">
-            {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
+            {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody

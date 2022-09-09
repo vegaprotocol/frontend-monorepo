@@ -17,7 +17,7 @@ export const VegaManageDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaManageDialogProps) => {
-  const { keypair, keypairs, selectPublicKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPublicKey, disconnect } = useVegaWallet();
   return (
     <Dialog
       title={t('SELECT A VEGA KEY')}
@@ -26,24 +26,24 @@ export const VegaManageDialog = ({
       intent={Intent.Primary}
       size="small"
     >
-      {keypairs ? (
+      {pubKeys ? (
         <ul className="mb-4" data-testid="keypair-list">
-          {keypairs.map((kp) => {
-            const isSelected = kp === keypair;
+          {pubKeys.map((pk) => {
+            const isSelected = pk === pubKey;
             return (
-              <li key={kp} data-testid={`key-${kp}`} className="mb-2 last:mb-0">
+              <li key={pk} data-testid={`key-${pk}`} className="mb-2 last:mb-0">
                 <div
                   className="flex gap-4 justify-between text-sm"
                   data-testid={isSelected ? 'selected-key' : ''}
                 >
                   <p data-testid="vega-public-key-full">
-                    {truncateByChars(kp)}
+                    {truncateByChars(pk)}
                   </p>
                   <div className="flex gap-4 ml-auto">
                     {!isSelected && (
                       <button
                         onClick={() => {
-                          selectPublicKey(kp);
+                          selectPublicKey(pk);
                           setDialogOpen(false);
                         }}
                         disabled={isSelected}
@@ -53,7 +53,7 @@ export const VegaManageDialog = ({
                         {t('Select')}
                       </button>
                     )}
-                    <CopyWithTooltip text={kp}>
+                    <CopyWithTooltip text={pk}>
                       <button
                         data-testid="copy-vega-public-key"
                         className="underline"

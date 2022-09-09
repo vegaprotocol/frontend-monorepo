@@ -51,19 +51,12 @@ export const useOrderValidation = ({
   message: React.ReactNode | string;
   isDisabled: boolean;
 } => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
   const { message, isDisabled } = useMemo(() => {
-    if (!keypair) {
+    if (!pubKey) {
       return { message: t('No public key selected'), isDisabled: true };
-    }
-
-    if (keypair.tainted) {
-      return {
-        isDisabled: true,
-        message: t('Selected public key has been tainted'),
-      };
     }
 
     if (
@@ -292,7 +285,7 @@ export const useOrderValidation = ({
     return { isDisabled: false, message: '' };
   }, [
     minSize,
-    keypair,
+    pubKey,
     market,
     fieldErrors?.size?.type,
     fieldErrors?.size?.message,

@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
-import { WALLET_KEY } from './storage-keys';
+import { WALLET_KEY } from './storage';
 
 const restConnector = new RestConnector();
 
@@ -11,7 +11,7 @@ afterAll(() => {
 });
 
 const TestComponent = () => {
-  const { connect, disconnect, keypairs, keypair, selectPublicKey } =
+  const { connect, disconnect, pubKey, pubKeys, selectPublicKey } =
     useVegaWallet();
   return (
     <div data-testid="children">
@@ -29,13 +29,13 @@ const TestComponent = () => {
       >
         Disconnect
       </button>
-      <p data-testid="current-keypair">{keypair}</p>
-      {keypairs?.length ? (
+      <p data-testid="current-keypair">{pubKey}</p>
+      {pubKeys?.length ? (
         <ul data-testid="keypair-list">
-          {keypairs.map((kp) => (
+          {pubKeys.map((pk) => (
             // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-            <li key={kp} onClick={() => selectPublicKey(kp)}>
-              {kp}
+            <li key={pk} onClick={() => selectPublicKey(pk)}>
+              {pk}
             </li>
           ))}
         </ul>
@@ -51,10 +51,10 @@ const generateJSX = () => (
 );
 
 it('Can connect, disconnect and retrieve keypairs', async () => {
-  const mockKeypairs = [{ pub: 'public key 1' }, { pub: 'public key 2' }];
+  const mockKeypairs = ['public key 1', 'public key 2'];
   jest
     .spyOn(restConnector, 'connect')
-    .mockImplementation(() => Promise.resolve(mockKeypairs as VegaKey[]));
+    .mockImplementation(() => Promise.resolve(mockKeypairs));
 
   jest
     .spyOn(restConnector, 'disconnect')
@@ -69,13 +69,13 @@ it('Can connect, disconnect and retrieve keypairs', async () => {
     mockKeypairs.length
   );
   expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[0].pub
+    mockKeypairs[0]
   );
 
   // Change current keypair
   fireEvent.click(screen.getByTestId('keypair-list').children[1]);
   expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[1].pub
+    mockKeypairs[1]
   );
 
   // Current keypair should persist
@@ -85,7 +85,7 @@ it('Can connect, disconnect and retrieve keypairs', async () => {
     fireEvent.click(screen.getByText('Connect'));
   });
   expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[1].pub
+    mockKeypairs[1]
   );
 
   await act(async () => {

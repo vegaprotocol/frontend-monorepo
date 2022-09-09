@@ -22,27 +22,27 @@ export const VegaWalletConnectButton = ({
   setConnectDialog,
 }: VegaWalletConnectButtonProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { keypair, keypairs, selectPublicKey, disconnect } = useVegaWallet();
-  const isConnected = keypair !== null;
+  const { pubKey, pubKeys, selectPublicKey, disconnect } = useVegaWallet();
+  const isConnected = pubKey !== null;
 
-  if (isConnected && keypairs) {
+  if (isConnected && pubKeys) {
     return (
       <DropdownMenu open={dropdownOpen}>
         <DropdownMenuTrigger
           data-testid="manage-vega-wallet"
           onClick={() => setDropdownOpen((curr) => !curr)}
         >
-          {truncateByChars(keypair)}
+          {truncateByChars(pubKey)}
         </DropdownMenuTrigger>
         <DropdownMenuContent onInteractOutside={() => setDropdownOpen(false)}>
           <div className="min-w-[340px]" data-testid="keypair-list">
             <DropdownMenuRadioGroup
-              value={keypair}
+              value={pubKey}
               onValueChange={(value) => {
                 selectPublicKey(value);
               }}
             >
-              {keypairs.map((kp) => (
+              {pubKeys.map((kp) => (
                 <KeypairItem key={kp} kp={kp} />
               ))}
             </DropdownMenuRadioGroup>

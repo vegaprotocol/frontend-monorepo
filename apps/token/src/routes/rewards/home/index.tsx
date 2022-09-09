@@ -66,11 +66,11 @@ export const REWARDS_QUERY = gql`
 
 export const RewardsIndex = () => {
   const { t } = useTranslation();
-  const { keypair, keypairs } = useVegaWallet();
+  const { pubKey, pubKeys } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
-    variables: { partyId: keypair },
-    skip: !keypair,
+    variables: { partyId: pubKey },
+    skip: !pubKey,
   });
   const { params } = useNetworkParams([
     NetworkParams.reward_asset,
@@ -137,9 +137,9 @@ export const RewardsIndex = () => {
           </section>
         )}
       <section>
-        {keypair && keypairs?.length ? (
+        {pubKey && pubKeys?.length ? (
           <RewardInfo
-            currVegaKey={keypair}
+            currVegaKey={pubKey}
             data={data}
             rewardAssetId={params.reward_asset}
           />

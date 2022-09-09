@@ -1,5 +1,0 @@
-query Stats {
-  statistics {
-    chainId
-  }
-}

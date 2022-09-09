@@ -42,7 +42,7 @@ export function useUserVote(
   yesVotes: Votes | null,
   noVotes: Votes | null
 ) {
-  const { keypair, sendTx } = useVegaWallet();
+  const { pubKey, sendTx } = useVegaWallet();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [timeout, setTimeoutValue] = useState<any>(null);
   const yes = useMemo(() => yesVotes || [], [yesVotes]);
@@ -54,11 +54,11 @@ export function useUserVote(
 
   // Find the users vote everytime yes or no votes change
   const userVote = useMemo(() => {
-    if (keypair) {
-      return getUserVote(keypair, yes, no);
+    if (pubKey) {
+      return getUserVote(pubKey, yes, no);
     }
     return null;
-  }, [keypair, yes, no]);
+  }, [pubKey, yes, no]);
 
   // If user vote changes update the vote state
   useEffect(() => {
@@ -91,20 +91,17 @@ export function useUserVote(
    * Casts a vote using the users connected wallet
    */
   async function castVote(value: VoteValue) {
-    if (!proposalId || !keypair) return;
+    if (!proposalId || !pubKey) return;
 
     setVoteState(VoteState.Requested);
 
     try {
-      const variables = {
-        pubKey: keypair
-        propagate: true,
+      await sendTx(pubKey, {
         voteSubmission: {
           value: value,
           proposalId,
         },
-      };
-      await sendTx(variables);
+      });
       setVoteState(VoteState.Pending);
 
       // Now await vote via poll in parent component

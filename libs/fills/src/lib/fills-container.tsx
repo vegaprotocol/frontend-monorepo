@@ -4,9 +4,9 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { FillsManager } from './fills-manager';
 
 export const FillsContainer = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <Splash>
         <p>{t('Please connect Vega wallet')}</p>
@@ -14,5 +14,5 @@ export const FillsContainer = () => {
     );
   }
 
-  return <FillsManager partyId={keypair} />;
+  return <FillsManager partyId={pubKey} />;
 };

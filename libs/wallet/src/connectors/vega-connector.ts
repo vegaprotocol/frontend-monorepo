@@ -261,5 +261,5 @@ export interface VegaConnector {
   sendTx: (
     pubkey: string,
     transaction: Transaction
-  ) => Promise<TransactionResponse>;
+  ) => Promise<TransactionResponse | null>;
 }
