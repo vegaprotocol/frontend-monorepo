@@ -1,7 +1,7 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { t } from '@vegaprotocol/react-helpers';
-import { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { Schema } from '@vegaprotocol/types';
+import { AsyncRenderer, Tab, Tabs, Splash, Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
@@ -19,6 +19,17 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
+  if (!marketId) {
+    return (
+      <Splash>
+        <h4 className="text-lg text-black dark:text-white">{t('Invalid market id.')}</h4>
+        <Link href="/" passHref={true}>
+          <Button>{t('Go back')}</Button>
+        </Link>
+      </Splash>
+    );
+  }
+
   const {
     data: { liquidityProviders, suppliedStake, targetStake, code, symbol },
     loading,
@@ -32,14 +43,14 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const activeEdges = useMemo(
     () =>
       liquidityProviders.filter(
-        (e) => e.status === LiquidityProvisionStatus.STATUS_ACTIVE
+        (e) => e.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]
   );
   const inactiveEdges = useMemo(
     () =>
       liquidityProviders.filter(
-        (e) => e.status !== LiquidityProvisionStatus.STATUS_ACTIVE
+        (e) => e.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]
   );
