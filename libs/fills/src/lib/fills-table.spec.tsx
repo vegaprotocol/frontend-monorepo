@@ -32,6 +32,7 @@ describe('FillsTable', () => {
         positionDecimalPlaces: 5,
         tradableInstrument: {
           instrument: {
+            name: 'test market',
             product: {
               settlementAsset: {
                 decimals: 2,

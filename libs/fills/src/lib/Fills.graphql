@@ -30,6 +30,7 @@ fragment FillFields on Trade {
     tradableInstrument {
       instrument {
         id
+        name
         code
         product {
           ... on Future {

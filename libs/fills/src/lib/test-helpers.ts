@@ -24,7 +24,7 @@ export const generateFills = (
       market: {
         tradableInstrument: {
           instrument: {
-            id: '012',
+            name: 'UNIDAI Monthly (30 Jun 2022)',
           },
         },
         positionDecimalPlaces: 2,
@@ -43,7 +43,7 @@ export const generateFills = (
       market: {
         tradableInstrument: {
           instrument: {
-            id: '123',
+            name: 'UNIDAI Monthly (30 Jun 2022)',
           },
         },
       },
@@ -122,6 +122,7 @@ export const generateFill = (override?: PartialDeep<FillFieldsFragment>) => {
           __typename: 'Instrument',
           id: 'instrument-id',
           code: 'instrument-code',
+          name: 'UNIDAI Monthly (30 Jun 2022)',
           product: {
             __typename: 'Future',
             settlementAsset: {
