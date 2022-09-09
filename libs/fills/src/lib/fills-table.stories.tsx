@@ -6,7 +6,7 @@ import { useCallback, useRef } from 'react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import { FillsTable } from './fills-table';
 import { generateFills, generateFill } from './test-helpers';
-import type { FillFieldsFragment } from './__generated__/Fills'
+import type { FillFieldsFragment } from './__generated__/Fills';
 import type { FillsTradeEdge } from './types';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 
@@ -22,13 +22,12 @@ const createdAt = new Date('2005-04-02 21:37:00').getTime();
 const fills = generateFills();
 Default.args = {
   partyId: 'party-id',
-  rowData: fills.party?.tradesConnection.edges.map((e: FillsTradeEdge) => e.node) || [],
+  rowData:
+    fills.party?.tradesConnection.edges.map((e: FillsTradeEdge) => e.node) ||
+    [],
 };
 
-const getData = (
-  start: number,
-  end: number
-): FillsTradeEdge[] =>
+const getData = (start: number, end: number): FillsTradeEdge[] =>
   new Array(end - start).fill(null).map((v, i) => ({
     __typename: 'TradeEdge',
     node: generateFill({
@@ -128,13 +127,7 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
   );
 
   const insert = useCallback(
-    ({
-      data,
-      totalCount,
-    }: {
-      data: FillsTradeEdge[];
-      totalCount?: number;
-    }) => {
+    ({ data, totalCount }: { data: FillsTradeEdge[]; totalCount?: number }) => {
       dataRef.current = data;
       totalCountRef.current = totalCount;
       return true;
@@ -217,9 +210,7 @@ PaginationScroll.args = { pagination: false };
 
 const InfiniteScrollManager = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(
-    null
-  );
+  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -265,13 +256,7 @@ const InfiniteScrollManager = () => {
   );
 
   const insert = useCallback(
-    ({
-      data,
-      totalCount,
-    }: {
-      data: FillsTradeEdge[];
-      totalCount?: number;
-    }) => {
+    ({ data, totalCount }: { data: FillsTradeEdge[]; totalCount?: number }) => {
       dataRef.current = data;
       totalCountRef.current = totalCount;
       return true;

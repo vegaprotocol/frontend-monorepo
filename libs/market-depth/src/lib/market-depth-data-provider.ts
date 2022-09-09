@@ -17,7 +17,7 @@ const update: Update<
   MarketDepthEventSubscription['marketDepthUpdate']
 > = (data, delta, reload) => {
   if (!data) {
-    return null
+    return null;
   }
 
   if (delta.market.id !== data.id) {

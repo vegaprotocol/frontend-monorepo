@@ -75,14 +75,12 @@ describe('compactRows', () => {
 });
 
 describe('updateLevels', () => {
-  let levels: Schema.PriceLevel[] = new Array(10)
-    .fill(null)
-    .map((n, i) => ({
-      __typename: 'PriceLevel',
-      volume: ((i + 1) * 10).toString(),
-      price: ((i + 1) * 10).toString(),
-      numberOfOrders: ((i + 1) * 10).toString(),
-    }));
+  let levels: Schema.PriceLevel[] = new Array(10).fill(null).map((n, i) => ({
+    __typename: 'PriceLevel',
+    volume: ((i + 1) * 10).toString(),
+    price: ((i + 1) * 10).toString(),
+    numberOfOrders: ((i + 1) * 10).toString(),
+  }));
   it('updates, removes and adds new items', () => {
     const removeFirstRow: Schema.PriceLevel = {
       __typename: 'PriceLevel',

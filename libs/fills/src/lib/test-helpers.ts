@@ -1,13 +1,12 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  FillsQuery,
-  FillFieldsFragment,
-} from './__generated__/Fills';
+import type { FillsQuery, FillFieldsFragment } from './__generated__/Fills';
 import { Side } from '@vegaprotocol/types';
 import { FillsTradeEdge } from './types';
 
-export const generateFills = (override?: PartialDeep<FillsQuery>): FillsQuery => {
+export const generateFills = (
+  override?: PartialDeep<FillsQuery>
+): FillsQuery => {
   const fills: FillFieldsFragment[] = [
     generateFill({
       buyer: {
@@ -82,9 +81,7 @@ export const generateFills = (override?: PartialDeep<FillsQuery>): FillsQuery =>
   return merge(defaultResult, override);
 };
 
-export const generateFill = (
-  override?: PartialDeep<FillFieldsFragment>
-) => {
+export const generateFill = (override?: PartialDeep<FillFieldsFragment>) => {
   const defaultFill: FillFieldsFragment = {
     __typename: 'Trade',
     id: '0',

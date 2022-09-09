@@ -13,7 +13,7 @@ import { fillsDataProvider as dataProvider } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
 
 type FillsTradeEdge = Pick<Schema.TradeEdge, '__typename' | 'cursor'> & {
-  node: FillFieldsFragment,
+  node: FillFieldsFragment;
 };
 
 interface FillsManagerProps {
@@ -22,9 +22,7 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(
-    null
-  );
+  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);

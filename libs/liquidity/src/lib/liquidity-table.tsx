@@ -92,7 +92,11 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         <AgGridColumn
           headerName={t('Status')}
           field="status"
-          valueFormatter={({ value }: { value: Schema.LiquidityProvisionStatus }) => {
+          valueFormatter={({
+            value,
+          }: {
+            value: Schema.LiquidityProvisionStatus;
+          }) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

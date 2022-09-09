@@ -32,7 +32,10 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       }
       dataRef.current = {
         ...deltaRef.current.market.data,
-        ...mapMarketData(deltaRef.current.market.data || null, resolutionRef.current),
+        ...mapMarketData(
+          deltaRef.current.market.data || null,
+          resolutionRef.current
+        ),
         rows: updateCompactedRows(
           dataRef.current.rows ?? [],
           deltaRef.current.sell ?? null,
@@ -46,7 +49,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   );
 
   const update = useCallback(
-    ({ delta }: { delta: MarketDepthEventSubscription['marketDepthUpdate'] }) => {
+    ({
+      delta,
+    }: {
+      delta: MarketDepthEventSubscription['marketDepthUpdate'];
+    }) => {
       if (!dataRef.current.rows) {
         return false;
       }
@@ -91,7 +98,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     }
     dataRef.current = {
       ...data.data,
-      rows: compactRows(data.depth.sell ?? null, data.depth.buy ?? null, resolution),
+      rows: compactRows(
+        data.depth.sell ?? null,
+        data.depth.buy ?? null,
+        resolution
+      ),
       ...mapMarketData(data.data ?? null, resolution),
     };
     setOrderbookData(dataRef.current);

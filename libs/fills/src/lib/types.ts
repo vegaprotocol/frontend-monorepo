@@ -1,6 +1,6 @@
-import { Schema } from '@vegaprotocol/types';
-import { FillFieldsFragment } from './__generated__/Fills';
+import type { Schema } from '@vegaprotocol/types';
+import type { FillFieldsFragment } from './__generated__/Fills';
 
 export type FillsTradeEdge = Pick<Schema.TradeEdge, '__typename' | 'cursor'> & {
-  node: FillFieldsFragment,
+  node: FillFieldsFragment;
 };

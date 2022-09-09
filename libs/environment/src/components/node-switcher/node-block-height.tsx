@@ -9,11 +9,9 @@ type NodeBlockHeightProps = {
 const POLL_INTERVAL = 3000;
 
 export const NodeBlockHeight = ({ value, setValue }: NodeBlockHeightProps) => {
-  const { data, startPolling, stopPolling } = useStatisticsQuery(
-    {
-      pollInterval: POLL_INTERVAL,
-    }
-  );
+  const { data, startPolling, stopPolling } = useStatisticsQuery({
+    pollInterval: POLL_INTERVAL,
+  });
 
   useEffect(() => {
     const handleStartPoll = () => startPolling(POLL_INTERVAL);

@@ -13,7 +13,12 @@ import type {
 import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 
 const update = (
-  data: (Pick<Schema.TradeEdge, '__typename' | 'cursor'> & { node: FillFieldsFragment } | null)[],
+  data: (
+    | (Pick<Schema.TradeEdge, '__typename' | 'cursor'> & {
+        node: FillFieldsFragment;
+      })
+    | null
+  )[],
   delta: FillFieldsFragment[]
 ) => {
   return produce(data, (draft) => {
@@ -21,10 +26,7 @@ const update = (
       const index = draft.findIndex((edge) => edge?.node.id === node.id);
       if (index !== -1) {
         if (draft[index]?.node) {
-          Object.assign(
-            draft[index]?.node as FillFieldsFragment,
-            node
-          );
+          Object.assign(draft[index]?.node as FillFieldsFragment, node);
         }
       } else {
         const firstNode = draft[0]?.node;
@@ -36,14 +38,14 @@ const update = (
   });
 };
 
-const getData = (
-  responseData: FillsQuery
-) => responseData.party?.tradesConnection.edges || null;
+const getData = (responseData: FillsQuery) =>
+  responseData.party?.tradesConnection.edges || null;
 
 const getPageInfo = (responseData: FillsQuery) =>
   responseData.party?.tradesConnection.pageInfo || null;
 
-const getDelta = (subscriptionData: FillsEventSubscription) => subscriptionData.trades || [];
+const getDelta = (subscriptionData: FillsEventSubscription) =>
+  subscriptionData.trades || [];
 
 export const fillsDataProvider = makeDataProvider({
   query: FillsDocument,

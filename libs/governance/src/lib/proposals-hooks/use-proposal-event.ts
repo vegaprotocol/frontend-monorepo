@@ -19,7 +19,10 @@ export const useProposalEvent = () => {
       callback: (proposal: ProposalEventFieldsFragment) => void
     ) => {
       subRef.current = client
-        .subscribe<ProposalEventSubscription, ProposalEventSubscriptionVariables>({
+        .subscribe<
+          ProposalEventSubscription,
+          ProposalEventSubscriptionVariables
+        >({
           query: ProposalEventDocument,
           variables: { partyId },
         })
