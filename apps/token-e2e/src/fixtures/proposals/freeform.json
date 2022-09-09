@@ -1,10 +1,11 @@
 {
   "rationale": {
-    "title": "An example freeform proposal",
-    "description": "I propose that everyone evaluate the following IPFS document and vote Yes if they agree. [bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si](https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si)"
+    "url": "https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
+    "hash": "bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
+    "description": "Freeform Proposal with unique id of: "
   },
   "terms": {
     "newFreeform": {},
-    "closingTimestamp": 1662374250
+    "closingTimestamp": 1657721401
   }
 }
