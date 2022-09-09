@@ -7,3 +7,4 @@ export * from './manage-dialog';
 export * from './vega-transaction-dialog';
 export * from './provider';
 export * from './connect-dialog';
+export * from './utils';

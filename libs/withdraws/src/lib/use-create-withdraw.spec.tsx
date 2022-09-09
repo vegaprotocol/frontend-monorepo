@@ -11,9 +11,9 @@ import {
   initialState,
   VegaTxStatus,
   VegaWalletContext,
+  determineId,
 } from '@vegaprotocol/wallet';
 import { waitFor } from '@testing-library/react';
-import { determineId } from '@vegaprotocol/react-helpers';
 import type {
   WithdrawalEvent,
   WithdrawalEvent_busEvents_event_Withdrawal,

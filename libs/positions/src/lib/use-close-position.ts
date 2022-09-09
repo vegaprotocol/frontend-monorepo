@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
+import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { usePositionEvent } from '../';
 import type { Position } from '../';

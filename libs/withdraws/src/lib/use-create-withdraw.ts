@@ -1,5 +1,8 @@
-import { determineId } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useVegaTransaction,
+  useVegaWallet,
+  determineId,
+} from '@vegaprotocol/wallet';
 import { useCallback, useState } from 'react';
 import { useWithdrawalApproval } from './use-withdrawal-approval';
 import { useWithdrawalEvent } from './use-withdrawal-event';

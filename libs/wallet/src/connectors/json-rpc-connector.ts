@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
+import { encodeTransaction } from '../utils';
 import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
 
@@ -61,10 +62,11 @@ const SendTransactionSchema = BaseSchema.extend({
     sentAt: z.string(),
     transactionHash: z.string(),
     transaction: z.object({
-      from: z.object({
-        publicKey: z.string(),
+      version: z.number(),
+      From: z.object({
+        PubKey: z.string(),
       }),
-      inputData: z.string(),
+      input_data: z.string(),
       pow: z.object({
         tid: z.string(),
         nonce: z.number(),
@@ -213,15 +215,11 @@ export class JsonRpcConnector implements VegaConnector {
       throw Errors.NO_TOKEN;
     }
 
-    const encodedTransaction = ethers.utils.base64.encode(
-      ethers.utils.toUtf8Bytes(JSON.stringify(transaction))
-    );
-
     const result = await this.request(Methods.SendTransaction, {
       token: cfg.token,
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
-      encodedTransaction,
+      encodedTransaction: encodeTransaction(transaction),
     });
 
     // TODO check result for user rejection
