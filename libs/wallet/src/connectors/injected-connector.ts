@@ -7,22 +7,15 @@ export class InjectedConnector implements VegaConnector {
   description = 'Connects using the Vega wallet browser extension';
 
   async connect() {
-    return [
-      {
-        index: 9,
-        pub: '0x123',
-        algorithm: { name: 'algo', version: 2 },
-        tainted: false,
-        meta: [],
-      },
-    ];
+    return ['0x123'];
   }
 
   async disconnect() {
     return;
   }
 
+  // @ts-ignore injected connector is not implemented
   sendTx() {
-    return Promise.resolve(null);
+    throw new Error('Not implemented');
   }
 }

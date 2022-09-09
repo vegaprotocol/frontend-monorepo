@@ -3,7 +3,7 @@ import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
-import { JsonRpcError } from './connectors/json-rpc-connector';
+import { WalletError } from './connectors';
 import { ConnectDialogTitle } from './connect-dialog';
 
 type Status =
@@ -29,7 +29,7 @@ export const JsonRpcConnectorForm = ({
 }) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
-  const [error, setError] = useState<JsonRpcError | null>(null);
+  const [error, setError] = useState<WalletError | null>(null);
 
   const attempConnect = useCallback(async () => {
     try {
@@ -61,7 +61,7 @@ export const JsonRpcConnectorForm = ({
 
       onConnect();
     } catch (err) {
-      if (err instanceof JsonRpcError) {
+      if (err instanceof WalletError) {
         setError(err);
       }
       setStatus('error');
@@ -87,7 +87,7 @@ const Connecting = ({
   connector,
 }: {
   status: Status;
-  error: JsonRpcError | null;
+  error: WalletError | null;
   connector: JsonRpcConnector;
 }) => {
   if (status === 'error') {

@@ -244,10 +244,22 @@ export type Transaction =
   | OrderAmendmentBody
   | ProposalSubmissionBody;
 
-interface TransactionResponse {
-  txHash: string;
+export interface TransactionResponse {
+  transactionHash: string;
+  signature: string; // still to be added by core
   receivedAt: string;
   sentAt: string;
+}
+export class WalletError {
+  message: string;
+  code: number;
+  data?: string;
+
+  constructor(message: string, code: number, data?: string) {
+    this.message = message;
+    this.code = code;
+    this.data = data;
+  }
 }
 
 export interface VegaConnector {

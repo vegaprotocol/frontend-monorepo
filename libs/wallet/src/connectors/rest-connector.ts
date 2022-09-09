@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
+import { WalletError } from './vega-connector';
 import { z } from 'zod';
 import { t } from '@vegaprotocol/react-helpers';
 
@@ -192,21 +193,15 @@ export class RestConnector implements VegaConnector {
       }
 
       if (res.error) {
-        if (res.details) {
-          return {
-            error: res.error,
-            details: res.details,
-          };
-        }
-        return {
-          error: res.error,
-        };
+        throw new WalletError(res.error, 1, res.details);
       }
 
       const data = TransactionResponseSchema.parse(res.data);
 
+      // Make return value match that of v2 service
       return {
-        txHash: data.txHash,
+        transactionHash: data.txHash,
+        signature: data.tx.signature.value,
         receivedAt: data.receivedAt,
         sentAt: data.sentAt,
       };

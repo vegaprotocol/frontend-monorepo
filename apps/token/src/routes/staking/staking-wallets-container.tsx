@@ -12,10 +12,7 @@ export const StakingWalletsContainer = ({
 }: {
   needsEthereum?: boolean;
   needsVega?: boolean;
-  children: (data: {
-    address: string;
-    currVegaKey: string | null;
-  }) => React.ReactElement;
+  children: (data: { address: string; pubKey: string }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
@@ -30,7 +27,7 @@ export const StakingWalletsContainer = ({
     );
   }
 
-  if (!pubKey && needsVega) {
+  if (!pubKey || needsVega) {
     return (
       <>
         <EthConnectPrompt>
@@ -42,5 +39,5 @@ export const StakingWalletsContainer = ({
     );
   }
 
-  return children({ address: account || '', currVegaKey: pubKey });
+  return children({ address: account || '', pubKey });
 };

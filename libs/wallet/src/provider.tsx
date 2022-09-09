@@ -79,18 +79,9 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       selectPublicKey,
       connect,
       disconnect,
-      connector: connector.current,
       sendTx,
     } as VegaWalletContextShape;
-  }, [
-    pubKey,
-    pubKeys,
-    selectPublicKey,
-    connect,
-    disconnect,
-    connector,
-    sendTx,
-  ]);
+  }, [pubKey, pubKeys, selectPublicKey, connect, disconnect, sendTx]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>

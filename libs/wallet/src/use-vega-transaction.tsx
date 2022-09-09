@@ -4,6 +4,7 @@ import { useVegaWallet } from './use-vega-wallet';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
+import { WalletError } from './connectors';
 
 export interface DialogProps {
   children?: JSX.Element;
@@ -22,8 +23,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: string | null;
-  details?: string[] | null;
+  error: WalletError | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -32,7 +32,6 @@ export interface VegaTxState {
 export const initialState = {
   status: VegaTxStatus.Default,
   error: null,
-  details: null,
   txHash: null,
   signature: null,
   dialogOpen: false,
@@ -59,45 +58,50 @@ export const useVegaTransaction = () => {
 
   const send = useCallback(
     async (pubKey: string, tx: Transaction) => {
-      setTransaction({
-        error: null,
-        details: null,
-        txHash: null,
-        signature: null,
-        status: VegaTxStatus.Requested,
-        dialogOpen: true,
-      });
-
-      const res = await sendTx(pubKey, tx);
-
-      if (res === null) {
-        // User rejected
-        reset();
-        return;
-      }
-
-      if (isError(res)) {
+      try {
         setTransaction({
-          error: res.error,
-          details: res.details,
+          error: null,
+          txHash: null,
+          signature: null,
+          status: VegaTxStatus.Requested,
+          dialogOpen: true,
+        });
+
+        const res = await sendTx(pubKey, tx);
+
+        if (res === null) {
+          // User rejected
+          reset();
+          return null;
+        }
+
+        if (res.signature && res.transactionHash) {
+          setTransaction({
+            status: VegaTxStatus.Pending,
+            txHash: res.transactionHash,
+            signature: res.signature,
+          });
+
+          return res;
+        }
+
+        return null;
+      } catch (err) {
+        const error =
+          err instanceof WalletError
+            ? err
+            : new WalletError(
+                'Something went wrong',
+                1,
+                'Unknown error occurred'
+              );
+
+        setTransaction({
+          error,
           status: VegaTxStatus.Error,
         });
-        return;
+        return null;
       }
-
-      if (res.tx?.signature?.value && res.txHash) {
-        setTransaction({
-          status: VegaTxStatus.Pending,
-          txHash: res.txHash,
-          signature: res.tx.signature.value,
-        });
-
-        return {
-          signature: res.tx.signature?.value,
-        };
-      }
-
-      return null;
     },
     [sendTx, setTransaction, reset]
   );
@@ -124,11 +128,4 @@ export const useVegaTransaction = () => {
     setTransaction,
     Dialog,
   };
-};
-
-export const isError = (error: unknown): error is { error: string } => {
-  if (error !== null && typeof error === 'object' && 'error' in error) {
-    return true;
-  }
-  return false;
 };

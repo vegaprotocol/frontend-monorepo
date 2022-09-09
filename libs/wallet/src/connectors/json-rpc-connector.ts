@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
+import { WalletError } from './vega-connector';
 
 const VERSION = 'v2';
 
@@ -13,24 +14,6 @@ enum Methods {
   ListKeys = 'session.list_keys',
   SendTransaction = 'session.send_transaction',
   GetChainId = 'session.get_chain_id',
-}
-
-export interface TransactionResponse {
-  txHash: string;
-  receivedAt: string;
-  sentAt: string;
-}
-
-export class JsonRpcError {
-  message: string;
-  code: number;
-  data?: string;
-
-  constructor(message: string, code: number, data?: string) {
-    this.message = message;
-    this.code = code;
-    this.data = data;
-  }
 }
 
 const BaseSchema = z.object({
@@ -77,6 +60,7 @@ const SendTransactionSchema = BaseSchema.extend({
     receivedAt: z.string(),
     sentAt: z.string(),
     transactionHash: z.string(),
+    signature: z.string(),
   }),
 });
 
@@ -88,13 +72,13 @@ type Response =
   | z.infer<typeof RequestPermissionsSchema>
   | z.infer<typeof SendTransactionSchema>
   | {
-      error: JsonRpcError;
+      error: WalletError;
     };
 
-const Errors: { [key: string]: JsonRpcError } = {
-  NO_TOKEN: new JsonRpcError('No token', 1),
-  INVALID_RESPONSE: new JsonRpcError('Invalid response from wallet', 2),
-  NO_SERVICE: new JsonRpcError('No service', 3),
+const Errors: { [key: string]: WalletError } = {
+  NO_TOKEN: new WalletError('No token', 1),
+  INVALID_RESPONSE: new WalletError('Invalid response from wallet', 2),
+  NO_SERVICE: new WalletError('No service', 3),
 };
 
 export class JsonRpcConnector implements VegaConnector {
@@ -219,14 +203,22 @@ export class JsonRpcConnector implements VegaConnector {
       ethers.utils.toUtf8Bytes(JSON.stringify(transaction))
     );
 
-    const res = await this.request(Methods.SendTransaction, {
+    const result = await this.request(Methods.SendTransaction, {
       token: cfg.token,
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
       encodedTransaction,
     });
 
-    return res;
+    // TODO check result for user rejection
+
+    const parsedResult = SendTransactionSchema.safeParse(result);
+
+    if (parsedResult.success) {
+      return parsedResult.data.result;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   private async request(method: Methods, params?: object) {
@@ -252,7 +244,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   private verifyResponse(result: Response) {
     if ('error' in result) {
-      throw new JsonRpcError(
+      throw new WalletError(
         result.error.message,
         result.error.code,
         result.error.data
