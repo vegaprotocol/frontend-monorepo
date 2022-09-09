@@ -12,7 +12,7 @@ type ButtonVariant = 'default' | 'primary' | 'secondary';
 type ButtonSize = 'lg' | 'md' | 'sm';
 
 const base =
-  'inline-block uppercase border rounded-md disabled:opacity-60 transition-colors';
+  'inline-block uppercase border rounded-md disabled:opacity-60';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
@@ -21,8 +21,8 @@ const defaultClasses = [
   'text-black dark:text-white',
   'border-black dark:border-white',
   'bg-white dark:bg-black',
-  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-800',
-  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-500',
+  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700',
+  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700 enabled:active:border-neutral-400 dark:enabled:active:border-neutral-400',
 ];
 const primary = [
   'text-black',

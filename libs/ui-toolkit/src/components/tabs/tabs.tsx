@@ -29,11 +29,10 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
             const isActive = child.props.id === activeTab;
             const triggerClass = classNames(
               'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-600',
-              'text-black dark:text-white',
               'uppercase',
               'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0 after:tracking-wider',
               {
-                'font-light tracking-wider': !isActive,
+                'font-light tracking-wider dark:text-neutral-400 dark:hover:text-white': !isActive,
               }
             );
             const borderClass = classNames(
