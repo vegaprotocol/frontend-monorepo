@@ -1,11 +1,7 @@
 import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
-import type {
-  Transaction,
-  TransactionResponse,
-  VegaConnector,
-} from './vega-connector';
+import type { Transaction, VegaConnector } from './vega-connector';
 import { WalletError } from './vega-connector';
 
 const VERSION = 'v2';
@@ -64,7 +60,21 @@ const SendTransactionSchema = BaseSchema.extend({
     receivedAt: z.string(),
     sentAt: z.string(),
     transactionHash: z.string(),
-    signature: z.string(),
+    transaction: z.object({
+      from: z.object({
+        publicKey: z.string(),
+      }),
+      inputData: z.string(),
+      pow: z.object({
+        tid: z.string(),
+        nonce: z.number(),
+      }),
+      signature: z.object({
+        algo: z.string(),
+        value: z.string(),
+        version: z.number(),
+      }),
+    }),
   }),
 });
 
@@ -219,7 +229,12 @@ export class JsonRpcConnector implements VegaConnector {
     const parsedResult = SendTransactionSchema.safeParse(result);
 
     if (parsedResult.success) {
-      return parsedResult.data.result as TransactionResponse;
+      return {
+        transactionHash: parsedResult.data.result.transactionHash,
+        sentAt: parsedResult.data.result.sentAt,
+        receivedAt: parsedResult.data.result.receivedAt,
+        signature: parsedResult.data.result.transaction.signature.value,
+      };
     } else {
       throw Errors.INVALID_RESPONSE;
     }

@@ -53,6 +53,7 @@ export const TransactionResponseSchema = z.object({
   sentAt: z.string(),
   receivedAt: z.string(),
 });
+export type V1TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 
 export const GetKeysSchema = z.object({
   keys: z.array(
