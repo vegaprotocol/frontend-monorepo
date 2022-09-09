@@ -45,8 +45,7 @@ const compileData = (data?: NetworkStatsQuery) => {
 
 export const StatsManager = ({ className }: StatsManagerProps) => {
   const { VEGA_ENV } = useEnvironment();
-  const { data, error, startPolling, stopPolling } =
-    useNetworkStatsQuery();
+  const { data, error, startPolling, stopPolling } = useNetworkStatsQuery();
 
   useEffect(() => {
     startPolling(1000);

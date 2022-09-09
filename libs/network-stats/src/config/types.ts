@@ -1,6 +1,4 @@
-import type {
-  NetworkStatsQuery,
-} from '../components/stats-manager/__generated__/Stats';
+import type { NetworkStatsQuery } from '../components/stats-manager/__generated__/Stats';
 
 export type Stats = Omit<NetworkStatsQuery['nodeData'], '__typename'> &
   Omit<NetworkStatsQuery['statistics'], '__typename'>;
