@@ -21,10 +21,6 @@ const agGridDarkVariables = `
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  .ag-theme-balham-dark .ag-header-row {
-    font-weight: 400;
-  }
 `;
 
 export const AgGrid = ({

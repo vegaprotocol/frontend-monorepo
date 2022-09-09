@@ -82,16 +82,16 @@ export const Positions = memo(
     };
     return (
       <AsyncRenderer loading={loading} error={error} data={data}>
-        <div className="p-2">
-          <h4 className="text-lg">
+        <div className="flex justify-between items-center p-3 pb-1">
+          <h4 className="text-m">
             {assetSymbol} {t('markets')}
           </h4>
-          <p>
+          <div className="text-sm text-neutral-300">
             {assetSymbol} {t('balance')}:
             <span data-testid="balance" className="pl-1 font-mono">
               <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
             </span>
-          </p>
+          </div>
         </div>
         <PositionsTable
           domLayout="autoHeight"
