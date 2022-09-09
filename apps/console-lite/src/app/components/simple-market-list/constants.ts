@@ -197,3 +197,10 @@ export const ROW_CLASS_RULES = {
 };
 
 export const LARGE_SCREENS = ['xl', 'xxl'];
+
+export const ALL_PRODUCTS_ITEM = {
+  name: t('All Markets'),
+  id: 'allmarkets',
+  cssClass: 'text-pink',
+  color: theme.colors.pink,
+};
