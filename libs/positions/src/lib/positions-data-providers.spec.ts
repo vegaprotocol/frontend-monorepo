@@ -112,7 +112,8 @@ const data: PositionsQuery = {
               id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
               name: 'Market name',
               decimalPlaces: 5,
-              tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+              tradingMode:
+                Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
               positionDecimalPlaces: 0,
               tradableInstrument: {
                 __typename: 'TradableInstrument',

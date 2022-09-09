@@ -4,7 +4,10 @@ import sortBy from 'lodash/sortBy';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import { PositionsDocument, PositionsEventDocument } from './__generated__/Positions';
+import {
+  PositionsDocument,
+  PositionsEventDocument,
+} from './__generated__/Positions';
 import type {
   PositionsQuery,
   PositionsEventSubscription,
