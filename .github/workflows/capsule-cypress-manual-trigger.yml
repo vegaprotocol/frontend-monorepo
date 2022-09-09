@@ -12,7 +12,7 @@ on:
         options:
           - explorer-e2e
           - console-lite-e2e
-          - stats-e2e
+          - stats-e2e 
           - token-e2e
           - trading-e2e
       includeFlows:
@@ -104,7 +104,7 @@ jobs:
         run: vegacapsule nomad &
 
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
         working-directory: capsule
 
       ######
