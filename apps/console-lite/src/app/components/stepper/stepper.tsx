@@ -88,7 +88,7 @@ export const Stepper = ({ steps }: StepperProps) => {
                         'md:mt-0 font-alpha uppercase text-black dark:text-white',
                         {
                           'mt-2 text-md md:text-2xl': isActive,
-                          'mt-4 text-sm md:text-lg md:ml-8': !isActive,
+                          'mt-4 text-sm md:text-lg md:ml-2': !isActive,
                         }
                       )}
                     >

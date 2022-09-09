@@ -33,17 +33,17 @@ export const WithdrawLimits = ({
   return (
     <table className="w-full text-sm">
       <tbody>
-        <tr>
+        <tr data-testid="balance-available">
           <th className="text-left font-normal">{t('Balance available')}</th>
           <td className="text-right">{balance.toString()}</td>
         </tr>
-        <tr>
+        <tr data-testid="withdrawal-threshold">
           <th className="text-left font-normal">
             {t('Delayed withdrawal threshold')}
           </th>
           <td className="text-right">{text}</td>
         </tr>
-        <tr>
+        <tr data-testid="delay-time">
           <th className="text-left font-normal">{t('Delay time')}</th>
           <td className="text-right">{delayTime}</td>
         </tr>
