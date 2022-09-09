@@ -11,7 +11,7 @@ on:
         type: choice
         options:
           - token-e2e
-          
+
       includeFlows:
         description: 'Include long flows (if any)?'
         required: true
