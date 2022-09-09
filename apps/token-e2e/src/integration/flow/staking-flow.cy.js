@@ -158,7 +158,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.validate_validator_list_total_stake_and_share('0', '', '2.00', '100%');
     });
 
-    it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
+    it.only('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
       cy.staking_page_associate_tokens('3', { type: 'contract' });
       cy.navigate_to('staking');
       cy.staking_page_associate_tokens('4', { type: 'wallet' });
