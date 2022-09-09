@@ -48,10 +48,10 @@ export const useCreateWithdraw = () => {
         },
       });
 
-      if (res?.signature) {
-        const id = determineId(res.signature);
+      if (res) {
+        const withdrawalId = determineId(res.signature);
 
-        const withdrawal = await waitForWithdrawal(id, pubKey);
+        const withdrawal = await waitForWithdrawal(withdrawalId, pubKey);
         setWithdrawal(withdrawal);
         const approval = await waitForWithdrawalApproval(withdrawal.id);
         setApproval(approval);

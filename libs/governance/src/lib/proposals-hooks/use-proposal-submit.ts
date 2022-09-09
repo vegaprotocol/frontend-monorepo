@@ -28,19 +28,17 @@ export const useProposalSubmit = () => {
           proposalSubmission: proposal,
         });
 
-        if (res?.signature) {
-          const resId = determineId(res.signature);
-          if (resId) {
-            waitForProposalEvent(resId, pubKey, (p) => {
+        if (res) {
+          const proposalId = determineId(res.signature);
+          if (proposalId) {
+            waitForProposalEvent(proposalId, pubKey, (p) => {
               setFinalizedProposal(p);
               setComplete();
             });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
-        return;
       }
     },
     [pubKey, send, setComplete, waitForProposalEvent]

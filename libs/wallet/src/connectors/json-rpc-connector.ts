@@ -1,7 +1,11 @@
 import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
-import type { Transaction, VegaConnector } from './vega-connector';
+import type {
+  Transaction,
+  TransactionResponse,
+  VegaConnector,
+} from './vega-connector';
 import { WalletError } from './vega-connector';
 
 const VERSION = 'v2';
@@ -215,7 +219,7 @@ export class JsonRpcConnector implements VegaConnector {
     const parsedResult = SendTransactionSchema.safeParse(result);
 
     if (parsedResult.success) {
-      return parsedResult.data.result;
+      return parsedResult.data.result as TransactionResponse;
     } else {
       throw Errors.INVALID_RESPONSE;
     }

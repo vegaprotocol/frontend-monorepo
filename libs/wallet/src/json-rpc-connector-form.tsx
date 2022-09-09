@@ -66,7 +66,7 @@ export const JsonRpcConnectorForm = ({
       }
       setStatus('error');
     }
-  }, [connector, connect, onConnect, walletUrl, appChainId]);
+  }, [connector, connect, onConnect, walletUrl]);
 
   useEffect(() => {
     if (status === 'idle') {

@@ -129,19 +129,17 @@ export const useOrderSubmit = () => {
           },
         });
 
-        if (res?.signature) {
-          const resId = determineId(res.signature);
-          if (resId) {
-            waitForOrderEvent(resId, pubKey, (order) => {
+        if (res) {
+          const orderId = determineId(res.signature);
+          if (orderId) {
+            waitForOrderEvent(orderId, pubKey, (order) => {
               setFinalizedOrder(order);
               setComplete();
             });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
-        return;
       }
     },
     [pubKey, send, setComplete, waitForOrderEvent]
