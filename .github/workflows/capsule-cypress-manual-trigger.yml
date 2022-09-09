@@ -10,11 +10,8 @@ on:
         required: true
         type: choice
         options:
-          - explorer-e2e
-          - console-lite-e2e
-          - stats-e2e
           - token-e2e
-          - trading-e2e
+
       includeFlows:
         description: 'Include long flows (if any)?'
         required: true
@@ -46,14 +43,6 @@ jobs:
       #######
       ## Checkout capsule
       #######
-
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          path: './frontend-monorepo'
 
       # Checkout capsule to build local network
       - name: Checkout capsule
@@ -104,7 +93,7 @@ jobs:
         run: vegacapsule nomad &
 
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
         working-directory: capsule
 
       ######
@@ -128,9 +117,14 @@ jobs:
       ## Run some tests
       ######
 
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
       - name: Install root dependencies
         run: yarn install
-        working-directory: frontend-monorepo
 
       - name: Run Cypress tests
         run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
