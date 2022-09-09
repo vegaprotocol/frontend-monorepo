@@ -2,9 +2,7 @@ import merge from 'lodash/merge';
 import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import type {
-  MarketDepthQuery,
-} from '@vegaprotocol/market-depth';
+import type { MarketDepthQuery } from '@vegaprotocol/market-depth';
 
 export const generateMarketDepth = (
   override?: PartialDeep<MarketDepthQuery>
