@@ -9,7 +9,7 @@ const agGridLightVariables = `
     --ag-header-background-color: ${colors.white};
     --ag-odd-row-background-color: ${colors.white};
     --ag-row-border-color: ${colors.white};
-    --ag-row-hover-color: ${colors.neutral[300]};
+    --ag-row-hover-color: ${colors.neutral[100]};
     --ag-font-size: 12px;
   }
 
