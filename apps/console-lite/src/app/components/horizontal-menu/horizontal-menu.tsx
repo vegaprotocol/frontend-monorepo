@@ -19,21 +19,21 @@ interface Props {
   'aria-label'?: string;
 }
 
-const MenuItem = ({ name, url, isActive, cssClass }: Item) => {
-  if (url) {
-    return (
-      <Link
-        to={url}
-        aria-label={name}
-        className={classNames('pl-0 hover:opacity-75', cssClass, {
-          active: !isActive,
-        })}
-      >
-        {name}
-      </Link>
-    );
+const MenuItem = ({ name, url, isActive, cssClass }: Item): JSX.Element => {
+  if (!url) {
+    return <span>{name}</span>;
   }
-  return name;
+  return (
+    <Link
+      to={url}
+      aria-label={name}
+      className={classNames('pl-0 hover:opacity-75', cssClass, {
+        active: !isActive,
+      })}
+    >
+      {name}
+    </Link>
+  );
 };
 
 const findActive = (active?: string, items?: Item[]) => {

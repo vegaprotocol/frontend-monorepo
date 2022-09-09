@@ -6,12 +6,10 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import type {
   GetRowIdParams,
   TabToNextCellParams,
-} from 'ag-grid-community/dist/lib/entities/iCallbackParams';
-import type { AgGridReact } from 'ag-grid-react';
-import type {
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
   ColDef,
