@@ -59,9 +59,9 @@ describe('deposit form validation', () => {
   it('unable to select assets not enabled', () => {
     cy.getByTestId('deposit-submit').click();
     // Assets not enabled in mocks
-    cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist')
-    cy.get(assetSelectField + ' option:contains(Asset 3)').should('not.exist')
-    cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist')
+    cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 3)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist');
   });
 
   it('able to disconnect eth wallet', () => {
