@@ -40,7 +40,6 @@
       ],
       "@vegaprotocol/trades": ["libs/trades/src/index.ts"],
       "@vegaprotocol/types": ["libs/types/src/index.ts"],
-      "@vegaprotocol/types/types": ["libs/types/src/__generated__/types.ts"],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],

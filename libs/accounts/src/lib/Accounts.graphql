@@ -3,7 +3,11 @@ fragment AccountFields on Account {
   balance
   market {
     id
-    name
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
   }
   asset {
     id
@@ -15,20 +19,14 @@ fragment AccountFields on Account {
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
-    accountsConnection {
-      edges {
-        node {
-          type
-          balance
-        }
-      }
+    accounts {
+      ...AccountFields
     }
   }
 }
 
-subscription AccountSubscribe($partyId: ID!) {
+subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    type
-    balance
+    ...AccountFields
   }
 }
