@@ -29,7 +29,7 @@ const feedbackError = '[data-testid="Error"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
-context('Governance flow - with eth and vega wallets connected', function () {
+context.skip('Governance flow - with eth and vega wallets connected', function () {
   before('connect wallets and set approval limit', function () {
     cy.vega_wallet_import();
     cy.visit('/');
