@@ -29,6 +29,8 @@ module.exports = {
       '../../libs/positions/**',
       '../../libs/react-helpers/**',
       '../../libs/trades/**',
+      '../../libs/web3/**',
+      '../../libs/wallet/**',
     ],
   },
 };

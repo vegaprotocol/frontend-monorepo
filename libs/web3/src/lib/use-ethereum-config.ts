@@ -1,6 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
-import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
+import { useNetworkParametersQuery } from '@vegaprotocol/react-helpers';
 
 export interface EthereumConfig {
   network_id: string;
@@ -23,26 +22,17 @@ export interface EthereumConfig {
   };
 }
 
-export const NETWORK_PARAMS_QUERY = gql`
-  query NetworkParamsQuery {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
-
 export const useEthereumConfig = () => {
   const { data, loading, error } =
-    useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
+    useNetworkParametersQuery();
 
   const config = useMemo(() => {
     if (!data) {
       return null;
     }
 
-    const param = data.networkParameters?.find(
-      (np) => np.key === 'blockchains.ethereumConfig'
+    const param = data.networkParametersConnection.edges?.find(
+      (np) => np?.node.key === 'blockchains.ethereumConfig'
     );
 
     if (!param) {
@@ -52,7 +42,7 @@ export const useEthereumConfig = () => {
     let parsedConfig: EthereumConfig;
 
     try {
-      parsedConfig = JSON.parse(param.value);
+      parsedConfig = JSON.parse(param.node.value);
     } catch {
       return null;
     }
