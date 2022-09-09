@@ -1,8 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 import type { ReactNode } from 'react';
-import type { MarketList_markets } from '../__generated__/MarketList';
+import type { MarketData } from '../market-data-provider';
+import type { MarketCandles } from '../markets-candles-provider';
+import type { Market } from '../markets-provider';
 
 import {
   SelectAllMarketsTableBody,
@@ -16,186 +18,173 @@ jest.mock(
       children
 );
 
+const MARKET_A: Partial<Market> = {
+  __typename: 'Market',
+  id: '1',
+  decimalPlaces: 2,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  tradableInstrument: {
+    __typename: 'TradableInstrument',
+    instrument: {
+      __typename: 'Instrument',
+      id: '1',
+      code: 'ABCDEF',
+      name: 'ABCDEF 1-Day',
+      product: {
+        __typename: 'Future',
+        settlementAsset: {
+          __typename: 'Asset',
+          symbol: 'ABC',
+        },
+      },
+      metadata: {
+        __typename: 'InstrumentMetadata',
+        tags: ['ABC', 'DEF'],
+      },
+    },
+  },
+  fees: {
+    __typename: 'Fees',
+    factors: {
+      __typename: 'FeeFactors',
+      infrastructureFee: '0.01',
+      liquidityFee: '0.01',
+      makerFee: '0.01',
+    },
+  },
+};
+
+const MARKET_B: Partial<Market> = {
+  __typename: 'Market',
+  id: '2',
+  decimalPlaces: 2,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  tradableInstrument: {
+    __typename: 'TradableInstrument',
+    instrument: {
+      __typename: 'Instrument',
+      id: '2',
+      code: 'XYZ',
+      name: 'XYZ 1-Day',
+      product: {
+        __typename: 'Future',
+        settlementAsset: {
+          __typename: 'Asset',
+          symbol: 'XYZ',
+        },
+      },
+      metadata: {
+        __typename: 'InstrumentMetadata',
+        tags: ['XYZ'],
+      },
+    },
+  },
+  fees: {
+    __typename: 'Fees',
+    factors: {
+      __typename: 'FeeFactors',
+      infrastructureFee: '0.01',
+      liquidityFee: '0.01',
+      makerFee: '0.01',
+    },
+  },
+};
+
+const MARKET_DATA_A: Partial<MarketData> = {
+  __typename: 'MarketData',
+  market: {
+    __typename: 'Market',
+    id: '1',
+  },
+  markPrice: '90',
+  trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+  indicativeVolume: '1000',
+};
+
+const MARKET_DATA_B: Partial<MarketData> = {
+  __typename: 'MarketData',
+  market: {
+    __typename: 'Market',
+    id: '2',
+  },
+  markPrice: '123.123',
+  trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+  indicativeVolume: '2000',
+};
+
+const MARKET_CANDLES_A: Partial<MarketCandles> = {
+  marketId: '1',
+  candles: [
+    {
+      __typename: 'CandleNode',
+      high: '100',
+      low: '10',
+      open: '10',
+      close: '80',
+      volume: '1000',
+    },
+    {
+      __typename: 'CandleNode',
+      high: '10',
+      low: '1',
+      open: '1',
+      close: '100',
+      volume: '1000',
+    },
+  ],
+};
+
+const MARKET_CANDLES_B: Partial<MarketCandles> = {
+  marketId: '2',
+  candles: [
+    {
+      __typename: 'CandleNode',
+      high: '100',
+      low: '10',
+      open: '10',
+      close: '80',
+      volume: '1000',
+    },
+  ],
+};
+
 describe('SelectMarket', () => {
   it('should render the SelectAllMarketsTableBody', () => {
     const onSelect = jest.fn();
-    const expectedMarket = mockData.data.markets[0];
     const { container } = render(
       <SelectAllMarketsTableBody
-        data={mockData.data.markets}
+        markets={[MARKET_A as Market, MARKET_B as Market]}
+        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
+        marketsCandles={[
+          MARKET_CANDLES_A as MarketCandles,
+          MARKET_CANDLES_B as MarketCandles,
+        ]}
         onSelect={onSelect}
       />
     );
-    expect(screen.getByText('AAPL.MF21')).toBeTruthy();
-    expect(screen.getByText('-3.14%')).toBeTruthy();
-    expect(container).toHaveTextContent(/141\.75/);
-    fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
-    expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
+    expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
+    expect(screen.getByText('25.00%')).toBeTruthy(); // price change
+    expect(container).toHaveTextContent(/1,000/); // volume
+    fireEvent.click(screen.getByTestId(`market-link-1`));
+    expect(onSelect).toHaveBeenCalledWith('1');
   });
 
   it('should call onSelect callback on SelectMarketLandingTable', () => {
     const onSelect = jest.fn();
-    const expectedMarket = mockData.data.markets[0];
     render(
       <SelectMarketLandingTable
-        data={mockData.data.markets}
+        markets={[MARKET_A as Market, MARKET_B as Market]}
+        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
+        marketsCandles={[
+          MARKET_CANDLES_A as MarketCandles,
+          MARKET_CANDLES_B as MarketCandles,
+        ]}
         onSelect={onSelect}
       />
     );
-    fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
-    expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
+    fireEvent.click(screen.getByTestId(`market-link-1`));
+    expect(onSelect).toHaveBeenCalledWith('1');
+    fireEvent.click(screen.getByTestId(`market-link-2`));
+    expect(onSelect).toHaveBeenCalledWith('2');
   });
 });
-
-const mockData = {
-  data: {
-    markets: [
-      {
-        __typename: 'Market',
-        id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
-        decimalPlaces: 2,
-        name: '',
-        positionDecimalPlaces: 4,
-        state: MarketState.STATE_ACTIVE,
-        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        data: {
-          markPrice: '14175',
-        },
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            __typename: 'Instrument',
-            name: 'APEUSD (May 2022)',
-            code: 'APEUSD',
-            product: {
-              __typename: 'Future',
-              settlementAsset: {
-                __typename: 'Asset',
-                symbol: 'USD',
-              },
-            },
-          },
-        },
-        marketTimestamps: {
-          __typename: 'MarketTimestamps',
-          open: '2022-05-18T13:08:27.693537312Z',
-          close: null,
-        },
-        fees: {
-          __typename: 'Fees',
-          factors: {
-            __typename: 'FeeFactors',
-            infrastructureFee: '0.01',
-            makerFee: '0.01',
-            liquidityFee: '0.01',
-          },
-        },
-        candles: [
-          {
-            __typename: 'Candle',
-            open: '822',
-            close: '798',
-          },
-          {
-            __typename: 'Candle',
-            open: '793',
-            close: '792',
-          },
-          {
-            __typename: 'Candle',
-            open: '794',
-            close: '776',
-          },
-          {
-            __typename: 'Candle',
-            open: '785',
-            close: '786',
-          },
-          {
-            __typename: 'Candle',
-            open: '803',
-            close: '770',
-          },
-          {
-            __typename: 'Candle',
-            open: '785',
-            close: '774',
-          },
-        ],
-      } as MarketList_markets,
-      {
-        __typename: 'Market',
-        id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
-        decimalPlaces: 5,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            __typename: 'Instrument',
-            name: 'Apple Monthly (30 Jun 2022)',
-            code: 'AAPL.MF21',
-            product: {
-              __typename: 'Future',
-              settlementAsset: {
-                __typename: 'Asset',
-                symbol: 'USD',
-              },
-            },
-          },
-        },
-        fees: {
-          __typename: 'Fees',
-          factors: {
-            __typename: 'FeeFactors',
-            infrastructureFee: '0.01',
-            makerFee: '0.01',
-            liquidityFee: '0.01',
-          },
-        },
-        marketTimestamps: {
-          __typename: 'MarketTimestamps',
-          open: '2022-05-18T13:00:39.328347732Z',
-          close: null,
-        },
-        candles: [
-          {
-            __typename: 'Candle',
-            open: '14707175',
-            close: '14633864',
-          },
-          {
-            __typename: 'Candle',
-            open: '14658400',
-            close: '14550193',
-          },
-          {
-            __typename: 'Candle',
-            open: '14550193',
-            close: '14373526',
-          },
-          {
-            __typename: 'Candle',
-            open: '14307141',
-            close: '14339846',
-          },
-          {
-            __typename: 'Candle',
-            open: '14357485',
-            close: '14179971',
-          },
-          {
-            __typename: 'Candle',
-            open: '14179972',
-            close: '14174855',
-          },
-        ],
-        name: '',
-        positionDecimalPlaces: 4,
-        state: MarketState.STATE_ACTIVE,
-        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        data: {
-          markPrice: '14175',
-        },
-      } as MarketList_markets,
-    ],
-  },
-};
