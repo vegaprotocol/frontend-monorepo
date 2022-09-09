@@ -10,7 +10,7 @@ const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
 const txTimeout = Cypress.env('txTimeout');
 
-context('Governance flow - with eth and vega wallets connected', function () {
+context.skip('Governance flow - with eth and vega wallets connected', function () {
   before('connect wallets and set approval limit', function () {
     cy.vega_wallet_import();
     cy.visit('/');
