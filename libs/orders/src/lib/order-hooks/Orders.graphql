@@ -8,6 +8,7 @@ fragment OrderFields on Order {
     tradableInstrument {
       instrument {
         id
+        name
         code
       }
     }
@@ -45,33 +46,37 @@ query Orders($partyId: ID!, $pagination: Pagination) {
   }
 }
 
-subscription OrderSub($partyId: ID!) {
+subscription OrderEvent($partyId: ID!) {
   orders(partyId: $partyId) {
     ...OrderFields
   }
 }
 
-subscription OrderEvent($partyId: ID!) {
+fragment OrderBusEventFields on Order {
+  type
+  id
+  status
+  rejectionReason
+  createdAt
+  size
+  price
+  timeInForce
+  expiresAt
+  side
+  market {
+    id
+    name
+    decimalPlaces
+    positionDecimalPlaces
+  }
+}
+
+subscription OrderBusEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
     type
     event {
       ... on Order {
-        type
-        id
-        status
-        rejectionReason
-        createdAt
-        size
-        price
-        timeInForce
-        expiresAt
-        side
-        market {
-          id
-          name
-          decimalPlaces
-          positionDecimalPlaces
-        }
+        ...OrderBusEventFields
       }
     }
   }

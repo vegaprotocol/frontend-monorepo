@@ -24,6 +24,8 @@ module.exports = {
       '../../libs/liquidity/**',
       '../../libs/market-depth/**',
       '../../libs/market-list/**',
+      '../../libs/network-stats/**',
+      '../../libs/orders/**',
     ],
   },
 };

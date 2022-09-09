@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
+import type { OrderFieldsFragment } from './__generated__/Orders';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
@@ -106,7 +106,7 @@ export const useOrderSubmit = () => {
   } = useVegaTransaction();
 
   const [finalizedOrder, setFinalizedOrder] =
-    useState<OrderEvent_busEvents_event_Order | null>(null);
+    useState<OrderFieldsFragment | null>(null);
 
   const reset = useCallback(() => {
     resetTransaction();

@@ -1,19 +1,18 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__/OrderEvent';
+import type { OrderFieldsFragment } from '../../order-hooks/__generated__/Orders';
 import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import {
+  Schema,
   OrderRejectionReasonMapping,
-  OrderStatus,
   OrderStatusMapping,
   OrderTimeInForceMapping,
-  OrderType,
 } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { Link } from '@vegaprotocol/ui-toolkit';
 
 export interface OrderFeedbackProps {
   transaction: VegaTxState;
-  order: OrderEvent_busEvents_event_Order | null;
+  order: OrderFieldsFragment | null;
 }
 
 export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
@@ -36,7 +35,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p className={labelClass}>{t(`Status`)}</p>
           <p>{t(`${OrderStatusMapping[order.status]}`)}</p>
         </div>
-        {order.type === OrderType.TYPE_LIMIT && order.market && (
+        {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={labelClass}>{t(`Price`)}</p>
             <p>
@@ -82,21 +81,18 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   );
 };
 
-const getRejectionReason = (
-  order: OrderEvent_busEvents_event_Order
-): string | null => {
+const getRejectionReason = (order: OrderFieldsFragment): string | null => {
   switch (order.status) {
-    case OrderStatus.STATUS_STOPPED:
+    case Schema.OrderStatus.STATUS_STOPPED:
       return t(
         `Your ${
           OrderTimeInForceMapping[order.timeInForce]
         } order was not filled and it has been stopped`
       );
-    case OrderStatus.STATUS_REJECTED:
-      return (
-        order.rejectionReason &&
-        t(OrderRejectionReasonMapping[order.rejectionReason])
-      );
+    case Schema.OrderStatus.STATUS_REJECTED:
+      return order.rejectionReason
+        ? t(OrderRejectionReasonMapping[order.rejectionReason])
+        : null;
     default:
       return null;
   }
