@@ -1,69 +1,23 @@
 import uniqBy from 'lodash/uniqBy';
 import compact from 'lodash/compact';
 import orderBy from 'lodash/orderBy';
-import { gql, useQuery } from '@apollo/client';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEffect, useMemo } from 'react';
+import type { Schema } from '@vegaprotocol/types';
+import {
+  useDepositsQuery,
+  DepositEventDocument,
+} from './__generated__/Deposit';
 import type {
-  DepositEventSub,
-  DepositEventSubVariables,
-  DepositEventSub_busEvents_event,
-  DepositEventSub_busEvents_event_Deposit,
-} from './__generated__/DepositEventSub';
-import type { Deposits, DepositsVariables } from './__generated__/Deposits';
-
-const DEPOSIT_FRAGMENT = gql`
-  fragment DepositFields on Deposit {
-    id
-    status
-    amount
-    asset {
-      id
-      symbol
-      decimals
-    }
-    createdTimestamp
-    creditedTimestamp
-    txHash
-  }
-`;
-
-const DEPOSITS_QUERY = gql`
-  ${DEPOSIT_FRAGMENT}
-  query DepositsQuery($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      depositsConnection {
-        edges {
-          node {
-            ...DepositFields
-          }
-        }
-      }
-    }
-  }
-`;
-
-const DEPOSITS_BUS_EVENT_SUB = gql`
-  ${DEPOSIT_FRAGMENT}
-  subscription DepositEventSub($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
-      event {
-        ... on Deposit {
-          ...DepositFields
-        }
-      }
-    }
-  }
-`;
+  DepositsQuery,
+  DepositEventSubscription,
+  DepositEventSubscriptionVariables,
+} from './__generated__/Deposit';
 
 export const useDeposits = () => {
   const { keypair } = useVegaWallet();
-  const { data, loading, error, subscribeToMore } = useQuery<
-    Deposits,
-    DepositsVariables
-  >(DEPOSITS_QUERY, {
+  const { data, loading, error, subscribeToMore } = useDepositsQuery({
     variables: { partyId: keypair?.pub || '' },
     skip: !keypair?.pub,
   });
@@ -83,8 +37,11 @@ export const useDeposits = () => {
   useEffect(() => {
     if (!keypair?.pub) return;
 
-    const unsub = subscribeToMore<DepositEventSub, DepositEventSubVariables>({
-      document: DEPOSITS_BUS_EVENT_SUB,
+    const unsub = subscribeToMore<
+      DepositEventSubscription,
+      DepositEventSubscriptionVariables
+    >({
+      document: DepositEventDocument,
       variables: { partyId: keypair?.pub },
       updateQuery,
     });
@@ -98,20 +55,19 @@ export const useDeposits = () => {
 };
 
 const updateQuery: UpdateQueryFn<
-  Deposits,
-  DepositEventSubVariables,
-  DepositEventSub
+  DepositsQuery,
+  DepositEventSubscriptionVariables,
+  DepositEventSubscription
 > = (prev, { subscriptionData, variables }) => {
-  console.log(subscriptionData);
   if (!subscriptionData.data.busEvents?.length || !variables?.partyId) {
     return prev;
   }
 
   const curr =
     compact(prev.party?.depositsConnection.edges?.map((e) => e?.node)) || [];
-  const incoming = subscriptionData.data.busEvents
-    .map((e) => e.event)
-    .filter(isDepositEvent);
+  const incoming: Schema.Deposit[] = subscriptionData.data.busEvents
+    .filter((event) => isDepositEvent(event as Schema.BusEvent))
+    .map((e) => e.event as Schema.Deposit);
 
   const deposits = uniqBy([...incoming, ...curr], 'id');
 
@@ -142,10 +98,8 @@ const updateQuery: UpdateQueryFn<
   };
 };
 
-const isDepositEvent = (
-  event: DepositEventSub_busEvents_event
-): event is DepositEventSub_busEvents_event_Deposit => {
-  if (event.__typename === 'Deposit') {
+const isDepositEvent = (busEvent: Schema.BusEvent) => {
+  if (busEvent.event.__typename === 'Deposit') {
     return true;
   }
 
