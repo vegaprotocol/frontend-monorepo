@@ -19,7 +19,7 @@ const associatedAmount = '[data-test-id="associated-amount"]';
 const disassocitiationWarning = '[data-testid="disassociation-warning"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
 
-context.skip(
+context(
   'Token association flow - with eth and vega wallets connected',
   function () {
     before('visit staking tab and connect vega wallet', function () {
