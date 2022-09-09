@@ -55,7 +55,9 @@ export const mapDataToMarketList = ({ markets }: MarketListQuery) => {
   );
 };
 
-export const calcCandleLow = (m: MarketListItemFragment): string | undefined => {
+export const calcCandleLow = (
+  m: MarketListItemFragment
+): string | undefined => {
   return m.candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.low) {
@@ -69,7 +71,9 @@ export const calcCandleLow = (m: MarketListItemFragment): string | undefined => 
     .toString();
 };
 
-export const calcCandleHigh = (m: MarketListItemFragment): string | undefined => {
+export const calcCandleHigh = (
+  m: MarketListItemFragment
+): string | undefined => {
   return m.candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.high) {

@@ -3,7 +3,9 @@ import { mapDataToMarketList } from './market-utils';
 
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
-    const result = mapDataToMarketList(mockData.data as unknown as MarketListQuery);
+    const result = mapDataToMarketList(
+      mockData.data as unknown as MarketListQuery
+    );
     expect(result).toEqual(mockList);
   });
 });

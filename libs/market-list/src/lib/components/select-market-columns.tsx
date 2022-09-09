@@ -284,7 +284,8 @@ export const columns = (
         market.tradingMode ===
           Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-        market.data.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data.trigger !==
+          Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
@@ -437,7 +438,8 @@ export const columnsPositionMarkets = (
         market.tradingMode ===
           Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-        market.data.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data.trigger !==
+          Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
