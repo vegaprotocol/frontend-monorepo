@@ -44,7 +44,7 @@
       "options": {
         "commands": [
           "npx apollo client:codegen --config=libs/types/apollo.config.js --target=typescript --globalTypesFile=libs/types/src/__generated__/globalTypes.ts",
-          "npx graphql-codegen --config=libs/types/codegen.yml -- --verbose",
+          "npx graphql-codegen --config=libs/types/codegen.yml --verbose",
           "node libs/types/fix-imports"
         ],
         "parallel": false

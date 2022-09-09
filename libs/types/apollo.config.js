@@ -27,6 +27,7 @@ module.exports = {
       '../../libs/network-stats/**',
       '../../libs/orders/**',
       '../../libs/positions/**',
+      '../../libs/react-helpers/**',
     ],
   },
 };

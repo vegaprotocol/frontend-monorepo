@@ -1,0 +1,10 @@
+query NetworkParameters {
+  networkParametersConnection {
+    edges {
+      node {
+        key
+        value
+      }
+    }
+  }
+}

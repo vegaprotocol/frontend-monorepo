@@ -1,36 +1,22 @@
-import { gql, useQuery } from '@apollo/client';
-import type { NetworkParams } from './__generated__/NetworkParams';
-
-export const NETWORK_PARAMETERS_QUERY = gql`
-  query NetworkParams {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
+import { useNetworkParametersQuery } from './__generated__/NetworkParameters';
 
 export const useNetworkParam = (param: string) => {
-  const { data, loading, error } = useQuery<NetworkParams, never>(
-    NETWORK_PARAMETERS_QUERY
-  );
-  const foundParams = data?.networkParameters?.filter((p) => param === p.key);
+  const { data, loading, error } = useNetworkParametersQuery();
+  const foundParams = data?.networkParametersConnection.edges?.filter((p) => param === p?.node.key);
   return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
+    data: foundParams ? foundParams.map((f) => f?.node.value) : null,
     loading,
     error,
   };
 };
 
 export const useNetworkParams = (params: string[]) => {
-  const { data, loading, error } = useQuery<NetworkParams, never>(
-    NETWORK_PARAMETERS_QUERY
-  );
-  const foundParams = data?.networkParameters
-    ?.filter((p) => params.includes(p.key))
-    .sort((a, b) => params.indexOf(a.key) - params.indexOf(b.key));
+  const { data, loading, error } = useNetworkParametersQuery();
+  const foundParams = data?.networkParametersConnection.edges
+    ?.filter((p) => params.includes(p?.node.key ?? ''))
+    .sort((a, b) => params.indexOf(a?.node.key ?? '') - params.indexOf(b?.node.key ?? ''));
   return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
+    data: foundParams ? foundParams.map((f) => f?.node.value) : null,
     loading,
     error,
   };
