@@ -100,7 +100,8 @@ export const SelectMarketPopover = ({
   marketName: string;
   onSelect: (id: string) => void;
 }) => {
-  const triggerClasses = 'sm:text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-4 whitespace-nowrap';
+  const triggerClasses =
+    'sm:text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-4 whitespace-nowrap';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();

@@ -337,7 +337,10 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
     <section className="h-full">
       <AutoSizer>
         {({ width, height }) => (
-          <div style={{ width, height }} className="overflow-auto border-[1px] dark:border-neutral-600">
+          <div
+            style={{ width, height }}
+            className="overflow-auto border-[1px] dark:border-neutral-600"
+          >
             {children}
           </div>
         )}

@@ -86,7 +86,7 @@ export const Positions = memo(
           <h4 className="text-m">
             {assetSymbol} {t('markets')}
           </h4>
-          <div className="text-sm text-neutral-300">
+          <div className="text-sm text-neutral-500 dark:text-neutral-300">
             {assetSymbol} {t('balance')}:
             <span data-testid="balance" className="pl-1 font-mono">
               <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
