@@ -5,7 +5,7 @@ import type { PartialDeep } from 'type-fest';
 
 import { FillsTable } from './fills-table';
 import { generateFill } from './test-helpers';
-import type { FillFields } from './__generated__/FillFields';
+import type { FillFieldsFragment } from './__generated__/Fills';
 
 const waitForGridToBeInTheDOM = () => {
   return waitFor(() => {
@@ -21,7 +21,7 @@ const waitForDataToHaveLoaded = () => {
 };
 
 describe('FillsTable', () => {
-  let defaultFill: PartialDeep<FillFields>;
+  let defaultFill: PartialDeep<FillFieldsFragment>;
 
   beforeEach(() => {
     defaultFill = {
@@ -32,7 +32,6 @@ describe('FillsTable', () => {
         positionDecimalPlaces: 5,
         tradableInstrument: {
           instrument: {
-            name: 'test market',
             product: {
               settlementAsset: {
                 decimals: 2,

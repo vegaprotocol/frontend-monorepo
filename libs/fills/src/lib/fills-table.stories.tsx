@@ -6,8 +6,8 @@ import { useCallback, useRef } from 'react';
 import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import { FillsTable } from './fills-table';
 import { generateFills, generateFill } from './test-helpers';
-import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
-import type { FillsSub_trades } from './__generated__/FillsSub';
+import type { FillFieldsFragment } from './__generated__/Fills'
+import type { FillsTradeEdge } from './types';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 
 export default {
@@ -22,13 +22,13 @@ const createdAt = new Date('2005-04-02 21:37:00').getTime();
 const fills = generateFills();
 Default.args = {
   partyId: 'party-id',
-  rowData: fills.party?.tradesConnection.edges.map((e) => e.node) || [],
+  rowData: fills.party?.tradesConnection.edges.map((e: FillsTradeEdge) => e.node) || [],
 };
 
 const getData = (
   start: number,
   end: number
-): Fills_party_tradesConnection_edges[] =>
+): FillsTradeEdge[] =>
   new Array(end - start).fill(null).map((v, i) => ({
     __typename: 'TradeEdge',
     node: generateFill({
@@ -49,8 +49,8 @@ const useDataProvider = ({
     data,
     totalCount,
   }: {
-    insertionData: Fills_party_tradesConnection_edges[];
-    data: Fills_party_tradesConnection_edges[];
+    insertionData: FillsTradeEdge[];
+    data: FillsTradeEdge[];
     totalCount?: number;
   }) => boolean;
 }) => {
@@ -82,7 +82,7 @@ interface PaginationManagerProps {
 
 const PaginationManager = ({ pagination }: PaginationManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<Fills_party_tradesConnection_edges[] | null>(null);
+  const dataRef = useRef<FillsTradeEdge[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -106,8 +106,8 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
       data,
       delta,
     }: {
-      data: Fills_party_tradesConnection_edges[];
-      delta: FillsSub_trades[];
+      data: FillsTradeEdge[];
+      delta: FillFieldsFragment[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -132,7 +132,7 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
       data,
       totalCount,
     }: {
-      data: Fills_party_tradesConnection_edges[];
+      data: FillsTradeEdge[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -149,7 +149,7 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+  const getRows = makeInfiniteScrollGetRows<FillsTradeEdge>(
     newRows,
     dataRef,
     totalCountRef,
@@ -217,7 +217,7 @@ PaginationScroll.args = { pagination: false };
 
 const InfiniteScrollManager = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(Fills_party_tradesConnection_edges | null)[] | null>(
+  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(
     null
   );
   const totalCountRef = useRef<number | undefined>(undefined);
@@ -243,8 +243,8 @@ const InfiniteScrollManager = () => {
       data,
       delta,
     }: {
-      data: (Fills_party_tradesConnection_edges | null)[];
-      delta: FillsSub_trades[];
+      data: (FillsTradeEdge | null)[];
+      delta: FillFieldsFragment[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -269,7 +269,7 @@ const InfiniteScrollManager = () => {
       data,
       totalCount,
     }: {
-      data: Fills_party_tradesConnection_edges[];
+      data: FillsTradeEdge[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -285,7 +285,7 @@ const InfiniteScrollManager = () => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+  const getRows = makeInfiniteScrollGetRows<FillsTradeEdge>(
     newRows,
     dataRef,
     totalCountRef,

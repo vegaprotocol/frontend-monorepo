@@ -19,6 +19,7 @@ module.exports = {
       '../../libs/candles-chart/**',
       '../../libs/deposits/**',
       '../../libs/environment/**',
+      '../../libs/fills/**',
     ],
   },
 };

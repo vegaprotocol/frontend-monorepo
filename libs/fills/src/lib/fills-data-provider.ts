@@ -1,103 +1,20 @@
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
-import { gql } from '@apollo/client';
 import {
   makeDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
-import type { PageInfo } from '@vegaprotocol/react-helpers';
-import type { FillFields } from './__generated__/FillFields';
+import type { Schema } from '@vegaprotocol/types';
 import type {
-  Fills,
-  Fills_party_tradesConnection_edges,
-  Fills_party_tradesConnection_edges_node,
+  FillFieldsFragment,
+  FillsQuery,
+  FillsEventSubscription,
 } from './__generated__/Fills';
-import type { FillsSub } from './__generated__/FillsSub';
-
-const FILL_FRAGMENT = gql`
-  fragment FillFields on Trade {
-    id
-    createdAt
-    price
-    size
-    buyOrder
-    sellOrder
-    aggressor
-    buyer {
-      id
-    }
-    seller {
-      id
-    }
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const FILLS_QUERY = gql`
-  ${FILL_FRAGMENT}
-  query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
-    party(id: $partyId) {
-      id
-      tradesConnection(marketId: $marketId, pagination: $pagination) {
-        edges {
-          node {
-            ...FillFields
-          }
-          cursor
-        }
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-          hasPreviousPage
-        }
-      }
-    }
-  }
-`;
-
-export const FILLS_SUB = gql`
-  ${FILL_FRAGMENT}
-  subscription FillsSub($partyId: ID!) {
-    trades(partyId: $partyId) {
-      ...FillFields
-    }
-  }
-`;
+import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 
 const update = (
-  data: (Fills_party_tradesConnection_edges | null)[],
-  delta: FillFields[]
+  data: (Pick<Schema.TradeEdge, '__typename' | 'cursor'> & { node: FillFieldsFragment } | null)[],
+  delta: FillFieldsFragment[]
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt').forEach((node) => {
@@ -105,7 +22,7 @@ const update = (
       if (index !== -1) {
         if (draft[index]?.node) {
           Object.assign(
-            draft[index]?.node as Fills_party_tradesConnection_edges_node,
+            draft[index]?.node as FillFieldsFragment,
             node
           );
         }
@@ -120,18 +37,17 @@ const update = (
 };
 
 const getData = (
-  responseData: Fills
-): Fills_party_tradesConnection_edges[] | null =>
-  responseData.party?.tradesConnection.edges || null;
+  responseData: FillsQuery
+) => responseData.party?.tradesConnection.edges || null;
 
-const getPageInfo = (responseData: Fills): PageInfo | null =>
+const getPageInfo = (responseData: FillsQuery) =>
   responseData.party?.tradesConnection.pageInfo || null;
 
-const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
+const getDelta = (subscriptionData: FillsEventSubscription) => subscriptionData.trades || [];
 
 export const fillsDataProvider = makeDataProvider({
-  query: FILLS_QUERY,
-  subscriptionQuery: FILLS_SUB,
+  query: FillsDocument,
+  subscriptionQuery: FillsEventDocument,
   update,
   getData,
   getDelta,

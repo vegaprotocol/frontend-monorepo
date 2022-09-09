@@ -65,7 +65,7 @@ query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
   }
 }
 
-subscription FillsSub($partyId: ID!) {
+subscription FillsEvent($partyId: ID!) {
   trades(partyId: $partyId) {
     ...FillFields
   }

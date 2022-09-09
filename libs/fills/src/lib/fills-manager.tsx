@@ -7,10 +7,14 @@ import {
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
+import type { Schema } from '@vegaprotocol/types';
 
 import { fillsDataProvider as dataProvider } from './fills-data-provider';
-import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
-import type { FillsSub_trades } from './__generated__/FillsSub';
+import type { FillFieldsFragment } from './__generated__/Fills';
+
+type FillsTradeEdge = Pick<Schema.TradeEdge, '__typename' | 'cursor'> & {
+  node: FillFieldsFragment,
+};
 
 interface FillsManagerProps {
   partyId: string;
@@ -18,7 +22,7 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(Fills_party_tradesConnection_edges | null)[] | null>(
+  const dataRef = useRef<(FillsTradeEdge | null)[] | null>(
     null
   );
   const totalCountRef = useRef<number | undefined>(undefined);
@@ -44,8 +48,8 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       delta,
     }: {
-      data: (Fills_party_tradesConnection_edges | null)[];
-      delta: FillsSub_trades[];
+      data: (FillsTradeEdge | null)[];
+      delta: FillFieldsFragment[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -70,7 +74,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       totalCount,
     }: {
-      data: (Fills_party_tradesConnection_edges | null)[];
+      data: (FillsTradeEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -83,13 +87,13 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
-    (Fills_party_tradesConnection_edges | null)[],
-    FillsSub_trades[]
+    (FillsTradeEdge | null)[],
+    FillFieldsFragment[]
   >({ dataProvider, update, insert, variables });
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+  const getRows = makeInfiniteScrollGetRows<FillsTradeEdge>(
     newRows,
     dataRef,
     totalCountRef,

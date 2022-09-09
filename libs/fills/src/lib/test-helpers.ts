@@ -1,13 +1,14 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Fills,
-  Fills_party_tradesConnection_edges_node,
+  FillsQuery,
+  FillFieldsFragment,
 } from './__generated__/Fills';
 import { Side } from '@vegaprotocol/types';
+import { FillsTradeEdge } from './types';
 
-export const generateFills = (override?: PartialDeep<Fills>): Fills => {
-  const fills: Fills_party_tradesConnection_edges_node[] = [
+export const generateFills = (override?: PartialDeep<FillsQuery>): FillsQuery => {
+  const fills: FillFieldsFragment[] = [
     generateFill({
       buyer: {
         id: 'party-id',
@@ -54,7 +55,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
     }),
   ];
 
-  const defaultResult: Fills = {
+  const defaultResult: FillsQuery = {
     party: {
       id: 'buyer-id',
       tradesConnection: {
@@ -82,9 +83,9 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
 };
 
 export const generateFill = (
-  override?: PartialDeep<Fills_party_tradesConnection_edges_node>
+  override?: PartialDeep<FillFieldsFragment>
 ) => {
-  const defaultFill: Fills_party_tradesConnection_edges_node = {
+  const defaultFill: FillFieldsFragment = {
     __typename: 'Trade',
     id: '0',
     createdAt: '2005-04-02T19:37:00.000Z',
@@ -116,6 +117,7 @@ export const generateFill = (
     market: {
       __typename: 'Market',
       id: 'market-id',
+      name: 'UNIDAI Monthly (30 Jun 2022)',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
       tradableInstrument: {
@@ -124,7 +126,6 @@ export const generateFill = (
           __typename: 'Instrument',
           id: 'instrument-id',
           code: 'instrument-code',
-          name: 'UNIDAI Monthly (30 Jun 2022)',
           product: {
             __typename: 'Future',
             settlementAsset: {
