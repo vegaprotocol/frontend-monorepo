@@ -1,9 +1,7 @@
-import {
-  STATS_QUERY,
-  TIME_UPDATE_SUBSCRIPTION,
-} from '../../utils/request-node';
-import type { Statistics } from '../../utils/__generated__/Statistics';
-import type { BlockTime } from '../../utils/__generated__/BlockTime';
+import { StatisticsDocument } from '../../utils/__generated__/Statistics';
+import type { StatisticsQuery } from '../../utils/__generated__/Statistics';
+import { BlockTimeDocument } from '../../utils/__generated__/BusEvents';
+import type { BlockTimeSubscription } from '../../utils/__generated__/BusEvents';
 import { Networks } from '../../types';
 import type { RequestHandlerResponse } from 'mock-apollo-client';
 import { createMockClient } from 'mock-apollo-client';
@@ -19,7 +17,7 @@ type MockClientProps = {
   busEvents?: MockRequestConfig;
 };
 
-export const getMockBusEventsResult = (): BlockTime => ({
+export const getMockBusEventsResult = (): BlockTimeSubscription => ({
   busEvents: [
     {
       __typename: 'BusEvent',
@@ -30,7 +28,7 @@ export const getMockBusEventsResult = (): BlockTime => ({
 
 export const getMockStatisticsResult = (
   env: Networks = Networks.TESTNET
-): Statistics => ({
+): StatisticsQuery => ({
   statistics: {
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
@@ -38,7 +36,7 @@ export const getMockStatisticsResult = (
   },
 });
 
-export const getMockQueryResult = (env: Networks): Statistics => ({
+export const getMockQueryResult = (env: Networks): StatisticsQuery => ({
   statistics: {
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
@@ -70,11 +68,11 @@ export default function ({
   const mockClient = createMockClient();
 
   mockClient.setRequestHandler(
-    STATS_QUERY,
+    StatisticsDocument,
     getHandler(statistics, getMockStatisticsResult(network))
   );
   mockClient.setRequestHandler(
-    TIME_UPDATE_SUBSCRIPTION,
+    BlockTimeDocument,
     getHandler(busEvents, getMockBusEventsResult())
   );
 
