@@ -127,7 +127,6 @@ describe('market info is displayed', () => {
   });
 
   it('liquidity displayed', () => {
-    // cy.getByTestId(marketTitle).contains('Liquidity').last().click();
     cy.getByTestId('accordion-toggle').eq(14).click();
 
     validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
@@ -163,7 +162,7 @@ describe('market info is displayed', () => {
 
     cy.getByTestId(externalLink)
       .should('have.attr', 'href')
-      .and('contain', 'https://explorer.fairground.wtf/oracles');
+      .and('contain', '/oracles');
   });
 
   it('proposal displayed', () => {
@@ -171,11 +170,8 @@ describe('market info is displayed', () => {
 
     cy.getByTestId(externalLink)
       .should('have.text', 'View governance proposal')
-      .and(
-        'have.attr',
-        'href',
-        'https://token.fairground.wtf/governance/market-0'
-      );
+      .and('have.attr', 'href')
+      .and('contain', '/governance/market-0');
   });
 
   afterEach('close toggle', () => {
