@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { RestConnector } from '.';
 import { useVegaWallet } from './use-vega-wallet';
+import { ConnectDialogTitle } from './connect-dialog';
 
 interface FormFields {
   wallet: string;
@@ -56,35 +57,38 @@ export function RestConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
-      <FormGroup label={t('Wallet')} labelFor="wallet">
-        <Input
-          {...register('wallet', { required: t('Required') })}
-          id="wallet"
-          type="text"
-        />
-        {errors.wallet?.message && (
-          <InputError intent="danger">{errors.wallet.message}</InputError>
-        )}
-      </FormGroup>
-      <FormGroup label={t('Passphrase')} labelFor="passphrase">
-        <Input
-          {...register('passphrase', { required: t('Required') })}
-          id="passphrase"
-          type="password"
-        />
-        {errors.passphrase?.message && (
-          <InputError intent="danger">{errors.passphrase.message}</InputError>
-        )}
-        {error && (
-          <InputError intent="danger" data-testid="form-error">
-            {error}
-          </InputError>
-        )}
-      </FormGroup>
-      <Button variant="primary" type="submit">
-        {t('Connect')}
-      </Button>
-    </form>
+    <>
+      <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
+        <FormGroup label={t('Wallet')} labelFor="wallet">
+          <Input
+            {...register('wallet', { required: t('Required') })}
+            id="wallet"
+            type="text"
+          />
+          {errors.wallet?.message && (
+            <InputError intent="danger">{errors.wallet.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label={t('Passphrase')} labelFor="passphrase">
+          <Input
+            {...register('passphrase', { required: t('Required') })}
+            id="passphrase"
+            type="password"
+          />
+          {errors.passphrase?.message && (
+            <InputError intent="danger">{errors.passphrase.message}</InputError>
+          )}
+          {error && (
+            <InputError intent="danger" data-testid="form-error">
+              {error}
+            </InputError>
+          )}
+        </FormGroup>
+        <Button variant="primary" type="submit">
+          {t('Connect')}
+        </Button>
+      </form>
+    </>
   );
 }

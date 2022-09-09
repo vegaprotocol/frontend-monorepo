@@ -21,6 +21,18 @@ export interface TransactionResponse {
   sentAt: string;
 }
 
+export class JsonRpcError {
+  message: string;
+  code: number;
+  data?: string;
+
+  constructor(message: string, code: number, data?: string) {
+    this.message = message;
+    this.code = code;
+    this.data = data;
+  }
+}
+
 const BaseSchema = z.object({
   id: z.string(),
   jsonrpc: z.literal('2.0'),
@@ -68,14 +80,6 @@ const SendTransactionSchema = BaseSchema.extend({
   }),
 });
 
-const ErrorSchema = BaseSchema.extend({
-  error: z.object({
-    message: z.string(),
-    data: z.string(),
-    code: z.number(),
-  }),
-});
-
 type Response =
   | z.infer<typeof ConnectWalletSchema>
   | z.infer<typeof ListKeysSchema>
@@ -83,10 +87,14 @@ type Response =
   | z.infer<typeof GetPermissionsSchema>
   | z.infer<typeof RequestPermissionsSchema>
   | z.infer<typeof SendTransactionSchema>
-  | z.infer<typeof ErrorSchema>;
+  | {
+      error: JsonRpcError;
+    };
 
-const Errors = {
-  NO_TOKEN: new Error('No token'),
+const Errors: { [key: string]: JsonRpcError } = {
+  NO_TOKEN: new JsonRpcError('No token', 1),
+  INVALID_RESPONSE: new JsonRpcError('Invalid response from wallet', 2),
+  NO_SERVICE: new JsonRpcError('No service', 3),
 };
 
 export class JsonRpcConnector implements VegaConnector {
@@ -105,8 +113,12 @@ export class JsonRpcConnector implements VegaConnector {
   async getChainId() {
     const result = await this.request(Methods.GetChainId);
     this.verifyResponse(result);
-    const data = GetChainIdSchema.parse(result);
-    return data.result;
+    const parseResult = GetChainIdSchema.safeParse(result);
+    if (parseResult.success) {
+      return parseResult.data.result;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   async connectWallet() {
@@ -114,14 +126,19 @@ export class JsonRpcConnector implements VegaConnector {
       hostname: window.location.host,
     });
     this.verifyResponse(result);
-    const data = ConnectWalletSchema.parse(result);
-    // store token and other config for eager connect and subsequent requests
-    setConfig({
-      token: data.result.token,
-      connector: 'jsonRpc',
-      url: this.url,
-    });
-    return data.result;
+    const parseResult = ConnectWalletSchema.safeParse(result);
+
+    if (parseResult.success) {
+      // store token and other config for eager connect and subsequent requests
+      setConfig({
+        token: parseResult.data.result.token,
+        connector: 'jsonRpc',
+        url: this.url,
+      });
+      return parseResult.data.result;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   async getPermissions() {
@@ -133,8 +150,12 @@ export class JsonRpcConnector implements VegaConnector {
       token: cfg.token,
     });
     this.verifyResponse(result);
-    const data = GetPermissionsSchema.parse(result);
-    return data.result;
+    const parseResult = GetPermissionsSchema.safeParse(result);
+    if (parseResult.success) {
+      return parseResult.data.result;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   async requestPermissions() {
@@ -149,8 +170,12 @@ export class JsonRpcConnector implements VegaConnector {
       },
     });
     this.verifyResponse(result);
-    const data = RequestPermissionsSchema.parse(result);
-    return data.result;
+    const parseResult = RequestPermissionsSchema.safeParse(result);
+    if (parseResult.success) {
+      return parseResult.data.result;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   // connect actually calling list_keys here, not to be confused with connect_wallet
@@ -164,8 +189,12 @@ export class JsonRpcConnector implements VegaConnector {
       token: cfg.token,
     });
     this.verifyResponse(result);
-    const data = ListKeysSchema.parse(result);
-    return data.result.keys;
+    const parseResult = ListKeysSchema.safeParse(result);
+    if (parseResult.success) {
+      return parseResult.data.result.keys;
+    } else {
+      throw Errors.INVALID_RESPONSE;
+    }
   }
 
   async disconnect() {
@@ -200,25 +229,33 @@ export class JsonRpcConnector implements VegaConnector {
     return res;
   }
 
-  private request(method: Methods, params?: object) {
-    return fetch(`${this.url}/api/${VERSION}/requests`, {
-      method: 'post',
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method,
-        params,
-        id: `${this.reqId++}`,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => res.json());
+  private async request(method: Methods, params?: object) {
+    try {
+      const result = await fetch(`${this.url}/api/${VERSION}/requests`, {
+        method: 'post',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method,
+          params,
+          id: `${this.reqId++}`,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const json = await result.json();
+      return json;
+    } catch (err) {
+      throw Errors.NO_SERVICE;
+    }
   }
 
   private verifyResponse(result: Response) {
     if ('error' in result) {
-      throw new Error(
-        `${result.error.message} (${result.error.code}): ${result.error.data}`
+      throw new JsonRpcError(
+        result.error.message,
+        result.error.code,
+        result.error.data
       );
     }
   }

@@ -1,4 +1,12 @@
-import { Button, Dialog, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Dialog,
+  FormGroup,
+  Icon,
+  Input,
+  Link,
+} from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import { t, useStatsQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
@@ -20,6 +28,23 @@ export function VegaConnectDialog({
   dialogOpen,
   setDialogOpen,
 }: VegaConnectDialogProps) {
+  return (
+    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+      <ConnectDialogContainer
+        connectors={connectors}
+        closeDialog={() => setDialogOpen(false)}
+      />
+    </Dialog>
+  );
+}
+
+const ConnectDialogContainer = ({
+  connectors,
+  closeDialog,
+}: {
+  connectors: Connectors;
+  closeDialog: () => void;
+}) => {
   const { VEGA_WALLET_URL } = useEnvironment();
   // Selected connector, we need to show the auth form if the rest connector (which is
   // currently the only way to connect) is selected.
@@ -28,50 +53,37 @@ export function VegaConnectDialog({
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   // const { data, loading, error } = useStatsQuery();
 
-  const onConnect = useCallback(() => {
-    setDialogOpen(false);
-  }, [setDialogOpen]);
-
-  let content = null;
-
-  // if (error) {
-  //   content = <div>Could not fetch chain Id</div>;
-  // } else if (loading || !data) {
-  //   content = <div>Fetching chain Id</div>;
-  // } else {
-  content =
-    selectedConnector !== null ? (
-      <SelectedForm
-        connector={selectedConnector}
-        onConnect={onConnect}
-        walletUrl={walletUrl}
-        // appChainId={data.statistics.chainId}
-      />
-    ) : (
-      <ConnectorList
-        walletUrl={walletUrl}
-        setWalletUrl={setWalletUrl}
-        connectors={connectors}
-        onSelect={setSelectedConnector}
-      />
-    );
-  // }
-
   return (
-    <Dialog
-      open={dialogOpen}
-      size="small"
-      onChange={(open) => {
-        if (!open) {
-          setSelectedConnector(null);
-        }
-        setDialogOpen(open);
-      }}
-    >
-      {content}
-    </Dialog>
+    <>
+      <ConnectDialogContent>
+        {selectedConnector !== null ? (
+          <SelectedForm
+            connector={selectedConnector}
+            onConnect={closeDialog}
+            walletUrl={walletUrl}
+            // appChainId={data.statistics.chainId}
+          />
+        ) : (
+          <ConnectorList
+            walletUrl={walletUrl}
+            setWalletUrl={setWalletUrl}
+            connectors={connectors}
+            onSelect={setSelectedConnector}
+          />
+        )}
+      </ConnectDialogContent>
+      <footer className="flex justify-center gap-4 pt-6 -px-4 md:-mx-8 border-t border-neutral-500 text-neutral-600 dark:text-neutral-400">
+        <Link href="https://github.com/vegaprotocol/vega/releases">
+          {t('Get a Vega Wallet')}
+        </Link>
+        {' | '}
+        <Link href="https://docs.vega.xyz/docs/mainnet/concepts/vega-wallet">
+          {t('Having trouble?')}
+        </Link>
+      </footer>
+    </>
   );
-}
+};
 
 const ConnectorList = ({
   connectors,
@@ -84,29 +96,11 @@ const ConnectorList = ({
   walletUrl: string;
   setWalletUrl: (value: string) => void;
 }) => {
-  const [locationInputExpanded, setLocationInputExpanded] = useState(false);
+  const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return (
     <>
-      {locationInputExpanded ? (
-        <FormGroup label={t('Wallet location')} labelFor="wallet-url">
-          <Input
-            value={walletUrl}
-            onChange={(e) => setWalletUrl(e.target.value)}
-            name="wallet-url"
-          />
-        </FormGroup>
-      ) : (
-        <p className="mb-4">
-          Or{' '}
-          <button
-            className="underline"
-            onClick={() => setLocationInputExpanded(true)}
-          >
-            enter a custom wallet location
-          </button>
-        </p>
-      )}
-      <ul data-testid="connectors-list">
+      <ConnectDialogTitle>Connect</ConnectDialogTitle>
+      <ul data-testid="connectors-list" className="mb-6">
         {Object.entries(connectors).map(([key, connector]) => (
           <li key={key} className="mb-4 last:mb-0">
             <Button
@@ -115,11 +109,41 @@ const ConnectorList = ({
               onClick={() => onSelect(connector)}
               fill={true}
             >
-              {t(`${key} provider`)}
+              <span className="flex text-left justify-between items-center">
+                {t(`${key} provider`)}
+                <Icon name="chevron-right" />
+              </span>
             </Button>
           </li>
         ))}
       </ul>
+      {urlInputExpanded ? (
+        <FormGroup label={t('Wallet location')} labelFor="wallet-url">
+          <div className="flex gap-4">
+            <Input
+              value={walletUrl}
+              onChange={(e) => setWalletUrl(e.target.value)}
+              name="wallet-url"
+            />
+            <div>
+              <Button onClick={() => setUrlInputExpanded(false)}>
+                {t('Update')}
+              </Button>
+            </div>
+          </div>
+        </FormGroup>
+      ) : (
+        <p className="mb-6 text-center text-neutral-600 dark:text-neutral-400">
+          {t('Or')}{' '}
+          <button
+            className="underline text-black dark:text-white"
+            onClick={() => setUrlInputExpanded(true)}
+          >
+            {t('enter a custom wallet location')}
+          </button>{' '}
+          {t('to change port or service URL')}
+        </p>
+      )}
     </>
   );
 };
@@ -157,4 +181,12 @@ const SelectedForm = ({
   }
 
   throw new Error('No connector selected');
+};
+
+export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
+  return <h1 className="text-2xl uppercase mb-6 text-center">{children}</h1>;
+};
+
+export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
+  return <div className="mb-6">{children}</div>;
 };

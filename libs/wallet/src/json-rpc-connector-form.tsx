@@ -1,8 +1,10 @@
-import { Loader } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
-import { JsonRpcError } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
+import { JsonRpcError } from './connectors/json-rpc-connector';
+import { ConnectDialogTitle } from './connect-dialog';
 
 type Status =
   | 'idle'
@@ -27,7 +29,7 @@ export const JsonRpcConnectorForm = ({
 }) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<JsonRpcError | null>(null);
 
   const attempConnect = useCallback(async () => {
     try {
@@ -59,10 +61,8 @@ export const JsonRpcConnectorForm = ({
 
       onConnect();
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Something went wrong');
+      if (err instanceof JsonRpcError) {
+        setError(err);
       }
       setStatus('error');
     }
@@ -78,51 +78,102 @@ export const JsonRpcConnectorForm = ({
     return null;
   }
 
-  return <Connecting status={status} error={error} />;
+  return <Connecting status={status} error={error} connector={connector} />;
 };
 
 const Connecting = ({
   status,
   error,
+  connector,
 }: {
   status: Status;
-  error: string | null;
+  error: JsonRpcError | null;
+  connector: JsonRpcConnector;
 }) => {
   if (status === 'error') {
-    return <p>{error ? error : 'Something went wrong'}</p>;
+    let title = t('Something went wrong');
+    let text: string | undefined = t('An unknown error occurred');
+    const icon = null;
+
+    if (error) {
+      if (error.code === 3) {
+        title = error.message;
+        text = t(`No service running at ${connector.url}`);
+      } else if (error.code === 3001) {
+        title = t('Connection declined');
+        text = t('Your wallet connect was rejected');
+      } else {
+        title = `${error.message} ${error.code}`;
+        text = error.data;
+      }
+    }
+
+    return (
+      <>
+        <ConnectDialogTitle>{title}</ConnectDialogTitle>
+        {icon && (
+          <div className="flex justify-center items-center my-6">
+            <Icon name={icon} size={10} />
+          </div>
+        )}
+        <p className="text-center">{text}</p>
+      </>
+    );
   }
 
   if (status === 'connected') {
-    return <p>Success</p>;
+    return (
+      <>
+        <ConnectDialogTitle>{t('Successfully connected')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Icon name="tick" size={10} />
+        </div>
+      </>
+    );
   }
 
   if (status === 'connecting') {
     return (
-      <p>
-        Approve the connection from your Vega wallet app. If you have multiple
-        wallets you'll need to choose which to connect with to complete the
-        connection.
-      </p>
+      <>
+        <ConnectDialogTitle>{t('Connecting...')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Icon name="exchange" size={10} />
+        </div>
+        <p className="text-center">
+          {t(
+            "Approve the connection from your Vega wallet app. If you have multiple wallets you'll need to choose which to connect with."
+          )}
+        </p>
+      </>
     );
   }
 
   if (status === 'requestingPerms') {
     return (
-      <p>
-        {window.location.host} now has access to your Wallet, however you don't
+      <>
+        <ConnectDialogTitle>{t('Update permissions')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Icon name="shield" size={10} />
+        </div>
+        <p className="text-center">
+          {t(`${window.location.host} now has access to your Wallet, however you don't
         have sufficient permissions to retrieve your public keys. Change your
-        permissions in the wallet app
-      </p>
+        permissions in the wallet app`)}
+        </p>
+      </>
     );
   }
 
   if (status === 'gettingChainId') {
     return (
-      <div className="flex items-center gap-4">
-        <Loader size="small" /> Verifying chain
-      </div>
+      <>
+        <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Loader size="small" />
+        </div>
+      </>
     );
   }
 
-  return <div>Shouldn't get here: {status}</div>;
+  return null;
 };
