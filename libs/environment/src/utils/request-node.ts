@@ -2,10 +2,9 @@ import createClient from './apollo-client';
 import { StatisticsDocument } from './__generated__/Statistics';
 import { BlockTimeDocument } from './__generated__/BusEvents';
 import type { StatisticsQuery } from './__generated__/Statistics';
-import type { BlockTimeSubscription } from './__generated__/BusEvents';
 
 type Callbacks = {
-  onStatsSuccess: (data: Statistics) => void;
+  onStatsSuccess: (data: StatisticsQuery) => void;
   onStatsFailure: () => void;
   onSubscriptionSuccess: () => void;
   onSubscriptionFailure: () => void;
