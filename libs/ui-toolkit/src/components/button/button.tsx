@@ -9,9 +9,10 @@ import { Icon } from '../icon';
 import classnames from 'classnames';
 
 type ButtonVariant = 'default' | 'primary' | 'secondary';
-type ButtonSize = 'lg' | 'md' | 'sm';
+type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
+const xs = 'px-2 py-0 text-sm';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
@@ -53,9 +54,11 @@ const getClassname = ({
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
+
     [lg]: size === 'lg',
     [md]: size === 'md',
     [sm]: size === 'sm',
+    [xs]: size === 'xs',
     [fillClasses]: fill,
   });
 };

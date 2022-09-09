@@ -85,7 +85,7 @@ export const NetworkSwitcher = () => {
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger className="text-white dark:text-white hover:bg-neutral-700">
+      <DropdownMenuTrigger className="text-white dark:text-white hover:!bg-neutral-700">
         {envTriggerMapping[VEGA_ENV]}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">

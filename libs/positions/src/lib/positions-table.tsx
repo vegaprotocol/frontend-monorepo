@@ -133,7 +133,7 @@ const ButtonCell = ({
     <Button
       data-testid="close-position"
       onClick={() => onClick(data)}
-      size="sm"
+      size="xs"
     >
       {t('Close')}
     </Button>
