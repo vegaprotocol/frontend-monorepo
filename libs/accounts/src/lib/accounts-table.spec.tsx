@@ -1,9 +1,9 @@
 import AccountsTable from './accounts-table';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import type { Accounts_party_accounts } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated__/Accounts';
 import { AccountType } from '@vegaprotocol/types';
 
-const singleRow: Accounts_party_accounts = {
+const singleRow: AccountFieldsFragment = {
   __typename: 'Account',
   type: AccountType.ACCOUNT_TYPE_MARGIN,
   balance: '125600000',

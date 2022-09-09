@@ -1,12 +1,12 @@
 import merge from 'lodash/merge';
-import type { Accounts } from '@vegaprotocol/accounts';
+import type { AccountsQuery } from '@vegaprotocol/accounts';
 import { AccountType } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 export const generateAccounts = (
-  override?: PartialDeep<Accounts>
-): Accounts => {
-  const defaultAccounts: Accounts = {
+  override?: PartialDeep<AccountsQuery>
+): AccountsQuery => {
+  const defaultAccounts: AccountsQuery = {
     party: {
       __typename: 'Party',
       id: Cypress.env('VEGA_PUBLIC_KEY'),

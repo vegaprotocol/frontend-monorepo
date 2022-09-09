@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import {
@@ -10,10 +9,8 @@ import {
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  AssetsConnection,
-  AssetsConnection_assetsConnection_edges_node_source_ERC20,
-} from './__generated__/AssetsConnection';
+import { useAssetsConnectionQuery } from './__generated__/Assets';
+import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
 export type AssetDetailsDialogStore = {
@@ -43,29 +40,6 @@ type AssetDetails = {
   tooltip: string;
 }[];
 
-export const ASSETS_CONNECTION_QUERY = gql`
-  query AssetsConnection {
-    assetsConnection {
-      edges {
-        node {
-          id
-          name
-          symbol
-          decimals
-          quantum
-          source {
-            ... on ERC20 {
-              contractAddress
-              lifetimeLimit
-              withdrawThreshold
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export interface AssetDetailsDialogProps {
   assetSymbol: string | Asset;
   open: boolean;
@@ -77,7 +51,7 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
-  const { data } = useQuery<AssetsConnection>(ASSETS_CONNECTION_QUERY);
+  const { data } = useAssetsConnectionQuery();
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
   const asset = data?.assetsConnection.edges?.find(
@@ -114,10 +88,7 @@ export const AssetDetailsDialog = ({
       {
         key: 'contractaddress',
         label: t('Contract address'),
-        value: (
-          asset.node
-            .source as AssetsConnection_assetsConnection_edges_node_source_ERC20
-        ).contractAddress,
+        value: (asset.node.source as Schema.ERC20).contractAddress,
         tooltip: t(
           'The address of the contract for the token, on the ethereum network'
         ),
@@ -125,10 +96,7 @@ export const AssetDetailsDialog = ({
       {
         key: 'withdrawalthreshold',
         label: t('Withdrawal threshold'),
-        value: (
-          asset.node
-            .source as AssetsConnection_assetsConnection_edges_node_source_ERC20
-        ).withdrawThreshold,
+        value: (asset.node.source as Schema.ERC20).withdrawThreshold,
         tooltip: t(
           'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
         ),
@@ -136,10 +104,7 @@ export const AssetDetailsDialog = ({
       {
         key: 'lifetimelimit',
         label: t('Lifetime limit'),
-        value: (
-          asset.node
-            .source as AssetsConnection_assetsConnection_edges_node_source_ERC20
-        ).lifetimeLimit,
+        value: (asset.node.source as Schema.ERC20).lifetimeLimit,
         tooltip: t(
           'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'
         ),

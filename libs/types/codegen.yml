@@ -9,21 +9,21 @@ config:
 generates:
   libs/types/src/__generated__/types.ts:
     - typescript
-  libs/**/__generated__:
+  libs/**:
     preset: near-operation-file
     presetConfig:
       folder: __generated___
       extension: .ts
-      baseTypesPath: ~@vegaprotocol/types/types
+      baseTypesPath: ~@vegaprotocol/types
     plugins:
       - typescript-operations
       - typescript-react-apollo
-  apps/**/__generated__:
+  apps/**:
     preset: near-operation-file
     presetConfig:
       folder: __generated___
       extension: .ts
-      baseTypesPath: ~@vegaprotocol/types/types
+      baseTypesPath: ~@vegaprotocol/types
     plugins:
       - typescript-operations
       - typescript-react-apollo
