@@ -27,7 +27,7 @@ interface OrderbookProps extends OrderbookData {
 
 const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
-    className="absolute border-b border-neutral-300 dark:border-neutral-700 inset-x-0"
+    className="absolute border-b border-neutral-300 dark:border-neutral-600 inset-x-0"
     style={{ top }}
     data-testid={testId}
   />
@@ -309,7 +309,7 @@ export const Orderbook = ({
       </div>
     ) : null;
 
-  const c = theme === 'dark' ? colors.neutral[700] : colors.neutral[300];
+  const c = theme === 'dark' ? colors.neutral[600] : colors.neutral[300];
   const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
 
   return (
@@ -320,7 +320,7 @@ export const Orderbook = ({
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-700"
+        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-600"
         style={{ gridAutoRows: '17px' }}
       >
         <div>{t('Bid vol')}</div>
@@ -344,7 +344,7 @@ export const Orderbook = ({
         )}
       </div>
       <div
-        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-neutral-300 dark:border-neutral-700 mt-2 z-10 bg-white dark:bg-black"
+        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-neutral-300 dark:border-neutral-600 mt-2 z-10 bg-white dark:bg-black"
         style={{ gridAutoRows: '17px' }}
       >
         <div className="col-start-2">

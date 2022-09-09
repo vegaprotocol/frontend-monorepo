@@ -6,6 +6,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher, VLogo } from '@vegaprotocol/ui-toolkit';
+import { Vega } from '../icons/vega';
 
 interface NavbarProps {
   theme: 'light' | 'dark';
@@ -19,12 +20,12 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
   return (
-    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
+    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-600 bg-black">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a>
-            <VLogo className="w-6 h-6 fill-white" />
+            <Vega className="w-13" />
           </a>
         </Link>
         <NetworkSwitcher />
