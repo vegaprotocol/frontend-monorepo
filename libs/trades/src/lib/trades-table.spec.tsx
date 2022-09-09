@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { DOWN_CLASS, TradesTable, UP_CLASS } from './trades-table';
-import type { TradeFields } from './__generated__/TradeFields';
+import type { TradeFieldsFragment } from './__generated__/Trades';
 
-const trade: TradeFields = {
+const trade: TradeFieldsFragment = {
   __typename: 'Trade',
   id: 'trade-id',
   price: '111122200',

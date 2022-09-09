@@ -30,7 +30,7 @@ query Trades($marketId: ID!, $pagination: Pagination) {
   }
 }
 
-subscription TradesSub($marketId: ID!) {
+subscription TradesEvent($marketId: ID!) {
   trades(marketId: $marketId) {
     ...TradeFields
   }

@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { Trades_market_tradesConnection_edges_node } from './__generated__/Trades';
+import type { TradeFieldsFragment } from './__generated__/Trades';
 import BigNumber from 'bignumber.js';
 
 export const UP_CLASS = 'text-vega-green';
@@ -42,7 +42,7 @@ type TradesTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: Trades_market_tradesConnection_edges_node | null;
+  data: TradeFieldsFragment | null;
 };
 
 export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
@@ -67,7 +67,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: TradesTableValueFormatterParams & {
-          value: Trades_market_tradesConnection_edges_node['price'];
+          value: TradeFieldsFragment['price'];
         }) => {
           if (!data?.market) {
             return null;
@@ -84,7 +84,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: TradesTableValueFormatterParams & {
-          value: Trades_market_tradesConnection_edges_node['size'];
+          value: TradeFieldsFragment['size'];
         }) => {
           if (!data?.market) {
             return null;
@@ -100,7 +100,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         valueFormatter={({
           value,
         }: TradesTableValueFormatterParams & {
-          value: Trades_market_tradesConnection_edges_node['createdAt'];
+          value: TradeFieldsFragment['createdAt'];
         }) => {
           return value && getDateTimeFormat().format(new Date(value));
         }}
