@@ -222,8 +222,6 @@ export class JsonRpcConnector implements VegaConnector {
       encodedTransaction: encodeTransaction(transaction),
     });
 
-    // TODO check result for user rejection
-
     const parsedResult = SendTransactionSchema.safeParse(result);
 
     if (parsedResult.success) {
@@ -234,6 +232,10 @@ export class JsonRpcConnector implements VegaConnector {
         signature: parsedResult.data.result.transaction.signature.value,
       };
     } else {
+      // prevent an error when the user rejects the transaction
+      if ('error' in result && result.error.code === 3001) {
+        return null;
+      }
       throw Errors.INVALID_RESPONSE;
     }
   }
