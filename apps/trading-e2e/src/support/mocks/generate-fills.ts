@@ -1,13 +1,13 @@
 import type {
-  Fills,
-  Fills_party_tradesConnection_edges_node,
+  FillsQuery,
+  FillFieldsFragment,
 } from '@vegaprotocol/fills';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateFills = (override?: PartialDeep<Fills>): Fills => {
-  const fills: Fills_party_tradesConnection_edges_node[] = [
+export const generateFills = (override?: PartialDeep<FillsQuery>): FillsQuery => {
+  const fills: FillFieldsFragment[] = [
     generateFill({
       buyer: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
@@ -18,7 +18,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       buyerFee: {
         infrastructureFee: '5000',
       },
@@ -36,11 +36,11 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.SIDE_BUY,
+      aggressor: Schema.Side.SIDE_BUY,
     }),
     generateFill({
       id: '3',
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       market: {
         tradableInstrument: {
           instrument: {
@@ -54,7 +54,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
     }),
   ];
 
-  const defaultResult: Fills = {
+  const defaultResult: FillsQuery = {
     party: {
       id: 'buyer-id',
       tradesConnection: {
@@ -82,9 +82,9 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
 };
 
 export const generateFill = (
-  override?: PartialDeep<Fills_party_tradesConnection_edges_node>
+  override?: PartialDeep<FillFieldsFragment>
 ) => {
-  const defaultFill: Fills_party_tradesConnection_edges_node = {
+  const defaultFill: FillFieldsFragment = {
     __typename: 'Trade',
     id: '0',
     createdAt: new Date().toISOString(),
@@ -92,7 +92,7 @@ export const generateFill = (
     size: '50000',
     buyOrder: 'buy-order',
     sellOrder: 'sell-order',
-    aggressor: Side.SIDE_BUY,
+    aggressor: Schema.Side.SIDE_BUY,
     buyer: {
       __typename: 'Party',
       id: 'buyer-id',
@@ -116,6 +116,7 @@ export const generateFill = (
     market: {
       __typename: 'Market',
       id: 'market-id',
+      name: 'Market name',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
       tradableInstrument: {

@@ -1,19 +1,21 @@
 import merge from 'lodash/merge';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import type { MarketDepth } from '../../../../../libs/market-depth/src/lib/__generated__/MarketDepth';
+import type {
+  MarketDepthQuery,
+} from '@vegaprotocol/market-depth';
 
 export const generateMarketDepth = (
-  override?: PartialDeep<MarketDepth>
-): MarketDepth => {
-  const defaultResult: MarketDepth = {
+  override?: PartialDeep<MarketDepthQuery>
+): MarketDepthQuery => {
+  const defaultResult: MarketDepthQuery = {
     market: {
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       data: {
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         staticMidPrice: '0',
         indicativePrice: '0',
         bestStaticBidPrice: '0',
