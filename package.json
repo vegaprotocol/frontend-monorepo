@@ -8,7 +8,7 @@
     "test": "nx test",
     "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack",
     "test:all": "nx run-many --all --target=test",
-    "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl"
+    "vegacapsule": "vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force"
   },
   "engines": {
     "node": ">=16.14.0"
