@@ -11,8 +11,7 @@ import classnames from 'classnames';
 type ButtonVariant = 'default' | 'primary' | 'secondary';
 type ButtonSize = 'lg' | 'md' | 'sm';
 
-const base =
-  'inline-block uppercase border rounded-md disabled:opacity-60';
+const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
 const sm = 'px-2 py-1 text-sm';
 const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
