@@ -70,7 +70,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
-    'border-transparent text-neutral-400 hover:text-white': !isActive,
+    'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,
   });
   return (
     <Link data-testid={testId} href={path} passHref={true}>
