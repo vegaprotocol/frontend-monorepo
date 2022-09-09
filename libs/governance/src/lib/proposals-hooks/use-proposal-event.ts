@@ -1,28 +1,12 @@
-import { useApolloClient, gql } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
+import { ProposalEventDocument } from './__generated__/Proposal';
 import type {
-  ProposalEvent,
-  ProposalEventVariables,
-  ProposalEvent_busEvents_event_Proposal,
-} from './__generated__/ProposalEvent';
+  ProposalEventSubscription,
+  ProposalEventFieldsFragment,
+  ProposalEventSubscriptionVariables,
+} from './__generated__/Proposal';
 import type { Subscription } from 'zen-observable-ts';
-
-export const PROPOSAL_EVENT_SUB = gql`
-  subscription ProposalEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Proposal]) {
-      type
-      event {
-        ... on Proposal {
-          id
-          reference
-          state
-          rejectionReason
-          errorDetails
-        }
-      }
-    }
-  }
-`;
 
 export const useProposalEvent = () => {
   const client = useApolloClient();
@@ -32,11 +16,11 @@ export const useProposalEvent = () => {
     (
       id: string,
       partyId: string,
-      callback: (proposal: ProposalEvent_busEvents_event_Proposal) => void
+      callback: (proposal: ProposalEventFieldsFragment) => void
     ) => {
       subRef.current = client
-        .subscribe<ProposalEvent, ProposalEventVariables>({
-          query: PROPOSAL_EVENT_SUB,
+        .subscribe<ProposalEventSubscription, ProposalEventSubscriptionVariables>({
+          query: ProposalEventDocument,
           variables: { partyId },
         })
         .subscribe(({ data }) => {

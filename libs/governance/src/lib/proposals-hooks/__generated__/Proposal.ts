@@ -3,6 +3,8 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
+
 export type ProposalEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -10,23 +12,27 @@ export type ProposalEventSubscriptionVariables = Types.Exact<{
 
 export type ProposalEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
 
-
+export const ProposalEventFieldsFragmentDoc = gql`
+    fragment ProposalEventFields on Proposal {
+  id
+  reference
+  state
+  rejectionReason
+  errorDetails
+}
+    `;
 export const ProposalEventDocument = gql`
     subscription ProposalEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Proposal]) {
     type
     event {
       ... on Proposal {
-        id
-        reference
-        state
-        rejectionReason
-        errorDetails
+        ...ProposalEventFields
       }
     }
   }
 }
-    `;
+    ${ProposalEventFieldsFragmentDoc}`;
 
 /**
  * __useProposalEventSubscription__

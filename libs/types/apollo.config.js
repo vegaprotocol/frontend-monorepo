@@ -20,6 +20,7 @@ module.exports = {
       '../../libs/deposits/**',
       '../../libs/environment/**',
       '../../libs/fills/**',
+      '../../libs/governance/**',
     ],
   },
 };
