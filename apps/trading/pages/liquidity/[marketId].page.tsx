@@ -1,7 +1,13 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { AsyncRenderer, Tab, Tabs, Splash, Button } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Tab,
+  Tabs,
+  Splash,
+  Button,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
@@ -22,7 +28,9 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   if (!marketId) {
     return (
       <Splash>
-        <h4 className="text-lg text-black dark:text-white">{t('Invalid market id.')}</h4>
+        <h4 className="text-lg text-black dark:text-white">
+          {t('Invalid market id.')}
+        </h4>
         <Link href="/" passHref={true}>
           <Button>{t('Go back')}</Button>
         </Link>
