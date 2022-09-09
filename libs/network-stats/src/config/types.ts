@@ -1,10 +1,9 @@
 import type {
-  NetworkStats_nodeData,
-  NetworkStats_statistics,
-} from '../components/stats-manager/__generated__/NetworkStats';
+  NetworkStatsQuery,
+} from '../components/stats-manager/__generated__/Stats';
 
-export type Stats = Omit<NetworkStats_nodeData, '__typename'> &
-  Omit<NetworkStats_statistics, '__typename'>;
+export type Stats = Omit<NetworkStatsQuery['nodeData'], '__typename'> &
+  Omit<NetworkStatsQuery['statistics'], '__typename'>;
 
 // eslint-disable-next-line
 export type value = any;
