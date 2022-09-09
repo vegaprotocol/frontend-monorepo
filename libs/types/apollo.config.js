@@ -26,6 +26,7 @@ module.exports = {
       '../../libs/market-list/**',
       '../../libs/network-stats/**',
       '../../libs/orders/**',
+      '../../libs/positions/**',
     ],
   },
 };

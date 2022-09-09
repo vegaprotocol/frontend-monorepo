@@ -1,6 +1,6 @@
-import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { AccountsQuery } from '@vegaprotocol/accounts';
-import type { Positions } from './__generated__/Positions';
+import type { PositionsQuery } from './__generated__/Positions';
 import { getMetrics } from './positions-data-providers';
 
 const accounts: AccountsQuery = {
@@ -10,7 +10,7 @@ const accounts: AccountsQuery = {
     accounts: [
       {
         __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
         asset: {
           __typename: 'Asset',
           symbol: 'tDAI',
@@ -22,7 +22,7 @@ const accounts: AccountsQuery = {
       },
       {
         __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_MARGIN,
+        type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
         asset: {
           __typename: 'Asset',
           symbol: 'tDAI',
@@ -44,7 +44,7 @@ const accounts: AccountsQuery = {
       },
       {
         __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_MARGIN,
+        type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
         asset: {
           __typename: 'Asset',
           symbol: 'tDAI',
@@ -68,7 +68,7 @@ const accounts: AccountsQuery = {
   },
 };
 
-const data: Positions = {
+const data: PositionsQuery = {
   party: {
     __typename: 'Party',
     id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
@@ -110,8 +110,9 @@ const data: Positions = {
             market: {
               __typename: 'Market',
               id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
+              name: 'Market name',
               decimalPlaces: 5,
-              tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+              tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
               positionDecimalPlaces: 0,
               tradableInstrument: {
                 __typename: 'TradableInstrument',
@@ -167,7 +168,8 @@ const data: Positions = {
               __typename: 'Market',
               id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
               decimalPlaces: 5,
-              tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+              name: 'Market name',
+              tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
               positionDecimalPlaces: 0,
               tradableInstrument: {
                 __typename: 'TradableInstrument',

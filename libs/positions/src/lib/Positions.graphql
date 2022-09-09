@@ -53,7 +53,7 @@ query Positions($partyId: ID!) {
   }
 }
 
-subscription PositionsSubscription($partyId: ID!) {
+subscription PositionsEvent($partyId: ID!) {
   positions(partyId: $partyId) {
     ...PositionFields
   }
