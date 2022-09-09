@@ -270,6 +270,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       title: t('Liquidity'),
       content: (
         <MarketInfoTable
+          data-testid="liquidity"
           data={{
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
