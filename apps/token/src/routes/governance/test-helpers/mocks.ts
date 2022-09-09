@@ -5,8 +5,8 @@ import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 export const mockPubkey = '0x123';
 
 export const mockWalletContext = {
-  keypair: mockPubkey,
-  keypairs: [mockPubkey],
+  pubKey: mockPubkey,
+  pubKeys: [mockPubkey],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),

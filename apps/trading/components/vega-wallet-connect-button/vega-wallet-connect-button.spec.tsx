@@ -25,7 +25,7 @@ const generateJsx = (
 };
 
 it('Not connected', () => {
-  render(generateJsx({ keypair: null } as VegaWalletContextShape, props));
+  render(generateJsx({ pubKey: null } as VegaWalletContextShape, props));
 
   const button = screen.getByRole('button');
   expect(button).toHaveTextContent('Connect Vega wallet');
@@ -34,16 +34,13 @@ it('Not connected', () => {
 });
 
 it('Connected', () => {
-  const keypair = '123456__123456';
+  const pubKey = '123456__123456';
   render(
-    generateJsx(
-      { keypair, keypairs: [keypair] } as VegaWalletContextShape,
-      props
-    )
+    generateJsx({ pubKey, pubKeys: [pubKey] } as VegaWalletContextShape, props)
   );
 
   const button = screen.getByRole('button');
-  expect(button).toHaveTextContent(truncateByChars(keypair));
+  expect(button).toHaveTextContent(truncateByChars(pubKey));
   fireEvent.click(button);
   expect(props.setConnectDialog).not.toHaveBeenCalled();
 });

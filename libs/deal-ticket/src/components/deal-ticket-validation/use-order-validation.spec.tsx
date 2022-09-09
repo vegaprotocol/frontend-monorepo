@@ -41,8 +41,8 @@ const market = {
 };
 
 const defaultWalletContext = {
-  keypair: '111111__111111',
-  keypairs: [],
+  pubKey: '111111__111111',
+  pubKeys: [],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),
@@ -91,14 +91,7 @@ describe('useOrderValidation', () => {
   });
 
   it('Returns an error message when no keypair found', () => {
-    const { result } = setup(defaultOrder, { keypair: null });
-    expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
-  });
-
-  it('Returns an error message when the keypair is tainted', () => {
-    const { result } = setup(defaultOrder, {
-      keypair: { ...defaultWalletContext.keypair, tainted: true },
-    });
+    const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 
