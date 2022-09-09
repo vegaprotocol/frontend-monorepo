@@ -149,16 +149,6 @@ describe('market info is displayed', () => {
       'Trading Termination Property',
       'termination.BTC.value'
     );
-    validateMarketDataRow(
-      2,
-      'Price Oracle',
-      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
-    );
-    validateMarketDataRow(
-      3,
-      'Termination Oracle',
-      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
-    );
 
     cy.getByTestId(externalLink)
       .should('have.attr', 'href')
