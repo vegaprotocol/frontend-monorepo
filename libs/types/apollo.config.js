@@ -21,6 +21,7 @@ module.exports = {
       '../../libs/environment/**',
       '../../libs/fills/**',
       '../../libs/governance/**',
+      '../../libs/liquidity/**',
     ],
   },
 };

@@ -1,0 +1,64 @@
+fragment LiquidityProvisionFeeShareFields on LiquidityProviderFeeShare {
+  party {
+    id
+  }
+  equityLikeShare
+  averageEntryValuation
+}
+
+query MarketLiquidity($marketId: ID!, $partyId: String) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    liquidityProvisionsConnection(party: $partyId) {
+      edges {
+        node {
+          id
+          party {
+            id
+            accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+              edges {
+                node {
+                  type
+                  balance
+                }
+              }
+            }
+          }
+          createdAt
+          updatedAt
+          commitmentAmount
+          fee
+          status
+        }
+      }
+    }
+    tradableInstrument {
+      instrument {
+        code
+        product {
+          ... on Future {
+            settlementAsset {
+              id
+              symbol
+              decimals
+            }
+          }
+        }
+      }
+    }
+    data {
+      market {
+        id
+      }
+      suppliedStake
+      openInterest
+      targetStake
+      marketValueProxy
+      liquidityProviderFeeShare {
+        ...LiquidityProvisionFeeShareFields
+      }
+    }
+  }
+}

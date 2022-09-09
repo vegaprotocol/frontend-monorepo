@@ -1,77 +1,10 @@
-import { gql, useQuery } from '@apollo/client';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import type {
-  MarketLiquidity,
-  MarketLiquidity_market_data_liquidityProviderFeeShare,
-} from './__generated__';
+import { useMarketLiquidityQuery } from './__generated__/Liquidity';
+import type { LiquidityProvisionFeeShareFieldsFragment } from './__generated__/Liquidity';
 
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
-
-const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!, $partyId: String) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      liquidityProvisionsConnection(party: $partyId) {
-        edges {
-          node {
-            id
-            party {
-              id
-              accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-                edges {
-                  node {
-                    type
-                    balance
-                  }
-                }
-              }
-            }
-            createdAt
-            updatedAt
-            commitmentAmount
-            fee
-            status
-          }
-        }
-      }
-      tradableInstrument {
-        instrument {
-          code
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-      data {
-        market {
-          id
-        }
-        suppliedStake
-        openInterest
-        targetStake
-        marketValueProxy
-        liquidityProviderFeeShare {
-          party {
-            id
-          }
-          equityLikeShare
-          averageEntryValuation
-        }
-      }
-    }
-  }
-`;
 
 export interface LiquidityProvision {
   party: string;
@@ -81,7 +14,7 @@ export interface LiquidityProvision {
   averageEntryValuation: string;
   obligation: string | null;
   supplied: string | null;
-  status?: LiquidityProvisionStatus;
+  status?: Schema.LiquidityProvisionStatus;
   createdAt: string | undefined;
   updatedAt: string | null | undefined;
 }
@@ -102,24 +35,21 @@ export const useLiquidityProvision = ({
   partyId,
 }: {
   partyId?: string;
-  marketId?: string;
+  marketId: string;
 }) => {
   const { data: stakeToCcySiskas } = useNetworkParam(SISKA_NETWORK_PARAMETER);
   const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-  const { data, loading, error } = useQuery<MarketLiquidity>(
-    MARKET_LIQUIDITY_QUERY,
-    {
-      variables: { marketId },
-    }
-  );
+  const { data, loading, error } = useMarketLiquidityQuery({
+    variables: { marketId },
+  });
   const liquidityProviders = (
     data?.market?.data?.liquidityProviderFeeShare || []
   )
     ?.filter(
-      (p: MarketLiquidity_market_data_liquidityProviderFeeShare) =>
+      (p: LiquidityProvisionFeeShareFieldsFragment) =>
         !partyId || p.party.id === partyId
     ) // if partyId is provided, filter out other parties
-    .map((provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
+    .map((provider: LiquidityProvisionFeeShareFieldsFragment) => {
       const liquidityProvisionConnection =
         data?.market?.liquidityProvisionsConnection.edges?.find(
           (e) => e?.node.party.id === provider.party.id
@@ -127,7 +57,7 @@ export const useLiquidityProvision = ({
       const balance =
         liquidityProvisionConnection?.node?.party.accountsConnection.edges?.reduce(
           (acc, e) => {
-            return e?.node.type === AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
+            return e?.node.type === Schema.AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
               ? acc.plus(new BigNumber(e?.node.balance ?? 0))
               : acc;
           },
