@@ -1,21 +1,18 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  MarketDepth,
-  MarketDepth_market,
-} from '@vegaprotocol/market-depth';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import type { MarketDepthQuery } from '@vegaprotocol/market-depth';
+import { Schema } from '@vegaprotocol/types';
 
 export const generateOrderBook = (
-  override?: PartialDeep<MarketDepth>
-): MarketDepth => {
-  const marketDepth: MarketDepth_market = {
+  override?: PartialDeep<MarketDepthQuery>
+): MarketDepthQuery => {
+  const marketDepth: MarketDepthQuery['market'] = {
     id: 'b2426f67b085ba8fb429f1b529d49372b2d096c6fb6f509f76c5863abb6d969e',
     decimalPlaces: 5,
     positionDecimalPlaces: 0,
     data: {
       staticMidPrice: '826337',
-      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       indicativeVolume: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '826336',
