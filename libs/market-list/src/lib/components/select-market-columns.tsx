@@ -6,10 +6,9 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import {
-  AuctionTrigger,
   AuctionTriggerMapping,
-  MarketTradingMode,
   MarketTradingModeMapping,
+  Schema,
 } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
@@ -18,10 +17,7 @@ import Link from 'next/link';
 import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketList_markets,
-  MarketList_markets_fees_factors,
-} from '../__generated__/MarketList';
+import type { MarketListItemFragment } from '../__generated__/MarketData';
 import isNil from 'lodash/isNil';
 
 export const cellClassNames = 'px-2 py-1 first:text-left text-right capitalize';
@@ -171,7 +167,7 @@ export const columnHeaders: Column[] = [
 ];
 
 export const columns = (
-  market: MarketList_markets,
+  market: MarketListItemFragment,
   onSelect: (id: string) => void
 ) => {
   const candlesClose = market.candles
@@ -286,9 +282,9 @@ export const columns = (
     {
       value:
         market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
@@ -325,7 +321,7 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: MarketList_markets & { openVolume: string },
+  market: MarketListItemFragment & { openVolume: string },
   onSelect: (id: string) => void
 ) => {
   const candlesClose = market.candles
@@ -439,9 +435,9 @@ export const columnsPositionMarkets = (
     {
       value:
         market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
@@ -489,7 +485,7 @@ export const columnsPositionMarkets = (
 const FeesCell = ({
   feeFactors,
 }: {
-  feeFactors: MarketList_markets_fees_factors;
+  feeFactors: MarketListItemFragment['fees']['factors'];
 }) => (
   <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
     <span>{totalFees(feeFactors) ?? '-'}</span>
@@ -499,7 +495,7 @@ const FeesCell = ({
 export const FeesBreakdown = ({
   feeFactors,
 }: {
-  feeFactors?: MarketList_markets_fees_factors;
+  feeFactors?: MarketListItemFragment['fees']['factors'];
 }) => {
   if (!feeFactors) return null;
   return (

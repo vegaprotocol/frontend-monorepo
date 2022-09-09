@@ -11,60 +11,64 @@ fragment MarketDataFields on MarketData {
   indicativeVolume
 }
 
-query MarketList($interval: Interval!, $since: String!) {
-  markets {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    tradingMode
-    fees {
-      factors {
-        makerFee
-        infrastructureFee
-        liquidityFee
-      }
+fragment MarketListItem on Market {
+  id
+  name
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
     }
-    data {
-      market {
-        id
-        state
-        tradingMode
-      }
-      bestBidPrice
-      bestOfferPrice
-      markPrice
-      trigger
-      indicativeVolume
+  }
+  data {
+    market {
+      id
+      state
+      tradingMode
     }
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-            }
+    bestBidPrice
+    bestOfferPrice
+    markPrice
+    trigger
+    indicativeVolume
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          settlementAsset {
+            symbol
           }
         }
       }
     }
-    marketTimestamps {
-      open
-      close
-    }
-    candles(interval: $interval, since: $since) {
-      open
-      close
-      high
-      low
-    }
+  }
+  marketTimestamps {
+    open
+    close
+  }
+  candles(interval: $interval, since: $since) {
+    open
+    close
+    high
+    low
+  }
+}
+
+query MarketList($interval: Interval!, $since: String!) {
+  markets {
+    ...MarketListItem
   }
 }
 

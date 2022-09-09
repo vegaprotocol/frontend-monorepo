@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 import type { ReactNode } from 'react';
-import type { MarketList_markets } from '../__generated__/MarketList';
+import type { MarketListItemFragment } from '../__generated__/MarketData';
 
 import {
   SelectAllMarketsTableBody,
@@ -56,8 +56,8 @@ const mockData = {
         decimalPlaces: 2,
         name: '',
         positionDecimalPlaces: 4,
-        state: MarketState.STATE_ACTIVE,
-        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '14175',
         },
@@ -122,7 +122,7 @@ const mockData = {
             close: '774',
           },
         ],
-      } as MarketList_markets,
+      } as MarketListItemFragment,
       {
         __typename: 'Market',
         id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
@@ -190,12 +190,12 @@ const mockData = {
         ],
         name: '',
         positionDecimalPlaces: 4,
-        state: MarketState.STATE_ACTIVE,
-        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '14175',
         },
-      } as MarketList_markets,
+      } as MarketListItemFragment,
     ],
   },
 };

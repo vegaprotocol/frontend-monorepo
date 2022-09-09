@@ -3,12 +3,11 @@ import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type {
-  MarketList,
-  MarketList_markets,
-  MarketList_markets_fees_factors,
-} from '../__generated__/MarketList';
+  MarketListQuery,
+  MarketListItemFragment,
+} from '../__generated__/MarketData';
 
-export const totalFees = (fees: MarketList_markets_fees_factors) => {
+export const totalFees = (fees: MarketListItemFragment['fees']['factors']) => {
   if (!fees) {
     return undefined;
   }
@@ -20,7 +19,7 @@ export const totalFees = (fees: MarketList_markets_fees_factors) => {
   );
 };
 
-export const mapDataToMarketList = ({ markets }: MarketList) => {
+export const mapDataToMarketList = ({ markets }: MarketListQuery) => {
   const tradingModesOrdering = [
     MarketTradingMode.TRADING_MODE_CONTINUOUS,
     MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -56,7 +55,7 @@ export const mapDataToMarketList = ({ markets }: MarketList) => {
   );
 };
 
-export const calcCandleLow = (m: MarketList_markets): string | undefined => {
+export const calcCandleLow = (m: MarketListItemFragment): string | undefined => {
   return m.candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.low) {
@@ -70,7 +69,7 @@ export const calcCandleLow = (m: MarketList_markets): string | undefined => {
     .toString();
 };
 
-export const calcCandleHigh = (m: MarketList_markets): string | undefined => {
+export const calcCandleHigh = (m: MarketListItemFragment): string | undefined => {
   return m.candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.high) {

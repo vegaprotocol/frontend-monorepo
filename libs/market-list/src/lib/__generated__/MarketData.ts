@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type MarketDataFieldsFragment = { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } };
 
+export type MarketListItemFragment = { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, data?: { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', symbol: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, candles?: Array<{ __typename?: 'Candle', open: string, close: string, high: string, low: string } | null> | null };
+
 export type MarketListQueryVariables = Types.Exact<{
   interval: Types.Interval;
   since: Types.Scalars['String'];
@@ -32,64 +34,69 @@ export const MarketDataFieldsFragmentDoc = gql`
   indicativeVolume
 }
     `;
-export const MarketListDocument = gql`
-    query MarketList($interval: Interval!, $since: String!) {
-  markets {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    tradingMode
-    fees {
-      factors {
-        makerFee
-        infrastructureFee
-        liquidityFee
-      }
+export const MarketListItemFragmentDoc = gql`
+    fragment MarketListItem on Market {
+  id
+  name
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
     }
-    data {
-      market {
-        id
-        state
-        tradingMode
-      }
-      bestBidPrice
-      bestOfferPrice
-      markPrice
-      trigger
-      indicativeVolume
+  }
+  data {
+    market {
+      id
+      state
+      tradingMode
     }
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-            }
+    bestBidPrice
+    bestOfferPrice
+    markPrice
+    trigger
+    indicativeVolume
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          settlementAsset {
+            symbol
           }
         }
       }
     }
-    marketTimestamps {
-      open
-      close
-    }
-    candles(interval: $interval, since: $since) {
-      open
-      close
-      high
-      low
-    }
+  }
+  marketTimestamps {
+    open
+    close
+  }
+  candles(interval: $interval, since: $since) {
+    open
+    close
+    high
+    low
   }
 }
     `;
+export const MarketListDocument = gql`
+    query MarketList($interval: Interval!, $since: String!) {
+  markets {
+    ...MarketListItem
+  }
+}
+    ${MarketListItemFragmentDoc}`;
 
 /**
  * __useMarketListQuery__
