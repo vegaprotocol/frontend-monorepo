@@ -2,7 +2,6 @@ import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { FillsQuery, FillFieldsFragment } from './__generated__/Fills';
 import { Side } from '@vegaprotocol/types';
-import { FillsTradeEdge } from './types';
 
 export const generateFills = (
   override?: PartialDeep<FillsQuery>
@@ -25,7 +24,7 @@ export const generateFills = (
       market: {
         tradableInstrument: {
           instrument: {
-            name: 'Apples Daily v3',
+            id: '012',
           },
         },
         positionDecimalPlaces: 2,
@@ -44,7 +43,7 @@ export const generateFills = (
       market: {
         tradableInstrument: {
           instrument: {
-            name: 'ETHBTC Quarterly (30 Jun 2022)',
+            id: '123',
           },
         },
       },
