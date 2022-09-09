@@ -280,35 +280,30 @@ export const Info = ({ market, onSelect }: InfoProps) => {
               .decimals
           }
           assetSymbol={assetSymbol}
-          link={
-            <Link onClick={() => onSelect(market.id)}>
-              {t('View liquidity provision table')}
-            </Link>
-          }
-        />
+        >
+          <Link onClick={() => onSelect(market.id)}>
+            {t('View liquidity provision table')}
+          </Link>
+        </MarketInfoTable>
       ),
     },
     {
       title: t('Oracle'),
       content: (
         <MarketInfoTable
-          data={{
-            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
-            priceOracle:
-              market.tradableInstrument.instrument.product
-                .oracleSpecForSettlementPrice.id,
-            terminationOracle:
-              market.tradableInstrument.instrument.product
-                .oracleSpecForTradingTermination.id,
-          }}
-          link={
-            <ExternalLink
-              href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
-            >
-              {t('View full oracle details')}
-            </ExternalLink>
-          }
-        />
+          data={market.tradableInstrument.instrument.product.oracleSpecBinding}
+        >
+          <ExternalLink
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForSettlementPrice.id}`}
+          >
+            {t('View price oracle specification')}
+          </ExternalLink>
+          <ExternalLink
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
+          >
+            {t('View termination oracle specification')}
+          </ExternalLink>
+        </MarketInfoTable>
       ),
     },
   ];
@@ -317,21 +312,19 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Proposal'),
       content: (
-        <p>
-          <ExternalLink
-            href={generatePath(Links.PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-              proposalId: market.proposal?.id || '',
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('View governance proposal')}
-          </ExternalLink>
-        </p>
+        <ExternalLink
+          href={generatePath(Links.PROPOSAL_PAGE, {
+            tokenUrl: VEGA_TOKEN_URL,
+            proposalId: market.proposal?.id || '',
+          })}
+          title={
+            market.proposal?.rationale.title ||
+            market.proposal?.rationale.description ||
+            ''
+          }
+        >
+          {t('View governance proposal')}
+        </ExternalLink>
       ),
     },
   ];
