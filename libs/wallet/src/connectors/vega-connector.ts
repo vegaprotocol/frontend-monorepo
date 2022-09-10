@@ -269,7 +269,11 @@ export interface VegaConnector {
   /** Disconnect from wallet */
   disconnect(): Promise<void>;
 
-  /** Send a TX to the network */
+  /**
+   * sign and send a transaction to the network
+   *
+   * @returns promise containing either the transaction payload or null if the user rejected the request
+   */
   sendTx: (
     pubkey: string,
     transaction: Transaction

@@ -96,39 +96,55 @@ const ConnectorList = ({
   setWalletUrl: (value: string) => void;
 }) => {
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
+  const getButtonText = (c: VegaConnector) => {
+    if (c instanceof RestConnector) {
+      return t('Hosted wallet');
+    } else {
+      return t('Vega wallet (CLI or GUI)');
+    }
+  };
   return (
     <>
-      <ConnectDialogTitle>Connect</ConnectDialogTitle>
+      <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
       <ul data-testid="connectors-list" className="mb-6">
-        {Object.entries(connectors).map(([key, connector]) => (
-          <li key={key} className="mb-4 last:mb-0">
-            <Button
-              key={key}
-              variant="primary"
-              onClick={() => onSelect(connector)}
-              fill={true}
-            >
-              <span className="flex text-left justify-between items-center">
-                {t(`${key} provider`)}
-                <Icon name="chevron-right" />
-              </span>
-            </Button>
-          </li>
-        ))}
+        {Object.entries(connectors)
+          .sort(([key]) => {
+            // ensure rest (hosted wallet is below)
+            return key === 'rest' ? 1 : -1;
+          })
+          .map(([key, connector]) => (
+            <li key={key} className="mb-4 last:mb-0">
+              <Button
+                key={key}
+                onClick={() => onSelect(connector)}
+                size="lg"
+                variant={
+                  connector instanceof JsonRpcConnector ? 'primary' : 'default'
+                }
+                fill={true}
+              >
+                <span className="-mx-6 flex text-left justify-between items-center">
+                  {getButtonText(connector)}
+                  <Icon name="chevron-right" />
+                </span>
+              </Button>
+            </li>
+          ))}
       </ul>
       {urlInputExpanded ? (
         <FormGroup label={t('Wallet location')} labelFor="wallet-url">
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <Input
               value={walletUrl}
               onChange={(e) => setWalletUrl(e.target.value)}
               name="wallet-url"
             />
-            <div>
-              <Button onClick={() => setUrlInputExpanded(false)}>
-                {t('Update')}
-              </Button>
-            </div>
+            <button
+              className="underline"
+              onClick={() => setUrlInputExpanded(false)}
+            >
+              {t('Update')}
+            </button>
           </div>
         </FormGroup>
       ) : (
@@ -163,7 +179,8 @@ const SelectedForm = ({
       <RestConnectorForm
         connector={connector}
         onConnect={onConnect}
-        walletUrl={walletUrl}
+        // Rest connector form is only used for hosted wallet
+        walletUrl="https://wallet.testnet.vega.xyz"
       />
     );
   }
