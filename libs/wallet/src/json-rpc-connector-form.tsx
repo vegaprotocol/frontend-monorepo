@@ -8,6 +8,7 @@ import { ConnectDialogTitle } from './connect-dialog';
 
 type Status =
   | 'idle'
+  | 'checkingVersion'
   | 'gettingChainId'
   | 'connecting'
   | 'gettingPerms'
@@ -34,7 +35,12 @@ export const JsonRpcConnectorForm = ({
   const attempConnect = useCallback(async () => {
     try {
       connector.url = walletUrl;
-      setStatus('gettingChainId');
+
+      setStatus('checkingVersion');
+
+      await connector.checkCompat();
+
+      // setStatus('gettingChainId');
 
       // const chainIdResult = await connector.getChainId();
 

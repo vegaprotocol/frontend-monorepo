@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import { encodeTransaction } from '../utils';
@@ -95,9 +94,11 @@ const Errors: { [key: string]: WalletError } = {
   NO_TOKEN: new WalletError('No token', 1),
   INVALID_RESPONSE: new WalletError('Invalid response from wallet', 2),
   NO_SERVICE: new WalletError('No service', 3),
+  INVALID_WALLET: new WalletError('Wallet version invalid', 4),
 };
 
 export class JsonRpcConnector implements VegaConnector {
+  version = VERSION;
   url: string | null = null;
   token: string | null = null;
   reqId = 0;
@@ -240,9 +241,28 @@ export class JsonRpcConnector implements VegaConnector {
     }
   }
 
+  async checkCompat() {
+    try {
+      const result = await fetch(`${this.url}/api/${this.version}/methods`);
+      console.log(result);
+      if (!result.ok) {
+        const err = Errors.INVALID_WALLET;
+        err.data = `The wallet running at ${this.url} is not supported. Required version is ${this.version}`;
+        throw err;
+      }
+      return true;
+    } catch (err) {
+      if (err instanceof WalletError) {
+        throw err;
+      }
+
+      throw Errors.NO_SERVICE;
+    }
+  }
+
   private async request(method: Methods, params?: object) {
     try {
-      const result = await fetch(`${this.url}/api/${VERSION}/requests`, {
+      const result = await fetch(`${this.url}/api/${this.version}/requests`, {
         method: 'post',
         body: JSON.stringify({
           jsonrpc: '2.0',

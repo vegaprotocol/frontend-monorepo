@@ -151,7 +151,7 @@ const ConnectorList = ({
         <p className="mb-6 text-center text-neutral-600 dark:text-neutral-400">
           {t('Or')}{' '}
           <button
-            className="underline text-black dark:text-white"
+            className="underline"
             onClick={() => setUrlInputExpanded(true)}
           >
             {t('enter a custom wallet location')}
