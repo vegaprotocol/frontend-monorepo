@@ -244,7 +244,6 @@ export class JsonRpcConnector implements VegaConnector {
   async checkCompat() {
     try {
       const result = await fetch(`${this.url}/api/${this.version}/methods`);
-      console.log(result);
       if (!result.ok) {
         const err = Errors.INVALID_WALLET;
         err.data = `The wallet running at ${this.url} is not supported. Required version is ${this.version}`;

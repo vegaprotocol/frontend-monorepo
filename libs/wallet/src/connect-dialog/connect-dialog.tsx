@@ -8,7 +8,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { JsonRpcConnector } from '../connectors';
 import { RestConnector } from '../connectors';
@@ -28,11 +28,14 @@ export function VegaConnectDialog({
   dialogOpen,
   setDialogOpen,
 }: VegaConnectDialogProps) {
+  const { data } = useChainIdQuery();
+
   return (
     <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
       <ConnectDialogContainer
         connectors={connectors}
         closeDialog={() => setDialogOpen(false)}
+        appChainId={data?.statistics.chainId}
       />
     </Dialog>
   );
@@ -41,9 +44,11 @@ export function VegaConnectDialog({
 const ConnectDialogContainer = ({
   connectors,
   closeDialog,
+  appChainId,
 }: {
   connectors: Connectors;
   closeDialog: () => void;
+  appChainId?: string;
 }) => {
   const { VEGA_WALLET_URL } = useEnvironment();
   // Selected connector, we need to show the auth form if the rest connector (which is
@@ -51,6 +56,14 @@ const ConnectDialogContainer = ({
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
+
+  if (!appChainId) {
+    return (
+      <ConnectDialogContent>
+        <p>Awaiting chainId</p>
+      </ConnectDialogContent>
+    );
+  }
 
   return (
     <>
@@ -60,7 +73,7 @@ const ConnectDialogContainer = ({
             connector={selectedConnector}
             onConnect={closeDialog}
             walletUrl={walletUrl}
-            // appChainId={data.statistics.chainId}
+            appChainId={appChainId}
           />
         ) : (
           <ConnectorList
@@ -172,7 +185,7 @@ const SelectedForm = ({
   connector: VegaConnector;
   onConnect: () => void;
   walletUrl: string;
-  appChainId?: string;
+  appChainId: string;
 }) => {
   if (connector instanceof RestConnector) {
     return (

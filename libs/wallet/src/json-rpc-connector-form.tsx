@@ -26,7 +26,7 @@ export const JsonRpcConnectorForm = ({
   connector: JsonRpcConnector;
   onConnect: () => void;
   walletUrl: string;
-  appChainId?: string;
+  appChainId: string;
 }) => {
   const { connect } = useVegaWallet();
   const [status, setStatus] = useState<Status>('idle');
@@ -34,35 +34,42 @@ export const JsonRpcConnectorForm = ({
 
   const attempConnect = useCallback(async () => {
     try {
+      // Set the connector url in case a custo mone was selected
       connector.url = walletUrl;
 
+      // Check that the running wallet is compatible with this connector
       setStatus('checkingVersion');
-
       await connector.checkCompat();
 
-      // setStatus('gettingChainId');
+      // Check if wallet is configured for the same chain as the app
+      setStatus('gettingChainId');
+      const chainIdResult = await connector.getChainId();
+      if (chainIdResult.chainID !== appChainId) {
+        throw new WalletError(
+          'Invalid chain',
+          0,
+          `chain id: ${chainIdResult.chainID} does not match expected chain id: ${appChainId}`
+        );
+      }
 
-      // const chainIdResult = await connector.getChainId();
-
-      // if (chainIdResult.chainID !== appChainId) {
-      //   setError(
-      //     `Invalid chain chain id: ${chainIdResult.chainID} does not match application chain id: ${appChainId}`
-      //   );
-      //   setStatus('error');
-      //   return;
-      // }
-
+      // Start connection flow. User will be prompted to select a wallet and enter
+      // its password in the wallet application, promise will resolve once successful
+      // or it will throw
       setStatus('connecting');
       await connector.connectWallet();
 
+      // Check wallet is permitted to reveal its public keys
       setStatus('gettingPerms');
       const permsResult = await connector.getPermissions();
-
       if (permsResult.permissions.public_keys === 'none') {
+        // Automatically request new perms. User will again be prompted to permit this change
+        // and enter their password
         setStatus('requestingPerms');
         await connector.requestPermissions();
       }
 
+      // Call connect in the wallet provider. The connector will be stored for
+      // future actions such as sending transactions
       await connect(connector);
 
       onConnect();
@@ -72,7 +79,7 @@ export const JsonRpcConnectorForm = ({
       }
       setStatus('error');
     }
-  }, [connector, connect, onConnect, walletUrl]);
+  }, [connector, connect, onConnect, walletUrl, appChainId]);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -175,7 +182,7 @@ const Connecting = ({
       <>
         <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
         <div className="flex justify-center items-center my-6">
-          <Loader size="small" />
+          <Loader />
         </div>
       </>
     );
