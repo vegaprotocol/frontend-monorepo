@@ -127,9 +127,8 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
 
     cy.getByTestId(externalLink).should(
-      'have.attr',
-      'href',
-      '/liquidity/market-0'
+      'have.text',
+      'View liquidity provision table'
     );
   });
 
