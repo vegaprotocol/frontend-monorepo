@@ -11,44 +11,43 @@ interface VegaWalletProviderProps {
 }
 
 export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
-  // Current selected publicKey, default with value from local storage
-  const [pubKey, setPubKey] = useState<string | null>(() => {
-    const pk = LocalStorage.getItem(WALLET_KEY);
-    return pk ? pk : null;
-  });
+  // Current selected pubKey
+  const [pubKey, setPubKey] = useState<string | null>(null);
 
-  // Keypair objects retrieved from the connector
+  // Arary of pubkeys retrieved from the connector
   const [pubKeys, setPubKeys] = useState<string[] | null>(null);
 
   // Reference to the current connector instance
   const connector = useRef<VegaConnector | null>(null);
 
-  const selectPublicKey = useCallback((pk: string) => {
+  const selectPubKey = useCallback((pk: string) => {
     setPubKey(pk);
     LocalStorage.setItem(WALLET_KEY, pk);
   }, []);
 
-  const connect = useCallback(
-    async (c: VegaConnector) => {
-      connector.current = c;
-      try {
-        const keys = await connector.current.connect();
+  const connect = useCallback(async (c: VegaConnector) => {
+    connector.current = c;
+    try {
+      const keys = await connector.current.connect();
 
-        if (keys?.length) {
-          setPubKeys(keys);
-          if (pubKey === null) {
-            setPubKey(keys[0]);
-          }
-          return keys;
+      if (keys?.length) {
+        setPubKeys(keys);
+
+        const lastUsedPubKey = LocalStorage.getItem(WALLET_KEY);
+        if (lastUsedPubKey) {
+          setPubKey(lastUsedPubKey);
         } else {
-          return null;
+          setPubKey(keys[0]);
         }
-      } catch (err) {
+
+        return keys;
+      } else {
         return null;
       }
-    },
-    [pubKey]
-  );
+    } catch (err) {
+      return null;
+    }
+  }, []);
 
   const disconnect = useCallback(async () => {
     try {
@@ -66,7 +65,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
   const sendTx = useCallback((pubkey: string, transaction: Transaction) => {
     if (!connector.current) {
-      return null;
+      throw new Error('No connector');
     }
 
     return connector.current.sendTx(pubkey, transaction);
@@ -76,12 +75,12 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     return {
       pubKey,
       pubKeys,
-      selectPublicKey,
+      selectPubKey,
       connect,
       disconnect,
       sendTx,
-    } as VegaWalletContextShape;
-  }, [pubKey, pubKeys, selectPublicKey, connect, disconnect, sendTx]);
+    };
+  }, [pubKey, pubKeys, selectPubKey, connect, disconnect, sendTx]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>

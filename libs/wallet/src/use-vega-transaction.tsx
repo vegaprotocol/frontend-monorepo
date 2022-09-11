@@ -29,6 +29,10 @@ export interface VegaTxState {
   dialogOpen: boolean;
 }
 
+const Errors = {
+  UNKNOWN: new WalletError('Something went wrong', 1, 'Unknown error occurred'),
+};
+
 export const initialState = {
   status: VegaTxStatus.Default,
   error: null,
@@ -87,17 +91,8 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
-        const error =
-          err instanceof WalletError
-            ? err
-            : new WalletError(
-                'Something went wrong',
-                1,
-                'Unknown error occurred'
-              );
-
         setTransaction({
-          error,
+          error: err instanceof WalletError ? err : Errors.UNKNOWN,
           status: VegaTxStatus.Error,
         });
         return null;

@@ -17,7 +17,7 @@ export const VegaManageDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaManageDialogProps) => {
-  const { pubKey, pubKeys, selectPublicKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   return (
     <Dialog
       title={t('SELECT A VEGA KEY')}
@@ -43,7 +43,7 @@ export const VegaManageDialog = ({
                     {!isSelected && (
                       <button
                         onClick={() => {
-                          selectPublicKey(pk);
+                          selectPubKey(pk);
                           setDialogOpen(false);
                         }}
                         disabled={isSelected}

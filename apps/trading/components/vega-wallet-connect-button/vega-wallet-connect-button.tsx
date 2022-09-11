@@ -22,7 +22,7 @@ export const VegaWalletConnectButton = ({
   setConnectDialog,
 }: VegaWalletConnectButtonProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { pubKey, pubKeys, selectPublicKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
 
   if (isConnected && pubKeys) {
@@ -39,7 +39,7 @@ export const VegaWalletConnectButton = ({
             <DropdownMenuRadioGroup
               value={pubKey}
               onValueChange={(value) => {
-                selectPublicKey(value);
+                selectPubKey(value);
               }}
             >
               {pubKeys.map((kp) => (

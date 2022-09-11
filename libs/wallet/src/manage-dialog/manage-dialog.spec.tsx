@@ -8,20 +8,20 @@ import { truncateByChars } from '@vegaprotocol/react-helpers';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;
-let keypair1;
-let keypair2;
+let pubKey1;
+let pubKey2;
 
 beforeEach(() => {
-  keypair1 = '111111__111111';
-  keypair2 = '222222__222222';
+  pubKey1 = '111111__111111';
+  pubKey2 = '222222__222222';
   props = {
     dialogOpen: true,
     setDialogOpen: jest.fn(),
   };
   context = {
-    keypair: keypair1,
-    keypairs: [keypair1, keypair2],
-    selectPublicKey: jest.fn(),
+    pubKey: pubKey1,
+    pubKeys: [pubKey1, pubKey2],
+    selectPubKey: jest.fn(),
     disconnect: jest.fn(),
   };
 });
@@ -43,19 +43,17 @@ it('Shows list of available keys and can disconnect', () => {
   const list = screen.getByTestId('keypair-list');
   expect(list).toBeInTheDocument();
   // eslint-disable-next-line
-  expect(list.children).toHaveLength(context.keypairs!.length);
+  expect(list.children).toHaveLength(context.pubKeys!.length);
 
   // eslint-disable-next-line
-  context.keypairs!.forEach((kp, i) => {
-    const keyListItem = within(screen.getByTestId(`key-${kp}`));
-    expect(
-      keyListItem.getByText(`${kp} ${truncateByChars(kp)}`)
-    ).toBeInTheDocument();
+  context.pubKeys!.forEach((pk, i) => {
+    const keyListItem = within(screen.getByTestId(`key-${pk}`));
+    expect(keyListItem.getByText(truncateByChars(pk))).toBeInTheDocument();
     expect(keyListItem.getByText('Copy')).toBeInTheDocument();
 
     // Active
     // eslint-disable-next-line
-    if (kp === context.keypair!) {
+    if (pk === context.pubKey!) {
       expect(keyListItem.getByTestId('selected-key')).toBeInTheDocument();
       expect(
         keyListItem.queryByTestId('select-keypair-button')
@@ -67,7 +65,7 @@ it('Shows list of available keys and can disconnect', () => {
       expect(selectButton).toBeInTheDocument();
       expect(keyListItem.queryByTestId('selected-key')).not.toBeInTheDocument();
       fireEvent.click(selectButton);
-      expect(context.selectPublicKey).toHaveBeenCalledWith(kp);
+      expect(context.selectPubKey).toHaveBeenCalledWith(pk);
     }
   });
 

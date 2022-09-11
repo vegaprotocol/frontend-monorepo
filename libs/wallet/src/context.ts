@@ -3,7 +3,6 @@ import type {
   Transaction,
   TransactionResponse,
   VegaConnector,
-  WalletError,
 } from './connectors';
 
 export interface VegaWalletContextShape {
@@ -20,7 +19,7 @@ export interface VegaWalletContextShape {
   disconnect: () => Promise<boolean>;
 
   /** Sets the current selected public key */
-  selectPublicKey: (pubKey: string) => void;
+  selectPubKey: (pubKey: string) => void;
 
   /** Sign and send a transaction to the network */
   sendTx: (

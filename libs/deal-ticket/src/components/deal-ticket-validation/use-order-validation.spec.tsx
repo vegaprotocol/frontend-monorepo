@@ -46,7 +46,7 @@ const defaultWalletContext = {
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
+  selectPubKey: jest.fn(),
   connector: null,
 };
 

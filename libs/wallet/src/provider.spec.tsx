@@ -1,97 +1,89 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import type { Transaction } from './connectors';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
+import type { ReactNode } from 'react';
 import { WALLET_KEY } from './storage';
 
 const restConnector = new RestConnector();
 
-afterAll(() => {
-  localStorage.clear();
-});
-
-const TestComponent = () => {
-  const { connect, disconnect, pubKey, pubKeys, selectPublicKey } =
-    useVegaWallet();
-  return (
-    <div data-testid="children">
-      <button
-        onClick={() => {
-          connect(restConnector);
-        }}
-      >
-        Connect
-      </button>
-      <button
-        onClick={() => {
-          disconnect();
-        }}
-      >
-        Disconnect
-      </button>
-      <p data-testid="current-keypair">{pubKey}</p>
-      {pubKeys?.length ? (
-        <ul data-testid="keypair-list">
-          {pubKeys.map((pk) => (
-            // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-            <li key={pk} onClick={() => selectPublicKey(pk)}>
-              {pk}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
+const setup = () => {
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <VegaWalletProvider>{children}</VegaWalletProvider>
   );
+  return renderHook(() => useVegaWallet(), { wrapper });
 };
 
-const generateJSX = () => (
-  <VegaWalletProvider>
-    <TestComponent />
-  </VegaWalletProvider>
-);
+describe('VegaWalletProvider', () => {
+  afterAll(() => {
+    localStorage.clear();
+  });
 
-it('Can connect, disconnect and retrieve keypairs', async () => {
-  const mockKeypairs = ['public key 1', 'public key 2'];
-  jest
+  const mockPubKeys = ['public key 1', 'public key 2'];
+  const spyOnConnect = jest
     .spyOn(restConnector, 'connect')
-    .mockImplementation(() => Promise.resolve(mockKeypairs));
-
-  jest
+    .mockImplementation(() => Promise.resolve(mockPubKeys));
+  const spyOnSend = jest
+    .spyOn(restConnector, 'sendTx')
+    .mockImplementation(() => Promise.resolve(null));
+  const storageSpy = jest.spyOn(LocalStorage, 'setItem');
+  const spyOnDisconnect = jest
     .spyOn(restConnector, 'disconnect')
     .mockImplementation(() => Promise.resolve());
 
-  const { unmount } = render(generateJSX());
-  expect(screen.getByTestId('children')).toBeInTheDocument();
-  await act(async () => {
-    fireEvent.click(screen.getByText('Connect'));
-  });
-  expect(screen.getByTestId('keypair-list').children).toHaveLength(
-    mockKeypairs.length
-  );
-  expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[0]
-  );
+  it('connects, disconnects and retrieve keypairs', async () => {
+    const { result } = setup();
 
-  // Change current keypair
-  fireEvent.click(screen.getByTestId('keypair-list').children[1]);
-  expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[1]
-  );
+    // Default state
+    expect(result.current).toEqual({
+      pubKey: null,
+      pubKeys: null,
+      selectPubKey: expect.any(Function),
+      connect: expect.any(Function),
+      disconnect: expect.any(Function),
+      sendTx: expect.any(Function),
+    });
 
-  // Current keypair should persist
-  unmount();
-  render(generateJSX());
-  await act(async () => {
-    fireEvent.click(screen.getByText('Connect'));
-  });
-  expect(screen.getByTestId('current-keypair')).toHaveTextContent(
-    mockKeypairs[1]
-  );
+    // Connect
+    await act(async () => {
+      result.current.connect(restConnector);
+    });
+    expect(spyOnConnect).toHaveBeenCalled();
+    expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
+    expect(result.current.pubKey).toBe(mockPubKeys[0]);
 
-  await act(async () => {
-    fireEvent.click(screen.getByText('Disconnect'));
+    // Change current pubkey
+    await act(async () => {
+      result.current.selectPubKey(mockPubKeys[1]);
+    });
+    expect(result.current.pubKey).toBe(mockPubKeys[1]);
+    expect(storageSpy).toHaveBeenCalledWith(WALLET_KEY, mockPubKeys[1]);
+
+    // Send tx
+    await act(async () => {
+      result.current.sendTx(mockPubKeys[1], {} as Transaction);
+    });
+    expect(spyOnSend).toHaveBeenCalledWith(mockPubKeys[1], {});
   });
-  expect(screen.getByTestId('current-keypair')).toBeEmptyDOMElement();
-  expect(screen.queryByTestId('keypairs-list')).not.toBeInTheDocument();
-  expect(localStorage.getItem(WALLET_KEY)).toBe(null);
+
+  it('persists selected pubkey and disconnects', async () => {
+    const { result } = setup();
+    expect(result.current.pubKey).toBe(null);
+
+    await act(async () => {
+      result.current.connect(restConnector);
+    });
+    expect(result.current.pubKey).toBe(mockPubKeys[1]);
+
+    // Disconnect
+    await act(async () => {
+      result.current.disconnect();
+    });
+    expect(result.current.pubKey).toBe(null);
+    expect(result.current.pubKeys).toBe(null);
+    expect(spyOnDisconnect).toHaveBeenCalled();
+    expect(localStorage.getItem(WALLET_KEY)).toBe(null);
+  });
 });
