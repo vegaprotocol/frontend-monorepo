@@ -57,38 +57,35 @@ export function RestConnectorForm({
   }
 
   return (
-    <>
-      <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
-        <FormGroup label={t('Wallet')} labelFor="wallet">
-          <Input
-            {...register('wallet', { required: t('Required') })}
-            id="wallet"
-            type="text"
-          />
-          {errors.wallet?.message && (
-            <InputError intent="danger">{errors.wallet.message}</InputError>
-          )}
-        </FormGroup>
-        <FormGroup label={t('Passphrase')} labelFor="passphrase">
-          <Input
-            {...register('passphrase', { required: t('Required') })}
-            id="passphrase"
-            type="password"
-          />
-          {errors.passphrase?.message && (
-            <InputError intent="danger">{errors.passphrase.message}</InputError>
-          )}
-          {error && (
-            <InputError intent="danger" data-testid="form-error">
-              {error}
-            </InputError>
-          )}
-        </FormGroup>
-        <Button variant="primary" type="submit">
-          {t('Connect')}
-        </Button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
+      <FormGroup label={t('Wallet')} labelFor="wallet">
+        <Input
+          {...register('wallet', { required: t('Required') })}
+          id="wallet"
+          type="text"
+        />
+        {errors.wallet?.message && (
+          <InputError intent="danger">{errors.wallet.message}</InputError>
+        )}
+      </FormGroup>
+      <FormGroup label={t('Passphrase')} labelFor="passphrase">
+        <Input
+          {...register('passphrase', { required: t('Required') })}
+          id="passphrase"
+          type="password"
+        />
+        {errors.passphrase?.message && (
+          <InputError intent="danger">{errors.passphrase.message}</InputError>
+        )}
+        {error && (
+          <InputError intent="danger" data-testid="form-error">
+            {error}
+          </InputError>
+        )}
+      </FormGroup>
+      <Button variant="primary" type="submit">
+        {t('Connect')}
+      </Button>
+    </form>
   );
 }

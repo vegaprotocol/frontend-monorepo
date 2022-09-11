@@ -176,6 +176,8 @@ const ConnectorList = ({
   );
 };
 
+export const HOSTED_WALLET_URL = 'https://wallet.testnet.vega.xyz';
+
 const SelectedForm = ({
   connector,
   onConnect,
@@ -189,12 +191,15 @@ const SelectedForm = ({
 }) => {
   if (connector instanceof RestConnector) {
     return (
-      <RestConnectorForm
-        connector={connector}
-        onConnect={onConnect}
-        // Rest connector form is only used for hosted wallet
-        walletUrl="https://wallet.testnet.vega.xyz"
-      />
+      <>
+        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+        <RestConnectorForm
+          connector={connector}
+          onConnect={onConnect}
+          // Rest connector form is only used for hosted wallet
+          walletUrl={HOSTED_WALLET_URL}
+        />
+      </>
     );
   }
 
