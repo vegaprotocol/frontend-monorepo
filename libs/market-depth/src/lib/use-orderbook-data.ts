@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-provider';
-import type { MarketDepth_market } from './__generated__';
+import type { MarketDepth_market } from './__generated__/MarketDepth';
 
 interface Props {
   variables: { marketId: string };

@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketData, MarketsDataQuery } from '.';
+import type { MarketsDataQuery } from './__generated__/MarketsDataQuery';
+import type { MarketData } from './market-data-provider';
 
 export const MARKETS_DATA_QUERY = gql`
   query MarketsDataQuery {

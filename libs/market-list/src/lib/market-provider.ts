@@ -1,7 +1,7 @@
 import { makeDerivedDataProvider } from '@vegaprotocol/react-helpers';
 
-import type { Market } from './';
-import { marketsProvider } from './';
+import type { Market } from './markets-provider';
+import { marketsProvider } from './markets-provider';
 
 export const marketProvider = makeDerivedDataProvider<Market>(
   [(callback, client, variables) => marketsProvider(callback, client)],
