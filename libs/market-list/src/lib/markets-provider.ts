@@ -105,7 +105,7 @@ export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
     return {
       markets: parts[0] as Market[],
       marketsData: parts[1] as MarketData[],
-      marketsCandles: parts[3] as MarketCandles[],
+      marketsCandles: parts[2] as MarketCandles[],
     };
   }
 );
@@ -124,14 +124,17 @@ export const marketsWithDataProvider = makeDerivedDataProvider<
 );
 
 export const useMarketList = () => {
-  const since = useMemo(() => {
+  const variables = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
+    return {
+      since: new Date(yesterday * 1000).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    };
   }, []);
   const update = useCallback(() => true, []);
   const { data, loading, error } = useDataProvider<MarketsListData, never>({
     dataProvider: marketListProvider,
-    variables: { interval: Interval.INTERVAL_I1H, since },
+    variables,
     update,
   });
 
