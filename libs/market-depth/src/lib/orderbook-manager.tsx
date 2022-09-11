@@ -91,15 +91,13 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  const marketUpdate = useCallback(() => true, []);
-
   const {
     data: market,
     error: marketError,
     loading: marketLoading,
   } = useDataProvider({
     dataProvider: marketProvider,
-    update: marketUpdate,
+    noUpdate: true,
     variables,
   });
 

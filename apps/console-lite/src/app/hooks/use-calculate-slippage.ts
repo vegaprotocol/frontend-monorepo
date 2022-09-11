@@ -22,10 +22,9 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
     variables,
     throttleMilliseconds: 5000,
   });
-  const update = useCallback(() => true, []);
   const { data: market } = useDataProvider<Market, never>({
     dataProvider: marketProvider,
-    update,
+    noUpdate: true,
     variables,
   });
   const volPriceArr =

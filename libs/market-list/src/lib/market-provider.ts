@@ -5,10 +5,15 @@ import { marketsProvider } from './';
 
 export const marketProvider = makeDerivedDataProvider<Market>(
   [(callback, client, variables) => marketsProvider(callback, client)],
-  ([markets], variables) =>
-    (markets &&
-      (markets as Market[]).find(
+  ([markets], variables) => {
+    if (markets) {
+      const market = (markets as Market[]).find(
         (market) => market.id === variables?.marketId
-      )) ||
-    null
+      );
+      if (market) {
+        return market;
+      }
+    }
+    return null;
+  }
 );

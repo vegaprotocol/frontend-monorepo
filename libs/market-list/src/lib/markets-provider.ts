@@ -131,11 +131,10 @@ export const useMarketList = () => {
       interval: Interval.INTERVAL_I1H,
     };
   }, []);
-  const update = useCallback(() => true, []);
   const { data, loading, error } = useDataProvider<MarketsListData, never>({
     dataProvider: marketListProvider,
     variables,
-    update,
+    noUpdate: true,
   });
 
   return {

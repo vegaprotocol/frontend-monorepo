@@ -2,17 +2,16 @@ import { activeMarketsProvider } from '@vegaprotocol/market-list';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useGlobalStore } from '../stores';
 
 export function Index() {
   const { replace } = useRouter();
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
-  const dataUpdate = useCallback(() => true, []);
   const { data, error, loading } = useDataProvider({
     dataProvider: activeMarketsProvider,
-    update: dataUpdate,
+    noUpdate: true,
   });
   const { riskNoticeDialog, update } = useGlobalStore((store) => ({
     riskNoticeDialog: store.riskNoticeDialog,

@@ -19,6 +19,7 @@ export function useDataProvider<Data, Delta>({
   update,
   insert,
   variables,
+  noUpdate,
   skip,
 }: {
   dataProvider: Subscribe<Data, Delta>;
@@ -33,6 +34,7 @@ export function useDataProvider<Data, Delta>({
     totalCount?: number;
   }) => boolean;
   variables?: OperationVariables;
+  noUpdate?: boolean;
   skip?: boolean;
 }) {
   const client = useApolloClient();
@@ -77,7 +79,12 @@ export function useDataProvider<Data, Delta>({
         // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
         if (initialized.current && data) {
-          if (isUpdate && update && (!delta || update({ delta, data }))) {
+          if (
+            isUpdate &&
+            !noUpdate &&
+            update &&
+            (!delta || update({ delta, data }))
+          ) {
             return;
           }
           if (
@@ -93,7 +100,7 @@ export function useDataProvider<Data, Delta>({
         setData(data);
       }
     },
-    [update, insert]
+    [update, insert, noUpdate]
   );
   useEffect(() => {
     if (skip) {

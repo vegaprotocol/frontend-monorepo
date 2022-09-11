@@ -4,16 +4,14 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
 import type { MarketWithData } from '../../markets-provider';
-import { useCallback } from 'react';
 interface MarketsContainerProps {
   onSelect: (marketId: string) => void;
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
-  const update = useCallback(() => true, []);
   const { data, error, loading } = useDataProvider<MarketWithData[], never>({
     dataProvider,
-    update,
+    noUpdate: true,
   });
 
   return (
