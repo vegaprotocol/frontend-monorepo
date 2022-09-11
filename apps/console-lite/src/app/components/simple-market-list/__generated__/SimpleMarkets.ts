@@ -9,26 +9,6 @@ import { MarketState } from "@vegaprotocol/types";
 // GraphQL query operation: SimpleMarkets
 // ====================================================
 
-export interface SimpleMarkets_markets_data_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-  /**
-   * Current state of the market
-   */
-  state: MarketState;
-}
-
-export interface SimpleMarkets_markets_data {
-  __typename: "MarketData";
-  /**
-   * market ID of the associated mark price
-   */
-  market: SimpleMarkets_markets_data_market;
-}
-
 export interface SimpleMarkets_markets_tradableInstrument_instrument_metadata {
   __typename: "InstrumentMetadata";
   /**
@@ -63,6 +43,10 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument {
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
   /**
    * Metadata for this instrument
    */
@@ -100,17 +84,9 @@ export interface SimpleMarkets_markets {
    */
   id: string;
   /**
-   * Market full name
-   */
-  name: string;
-  /**
    * Current state of the market
    */
   state: MarketState;
-  /**
-   * marketData for the given market
-   */
-  data: SimpleMarkets_markets_data | null;
   /**
    * An instance of, or reference to, a tradable instrument.
    */

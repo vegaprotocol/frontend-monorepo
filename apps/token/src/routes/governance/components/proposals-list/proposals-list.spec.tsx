@@ -14,7 +14,7 @@ import {
   lastMonth,
   nextMonth,
 } from '../../test-helpers/mocks';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
@@ -58,7 +58,7 @@ const failedProposalClosedLastMonth = generateProposal({
   },
 });
 
-const renderComponent = (proposals: Proposals_proposals[]) => (
+const renderComponent = (proposals: ProposalNode[]) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>

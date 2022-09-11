@@ -15,7 +15,6 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts",
-    "src/lib/withdraw-manager.foo.tsx",
     "jest.config.ts"
   ]
 }

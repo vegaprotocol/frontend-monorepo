@@ -6,19 +6,11 @@ export const generateSimpleMarkets = () => {
       { ...protoMarket },
       {
         id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
-        name: 'CELUSD (June 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
-            state: 'STATE_PENDING',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'CELUSD',
+            name: 'CELUSD (June 2022)',
             metadata: {
               tags: [
                 'base:CEL',
@@ -43,19 +35,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
-        name: 'XMRUSD market',
         state: 'Suspended',
-        data: {
-          market: {
-            id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'XMRUSD',
+            name: 'XMRUSD market',
             metadata: {
               tags: [
                 'base:monero',
@@ -80,19 +64,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
-        name: 'UNIDAI Monthly (30 Jun 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
-            state: 'STATE_SUSPENDED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'UNIDAI.MF21',
+            name: 'UNIDAI Monthly (30 Jun 2022)',
             metadata: {
               tags: [
                 'formerly:3C58ED2A4A6C5D7E',
@@ -191,19 +167,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
-        name: 'XMRUSD market',
         state: 'Pending',
-        data: {
-          market: {
-            id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
-            state: 'STATE_ACTIVE',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'XMRUSD',
+            name: 'XMRUSD market',
             metadata: {
               tags: [
                 'base:monero',
@@ -301,19 +269,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
-        name: 'ApeCoin (18 Jul 2022)',
         state: 'Closed',
-        data: {
-          market: {
-            id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'APE/USD',
+            name: 'ApeCoin (18 Jul 2022)',
             metadata: {
               tags: [
                 'quote:USD',
@@ -337,19 +297,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
-        name: 'BTCUSD Monthly (18 Jul 2022)',
         state: 'Settled',
-        data: {
-          market: {
-            id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'BTCUSD.MF21',
+            name: 'BTCUSD Monthly (18 Jul 2022)',
             metadata: {
               tags: [
                 'formerly:076BB86A5AA41E3E',
@@ -375,19 +327,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
-        name: 'Builders Club x ETHcc',
         state: 'Settled',
-        data: {
-          market: {
-            id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
-            state: 'STATE_ACTIVE',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'LTCUSD',
+            name: 'Builders Club x ETHcc',
             metadata: {
               tags: [
                 'base:litecoin',
@@ -473,19 +417,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
-        name: 'BTCUSD Monthly (18 Jul 2022)',
         state: 'Pending',
-        data: {
-          market: {
-            id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'BTCUSD.MF21',
+            name: 'BTCUSD Monthly (18 Jul 2022)',
             metadata: {
               tags: [
                 'formerly:076BB86A5AA41E3E',
@@ -511,19 +447,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
-        name: 'ETHBTC Quarterly (30 Jun 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
-            state: 'STATE_ACTIVE',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'ETHBTC.QM21',
+            name: 'ETHBTC Quarterly (30 Jun 2022)',
             metadata: {
               tags: [
                 'formerly:1F0BB6EB5703B099',
@@ -622,19 +550,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
-        name: 'Apple Monthly (30 Jun 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
-            state: 'STATE_ACTIVE',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'AAPL.MF21',
+            name: 'Apple Monthly (30 Jun 2022)',
             metadata: {
               tags: [
                 'formerly:4899E01009F1A721',
@@ -734,19 +654,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
-        name: 'Tesla Quarterly (30 Jun 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
-            state: 'STATE_ACTIVE',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'TSLA.QM21',
+            name: 'Tesla Quarterly (30 Jun 2022)',
             metadata: {
               tags: [
                 'formerly:5A86B190C384997F',
@@ -846,19 +758,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
-        name: 'Go big or Go home',
         state: 'Active',
-        data: {
-          market: {
-            id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
-            state: 'STATE_SUSPENDED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'LTCUSD',
+            name: 'Go big or Go home',
             metadata: {
               tags: [
                 'base:litecoin',
@@ -897,19 +801,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
-        name: 'BTCUSD Monthly (08 Jul 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'BTCUSD.MF21',
+            name: 'BTCUSD Monthly (08 Jul 2022)',
             metadata: {
               tags: [
                 'formerly:076BB86A5AA41E3E',
@@ -935,19 +831,11 @@ export const generateSimpleMarkets = () => {
       },
       {
         id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',
-        name: 'BTCUSD Monthly (18 Jul 2022)',
         state: 'Active',
-        data: {
-          market: {
-            id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',
-            state: 'STATE_PROPOSED',
-            __typename: 'Market',
-          },
-          __typename: 'MarketData',
-        },
         tradableInstrument: {
           instrument: {
             code: 'BTCUSD.MF21',
+            name: 'BTCUSD Monthly (18 Jul 2022)',
             metadata: {
               tags: [
                 'formerly:076BB86A5AA41E3E',
@@ -978,14 +866,15 @@ export const generateSimpleMarkets = () => {
 export const generateLongListMarkets = (count: number) => {
   const markets = [];
   for (let i = 0; i < count; i++) {
-    const { id, name } = protoMarket;
     markets.push({
       ...protoMarket,
-      id: id + i,
-      name: name + i,
-      data: {
-        ...protoMarket.data,
-        id: id + i,
+      id: protoMarket.id + i,
+      tradableInstrument: {
+        ...protoMarket.tradableInstrument,
+        instrument: {
+          ...protoMarket.tradableInstrument.instrument,
+          name: protoMarket.tradableInstrument.instrument.name + i,
+        },
       },
     });
   }

@@ -130,7 +130,11 @@ const ButtonCell = ({
   data: Position;
 }) => {
   return (
-    <Button onClick={() => onClick(data)} size="sm">
+    <Button
+      data-testid="close-position"
+      onClick={() => onClick(data)}
+      size="sm"
+    >
       {t('Close')}
     </Button>
   );
@@ -168,7 +172,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             // split market name into two parts, 'Part1 (Part2)' or 'Part1 - Part2'
             const matches = value.match(/^(.*)(\((.*)\)| - (.*))\s*$/);
-            if (matches) {
+            if (matches && matches[1] && matches[3]) {
               return [matches[1].trim(), matches[3].trim()];
             }
             return [value];

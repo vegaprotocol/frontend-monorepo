@@ -1,8 +1,10 @@
+import orderBy from 'lodash/orderBy';
+import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import type {
   WithdrawalEvent,
   WithdrawalEventVariables,
@@ -12,6 +14,7 @@ import type {
 import type {
   Withdrawals,
   WithdrawalsVariables,
+  Withdrawals_party_withdrawalsConnection_edges,
 } from './__generated__/Withdrawals';
 
 const WITHDRAWAL_FRAGMENT = gql`
@@ -21,8 +24,15 @@ const WITHDRAWAL_FRAGMENT = gql`
     amount
     asset {
       id
+      name
       symbol
       decimals
+      status
+      source {
+        ... on ERC20 {
+          contractAddress
+        }
+      }
     }
     createdTimestamp
     withdrawnTimestamp
@@ -41,8 +51,12 @@ export const WITHDRAWALS_QUERY = gql`
   query Withdrawals($partyId: ID!) {
     party(id: $partyId) {
       id
-      withdrawals {
-        ...WithdrawalFields
+      withdrawalsConnection {
+        edges {
+          node {
+            ...WithdrawalFields
+          }
+        }
       }
     }
   }
@@ -63,7 +77,7 @@ export const WITHDRAWAL_BUS_EVENT_SUB = gql`
 
 export const useWithdrawals = () => {
   const { keypair } = useVegaWallet();
-  const { subscribeToMore, ...queryResult } = useQuery<
+  const { data, loading, error, subscribeToMore } = useQuery<
     Withdrawals,
     WithdrawalsVariables
   >(WITHDRAWALS_QUERY, {
@@ -85,19 +99,36 @@ export const useWithdrawals = () => {
     };
   }, [keypair?.pub, subscribeToMore]);
 
-  return queryResult;
+  const withdrawals = useMemo(() => {
+    if (!data?.party?.withdrawalsConnection?.edges) {
+      return [];
+    }
+
+    return orderBy(
+      compact(data.party.withdrawalsConnection.edges).map((edge) => edge.node),
+      'createdTimestamp',
+      'desc'
+    );
+  }, [data]);
+
+  return {
+    data,
+    loading,
+    error,
+    withdrawals,
+  };
 };
 
 export const updateQuery: UpdateQueryFn<
   Withdrawals,
   WithdrawalEventVariables,
   WithdrawalEvent
-> = (prev, { subscriptionData }) => {
+> = (prev, { subscriptionData, variables }) => {
   if (!subscriptionData.data.busEvents?.length) {
     return prev;
   }
 
-  const curr = prev.party?.withdrawals || [];
+  const curr = prev.party?.withdrawalsConnection.edges || [];
   const incoming = subscriptionData.data.busEvents
     .map((e) => {
       return {
@@ -105,21 +136,28 @@ export const updateQuery: UpdateQueryFn<
         pendingOnForeignChain: false,
       };
     })
-    .filter(
-      isWithdrawalEvent
-      // Need this type cast here, TS can't infer that we've filtered any event types
-      // that arent Withdrawals
-    ) as WithdrawalEvent_busEvents_event_Withdrawal[];
+    .filter(isWithdrawalEvent)
+    .map(
+      (w) =>
+        ({
+          __typename: 'WithdrawalEdge',
+          node: w,
+        } as Withdrawals_party_withdrawalsConnection_edges)
+    );
 
-  const withdrawals = uniqBy([...incoming, ...curr], 'id');
+  const edges = uniqBy([...incoming, ...curr], 'node.id');
 
   // Write new party to cache if not present
   if (!prev.party) {
     return {
       ...prev,
       party: {
+        id: variables?.partyId,
         __typename: 'Party',
-        withdrawals,
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges,
+        },
       },
     } as Withdrawals;
   }
@@ -128,7 +166,10 @@ export const updateQuery: UpdateQueryFn<
     ...prev,
     party: {
       ...prev.party,
-      withdrawals,
+      withdrawalsConnection: {
+        __typename: 'WithdrawalsConnection',
+        edges,
+      },
     },
   };
 };

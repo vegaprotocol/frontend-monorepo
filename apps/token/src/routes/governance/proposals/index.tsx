@@ -1,5 +1,5 @@
 export {
   ProposalsContainer,
-  PROPOSALS_QUERY,
   ProposalsContainer as default,
+  PROPOSALS_QUERY,
 } from './proposals-container';

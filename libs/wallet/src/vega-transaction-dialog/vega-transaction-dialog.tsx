@@ -43,6 +43,7 @@ export const VegaTransactionDialog = ({
       intent={computedIntent}
       title={computedTitle}
       icon={computedIcon}
+      size="small"
     >
       {content}
     </Dialog>
@@ -59,8 +60,9 @@ interface VegaDialogProps {
 export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
 
+  let content = null;
   if (transaction.status === VegaTxStatus.Requested) {
-    return (
+    content = (
       <p data-testid={transaction.status}>
         {t(
           'Please open your wallet application and confirm or reject the transaction'
@@ -70,7 +72,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Error) {
-    return (
+    content = (
       <div data-testid={transaction.status}>
         <p>{transaction.error && formatLabel(transaction.error)}</p>
         {transaction.details && (
@@ -81,7 +83,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Pending) {
-    return (
+    content = (
       <div data-testid={transaction.status}>
         <p className="break-all">
           {t('Please wait for your transaction to be confirmed')} - &nbsp;
@@ -102,7 +104,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Complete) {
-    return (
+    content = (
       <div data-testid={transaction.status}>
         <p className="break-all">
           {t('Your transaction has been confirmed')} - &nbsp;
@@ -122,7 +124,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
     );
   }
 
-  return null;
+  return <div className="text-sm">{content}</div>;
 };
 
 const getIntent = (transaction: VegaTxState) => {
@@ -160,7 +162,11 @@ const getIcon = (transaction: VegaTxState) => {
     case VegaTxStatus.Requested:
       return <Icon name="hand-up" />;
     case VegaTxStatus.Pending:
-      return <Loader size="small" />;
+      return (
+        <span className="mt-1">
+          <Loader size="small" />
+        </span>
+      );
     case VegaTxStatus.Error:
       return <Icon name="warning-sign" />;
     case VegaTxStatus.Complete:

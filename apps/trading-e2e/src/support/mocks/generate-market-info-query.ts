@@ -15,11 +15,19 @@ export const generateMarketInfoQuery = (
     market: {
       __typename: 'Market',
       id: 'market-0',
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
-      decimalPlaces: 2,
+      decimalPlaces: 5,
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      proposal: {
+        __typename: 'Proposal',
+        id: 'market-0',
+        rationale: {
+          __typename: 'ProposalRationale',
+          title: 'ETHBTC',
+          description: '',
+        },
+      },
       accounts: [
         {
           type: AccountType.ACCOUNT_TYPE_INSURANCE,
@@ -77,7 +85,9 @@ export const generateMarketInfoQuery = (
           id: '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
         },
         markPrice: '5749',
-        indicativeVolume: '0',
+        suppliedStake: '56767',
+        marketValueProxy: '677678',
+        targetStake: '56789',
         bestBidVolume: '5',
         bestOfferVolume: '1',
         bestStaticBidVolume: '5',
@@ -134,9 +144,10 @@ export const generateMarketInfoQuery = (
             quoteName: 'BTC',
             settlementAsset: {
               __typename: 'Asset',
-              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              id: 'market-0',
               symbol: 'tBTC',
               name: 'tBTC TEST',
+              decimals: 5,
             },
             oracleSpecForSettlementPrice: {
               __typename: 'OracleSpec',

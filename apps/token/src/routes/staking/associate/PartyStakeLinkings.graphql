@@ -1,0 +1,12 @@
+query PartyStakeLinkings($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    stake {
+      linkings {
+        id
+        txHash
+        status
+      }
+    }
+  }
+}

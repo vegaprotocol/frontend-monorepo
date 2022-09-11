@@ -10,28 +10,15 @@ import type {
   SimpleMarketDataSub_marketData,
 } from './__generated__/SimpleMarketDataSub';
 
-const MARKET_DATA_FRAGMENT = gql`
-  fragment SimpleMarketDataFields on MarketData {
-    market {
-      id
-      state
-    }
-  }
-`;
-
 export const MARKETS_QUERY = gql`
-  ${MARKET_DATA_FRAGMENT}
   query SimpleMarkets($CandleSince: String!) {
     markets {
       id
-      name
       state
-      data {
-        ...SimpleMarketDataFields
-      }
       tradableInstrument {
         instrument {
           code
+          name
           metadata {
             tags
           }
@@ -55,10 +42,12 @@ export const MARKETS_QUERY = gql`
 `;
 
 const MARKET_DATA_SUB = gql`
-  ${MARKET_DATA_FRAGMENT}
   subscription SimpleMarketDataSub {
     marketData {
-      ...SimpleMarketDataFields
+      market {
+        id
+        state
+      }
     }
   }
 `;
@@ -78,7 +67,7 @@ const update = (
   return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
-      draft[index].data = delta;
+      draft[index].state = delta.market.state;
     }
     // @TODO - else push new market to draft
   });

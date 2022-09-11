@@ -10,7 +10,6 @@ export const generateDealTicketQuery = (
     market: {
       __typename: 'Market',
       id: 'market-0',
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
@@ -18,8 +17,9 @@ export const generateDealTicketQuery = (
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
-          id: 'tBTC TEST',
           __typename: 'Instrument',
+          id: 'tBTC TEST',
+          name: 'ETHBTC Quarterly (30 Jun 2022)',
           product: {
             __typename: 'Future',
             quoteName: 'BTC',

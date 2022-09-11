@@ -28,6 +28,9 @@ export interface Delegations_party_delegations_node {
 
 export interface Delegations_party_delegations {
   __typename: "Delegation";
+  /**
+   * The amount field formatted by the client
+   */
   amountFormatted: string;
   /**
    * Amount delegated
@@ -49,6 +52,9 @@ export interface Delegations_party_stake {
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
+  /**
+   * The currently available stake formatted by the client
+   */
   currentStakeAvailableFormatted: string;
 }
 

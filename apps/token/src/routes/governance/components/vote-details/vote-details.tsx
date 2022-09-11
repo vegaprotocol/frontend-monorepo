@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { useUserVote } from './use-user-vote';
 import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;
@@ -67,21 +67,33 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         </thead>
         <tbody>
           <tr>
-            <td className="text-left">
+            <td
+              className="text-left"
+              data-testid="vote-progress-indicator-percentage-for"
+            >
               {yesPercentage.toFixed(defaultDecimals)}%
             </td>
             <td className="text-center text-white">
               {t('majorityRequired')}{' '}
               {requiredMajorityPercentage.toFixed(defaultDecimals)}%
             </td>
-            <td className="text-right">
+            <td
+              className="text-right"
+              data-testid="vote-progress-indicator-percentage-against"
+            >
               {noPercentage.toFixed(defaultDecimals)}%
             </td>
           </tr>
           <tr>
-            <td> {formatNumber(yesTokens, defaultDecimals)}</td>
+            <td data-testid="vote-progress-indicator-tokens-for">
+              {' '}
+              {formatNumber(yesTokens, defaultDecimals)}{' '}
+            </td>
             <td></td>
-            <td className="text-right">
+            <td
+              data-testid="vote-progress-indicator-tokens-against"
+              className="text-right"
+            >
               {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>

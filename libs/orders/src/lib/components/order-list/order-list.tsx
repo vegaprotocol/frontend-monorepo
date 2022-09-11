@@ -37,7 +37,7 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../order-data-provider/__generated__';
+import type { OrderFields } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
@@ -62,7 +62,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           ref={ref}
           setEditOrder={setEditOrder}
         />
-        <orderCancel.TransactionDialog
+        <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
         >
@@ -70,15 +70,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             transaction={orderCancel.transaction}
             order={orderCancel.cancelledOrder}
           />
-        </orderCancel.TransactionDialog>
-        <orderEdit.TransactionDialog
+        </orderCancel.Dialog>
+        <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
         >
           <OrderFeedback
             transaction={orderEdit.transaction}
             order={orderEdit.updatedOrder}
           />
-        </orderEdit.TransactionDialog>
+        </orderEdit.Dialog>
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}

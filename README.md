@@ -69,10 +69,10 @@ Run `nx serve my-app` for a dev server. Navigate to the port specified in `app/<
 
 ### Using Apollo GraphQL and Generate Types
 
-In order to generate the schemas for your GraphQL queries, you can run `NX_VEGA_URL=[YOUR URL HERE] nx run types:generate`.
+In order to generate the schemas for your GraphQL queries, you can run `GRAPHQL_SCHEMA_PATH=[YOUR SCHEMA FILE / API URL HERE] nx run types:generate`.
 
 ```bash
-export  NX_VEGA_URL=https://api.n11.testnet.vega.xyz/graphql
+export  GRAPHQL_SCHEMA_PATH=https://api.n11.testnet.vega.xyz/graphql
 yarn nx run types:generate
 ```
 
@@ -139,6 +139,17 @@ Which will now point the app to use a devnet data node. To see a list of all pos
 Coming soon! You will be able to run the containers within Vega Capsule.
 
 You can run against a local instance of Vega Capsule today by using the .env.capsule present in the apps.
+
+If you wish to run E2E tests for Token and Block Explorer (other areas to be added soon)
+
+- Vegacapsule must be used in order for these tests to succeed, the vegacapsule repo README.md file contains the steps required to set this up, it must be installed globally.
+- However we start the capsule network a little differently to how it is laid out in those instructions:
+
+In order to run the bootstrap command to generate and start a new network, we must do so using the following:
+
+```bash
+vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl
+```
 
 # 📑 License
 

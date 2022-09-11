@@ -4,19 +4,20 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 import { Links } from '../../../../config';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
-  proposals: Proposals_proposals[];
+  proposals: ProposalFields[];
 }
 
 interface SortedProposalsProps {
-  open: Proposals_proposals[];
-  closed: Proposals_proposals[];
+  open: ProposalFields[];
+  closed: ProposalFields[];
 }
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
@@ -38,7 +39,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: Proposals_proposals) =>
+  const filterPredicate = (p: ProposalFields) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 
@@ -65,14 +66,9 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           {t(
             `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
           )}{' '}
-          <a
-            href={Links.GOVERNANCE_PAGE}
-            className="underline text-white"
-            target="_blank"
-            rel="nofollow noreferrer"
-          >
+          <ExternalLink href={Links.GOVERNANCE_PAGE} className="text-white">
             {t(`Find out more about Vega governance`)}
-          </a>
+          </ExternalLink>
         </p>
       </div>
       {proposals.length > 0 && (

@@ -66,6 +66,18 @@ it('Splits market name', async () => {
   expect(screen.getByText('31 july 2022')).toBeTruthy();
 });
 
+it('Does not fail if the market name does not match the split pattern', async () => {
+  const breakingMarketName = 'OP/USD AUG-SEP22 - Incentive';
+  const row = [
+    Object.assign({}, singleRow, { marketName: breakingMarketName }),
+  ];
+  await act(async () => {
+    render(<PositionsTable rowData={row} />);
+  });
+
+  expect(screen.getByText(breakingMarketName)).toBeTruthy();
+});
+
 it('add color and sign to amount, displays positive notional value', async () => {
   let result: RenderResult;
   await act(async () => {

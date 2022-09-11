@@ -9,23 +9,23 @@ export function Index() {
   const { replace } = useRouter();
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
-  const update = useCallback(() => true, []);
+  const dataUpdate = useCallback(() => true, []);
   const { data, error, loading } = useDataProvider({
     dataProvider: activeMarketsProvider,
-    update,
+    update: dataUpdate,
   });
-  const { vegaRiskNoticeDialog, setLandingDialog } = useGlobalStore(
-    (store) => store
-  );
+  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
+    riskNoticeDialog: store.riskNoticeDialog,
+    update: store.update,
+  }));
 
   useEffect(() => {
-    setLandingDialog(true);
+    update({ landingDialog: true });
 
     if (data) {
       const marketId = data[0]?.id;
 
       if (marketId) {
-        setLandingDialog(true);
         replace(`/markets/${marketId}`);
       }
       // Fallback to the markets list page
@@ -33,7 +33,7 @@ export function Index() {
         replace('/markets');
       }
     }
-  }, [data, replace, vegaRiskNoticeDialog, setLandingDialog]);
+  }, [data, replace, riskNoticeDialog, update]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

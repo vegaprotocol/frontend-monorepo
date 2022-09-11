@@ -75,18 +75,11 @@ const protoCandles = [
 
 export const protoMarket = {
   id: 'first-btcusd-id',
-  name: 'AAVEDAI Monthly (30 Jun 2022)',
-  data: {
-    market: {
-      id: 'first-btcusd-id',
-      state: 'STATE_ACTIVE',
-      __typename: 'Market',
-    },
-    __typename: 'MarketData',
-  },
+  state: 'STATE_ACTIVE',
   tradableInstrument: {
     instrument: {
       code: 'AAVEDAI.MF21',
+      name: 'AAVEDAI Monthly (30 Jun 2022)',
       metadata: {
         tags: [
           'formerly:2839D9B2329C9E70',

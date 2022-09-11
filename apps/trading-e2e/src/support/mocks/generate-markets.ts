@@ -18,7 +18,6 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
   const markets: Markets_marketsConnection_edges_node[] = [
     {
       id: 'market-0',
-      name: 'ACTIVE MARKET',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -41,7 +40,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
         instrument: {
           id: '',
           code: 'BTCUSD.MF21',
-          name: '',
+          name: 'ACTIVE MARKET',
           metadata: {
             __typename: 'InstrumentMetadata',
             tags: [],
@@ -61,7 +60,6 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
     },
     {
       id: 'market-1',
-      name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -83,7 +81,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       tradableInstrument: {
         instrument: {
           id: 'SOLUSD',
-          name: 'SOL/USD',
+          name: 'SUSPENDED MARKET',
           code: 'SOLUSD',
           metadata: {
             __typename: 'InstrumentMetadata',
@@ -104,7 +102,6 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
     },
     {
       id: 'market-2',
-      name: 'Apple Monthly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -147,7 +144,6 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
     },
     {
       id: 'market-3',
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,

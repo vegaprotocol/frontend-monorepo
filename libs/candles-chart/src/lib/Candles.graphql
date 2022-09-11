@@ -1,0 +1,31 @@
+fragment CandleFields on Candle {
+  datetime
+  high
+  low
+  open
+  close
+  volume
+}
+
+query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+      }
+    }
+    candles(interval: $interval, since: $since) {
+      ...CandleFields
+    }
+  }
+}
+
+subscription CandlesEvents($marketId: ID!, $interval: Interval!) {
+  candles(marketId: $marketId, interval: $interval) {
+    ...CandleFields
+  }
+}

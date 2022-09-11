@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import type { Proposal_proposal_terms } from '../../proposal/__generated__/Proposal';
+import type { ProposalFields_terms } from '../../__generated__/ProposalFields';
 
 export const ProposalTermsJson = ({
   terms,
 }: {
-  terms: Proposal_proposal_terms;
+  terms: ProposalFields_terms;
 }) => {
   const { t } = useTranslation();
   return (

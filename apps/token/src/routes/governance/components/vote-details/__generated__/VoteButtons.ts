@@ -13,6 +13,9 @@ export interface VoteButtons_party_stake {
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
+  /**
+   * The currently available stake formatted by the client
+   */
   currentStakeAvailableFormatted: string;
 }
 

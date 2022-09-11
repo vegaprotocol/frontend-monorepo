@@ -22,7 +22,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         headerName: t('Markets'),
         headerClass: 'uppercase',
         minWidth: isMobile ? 160 : 350,
-        field: 'name',
+        field: 'tradableInstrument.instrument.name',
         cellClass: 'overflow-visible',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
           <MarketNameRenderer market={data} isMobile={isMobile} />
@@ -93,13 +93,13 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
       {
         colId: 'status',
         headerName: t('Status'),
-        field: 'data.market.state',
+        field: 'state',
         headerClass: 'uppercase',
         minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="uppercase flex h-full items-center justify-center">
-            <div className="border text-center px-2 md:px-8 leading-4 md:leading-6">
-              {MARKET_STATES_MAP[data.data?.market.state || '']}
+            <div className="border text-center px-2 md:px-6 leading-4 md:leading-6">
+              {MARKET_STATES_MAP[data.state || '']}
             </div>
           </div>
         ),

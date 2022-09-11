@@ -41,13 +41,13 @@ const FILL_FRAGMENT = gql`
     }
     market {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
           code
+          name
           product {
             ... on Future {
               settlementAsset {

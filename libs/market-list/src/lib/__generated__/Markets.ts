@@ -108,10 +108,6 @@ export interface Markets_marketsConnection_edges_node {
    */
   id: string;
   /**
-   * Market full name
-   */
-  name: string;
-  /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 

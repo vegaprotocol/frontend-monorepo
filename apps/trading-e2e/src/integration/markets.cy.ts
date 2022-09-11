@@ -10,6 +10,7 @@ describe('markets table', () => {
 
   it('renders markets correctly', () => {
     cy.visit('/');
+    cy.wait('@Market');
     cy.wait('@Markets');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');

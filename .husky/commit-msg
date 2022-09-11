@@ -6,7 +6,3 @@ yarn commitlint --edit "${1}"
 
 # Lint all staged files
 yarn lint-staged
-
-# Build & test affected apps
-yarn nx affected:build --uncommitted
-yarn nx affected:test --uncommitted

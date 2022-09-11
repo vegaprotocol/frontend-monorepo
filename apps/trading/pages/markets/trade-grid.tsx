@@ -1,48 +1,47 @@
-import 'allotment/dist/style.css';
 import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import {
-  addDecimalsFormatNumber,
-  getDateFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
-import {
-  AuctionTrigger,
-  AuctionTriggerMapping,
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
-import type { CandleClose } from '@vegaprotocol/types';
-import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
 import {
   Tab,
   Tabs,
+  ResizableGrid,
+  ResizableGridPanel,
+  ButtonLink,
+  Tooltip,
   PriceCellChange,
   Link,
-  Tooltip,
-  ResizableGrid,
-  ButtonLink,
-  ResizableGridPanel,
 } from '@vegaprotocol/ui-toolkit';
+import {
+  addDecimalsFormatNumber,
+  getDateFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
+import { SelectMarketPopover } from '@vegaprotocol/market-list';
+import { useGlobalStore } from '../../stores';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { CandleClose } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  AuctionTriggerMapping,
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
@@ -117,29 +116,35 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const candlesClose: string[] = (market?.candles || [])
-    .map((candle) => candle?.close)
-    .filter((c): c is CandleClose => c !== null);
-  const symbol =
-    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-  const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
+  const { update } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
 
-  const store = useGlobalStore();
   const onSelect = (marketId: string) => {
-    if (marketId && store.marketId !== marketId) {
-      store.setMarketId(marketId);
+    if (marketId && marketId !== marketId) {
+      update({ marketId });
     }
   };
 
+  const candlesClose: string[] = (market?.candles || [])
+    .map((candle) => candle?.close)
+    .filter((c): c is CandleClose => c !== null);
   const hasExpiry = market.marketTimestamps.close !== null;
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
+
+  const itemClass =
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+  const itemHeading = 'text-neutral-400';
 
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
       <div className="xl:flex xl:gap-4  items-start">
         <div className="px-4 mb-2 xl:mb-0">
-          <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+          <SelectMarketPopover
+            marketName={market.tradableInstrument.instrument.name}
+            onSelect={onSelect}
+          />
         </div>
         <div
           data-testid="market-summary"

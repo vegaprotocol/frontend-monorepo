@@ -188,10 +188,6 @@ export interface Market_market {
    */
   id: string;
   /**
-   * Market full name
-   */
-  name: string;
-  /**
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
