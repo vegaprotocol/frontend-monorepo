@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
 import { marketProvider } from '@vegaprotocol/market-list';

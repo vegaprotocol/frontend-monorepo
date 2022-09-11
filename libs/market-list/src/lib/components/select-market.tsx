@@ -1,4 +1,4 @@
-import { t, volumePrefix, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
   Icon,

@@ -12,7 +12,7 @@ import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
