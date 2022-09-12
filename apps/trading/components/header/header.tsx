@@ -5,19 +5,20 @@ import { cloneElement } from 'react';
 
 interface TradeMarketHeaderProps {
   title: ReactNode;
-  children: ReactElement[];
+  children: Array<ReactElement | null>;
 }
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
     <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-600">
       <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4 mb-2">{title}</div>
+        <div className="px-4">{title}</div>
         <div
           data-testid="market-summary"
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
         >
           {Children.map(children, (child, index) => {
+            if (!child) return null;
             return cloneElement(child, {
               id: `header-stat-${index}`,
             });
