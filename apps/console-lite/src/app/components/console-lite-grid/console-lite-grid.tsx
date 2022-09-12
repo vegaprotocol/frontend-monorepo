@@ -5,7 +5,13 @@ import {
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+} from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type {
   GetRowIdParams,
@@ -14,6 +20,7 @@ import type {
   FullWidthCellKeyDownEvent,
   ColDef,
   ColGroupDef,
+  GetRowIdFunc,
 } from 'ag-grid-community';
 
 interface Props<T> {
@@ -21,20 +28,22 @@ interface Props<T> {
   data: T[];
   defaultColDef: ColDef;
   handleRowClicked?: (event: { data: T }) => void;
+  components?: Record<string, unknown>;
+  getRowId?: GetRowIdFunc;
 }
 
-const ConsoleLiteGrid = <T extends { id: string }>({
-  columnDefs,
-  data,
-  defaultColDef,
-  handleRowClicked,
-}: Props<T>) => {
+const ConsoleLiteGrid = <T extends { id: string }>(
+  { columnDefs, data, defaultColDef, handleRowClicked, getRowId }: Props<T>,
+  ref?: React.Ref<AgGridReact>
+) => {
   const { isMobile, screenSize } = useScreenDimensions();
   const gridRef = useRef<AgGridReact | null>(null);
   const theme = useContext(ThemeContext);
   const handleOnGridReady = useCallback(() => {
-    gridRef.current?.api?.sizeColumnsToFit();
-  }, [gridRef]);
+    (
+      (ref as React.RefObject<AgGridReact>) || gridRef
+    ).current?.api?.sizeColumnsToFit();
+  }, [gridRef, ref]);
   const onTabToNextCell = useCallback((params: TabToNextCellParams) => {
     const {
       api,
@@ -46,7 +55,7 @@ const ConsoleLiteGrid = <T extends { id: string }>({
     }
     return { ...params.previousCellPosition, rowIndex: rowIndex + 1 };
   }, []);
-  const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
+  const getRowIdLocal = useCallback(({ data }: GetRowIdParams) => data.id, []);
   const onCellKeyDown = useCallback(
     (
       params: (CellKeyDownEvent | FullWidthCellKeyDownEvent) & {
@@ -80,10 +89,10 @@ const ConsoleLiteGrid = <T extends { id: string }>({
       onRowClicked={handleRowClicked}
       rowClass={isMobile ? 'mobile' : ''}
       rowClassRules={constants.ROW_CLASS_RULES}
-      ref={gridRef}
+      ref={ref || gridRef}
       overlayNoRowsTemplate={t('No data to display')}
       suppressContextMenu
-      getRowId={getRowId}
+      getRowId={getRowId || getRowIdLocal}
       suppressMovableColumns
       suppressRowTransform
       onCellKeyDown={onCellKeyDown}
@@ -93,4 +102,10 @@ const ConsoleLiteGrid = <T extends { id: string }>({
   );
 };
 
-export default ConsoleLiteGrid;
+const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <
+  T extends { id: string }
+>(
+  p: Props<T> & { ref?: React.Ref<AgGridReact> }
+) => React.ReactElement;
+
+export default ConsoleLiteGridForwarder;

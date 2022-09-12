@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AccountsContainer } from '@vegaprotocol/accounts';
+import { AccountManager } from './accounts';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -19,11 +19,18 @@ export const Portfolio = () => {
   const params = useParams<RouterParams>();
 
   const module = useMemo(() => {
+    if (!keypair) {
+      return (
+        <section className="xl:w-1/2">
+          <ConnectWallet />
+        </section>
+      );
+    }
+
     switch (params?.module) {
       case constants.PORTFOLIO_ASSETS:
       default:
-        console.log(1);
-        return <AccountsContainer />;
+        return <AccountManager partyId={keypair.pub} />;
       case constants.PORTFOLIO_POSITIONS:
         return <PositionsContainer />;
       case constants.PORTFOLIO_ORDERS:
@@ -33,15 +40,8 @@ export const Portfolio = () => {
       case constants.PORTFOLIO_DEPOSITS:
         return <DepositContainer />;
     }
-  }, [params?.module]);
+  }, [params?.module, keypair]);
 
-  if (!keypair) {
-    return (
-      <section className="xl:w-1/2">
-        <ConnectWallet />
-      </section>
-    );
-  }
   return (
     <div className="mt-2 h-full grid grid-rows-[min-content_1fr]">
       <HorizontalMenu
