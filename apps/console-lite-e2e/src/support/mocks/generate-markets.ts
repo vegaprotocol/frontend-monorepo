@@ -1,3 +1,10 @@
+import merge from 'lodash/merge';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import type { PartialDeep } from 'type-fest';
+import type {
+  Markets,
+  Markets_marketsConnection_edges_node,
+} from '@vegaprotocol/market-list';
 import { protoMarket } from './commons';
 
 export const generateSimpleMarkets = () => {
@@ -879,4 +886,42 @@ export const generateLongListMarkets = (count: number) => {
     });
   }
   return { markets };
+};
+
+export const generateMarkets = (override?) => {
+  const markets = [
+    {
+      ...protoMarket,
+      decimalPlaces: 5,
+      positionDecimalPlaces: 0,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
+      marketTimestamps: {
+        __typename: 'MarketTimestamps',
+        close: '',
+        open: '',
+      },
+      fees: {
+        __typename: 'Fees',
+        factors: {
+          __typename: 'FeeFactors',
+          makerFee: '',
+          infrastructureFee: '',
+          liquidityFee: '',
+        },
+      },
+    },
+  ];
+
+  const defaultResult = {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
+
+  return merge(defaultResult, override);
 };
