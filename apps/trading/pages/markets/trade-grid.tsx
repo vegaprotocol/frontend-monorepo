@@ -142,7 +142,7 @@ export const TradeMarketHeader = ({
         </div>
         <div
           data-testid="market-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
+          className="flex flex-nowrap items-start mt-3 xl:flex-1 w-full overflow-x-auto text-xs "
         >
           <div className={itemClass}>
             <div className={itemHeading}>{t('Expiry')}</div>
