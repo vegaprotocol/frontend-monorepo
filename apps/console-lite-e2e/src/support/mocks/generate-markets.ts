@@ -1,10 +1,5 @@
 import merge from 'lodash/merge';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { PartialDeep } from 'type-fest';
-import type {
-  Markets,
-  Markets_marketsConnection_edges_node,
-} from '@vegaprotocol/market-list';
 import { protoMarket } from './commons';
 
 export const generateSimpleMarkets = () => {
