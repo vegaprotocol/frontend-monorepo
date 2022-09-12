@@ -88,11 +88,14 @@ export const NetworkSwitcher = ({
     [setOpen, setAdvancedView]
   );
 
-  const dropdownTriggerClasses = classNames('hover:border-white hover:!bg-neutral-700', {
-    'dark:text-white dark:bg-black text-black bg-white': !fixedBg,
-    'text-black bg-white': fixedBg === 'light',
-    'text-white bg-black': fixedBg === 'dark',
-  });
+  const dropdownTriggerClasses = classNames(
+    'hover:border-white hover:!bg-neutral-700 focus:!border-white',
+    {
+      'dark:text-white dark:bg-black text-black bg-white': !fixedBg,
+      'text-black bg-white': fixedBg === 'light',
+      'text-white bg-black': fixedBg === 'dark',
+    }
+  );
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
