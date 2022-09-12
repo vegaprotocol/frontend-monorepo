@@ -60,6 +60,10 @@ export const DealTicket = ({
           price:
             order.price && removeDecimal(order.price, market.decimalPlaces),
           size: removeDecimal(order.size, market.positionDecimalPlaces),
+          expiresAt:
+            order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+              ? order.expiresAt
+              : undefined,
         });
       }
     },
