@@ -4,17 +4,14 @@ import { mockTradingPage } from '../support/trading';
 
 describe('home', () => {
   const selectMarketOverlay = 'select-market-list';
-
-  beforeEach('load homepage', () => {
-    cy.visit('/');
+  beforeEach(() => {
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+    });
   });
 
   describe('default market found', () => {
     it('redirects to a default market with the landing dialog open', () => {
-      cy.mockGQL((req) => {
-        // Mock all market page queries
-        mockTradingPage(req, MarketState.STATE_ACTIVE);
-      });
       cy.visit('/');
       cy.wait('@Market');
 
