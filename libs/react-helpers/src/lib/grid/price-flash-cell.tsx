@@ -1,14 +1,14 @@
 import { FlashCell } from './flash-cell';
 
-export interface IPriceFlashCellProps {
+export interface AgPriceFlashCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
 }
 
-export const PriceFlashCell = ({
+export const AgPriceFlashCell = ({
   value,
   valueFormatted,
-}: IPriceFlashCellProps) => {
+}: AgPriceFlashCellProps) => {
   if ((!value && value !== 0) || isNaN(Number(value))) {
     return <span data-testid="price">-</span>;
   }
@@ -19,4 +19,4 @@ export const PriceFlashCell = ({
   );
 };
 
-PriceFlashCell.displayName = 'PriceFlashCell';
+AgPriceFlashCell.displayName = 'AgPriceFlashCell';

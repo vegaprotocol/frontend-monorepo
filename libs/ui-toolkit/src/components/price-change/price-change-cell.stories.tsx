@@ -1,13 +1,13 @@
 import type { Story, Meta } from '@storybook/react';
-import { PriceCellChange } from './price-change-cell';
+import { AgPriceCellChange } from './price-change-cell';
 
 export default {
-  component: PriceCellChange,
-  title: 'PriceCellChange',
+  component: AgPriceCellChange,
+  title: 'AgPriceCellChange',
 } as Meta;
 
 const Template: Story = (args) => (
-  <PriceCellChange candles={[args['candles']]} {...args} />
+  <AgPriceCellChange candles={[args['candles']]} {...args} />
 );
 
 export const Increased = Template.bind({});

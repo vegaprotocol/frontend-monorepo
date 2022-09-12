@@ -7,7 +7,7 @@ import React from 'react';
 import { signedNumberCssClass } from '@vegaprotocol/react-helpers';
 import { Arrow } from '../arrows/arrow';
 
-export interface PriceChangeCellProps {
+export interface AgPriceChangeCellProps {
   /** either candle `close`or `open` values to be filtered and used here in order to calculate the price change  */
   candles: string[];
   decimalPlaces?: number;
@@ -36,8 +36,8 @@ export const priceChange = (candles: string[]) => {
     : 0;
 };
 
-export const PriceCellChange = React.memo(
-  ({ candles, decimalPlaces }: PriceChangeCellProps) => {
+export const AgPriceCellChange = React.memo(
+  ({ candles, decimalPlaces }: AgPriceChangeCellProps) => {
     const change = priceChange(candles);
     const changePercentage = priceChangePercentage(candles);
     return (
@@ -64,4 +64,4 @@ export const PriceCellChange = React.memo(
   }
 );
 
-PriceCellChange.displayName = 'PriceCellChange';
+AgPriceCellChange.displayName = 'AgPriceCellChange';

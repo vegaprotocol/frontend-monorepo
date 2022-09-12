@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
-import { PriceCell } from './price-cell';
+import { AgPriceCell } from './price-cell';
 import classNames from 'classnames';
 
 export enum VolumeType {
@@ -14,7 +14,7 @@ export interface VolProps {
   type: VolumeType;
   testId?: string;
 }
-export interface IVolCellProps extends ICellRendererParams {
+export interface AgVolCellProps extends ICellRendererParams {
   value: number | bigint | null | undefined;
   valueFormatted: Omit<VolProps, 'value'>;
 }
@@ -42,7 +42,7 @@ export const Vol = React.memo(
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
           }}
         ></div>
-        <PriceCell value={value} valueFormatted={valueFormatted} />
+        <AgPriceCell value={value} valueFormatted={valueFormatted} />
       </div>
     );
   }
@@ -50,8 +50,8 @@ export const Vol = React.memo(
 
 Vol.displayName = 'Vol';
 
-export const VolCell = ({ value, valueFormatted }: IVolCellProps) => (
+export const AgVolume = ({ value, valueFormatted }: AgVolCellProps) => (
   <Vol value={value} {...valueFormatted} />
 );
 
-VolCell.displayName = 'VolCell';
+AgVolume.displayName = 'AgVolume';

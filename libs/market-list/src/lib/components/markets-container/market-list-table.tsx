@@ -4,7 +4,7 @@ import type {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
-  PriceFlashCell,
+  AgPriceFlashCell,
   addDecimalsFormatNumber,
   t,
   toBigNum,
@@ -53,7 +53,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         filterParams: { buttons: ['reset'] },
       }}
       suppressCellFocus={true}
-      components={{ PriceFlashCell }}
+      components={{ AgPriceFlashCell }}
       {...props}
     >
       <AgGridColumn
@@ -100,7 +100,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Best bid')}
         field="data.bestBidPrice"
         type="rightAligned"
-        cellRenderer="PriceFlashCell"
+        cellRenderer="AgPriceFlashCell"
         filter="agNumberColumnFilter"
         valueGetter={({ data }: { data?: MarketList_markets }) => {
           return data?.data?.bestBidPrice === undefined
@@ -120,7 +120,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Best offer')}
         field="data.bestOfferPrice"
         type="rightAligned"
-        cellRenderer="PriceFlashCell"
+        cellRenderer="AgPriceFlashCell"
         filter="agNumberColumnFilter"
         valueGetter={({ data }: { data?: MarketList_markets }) => {
           return data?.data?.bestOfferPrice === undefined
@@ -143,7 +143,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Mark price')}
         field="data.markPrice"
         type="rightAligned"
-        cellRenderer="PriceFlashCell"
+        cellRenderer="AgPriceFlashCell"
         filter="agNumberColumnFilter"
         valueGetter={({ data }: { data?: MarketList_markets }) => {
           return data?.data?.markPrice === undefined

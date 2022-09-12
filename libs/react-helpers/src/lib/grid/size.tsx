@@ -26,11 +26,11 @@ export const Size = ({
   );
 };
 
-export interface ISizeCellProps extends ICellRendererParams {
+export interface AgSizeCellProps extends ICellRendererParams {
   value: number | string;
 }
 
-export const SizeCell = ({ value, data }: ISizeCellProps) => {
+export const AgSizeCell = ({ value, data }: AgSizeCellProps) => {
   if ((!value && value !== 0) || isNaN(Number(value))) {
     return <span data-testid="size">-</span>;
   }
@@ -43,4 +43,4 @@ export const SizeCell = ({ value, data }: ISizeCellProps) => {
   );
 };
 
-SizeCell.displayName = 'SizeCell';
+AgSizeCell.displayName = 'AgSizeCell';

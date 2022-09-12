@@ -13,7 +13,7 @@ export interface CumulativeVolProps {
   className?: string;
 }
 
-export interface ICumulativeVolCellProps extends ICellRendererParams {
+export interface AgCumulativeVolCellProps extends ICellRendererParams {
   value: CumulativeVolProps;
 }
 
@@ -64,7 +64,7 @@ export const CumulativeVol = React.memo(
     return (
       <div
         className={classNames('h-full relative', className)}
-        data-testid={testId || 'cummulative-vol'}
+        data-testid={testId || 'cumulative-vol'}
       >
         {askBar}
         {bidBar}
@@ -76,8 +76,8 @@ export const CumulativeVol = React.memo(
 
 CumulativeVol.displayName = 'CumulativeVol';
 
-export const CumulativeVolCell = ({ value }: ICumulativeVolCellProps) => (
+export const AgCumulativeVolCell = ({ value }: AgCumulativeVolCellProps) => (
   <CumulativeVol {...value} />
 );
 
-CumulativeVolCell.displayName = 'CumulativeVolCell';
+AgCumulativeVolCell.displayName = 'AgCumulativeVolCell';

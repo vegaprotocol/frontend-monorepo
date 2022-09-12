@@ -5,7 +5,7 @@ import type {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
-  PriceCell,
+  AgPriceCell,
   addDecimalsFormatNumber,
   t,
   addSummaryRows,
@@ -105,7 +105,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           flex: 1,
           resizable: true,
         }}
-        components={{ PriceCell }}
+        components={{ AgPriceCell }}
         onSortChanged={({ api, columnApi }) => {
           addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
         }}
@@ -157,7 +157,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         <AgGridColumn
           headerName={t('Balance')}
           field="balance"
-          cellRenderer="PriceCell"
+          cellRenderer="AgPriceCell"
           type="rightAligned"
           valueFormatter={({
             value,

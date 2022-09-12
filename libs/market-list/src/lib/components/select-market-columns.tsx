@@ -2,7 +2,7 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  PriceCell,
+  AgPriceCell,
   t,
 } from '@vegaprotocol/react-helpers';
 import {
@@ -11,7 +11,11 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  AgPriceCellChange,
+  Sparkline,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 
@@ -208,7 +212,7 @@ export const columns = (
     },
     {
       value: market.data?.markPrice ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(market.data?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
             market.data?.markPrice.toString(),
@@ -224,7 +228,7 @@ export const columns = (
     },
     {
       value: candlesClose && (
-        <PriceCellChange
+        <AgPriceCellChange
           candles={candlesClose}
           decimalPlaces={market.decimalPlaces}
         />
@@ -253,7 +257,7 @@ export const columns = (
     },
     {
       value: candleHigh ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
@@ -269,7 +273,7 @@ export const columns = (
     },
     {
       value: candleLow ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),
@@ -362,7 +366,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: market.data?.markPrice ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(market.data.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
             market.data.markPrice.toString(),
@@ -378,7 +382,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: candlesClose && (
-        <PriceCellChange
+        <AgPriceCellChange
           candles={candlesClose}
           decimalPlaces={market.decimalPlaces}
         />
@@ -406,7 +410,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: candleHigh ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
@@ -422,7 +426,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: candleLow ? (
-        <PriceCell
+        <AgPriceCell
           value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),

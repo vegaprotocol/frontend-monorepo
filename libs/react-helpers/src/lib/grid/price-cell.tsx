@@ -1,13 +1,13 @@
 import React from 'react';
 import { getDecimalSeparator } from '../format';
-export interface IPriceCellProps {
+export interface AgPriceCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
   testId?: string;
 }
 
-export const PriceCell = React.memo(
-  ({ value, valueFormatted, testId }: IPriceCellProps) => {
+export const AgPriceCell = React.memo(
+  ({ value, valueFormatted, testId }: AgPriceCellProps) => {
     if (
       (!value && value !== 0) ||
       (typeof value === 'number' && isNaN(Number(value)))
@@ -33,4 +33,4 @@ export const PriceCell = React.memo(
   }
 );
 
-PriceCell.displayName = 'PriceCell';
+AgPriceCell.displayName = 'AgPriceCell';

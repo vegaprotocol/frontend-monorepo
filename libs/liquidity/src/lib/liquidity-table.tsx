@@ -5,10 +5,7 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
-import {
-  AgGridDynamic as AgGrid,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, AgTooltip } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { LiquidityProvision } from './liquidity-data-provider';
@@ -53,7 +50,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           flex: 1,
           resizable: true,
           minWidth: 100,
-          tooltipComponent: TooltipCellComponent,
+          tooltipComponent: AgTooltip,
         }}
         rowData={data}
       >

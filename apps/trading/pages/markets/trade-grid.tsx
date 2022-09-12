@@ -21,7 +21,7 @@ import {
   ResizableGridPanel,
   ButtonLink,
   Tooltip,
-  PriceCellChange,
+  AgPriceCellChange,
   Link,
 } from '@vegaprotocol/ui-toolkit';
 import {
@@ -167,7 +167,7 @@ export const TradeMarketHeader = ({
           </div>
           <div className={itemClass}>
             <div className={itemHeading}>{t('Change (24h)')}</div>
-            <PriceCellChange
+            <AgPriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />

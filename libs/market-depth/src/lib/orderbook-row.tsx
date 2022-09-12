@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  PriceCell,
+  AgPriceCell,
   Vol,
   CumulativeVol,
   addDecimalsFormatNumber,
@@ -47,7 +47,7 @@ export const OrderbookRow = React.memo(
           relativeValue={relativeBid}
           type={VolumeType.bid}
         />
-        <PriceCell
+        <AgPriceCell
           testId={`price-${price}`}
           value={BigInt(price)}
           valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}

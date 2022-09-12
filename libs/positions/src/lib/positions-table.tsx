@@ -8,7 +8,7 @@ import type {
   CellRendererSelectorResult,
 } from 'ag-grid-community';
 import {
-  PriceFlashCell,
+  AgPriceFlashCell,
   addDecimalsFormatNumber,
   volumePrefix,
   t,
@@ -23,7 +23,7 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button, AgTooltip } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -52,7 +52,7 @@ export interface MarketNameCellProps {
   valueFormatted?: [string, string];
 }
 
-export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
+export const AgMarketName = ({ valueFormatted }: MarketNameCellProps) => {
   if (valueFormatted && valueFormatted[1]) {
     return (
       <div className="leading-tight">
@@ -64,7 +64,7 @@ export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
   return (valueFormatted && valueFormatted[0]) || undefined;
 };
 
-export interface PriceCellProps {
+export interface AgPriceCellProps {
   valueFormatted?: {
     low: string;
     high: string;
@@ -73,7 +73,7 @@ export interface PriceCellProps {
   };
 }
 
-export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
+export const AgProgressBar = ({ valueFormatted }: AgPriceCellProps) => {
   return valueFormatted ? (
     <>
       <div className="flex justify-between leading-tight font-mono">
@@ -89,16 +89,16 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   ) : null;
 };
 
-ProgressBarCell.displayName = 'PriceFlashCell';
+AgProgressBar.displayName = 'AgPriceFlashCell';
 
-export interface AmountCellProps {
+export interface AgAmountCellProps {
   valueFormatted?: Pick<
     Position,
     'openVolume' | 'marketDecimalPlaces' | 'positionDecimalPlaces' | 'notional'
   >;
 }
 
-export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
+export const AgAmountCell = ({ valueFormatted }: AgAmountCellProps) => {
   if (!valueFormatted) {
     return null;
   }
@@ -120,7 +120,7 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   ) : null;
 };
 
-AmountCell.displayName = 'AmountCell';
+AgAmountCell.displayName = 'AgAmountCell';
 
 const ButtonCell = ({
   onClick,
@@ -155,15 +155,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         defaultColDef={{
           flex: 1,
           resizable: true,
-          tooltipComponent: TooltipCellComponent,
+          tooltipComponent: AgTooltip,
         }}
-        components={{ PriceFlashCell, ProgressBarCell }}
+        components={{ AgPriceFlashCell, AgProgressBar }}
         {...props}
       >
         <AgGridColumn
           headerName={t('Market')}
           field="marketName"
-          cellRenderer={MarketNameCell}
+          cellRenderer={AgMarketName}
           valueFormatter={({
             value,
           }: PositionsTableValueFormatterParams & {
@@ -191,7 +191,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? PriceFlashCell : AmountCell,
+              component: params.node.rowPinned
+                ? AgPriceFlashCell
+                : AgAmountCell,
             };
           }}
           valueFormatter={({
@@ -200,7 +202,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             node,
           }: PositionsTableValueFormatterParams & {
             value: Position['openVolume'];
-          }): AmountCellProps['valueFormatted'] | string => {
+          }): AgAmountCellProps['valueFormatted'] | string => {
             if (!value || !data) {
               return undefined;
             }
@@ -218,7 +220,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+              component: params.node.rowPinned ? EmptyCell : AgPriceFlashCell,
             };
           }}
           valueFormatter={({
@@ -258,14 +260,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+              component: params.node.rowPinned ? EmptyCell : AgProgressBar,
             };
           }}
           valueFormatter={({
             data,
             node,
           }: PositionsTableValueFormatterParams):
-            | PriceCellProps['valueFormatted']
+            | AgPriceCellProps['valueFormatted']
             | undefined => {
             if (!data || node?.rowPinned) {
               return undefined;
@@ -296,7 +298,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+              component: params.node.rowPinned ? EmptyCell : AgPriceFlashCell,
             };
           }}
           valueFormatter={({
@@ -313,12 +315,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="capitalUtilisation"
           type="rightAligned"
           flex={2}
-          cellRenderer="ProgressBarCell"
+          cellRenderer="AgProgressBar"
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+              component: params.node.rowPinned ? EmptyCell : AgProgressBar,
             };
           }}
           valueFormatter={({
@@ -327,7 +329,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             node,
           }: PositionsTableValueFormatterParams & {
             value: Position['capitalUtilisation'];
-          }): PriceCellProps['valueFormatted'] | undefined => {
+          }): AgPriceCellProps['valueFormatted'] | undefined => {
             if (!data || node?.rowPinned) {
               return undefined;
             }
@@ -353,7 +355,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
-          cellRenderer="PriceFlashCell"
+          cellRenderer="AgPriceFlashCell"
           headerTooltip={t('P&L excludes any fees paid.')}
         />
         <AgGridColumn
@@ -371,7 +373,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               ? undefined
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
-          cellRenderer="PriceFlashCell"
+          cellRenderer="AgPriceFlashCell"
         />
         <AgGridColumn
           headerName={t('Updated')}
