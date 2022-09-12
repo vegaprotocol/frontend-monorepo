@@ -36,7 +36,8 @@ export const Toggle = ({
     'px-10 py-2',
     'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
     'peer-checked:text-white dark:peer-checked:text-black',
-    'cursor-pointer peer-checked:cursor-auto select-none'
+    'cursor-pointer peer-checked:cursor-auto select-none',
+    'hover:bg-neutral-200 hover:rounded-full'
   );
 
   return (
