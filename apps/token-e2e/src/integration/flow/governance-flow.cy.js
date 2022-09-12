@@ -230,11 +230,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         let proposalId = proposal.response.body.data.busEvents[0].event.id;
         cy.get('[data-testid="set-proposals-filter-visible"]').click();
         cy.get('[data-testid="filter-input"]').type(proposerId);
-        cy.get(`#${proposalId}`).should(
-          'contain',
-          `${proposalId}`,
-          txTimeout
-        );
+        cy.get(`#${proposalId}`).should('contain', `${proposalId}`, txTimeout);
       });
     });
 

@@ -1,6 +1,6 @@
 const vegaWalletContainer = '[data-testid="vega-wallet"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
-const vegaWalletNameElement = '[data-testid="wallet-name"]'; 
+const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
@@ -17,12 +17,11 @@ Cypress.Commands.add('vega_wallet_import', () => {
   cy.exec(
     `vegawallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
-  cy.exec(
-    `vegawallet version`
-  ).its('stdout')
-  .then((output) => {
-    cy.log(output);
-  });;
+  cy.exec(`vegawallet version`)
+    .its('stdout')
+    .then((output) => {
+      cy.log(output);
+    });
 });
 
 Cypress.Commands.add('vega_wallet_connect', () => {
