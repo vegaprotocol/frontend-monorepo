@@ -198,7 +198,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.get('[data-testid="filter-input"]').type(proposalId);
           cy.get(`#${proposalId}`).should(
             'contain',
-            `Freeform proposal: ${proposalId}`,
+            `${proposalId}`,
             txTimeout
           );
         });
@@ -232,7 +232,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         cy.get('[data-testid="filter-input"]').type(proposerId);
         cy.get(`#${proposalId}`).should(
           'contain',
-          `Freeform proposal: ${proposalId}`,
+          `${proposalId}`,
           txTimeout
         );
       });
@@ -264,7 +264,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .then((proposalId) => {
           cy.get(openProposals).within(() => {
             cy.get(`#${proposalId}`)
-              .should('contain', `Freeform proposal: ${proposalId}`, txTimeout)
+              .should('contain', `${proposalId}`, txTimeout)
               .and('contain', 'Open')
               .and('be.visible')
               .within(() => {
