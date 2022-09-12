@@ -30,16 +30,17 @@ function setup(mocks?: MockedResponse[]) {
 
 it('Should perform the Ethereum transaction with the fetched approval', async () => {
   const withdrawalId = 'withdrawal-id';
-  const erc20WithdrawalApproval: Erc20ApprovalQuery['erc20WithdrawalApproval'] = {
-    __typename: 'Erc20WithdrawalApproval',
-    assetSource: 'asset-source',
-    amount: '100',
-    nonce: '1',
-    creation: '1',
-    signatures: 'signatures',
-    targetAddress: 'target-address',
-    expiry: 'expiry',
-  };
+  const erc20WithdrawalApproval: Erc20ApprovalQuery['erc20WithdrawalApproval'] =
+    {
+      __typename: 'Erc20WithdrawalApproval',
+      assetSource: 'asset-source',
+      amount: '100',
+      nonce: '1',
+      creation: '1',
+      signatures: 'signatures',
+      targetAddress: 'target-address',
+      expiry: 'expiry',
+    };
   const mockERC20Approval: MockedResponse<Erc20ApprovalQuery> = {
     request: {
       query: ERC20_APPROVAL_QUERY,

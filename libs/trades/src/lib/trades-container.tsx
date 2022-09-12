@@ -6,13 +6,16 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import {
   MAX_TRADES,
   tradesDataProvider as dataProvider,
 } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import type { TradesQueryVariables, TradeFieldsFragment } from './__generated__/Trades';
+import type {
+  TradesQueryVariables,
+  TradeFieldsFragment,
+} from './__generated__/Trades';
 
 interface TradesContainerProps {
   marketId: string;
@@ -20,9 +23,7 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<
-    (Schema.TradeEdge | null)[] | null
-  >(null);
+  const dataRef = useRef<(Schema.TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -96,13 +97,12 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows =
-    makeInfiniteScrollGetRows<Schema.TradeEdge>(
-      newRows,
-      dataRef,
-      totalCountRef,
-      load
-    );
+  const getRows = makeInfiniteScrollGetRows<Schema.TradeEdge>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {

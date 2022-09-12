@@ -23,8 +23,7 @@ export interface EthereumConfig {
 }
 
 export const useEthereumConfig = () => {
-  const { data, loading, error } =
-    useNetworkParametersQuery();
+  const { data, loading, error } = useNetworkParametersQuery();
 
   const config = useMemo(() => {
     if (!data) {

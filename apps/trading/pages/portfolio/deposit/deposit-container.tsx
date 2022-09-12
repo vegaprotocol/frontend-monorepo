@@ -1,6 +1,9 @@
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import type { DepositPage, DepositPage_assetsConnection_edges_node } from './__generated__/DepositPage';
+import type {
+  DepositPage,
+  DepositPage_assetsConnection_edges_node,
+} from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { AssetStatus } from '@vegaprotocol/types';
 import { getNodes, t } from '@vegaprotocol/react-helpers';
@@ -31,7 +34,10 @@ export const DepositContainer = () => {
     <PageQueryContainer<DepositPage>
       query={DEPOSIT_PAGE_QUERY}
       render={(data) => {
-        const assets = getNodes<DepositPage_assetsConnection_edges_node>(data, (node) => node?.status === AssetStatus.STATUS_ENABLED);
+        const assets = getNodes<DepositPage_assetsConnection_edges_node>(
+          data,
+          (node) => node?.status === AssetStatus.STATUS_ENABLED
+        );
         if (!assets.length) {
           return (
             <Splash>

@@ -32,7 +32,10 @@ export const useCompleteWithdraw = () => {
         if (!contract) {
           return;
         }
-        const res = await query<Erc20ApprovalQuery, Erc20ApprovalQueryVariables>({
+        const res = await query<
+          Erc20ApprovalQuery,
+          Erc20ApprovalQueryVariables
+        >({
           query: Erc20ApprovalDocument,
           variables: { withdrawalId },
         });

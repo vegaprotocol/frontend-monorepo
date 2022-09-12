@@ -4,7 +4,10 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import type { AssetsQuery, AssetsQuery_assetsConnection_edges_node } from './__generated__/AssetsQuery';
+import type {
+  AssetsQuery,
+  AssetsQuery_assetsConnection_edges_node,
+} from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {

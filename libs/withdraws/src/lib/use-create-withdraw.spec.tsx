@@ -5,9 +5,12 @@ import type { ReactNode } from 'react';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
-import { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
+import type { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
 import { WithdrawalEventDocument } from './__generated__/Withdrawal';
-import type { WithdrawalEventSubscription, WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import type {
+  WithdrawalEventSubscription,
+  WithdrawalFieldsFragment,
+} from './__generated__/Withdrawal';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import {
   initialState,
