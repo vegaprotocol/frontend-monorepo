@@ -196,7 +196,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .then((proposalId) => {
           cy.get('[data-testid="set-proposals-filter-visible"]').click();
           cy.get('[data-testid="filter-input"]').type(proposalId);
-          cy.get(`#${proposalId}`).should('contain', `${proposalId}`);
+          cy.get(`#${proposalId}`).should('contain', proposalId);
         });
     });
 
@@ -226,7 +226,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         let proposalId = proposal.response.body.data.busEvents[0].event.id;
         cy.get('[data-testid="set-proposals-filter-visible"]').click();
         cy.get('[data-testid="filter-input"]').type(proposerId);
-        cy.get(`#${proposalId}`).should('contain', `${proposalId}`);
+        cy.get(`#${proposalId}`).should('contain', proposalId);
       });
     });
 
@@ -256,7 +256,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .then((proposalId) => {
           cy.get(openProposals).within(() => {
             cy.get(`#${proposalId}`)
-              .should('contain', `${proposalId}`)
+              .should('contain', proposalId)
               .and('contain', 'Open')
               .and('be.visible')
               .within(() => {
