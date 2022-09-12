@@ -10,11 +10,11 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-600">
+    <header className="w-screen xl:px-4 pt-4 border-b border-default">
       <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4">{title}</div>
+        <div className="mb-4 xl:mb-0">{title}</div>
         <div
-          data-testid="market-summary"
+          data-testid="header-summary"
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
         >
           {Children.map(children, (child, index) => {
@@ -41,8 +41,8 @@ export const HeaderStat = ({
   description?: string | ReactNode;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-600';
-  const itemHeading = 'text-neutral-400';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default';
+  const itemHeading = 'text-neutral-500 dark:text-neutral-400';
 
   return (
     <div className={itemClass}>

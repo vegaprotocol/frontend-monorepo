@@ -116,6 +116,7 @@ export const TradeMarketHeader = ({
   market,
   onSelect,
 }: TradeMarketHeaderProps) => {
+  const { push } = useRouter();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -125,8 +126,6 @@ export const TradeMarketHeader = ({
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-
-  const { push } = useRouter();
 
   return (
     <Header
@@ -363,7 +362,7 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-600">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('p-4 min-w-[100px] capitalize', {
