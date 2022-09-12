@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } };
 
+export type TradeEdgeFieldsFragment = { __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } };
+
 export type TradesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
@@ -33,16 +35,21 @@ export const TradeFieldsFragmentDoc = gql`
   }
 }
     `;
+export const TradeEdgeFieldsFragmentDoc = gql`
+    fragment TradeEdgeFields on TradeEdge {
+  node {
+    ...TradeFields
+  }
+  cursor
+}
+    ${TradeFieldsFragmentDoc}`;
 export const TradesDocument = gql`
     query Trades($marketId: ID!, $pagination: Pagination) {
   market(id: $marketId) {
     id
     tradesConnection(pagination: $pagination) {
       edges {
-        node {
-          ...TradeFields
-        }
-        cursor
+        ...TradeEdgeFields
       }
       pageInfo {
         startCursor
@@ -53,7 +60,7 @@ export const TradesDocument = gql`
     }
   }
 }
-    ${TradeFieldsFragmentDoc}`;
+    ${TradeEdgeFieldsFragmentDoc}`;
 
 /**
  * __useTradesQuery__

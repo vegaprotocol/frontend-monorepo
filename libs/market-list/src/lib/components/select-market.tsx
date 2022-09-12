@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import { t, volumePrefix } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
@@ -17,21 +16,20 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { MarketList_markets } from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { Positions } from '@vegaprotocol/positions';
-import { POSITIONS_QUERY } from '@vegaprotocol/positions';
+import { usePositionsQuery } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
 import { useMarketList } from '../markets-data-provider';
+import { MarketListItemFragment } from '../__generated__/MarketData'
 
 export const SelectMarketLandingTable = ({
   data,
   onSelect,
 }: {
-  data: MarketList_markets[] | undefined;
+  data: MarketListItemFragment[] | undefined;
   onSelect: (id: string) => void;
 }) => {
   return (
@@ -66,7 +64,7 @@ export const SelectAllMarketsTableBody = ({
   headers = columnHeaders,
   tableColumns = (market) => columns(market, onSelect),
 }: {
-  data?: MarketList_markets[];
+  data?: MarketListItemFragment[];
   title?: string;
   onSelect: (id: string) => void;
   headers?: Column[];
@@ -104,9 +102,9 @@ export const SelectMarketPopover = ({
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
-  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
+  const variables = useMemo(() => ({ partyId: keypair?.pub ?? '' }), [keypair?.pub]);
   const { data: marketDataPositions, loading: positionsLoading } =
-    useQuery<Positions>(POSITIONS_QUERY, {
+    usePositionsQuery({
       variables,
       skip: !keypair?.pub,
     });
