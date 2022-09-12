@@ -8,6 +8,7 @@ const agGridDarkVariables = `
     --ag-border-color: ${colors.neutral[700]};
     --ag-header-background-color: ${colors.black};
     --ag-odd-row-background-color: ${colors.black};
+    --ag-header-column-separator-color: ${colors.neutral[600]};
     --ag-row-border-color:${colors.black};
     --ag-row-hover-color: ${colors.neutral[800]};
     --ag-font-size: 12px;
