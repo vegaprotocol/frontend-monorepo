@@ -127,7 +127,6 @@ export const TradeMarketHeader = ({
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
   const itemClass =
-
     'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-600';
   const itemHeading = 'text-neutral-500 dark:text-neutral-400';
   const itemHeading = 'text-neutral-400';
