@@ -1,24 +1,15 @@
-export const generateMarketDepth = () => {
-  return {
+import merge from 'lodash/merge';
+import type { PartialDeep } from 'type-fest';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import type { MarketDepth } from '../../../../../libs/market-depth/src/lib/__generated__/MarketDepth';
+
+export const generateMarketDepth = (
+  override?: PartialDeep<MarketDepth>
+): MarketDepth => {
+  const defaultResult: MarketDepth = {
     market: {
       id: 'a46bd7e5277087723b7ab835844dec3cef8b4445738101269624bf5537d5d423',
-      decimalPlaces: 5,
-      positionDecimalPlaces: 0,
-      data: {
-        staticMidPrice: '9893006',
-        marketTradingMode: 'TRADING_MODE_CONTINUOUS',
-        indicativeVolume: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '9893006',
-        bestStaticOfferPrice: '9893006',
-        market: {
-          id: 'a46bd7e5277087723b7ab835844dec3cef8b4445738101269624bf5537d5d423',
-          __typename: 'Market',
-        },
-        __typename: 'MarketData',
-      },
       depth: {
-        lastTrade: { price: '9893006', __typename: 'Trade' },
         sell: [
           {
             price: '9893007',
@@ -215,4 +206,5 @@ export const generateMarketDepth = () => {
       __typename: 'Market',
     },
   };
+  return merge(defaultResult, override);
 };
