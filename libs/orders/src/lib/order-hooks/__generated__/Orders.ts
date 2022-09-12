@@ -22,14 +22,12 @@ export type OrderEventSubscriptionVariables = Types.Exact<{
 
 export type OrderEventSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } } } }> | null };
 
-export type OrderBusEventFieldsFragment = { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: string, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: string | null, side: Types.Side, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number } };
-
 export type OrderBusEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: string, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: string | null, side: Types.Side, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number } } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type OrderBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } } } } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
 
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
@@ -68,26 +66,6 @@ export const OrderConnectionFieldsFragmentDoc = gql`
   cursor
 }
     ${OrderFieldsFragmentDoc}`;
-export const OrderBusEventFieldsFragmentDoc = gql`
-    fragment OrderBusEventFields on Order {
-  type
-  id
-  status
-  rejectionReason
-  createdAt
-  size
-  price
-  timeInForce
-  expiresAt
-  side
-  market {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-  }
-}
-    `;
 export const OrdersDocument = gql`
     query Orders($partyId: ID!, $pagination: Pagination) {
   party(id: $partyId) {
@@ -171,12 +149,12 @@ export const OrderBusEventDocument = gql`
     type
     event {
       ... on Order {
-        ...OrderBusEventFields
+        ...OrderFields
       }
     }
   }
 }
-    ${OrderBusEventFieldsFragmentDoc}`;
+    ${OrderFieldsFragmentDoc}`;
 
 /**
  * __useOrderBusEventSubscription__

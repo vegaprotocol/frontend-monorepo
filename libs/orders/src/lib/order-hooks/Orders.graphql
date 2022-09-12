@@ -56,31 +56,12 @@ subscription OrderEvent($partyId: ID!) {
   }
 }
 
-fragment OrderBusEventFields on Order {
-  type
-  id
-  status
-  rejectionReason
-  createdAt
-  size
-  price
-  timeInForce
-  expiresAt
-  side
-  market {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-  }
-}
-
 subscription OrderBusEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
     type
     event {
       ... on Order {
-        ...OrderBusEventFields
+        ...OrderFields
       }
     }
   }

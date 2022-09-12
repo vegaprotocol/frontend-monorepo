@@ -7,10 +7,10 @@ import type { RowClickedEvent } from 'ag-grid-community';
 import { produce } from 'immer';
 import merge from 'lodash/merge';
 import type {
-  MarketList_markets,
-  MarketList_markets_data,
-  MarketDataSub_marketData,
-} from '../../';
+  MarketListQuery,
+  MarketListItemFragment,
+  MarketDataFieldsFragment,
+} from '../../__generated__/MarketData';
 import { marketsDataProvider as dataProvider } from '../../markets-data-provider';
 import { Interval, MarketState } from '@vegaprotocol/types';
 
@@ -31,10 +31,10 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   );
 
   const update = useCallback(
-    ({ delta }: { delta: MarketDataSub_marketData }) => {
-      const update: MarketList_markets[] = [];
-      const add: MarketList_markets[] = [];
-      const remove: MarketList_markets[] = [];
+    ({ delta }: { delta: MarketDataFieldsFragment }) => {
+      const update: MarketListQuery['markets'] = [];
+      const add: MarketListQuery['markets'] = [];
+      const remove: MarketListQuery['markets'] = [];
       if (!gridRef.current?.api) {
         return false;
       }
@@ -42,9 +42,9 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         getRowId({ data: delta.market })
       );
       if (rowNode) {
-        const updatedData = produce<MarketList_markets>(
+        const updatedData = produce<MarketListQuery['markets']>(
           rowNode.data.data,
-          (draft: MarketList_markets) => merge(draft, delta)
+          (draft: MarketListQuery['markets']) => merge(draft, delta)
         );
         if (updatedData !== rowNode.data.data) {
           update.push({ ...rowNode.data, data: updatedData });
@@ -64,8 +64,8 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   );
 
   const { data, error, loading } = useDataProvider<
-    MarketList_markets[],
-    MarketList_markets_data
+    MarketListQuery['markets'],
+    MarketDataFieldsFragment
   >({ dataProvider, update, variables });
 
   return (
@@ -83,7 +83,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
           // filters out clicks on the symbol column because it should display asset details
           if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
             return;
-          onSelect((data as MarketList_markets).id);
+          onSelect((data as MarketListItemFragment).id);
         }}
       />
     </AsyncRenderer>

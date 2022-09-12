@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/react-helpers';
-import type { Orders_party_ordersConnection_edges_node } from '../';
+import type { OrderFieldsFragment } from '../../order-hooks/__generated__/Orders';
 import * as orderListMock from '../';
 import { forwardRef } from 'react';
 
@@ -43,7 +43,7 @@ it('Renders the order list if orders provided', async () => {
   // avoid warnings about padding refs
   orderListMock.OrderList = forwardRef(() => <div>OrderList</div>);
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
-    data: [{ id: '1' } as Orders_party_ordersConnection_edges_node],
+    data: [{ id: '1' } as OrderFieldsFragment],
     loading: false,
     error: undefined,
     flush: jest.fn(),

@@ -8,7 +8,7 @@ import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
 import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
+import type { OrderFieldsFragment, OrderConnectionFieldsFragment } from '../../order-hooks/__generated__/Orders';
 
 interface OrderListManagerProps {
   partyId: string;
@@ -16,7 +16,7 @@ interface OrderListManagerProps {
 
 export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(Orders_party_ordersConnection_edges | null)[] | null>(
+  const dataRef = useRef<(OrderConnectionFieldsFragment | null)[] | null>(
     null
   );
   const totalCountRef = useRef<number | undefined>(undefined);
@@ -43,8 +43,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       delta,
     }: {
-      data: (Orders_party_ordersConnection_edges | null)[];
-      delta: OrderFields[];
+      data: (OrderConnectionFieldsFragment | null)[];
+      delta: OrderFieldsFragment[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -69,7 +69,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       totalCount,
     }: {
-      data: Orders_party_ordersConnection_edges[];
+      data: OrderConnectionFieldsFragment[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -89,7 +89,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   dataRef.current = data;
 
   const getRows =
-    makeInfiniteScrollGetRows<Orders_party_ordersConnection_edges>(
+    makeInfiniteScrollGetRows<OrderConnectionFieldsFragment>(
       newRows,
       dataRef,
       totalCountRef,

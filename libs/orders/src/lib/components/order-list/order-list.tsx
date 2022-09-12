@@ -1,8 +1,5 @@
 import {
-  OrderTimeInForce,
-  OrderStatus,
-  Side,
-  OrderType,
+  Schema,
   OrderTypeMapping,
   OrderStatusMapping,
   OrderTimeInForceMapping,
@@ -31,20 +28,19 @@ import type {
 } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
-import type { Orders_party_ordersConnection_edges_node } from '../';
+import type { OrderFieldsFragment } from '../../order-hooks/__generated__/Orders';
 import BigNumber from 'bignumber.js';
 
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderFieldsFragment | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
@@ -101,12 +97,12 @@ type OrderListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: Orders_party_ordersConnection_edges_node | null;
+  data: OrderFieldsFragment | null;
 };
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
-  cancel: (order: OrderFields) => void;
-  setEditOrder: (order: OrderFields) => void;
+  cancel: (order: OrderFieldsFragment) => void;
+  setEditOrder: (order: OrderFieldsFragment) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -134,25 +130,25 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             [positiveClassNames]: ({
               data,
             }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_BUY,
+              data: OrderFieldsFragment;
+            }) => data?.side === Schema.Side.SIDE_BUY,
             [negativeClassNames]: ({
               data,
             }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_SELL,
+              data: OrderFieldsFragment;
+            }) => data?.side === Schema.Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['size'];
+            value?: OrderFieldsFragment['size'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
             const prefix = data
-              ? data.side === Side.SIDE_BUY
+              ? data.side === Schema.Side.SIDE_BUY
                 ? '+'
                 : '-'
               : '';
@@ -166,8 +162,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
           }: ValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['type'];
-          }) => OrderTypeMapping[value as OrderType]}
+            value?: OrderFieldsFragment['type'];
+          }) => OrderTypeMapping[value as Schema.OrderType]}
         />
         <AgGridColumn
           field="status"
@@ -175,12 +171,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['status'];
+            value?: OrderFieldsFragment['status'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            if (value === OrderStatus.STATUS_REJECTED) {
+            if (value === Schema.OrderStatus.STATUS_REJECTED) {
               return `${OrderStatusMapping[value]}: ${
                 data.rejectionReason &&
                 OrderRejectionReasonMapping[data.rejectionReason]
@@ -198,7 +194,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
             value,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['remaining'];
+            value?: OrderFieldsFragment['remaining'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
@@ -221,13 +217,13 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['price'];
+            value?: OrderFieldsFragment['price'];
           }) => {
             if (
               value === undefined ||
               !data ||
               !data.market ||
-              data.type === OrderType.TYPE_MARKET
+              data.type === Schema.OrderType.TYPE_MARKET
             ) {
               return '-';
             }
@@ -240,13 +236,13 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['timeInForce'];
+            value?: OrderFieldsFragment['timeInForce'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
             if (
-              value === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+              value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
               data.expiresAt
             ) {
               const expiry = getDateTimeFormat().format(
@@ -263,7 +259,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['createdAt'];
+            value?: OrderFieldsFragment['createdAt'];
           }) => {
             return value ? getDateTimeFormat().format(new Date(value)) : value;
           }}
@@ -273,7 +269,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['updatedAt'];
+            value?: OrderFieldsFragment['updatedAt'];
           }) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
@@ -326,64 +322,64 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
 /**
  * Check if an order is active to determine if it can be edited or cancelled
  */
-const isOrderActive = (status: OrderStatus) => {
+const isOrderActive = (status: Schema.OrderStatus) => {
   return ![
-    OrderStatus.STATUS_CANCELLED,
-    OrderStatus.STATUS_REJECTED,
-    OrderStatus.STATUS_EXPIRED,
-    OrderStatus.STATUS_FILLED,
-    OrderStatus.STATUS_STOPPED,
-    OrderStatus.STATUS_PARTIALLY_FILLED,
+    Schema.OrderStatus.STATUS_CANCELLED,
+    Schema.OrderStatus.STATUS_REJECTED,
+    Schema.OrderStatus.STATUS_EXPIRED,
+    Schema.OrderStatus.STATUS_FILLED,
+    Schema.OrderStatus.STATUS_STOPPED,
+    Schema.OrderStatus.STATUS_PARTIALLY_FILLED,
   ].includes(status);
 };
 
-const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
+const getEditDialogTitle = (status?: Schema.OrderStatus): string | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_ACTIVE:
+    case Schema.OrderStatus.STATUS_ACTIVE:
       return t('Order updated');
-    case OrderStatus.STATUS_FILLED:
+    case Schema.OrderStatus.STATUS_FILLED:
       return t('Order filled');
-    case OrderStatus.STATUS_PARTIALLY_FILLED:
+    case Schema.OrderStatus.STATUS_PARTIALLY_FILLED:
       return t('Order partially filled');
-    case OrderStatus.STATUS_PARKED:
+    case Schema.OrderStatus.STATUS_PARKED:
       return t('Order parked');
-    case OrderStatus.STATUS_STOPPED:
+    case Schema.OrderStatus.STATUS_STOPPED:
       return t('Order stopped');
-    case OrderStatus.STATUS_EXPIRED:
+    case Schema.OrderStatus.STATUS_EXPIRED:
       return t('Order expired');
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
-    case OrderStatus.STATUS_REJECTED:
+    case Schema.OrderStatus.STATUS_REJECTED:
       return t('Order rejected');
     default:
       return t('Order amendment failed');
   }
 };
 
-const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
+const getCancelDialogIntent = (status?: Schema.OrderStatus): Intent | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return Intent.Success;
     default:
       return Intent.Danger;
   }
 };
 
-const getCancelDialogTitle = (status?: OrderStatus): string | undefined => {
+const getCancelDialogTitle = (status?: Schema.OrderStatus): string | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
     default:
       return t('Order cancellation failed');

@@ -14,12 +14,12 @@ import {
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import type { OrderFields } from '../order-data-provider';
+import type { OrderFieldsFragment } from '../../';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderFields;
+  order: OrderFieldsFragment;
   onSubmit: (fields: FormFields) => void;
 }
 

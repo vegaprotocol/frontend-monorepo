@@ -1,11 +1,12 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import { OrderBusEventDocument } from './__generated__/Orders';
 import type {
-  OrderEvent,
-  OrderEventVariables,
-  OrderEvent_busEvents_event_Order,
-} from './';
+  OrderBusEventSubscription,
+  OrderBusEventSubscriptionVariables,
+  OrderFieldsFragment,
+} from './__generated__/Orders'
+
 import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderEvent = () => {
@@ -16,11 +17,11 @@ export const useOrderEvent = () => {
     (
       id: string,
       partyId: string,
-      callback: (order: OrderEvent_busEvents_event_Order) => void
+      callback: (order: OrderFieldsFragment) => void
     ) => {
       subRef.current = client
-        .subscribe<OrderEvent, OrderEventVariables>({
-          query: ORDER_EVENT_SUB,
+        .subscribe<OrderBusEventSubscription, OrderBusEventSubscriptionVariables>({
+          query: OrderBusEventDocument,
           variables: { partyId },
         })
         .subscribe(({ data }) => {
