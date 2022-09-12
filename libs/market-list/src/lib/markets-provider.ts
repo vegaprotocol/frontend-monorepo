@@ -22,7 +22,6 @@ export type Market = Markets_marketsConnection_edges_node;
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketFields on Market {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     state
