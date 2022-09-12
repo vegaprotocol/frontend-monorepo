@@ -201,7 +201,7 @@ const TableTitle = ({ children }: { children: ReactNode }) => {
     <thead>
       <tr>
         <th className="font-normal text-left">
-          <h3 className="text-lg">{children}</h3>
+          <h3 className="text-lg ml-2">{children}</h3>
         </th>
       </tr>
     </thead>

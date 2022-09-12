@@ -56,7 +56,7 @@ export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
   if (valueFormatted && valueFormatted[1]) {
     return (
       <div className="leading-tight">
-        <div>{valueFormatted[0]}</div>
+        <div className="font-semibold">{valueFormatted[0]}</div>
         <div>{valueFormatted[1]}</div>
       </div>
     );
