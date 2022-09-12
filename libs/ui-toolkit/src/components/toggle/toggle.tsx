@@ -37,7 +37,7 @@ export const Toggle = ({
     'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
     'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
-    'hover:bg-neutral-200 hover:rounded-full'
+    'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full'
   );
 
   return (
