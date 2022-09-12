@@ -18,6 +18,11 @@ fragment WithdrawalFields on Withdrawal {
   pendingOnForeignChain @client
 }
 
+fragment PendingWithdrawal on Withdrawal {
+  pendingOnForeignChain @client
+  txHash
+}
+
 query Withdrawals($partyId: ID!) {
   party(id: $partyId) {
     id

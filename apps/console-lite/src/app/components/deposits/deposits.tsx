@@ -1,11 +1,12 @@
 import { gql, useQuery } from '@apollo/client';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
+import { getNodes, t } from '@vegaprotocol/react-helpers';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
-import type { Deposits } from './__generated__/Deposits';
+import type { Deposits, Deposits_assetsConnection_edges_node } from './__generated__/Deposits';
 
 const DEPOSITS_QUERY = gql`
   query Deposits {
@@ -40,7 +41,7 @@ export const DepositContainer = () => {
     skip: !keypair?.pub,
   });
 
-  const assets = getEnabledAssets(data);
+  const assets = getNodes<Deposits_assetsConnection_edges_node>(data, (node) => node?.status === AssetStatus.STATUS_ENABLED);
 
   return (
     <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>

@@ -1,4 +1,17 @@
-query WithdrawPageQuery($partyId: ID!) {
+fragment AssetFields on Asset {
+  id
+  symbol
+  name
+  decimals
+  status
+  source {
+    ... on ERC20 {
+      contractAddress
+    }
+  }
+}
+
+query WithdrawForm($partyId: ID!) {
   party(id: $partyId) {
     id
     withdrawals {
@@ -17,15 +30,7 @@ query WithdrawPageQuery($partyId: ID!) {
   assetsConnection {
     edges {
       node {
-        id
-        symbol
-        name
-        decimals
-        source {
-          ... on ERC20 {
-            contractAddress
-          }
-        }
+        ...AssetFields
       }
     }
   }

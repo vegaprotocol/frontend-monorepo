@@ -17,64 +17,6 @@ import type {
   Withdrawals_party_withdrawalsConnection_edges,
 } from './__generated__/Withdrawals';
 
-const WITHDRAWAL_FRAGMENT = gql`
-  fragment WithdrawalFields on Withdrawal {
-    id
-    status
-    amount
-    asset {
-      id
-      name
-      symbol
-      decimals
-      status
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-      }
-    }
-    createdTimestamp
-    withdrawnTimestamp
-    txHash
-    details {
-      ... on Erc20WithdrawalDetails {
-        receiverAddress
-      }
-    }
-    pendingOnForeignChain @client
-  }
-`;
-
-export const WITHDRAWALS_QUERY = gql`
-  ${WITHDRAWAL_FRAGMENT}
-  query Withdrawals($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      withdrawalsConnection {
-        edges {
-          node {
-            ...WithdrawalFields
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const WITHDRAWAL_BUS_EVENT_SUB = gql`
-  ${WITHDRAWAL_FRAGMENT}
-  subscription WithdrawalEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Withdrawal]) {
-      event {
-        ... on Withdrawal {
-          ...WithdrawalFields
-        }
-      }
-    }
-  }
-`;
-
 export const useWithdrawals = () => {
   const { keypair } = useVegaWallet();
   const { data, loading, error, subscribeToMore } = useQuery<

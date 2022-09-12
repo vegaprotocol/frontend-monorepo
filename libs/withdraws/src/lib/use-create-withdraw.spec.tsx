@@ -2,10 +2,12 @@ import { act, renderHook } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
-import { ERC20_APPROVAL_QUERY } from './queries';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
-import type { Erc20Approval } from './__generated__/Erc20Approval';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
+import { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
+import { WithdrawalEventDocument } from './__generated__/Withdrawal';
+import type { WithdrawalEventSubscription, WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import {
   initialState,
@@ -14,12 +16,6 @@ import {
 } from '@vegaprotocol/wallet';
 import { waitFor } from '@testing-library/react';
 import { determineId } from '@vegaprotocol/react-helpers';
-import type {
-  WithdrawalEvent,
-  WithdrawalEvent_busEvents_event_Withdrawal,
-} from './__generated__/WithdrawalEvent';
-import { WITHDRAWAL_BUS_EVENT_SUB } from './use-withdrawals';
-import { WithdrawalStatus } from '@vegaprotocol/types';
 import { Schema } from '@vegaprotocol/types';
 
 function setup(
@@ -54,9 +50,9 @@ afterAll(() => {
 const pubkey = '0x123';
 let mockSend: jest.Mock;
 let withdrawalInput: WithdrawalArgs;
-let withdrawalEvent: WithdrawalEvent_busEvents_event_Withdrawal;
-let mockERC20Approval: MockedResponse<Erc20Approval>;
-let mockWithdrawalEvent: MockedResponse<WithdrawalEvent>;
+let withdrawalEvent: WithdrawalFieldsFragment;
+let mockERC20Approval: MockedResponse<Erc20ApprovalQuery>;
+let mockWithdrawalEvent: MockedResponse<WithdrawalEventSubscription>;
 
 beforeEach(() => {
   mockSend = jest
@@ -66,19 +62,13 @@ beforeEach(() => {
     );
   withdrawalEvent = {
     id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
-    status: WithdrawalStatus.STATUS_OPEN,
+    status: Schema.WithdrawalStatus.STATUS_OPEN,
     amount: '100',
     asset: {
       __typename: 'Asset',
       id: 'asset-id',
-      name: 'asset-name',
       symbol: 'asset-symbol',
       decimals: 2,
-      status: Schema.AssetStatus.STATUS_ENABLED,
-      source: {
-        __typename: 'ERC20',
-        contractAddress: '0x123',
-      },
     },
     createdTimestamp: '2022-07-05T14:25:47.815283706Z',
     withdrawnTimestamp: '2022-07-05T14:25:47.815283706Z',
@@ -98,7 +88,7 @@ beforeEach(() => {
   };
   mockERC20Approval = {
     request: {
-      query: ERC20_APPROVAL_QUERY,
+      query: Erc20ApprovalDocument,
       variables: { withdrawalId: derivedWithdrawalId },
     },
     result: {
@@ -119,7 +109,7 @@ beforeEach(() => {
   };
   mockWithdrawalEvent = {
     request: {
-      query: WITHDRAWAL_BUS_EVENT_SUB,
+      query: WithdrawalEventDocument,
       variables: { partyId: pubkey },
     },
     result: {

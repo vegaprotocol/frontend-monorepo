@@ -1,13 +1,9 @@
 import type { Asset, AssetWithStatus } from '@vegaprotocol/react-helpers';
-import {
-  AccountType,
-  AssetStatus,
-  WithdrawalStatus,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { Account } from './types';
-import type { Withdrawals_party_withdrawalsConnection_edges_node } from './__generated__/Withdrawals';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 export const generateAsset = (override?: PartialDeep<Asset>) => {
   const defaultAsset: AssetWithStatus = {
@@ -16,7 +12,7 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 5,
-    status: AssetStatus.STATUS_ENABLED,
+    status: Schema.AssetStatus.STATUS_ENABLED,
     source: {
       __typename: 'ERC20',
       contractAddress: 'contract-address',
@@ -27,7 +23,7 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
 
 export const generateAccount = (override?: PartialDeep<Account>) => {
   const defaultAccount: Account = {
-    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000',
     asset: {
       id: 'asset-id',
@@ -38,13 +34,13 @@ export const generateAccount = (override?: PartialDeep<Account>) => {
 };
 
 export const generateWithdrawal = (
-  override?: PartialDeep<Withdrawals_party_withdrawalsConnection_edges_node>
-): Withdrawals_party_withdrawalsConnection_edges_node => {
+  override?: PartialDeep<WithdrawalFieldsFragment>
+): WithdrawalFieldsFragment => {
   return merge(
     {
       __typename: 'Withdrawal',
       id: 'withdrawal-id',
-      status: WithdrawalStatus.STATUS_OPEN,
+      status: Schema.WithdrawalStatus.STATUS_OPEN,
       amount: '100',
       asset: {
         __typename: 'Asset',
@@ -52,7 +48,7 @@ export const generateWithdrawal = (
         id: 'asset-id',
         symbol: 'asset-symbol',
         decimals: 2,
-        status: AssetStatus.STATUS_ENABLED,
+        status: Schema.AssetStatus.STATUS_ENABLED,
         source: {
           __typename: 'ERC20',
           contractAddress: '0x123',

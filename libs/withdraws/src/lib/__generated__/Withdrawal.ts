@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WithdrawalFieldsFragment = { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: string, withdrawnTimestamp?: string | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
 
+export type PendingWithdrawalFragment = { __typename?: 'Withdrawal', pendingOnForeignChain: boolean, txHash?: string | null };
+
 export type WithdrawalsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -38,6 +40,12 @@ export const WithdrawalFieldsFragmentDoc = gql`
     }
   }
   pendingOnForeignChain @client
+}
+    `;
+export const PendingWithdrawalFragmentDoc = gql`
+    fragment PendingWithdrawal on Withdrawal {
+  pendingOnForeignChain @client
+  txHash
 }
     `;
 export const WithdrawalsDocument = gql`
