@@ -18,8 +18,6 @@ Cypress.Commands.add('vega_wallet_import', () => {
     .its('stdout')
     .then((output) => {
       cy.log(output);
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(7000);
     });
 });
 
