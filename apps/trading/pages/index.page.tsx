@@ -22,6 +22,7 @@ export function Index() {
 
       if (marketId) {
         replace(`/markets/${marketId}`);
+        update({ marketId });
       }
       // Fallback to the markets list page
       else {

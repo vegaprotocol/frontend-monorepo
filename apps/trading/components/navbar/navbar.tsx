@@ -27,7 +27,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
             <VLogo className="w-6 h-6 fill-white" />
           </a>
         </Link>
-        <NetworkSwitcher />
+        <NetworkSwitcher fixedBg="dark" />
       </div>
       <nav className="flex items-center">
         {[
