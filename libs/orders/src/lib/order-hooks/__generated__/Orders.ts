@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } } } };
 
+export type OrderConnectionFieldsFragment = { __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } } } } };
+
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
@@ -58,6 +60,14 @@ export const OrderFieldsFragmentDoc = gql`
   updatedAt
 }
     `;
+export const OrderConnectionFieldsFragmentDoc = gql`
+    fragment OrderConnectionFields on OrderEdge {
+  node {
+    ...OrderFields
+  }
+  cursor
+}
+    ${OrderFieldsFragmentDoc}`;
 export const OrderBusEventFieldsFragmentDoc = gql`
     fragment OrderBusEventFields on Order {
   type
@@ -84,10 +94,7 @@ export const OrdersDocument = gql`
     id
     ordersConnection(pagination: $pagination) {
       edges {
-        node {
-          ...OrderFields
-        }
-        cursor
+        ...OrderConnectionFields
       }
       pageInfo {
         startCursor
@@ -98,7 +105,7 @@ export const OrdersDocument = gql`
     }
   }
 }
-    ${OrderFieldsFragmentDoc}`;
+    ${OrderConnectionFieldsFragmentDoc}`;
 
 /**
  * __useOrdersQuery__

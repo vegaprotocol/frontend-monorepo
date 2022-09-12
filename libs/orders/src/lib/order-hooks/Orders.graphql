@@ -26,15 +26,19 @@ fragment OrderFields on Order {
   updatedAt
 }
 
+fragment OrderConnectionFields on OrderEdge {
+  node {
+    ...OrderFields
+  }
+  cursor
+}
+
 query Orders($partyId: ID!, $pagination: Pagination) {
   party(id: $partyId) {
     id
     ordersConnection(pagination: $pagination) {
       edges {
-        node {
-          ...OrderFields
-        }
-        cursor
+        ...OrderConnectionFields
       }
       pageInfo {
         startCursor

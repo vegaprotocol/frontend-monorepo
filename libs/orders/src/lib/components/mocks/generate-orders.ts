@@ -1,22 +1,18 @@
 import merge from 'lodash/merge';
-import {
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
-import type { Orders_party_ordersConnection_edges_node } from '../';
+import { Schema } from '@vegaprotocol/types';
+import type { OrderFieldsFragment } from '../../order-hooks/__generated__/Orders'
 import type { PartialDeep } from 'type-fest';
 
 export const generateOrder = (
-  partialOrder?: PartialDeep<Orders_party_ordersConnection_edges_node>
+  partialOrder?: PartialDeep<OrderFieldsFragment>
 ) => {
-  const order: Orders_party_ordersConnection_edges_node = {
+  const order: OrderFieldsFragment = {
     __typename: 'Order',
     id: 'order-id2',
     market: {
       __typename: 'Market',
       id: 'market-id',
+      name: 'Market name',
       decimalPlaces: 2,
       positionDecimalPlaces: 2,
       tradableInstrument: {
@@ -30,12 +26,12 @@ export const generateOrder = (
       },
     },
     size: '10',
-    type: OrderType.TYPE_MARKET,
-    status: OrderStatus.STATUS_ACTIVE,
-    side: Side.SIDE_BUY,
+    type: Schema.OrderType.TYPE_MARKET,
+    status: Schema.OrderStatus.STATUS_ACTIVE,
+    side: Schema.Side.SIDE_BUY,
     remaining: '5',
     price: '',
-    timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+    timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     expiresAt: null,
@@ -46,21 +42,21 @@ export const generateOrder = (
 
 export const limitOrder = generateOrder({
   id: 'limit-order',
-  type: OrderType.TYPE_LIMIT,
-  status: OrderStatus.STATUS_ACTIVE,
-  timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+  type: Schema.OrderType.TYPE_LIMIT,
+  status: Schema.OrderStatus.STATUS_ACTIVE,
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
   createdAt: new Date(2022, 3, 3).toISOString(),
   expiresAt: new Date(2022, 3, 5).toISOString(),
 });
 
 export const marketOrder = generateOrder({
   id: 'market-order',
-  type: OrderType.TYPE_MARKET,
-  status: OrderStatus.STATUS_ACTIVE,
+  type: Schema.OrderType.TYPE_MARKET,
+  status: Schema.OrderStatus.STATUS_ACTIVE,
 });
 
 export const generateMockOrders =
-  (): Orders_party_ordersConnection_edges_node[] => {
+  (): OrderFieldsFragment[] => {
     return [
       generateOrder({
         id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
@@ -79,12 +75,12 @@ export const generateMockOrders =
           },
         },
         size: '10',
-        type: OrderType.TYPE_LIMIT,
-        status: OrderStatus.STATUS_FILLED,
-        side: Side.SIDE_BUY,
+        type: Schema.OrderType.TYPE_LIMIT,
+        status: Schema.OrderStatus.STATUS_FILLED,
+        side: Schema.Side.SIDE_BUY,
         remaining: '0',
         price: '20000000',
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         createdAt: new Date(2020, 1, 1).toISOString(),
       }),
       generateOrder({
@@ -104,12 +100,12 @@ export const generateMockOrders =
           },
         },
         size: '1',
-        type: OrderType.TYPE_LIMIT,
-        status: OrderStatus.STATUS_FILLED,
-        side: Side.SIDE_BUY,
+        type: Schema.OrderType.TYPE_LIMIT,
+        status: Schema.OrderStatus.STATUS_FILLED,
+        side: Schema.Side.SIDE_BUY,
         remaining: '0',
         price: '100',
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         createdAt: new Date().toISOString(),
       }),
       generateOrder({
@@ -129,18 +125,18 @@ export const generateMockOrders =
           },
         },
         size: '1',
-        type: OrderType.TYPE_LIMIT,
-        status: OrderStatus.STATUS_FILLED,
-        side: Side.SIDE_BUY,
+        type: Schema.OrderType.TYPE_LIMIT,
+        status: Schema.OrderStatus.STATUS_FILLED,
+        side: Schema.Side.SIDE_BUY,
         remaining: '0',
         price: '20000',
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         createdAt: new Date(2022, 5, 10).toISOString(),
       }),
     ];
   };
 
 export const generateOrdersArray =
-  (): Orders_party_ordersConnection_edges_node[] => {
+  (): OrderFieldsFragment[] => {
     return [marketOrder, limitOrder, ...generateMockOrders()];
   };

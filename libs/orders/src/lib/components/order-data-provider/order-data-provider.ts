@@ -1,5 +1,4 @@
 import produce from 'immer';
-import { gql } from '@apollo/client';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 import {
@@ -7,77 +6,17 @@ import {
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
+import { OrdersDocument, OrderEventDocument } from '../../order-hooks/__generated__/Orders';
 import type {
-  Orders,
-  Orders_party_ordersConnection_edges,
-  OrderSub,
-  OrderFields,
-} from '../';
-
-const ORDER_FRAGMENT = gql`
-  fragment OrderFields on Order {
-    id
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-        }
-      }
-    }
-    type
-    side
-    size
-    status
-    rejectionReason
-    price
-    timeInForce
-    remaining
-    expiresAt
-    createdAt
-    updatedAt
-  }
-`;
-
-export const ORDERS_QUERY = gql`
-  ${ORDER_FRAGMENT}
-  query Orders($partyId: ID!, $pagination: Pagination) {
-    party(id: $partyId) {
-      id
-      ordersConnection(pagination: $pagination) {
-        edges {
-          node {
-            ...OrderFields
-          }
-          cursor
-        }
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-          hasPreviousPage
-        }
-      }
-    }
-  }
-`;
-
-export const ORDERS_SUB = gql`
-  ${ORDER_FRAGMENT}
-  subscription OrderSub($partyId: ID!) {
-    orders(partyId: $partyId) {
-      ...OrderFields
-    }
-  }
-`;
+  OrdersQuery,
+  OrderEventSubscription,
+  OrderFieldsFragment,
+  OrderConnectionFieldsFragment,
+} from '../../order-hooks/__generated__/Orders';
 
 export const update = (
-  data: Orders_party_ordersConnection_edges[],
-  delta: OrderFields[]
+  data: OrderConnectionFieldsFragment[],
+  delta: OrderFieldsFragment[]
 ) => {
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
@@ -106,18 +45,18 @@ export const update = (
 };
 
 const getData = (
-  responseData: Orders
-): Orders_party_ordersConnection_edges[] | null =>
+  responseData: OrdersQuery
+): OrderConnectionFieldsFragment[] | null =>
   responseData?.party?.ordersConnection.edges || null;
 
-const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
+const getDelta = (subscriptionData: OrderEventSubscription) => subscriptionData.orders || [];
 
-const getPageInfo = (responseData: Orders): PageInfo | null =>
+const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection.pageInfo || null;
 
 export const ordersDataProvider = makeDataProvider({
-  query: ORDERS_QUERY,
-  subscriptionQuery: ORDERS_SUB,
+  query: OrdersDocument,
+  subscriptionQuery: OrderEventDocument,
   update,
   getData,
   getDelta,
