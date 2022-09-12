@@ -55,7 +55,7 @@ export const SelectMarketLandingTable = ({
           </tbody>
         </table>
       </div>
-      <Link href="/markets">{'Or view full market list'}</Link>
+      <Link className="ml-2" href="/markets">{'Or view full market list'}</Link>
     </>
   );
 };
@@ -228,6 +228,7 @@ export const SelectMarketDialog = ({
       open={dialogOpen}
       onChange={() => setDialogOpen(false)}
       size="small"
+      titleClassName="ml-2"
     >
       <LandingDialogContainer onSelect={onSelectMarket} />
     </Dialog>

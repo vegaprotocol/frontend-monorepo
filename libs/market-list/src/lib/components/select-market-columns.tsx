@@ -24,7 +24,7 @@ import type {
 } from '../__generated__/MarketList';
 import isNil from 'lodash/isNil';
 
-export const cellClassNames = 'px-0 py-1 first:text-left text-right';
+export const cellClassNames = 'px-0 py-1 first:text-left first:pl-2 last:pr-2 text-right';
 
 const FeesInfo = () => {
   return (
