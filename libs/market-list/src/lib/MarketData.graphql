@@ -26,16 +26,7 @@ fragment MarketListItem on Market {
     }
   }
   data {
-    market {
-      id
-      state
-      tradingMode
-    }
-    bestBidPrice
-    bestOfferPrice
-    markPrice
-    trigger
-    indicativeVolume
+    ...MarketDataFields
   }
   tradableInstrument {
     instrument {
@@ -72,7 +63,7 @@ query MarketList($interval: Interval!, $since: String!) {
   }
 }
 
-subscription MarketDataSub {
+subscription MarketDataEvent {
   marketData {
     ...MarketDataFields
   }
