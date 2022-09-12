@@ -37,7 +37,7 @@ export const SelectMarketLandingTable = ({
   return (
     <>
       <div
-        className="max-h-[60vh] overflow-x-auto"
+        className="max-h-[60vh] overflow-x-auto mb-3"
         data-testid="select-market-list"
       >
         <table className="text-sm relative h-full min-w-full whitespace-nowrap">
@@ -55,7 +55,9 @@ export const SelectMarketLandingTable = ({
           </tbody>
         </table>
       </div>
-      <Link className="ml-2" href="/markets">{'Or view full market list'}</Link>
+      <Link className="ml-2 mt-2" href="/markets">
+        {'Or view full market list'}
+      </Link>
     </>
   );
 };
