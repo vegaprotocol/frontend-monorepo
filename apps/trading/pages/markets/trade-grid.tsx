@@ -127,14 +127,14 @@ export const TradeMarketHeader = ({
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-600';
+  const itemHeading = 'text-neutral-500 dark:text-neutral-400';
   const { push } = useRouter();
 
   return (
-    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
+    <header className="w-screen px-4 border-b border-neutral-300 dark:border-neutral-600">
       <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4 mb-2 xl:mb-0">
+        <div>
           <SelectMarketPopover
             marketName={market.tradableInstrument.instrument.name}
             onSelect={onSelect}
@@ -142,7 +142,7 @@ export const TradeMarketHeader = ({
         </div>
         <div
           data-testid="market-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
+          className="flex flex-nowrap items-start mt-3 xl:flex-1 w-full overflow-x-auto text-xs "
         >
           <div className={itemClass}>
             <div className={itemHeading}>{t('Expiry')}</div>
@@ -273,7 +273,7 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={330}
               minSize={300}
             >
               <TradeGridChild>
@@ -295,7 +295,7 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={430}
               minSize={200}
             >
               <TradeGridChild>
@@ -313,7 +313,7 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="33%"
+          preferredSize="25%"
           minSize={50}
         >
           <TradeGridChild>
@@ -347,7 +347,10 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
     <section className="h-full">
       <AutoSizer>
         {({ width, height }) => (
-          <div style={{ width, height }} className="overflow-auto">
+          <div
+            style={{ width, height }}
+            className="overflow-auto border-[1px] dark:border-neutral-600"
+          >
             {children}
           </div>
         )}
@@ -395,7 +398,7 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-600">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('p-4 min-w-[100px] capitalize', {

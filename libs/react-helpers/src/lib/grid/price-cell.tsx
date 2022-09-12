@@ -26,7 +26,7 @@ export const PriceCell = React.memo(
         {valueSplit[0]}
         {valueSplit[1] ? decimalSeparator : null}
         {valueSplit[1] ? (
-          <span className="opacity-50">{valueSplit[1]}</span>
+          <span className="opacity-60">{valueSplit[1]}</span>
         ) : null}
       </span>
     );

@@ -133,7 +133,7 @@ const ButtonCell = ({
     <Button
       data-testid="close-position"
       onClick={() => onClick(data)}
-      size="sm"
+      size="xs"
     >
       {t('Close')}
     </Button>
@@ -181,7 +181,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
           valueGetter={({ node, data }: ValueGetterParams) => {
             return node?.rowPinned ? data?.notional : data?.openVolume;

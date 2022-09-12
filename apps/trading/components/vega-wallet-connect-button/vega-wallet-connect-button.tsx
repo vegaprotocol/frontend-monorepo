@@ -30,7 +30,7 @@ export const VegaWalletConnectButton = ({
     return (
       <DropdownMenu open={dropdownOpen}>
         <DropdownMenuTrigger
-          className="text-white"
+          className="text-white hover:!bg-neutral-700"
           data-testid="manage-vega-wallet"
           onClick={() => setDropdownOpen((curr) => !curr)}
         >

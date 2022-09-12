@@ -10,7 +10,7 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
+    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-600">
       <div className="xl:flex xl:gap-4  items-start">
         <div className="px-4 mb-2">{title}</div>
         <div
@@ -40,7 +40,7 @@ export const HeaderStat = ({
   description?: string | ReactNode;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-600';
   const itemHeading = 'text-neutral-400';
 
   return (

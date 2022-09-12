@@ -88,7 +88,7 @@ export const NetworkSwitcher = ({
     [setOpen, setAdvancedView]
   );
 
-  const dropdownTriggerClasses = classNames({
+  const dropdownTriggerClasses = classNames('hover:!bg-neutral-700', {
     'dark:text-white dark:bg-black text-black bg-white': !fixedBg,
     'text-black bg-white': fixedBg === 'light',
     'text-white bg-black': fixedBg === 'dark',
