@@ -47,7 +47,7 @@ it('Render correct columns', async () => {
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
     'Market',
-    'Amount',
+    'Size',
     'Mark price',
     'Entry price',
     'Leverage',

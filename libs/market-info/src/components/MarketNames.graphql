@@ -1,0 +1,20 @@
+query MarketNames {
+  markets {
+    id
+    name
+    state
+    tradableInstrument {
+      instrument {
+        code
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            quoteName
+          }
+        }
+      }
+    }
+  }
+}
