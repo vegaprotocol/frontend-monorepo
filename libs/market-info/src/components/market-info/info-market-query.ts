@@ -39,11 +39,6 @@ export const MARKET_INFO_QUERY = gql`
           }
         }
       }
-      riskFactors {
-        market
-        short
-        long
-      }
       data {
         market {
           id

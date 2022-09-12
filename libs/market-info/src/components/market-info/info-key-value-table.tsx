@@ -16,8 +16,7 @@ import { tooltipMapping } from './tooltip-mapping';
 
 interface RowProps {
   field: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: unknown;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
@@ -32,49 +31,48 @@ const Row = ({
   unformatted,
   assetSymbol = '',
 }: RowProps) => {
-  const isNumber = typeof value === 'number' || !isNaN(Number(value));
-  const isPrimitive = typeof value === 'string' || isNumber;
   const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
-  let formattedValue = value;
-  if (isNumber && !unformatted) {
-    if (decimalPlaces) {
-      formattedValue = `${addDecimalsFormatNumber(
-        value,
-        decimalPlaces
-      )} ${assetSymbol}`;
-    } else if (asPercentage && value) {
-      formattedValue = formatNumberPercentage(new BigNumber(value).times(100));
-    } else {
-      formattedValue = `${formatNumber(Number(value))} ${assetSymbol}`;
+
+  const getFormattedValue = (value: unknown) => {
+    if (typeof value !== 'string' && typeof value !== 'number') return null;
+    if (unformatted || isNaN(Number(value))) {
+      return value;
     }
-  }
-  if (isPrimitive) {
-    return (
-      <KeyValueTableRow
-        key={field}
-        inline={isPrimitive}
-        noBorder={true}
-        dtClassName={className}
-        ddClassName={className}
-      >
-        <Tooltip description={tooltipMapping[field]} align="start">
-          <div tabIndex={-1}>{startCase(t(field))}</div>
-        </Tooltip>
-        <span style={{ wordBreak: 'break-word' }}>{formattedValue}</span>
-      </KeyValueTableRow>
-    );
-  }
-  return null;
+    if (decimalPlaces) {
+      return `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`;
+    }
+    if (asPercentage) {
+      return formatNumberPercentage(new BigNumber(value).times(100));
+    }
+    return `${formatNumber(Number(value))} ${assetSymbol}`;
+  };
+
+  const formattedValue: string | number | null = getFormattedValue(value);
+
+  if (!formattedValue) return null;
+  return (
+    <KeyValueTableRow
+      key={field}
+      inline={true}
+      noBorder={true}
+      dtClassName={className}
+      ddClassName={className}
+    >
+      <Tooltip description={tooltipMapping[field]} align="start">
+        <div tabIndex={-1}>{startCase(t(field))}</div>
+      </Tooltip>
+      <span style={{ wordBreak: 'break-word' }}>{formattedValue}</span>
+    </KeyValueTableRow>
+  );
 };
 
 export interface MarketInfoTableProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: unknown;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
   omits?: string[];
-  link?: ReactNode;
+  children?: ReactNode;
   assetSymbol?: string;
 }
 
@@ -84,9 +82,12 @@ export const MarketInfoTable = ({
   asPercentage,
   unformatted,
   omits = ['__typename'],
-  link,
+  children,
   assetSymbol,
 }: MarketInfoTableProps) => {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
   return (
     <>
       <KeyValueTable>
@@ -104,7 +105,7 @@ export const MarketInfoTable = ({
             />
           ))}
       </KeyValueTable>
-      {link}
+      <div className="flex flex-col gap-2">{children}</div>
     </>
   );
 };

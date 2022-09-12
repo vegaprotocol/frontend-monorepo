@@ -5,6 +5,10 @@ import { mockTradingPage } from '../support/trading';
 describe('home', () => {
   const selectMarketOverlay = 'select-market-list';
 
+  beforeEach('load homepage', () => {
+    cy.visit('/');
+  });
+
   describe('default market found', () => {
     it('redirects to a default market with the landing dialog open', () => {
       cy.mockGQL((req) => {
@@ -12,6 +16,8 @@ describe('home', () => {
         mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
       cy.visit('/');
+      cy.wait('@Market');
+
       cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
 
       // Overlay should be shown

@@ -28,7 +28,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
             <Vega className="w-13" />
           </a>
         </Link>
-        <NetworkSwitcher />
+        <NetworkSwitcher fixedBg="dark" />
       </div>
       <nav className="flex items-center">
         {[

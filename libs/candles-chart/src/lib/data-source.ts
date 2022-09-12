@@ -1,16 +1,21 @@
 import type { ApolloClient } from '@apollo/client';
-import { gql } from '@apollo/client';
 import type { Candle, DataSource } from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
 
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import type { Chart, ChartVariables } from './__generated__/Chart';
-import type { Candles, CandlesVariables } from './__generated__/Candles';
-import type { CandleFields } from './__generated__/CandleFields';
+import { ChartDocument } from './__generated__/Chart';
+import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
+import {
+  CandlesDocument,
+  CandlesEventsDocument,
+} from './__generated__/Candles';
 import type {
-  CandlesSub,
-  CandlesSubVariables,
-} from './__generated__/CandlesSub';
+  CandlesQuery,
+  CandlesQueryVariables,
+  CandleFieldsFragment,
+  CandlesEventsSubscription,
+  CandlesEventsSubscriptionVariables,
+} from './__generated__/Candles';
 import type { Subscription } from 'zen-observable-ts';
 import { Interval } from '@vegaprotocol/types';
 
@@ -22,61 +27,6 @@ const INTERVAL_TO_PENNANT_MAP = {
   [PennantInterval.I6H]: Interval.INTERVAL_I6H,
   [PennantInterval.I1D]: Interval.INTERVAL_I1D,
 };
-
-export const CANDLE_FRAGMENT = gql`
-  fragment CandleFields on Candle {
-    datetime
-    high
-    low
-    open
-    close
-    volume
-  }
-`;
-
-export const CANDLES_QUERY = gql`
-  ${CANDLE_FRAGMENT}
-  query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-        }
-      }
-      candles(interval: $interval, since: $since) {
-        ...CandleFields
-      }
-    }
-  }
-`;
-
-export const CANDLES_SUB = gql`
-  ${CANDLE_FRAGMENT}
-  subscription CandlesSub($marketId: ID!, $interval: Interval!) {
-    candles(marketId: $marketId, interval: $interval) {
-      ...CandleFields
-    }
-  }
-`;
-
-const CHART_QUERY = gql`
-  query Chart($marketId: ID!) {
-    market(id: $marketId) {
-      decimalPlaces
-      data {
-        priceMonitoringBounds {
-          minValidPrice
-          maxValidPrice
-          referencePrice
-        }
-      }
-    }
-  }
-`;
 
 const defaultConfig = {
   decimalPlaces: 5,
@@ -131,13 +81,15 @@ export class VegaDataSource implements DataSource {
    */
   async onReady() {
     try {
-      const { data } = await this.client.query<Chart, ChartVariables>({
-        query: CHART_QUERY,
-        variables: {
-          marketId: this.marketId,
-        },
-        fetchPolicy: 'no-cache',
-      });
+      const { data } = await this.client.query<ChartQuery, ChartQueryVariables>(
+        {
+          query: ChartDocument,
+          variables: {
+            marketId: this.marketId,
+          },
+          fetchPolicy: 'no-cache',
+        }
+      );
 
       if (data && data.market && data.market.data) {
         this._decimalPlaces = data.market.decimalPlaces;
@@ -178,8 +130,11 @@ export class VegaDataSource implements DataSource {
    */
   async query(interval: PennantInterval, from: string) {
     try {
-      const { data } = await this.client.query<Candles, CandlesVariables>({
-        query: CANDLES_QUERY,
+      const { data } = await this.client.query<
+        CandlesQuery,
+        CandlesQueryVariables
+      >({
+        query: CandlesDocument,
         variables: {
           marketId: this.marketId,
           interval: INTERVAL_TO_PENNANT_MAP[interval],
@@ -192,7 +147,7 @@ export class VegaDataSource implements DataSource {
         const decimalPlaces = data.market.decimalPlaces;
 
         const candles = data.market.candles
-          .filter((d): d is CandleFields => d !== null)
+          .filter((d): d is CandleFieldsFragment => d !== null)
           .map((d) => parseCandle(d, decimalPlaces));
 
         return candles;
@@ -211,8 +166,11 @@ export class VegaDataSource implements DataSource {
     interval: PennantInterval,
     onSubscriptionData: (data: Candle) => void
   ) {
-    const res = this.client.subscribe<CandlesSub, CandlesSubVariables>({
-      query: CANDLES_SUB,
+    const res = this.client.subscribe<
+      CandlesEventsSubscription,
+      CandlesEventsSubscriptionVariables
+    >({
+      query: CandlesEventsDocument,
       variables: {
         marketId: this.marketId,
         interval: INTERVAL_TO_PENNANT_MAP[interval],
@@ -236,7 +194,10 @@ export class VegaDataSource implements DataSource {
   }
 }
 
-function parseCandle(candle: CandleFields, decimalPlaces: number): Candle {
+function parseCandle(
+  candle: CandleFieldsFragment,
+  decimalPlaces: number
+): Candle {
   return {
     date: new Date(candle.datetime),
     high: Number(addDecimal(candle.high, decimalPlaces)),

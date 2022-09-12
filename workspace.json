@@ -16,6 +16,7 @@
     "governance": "libs/governance",
     "liquidity": "libs/liquidity",
     "market-depth": "libs/market-depth",
+    "market-info": "libs/market-info",
     "market-list": "libs/market-list",
     "network-info": "libs/network-info",
     "network-stats": "libs/network-stats",

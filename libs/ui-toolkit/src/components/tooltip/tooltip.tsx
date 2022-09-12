@@ -8,6 +8,7 @@ import {
   Arrow,
   Portal,
 } from '@radix-ui/react-tooltip';
+import type { ITooltipParams } from 'ag-grid-community';
 
 export interface TooltipProps {
   children: React.ReactElement;
@@ -56,3 +57,11 @@ export const Tooltip = ({
   ) : (
     children
   );
+
+export const TooltipCellComponent = (props: ITooltipParams) => {
+  return (
+    <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
+      {props.value}
+    </p>
+  );
+};
