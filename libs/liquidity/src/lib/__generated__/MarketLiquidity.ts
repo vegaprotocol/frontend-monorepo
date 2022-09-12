@@ -122,6 +122,10 @@ export interface MarketLiquidity_market_tradableInstrument_instrument {
    */
   code: string;
   /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
   product: MarketLiquidity_market_tradableInstrument_instrument_product;
@@ -204,14 +208,14 @@ export interface MarketLiquidity_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )

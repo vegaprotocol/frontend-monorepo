@@ -4,6 +4,7 @@ import { mockTradingPage } from '../support/trading';
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
+const link = 'link';
 const externalLink = 'external-link';
 
 describe('market info is displayed', () => {
@@ -85,13 +86,6 @@ describe('market info is displayed', () => {
     validateMarketDataRow(4, 'Sector', 'crypto');
   });
 
-  it('risk factors displayed', () => {
-    cy.getByTestId(marketTitle).contains('Risk factors').click();
-
-    validateMarketDataRow(0, 'Short', '0.008571790367285281');
-    validateMarketDataRow(1, 'Long', '0.008508132993273576');
-  });
-
   it('risk model displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk model').click();
 
@@ -127,17 +121,13 @@ describe('market info is displayed', () => {
   });
 
   it('liquidity displayed', () => {
-    cy.getByTestId('accordion-toggle').eq(14).click();
+    cy.getByTestId('accordion-toggle').eq(13).click();
 
     validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
     validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
 
-    cy.getByTestId(externalLink).should(
-      'have.attr',
-      'href',
-      '/liquidity/market-0'
-    );
+    cy.getByTestId(link).should('have.text', 'View liquidity provision table');
   });
 
   it('oracle displayed', () => {
@@ -148,16 +138,6 @@ describe('market info is displayed', () => {
       1,
       'Trading Termination Property',
       'termination.BTC.value'
-    );
-    validateMarketDataRow(
-      2,
-      'Price Oracle',
-      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
-    );
-    validateMarketDataRow(
-      3,
-      'Termination Oracle',
-      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
     );
 
     cy.getByTestId(externalLink)
