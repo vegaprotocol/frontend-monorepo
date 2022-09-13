@@ -7,9 +7,8 @@ import React, {
   useMemo,
 } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import { gql, useQuery } from '@apollo/client';
 import classNames from 'classnames';
-import type { DealTicketQuery_market } from './';
+import type { DealTicketQuery } from '../__generated___/DealTicket';
 import {
   ButtonLink,
   Icon,
@@ -22,40 +21,15 @@ import {
   useScreenDimensions,
   useOutsideClick,
 } from '@vegaprotocol/react-helpers';
-import type {
-  MarketNames,
-  MarketNames_markets,
-} from './__generated__/MarketNames';
 import { IconNames } from '@blueprintjs/icons';
-import { MarketState } from '@vegaprotocol/types';
-
-export const MARKET_NAMES_QUERY = gql`
-  query MarketNames {
-    markets {
-      id
-      state
-      tradableInstrument {
-        instrument {
-          code
-          name
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              quoteName
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { Schema } from '@vegaprotocol/types';
+import { useMarketNamesQuery } from '@vegaprotocol/market-info';
+import type { MarketNamesFieldsFragment } from '@vegaprotocol/market-info';
 
 interface Props {
-  market: DealTicketQuery_market;
+  market: DealTicketQuery['market'];
   setMarket: (marketId: string) => void;
-  ItemRenderer?: React.FC<{ market: MarketNames_markets; isMobile?: boolean }>;
+  ItemRenderer?: React.FC<{ market: MarketNamesFieldsFragment; isMobile?: boolean }>;
 }
 
 function escapeRegExp(str: string) {
@@ -68,16 +42,16 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const arrowButtonRef = useRef<HTMLButtonElement | null>(null);
   const [skip, setSkip] = useState(true);
-  const [results, setResults] = useState<MarketNames_markets[]>([]);
+  const [results, setResults] = useState<MarketNamesFieldsFragment[]>([]);
   const [showPane, setShowPane] = useState(false);
   const [lookup, setLookup] = useState(
-    market.tradableInstrument.instrument.name || ''
+    market?.tradableInstrument.instrument.name || ''
   );
   const [dialogContent, setDialogContent] = useState<React.ReactNode | null>(
     null
   );
 
-  const { data, loading, error } = useQuery<MarketNames>(MARKET_NAMES_QUERY, {
+  const { data, loading, error } = useMarketNamesQuery({
     skip,
   });
 
@@ -104,10 +78,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleMarketSelect = useCallback(
-    (market: {
-      id: string;
-      tradableInstrument: { instrument: { name: string } };
-    }) => {
+    (market: MarketNamesFieldsFragment) => {
       setLookup(market.tradableInstrument.instrument.name);
       setShowPane(false);
       setMarket(market.id);
@@ -119,7 +90,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleItemKeyDown = useCallback(
     (
       event: React.KeyboardEvent,
-      market: MarketNames_markets,
+      market: MarketNamesFieldsFragment,
       index: number
     ) => {
       switch (event.key) {
@@ -143,11 +114,15 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
         case 'Enter':
           event.preventDefault();
-          handleMarketSelect(market);
+          if (market) {
+            handleMarketSelect(market);
+          }
           break;
         default:
           setShowPane(false);
-          setLookup(market.tradableInstrument.instrument.name);
+          if (market && market.tradableInstrument) {
+            setLookup(market.tradableInstrument.instrument.name);
+          }
       }
     },
     [results, handleMarketSelect]
@@ -163,7 +138,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleOnBlur = useCallback(() => {
-    if (!lookup && !showPane) {
+    if (!lookup && market && !showPane) {
       setLookup(market.tradableInstrument.instrument.name);
     }
   }, [market, lookup, showPane, setLookup]);
@@ -177,7 +152,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleDialogOnchange = useCallback(
     (isOpen: boolean) => {
       setShowPane(isOpen);
-      if (!isOpen) {
+      if (!isOpen && market) {
         setLookup(lookup || market.tradableInstrument.instrument.name);
         inputRef.current?.focus();
       }
@@ -186,7 +161,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       setShowPane,
       lookup,
       setLookup,
-      market.tradableInstrument.instrument.name,
+      market?.tradableInstrument.instrument.name,
       inputRef,
     ]
   );
@@ -237,14 +212,14 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>
           )}
           <div ref={contRef} className="w-full">
-            {results.map((market, i) => (
+            {results?.map((market, i) => (
               <div
                 role="button"
                 tabIndex={0}
                 key={market.id}
                 className="bg-white dark:bg-black cursor-pointer px-4 py-2"
                 onClick={() => handleMarketSelect(market)}
-                onKeyDown={(e) => handleItemKeyDown(e, market, i)}
+                onKeyDown={(e) => market && handleItemKeyDown(e, market, i)}
               >
                 {ItemRenderer ? (
                   <ItemRenderer market={market} />
@@ -275,8 +250,8 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   useEffect(() => {
     setResults(
       data?.markets?.filter(
-        (item: MarketNames_markets) =>
-          item.state === MarketState.STATE_ACTIVE &&
+        (item: MarketNamesFieldsFragment) =>
+          item.state === Schema.MarketState.STATE_ACTIVE &&
           item.tradableInstrument.instrument.name.match(
             new RegExp(escapeRegExp(lookup), 'i')
           )

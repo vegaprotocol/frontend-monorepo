@@ -1,138 +1,139 @@
-query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
-  market(id: $marketId) {
+fragment MarketInfoCandleFields on Candle {
+  volume
+}
+
+fragment MarketInfoFields on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  proposal {
     id
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    accounts {
-      type
-      asset {
-        id
-      }
-      balance
+    rationale {
+      title
+      description
     }
-    tradingMode
-    accounts {
-      type
-      asset {
-        id
-      }
-      balance
+  }
+  accounts {
+    type
+    asset {
+      id
     }
-    fees {
-      factors {
-        makerFee
-        infrastructureFee
-        liquidityFee
-      }
+    balance
+  }
+  tradingMode
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
     }
-    priceMonitoringSettings {
-      parameters {
-        triggers {
-          horizonSecs
-          probability
-          auctionExtensionSecs
-        }
+  }
+  priceMonitoringSettings {
+    parameters {
+      triggers {
+        horizonSecs
+        probability
+        auctionExtensionSecs
       }
     }
-    riskFactors {
-      market
-      short
-      long
+  }
+  data {
+    market {
+      id
     }
-    accounts {
-      type
-      asset {
-        id
+    markPrice
+    bestBidVolume
+    bestOfferVolume
+    bestStaticBidVolume
+    bestStaticOfferVolume
+    bestBidPrice
+    bestOfferPrice
+    trigger
+    openInterest
+    suppliedStake
+    openInterest
+    targetStake
+    marketValueProxy
+    priceMonitoringBounds {
+      minValidPrice
+      maxValidPrice
+      trigger {
+        horizonSecs
+        probability
+        auctionExtensionSecs
       }
-      balance
+      referencePrice
     }
-    data {
-      market {
-        id
+  }
+  liquidityMonitoringParameters {
+    triggeringRatio
+    targetStakeParameters {
+      timeWindow
+      scalingFactor
+    }
+  }
+  candles(interval: $interval, since: $since) {
+    ...MarketInfoCandleFields
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
       }
-      markPrice
-      indicativeVolume
-      bestBidVolume
-      bestOfferVolume
-      bestStaticBidVolume
-      bestStaticOfferVolume
-      openInterest
-      bestBidPrice
-      bestOfferPrice
-      trigger
-      priceMonitoringBounds {
-        minValidPrice
-        maxValidPrice
-        trigger {
-          horizonSecs
-          probability
-          auctionExtensionSecs
-        }
-        referencePrice
-      }
-    }
-    liquidityMonitoringParameters {
-      triggeringRatio
-      targetStakeParameters {
-        timeWindow
-        scalingFactor
-      }
-    }
-    candles(interval: $interval, since: $since) {
-      volume
-    }
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            quoteName
-            settlementAsset {
-              id
-              symbol
-              name
-            }
-            oracleSpecForSettlementPrice {
-              id
-            }
-            oracleSpecForTradingTermination {
-              id
-            }
-            oracleSpecBinding {
-              settlementPriceProperty
-              tradingTerminationProperty
-            }
+      product {
+        ... on Future {
+          quoteName
+          settlementAsset {
+            id
+            symbol
+            name
+            decimals
           }
-        }
-      }
-      riskModel {
-        ... on LogNormalRiskModel {
-          tau
-          riskAversionParameter
-          params {
-            r
-            sigma
-            mu
+          oracleSpecForSettlementPrice {
+            id
           }
-        }
-        ... on SimpleRiskModel {
-          params {
-            factorLong
-            factorShort
+          oracleSpecForTradingTermination {
+            id
+          }
+          oracleSpecBinding {
+            settlementPriceProperty
+            tradingTerminationProperty
           }
         }
       }
     }
-    depth {
-      lastTrade {
-        price
+    riskModel {
+      ... on LogNormalRiskModel {
+        tau
+        riskAversionParameter
+        params {
+          r
+          sigma
+          mu
+        }
+      }
+      ... on SimpleRiskModel {
+        params {
+          factorLong
+          factorShort
+        }
       }
     }
+  }
+  depth {
+    lastTrade {
+      price
+    }
+  }
+}
+
+query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    ...MarketInfoFields
   }
 }

@@ -11,7 +11,7 @@ export type MarketLiquidityQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketLiquidityQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, liquidityProvisionsConnection: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id?: string | null, createdAt: string, updatedAt?: string | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', type: Types.AccountType, balance: string } } | null> | null } } } } | null> | null }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } }, data?: { __typename?: 'MarketData', suppliedStake?: string | null, openInterest: string, targetStake?: string | null, marketValueProxy: string, market: { __typename?: 'Market', id: string }, liquidityProviderFeeShare?: Array<{ __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } }> | null } | null } | null };
+export type MarketLiquidityQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, liquidityProvisionsConnection: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id?: string | null, createdAt: string, updatedAt?: string | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'Account', type: Types.AccountType, balance: string } } | null> | null } } } } | null> | null }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } }, data?: { __typename?: 'MarketData', suppliedStake?: string | null, openInterest: string, targetStake?: string | null, marketValueProxy: string, market: { __typename?: 'Market', id: string }, liquidityProviderFeeShare?: Array<{ __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } }> | null } | null } | null };
 
 export const LiquidityProvisionFeeShareFieldsFragmentDoc = gql`
     fragment LiquidityProvisionFeeShareFields on LiquidityProviderFeeShare {
@@ -54,6 +54,7 @@ export const MarketLiquidityDocument = gql`
     tradableInstrument {
       instrument {
         code
+        name
         product {
           ... on Future {
             settlementAsset {

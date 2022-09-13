@@ -3,34 +3,41 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type MarketNamesFieldsFragment = { __typename?: 'Market', id: string, name: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string } } } };
+
 export type MarketNamesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type MarketNamesQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string } } } }> | null };
+export type MarketNamesQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, name: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string } } } }> | null };
 
-
-export const MarketNamesDocument = gql`
-    query MarketNames {
-  markets {
-    id
-    state
-    tradableInstrument {
-      instrument {
-        code
-        name
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            quoteName
-          }
+export const MarketNamesFieldsFragmentDoc = gql`
+    fragment MarketNamesFields on Market {
+  id
+  name
+  state
+  tradableInstrument {
+    instrument {
+      code
+      name
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          quoteName
         }
       }
     }
   }
 }
     `;
+export const MarketNamesDocument = gql`
+    query MarketNames {
+  markets {
+    ...MarketNamesFields
+  }
+}
+    ${MarketNamesFieldsFragmentDoc}`;
 
 /**
  * __useMarketNamesQuery__

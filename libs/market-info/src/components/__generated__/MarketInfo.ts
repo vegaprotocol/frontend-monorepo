@@ -1,0 +1,191 @@
+import { Schema as Types } from '@vegaprotocol/types';
+
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+const defaultOptions = {} as const;
+export type MarketInfoCandleFieldsFragment = { __typename?: 'Candle', volume: string };
+
+export type MarketInfoFieldsFragment = { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, proposal?: { __typename?: 'Proposal', id?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string } } | null, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string } }> | null, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, priceMonitoringSettings: { __typename?: 'PriceMonitoringSettings', parameters?: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null } | null }, data?: { __typename?: 'MarketData', markPrice: string, bestBidVolume: string, bestOfferVolume: string, bestStaticBidVolume: string, bestStaticOfferVolume: string, bestBidPrice: string, bestOfferPrice: string, trigger: Types.AuctionTrigger, openInterest: string, suppliedStake?: string | null, targetStake?: string | null, marketValueProxy: string, market: { __typename?: 'Market', id: string }, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null } | null, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', triggeringRatio: number, targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, candles?: Array<{ __typename?: 'Candle', volume: string } | null> | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, oracleSpecForSettlementPrice: { __typename?: 'OracleSpec', id: string }, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, oracleSpecBinding: { __typename?: 'OracleSpecToFutureBinding', settlementPriceProperty: string, tradingTerminationProperty: string } } }, riskModel: { __typename?: 'LogNormalRiskModel', tau: number, riskAversionParameter: number, params: { __typename?: 'LogNormalModelParams', r: number, sigma: number, mu: number } } | { __typename?: 'SimpleRiskModel', params: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } } }, depth: { __typename?: 'MarketDepth', lastTrade?: { __typename?: 'Trade', price: string } | null } };
+
+export type MarketInfoQueryVariables = Types.Exact<{
+  marketId: Types.Scalars['ID'];
+  interval: Types.Interval;
+  since: Types.Scalars['String'];
+}>;
+
+
+export type MarketInfoQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, proposal?: { __typename?: 'Proposal', id?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string } } | null, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string } }> | null, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, priceMonitoringSettings: { __typename?: 'PriceMonitoringSettings', parameters?: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null } | null }, data?: { __typename?: 'MarketData', markPrice: string, bestBidVolume: string, bestOfferVolume: string, bestStaticBidVolume: string, bestStaticOfferVolume: string, bestBidPrice: string, bestOfferPrice: string, trigger: Types.AuctionTrigger, openInterest: string, suppliedStake?: string | null, targetStake?: string | null, marketValueProxy: string, market: { __typename?: 'Market', id: string }, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null } | null, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', triggeringRatio: number, targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, candles?: Array<{ __typename?: 'Candle', volume: string } | null> | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, oracleSpecForSettlementPrice: { __typename?: 'OracleSpec', id: string }, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, oracleSpecBinding: { __typename?: 'OracleSpecToFutureBinding', settlementPriceProperty: string, tradingTerminationProperty: string } } }, riskModel: { __typename?: 'LogNormalRiskModel', tau: number, riskAversionParameter: number, params: { __typename?: 'LogNormalModelParams', r: number, sigma: number, mu: number } } | { __typename?: 'SimpleRiskModel', params: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } } }, depth: { __typename?: 'MarketDepth', lastTrade?: { __typename?: 'Trade', price: string } | null } } | null };
+
+export const MarketInfoCandleFieldsFragmentDoc = gql`
+    fragment MarketInfoCandleFields on Candle {
+  volume
+}
+    `;
+export const MarketInfoFieldsFragmentDoc = gql`
+    fragment MarketInfoFields on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  proposal {
+    id
+    rationale {
+      title
+      description
+    }
+  }
+  accounts {
+    type
+    asset {
+      id
+    }
+    balance
+  }
+  tradingMode
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+  }
+  priceMonitoringSettings {
+    parameters {
+      triggers {
+        horizonSecs
+        probability
+        auctionExtensionSecs
+      }
+    }
+  }
+  data {
+    market {
+      id
+    }
+    markPrice
+    bestBidVolume
+    bestOfferVolume
+    bestStaticBidVolume
+    bestStaticOfferVolume
+    bestBidPrice
+    bestOfferPrice
+    trigger
+    openInterest
+    suppliedStake
+    openInterest
+    targetStake
+    marketValueProxy
+    priceMonitoringBounds {
+      minValidPrice
+      maxValidPrice
+      trigger {
+        horizonSecs
+        probability
+        auctionExtensionSecs
+      }
+      referencePrice
+    }
+  }
+  liquidityMonitoringParameters {
+    triggeringRatio
+    targetStakeParameters {
+      timeWindow
+      scalingFactor
+    }
+  }
+  candles(interval: $interval, since: $since) {
+    ...MarketInfoCandleFields
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          quoteName
+          settlementAsset {
+            id
+            symbol
+            name
+            decimals
+          }
+          oracleSpecForSettlementPrice {
+            id
+          }
+          oracleSpecForTradingTermination {
+            id
+          }
+          oracleSpecBinding {
+            settlementPriceProperty
+            tradingTerminationProperty
+          }
+        }
+      }
+    }
+    riskModel {
+      ... on LogNormalRiskModel {
+        tau
+        riskAversionParameter
+        params {
+          r
+          sigma
+          mu
+        }
+      }
+      ... on SimpleRiskModel {
+        params {
+          factorLong
+          factorShort
+        }
+      }
+    }
+  }
+  depth {
+    lastTrade {
+      price
+    }
+  }
+}
+    ${MarketInfoCandleFieldsFragmentDoc}`;
+export const MarketInfoDocument = gql`
+    query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    ...MarketInfoFields
+  }
+}
+    ${MarketInfoFieldsFragmentDoc}`;
+
+/**
+ * __useMarketInfoQuery__
+ *
+ * To run a query within a React component, call `useMarketInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketInfoQuery({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *      interval: // value for 'interval'
+ *      since: // value for 'since'
+ *   },
+ * });
+ */
+export function useMarketInfoQuery(baseOptions: Apollo.QueryHookOptions<MarketInfoQuery, MarketInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketInfoQuery, MarketInfoQueryVariables>(MarketInfoDocument, options);
+      }
+export function useMarketInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketInfoQuery, MarketInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketInfoQuery, MarketInfoQueryVariables>(MarketInfoDocument, options);
+        }
+export type MarketInfoQueryHookResult = ReturnType<typeof useMarketInfoQuery>;
+export type MarketInfoLazyQueryHookResult = ReturnType<typeof useMarketInfoLazyQuery>;
+export type MarketInfoQueryResult = Apollo.QueryResult<MarketInfoQuery, MarketInfoQueryVariables>;
