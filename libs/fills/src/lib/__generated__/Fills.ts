@@ -229,7 +229,7 @@ export interface Fills_party {
    * Party identifier
    */
   id: string;
-  tradesConnection: Fills_party_tradesConnection;
+  tradesConnection: Fills_party_tradesConnection | null;
 }
 
 export interface Fills {
