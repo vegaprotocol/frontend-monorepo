@@ -155,7 +155,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleDialogOnchange = useCallback(
     (isOpen: boolean) => {
       setShowPane(isOpen);
-      if (!isOpen && market) {
+      if (!isOpen && market?.tradableInstrument.instrument.name) {
         setLookup(lookup || market.tradableInstrument.instrument.name);
         inputRef.current?.focus();
       }
@@ -163,8 +163,8 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     [
       setShowPane,
       lookup,
-      setLookup,
       market?.tradableInstrument.instrument.name,
+      setLookup,
       inputRef,
     ]
   );
