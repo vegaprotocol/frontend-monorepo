@@ -7,7 +7,7 @@ import {
   Input,
   InputError,
 } from '@vegaprotocol/ui-toolkit';
-import { addHours } from 'date-fns';
+import { addHours, addMinutes } from 'date-fns';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -16,10 +16,14 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps {
   voteErrorMessage: string | undefined;
   voteMinClose: string;
   voteMaxClose: string;
+  enactmentRequired?: boolean;
   enactmentRegister?: UseFormRegisterReturn<'proposalEnactmentDeadline'>;
   enactmentErrorMessage?: string;
   enactmentMinClose?: string;
   enactmentMaxClose?: string;
+  validationRequired?: boolean;
+  validationRegister?: UseFormRegisterReturn<'proposalValidationDeadline'>;
+  validationErrorMessage?: string;
 }
 
 export const ProposalFormVoteAndEnactmentDeadline = function ({
@@ -31,6 +35,9 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
   enactmentErrorMessage,
   enactmentMinClose,
   enactmentMaxClose,
+  validationRequired,
+  validationRegister,
+  validationErrorMessage,
 }: ProposalFormVoteAndEnactmentDeadlineProps) {
   const {
     minVoteSeconds,
@@ -75,38 +82,103 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
       [minVoteSeconds, maxVoteSeconds, minEnactmentSeconds, maxEnactmentSeconds]
     );
 
-  const [voteDeadline, setVoteDeadline] = useState<number>(minVoteHours);
-  const [enactmentDeadline, setEnactmentDeadline] =
-    useState<number>(minEnactmentHours);
-  const [voteDeadlineDate, setVoteDeadlineDate] = useState<Date>(
-    addHours(new Date(), voteDeadline)
-  );
-  const [enactmentDeadlineDate, setEnactmentDeadlineDate] = useState<Date>(
-    addHours(new Date(), voteDeadline + enactmentDeadline)
-  );
+  const [deadlines, setDeadlines] = useState<{
+    vote: number;
+    enactment: number;
+    validation: number;
+  }>({
+    vote: minVoteHours,
+    enactment: minEnactmentHours,
+    validation: 0,
+  });
+
+  const [deadlineDates, setDeadlineDates] = useState<{
+    vote: Date;
+    enactment: Date;
+    validation: Date;
+  }>({
+    vote:
+      deadlines.vote === minVoteHours
+        ? addHours(addMinutes(new Date(), 2), deadlines.vote)
+        : addHours(new Date(), deadlines.vote),
+    enactment: addHours(new Date(), deadlines.vote + deadlines.enactment),
+    validation:
+      deadlines.validation === 0
+        ? addHours(addMinutes(new Date(), 2), deadlines.validation)
+        : addHours(new Date(), deadlines.validation),
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setVoteDeadlineDate(addHours(new Date(), voteDeadline));
-      setEnactmentDeadlineDate(
-        addHours(new Date(), voteDeadline + enactmentDeadline)
-      );
+      setDeadlineDates((prev) => ({
+        ...prev,
+        vote:
+          deadlines.vote === minVoteHours
+            ? addHours(addMinutes(new Date(), 2), deadlines.vote)
+            : addHours(new Date(), deadlines.vote),
+        enactment: addHours(new Date(), deadlines.vote + deadlines.enactment),
+        validation:
+          deadlines.validation === 0
+            ? addHours(addMinutes(new Date(), 2), deadlines.validation)
+            : addHours(new Date(), deadlines.validation),
+      }));
     }, 1000);
     return () => clearInterval(interval);
-  }, [voteDeadline, enactmentDeadline]);
+  }, [deadlines, minVoteHours]);
 
   const updateVoteDeadlineAndDate = (hours: number) => {
-    setVoteDeadline(hours);
-    setVoteDeadlineDate(addHours(new Date(), hours));
-    // Amending the vote deadline also changes the enactment deadline date
-    if (enactmentDeadlineDate) {
-      setEnactmentDeadlineDate(addHours(new Date(), hours + enactmentDeadline));
-    }
+    // Validation, when needed, can only happen within the voting period. Therefore, if the
+    // vote deadline is changed, the validation deadline must be changed to be within the
+    // new vote deadline.
+    setDeadlines((prev) => ({
+      ...prev,
+      vote: hours,
+      validation: Math.min(prev.validation, hours),
+    }));
+
+    // If the vote deadline is set to minimum, add 2 mins to the date as we do
+    // this on submission to allow time to confirm in the wallet. Amending the
+    // vote deadline also changes the enactment date and potentially the validation
+    // date.
+    // The validation deadline date cannot be after the vote deadline date. Therefore,
+    // if the vote deadline is changed, the validation deadline must potentially
+    // be changed to be within the new vote deadline.
+    setDeadlineDates((prev) => ({
+      ...prev,
+      vote:
+        hours === minVoteHours
+          ? addHours(addMinutes(new Date(), 2), hours)
+          : addHours(new Date(), hours),
+      enactment: addHours(new Date(), hours + deadlines.enactment),
+      validation: addHours(new Date(), Math.min(hours, deadlines.validation)),
+    }));
   };
 
   const updateEnactmentDeadlineAndDate = (hours: number) => {
-    setEnactmentDeadline(hours);
-    setEnactmentDeadlineDate(addHours(voteDeadlineDate, hours));
+    setDeadlines((prev) => ({
+      ...prev,
+      enactment: hours,
+    }));
+
+    setDeadlineDates((prev) => ({
+      ...prev,
+      enactment: addHours(deadlineDates.vote, hours),
+    }));
+  };
+
+  const updateValidationDeadlineAndDate = (hours: number) => {
+    setDeadlines((prev) => ({
+      ...prev,
+      validation: hours,
+    }));
+
+    setDeadlineDates((prev) => ({
+      ...prev,
+      validation:
+        hours === 0
+          ? addHours(addMinutes(new Date(), 2), hours)
+          : addHours(new Date(), hours),
+    }));
   };
 
   const { t } = useTranslation();
@@ -128,7 +200,7 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
               {...voteRegister}
               id="proposal-vote-deadline"
               type="number"
-              value={voteDeadline}
+              value={deadlines.vote}
               min={minVoteHours}
               max={maxVoteHours}
               onChange={(e) => {
@@ -142,10 +214,16 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
             </span>
           </div>
           <div className="flex items-center gap-4 text-sm">
-            <ButtonLink onClick={() => updateVoteDeadlineAndDate(minVoteHours)}>
+            <ButtonLink
+              data-testid="min-vote"
+              onClick={() => updateVoteDeadlineAndDate(minVoteHours)}
+            >
               {t('UseMin')}
             </ButtonLink>
-            <ButtonLink onClick={() => updateVoteDeadlineAndDate(maxVoteHours)}>
+            <ButtonLink
+              data-testid="max-vote"
+              onClick={() => updateVoteDeadlineAndDate(maxVoteHours)}
+            >
               {t('UseMax')}
             </ButtonLink>
           </div>
@@ -154,17 +232,91 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
           <InputError intent="danger">{voteErrorMessage}</InputError>
         )}
 
-        {voteDeadlineDate && (
+        {deadlineDates.vote && (
           <p className="mt-2 text-sm text-white">
             <span className="font-light">
               {t('ThisWillSetVotingDeadlineTo')}
             </span>
-            <span className="pl-2">{voteDeadlineDate?.toLocaleString()}</span>
+            <span data-testid="voting-date" className="pl-2">
+              {deadlineDates.vote?.toLocaleString()}
+            </span>
+            {deadlines.vote === minVoteHours && (
+              <span
+                data-testid="voting-2-mins-extra"
+                className="block mt-4 font-light"
+              >
+                {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+              </span>
+            )}
           </p>
         )}
       </FormGroup>
 
-      {enactmentRegister && minEnactmentHours && maxEnactmentHours && (
+      {validationRequired && (
+        <FormGroup
+          label={t('ProposalValidationDeadline')}
+          labelFor="proposal-validation-deadline"
+        >
+          <div className="flex items-center gap-2">
+            <div className="relative w-28">
+              <Input
+                {...validationRegister}
+                id="proposal-validation-deadline"
+                type="number"
+                value={deadlines.validation}
+                min={0}
+                max={deadlines.vote}
+                onChange={(e) => {
+                  updateValidationDeadlineAndDate(Number(e.target.value));
+                }}
+                data-testid="proposal-validation-deadline"
+                className="pr-12"
+              />
+              <span className="absolute right-2 bottom-1/2 translate-y-1/2 text-sm">
+                {t('Hours')}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 text-sm">
+              <ButtonLink
+                data-testid="min-validation"
+                onClick={() => updateValidationDeadlineAndDate(0)}
+              >
+                {t('UseMin')}
+              </ButtonLink>
+              <ButtonLink
+                data-testid="max-validation"
+                onClick={() => updateValidationDeadlineAndDate(deadlines.vote)}
+              >
+                {t('UseMax')}
+              </ButtonLink>
+            </div>
+          </div>
+          {validationErrorMessage && (
+            <InputError intent="danger">{validationErrorMessage}</InputError>
+          )}
+
+          {deadlineDates.validation && (
+            <p className="mt-2 text-sm text-white">
+              <span className="font-light">
+                {t('ThisWillSetValidationDeadlineTo')}
+              </span>
+              <span data-testid="validation-date" className="pl-2">
+                {deadlineDates.validation?.toLocaleString()}
+              </span>
+              {deadlines.validation === 0 && (
+                <span
+                  data-testid="validation-2-mins-extra"
+                  className="block mt-4 font-light"
+                >
+                  {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+                </span>
+              )}
+            </p>
+          )}
+        </FormGroup>
+      )}
+
+      {enactmentMinClose && enactmentMaxClose && maxEnactmentHours && (
         <FormGroup
           label={t('ProposalEnactmentDeadline')}
           labelFor="proposal-enactment-deadline"
@@ -175,7 +327,7 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
                 {...enactmentRegister}
                 id="proposal-enactment-deadline"
                 type="number"
-                value={enactmentDeadline}
+                value={deadlines.enactment}
                 min={minEnactmentHours}
                 max={maxEnactmentHours}
                 onChange={(e) => {
@@ -190,6 +342,7 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
             </div>
             <div className="flex items-center gap-4 text-sm">
               <ButtonLink
+                data-testid="min-enactment"
                 onClick={() =>
                   updateEnactmentDeadlineAndDate(minEnactmentHours)
                 }
@@ -197,6 +350,7 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
                 {t('UseMin')}
               </ButtonLink>
               <ButtonLink
+                data-testid="max-enactment"
                 onClick={() =>
                   updateEnactmentDeadlineAndDate(maxEnactmentHours)
                 }
@@ -209,13 +363,13 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
             <InputError intent="danger">{enactmentErrorMessage}</InputError>
           )}
 
-          {enactmentDeadlineDate && (
+          {deadlineDates.enactment && (
             <p className="mt-2 text-sm text-white">
               <span className="font-light">
                 {t('ThisWillSetEnactmentDeadlineTo')}
               </span>
-              <span className="pl-2">
-                {enactmentDeadlineDate?.toLocaleString()}
+              <span data-testid="enactment-date" className="pl-2">
+                {deadlineDates.enactment?.toLocaleString()}
               </span>
             </p>
           )}
