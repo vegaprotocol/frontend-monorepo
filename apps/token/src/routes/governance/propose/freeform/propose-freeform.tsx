@@ -73,7 +73,7 @@ export const ProposeFreeform = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<FreeformProposalFormFields>();
-  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
+  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: FreeformProposalFormFields) => {
     await submit({
@@ -152,7 +152,7 @@ export const ProposeFreeform = () => {
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
-                  TransactionDialog={TransactionDialog}
+                  TransactionDialog={Dialog}
                 />
               </form>
             </div>

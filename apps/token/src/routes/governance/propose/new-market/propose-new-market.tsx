@@ -86,7 +86,7 @@ export const ProposeNewMarket = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<NewMarketProposalFormFields>();
-  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
+  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: NewMarketProposalFormFields) => {
     await submit({
@@ -201,7 +201,7 @@ export const ProposeNewMarket = () => {
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
-                  TransactionDialog={TransactionDialog}
+                  TransactionDialog={Dialog}
                 />
               </form>
             </div>

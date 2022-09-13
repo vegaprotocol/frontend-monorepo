@@ -28,7 +28,7 @@ export const ProposeRaw = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<RawProposalFormFields>();
-  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
+  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const hasError = Boolean(errors.rawProposalData?.message);
 
@@ -92,7 +92,7 @@ export const ProposeRaw = () => {
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
-                  TransactionDialog={TransactionDialog}
+                  TransactionDialog={Dialog}
                 />
               </form>
             </div>

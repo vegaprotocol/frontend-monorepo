@@ -120,7 +120,7 @@ export const ProposeNetworkParameter = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<NetworkParameterProposalFormFields>();
-  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
+  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
     await submit({
@@ -280,7 +280,7 @@ export const ProposeNetworkParameter = () => {
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
                 <ProposalFormTransactionDialog
                   finalizedProposal={finalizedProposal}
-                  TransactionDialog={TransactionDialog}
+                  TransactionDialog={Dialog}
                 />
               </form>
             </div>
