@@ -14,7 +14,11 @@ export const STATS_QUERY = gql`
 export const TIME_UPDATE_SUBSCRIPTION = gql`
   subscription BlockTime {
     busEvents(types: TimeUpdate, batchSize: 1) {
-      eventId
+      event {
+        ... on TimeUpdate {
+          timestamp
+        }
+      }
     }
   }
 `;

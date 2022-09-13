@@ -119,22 +119,6 @@ export interface MarketInfoQuery_market_priceMonitoringSettings {
   parameters: MarketInfoQuery_market_priceMonitoringSettings_parameters | null;
 }
 
-export interface MarketInfoQuery_market_riskFactors {
-  __typename: "RiskFactor";
-  /**
-   * market the risk factor was emitted for
-   */
-  market: string;
-  /**
-   * short factor
-   */
-  short: string;
-  /**
-   * long factor
-   */
-  long: string;
-}
-
 export interface MarketInfoQuery_market_data_market {
   __typename: "Market";
   /**
@@ -184,7 +168,7 @@ export interface MarketInfoQuery_market_data_priceMonitoringBounds {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**
@@ -507,10 +491,6 @@ export interface MarketInfoQuery_market {
    * Price monitoring settings for the market
    */
   priceMonitoringSettings: MarketInfoQuery_market_priceMonitoringSettings;
-  /**
-   * risk factors for the market
-   */
-  riskFactors: MarketInfoQuery_market_riskFactors | null;
   /**
    * marketData for the given market
    */

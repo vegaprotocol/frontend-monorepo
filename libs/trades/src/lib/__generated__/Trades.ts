@@ -97,7 +97,7 @@ export interface Trades_market {
    * Market ID
    */
   id: string;
-  tradesConnection: Trades_market_tradesConnection;
+  tradesConnection: Trades_market_tradesConnection | null;
 }
 
 export interface Trades {

@@ -55,6 +55,10 @@ export interface Markets_marketsConnection_edges_node_tradableInstrument_instrum
    * The name of the asset (string)
    */
   settlementAsset: Markets_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset;
+  /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
 }
 
 export interface Markets_marketsConnection_edges_node_tradableInstrument_instrument {
@@ -167,5 +171,5 @@ export interface Markets_marketsConnection {
 }
 
 export interface Markets {
-  marketsConnection: Markets_marketsConnection;
+  marketsConnection: Markets_marketsConnection | null;
 }

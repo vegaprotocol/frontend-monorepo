@@ -44,7 +44,7 @@ export interface MarketsDataQuery_marketsConnection_edges_node_data {
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous, etc)
+   * what mode the market is in (auction, continuous, etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
@@ -87,5 +87,5 @@ export interface MarketsDataQuery_marketsConnection {
 }
 
 export interface MarketsDataQuery {
-  marketsConnection: MarketsDataQuery_marketsConnection;
+  marketsConnection: MarketsDataQuery_marketsConnection | null;
 }

@@ -16,29 +16,22 @@ import produce from 'immer';
 
 export const MAX_TRADES = 50;
 
-const TRADES_FRAGMENT = gql`
-  fragment TradeFields on Trade {
-    id
-    price
-    size
-    createdAt
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-    }
-  }
-`;
-
 export const TRADES_QUERY = gql`
-  ${TRADES_FRAGMENT}
   query Trades($marketId: ID!, $pagination: Pagination) {
     market(id: $marketId) {
       id
       tradesConnection(pagination: $pagination) {
         edges {
           node {
-            ...TradeFields
+            id
+            price
+            size
+            createdAt
+            market {
+              id
+              decimalPlaces
+              positionDecimalPlaces
+            }
           }
           cursor
         }
@@ -54,10 +47,13 @@ export const TRADES_QUERY = gql`
 `;
 
 export const TRADES_SUB = gql`
-  ${TRADES_FRAGMENT}
   subscription TradesSub($marketId: ID!) {
     trades(marketId: $marketId) {
-      ...TradeFields
+      id
+      price
+      size
+      createdAt
+      marketId
     }
   }
 `;

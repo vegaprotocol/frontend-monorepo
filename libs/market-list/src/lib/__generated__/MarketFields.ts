@@ -55,6 +55,10 @@ export interface MarketFields_tradableInstrument_instrument_product {
    * The name of the asset (string)
    */
   settlementAsset: MarketFields_tradableInstrument_instrument_product_settlementAsset;
+  /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
 }
 
 export interface MarketFields_tradableInstrument_instrument {

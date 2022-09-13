@@ -14,7 +14,7 @@ export interface Orders_party_ordersConnection_edges_node {
   /**
    * Hash of the order data
    */
-  id: string;  
+  id: string;
   /**
    * The order type
    */

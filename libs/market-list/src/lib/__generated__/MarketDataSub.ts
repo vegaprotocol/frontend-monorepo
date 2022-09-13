@@ -36,7 +36,7 @@ export interface MarketDataSub_marketsData {
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous etc)
+   * what mode the market is in (auction, continuous etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
@@ -65,5 +65,5 @@ export interface MarketDataSub {
 }
 
 export interface MarketDataSubVariables {
-  id: string;
+  marketId: string;
 }

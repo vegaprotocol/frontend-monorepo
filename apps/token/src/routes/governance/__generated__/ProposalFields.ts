@@ -48,7 +48,7 @@ export interface ProposalFields_terms_change_NewMarket_instrument_futureProduct_
 export interface ProposalFields_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
-   * Product asset ID
+   * Product asset
    */
   settlementAsset: ProposalFields_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }

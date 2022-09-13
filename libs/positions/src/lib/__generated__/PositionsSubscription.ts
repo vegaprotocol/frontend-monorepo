@@ -98,7 +98,7 @@ export interface PositionsSubscription_positions_market_data {
    */
   markPrice: string;
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: PositionsSubscription_positions_market_data_market;
 }
@@ -172,7 +172,7 @@ export interface PositionsSubscription_positions {
   /**
    * Margins of the party for the given position
    */
-  marginsConnection: PositionsSubscription_positions_marginsConnection;
+  marginsConnection: PositionsSubscription_positions_marginsConnection | null;
   /**
    * Market relating to this position
    */
@@ -183,7 +183,7 @@ export interface PositionsSubscription {
   /**
    * Subscribe to the positions updates
    */
-  positions: PositionsSubscription_positions;
+  positions: PositionsSubscription_positions[];
 }
 
 export interface PositionsSubscriptionVariables {

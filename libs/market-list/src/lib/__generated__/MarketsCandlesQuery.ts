@@ -55,7 +55,7 @@ export interface MarketsCandlesQuery_marketsConnection_edges_node {
   /**
    * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candlesConnection: MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection;
+  candlesConnection: MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection | null;
 }
 
 export interface MarketsCandlesQuery_marketsConnection_edges {
@@ -72,7 +72,7 @@ export interface MarketsCandlesQuery_marketsConnection {
 }
 
 export interface MarketsCandlesQuery {
-  marketsConnection: MarketsCandlesQuery_marketsConnection;
+  marketsConnection: MarketsCandlesQuery_marketsConnection | null;
 }
 
 export interface MarketsCandlesQueryVariables {

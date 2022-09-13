@@ -302,5 +302,5 @@ export interface ProposalsQuery {
   /**
    * All governance proposals in the Vega network
    */
-  proposalsConnection: ProposalsQuery_proposalsConnection;
+  proposalsConnection: ProposalsQuery_proposalsConnection | null;
 }

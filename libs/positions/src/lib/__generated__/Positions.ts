@@ -98,7 +98,7 @@ export interface Positions_party_positionsConnection_edges_node_market_data {
    */
   markPrice: string;
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: Positions_party_positionsConnection_edges_node_market_data_market;
 }
@@ -172,7 +172,7 @@ export interface Positions_party_positionsConnection_edges_node {
   /**
    * Margins of the party for the given position
    */
-  marginsConnection: Positions_party_positionsConnection_edges_node_marginsConnection;
+  marginsConnection: Positions_party_positionsConnection_edges_node_marginsConnection | null;
   /**
    * Market relating to this position
    */
@@ -201,7 +201,7 @@ export interface Positions_party {
   /**
    * Trading positions relating to a party
    */
-  positionsConnection: Positions_party_positionsConnection;
+  positionsConnection: Positions_party_positionsConnection | null;
 }
 
 export interface Positions {
