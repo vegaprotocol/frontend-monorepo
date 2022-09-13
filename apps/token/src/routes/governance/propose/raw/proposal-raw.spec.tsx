@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
@@ -44,18 +45,20 @@ describe('Raw proposal form', () => {
   };
   const setup = (mockSendTx = jest.fn()) => {
     return render(
-      <MockedProvider mocks={[mockProposalEvent]}>
-        <VegaWalletContext.Provider
-          value={
-            {
-              keypair: { pub: pubkey },
-              sendTx: mockSendTx,
-            } as unknown as VegaWalletContextShape
-          }
-        >
-          <ProposeRaw />
-        </VegaWalletContext.Provider>
-      </MockedProvider>
+      <AppStateProvider>
+        <MockedProvider mocks={[mockProposalEvent]}>
+          <VegaWalletContext.Provider
+            value={
+              {
+                keypair: { pub: pubkey },
+                sendTx: mockSendTx,
+              } as unknown as VegaWalletContextShape
+            }
+          >
+            <ProposeRaw />
+          </VegaWalletContext.Provider>
+        </MockedProvider>
+      </AppStateProvider>
     );
   };
 
@@ -67,7 +70,7 @@ describe('Raw proposal form', () => {
     jest.useRealTimers();
   });
 
-  it.skip('handles validation', async () => {
+  it('handles validation', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve());
     setup(mockSendTx);
     await act(async () => {
@@ -93,102 +96,102 @@ describe('Raw proposal form', () => {
     );
   });
 
-  // it('sends the transaction', async () => {
-  //   const mockSendTx = jest.fn().mockReturnValue(
-  //     new Promise((resolve) => {
-  //       setTimeout(
-  //         () =>
-  //           resolve({
-  //             txHash: 'tx-hash',
-  //             tx: {
-  //               signature: {
-  //                 value:
-  //                   'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
-  //               },
-  //             },
-  //           }),
-  //         100
-  //       );
-  //     })
-  //   );
-  //   setup(mockSendTx);
-  //
-  //   const inputJSON = JSON.stringify({
-  //     rationale: {
-  //       description: 'Update governance.proposal.freeform.minVoterBalance',
-  //       title: 'testing 123',
-  //     },
-  //     terms: {
-  //       updateNetworkParameter: {
-  //         changes: {
-  //           key: 'governance.proposal.freeform.minVoterBalance',
-  //           value: '300',
-  //         },
-  //       },
-  //       closingTimestamp: 1657721401,
-  //       enactmentTimestamp: 1657807801,
-  //     },
-  //   });
-  //   fireEvent.change(screen.getByTestId('proposal-data'), {
-  //     target: { value: inputJSON },
-  //   });
-  //
-  //   await act(async () => {
-  //     fireEvent.click(screen.getByTestId('proposal-submit'));
-  //   });
-  //
-  //   expect(mockSendTx).toHaveBeenCalledWith({
-  //     propagate: true,
-  //     pubKey: pubkey,
-  //     proposalSubmission: JSON.parse(inputJSON),
-  //   });
-  //
-  //   expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-  //     'Confirm transaction in wallet'
-  //   );
-  //
-  //   await act(async () => {
-  //     jest.advanceTimersByTime(200);
-  //   });
-  //
-  //   expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-  //     'Awaiting network confirmation'
-  //   );
-  //
-  //   await act(async () => {
-  //     jest.advanceTimersByTime(400);
-  //   });
-  //
-  //   expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-  //     'Proposal rejected'
-  //   );
-  // });
-  //
-  // it('can be rejected by the user', async () => {
-  //   const mockSendTx = jest.fn().mockReturnValue(
-  //     new Promise((resolve) => {
-  //       setTimeout(() => resolve(null), 100);
-  //     })
-  //   );
-  //   setup(mockSendTx);
-  //
-  //   const inputJSON = '{}';
-  //   fireEvent.change(screen.getByTestId('proposal-data'), {
-  //     target: { value: inputJSON },
-  //   });
-  //
-  //   await act(async () => {
-  //     fireEvent.click(screen.getByTestId('proposal-submit'));
-  //   });
-  //
-  //   expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-  //     'Confirm transaction in wallet'
-  //   );
-  //
-  //   await act(async () => {
-  //     jest.advanceTimersByTime(200);
-  //   });
-  //
-  //   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-  // });
+  it('sends the transaction', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(
+      new Promise((resolve) => {
+        setTimeout(
+          () =>
+            resolve({
+              txHash: 'tx-hash',
+              tx: {
+                signature: {
+                  value:
+                    'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
+                },
+              },
+            }),
+          100
+        );
+      })
+    );
+    setup(mockSendTx);
+
+    const inputJSON = JSON.stringify({
+      rationale: {
+        description: 'Update governance.proposal.freeform.minVoterBalance',
+        title: 'testing 123',
+      },
+      terms: {
+        updateNetworkParameter: {
+          changes: {
+            key: 'governance.proposal.freeform.minVoterBalance',
+            value: '300',
+          },
+        },
+        closingTimestamp: 1657721401,
+        enactmentTimestamp: 1657807801,
+      },
+    });
+    fireEvent.change(screen.getByTestId('proposal-data'), {
+      target: { value: inputJSON },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
+
+    expect(mockSendTx).toHaveBeenCalledWith({
+      propagate: true,
+      pubKey: pubkey,
+      proposalSubmission: JSON.parse(inputJSON),
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Confirm transaction in wallet'
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Awaiting network confirmation'
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Proposal rejected'
+    );
+  });
+
+  it('can be rejected by the user', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(
+      new Promise((resolve) => {
+        setTimeout(() => resolve(null), 100);
+      })
+    );
+    setup(mockSendTx);
+
+    const inputJSON = '{}';
+    fireEvent.change(screen.getByTestId('proposal-data'), {
+      target: { value: inputJSON },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Confirm transaction in wallet'
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });

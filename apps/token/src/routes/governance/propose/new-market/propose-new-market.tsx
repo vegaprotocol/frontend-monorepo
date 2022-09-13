@@ -167,6 +167,7 @@ export const ProposeNewMarket = () => {
                       },
                     },
                   })}
+                  labelOverride={'Terms.changes.newMarket (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
                 />
 

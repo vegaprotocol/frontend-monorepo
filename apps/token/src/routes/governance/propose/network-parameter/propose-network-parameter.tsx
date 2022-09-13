@@ -45,10 +45,15 @@ const SelectedNetworkParamCurrentValue = ({
   return (
     <div className="mb-4">
       <p className="text-sm text-white">{t('CurrentValue')}</p>
+
       {isJsonObject(value) ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : (
-        <Input value={value} readOnly />
+        <Input
+          value={value}
+          data-testid="selected-proposal-param-current-value"
+          readOnly
+        />
       )}
     </div>
   );
@@ -193,6 +198,7 @@ export const ProposeNetworkParameter = () => {
                   hideLabel={true}
                 >
                   <Select
+                    data-testid="proposal-parameter-select"
                     id="proposal-parameter-key"
                     {...register('proposalNetworkParameterKey', {
                       required: t('Required'),
@@ -226,10 +232,11 @@ export const ProposeNetworkParameter = () => {
 
                     <FormGroup
                       label={t('NewProposedValue')}
-                      labelFor="proposal-parameter-value"
+                      labelFor="proposal-parameter-new-value"
                     >
                       <TextArea
-                        id="proposal-parameter-value"
+                        data-testid="selected-proposal-param-new-value"
+                        id="proposal-parameter-new-value"
                         {...register('proposalNetworkParameterValue', {
                           required: t('Required'),
                         })}

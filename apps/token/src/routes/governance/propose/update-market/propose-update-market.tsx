@@ -225,6 +225,7 @@ export const ProposeUpdateMarket = () => {
                   hideLabel={true}
                 >
                   <Select
+                    data-testid="proposal-market-select"
                     id="proposal-market"
                     {...register('proposalMarketId', {
                       required: t('Required'),
@@ -286,7 +287,7 @@ export const ProposeUpdateMarket = () => {
                       },
                     },
                   })}
-                  labelOverride={t('ProposeUpdateMarketChanges')}
+                  labelOverride={t('ProposeUpdateMarketTerms')}
                   errorMessage={errors?.proposalTerms?.message}
                 />
 

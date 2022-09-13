@@ -5,6 +5,7 @@ import {
   useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  getValidationTimestamp,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -27,6 +28,7 @@ import type { ProposalNewAssetTerms } from '@vegaprotocol/wallet';
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: number;
   proposalEnactmentDeadline: number;
+  proposalValidationDeadline: number;
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;
@@ -101,6 +103,9 @@ export const ProposeNewAsset = () => {
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline
+        ),
+        validationTimestamp: getValidationTimestamp(
+          fields.proposalValidationDeadline
         ),
       } as ProposalNewAssetTerms,
     });
@@ -185,6 +190,13 @@ export const ProposeNewAsset = () => {
                   }
                   enactmentMinClose={minEnactmentDeadline as string}
                   enactmentMaxClose={maxEnactmentDeadline as string}
+                  validationRequired={true}
+                  validationRegister={register('proposalValidationDeadline', {
+                    required: t('Required'),
+                  })}
+                  validationErrorMessage={
+                    errors?.proposalValidationDeadline?.message
+                  }
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
