@@ -1,4 +1,5 @@
 export * from './hooks';
+export * from './lib/assets';
 export * from './lib/nodes';
 export * from './lib/context';
 export * from './lib/determine-id';

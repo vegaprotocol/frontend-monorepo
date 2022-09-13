@@ -3,34 +3,41 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type AssetFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, quantum: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } };
+
 export type AssetsConnectionQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type AssetsConnectionQuery = { __typename?: 'Query', assetsConnection: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } } } | null> | null } };
+export type AssetsConnectionQuery = { __typename?: 'Query', assetsConnection: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, quantum: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } } } | null> | null } };
 
-
+export const AssetFieldsFragmentDoc = gql`
+    fragment AssetFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  status
+  quantum
+  source {
+    ... on ERC20 {
+      contractAddress
+      lifetimeLimit
+      withdrawThreshold
+    }
+  }
+}
+    `;
 export const AssetsConnectionDocument = gql`
     query AssetsConnection {
   assetsConnection {
     edges {
       node {
-        id
-        name
-        symbol
-        decimals
-        quantum
-        source {
-          ... on ERC20 {
-            contractAddress
-            lifetimeLimit
-            withdrawThreshold
-          }
-        }
+        ...AssetFields
       }
     }
   }
 }
-    `;
+    ${AssetFieldsFragmentDoc}`;
 
 /**
  * __useAssetsConnectionQuery__

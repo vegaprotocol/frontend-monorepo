@@ -4,26 +4,31 @@ import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import { Schema } from '@vegaprotocol/types';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@web3-react/core');
 
-function generateAsset(): Asset {
+function generateAsset(): AssetFieldsFragment {
   return {
     __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 2,
+    status: Schema.AssetStatus.STATUS_ENABLED,
+    quantum: '',
     source: {
       __typename: 'ERC20',
       contractAddress: 'contract-address',
+      lifetimeLimit: '',
+      withdrawThreshold: '',
     },
   };
 }
 
-let asset: Asset;
+let asset: AssetFieldsFragment;
 let props: DepositFormProps;
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 

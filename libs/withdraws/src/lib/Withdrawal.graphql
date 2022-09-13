@@ -1,11 +1,22 @@
+fragment WithdrawalAssetFields on Asset {
+  id
+  symbol
+  name
+  decimals
+  status
+  source {
+    ... on ERC20 {
+      contractAddress
+    }
+  }
+}
+
 fragment WithdrawalFields on Withdrawal {
   id
   status
   amount
   asset {
-    id
-    symbol
-    decimals
+    ...WithdrawalAssetFields
   }
   createdTimestamp
   withdrawnTimestamp
@@ -23,11 +34,19 @@ fragment PendingWithdrawal on Withdrawal {
   txHash
 }
 
+fragment WithdrawalEdgeFields on WithdrawalEdge {
+  node {
+    ...WithdrawalFields
+  }
+}
+
 query Withdrawals($partyId: ID!) {
   party(id: $partyId) {
     id
-    withdrawals {
-      ...WithdrawalFields
+    withdrawalsConnection {
+      edges {
+        ...WithdrawalEdgeFields
+      }
     }
   }
 }
@@ -37,6 +56,31 @@ subscription WithdrawalEvent($partyId: ID!) {
     event {
       ... on Withdrawal {
         ...WithdrawalFields
+      }
+    }
+  }
+}
+
+query WithdrawForm($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    withdrawals {
+      id
+      txHash
+    }
+    accounts {
+      type
+      balance
+      asset {
+        id
+        symbol
+      }
+    }
+  }
+  assetsConnection {
+    edges {
+      node {
+        ...WithdrawalAssetFields
       }
     }
   }

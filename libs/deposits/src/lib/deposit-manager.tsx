@@ -6,10 +6,10 @@ import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
 import { useCallback } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 
 interface DepositManagerProps {
-  assets: Asset[];
+  assets: AssetFieldsFragment[];
   isFaucetable: boolean;
 }
 

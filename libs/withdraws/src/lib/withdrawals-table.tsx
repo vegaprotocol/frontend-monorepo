@@ -19,12 +19,12 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import type { VerifyState } from './use-verify-withdrawal';
 import { ApprovalStatus, useVerifyWithdrawal } from './use-verify-withdrawal';
 
 export interface WithdrawalsTableProps {
-  withdrawals: WithdrawalFields[];
+  withdrawals: WithdrawalFieldsFragment[];
 }
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
@@ -57,7 +57,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
+          }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'amount'>) => {
             return addDecimalsFormatNumber(value, data.asset.decimals);
           }}
         />
@@ -69,7 +69,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<
-            WithdrawalFields,
+            WithdrawalFieldsFragment,
             'details.receiverAddress'
           >) => {
             if (!value) return '-';
@@ -82,7 +82,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<
-            WithdrawalFields,
+            WithdrawalFieldsFragment,
             'createdTimestamp'
           >) => {
             return getDateTimeFormat().format(new Date(value));
@@ -93,7 +93,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           field="txHash"
           cellRenderer={({
             value,
-          }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
+          }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
             if (!value) return '-';
             return (
               <Link
@@ -112,7 +112,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           field="status"
           cellRenderer="StatusCell"
           cellRendererParams={{
-            complete: async (withdrawal: WithdrawalFields) => {
+            complete: async (withdrawal: WithdrawalFieldsFragment) => {
               const verified = await verify(withdrawal);
 
               if (!verified) {
@@ -145,9 +145,9 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
 };
 
 export interface StatusCellProps
-  extends VegaICellRendererParams<WithdrawalFields, 'status'> {
+  extends VegaICellRendererParams<WithdrawalFieldsFragment, 'status'> {
   ethUrl: string;
-  complete: (withdrawal: WithdrawalFields) => void;
+  complete: (withdrawal: WithdrawalFieldsFragment) => void;
 }
 
 export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
@@ -184,7 +184,7 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
 };
 
 export interface RecipientCellProps
-  extends VegaICellRendererParams<WithdrawalFields, 'details.receiverAddress'> {
+  extends VegaICellRendererParams<WithdrawalFieldsFragment, 'details.receiverAddress'> {
   ethUrl: string;
 }
 

@@ -1,7 +1,7 @@
-import type { AccountType } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 export interface Account {
-  type: AccountType;
+  type: Schema.AccountType;
   balance: string;
   asset: {
     id: string;

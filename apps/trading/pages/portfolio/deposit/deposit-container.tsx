@@ -2,17 +2,16 @@ import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type {
   DepositPage,
-  DepositPage_assetsConnection_edges_node,
 } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { getNodes, t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
+import { AssetFieldsFragmentDoc, AssetFieldsFragment } from '@vegaprotocol/assets';
 
 const DEPOSIT_PAGE_QUERY = gql`
-  ${ASSET_FRAGMENT}
+  ${AssetFieldsFragmentDoc}
   query DepositPage {
     assetsConnection {
       edges {
@@ -34,9 +33,9 @@ export const DepositContainer = () => {
     <PageQueryContainer<DepositPage>
       query={DEPOSIT_PAGE_QUERY}
       render={(data) => {
-        const assets = getNodes<DepositPage_assetsConnection_edges_node>(
+        const assets = getNodes<AssetFieldsFragment>(
           data,
-          (node) => node?.status === AssetStatus.STATUS_ENABLED
+          (node) => node?.status === Schema.AssetStatus.STATUS_ENABLED
         );
         if (!assets.length) {
           return (

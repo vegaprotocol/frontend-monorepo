@@ -17,12 +17,11 @@ import type {
   AgReactUiProps,
 } from 'ag-grid-react';
 import {
-  MarketTradingMode,
-  AuctionTrigger,
+  Schema,
   MarketTradingModeMapping,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
-import type { MarketList_markets } from '../../';
+import type { MarketListItemFragment } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;
@@ -31,7 +30,7 @@ type MarketListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: MarketList_markets;
+  data: MarketListItemFragment;
 };
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
@@ -83,14 +82,14 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Trading mode')}
         field="data"
         minWidth={170}
-        valueGetter={({ data }: { data?: MarketList_markets }) => {
+        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
           if (!data?.data) return undefined;
           const { market, trigger } = data.data;
           return market &&
             market.tradingMode ===
-              MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+              Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
-            trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+            trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
             ? `${MarketTradingModeMapping[market.tradingMode]}
             - ${AuctionTriggerMapping[trigger]}`
             : MarketTradingModeMapping[market.tradingMode];
@@ -102,7 +101,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketList_markets }) => {
+        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
           return data?.data?.bestBidPrice === undefined
             ? undefined
             : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
@@ -122,7 +121,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketList_markets }) => {
+        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
           return data?.data?.bestOfferPrice === undefined
             ? undefined
             : toBigNum(
@@ -145,7 +144,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketList_markets }) => {
+        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();

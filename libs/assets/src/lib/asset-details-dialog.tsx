@@ -1,5 +1,4 @@
 import { t } from '@vegaprotocol/react-helpers';
-import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   Button,
   Dialog,
@@ -10,14 +9,15 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { useAssetsConnectionQuery } from './__generated__/Assets';
+import { AssetFieldsFragment } from './__generated__/Assets';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
 export type AssetDetailsDialogStore = {
   isAssetDetailsDialogOpen: boolean;
-  assetDetailsDialogSymbol: string | Asset;
+  assetDetailsDialogSymbol: string | AssetFieldsFragment;
   setAssetDetailsDialogOpen: (isOpen: boolean) => void;
-  setAssetDetailsDialogSymbol: (symbol: string | Asset) => void;
+  setAssetDetailsDialogSymbol: (symbol: string | AssetFieldsFragment) => void;
 };
 
 export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
@@ -27,7 +27,7 @@ export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
     setAssetDetailsDialogOpen: (isOpen: boolean) => {
       set({ isAssetDetailsDialogOpen: isOpen });
     },
-    setAssetDetailsDialogSymbol: (symbol: string | Asset) => {
+    setAssetDetailsDialogSymbol: (symbol: string | AssetFieldsFragment) => {
       set({ assetDetailsDialogSymbol: symbol });
     },
   })
@@ -41,7 +41,7 @@ type AssetDetails = {
 }[];
 
 export interface AssetDetailsDialogProps {
-  assetSymbol: string | Asset;
+  assetSymbol: string | AssetFieldsFragment;
   open: boolean;
   onChange: (open: boolean) => void;
 }

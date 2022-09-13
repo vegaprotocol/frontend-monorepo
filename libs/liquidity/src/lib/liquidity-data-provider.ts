@@ -12,8 +12,8 @@ export interface LiquidityProvision {
   fee: string | undefined;
   equityLikeShare: string;
   averageEntryValuation: string;
-  obligation: string | null;
-  supplied: string | null;
+  obligation?: string | null;
+  supplied?: string | null;
   status?: Schema.LiquidityProvisionStatus;
   createdAt: string | undefined;
   updatedAt: string | null | undefined;

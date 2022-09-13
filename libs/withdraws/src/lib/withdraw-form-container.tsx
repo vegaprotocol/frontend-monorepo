@@ -2,11 +2,8 @@ import { getNodes, t } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
-import type {
-  AssetFieldsFragment} from './__generated__/Withdraw';
-import {
-  useWithdrawFormQuery
-} from './__generated__/Withdraw';
+import type { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
+import { useWithdrawFormQuery } from './__generated__/Withdrawal';
 
 interface WithdrawFormContainerProps {
   partyId: string;
@@ -22,7 +19,7 @@ export const WithdrawFormContainer = ({
   });
 
   const assets = useMemo(() => {
-    return getNodes<AssetFieldsFragment>(data?.assetsConnection);
+    return getNodes<WithdrawalAssetFieldsFragment>(data?.assetsConnection);
   }, [data]);
 
   if (loading || !data) {

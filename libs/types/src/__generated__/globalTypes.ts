@@ -226,15 +226,6 @@ export enum VoteValue {
   VALUE_YES = "VALUE_YES",
 }
 
-/**
- * The status of a withdrawal
- */
-export enum WithdrawalStatus {
-  STATUS_FINALIZED = "STATUS_FINALIZED",
-  STATUS_OPEN = "STATUS_OPEN",
-  STATUS_REJECTED = "STATUS_REJECTED",
-}
-
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import BigNumber from 'bignumber.js';
-import { addDecimal, t } from '@vegaprotocol/react-helpers';
+import { addDecimal, t, isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
-  Erc20Approval,
-  Erc20ApprovalVariables,
+  Erc20ApprovalQuery,
+  Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
 
@@ -57,11 +57,11 @@ export const useVerifyWithdrawal = () => {
   }, [setState]);
 
   const verify = useCallback(
-    async (withdrawal: WithdrawalFields) => {
+    async (withdrawal: WithdrawalFieldsFragment) => {
       try {
         setState({ dialogOpen: true });
 
-        if (withdrawal.asset.source.__typename !== 'ERC20') {
+        if (!isAssetTypeERC20(withdrawal.asset.source)) {
           setState({
             status: ApprovalStatus.Error,
             message: t(
@@ -97,8 +97,8 @@ export const useVerifyWithdrawal = () => {
           }
         }
 
-        const res = await client.query<Erc20Approval, Erc20ApprovalVariables>({
-          query: ERC20_APPROVAL_QUERY,
+        const res = await client.query<Erc20ApprovalQuery, Erc20ApprovalQueryVariables>({
+          query: Erc20ApprovalDocument,
           variables: { withdrawalId: withdrawal.id },
         });
 

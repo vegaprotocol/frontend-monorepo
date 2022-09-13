@@ -30,13 +30,13 @@ export interface Deposits_assetsConnection_edges_node {
    */
   id: string;
   /**
-   * The full name of the asset (e.g: Great British Pound)
-   */
-  name: string;
-  /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
   /**
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */

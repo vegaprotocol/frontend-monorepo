@@ -2,18 +2,18 @@ import { useCallback } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
-import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account } from './types';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { captureException } from '@sentry/react';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useWithdrawStore } from './withdraw-store';
+import { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal'
 
 export interface WithdrawManagerProps {
-  assets: Asset[];
+  assets: WithdrawalAssetFieldsFragment[];
   accounts: Account[];
   submit: (args: WithdrawalArgs) => void;
 }
@@ -34,7 +34,7 @@ export const WithdrawManager = ({
       const asset = assets.find((a) => a.id === id);
       const account = accounts.find(
         (a) =>
-          a.type === AccountType.ACCOUNT_TYPE_GENERAL &&
+          a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL &&
           a.asset.id === asset?.id
       );
       const balance =

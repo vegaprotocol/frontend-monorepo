@@ -1,19 +1,24 @@
+fragment AssetFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  status
+  quantum
+  source {
+    ... on ERC20 {
+      contractAddress
+      lifetimeLimit
+      withdrawThreshold
+    }
+  }
+}
+
 query AssetsConnection {
   assetsConnection {
     edges {
       node {
-        id
-        name
-        symbol
-        decimals
-        quantum
-        source {
-          ... on ERC20 {
-            contractAddress
-            lifetimeLimit
-            withdrawThreshold
-          }
-        }
+        ...AssetFields
       }
     }
   }

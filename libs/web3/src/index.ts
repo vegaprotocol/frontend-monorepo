@@ -1,5 +1,4 @@
 export * from './lib/ethereum-error';
-export * from './lib/__generated__/NetworkParams';
 export * from './lib/use-bridge-contract';
 export * from './lib/use-token-contract';
 export * from './lib/use-token-decimals';

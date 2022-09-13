@@ -1,4 +1,3 @@
-import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
   t,
@@ -17,6 +16,7 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import { Web3WalletInput } from '@vegaprotocol/web3';
@@ -35,8 +35,8 @@ interface FormFields {
 }
 
 export interface DepositFormProps {
-  assets: Asset[];
-  selectedAsset?: Asset;
+  assets: AssetFieldsFragment[];
+  selectedAsset?: AssetFieldsFragment;
   onSelectAsset: (assetId: string) => void;
   balance: BigNumber | undefined;
   submitApprove: () => void;
@@ -85,7 +85,7 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
+    if (!selectedAsset || selectedAsset.source?.__typename !== 'ERC20') {
       throw new Error('Invalid asset');
     }
 
@@ -122,7 +122,7 @@ export const DepositForm = ({
   const min = useMemo(() => {
     // Min viable amount given asset decimals EG for WEI 0.000000000000000001
     const minViableAmount = selectedAsset
-      ? new BigNumber(addDecimal('1', selectedAsset.decimals))
+      ? new BigNumber(addDecimal('1', selectedAsset.decimals ?? 0))
       : new BigNumber(0);
 
     return minViableAmount;
@@ -163,7 +163,7 @@ export const DepositForm = ({
               }}
             >
               <option value="">{t('Please select')}</option>
-              {assets.filter(isAssetTypeERC20).map((a) => (
+              {assets.filter(asset => isAssetTypeERC20(asset.source)).map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name}
                 </option>
@@ -270,7 +270,7 @@ export const DepositForm = ({
 };
 
 interface FormButtonProps {
-  selectedAsset?: Asset;
+  selectedAsset?: AssetFieldsFragment;
   amount: BigNumber;
   allowance: BigNumber | undefined;
   onApproveClick: () => void;

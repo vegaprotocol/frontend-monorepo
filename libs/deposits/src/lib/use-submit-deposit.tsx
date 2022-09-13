@@ -8,7 +8,6 @@ import type {
 import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
 import {
-  isAssetTypeERC20,
   remove0x,
   removeDecimal,
 } from '@vegaprotocol/react-helpers';
@@ -27,10 +26,7 @@ export const useSubmitDeposit = () => {
   const { asset, update } = useDepositStore();
   const { config } = useEthereumConfig();
   const bridgeContract = useBridgeContract();
-  const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset : undefined,
-    true
-  );
+  const tokenContract = useTokenContract(asset, true);
 
   // Store public key from contract arguments for use in the subscription,
   // NOTE: it may be different from the users connected key

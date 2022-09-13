@@ -1,3 +1,4 @@
+export * from './assets';
 export * from './context';
 export * from './format';
 export * from './grid';

@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import BigNumber from 'bignumber.js';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export const useGetDepositMaximum = (
   contract: CollateralBridge | null,
-  asset: Asset | undefined
+  asset: AssetFieldsFragment | undefined
 ) => {
   const getDepositMaximum = useCallback(async () => {
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {

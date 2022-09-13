@@ -10,22 +10,15 @@ import type {
   Deposits,
   Deposits_assetsConnection_edges_node,
 } from './__generated__/Deposits';
+import { AssetFieldsFragmentDoc } from '@vegaprotocol/assets';
 
 const DEPOSITS_QUERY = gql`
+  ${AssetFieldsFragmentDoc}
   query Deposits {
     assetsConnection {
       edges {
         node {
-          id
-          name
-          symbol
-          decimals
-          status
-          source {
-            ... on ERC20 {
-              contractAddress
-            }
-          }
+          ...AssetFields
         }
       }
     }

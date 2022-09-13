@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { formatDistanceToNow } from 'date-fns';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 export const WithdrawalFeedback = ({
   transaction,
@@ -20,7 +20,7 @@ export const WithdrawalFeedback = ({
   availableTimestamp,
 }: {
   transaction: VegaTxState;
-  withdrawal: WithdrawalFields | null;
+  withdrawal: WithdrawalFieldsFragment | null;
   submitWithdraw: (withdrawalId: string) => void;
   availableTimestamp: number | null;
 }) => {

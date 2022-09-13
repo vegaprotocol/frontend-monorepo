@@ -1,17 +1,17 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
-import { WITHDRAWAL_BUS_EVENT_SUB } from './use-withdrawals';
+import { WithdrawalEventDocument } from './__generated__/Withdrawal';
 import type {
-  WithdrawalEvent,
-  WithdrawalEventVariables,
-  WithdrawalEvent_busEvents_event_Withdrawal,
-} from './__generated__/WithdrawalEvent';
+  WithdrawalEventSubscription,
+  WithdrawalEventSubscriptionVariables,
+  WithdrawalFieldsFragment,
+} from './__generated__/Withdrawal';
 
 type WaitForWithdrawalEvent = (
   id: string,
   partyId: string
-) => Promise<WithdrawalEvent_busEvents_event_Withdrawal>;
+) => Promise<WithdrawalFieldsFragment>;
 export const useWithdrawalEvent = () => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
@@ -20,8 +20,8 @@ export const useWithdrawalEvent = () => {
     (id, partyId) => {
       return new Promise((resolve) => {
         subRef.current = client
-          .subscribe<WithdrawalEvent, WithdrawalEventVariables>({
-            query: WITHDRAWAL_BUS_EVENT_SUB,
+          .subscribe<WithdrawalEventSubscription, WithdrawalEventSubscriptionVariables>({
+            query: WithdrawalEventDocument,
             variables: { partyId },
           })
           .subscribe(({ data }) => {

@@ -3,11 +3,11 @@ import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { useWeb3React } from '@web3-react/core';
 
-export const useGetDepositedAmount = (asset: Asset | undefined) => {
+export const useGetDepositedAmount = (asset: AssetFieldsFragment | undefined) => {
   const { account, provider } = useWeb3React();
   const { config } = useEthereumConfig();
 

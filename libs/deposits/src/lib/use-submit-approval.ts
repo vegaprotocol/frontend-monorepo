@@ -1,4 +1,4 @@
-import { isAssetTypeERC20, removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 import * as Sentry from '@sentry/react';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import {
@@ -12,10 +12,7 @@ import { useGetAllowance } from './use-get-allowance';
 export const useSubmitApproval = () => {
   const { config } = useEthereumConfig();
   const { asset, update } = useDepositStore();
-  const contract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset : undefined,
-    true
-  );
+  const contract = useTokenContract(asset, true);
   const getAllowance = useGetAllowance(contract, asset);
   const transaction = useEthereumTransaction<Token, 'approve'>(
     contract,

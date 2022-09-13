@@ -31,6 +31,7 @@ module.exports = {
       '../../libs/trades/**',
       '../../libs/web3/**',
       '../../libs/wallet/**',
+      '../../libs/withdraws/**',
     ],
   },
 };

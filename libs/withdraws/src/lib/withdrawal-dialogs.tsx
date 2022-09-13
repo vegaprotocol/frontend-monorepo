@@ -25,7 +25,7 @@ export const WithdrawalDialogs = ({
         size="small"
       >
         <WithdrawFormContainer
-          partyId={keypair?.pub}
+          partyId={keypair?.pub ?? ''}
           submit={(args) => {
             setWithdrawDialog(false);
             createWithdraw.submit(args);
