@@ -1,7 +1,7 @@
 import { addHours, addMinutes, getTime } from 'date-fns';
 
-export const getValidationTimestamp = (proposalValidationDeadline: number) => {
-  return Math.floor(
+export const getValidationTimestamp = (proposalValidationDeadline: number) =>
+  Math.floor(
     getTime(
       proposalValidationDeadline === 0
         ? addHours(
@@ -11,4 +11,3 @@ export const getValidationTimestamp = (proposalValidationDeadline: number) => {
         : addHours(new Date(Date.now()), proposalValidationDeadline)
     ) / 1000
   );
-};
