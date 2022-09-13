@@ -22,6 +22,9 @@ export const ORDERS_QUERY = gql`
         edges {
           node {
             id
+            market {
+              id
+            }
             type
             side
             size
@@ -91,9 +94,14 @@ export const update = (
           draft.unshift(...draft.splice(index, 1));
         }
       } else if (newer) {
+        const { marketId, ...order } = node;
         draft.unshift({
           node: {
-            ...node,
+            ...order,
+            market: {
+              __typename: 'Market',
+              id: marketId,
+            },
             __typename: 'Order',
           },
           cursor: '',

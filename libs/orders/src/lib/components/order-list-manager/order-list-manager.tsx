@@ -7,8 +7,9 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
+import { marketsProvider } from '@vegaprotocol/market-list';
 import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
+import type { Orders_party_ordersConnection_edges, OrderSub_orders } from '../';
 
 interface OrderListManagerProps {
   partyId: string;
@@ -44,7 +45,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       delta,
     }: {
       data: (Orders_party_ordersConnection_edges | null)[];
-      delta: OrderFields[];
+      delta: OrderSub_orders[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -79,6 +80,14 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     []
   );
 
+  const {
+    data: markets,
+    error: marketsError,
+    loading: marketsLoading,
+  } = useDataProvider({
+    dataProvider: marketsProvider,
+  });
+
   const { data, error, loading, load, totalCount } = useDataProvider({
     dataProvider,
     update,
@@ -107,14 +116,21 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <OrderList
-        ref={gridRef}
-        rowModelType="infinite"
-        datasource={{ getRows }}
-        onBodyScrollEnd={onBodyScrollEnd}
-        onBodyScroll={onBodyScroll}
-      />
+    <AsyncRenderer
+      loading={loading || marketsLoading}
+      error={error || marketsError}
+      data={data && markets}
+    >
+      {markets && (
+        <OrderList
+          ref={gridRef}
+          markets={markets}
+          rowModelType="infinite"
+          datasource={{ getRows }}
+          onBodyScrollEnd={onBodyScrollEnd}
+          onBodyScroll={onBodyScroll}
+        />
+      )}
     </AsyncRenderer>
   );
 };

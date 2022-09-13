@@ -9,12 +9,24 @@ import { Pagination, OrderType, Side, OrderStatus, OrderRejectionReason, OrderTi
 // GraphQL query operation: Orders
 // ====================================================
 
+export interface Orders_party_ordersConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
 export interface Orders_party_ordersConnection_edges_node {
   __typename: "Order";
   /**
    * Hash of the order data
    */
-  id: string;
+   id: string;
+   /**
+    * The market the order is trading on (probably stored internally as a hash of the market details)
+    */
+   market: Orders_party_ordersConnection_edges_node_market;
   /**
    * The order type
    */

@@ -14,6 +14,10 @@ export const generateOrder = (
   const order: Orders_party_ordersConnection_edges_node = {
     __typename: 'Order',
     id: 'order-id2',
+    market: {
+      __typename: 'Market',
+      id: 'market-id',
+    },
     size: '10',
     type: OrderType.TYPE_MARKET,
     status: OrderStatus.STATUS_ACTIVE,
@@ -49,6 +53,10 @@ export const generateMockOrders =
     return [
       generateOrder({
         id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
+        market: {
+          __typename: 'Market',
+          id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        },
         size: '10',
         type: OrderType.TYPE_LIMIT,
         status: OrderStatus.STATUS_FILLED,
@@ -60,6 +68,10 @@ export const generateMockOrders =
       }),
       generateOrder({
         id: '48DB6767E4E4E0F649C5A13ABFADE39F8451C27DA828DAF14B7A1E8E5EBDAD99',
+        market: {
+          __typename: 'Market',
+          id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        },
         size: '1',
         type: OrderType.TYPE_LIMIT,
         status: OrderStatus.STATUS_FILLED,
@@ -71,6 +83,10 @@ export const generateMockOrders =
       }),
       generateOrder({
         id: '4e93702990712c41f6995fcbbd94f60bb372ad12d64dfa7d96d205c49f790336',
+        market: {
+          __typename: 'Market',
+          id: 'c6f4337b31ed57a961969c3ba10297b369d01b9e75a4cbb96db4fc62886444e6',
+        },
         size: '1',
         type: OrderType.TYPE_LIMIT,
         status: OrderStatus.STATUS_FILLED,
