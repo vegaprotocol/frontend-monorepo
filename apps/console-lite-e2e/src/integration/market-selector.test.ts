@@ -9,6 +9,7 @@ import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketNames } from '../support/mocks/generate-market-names';
+import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 
 describe('market selector', () => {
   let markets;
@@ -23,6 +24,7 @@ describe('market selector', () => {
       aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketNames', generateMarketNames());
+      aliasQuery(req, 'MarketDepth', generateMarketDepth());
     });
 
     cy.visit('/markets');

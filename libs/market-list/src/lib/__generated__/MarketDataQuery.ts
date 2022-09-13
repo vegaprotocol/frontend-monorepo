@@ -6,15 +6,23 @@
 import { AuctionTrigger, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL subscription operation: MarketDataSub
+// GraphQL query operation: MarketDataQuery
 // ====================================================
 
-export interface MarketDataSub_marketsData {
-  __typename: "ObservableMarketData";
+export interface MarketDataQuery_marketsConnection_edges_node_data_market {
+  __typename: "Market";
   /**
-   * market ID of the associated mark price
+   * Market ID
    */
-  marketId: string;
+  id: string;
+}
+
+export interface MarketDataQuery_marketsConnection_edges_node_data {
+  __typename: "MarketData";
+  /**
+   * market of the associated mark price
+   */
+  market: MarketDataQuery_marketsConnection_edges_node_data_market;
   /**
    * the highest price level on an order book for buy orders.
    */
@@ -36,7 +44,7 @@ export interface MarketDataSub_marketsData {
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous etc)
+   * what state the market is in (auction, continuous, etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
@@ -52,18 +60,36 @@ export interface MarketDataSub_marketsData {
    */
   bestStaticBidPrice: string;
   /**
-   * the lowest price level on an order book for offer orders not including pegged orders
+   * the lowest price level on an order book for offer orders not including pegged orders.
    */
   bestStaticOfferPrice: string;
 }
 
-export interface MarketDataSub {
+export interface MarketDataQuery_marketsConnection_edges_node {
+  __typename: "Market";
   /**
-   * Subscribe to the mark price changes
+   * marketData for the given market
    */
-  marketsData: MarketDataSub_marketsData[];
+  data: MarketDataQuery_marketsConnection_edges_node_data | null;
 }
 
-export interface MarketDataSubVariables {
+export interface MarketDataQuery_marketsConnection_edges {
+  __typename: "MarketEdge";
+  node: MarketDataQuery_marketsConnection_edges_node;
+}
+
+export interface MarketDataQuery_marketsConnection {
+  __typename: "MarketConnection";
+  /**
+   * The markets in this connection
+   */
+  edges: MarketDataQuery_marketsConnection_edges[];
+}
+
+export interface MarketDataQuery {
+  marketsConnection: MarketDataQuery_marketsConnection;
+}
+
+export interface MarketDataQueryVariables {
   id: string;
 }
