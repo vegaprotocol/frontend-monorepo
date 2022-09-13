@@ -23,6 +23,8 @@ import type {
   GetRowIdFunc,
 } from 'ag-grid-community';
 
+import type { Datasource } from '@vegaprotocol/positions';
+
 interface Props<T> {
   columnDefs: (ColDef | ColGroupDef)[] | null;
   data: T[];
@@ -30,9 +32,11 @@ interface Props<T> {
   handleRowClicked?: (event: { data: T }) => void;
   components?: Record<string, unknown>;
   getRowId?: GetRowIdFunc;
+  rowData?: T[] | null;
+  datasource?: Datasource;
 }
 
-const ConsoleLiteGrid = <T extends { id: string }>(
+const ConsoleLiteGrid = <T extends { id?: string }>(
   { columnDefs, data, defaultColDef, handleRowClicked, getRowId }: Props<T>,
   ref?: React.Ref<AgGridReact>
 ) => {
@@ -103,7 +107,7 @@ const ConsoleLiteGrid = <T extends { id: string }>(
 };
 
 const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <
-  T extends { id: string }
+  T extends { id?: string }
 >(
   p: Props<T> & { ref?: React.Ref<AgGridReact> }
 ) => React.ReactElement;

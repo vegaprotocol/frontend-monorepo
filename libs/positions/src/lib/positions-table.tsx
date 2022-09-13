@@ -41,7 +41,7 @@ interface Props extends AgGridReactProps {
   style?: CSSProperties;
 }
 
-type PositionsTableValueFormatterParams = Omit<
+export type PositionsTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
