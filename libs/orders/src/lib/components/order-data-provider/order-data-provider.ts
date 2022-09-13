@@ -10,9 +10,8 @@ import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type {
   Orders,
   Orders_party_ordersConnection_edges,
-  OrderSub,
-  OrderFields,
-} from '../';
+} from './__generated__/Orders';
+import type { OrderSub, OrderSub_orders } from './__generated__/OrderSub';
 
 export const ORDERS_QUERY = gql`
   query Orders($partyId: ID!, $pagination: Pagination) {
@@ -81,7 +80,7 @@ export const ORDERS_SUB = gql`
 
 export const update = (
   data: Orders_party_ordersConnection_edges[],
-  delta: OrderFields[]
+  delta: OrderSub_orders[]
 ) => {
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
@@ -112,12 +111,12 @@ export const update = (
 const getData = (
   responseData: Orders
 ): Orders_party_ordersConnection_edges[] | null =>
-  responseData?.party?.ordersConnection.edges || null;
+  responseData?.party?.ordersConnection?.edges || null;
 
 const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
 
 const getPageInfo = (responseData: Orders): PageInfo | null =>
-  responseData.party?.ordersConnection.pageInfo || null;
+  responseData.party?.ordersConnection?.pageInfo || null;
 
 export const ordersDataProvider = makeDataProvider({
   query: ORDERS_QUERY,

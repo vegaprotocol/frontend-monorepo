@@ -3,6 +3,8 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type AccountFieldsFragment = { __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, assetId: string, marketId?: string | null };
+
 export type AccountsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -15,9 +17,16 @@ export type AccountEventsSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, marketId?: string | null, assetId: string }> };
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', marketId?: string | null, assetId: string, type: Types.AccountType, balance: string }> };
 
-
+export const AccountFieldsFragmentDoc = gql`
+    fragment AccountFields on AccountUpdate {
+  type
+  balance
+  assetId
+  marketId
+}
+    `;
 export const AccountsDocument = gql`
     query Accounts($partyId: ID!) {
   party(id: $partyId) {
@@ -73,13 +82,12 @@ export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQuer
 export const AccountEventsDocument = gql`
     subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    type
-    balance
+    ...AccountFields
     marketId
     assetId
   }
 }
-    `;
+    ${AccountFieldsFragmentDoc}`;
 
 /**
  * __useAccountEventsSubscription__

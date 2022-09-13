@@ -1,9 +1,11 @@
+import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
-import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
 import type { WithdrawFormQuery } from './__generated__/WithdrawFormQuery';
+import { AssetStatus } from '@vegaprotocol/types';
 
 export const ASSET_FRAGMENT = gql`
   fragment AssetFields on Asset {
@@ -65,11 +67,13 @@ export const WithdrawFormContainer = ({
   );
 
   const assets = useMemo(() => {
-    if (!data?.assetsConnection.edges) {
+    if (!data?.assetsConnection?.edges) {
       return [];
     }
 
-    return getEnabledAssets(data);
+    return compact(data.assetsConnection.edges)
+      .map((e) => e.node)
+      .filter((a) => a.status === AssetStatus.STATUS_ENABLED);
   }, [data]);
 
   if (loading || !data) {

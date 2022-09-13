@@ -11,7 +11,10 @@ import type {
   DepositEventSub_busEvents_event,
   DepositEventSub_busEvents_event_Deposit,
 } from './__generated__/DepositEventSub';
-import type { Deposits, DepositsVariables } from './__generated__/Deposits';
+import type {
+  DepositsQuery,
+  DepositsQueryVariables,
+} from './__generated__/DepositsQuery';
 
 const DEPOSIT_FRAGMENT = gql`
   fragment DepositFields on Deposit {
@@ -61,15 +64,15 @@ const DEPOSITS_BUS_EVENT_SUB = gql`
 export const useDeposits = () => {
   const { keypair } = useVegaWallet();
   const { data, loading, error, subscribeToMore } = useQuery<
-    Deposits,
-    DepositsVariables
+    DepositsQuery,
+    DepositsQueryVariables
   >(DEPOSITS_QUERY, {
     variables: { partyId: keypair?.pub || '' },
     skip: !keypair?.pub,
   });
 
   const deposits = useMemo(() => {
-    if (!data?.party?.depositsConnection.edges?.length) {
+    if (!data?.party?.depositsConnection?.edges?.length) {
       return [];
     }
 
@@ -98,7 +101,7 @@ export const useDeposits = () => {
 };
 
 const updateQuery: UpdateQueryFn<
-  Deposits,
+  DepositsQuery,
   DepositEventSubVariables,
   DepositEventSub
 > = (prev, { subscriptionData, variables }) => {
@@ -108,7 +111,7 @@ const updateQuery: UpdateQueryFn<
   }
 
   const curr =
-    compact(prev.party?.depositsConnection.edges?.map((e) => e?.node)) || [];
+    compact(prev.party?.depositsConnection?.edges?.map((e) => e?.node)) || [];
   const incoming = subscriptionData.data.busEvents
     .map((e) => e.event)
     .filter(isDepositEvent);

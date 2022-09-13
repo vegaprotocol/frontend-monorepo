@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
@@ -99,9 +100,10 @@ const Governance = () => {
   const { data } = useQuery<ProposalsQuery>(PROPOSALS_QUERY, {
     errorPolicy: 'ignore',
   });
-  const proposals = getProposals(
-    data
-  ) as ProposalsQuery_proposalsConnection_edges_node[];
+
+  const proposals = compact(data?.proposalsConnection?.edges).map(
+    (e) => e.node
+  );
 
   if (!data) return null;
   return (

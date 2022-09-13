@@ -1,3 +1,10 @@
+fragment AccountFields on AccountUpdate {
+  type
+  balance
+  assetId
+  marketId
+}
+
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
@@ -23,8 +30,7 @@ query Accounts($partyId: ID!) {
 
 subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    type
-    balance
+    ...AccountFields
     marketId
     assetId
   }

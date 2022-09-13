@@ -6,7 +6,7 @@ import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
 
 interface ProposalProps {
-  proposal: Proposal_proposal;
+  proposal: Proposal_proposal | null;
 }
 
 export const Proposal = ({ proposal }: ProposalProps) => {

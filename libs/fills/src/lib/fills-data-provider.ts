@@ -6,16 +6,14 @@ import {
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import type { FillFields } from './__generated__/FillFields';
 import type {
   Fills,
   Fills_party_tradesConnection_edges,
   Fills_party_tradesConnection_edges_node,
 } from './__generated__/Fills';
-import type { FillsSub } from './__generated__/FillsSub';
+import type { FillsSub, FillsSub_trades } from './__generated__/FillsSub';
 
 export const FILLS_QUERY = gql`
-  ${FILL_FRAGMENT}
   query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
     party(id: $partyId) {
       id
@@ -109,7 +107,7 @@ export const FILLS_SUB = gql`
 
 const update = (
   data: (Fills_party_tradesConnection_edges | null)[],
-  delta: FillFields[]
+  delta: FillsSub_trades[]
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt').forEach((node) => {
@@ -134,10 +132,10 @@ const update = (
 const getData = (
   responseData: Fills
 ): Fills_party_tradesConnection_edges[] | null =>
-  responseData.party?.tradesConnection.edges || null;
+  responseData.party?.tradesConnection?.edges || null;
 
 const getPageInfo = (responseData: Fills): PageInfo | null =>
-  responseData.party?.tradesConnection.pageInfo || null;
+  responseData.party?.tradesConnection?.pageInfo || null;
 
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
 

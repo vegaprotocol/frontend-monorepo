@@ -29,7 +29,7 @@ export const getProposals = (data?: ProposalsConnection) => {
   return proposals ? (proposals as Proposal[]) : [];
 };
 
-const orderByDate = (arr: Proposal[]) =>
+export const orderByDate = (arr: Proposal[]) =>
   orderBy(
     arr,
     [

@@ -16,9 +16,9 @@ import {
   useState,
   useContext,
 } from 'react';
-import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
 import type { DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
+import type { MarketDepthSubscription_marketsDepthUpdate } from './__generated__/MarketDepthSubscription';
 
 interface DepthChartManagerProps {
   marketId: string;
@@ -40,7 +40,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   // Apply updates to the table
   const update = useCallback(
-    ({ delta }: { delta: MarketDepthSubscription_marketDepthUpdate }) => {
+    ({ delta }: { delta: MarketDepthSubscription_marketsDepthUpdate }) => {
       if (!dataRef.current) {
         return false;
       }

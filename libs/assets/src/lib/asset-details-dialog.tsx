@@ -9,9 +9,9 @@ import {
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { useAssetsConnectionQuery } from './__generated__/Assets';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
+import { useAssetsConnectionQuery } from './__generated___/Assets';
 
 export type AssetDetailsDialogStore = {
   isAssetDetailsDialogOpen: boolean;
@@ -54,7 +54,7 @@ export const AssetDetailsDialog = ({
   const { data } = useAssetsConnectionQuery();
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
-  const asset = data?.assetsConnection.edges?.find(
+  const asset = data?.assetsConnection?.edges?.find(
     (e) => e?.node.symbol === symbol
   );
 
