@@ -46,6 +46,7 @@ const MARKET_DATA_FRAGMENT = gql`
             settlementAsset {
               symbol
             }
+            quoteName
           }
         }
       }
@@ -88,7 +89,7 @@ export const activeMarketsProvider = makeDerivedDataProvider<Market[]>(
   ([markets]) => mapDataToMarketList(markets)
 );
 
-interface MarketsListData {
+export interface MarketsListData {
   markets: Market[];
   marketsData: MarketData[];
   marketsCandles: MarketCandles[];

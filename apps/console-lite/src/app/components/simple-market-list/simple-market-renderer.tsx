@@ -1,10 +1,9 @@
-import React from 'react';
 import classNames from 'classnames';
-import type { MarketNames_markets } from '@vegaprotocol/deal-ticket';
 import SimpleMarketExpires from './simple-market-expires';
+import type { Market } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: MarketNames_markets;
+  market: Market;
   isMobile?: boolean;
 }
 
@@ -25,7 +24,7 @@ const MarketNameRenderer = ({ market, isMobile }: Props) => {
         />
       </div>
       <div className="col-span-2 text-ui-tiny md:text-ui-small text-deemphasise dark:text-midGrey self-start leading-3">
-        {market.tradableInstrument.instrument.product.quoteName}
+        {/* {market.tradableInstrument.instrument.product.quoteName} */}
       </div>
     </div>
   );

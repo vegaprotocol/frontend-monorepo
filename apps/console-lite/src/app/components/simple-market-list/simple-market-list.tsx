@@ -1,29 +1,16 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { subDays } from 'date-fns';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import {
-  useDataProvider,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import type { MarketState } from '@vegaprotocol/types';
-import useMarketsFilterData from '../../hooks/use-markets-filter-data';
+import filterMarkets from '../../hooks/filter-markets';
 import useColumnDefinitions from '../../hooks/use-column-definitions';
-import dataProvider from './data-provider';
 import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
-import type { SimpleMarketDataSub_marketData } from './__generated__/SimpleMarketDataSub';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import type {
   CellKeyDownEvent,
@@ -33,8 +20,10 @@ import type {
   GetRowIdParams,
   TabToNextCellParams,
 } from 'ag-grid-community/dist/lib/entities/iCallbackParams';
+import type { Market } from '@vegaprotocol/market-list';
+import { useMarketList } from '@vegaprotocol/market-list';
 
-export type SimpleMarketsType = SimpleMarkets_markets & {
+export type MarketWithPercentChange = Market & {
   percentChange?: number | '-';
 };
 
@@ -51,26 +40,18 @@ const SimpleMarketList = () => {
   const theme = useContext(ThemeContext);
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo(
-    () => ({
-      CandleSince: subDays(Date.now(), 1).toJSON(),
-    }),
-    []
-  );
-  const update = useCallback(
-    ({ delta }: { delta: SimpleMarketDataSub_marketData }) =>
-      statusesRef.current[delta.market.id] === delta.market.state,
-    [statusesRef]
-  );
 
-  const { data, error, loading } = useDataProvider({
-    dataProvider,
-    update,
-    variables,
-  });
-  const localData: Array<SimpleMarketsType> = useMarketsFilterData(
-    data || [],
-    params
+  const { data, error, loading } = useMarketList();
+
+  const localData = useMemo(
+    () =>
+      filterMarkets(data?.markets || [], params).map((m) => ({
+        ...m,
+        candles: (data?.marketsCandles || [])
+          .filter((c) => c.marketId === m.id)
+          .map((c) => c.candles),
+      })),
+    [data, params]
   );
 
   const handleOnGridReady = useCallback(() => {
@@ -79,7 +60,7 @@ const SimpleMarketList = () => {
 
   useEffect(() => {
     const statuses: Record<string, MarketState | ''> = {};
-    data?.forEach((market) => {
+    data?.markets?.forEach((market) => {
       statuses[market.id] = market.state || '';
     });
     statusesRef.current = statuses;
@@ -95,7 +76,7 @@ const SimpleMarketList = () => {
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
   const handleRowClicked = useCallback(
-    ({ data }: { data: SimpleMarketsType }) => {
+    ({ data }: { data: Market }) => {
       if (IS_MARKET_TRADABLE(data)) {
         navigate(`/trading/${data.id}`);
       }
@@ -135,7 +116,7 @@ const SimpleMarketList = () => {
 
   return (
     <div className="h-full p-4 md:p-6 grid grid-rows-[min-content,1fr]">
-      <SimpleMarketToolbar data={data || []} />
+      <SimpleMarketToolbar data={data?.markets || []} />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <AgGrid
           className="mb-32 min-h-[300px]"

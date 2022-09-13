@@ -1,11 +1,8 @@
-import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 import type { RouterParams } from '../components/simple-market-list/simple-market-list';
 import { MarketState } from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/market-list';
 
-const useMarketsFilterData = (
-  data: SimpleMarkets_markets[] = [],
-  params: RouterParams
-) => {
+const filterMarkets = (data: Market[], params: RouterParams) => {
   return data.filter((item) => {
     if (
       params.product &&
@@ -34,4 +31,4 @@ const useMarketsFilterData = (
   });
 };
 
-export default useMarketsFilterData;
+export default filterMarkets;

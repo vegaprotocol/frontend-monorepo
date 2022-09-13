@@ -13,12 +13,8 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import { MARKETS_QUERY } from './data-provider';
-import type {
-  SimpleMarkets_markets,
-  SimpleMarkets,
-} from './__generated__/SimpleMarkets';
-import type { SimpleMarketDataSub_marketData } from './__generated__/SimpleMarketDataSub';
+import type { Market, MarketsListData } from '@vegaprotocol/market-list';
+import { MARKET_LIST_QUERY } from '@vegaprotocol/market-list';
 
 const mockedNavigate = jest.fn();
 
@@ -27,16 +23,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
   useParams: () => ({}),
 }));
-
-jest.mock('date-fns', () => ({
-  subDays: () => new Date('2022-06-02T11:11:21.721Z'),
-}));
-
-let updateMock: ({
-  delta,
-}: {
-  delta: SimpleMarketDataSub_marketData;
-}) => boolean;
 
 let mockData = [
   {
@@ -73,20 +59,18 @@ let mockData = [
       },
     },
   },
-] as unknown as SimpleMarkets_markets[];
+] as unknown as Market[];
 
-const mockUseDataProvider = ({ update }: { update: () => boolean }) => {
-  updateMock = update;
+const LIB = '@vegaprotocol/market-list';
+const useMarketList = () => {
   return { data: mockData, loading: false, error: false };
 };
-
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useDataProvider: jest.fn((args) => mockUseDataProvider(args)),
+jest.mock(LIB, () => ({
+  ...jest.requireActual(LIB),
+  useMarketList: jest.fn(() => useMarketList()),
 }));
 
 const mockIsTradable = jest.fn((_arg) => true);
-
 jest.mock('../../constants', () => ({
   ...jest.requireActual('../../constants'),
   IS_MARKET_TRADABLE: jest.fn((arg) => mockIsTradable(arg)),
@@ -98,15 +82,12 @@ describe('SimpleMarketList', () => {
     cleanup();
   });
 
-  const mocks: MockedResponse<SimpleMarkets> = {
+  const mocks: MockedResponse<MarketsListData> = {
     request: {
-      query: MARKETS_QUERY,
-      variables: {
-        CandleSince: '2022-06-02T11:11:21.721Z',
-      },
+      query: MARKET_LIST_QUERY,
     },
     result: {
-      data: { markets: mockData },
+      data: { markets: mockData, marketsCandles: [], marketsData: [] },
     },
   };
 
@@ -129,49 +110,6 @@ describe('SimpleMarketList', () => {
       const container = document.querySelector('.ag-center-cols-container');
       expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
     });
-  });
-
-  it('update should return proper boolean value', async () => {
-    await act(async () => {
-      render(
-        <MockedProvider mocks={[mocks]}>
-          <SimpleMarketList />
-        </MockedProvider>,
-        { wrapper: BrowserRouter }
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    await waitFor(() => {
-      expect(
-        document.querySelector('.ag-center-cols-container')
-      ).toBeInTheDocument();
-    });
-
-    await expect(
-      updateMock({
-        delta: {
-          __typename: 'MarketData',
-          market: {
-            __typename: 'Market',
-            id: '2',
-            state: MarketState.STATE_ACTIVE,
-          },
-        },
-      })
-    ).toEqual(true);
-
-    await expect(
-      updateMock({
-        delta: {
-          __typename: 'MarketData',
-          market: {
-            __typename: 'Market',
-            id: '2',
-            state: MarketState.STATE_SUSPENDED,
-          },
-        },
-      })
-    ).toEqual(false);
   });
 
   it('click on row should be properly handled', async () => {
