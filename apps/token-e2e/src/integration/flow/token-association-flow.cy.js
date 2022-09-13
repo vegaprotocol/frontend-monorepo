@@ -78,18 +78,10 @@ context(
         // 1000-ASSO-0028
         // 1000-ASSO-0029
 
-        cy.staking_page_associate_tokens('2');
-
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 2.0);
-
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('2.0', txTimeout)
-          .should('be.visible');
-
-        cy.get('button').contains('Select a validator to nominate').click();
+        cy.eth_associate_tokens(2);
+        cy.get(vegaWallet).within(() => {
+          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+        });
 
         cy.staking_page_disassociate_tokens('2');
 
@@ -122,13 +114,10 @@ context(
       });
 
       it('Able to disassociate a partial amount of tokens currently associated', function () {
-        cy.staking_page_associate_tokens('2');
-
+        cy.eth_associate_tokens(2);
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
-
-        cy.get('button').contains('Select a validator to nominate').click();
 
         cy.staking_page_disassociate_tokens('1');
 
@@ -152,13 +141,10 @@ context(
         const warningText =
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
 
-        cy.staking_page_associate_tokens('2');
-
+        cy.eth_associate_tokens(2);
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
         });
-
-        cy.get('button').contains('Select a validator to nominate').click();
 
         cy.get(ethWalletDissociateButton).click();
         cy.get(disassocitiationWarning).should('contain', warningText);
@@ -215,31 +201,14 @@ context(
           .should('be.visible');
       });
 
-      it('Able to associate & disassociate both wallet and vesting contract tokens', function () {
+      it('Able disassociate both wallet and vesting contract tokens', function () {
         // 1000-ASSO-0019
         // 1000-ASSO-0020
         // 1000-ASSO-0021
         // 1000-ASSO-0022
 
-        cy.staking_page_associate_tokens('21', { type: 'wallet' });
-        cy.get('button').contains('Select a validator to nominate').click();
-        cy.staking_page_associate_tokens('37', { type: 'contract' });
-
-        cy.get(vestingContractSection).within(() => {
-          cy.get(associatedKey).should(
-            'contain',
-            Cypress.env('vegaWalletPublicKeyShort')
-          );
-          cy.get(associatedAmount, txTimeout).should('contain', 37);
-        });
-
-        cy.get(vegaInWalletSection).within(() => {
-          cy.get(associatedKey).should(
-            'contain',
-            Cypress.env('vegaWalletPublicKeyShort')
-          );
-          cy.get(associatedAmount, txTimeout).should('contain', 21);
-        });
+        cy.eth_associate_tokens(21, 'wallet');
+        cy.eth_associate_tokens(37, 'contract');
 
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 58);
