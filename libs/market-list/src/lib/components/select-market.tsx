@@ -76,7 +76,7 @@ export const SelectAllMarketsTableBody = ({
   if (!data) return null;
   return (
     <>
-      <thead className="bg-neutral-50 dark:bg-neutral-800">
+      <thead className="bg-neutral-100 dark:bg-neutral-800">
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
       {/* Border styles required to create space between tbody elements margin/padding dont work */}
@@ -101,7 +101,7 @@ export const SelectMarketPopover = ({
   onSelect: (id: string) => void;
 }) => {
   const triggerClasses =
-    'sm:text-lg md:text-xl lg:text-2xl font-medium flex items-center gap-4 whitespace-nowrap my-3 hover:text-neutral-500 dark:hover:text-neutral-300';
+    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();

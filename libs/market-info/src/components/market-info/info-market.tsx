@@ -335,7 +335,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <p className={headerClassName}>{t('Market data')}</p>
         <Accordion panels={marketDataPanels} />
       </div>
-      <div className="mb-4">
+      <div className="mb-8">
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>

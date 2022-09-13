@@ -29,7 +29,7 @@ export const DropdownMenuTrigger = forwardRef<
     className,
     'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500',
     'focus:border-black dark:focus:border-white whitespace-nowrap',
-    'hover:bg-neutral-100 dark:hover:bg-neutral-700'
+    'hover:bg-neutral-200 dark:hover:bg-neutral-700'
   );
   return (
     <DropdownMenuPrimitive.Trigger
