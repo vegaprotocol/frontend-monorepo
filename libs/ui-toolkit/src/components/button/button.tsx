@@ -22,7 +22,8 @@ const defaultClasses = [
   'border-black dark:border-white',
   'bg-white dark:bg-black',
   'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700',
-  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700 enabled:active:border-neutral-400 dark:enabled:active:border-neutral-400',
+  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700',
+  'enabled:active:border-neutral-400',
 ];
 const primary = [
   'text-black',

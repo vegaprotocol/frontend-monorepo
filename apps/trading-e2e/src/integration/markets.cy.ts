@@ -127,7 +127,7 @@ describe('markets table', () => {
   }
 
   function verifyMarketSummaryDisplayed() {
-    const marketSummaryBlock = 'market-summary';
+    const marketSummaryBlock = 'header-summary';
     const percentageValue = 'price-change-percentage';
     const priceChangeValue = 'price-change';
     const tradingVolume = 'trading-volume';
