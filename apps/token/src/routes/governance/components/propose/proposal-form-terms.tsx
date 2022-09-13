@@ -23,7 +23,7 @@ export const ProposalFormTerms = function ({
       labelFor="proposal-terms"
     >
       <div className="mt-[-4px] mb-2 text-sm font-light">
-        {VEGA_DOCS_URL && <ProposalDocsLink url={VEGA_DOCS_URL} />}
+        {VEGA_DOCS_URL && <ProposalDocsLink urlPart1={VEGA_DOCS_URL} />}
       </div>
       <TextArea
         id="proposal-terms"

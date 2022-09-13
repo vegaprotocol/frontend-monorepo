@@ -14,6 +14,7 @@ import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
+  ProposalDocsLink,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -65,7 +66,7 @@ export const ProposeFreeform = () => {
     [networkParamsData]
   );
 
-  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -102,6 +103,14 @@ export const ProposeFreeform = () => {
               spamProtectionMin={minSpamBalance}
             />
 
+            {VEGA_DOCS_URL && (
+              <div className="text-sm">
+                <ProposalDocsLink
+                  urlPart1={VEGA_DOCS_URL}
+                  urlPart2={'/tutorials/proposals/freeform-proposal'}
+                />
+              </div>
+            )}
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreProposalsInfo')}{' '}

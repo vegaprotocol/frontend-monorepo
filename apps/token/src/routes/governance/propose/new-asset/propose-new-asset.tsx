@@ -17,6 +17,7 @@ import {
   ProposalFormTransactionDialog,
   ProposalFormSubheader,
   ProposalFormVoteAndEnactmentDeadline,
+  ProposalDocsLink,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -80,7 +81,7 @@ export const ProposeNewAsset = () => {
     [networkParamsData]
   );
 
-  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -126,6 +127,14 @@ export const ProposeNewAsset = () => {
               spamProtectionMin={minSpamBalance}
             />
 
+            {VEGA_DOCS_URL && (
+              <div className="text-sm">
+                <ProposalDocsLink
+                  urlPart1={VEGA_DOCS_URL}
+                  urlPart2={'/tutorials/proposals/new-asset-proposal'}
+                />
+              </div>
+            )}
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreAssetsInfo')}{' '}
@@ -172,6 +181,7 @@ export const ProposeNewAsset = () => {
                       },
                     },
                   })}
+                  labelOverride={'Terms.newAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
                 />
 

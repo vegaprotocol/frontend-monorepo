@@ -15,7 +15,7 @@ export const Propose = () => {
     <>
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
-        {VEGA_DOCS_URL && <ProposalDocsLink url={VEGA_DOCS_URL} />}
+        {VEGA_DOCS_URL && <ProposalDocsLink urlPart1={VEGA_DOCS_URL} />}
         {VEGA_EXPLORER_URL && (
           <p>
             {t('MoreProposalsInfo')}{' '}

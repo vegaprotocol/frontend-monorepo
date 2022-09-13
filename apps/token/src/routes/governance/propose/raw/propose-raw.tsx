@@ -11,6 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
+  ProposalDocsLink,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
 } from '../../components/propose';
@@ -20,7 +21,7 @@ export interface RawProposalFormFields {
 }
 
 export const ProposeRaw = () => {
-  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -41,6 +42,12 @@ export const ProposeRaw = () => {
       <VegaWalletContainer>
         {() => (
           <>
+            {VEGA_DOCS_URL && (
+              <div className="text-sm">
+                <ProposalDocsLink urlPart1={VEGA_DOCS_URL} />
+              </div>
+            )}
+
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreProposalsInfo')}{' '}

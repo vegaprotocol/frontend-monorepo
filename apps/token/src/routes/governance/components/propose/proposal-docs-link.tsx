@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalDocsLinkProps {
-  url: string;
+  urlPart1: string;
+  urlPart2?: string;
 }
 
-export const ProposalDocsLink = ({ url }: ProposalDocsLinkProps) => {
+export const ProposalDocsLink = ({
+  urlPart1,
+  urlPart2,
+}: ProposalDocsLinkProps) => {
   const { t } = useTranslation();
-  const docsLink = `${url}/tutorials/proposals`;
+  const docsLink = `${urlPart1}${urlPart2 ? urlPart2 : '/tutorials/proposals'}`;
   const linkStyles = classnames('underline mb-2');
 
   return (
