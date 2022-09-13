@@ -29,7 +29,8 @@ describe('ProposalForm', () => {
               reference: 'proposal-reference',
               state: Schema.ProposalState.STATE_OPEN,
               rejectionReason:
-                Schema.ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+                Schema.ProposalRejectionReason
+                  .PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
               errorDetails: 'error-details',
             },
           },

@@ -4,7 +4,7 @@ import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import { Schema } from '@vegaprotocol/types';
 
-type ProposalsConnection = Pick<Schema.Query, 'proposalsConnection'>
+type ProposalsConnection = Pick<Schema.Query, 'proposalsConnection'>;
 
 export const getProposals = (data?: ProposalsConnection) => {
   const proposals = data?.proposalsConnection.edges

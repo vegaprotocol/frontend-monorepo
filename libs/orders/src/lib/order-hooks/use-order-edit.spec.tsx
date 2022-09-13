@@ -8,7 +8,10 @@ import { Schema } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
 import { OrderBusEventDocument } from './__generated__/Orders';
-import type { OrderBusEventSubscription, OrderFieldsFragment } from './__generated__/Orders';
+import type {
+  OrderBusEventSubscription,
+  OrderFieldsFragment,
+} from './__generated__/Orders';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { generateOrder } from '../components';
@@ -23,7 +26,10 @@ const defaultWalletContext = {
   connector: null,
 };
 
-function setup(order: OrderFieldsFragment, context?: Partial<VegaWalletContextShape>) {
+function setup(
+  order: OrderFieldsFragment,
+  context?: Partial<VegaWalletContextShape>
+) {
   const mocks: MockedResponse<OrderBusEventSubscription> = {
     request: {
       query: OrderBusEventDocument,
@@ -58,7 +64,7 @@ function setup(order: OrderFieldsFragment, context?: Partial<VegaWalletContextSh
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
                 __typename: 'Market',
               },
@@ -104,7 +110,7 @@ function setup(order: OrderFieldsFragment, context?: Partial<VegaWalletContextSh
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
                 __typename: 'Market',
               },

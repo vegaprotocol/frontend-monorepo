@@ -4,10 +4,7 @@ import type {
   VegaWalletContextShape,
   VegaKeyExtended,
 } from '@vegaprotocol/wallet';
-import {
-  Schema,
-  MarketStateMapping,
-} from '@vegaprotocol/types';
+import { Schema, MarketStateMapping } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';

@@ -12,7 +12,6 @@ import { useOrderCancel } from './use-order-cancel';
 import { OrderBusEventDocument } from './__generated__/Orders';
 import type { OrderBusEventSubscription } from './__generated__/Orders';
 
-
 const defaultWalletContext = {
   keypair: null,
   keypairs: [],
@@ -58,7 +57,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
               },
               __typename: 'Order',
@@ -103,7 +102,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
               },
               __typename: 'Order',

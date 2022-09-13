@@ -85,7 +85,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
                 __typename: 'Market',
               },
@@ -131,7 +131,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
                     name: 'UNIDAI',
                     code: 'UNIDAI',
                     __typename: 'Instrument',
-                  }
+                  },
                 },
                 __typename: 'Market',
               },
