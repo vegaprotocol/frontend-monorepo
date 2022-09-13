@@ -19,6 +19,10 @@ export interface Orders_party_ordersConnection_edges_node_market_tradableInstrum
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
 }
 
 export interface Orders_party_ordersConnection_edges_node_market_tradableInstrument {
@@ -35,10 +39,6 @@ export interface Orders_party_ordersConnection_edges_node_market {
    * Market ID
    */
   id: string;
-  /**
-   * Market full name
-   */
-  name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)

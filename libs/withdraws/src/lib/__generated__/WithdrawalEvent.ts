@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { WithdrawalStatus } from "@vegaprotocol/types";
+import { WithdrawalStatus, AssetStatus } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL subscription operation: WithdrawalEvent
@@ -13,12 +13,30 @@ export interface WithdrawalEvent_busEvents_event_TimeUpdate {
   __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Order" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "OracleSpec" | "LiquidityProvision";
 }
 
+export interface WithdrawalEvent_busEvents_event_Withdrawal_asset_source_BuiltinAsset {
+  __typename: "BuiltinAsset";
+}
+
+export interface WithdrawalEvent_busEvents_event_Withdrawal_asset_source_ERC20 {
+  __typename: "ERC20";
+  /**
+   * The address of the ERC20 contract
+   */
+  contractAddress: string;
+}
+
+export type WithdrawalEvent_busEvents_event_Withdrawal_asset_source = WithdrawalEvent_busEvents_event_Withdrawal_asset_source_BuiltinAsset | WithdrawalEvent_busEvents_event_Withdrawal_asset_source_ERC20;
+
 export interface WithdrawalEvent_busEvents_event_Withdrawal_asset {
   __typename: "Asset";
   /**
    * The ID of the asset
    */
   id: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
   /**
    * The symbol of the asset (e.g: GBP)
    */
@@ -27,6 +45,14 @@ export interface WithdrawalEvent_busEvents_event_Withdrawal_asset {
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
+  /**
+   * The status of the asset in the Vega network
+   */
+  status: AssetStatus;
+  /**
+   * The origin source of the asset (e.g: an ERC20 asset)
+   */
+  source: WithdrawalEvent_busEvents_event_Withdrawal_asset_source;
 }
 
 export interface WithdrawalEvent_busEvents_event_Withdrawal_details {

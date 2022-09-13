@@ -163,7 +163,7 @@ describe('Raw proposal form', () => {
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-      'Proposal rejected'
+      'Proposal submitted'
     );
   });
 

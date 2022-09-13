@@ -1,0 +1,60 @@
+query Market($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    id
+    name
+    tradingMode
+    state
+    decimalPlaces
+    positionDecimalPlaces
+    data {
+      market {
+        id
+      }
+      auctionStart
+      auctionEnd
+      markPrice
+      indicativeVolume
+      indicativePrice
+      suppliedStake
+      targetStake
+      bestBidVolume
+      bestOfferVolume
+      bestStaticBidVolume
+      bestStaticOfferVolume
+      trigger
+    }
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            oracleSpecForTradingTermination {
+              id
+            }
+            quoteName
+            settlementAsset {
+              id
+              symbol
+              name
+              decimals
+            }
+          }
+        }
+      }
+    }
+    marketTimestamps {
+      open
+      close
+    }
+    candles(interval: $interval, since: $since) {
+      open
+      close
+      volume
+    }
+  }
+}

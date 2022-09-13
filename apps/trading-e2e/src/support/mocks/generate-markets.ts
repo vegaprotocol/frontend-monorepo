@@ -5,15 +5,19 @@ import {
   MarketTradingMode,
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-import type { MarketList, MarketList_markets } from '@vegaprotocol/market-list';
+import type {
+  Markets,
+  Markets_marketsConnection_edges_node,
+  MarketsCandlesQuery,
+  MarketsCandlesQuery_marketsConnection_edges_node,
+  MarketsDataQuery,
+  MarketsDataQuery_marketsConnection_edges_node,
+} from '@vegaprotocol/market-list';
 
-export const generateMarkets = (
-  override?: PartialDeep<MarketList>
-): MarketList => {
-  const markets: MarketList_markets[] = [
+export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
+  const markets: Markets_marketsConnection_edges_node[] = [
     {
       id: 'market-0',
-      name: 'ACTIVE MARKET',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -23,15 +27,6 @@ export const generateMarkets = (
         close: '',
         open: '',
       },
-      candles: [
-        {
-          __typename: 'Candle',
-          open: '100',
-          close: '100',
-          high: '110',
-          low: '90',
-        },
-      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -41,25 +36,11 @@ export const generateMarkets = (
           liquidityFee: '',
         },
       },
-      data: {
-        market: {
-          id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
-          state: MarketState.STATE_ACTIVE,
-          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-          __typename: 'Market',
-        },
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
       tradableInstrument: {
         instrument: {
           id: '',
           code: 'BTCUSD.MF21',
-          name: '',
+          name: 'ACTIVE MARKET',
           metadata: {
             __typename: 'InstrumentMetadata',
             tags: [],
@@ -79,7 +60,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-1',
-      name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -89,15 +69,6 @@ export const generateMarkets = (
         close: '',
         open: '',
       },
-      candles: [
-        {
-          __typename: 'Candle',
-          open: '100',
-          close: '100',
-          high: '110',
-          low: '90',
-        },
-      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -107,24 +78,10 @@ export const generateMarkets = (
           liquidityFee: '',
         },
       },
-      data: {
-        market: {
-          id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
-          state: MarketState.STATE_SUSPENDED,
-          tradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
-          __typename: 'Market',
-        },
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        indicativeVolume: '0',
-        markPrice: '8441',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
       tradableInstrument: {
         instrument: {
           id: 'SOLUSD',
-          name: 'SOL/USD',
+          name: 'SUSPENDED MARKET',
           code: 'SOLUSD',
           metadata: {
             __typename: 'InstrumentMetadata',
@@ -145,7 +102,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-2',
-      name: 'Apple Monthly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -155,15 +111,6 @@ export const generateMarkets = (
         close: '2022-08-26T11:36:32.252490405Z',
         open: null,
       },
-      candles: [
-        {
-          __typename: 'Candle',
-          open: '100',
-          close: '100',
-          high: '110',
-          low: '90',
-        },
-      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -172,20 +119,6 @@ export const generateMarkets = (
           infrastructureFee: '0.0005',
           liquidityFee: '0.001',
         },
-      },
-      data: {
-        market: {
-          id: 'a1c731af07570ca49b22a3cd253cc143dc14068edbec918e1087e69db934af5f',
-          state: MarketState.STATE_SUSPENDED,
-          tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-          __typename: 'Market',
-        },
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-        __typename: 'MarketData',
       },
       tradableInstrument: {
         instrument: {
@@ -211,7 +144,6 @@ export const generateMarkets = (
     },
     {
       id: 'market-3',
-      name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -221,15 +153,6 @@ export const generateMarkets = (
         close: '2022-08-26T11:36:32.252490405Z',
         open: null,
       },
-      candles: [
-        {
-          __typename: 'Candle',
-          open: '100',
-          close: '100',
-          high: '110',
-          low: '90',
-        },
-      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -238,20 +161,6 @@ export const generateMarkets = (
           infrastructureFee: '0.0005',
           liquidityFee: '0.001',
         },
-      },
-      data: {
-        market: {
-          id: 'bebea8ec669b913a7d6a704a6d8cede164bc1376229e0d472bc6fdaa976629b2',
-          state: MarketState.STATE_ACTIVE,
-          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-          __typename: 'Market',
-        },
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-        __typename: 'MarketData',
       },
       tradableInstrument: {
         instrument: {
@@ -276,8 +185,212 @@ export const generateMarkets = (
       __typename: 'Market',
     },
   ];
-  const defaultResult = {
-    markets,
+
+  const defaultResult: Markets = {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
+
+  return merge(defaultResult, override);
+};
+
+export const generateMarketsData = (
+  override?: PartialDeep<MarketsDataQuery>
+): MarketsDataQuery => {
+  const markets: MarketsDataQuery_marketsConnection_edges_node[] = [
+    {
+      data: {
+        market: {
+          id: 'market-0',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '4612690058',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+    {
+      data: {
+        market: {
+          id: 'market-1',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '8441',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+    {
+      data: {
+        market: {
+          id: 'market-2',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '4612690058',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+    {
+      data: {
+        market: {
+          id: 'market-3',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '4612690058',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+  ];
+
+  const defaultResult: MarketsDataQuery = {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
+
+  return merge(defaultResult, override);
+};
+
+export const generateMarketsCandles = (
+  override?: PartialDeep<MarketsCandlesQuery>
+): MarketsCandlesQuery => {
+  const markets: MarketsCandlesQuery_marketsConnection_edges_node[] = [
+    {
+      __typename: 'Market',
+      id: 'market-0',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
+          {
+            __typename: 'CandleEdge',
+            node: {
+              __typename: 'CandleNode',
+              open: '100',
+              close: '100',
+              high: '110',
+              low: '90',
+              volume: '1',
+            },
+          },
+        ],
+      },
+    },
+    {
+      __typename: 'Market',
+      id: 'market-1',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
+          {
+            __typename: 'CandleEdge',
+            node: {
+              __typename: 'CandleNode',
+              open: '100',
+              close: '100',
+              high: '110',
+              low: '90',
+              volume: '1',
+            },
+          },
+        ],
+      },
+    },
+    {
+      __typename: 'Market',
+      id: 'market-2',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
+          {
+            __typename: 'CandleEdge',
+            node: {
+              __typename: 'CandleNode',
+              open: '100',
+              close: '100',
+              high: '110',
+              low: '90',
+              volume: '1',
+            },
+          },
+        ],
+      },
+    },
+    {
+      __typename: 'Market',
+      id: 'market-3',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
+          {
+            __typename: 'CandleEdge',
+            node: {
+              __typename: 'CandleNode',
+              open: '100',
+              close: '100',
+              high: '110',
+              low: '90',
+              volume: '1',
+            },
+          },
+        ],
+      },
+    },
+  ];
+  const defaultResult: MarketsCandlesQuery = {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
   };
 
   return merge(defaultResult, override);

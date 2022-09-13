@@ -23,11 +23,11 @@ export const Popover = ({
         <PopoverPrimitive.Content
           data-testid="popover-content"
           align="start"
-          className="p-4 rounded bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200"
+          className="p-4 rounded bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 border border-neutral-400"
           sideOffset={10}
         >
           <PopoverPrimitive.Close
-            className="px-4 py-2 absolute top-0 right-0"
+            className="px-4 py-2 absolute top-0 right-0 z-20"
             data-testid="dialog-close"
           >
             <Icon name="cross" />

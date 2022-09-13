@@ -102,7 +102,7 @@ export const useVegaTransaction = () => {
     [sendTx, setTransaction, reset]
   );
 
-  const TransactionDialog = useMemo(() => {
+  const Dialog = useMemo(() => {
     return (props: DialogProps) => (
       <VegaTransactionDialog
         {...props}
@@ -122,7 +122,7 @@ export const useVegaTransaction = () => {
     reset,
     setComplete,
     setTransaction,
-    TransactionDialog,
+    Dialog,
   };
 };
 

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type { Accounts_party_accounts } from '@vegaprotocol/accounts';
+import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { Positions, Positions_party } from './__generated__/Positions';
@@ -72,7 +72,6 @@ const POSITION_FIELDS = gql`
     }
     market {
       id
-      name
       decimalPlaces
       positionDecimalPlaces
       tradingMode
@@ -118,7 +117,7 @@ export const POSITIONS_SUBSCRIPTION = gql`
 
 export const getMetrics = (
   data: Positions_party | null,
-  accounts: Accounts_party_accounts[] | null
+  accounts: AccountFieldsFragment[] | null
 ): Position[] => {
   if (!data || !data?.positionsConnection.edges) {
     return [];
@@ -202,7 +201,7 @@ export const getMetrics = (
       ) && generalAccountBalance.isLessThan(marginInitial.minus(marginSearch));
 
     metrics.push({
-      marketName: market.name,
+      marketName: market.tradableInstrument.instrument.name,
       averageEntryPrice: position.node.averageEntryPrice,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),
@@ -253,7 +252,7 @@ export const update = (
   });
 };
 
-export const positionDataProvider = makeDataProvider<
+export const positionsDataProvider = makeDataProvider<
   Positions,
   Positions_party,
   PositionsSubscription,
@@ -268,12 +267,12 @@ export const positionDataProvider = makeDataProvider<
 });
 
 export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
-  [positionDataProvider, accountsDataProvider],
+  [positionsDataProvider, accountsDataProvider],
   ([positions, accounts]) => {
     return sortBy(
       getMetrics(
         positions as Positions_party | null,
-        accounts as Accounts_party_accounts[] | null
+        accounts as AccountFieldsFragment[] | null
       ),
       'updatedAt'
     ).reverse();

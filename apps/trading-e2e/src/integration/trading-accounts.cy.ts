@@ -33,7 +33,7 @@ describe('accounts', () => {
     cy.getByTestId('tab-accounts')
       .should('be.visible')
       .get(tradingAccountRowId)
-      .find('[col-id="market.name"]')
+      .find('[col-id="market.tradableInstrument.instrument.name"]')
       .should('have.text', '—');
 
     cy.getByTestId('tab-accounts')

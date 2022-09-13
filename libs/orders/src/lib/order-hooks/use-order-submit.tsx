@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { OrderEvent_busEvents_event_Order } from './__generated__';
+import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
-import type { OrderTimeInForce, Side } from '@vegaprotocol/types';
+import type { Side } from '@vegaprotocol/types';
+import { OrderTimeInForce } from '@vegaprotocol/types';
 import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
@@ -102,7 +103,7 @@ export const useOrderSubmit = () => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    TransactionDialog,
+    Dialog,
   } = useVegaTransaction();
 
   const [finalizedOrder, setFinalizedOrder] =
@@ -131,9 +132,11 @@ export const useOrderSubmit = () => {
               order.type === OrderType.TYPE_LIMIT && order.price
                 ? order.price
                 : undefined,
-            expiresAt: order.expiresAt
-              ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
-              : undefined,
+            expiresAt:
+              order.expiresAt &&
+              order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+                ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+                : undefined,
           },
         });
 
@@ -158,7 +161,7 @@ export const useOrderSubmit = () => {
   return {
     transaction,
     finalizedOrder,
-    TransactionDialog,
+    Dialog,
     submit,
     reset,
   };

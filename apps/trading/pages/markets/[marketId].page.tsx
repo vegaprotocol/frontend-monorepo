@@ -5,7 +5,7 @@ import { Interval } from '@vegaprotocol/types';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
@@ -16,7 +16,6 @@ const MARKET_QUERY = gql`
   query Market($marketId: ID!, $interval: Interval!, $since: String!) {
     market(id: $marketId) {
       id
-      name
       tradingMode
       state
       decimalPlaces
@@ -56,6 +55,7 @@ const MARKET_QUERY = gql`
                 id
                 symbol
                 name
+                decimals
               }
             }
           }
@@ -84,17 +84,35 @@ const MarketPage = ({ id }: { id?: string }) => {
       update: store.update,
     })
   );
+  const { update: updateStore } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
 
   // Default to first marketId query item if found
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
+  const onSelect = (id: string) => {
+    if (id && id !== marketId) {
+      updateStore({ marketId: id });
+    }
+  };
+
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
-  const [yTimestamp] = useState(() => {
+  const yTimestamp = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
-  });
+  }, []);
+
+  const variables = useMemo(
+    () => ({
+      marketId: marketId || '',
+      interval: Interval.INTERVAL_I1H,
+      since: yTimestamp,
+    }),
+    [marketId, yTimestamp]
+  );
 
   if (!marketId) {
     return (
@@ -109,11 +127,7 @@ const MarketPage = ({ id }: { id?: string }) => {
       query={MARKET_QUERY}
       data-testid="market"
       options={{
-        variables: {
-          marketId,
-          interval: Interval.INTERVAL_I1H,
-          since: yTimestamp,
-        },
+        variables,
         fetchPolicy: 'network-only',
       }}
       render={({ market }) => {
@@ -124,20 +138,16 @@ const MarketPage = ({ id }: { id?: string }) => {
         return (
           <>
             {w > 960 ? (
-              <TradeGrid market={market} />
+              <TradeGrid market={market} onSelect={onSelect} />
             ) : (
-              <TradePanels market={market} />
+              <TradePanels market={market} onSelect={onSelect} />
             )}
             <SelectMarketDialog
               dialogOpen={landingDialog && !riskNoticeDialog}
               setDialogOpen={(isOpen: boolean) =>
                 update({ landingDialog: isOpen })
               }
-              onSelect={(marketId: string) => {
-                if (marketId && marketId !== marketId) {
-                  update({ marketId });
-                }
-              }}
+              onSelect={onSelect}
             />
           </>
         );

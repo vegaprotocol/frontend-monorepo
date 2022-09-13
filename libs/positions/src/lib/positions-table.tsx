@@ -23,7 +23,7 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, Button } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -130,7 +130,11 @@ const ButtonCell = ({
   data: Position;
 }) => {
   return (
-    <Button onClick={() => onClick(data)} size="sm">
+    <Button
+      data-testid="close-position"
+      onClick={() => onClick(data)}
+      size="xs"
+    >
       {t('Close')}
     </Button>
   );
@@ -147,9 +151,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         getRowId={getRowId}
         rowHeight={34}
         ref={ref}
+        tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
           resizable: true,
+          tooltipComponent: TooltipCellComponent,
         }}
         components={{ PriceFlashCell, ProgressBarCell }}
         {...props}
@@ -168,14 +174,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             // split market name into two parts, 'Part1 (Part2)' or 'Part1 - Part2'
             const matches = value.match(/^(.*)(\((.*)\)| - (.*))\s*$/);
-            if (matches) {
+            if (matches && matches[1] && matches[3]) {
               return [matches[1].trim(), matches[3].trim()];
             }
             return [value];
           }}
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
           valueGetter={({ node, data }: ValueGetterParams) => {
             return node?.rowPinned ? data?.notional : data?.openVolume;

@@ -1,0 +1,23 @@
+query NodesQuery {
+  nodes {
+    id
+    name
+    infoUrl
+    avatarUrl
+    pubkey
+    tmPubkey
+    ethereumAddress
+    location
+    stakedByOperator
+    stakedByDelegates
+    stakedTotal
+    pendingStake
+    epochData {
+      total
+      offline
+      online
+    }
+    status
+    name
+  }
+}

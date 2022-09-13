@@ -45,7 +45,7 @@ export type RouterParams = Partial<{
 }>;
 
 const SimpleMarketList = () => {
-  const { isMobile } = useScreenDimensions();
+  const { isMobile, screenSize } = useScreenDimensions();
   const navigate = useNavigate();
   const params = useParams<RouterParams>();
   const theme = useContext(ThemeContext);
@@ -80,7 +80,7 @@ const SimpleMarketList = () => {
   useEffect(() => {
     const statuses: Record<string, MarketState | ''> = {};
     data?.forEach((market) => {
-      statuses[market.id] = market.data?.market.state || '';
+      statuses[market.id] = market.state || '';
     });
     statusesRef.current = statuses;
   }, [data, statusesRef]);
@@ -129,6 +129,10 @@ const SimpleMarketList = () => {
     [handleRowClicked]
   );
 
+  const shouldSuppressHorizontalScroll = useMemo(() => {
+    return !isMobile && constants.LARGE_SCREENS.includes(screenSize);
+  }, [isMobile, screenSize]);
+
   return (
     <div className="h-full p-4 md:p-6 grid grid-rows-[min-content,1fr]">
       <SimpleMarketToolbar data={data || []} />
@@ -156,6 +160,7 @@ const SimpleMarketList = () => {
           suppressRowTransform
           onCellKeyDown={onCellKeyDown}
           tabToNextCell={onTabToNextCell}
+          suppressHorizontalScroll={shouldSuppressHorizontalScroll}
         />
       </AsyncRenderer>
     </div>

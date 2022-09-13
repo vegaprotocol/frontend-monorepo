@@ -1,12 +1,14 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Candles,
-  Candles_market_candles,
+  CandlesQuery,
+  CandleFieldsFragment,
 } from '@vegaprotocol/candles-chart';
 
-export const generateCandles = (override?: PartialDeep<Candles>): Candles => {
-  const candles: Candles_market_candles[] = [
+export const generateCandles = (
+  override?: PartialDeep<CandlesQuery>
+): CandlesQuery => {
+  const candles: CandleFieldsFragment[] = [
     {
       datetime: '2022-04-06T09:15:00Z',
       high: '17481092',

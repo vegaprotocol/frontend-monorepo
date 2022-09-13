@@ -9,6 +9,7 @@ import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketNames } from '../support/mocks/generate-market-names';
+import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 
 describe('market selector', () => {
   let markets;
@@ -23,6 +24,7 @@ describe('market selector', () => {
       aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketNames', generateMarketNames());
+      aliasQuery(req, 'MarketDepth', generateMarketDepth());
     });
 
     cy.visit('/markets');
@@ -39,7 +41,7 @@ describe('market selector', () => {
       connectVegaWallet();
       cy.get('input[placeholder="Search"]').should(
         'have.value',
-        markets[0].name
+        markets[0].tradableInstrument.instrument.name
       );
       cy.getByTestId('arrow-button').click();
       cy.getByTestId('market-pane').should('be.visible');
@@ -47,7 +49,7 @@ describe('market selector', () => {
         .children()
         .find('[role="button"]')
         .first()
-        .should('contain.text', markets[0].name);
+        .should('contain.text', markets[0].tradableInstrument.instrument.name);
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
@@ -70,8 +72,8 @@ describe('market selector', () => {
       cy.get('input[placeholder="Search"]').type('aa');
       const filtered = markets.filter(
         (market) =>
-          market.data.market.state === 'STATE_ACTIVE' &&
-          market.name.match(/aa/i)
+          market.state === 'STATE_ACTIVE' &&
+          market.tradableInstrument.instrument.name.match(/aa/i)
       );
       cy.getByTestId('market-pane')
         .children()
@@ -88,7 +90,7 @@ describe('market selector', () => {
       );
       cy.get('input[placeholder="Search"]').should(
         'have.value',
-        filtered[filtered.length - 1].name
+        filtered[filtered.length - 1].tradableInstrument.instrument.name
       );
     }
   });
@@ -131,7 +133,7 @@ describe('market selector', () => {
       cy.getByTestId('dialog-close').click();
       cy.get('input[placeholder="Search"]').should(
         'have.value',
-        markets[0].name
+        markets[0].tradableInstrument.instrument.name
       );
     }
   });

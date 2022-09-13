@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { Button, Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';
-// @ts-ignore No types availabel for duration-js
+// @ts-ignore No types available for duration-js
 import Duration from 'duration-js';
 import gql from 'graphql-tag';
 import React from 'react';
@@ -15,10 +15,10 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../../contexts/app-state/app-state-context';
-import { useNetworkParam } from '../../../hooks/use-network-param';
 import type { Rewards } from './__generated__/Rewards';
 import { RewardInfo } from './reward-info';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
 
 export const REWARDS_QUERY = gql`
   query Rewards($partyId: ID!) {
@@ -77,7 +77,7 @@ export const RewardsIndex = () => {
     data: rewardAssetData,
     loading: rewardAssetLoading,
     error: rewardAssetError,
-  } = useNetworkParam([
+  } = useNetworkParams([
     NetworkParams.REWARD_ASSET,
     NetworkParams.REWARD_PAYOUT_DURATION,
   ]);

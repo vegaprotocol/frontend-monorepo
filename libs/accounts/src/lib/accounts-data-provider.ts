@@ -1,60 +1,21 @@
 import produce from 'immer';
-import { gql } from '@apollo/client';
+import {
+  AccountsDocument,
+  AccountEventsDocument,
+} from './__generated__/Accounts';
 import type {
-  Accounts,
-  Accounts_party_accounts,
+  AccountFieldsFragment,
+  AccountsQuery,
+  AccountEventsSubscription,
 } from './__generated__/Accounts';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
-import type {
-  AccountSubscribe,
-  AccountSubscribe_accounts,
-} from './__generated__/AccountSubscribe';
-
-const ACCOUNTS_FRAGMENT = gql`
-  fragment AccountFields on Account {
-    type
-    balance
-    market {
-      id
-      name
-    }
-    asset {
-      id
-      symbol
-      decimals
-    }
-  }
-`;
-
-const ACCOUNTS_QUERY = gql`
-  ${ACCOUNTS_FRAGMENT}
-  query Accounts($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      accounts {
-        ...AccountFields
-      }
-    }
-  }
-`;
-
-export const ACCOUNTS_SUB = gql`
-  ${ACCOUNTS_FRAGMENT}
-  subscription AccountSubscribe($partyId: ID!) {
-    accounts(partyId: $partyId) {
-      ...AccountFields
-    }
-  }
-`;
-
-export const getId = (
-  data: Accounts_party_accounts | AccountSubscribe_accounts
-) => `${data.type}-${data.asset.symbol}-${data.market?.id ?? 'null'}`;
+export const getId = (data: AccountFieldsFragment) =>
+  `${data.type}-${data.asset.symbol}-${data.market?.id ?? 'null'}`;
 
 const update = (
-  data: Accounts_party_accounts[],
-  delta: AccountSubscribe_accounts
+  data: AccountFieldsFragment[],
+  delta: AccountFieldsFragment
 ) => {
   return produce(data, (draft) => {
     const id = getId(delta);
@@ -67,20 +28,24 @@ const update = (
   });
 };
 
-const getData = (responseData: Accounts): Accounts_party_accounts[] | null =>
-  responseData.party ? responseData.party.accounts : null;
+const getData = (
+  responseData: AccountsQuery
+): AccountFieldsFragment[] | null => {
+  return responseData.party?.accounts ?? null;
+};
+
 const getDelta = (
-  subscriptionData: AccountSubscribe
-): AccountSubscribe_accounts => subscriptionData.accounts;
+  subscriptionData: AccountEventsSubscription
+): AccountFieldsFragment => subscriptionData.accounts;
 
 export const accountsDataProvider = makeDataProvider<
-  Accounts,
-  Accounts_party_accounts[],
-  AccountSubscribe,
-  AccountSubscribe_accounts
+  AccountsQuery,
+  AccountFieldsFragment[],
+  AccountEventsSubscription,
+  AccountFieldsFragment
 >({
-  query: ACCOUNTS_QUERY,
-  subscriptionQuery: ACCOUNTS_SUB,
+  query: AccountsDocument,
+  subscriptionQuery: AccountEventsDocument,
   update,
   getData,
   getDelta,

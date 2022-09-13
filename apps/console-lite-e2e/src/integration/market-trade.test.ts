@@ -1,5 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateSimpleMarkets } from '../support/mocks/generate-markets';
+import {
+  generateSimpleMarkets,
+  generateMarkets,
+} from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
@@ -14,6 +17,7 @@ describe('Market trade', () => {
   let markets;
   beforeEach(() => {
     cy.mockGQL((req) => {
+      aliasQuery(req, 'Markets', generateMarkets());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
@@ -170,7 +174,50 @@ describe('Market trade', () => {
         .find('button')
         .should('have.text', '2');
       cy.get('button').contains('Max').click();
-      cy.getByTestId('price-slippage-value').should('have.text', '0.02%');
+    }
+  });
+
+  it('slippage value should be displayed', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('button').contains('Max').click();
+      cy.get('#step-2-panel')
+        .find('dl')
+        .eq(2)
+        .find('dd')
+        .should('have.text', '0.02%');
+    }
+  });
+
+  it('allow slippage value to be adjusted', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('button').contains('Max').click();
+      cy.get('#step-2-panel')
+        .find('dl')
+        .eq(2)
+        .find('dd')
+        .should('have.text', '0.02%');
+      cy.get('#step-2-panel').find('dl').eq(2).find('button').click();
+      cy.get('#input-order-slippage')
+        .focus()
+        .type('{backspace}{backspace}{backspace}1');
+
+      cy.getByTestId('slippage-dialog').find('button').click();
+
+      cy.get('#step-2-panel')
+        .find('dl')
+        .eq(2)
+        .find('dd')
+        .should('have.text', '1%');
     }
   });
 
@@ -195,9 +242,9 @@ describe('Market trade', () => {
       cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
       cy.get('#step-2-panel')
         .find('dt')
-        .eq(3)
+        .eq(2)
         .should('have.text', 'Est. Position Size (tDAI)');
-      cy.get('#step-2-panel').find('dd').eq(3).should('have.text', '197.86012');
+      cy.get('#step-2-panel').find('dd').eq(2).should('have.text', '197.86012');
     }
   });
 
@@ -210,11 +257,11 @@ describe('Market trade', () => {
       cy.get('#step-2-control').click();
       cy.get('#step-2-panel')
         .find('dt')
-        .eq(4)
+        .eq(3)
         .should('have.text', 'Est. Fees (tDAI)');
       cy.get('#step-2-panel')
         .find('dd')
-        .eq(4)
+        .eq(3)
         .should('have.text', '3.00000 (3.03%)');
     }
   });

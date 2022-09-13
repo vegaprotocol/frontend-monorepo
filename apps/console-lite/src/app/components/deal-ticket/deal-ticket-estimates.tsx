@@ -4,6 +4,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import * as constants from './constants';
+import { TrafficLight } from '../traffic-light';
 
 interface DealTicketEstimatesProps {
   quoteName?: string;
@@ -13,6 +14,7 @@ interface DealTicketEstimatesProps {
   fees?: string;
   notionalSize?: string;
   size?: string;
+  slippage?: string;
 }
 
 interface DataTitleProps {
@@ -20,7 +22,7 @@ interface DataTitleProps {
   quoteName?: string;
 }
 
-const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
+export const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
   <dt>
     {children}
     {quoteName && <small> ({quoteName})</small>}
@@ -28,14 +30,20 @@ const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
 );
 
 interface ValueTooltipProps {
-  value: string;
+  value?: string;
+  children?: ReactNode;
   description: string;
   id?: string;
 }
 
-const ValueTooltipRow = ({ value, description, id }: ValueTooltipProps) => (
+export const ValueTooltipRow = ({
+  value,
+  children,
+  description,
+  id,
+}: ValueTooltipProps) => (
   <dd className="flex gap-x-2 items-center">
-    {value}
+    {value || children}
     <Tooltip align="center" description={description}>
       <div className="cursor-help" id={id || ''} tabIndex={-1}>
         <Icon
@@ -56,6 +64,7 @@ export const DealTicketEstimates = ({
   fees,
   notionalSize,
   size,
+  slippage,
 }: DealTicketEstimatesProps) => (
   <dl className="text-black dark:text-white">
     {size && (
@@ -93,7 +102,7 @@ export const DealTicketEstimates = ({
       </div>
     )}
     {estMargin && (
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-2">
         <DataTitle quoteName={quoteName}>{t('Est. Margin')}</DataTitle>
         <ValueTooltipRow
           value={estMargin}
@@ -102,16 +111,22 @@ export const DealTicketEstimates = ({
       </div>
     )}
     {estCloseOut && (
-      <div className="flex justify-between">
-        <dt>
-          <span>{t('Est. Close out')}</span>
-          &nbsp;
-          <small>({quoteName})</small>
-        </dt>
+      <div className="flex justify-between mb-2">
+        <DataTitle quoteName={quoteName}>{t('Est. Close out')}</DataTitle>
         <ValueTooltipRow
           value={estCloseOut}
           description={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
         />
+      </div>
+    )}
+    {slippage && (
+      <div className="flex justify-between mb-2">
+        <DataTitle>{t('Est. Price Impact / Slippage')}</DataTitle>
+        <ValueTooltipRow description={constants.EST_SLIPPAGE}>
+          <TrafficLight value={parseFloat(slippage)} q1={1} q2={5}>
+            {slippage}%
+          </TrafficLight>
+        </ValueTooltipRow>
       </div>
     )}
   </dl>

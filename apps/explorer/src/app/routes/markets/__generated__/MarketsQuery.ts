@@ -466,10 +466,6 @@ export interface MarketsQuery_markets {
    */
   id: string;
   /**
-   * Market full name
-   */
-  name: string;
-  /**
    * Fees related data
    */
   fees: MarketsQuery_markets_fees;

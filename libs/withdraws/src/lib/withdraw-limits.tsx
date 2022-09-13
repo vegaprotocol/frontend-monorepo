@@ -1,34 +1,51 @@
 import { t } from '@vegaprotocol/react-helpers';
-import type BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
+import { formatDistanceToNow } from 'date-fns';
 
 interface WithdrawLimitsProps {
-  limits: {
-    max: BigNumber;
-  };
+  amount: string;
+  threshold: BigNumber;
   balance: BigNumber;
+  delay: number | undefined;
 }
 
-export const WithdrawLimits = ({ limits, balance }: WithdrawLimitsProps) => {
-  let maxLimit = '';
+export const WithdrawLimits = ({
+  amount,
+  threshold,
+  balance,
+  delay,
+}: WithdrawLimitsProps) => {
+  let text = '';
 
-  if (limits.max.isEqualTo(Infinity)) {
-    maxLimit = t('No limit');
-  } else if (limits.max.isGreaterThan(1_000_000)) {
-    maxLimit = t('1m+');
+  if (threshold.isEqualTo(Infinity)) {
+    text = t('No limit');
+  } else if (threshold.isGreaterThan(1_000_000)) {
+    text = t('1m+');
   } else {
-    maxLimit = limits.max.toString();
+    text = threshold.toString();
   }
+
+  const delayTime =
+    new BigNumber(amount).isGreaterThan(threshold) && delay
+      ? formatDistanceToNow(Date.now() + delay * 1000)
+      : t('None');
 
   return (
     <table className="w-full text-sm">
       <tbody>
-        <tr>
+        <tr data-testid="balance-available">
           <th className="text-left font-normal">{t('Balance available')}</th>
           <td className="text-right">{balance.toString()}</td>
         </tr>
-        <tr>
-          <th className="text-left font-normal">{t('Maximum withdrawal')}</th>
-          <td className="text-right">{maxLimit}</td>
+        <tr data-testid="withdrawal-threshold">
+          <th className="text-left font-normal">
+            {t('Delayed withdrawal threshold')}
+          </th>
+          <td className="text-right">{text}</td>
+        </tr>
+        <tr data-testid="delay-time">
+          <th className="text-left font-normal">{t('Delay time')}</th>
+          <td className="text-right">{delayTime}</td>
         </tr>
       </tbody>
     </table>

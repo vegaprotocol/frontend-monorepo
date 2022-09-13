@@ -15,10 +15,7 @@ import {
 import type { ReactNode } from 'react';
 import type { Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
-import type {
-  OrderEvent,
-  OrderEvent_busEvents,
-} from './__generated__/OrderEvent';
+import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
@@ -145,7 +142,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
 }
 
 describe('useOrderSubmit', () => {
-  it('should submit a correctly formatted order', async () => {
+  it('should submit a correctly formatted order on GTT', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
     const keypair = {
       pub: '0x123',
@@ -178,7 +175,45 @@ describe('useOrderSubmit', () => {
         side: Side.SIDE_BUY,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789',
-        expiresAt: order.expiresAt ? toNanoSeconds(order.expiresAt) : undefined,
+        expiresAt: toNanoSeconds(order.expiresAt),
+      },
+    });
+  });
+
+  it('should submit a correctly formatted order on GTC', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
+    const keypair = {
+      pub: '0x123',
+    } as VegaKeyExtended;
+    const { result } = setup({
+      sendTx: mockSendTx,
+      keypairs: [keypair],
+      keypair,
+    });
+
+    const order = {
+      type: OrderType.TYPE_LIMIT,
+      size: '10',
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      side: Side.SIDE_BUY,
+      price: '123456789',
+      expiresAt: new Date('2022-01-01'),
+    };
+    await act(async () => {
+      result.current.submit({ ...order, marketId: defaultMarket.id });
+    });
+
+    expect(mockSendTx).toHaveBeenCalledWith({
+      pubKey: keypair.pub,
+      propagate: true,
+      orderSubmission: {
+        type: OrderType.TYPE_LIMIT,
+        marketId: defaultMarket.id,
+        size: '10',
+        side: Side.SIDE_BUY,
+        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        price: '123456789',
+        expiresAt: undefined,
       },
     });
   });

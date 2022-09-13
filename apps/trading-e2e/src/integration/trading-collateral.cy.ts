@@ -13,7 +13,8 @@ describe('collateral', () => {
   const collateralTab = 'Collateral';
   const assetSymbolColumn = "[col-id='asset.symbol']";
   const assetTypeColumn = "[col-id='type']";
-  const assetMarketName = "[col-id='market.name']";
+  const assetMarketName =
+    "[col-id='market.tradableInstrument.instrument.name']";
   it('renders collateral', () => {
     connectVegaWallet();
     cy.getByTestId(collateralTab).click();

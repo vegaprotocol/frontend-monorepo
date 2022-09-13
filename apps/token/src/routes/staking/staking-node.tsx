@@ -101,7 +101,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
           ? t('validatorTitle', { nodeName: nodeInfo.name })
           : t('validatorTitle', { nodeName: t('validatorTitleFallback') })}
       </h2>
-      <section className="mb-24">
+      <section className="mb-4">
         <ValidatorTable
           node={nodeInfo}
           stakedTotal={data?.nodeData?.stakedTotalFormatted || '0'}
@@ -109,7 +109,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
         />
       </section>
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
-        <section className="mb-24">
+        <section className="mb-4">
           <EpochCountdown
             id={data.epoch.id}
             startDate={new Date(data?.epoch.timestamps.start)}
@@ -117,7 +117,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
           />
         </section>
       )}
-      <section className="mb-24">
+      <section className="mb-4">
         <YourStake
           stakeNextEpoch={stakeNextEpoch}
           stakeThisEpoch={stakeThisEpoch}

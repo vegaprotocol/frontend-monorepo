@@ -1,0 +1,27 @@
+query AssetsQuery {
+  assetsConnection {
+    edges {
+      node {
+        id
+        name
+        symbol
+        decimals
+        source {
+          ... on ERC20 {
+            contractAddress
+          }
+          ... on BuiltinAsset {
+            maxFaucetAmountMint
+          }
+        }
+        infrastructureFeeAccount {
+          type
+          balance
+          market {
+            id
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+query MarketTags($marketId: ID!) {
+  market(id: $marketId) {
+    tradableInstrument {
+      instrument {
+        metadata {
+          tags
+        }
+      }
+    }
+  }
+}

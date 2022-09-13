@@ -1,118 +1,78 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
-import type { WithdrawalFields } from './use-withdraw';
-import { useWithdraw } from './use-withdraw';
-import { WithdrawDialog } from './withdraw-dialog';
-import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
+import type { WithdrawalArgs } from './use-create-withdraw';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account } from './types';
-import { useGetWithdrawLimits } from './use-get-withdraw-limits';
+import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
+import { captureException } from '@sentry/react';
+import { useGetWithdrawDelay } from './use-get-withdraw-delay';
+import { useWithdrawStore } from './withdraw-store';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
-  initialAssetId?: string;
+  submit: (args: WithdrawalArgs) => void;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
-  initialAssetId,
+  submit,
 }: WithdrawManagerProps) => {
-  const dialogDismissed = useRef(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
+  const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
+  const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
 
-  const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
-    dialogDismissed.current
-  );
+  // Everytime an asset is selected we need to find the corresponding
+  // account, balance, min viable amount and delay threshold
+  const handleSelectAsset = useCallback(
+    async (id: string) => {
+      const asset = assets.find((a) => a.id === id);
+      const account = accounts.find(
+        (a) =>
+          a.type === AccountType.ACCOUNT_TYPE_GENERAL &&
+          a.asset.id === asset?.id
+      );
+      const balance =
+        account && asset
+          ? new BigNumber(addDecimal(account.balance, asset.decimals))
+          : new BigNumber(0);
+      const min = asset
+        ? new BigNumber(addDecimal('1', asset.decimals))
+        : new BigNumber(0);
 
-  // Find the asset object from the select box
-  const asset = useMemo(() => {
-    return assets?.find((a) => a.id === assetId);
-  }, [assets, assetId]);
+      // Query collateral bridge for threshold for selected asset
+      // and subsequent delay if withdrawal amount is larger than it
+      let threshold;
+      let delay;
 
-  const account = useMemo(() => {
-    return accounts.find(
-      (a) =>
-        a.type === AccountType.ACCOUNT_TYPE_GENERAL && a.asset.id === asset?.id
-    );
-  }, [asset, accounts]);
+      try {
+        const result = await Promise.all([getThreshold(asset), getDelay()]);
+        threshold = result[0];
+        delay = result[1];
+      } catch (err) {
+        captureException(err);
+      }
 
-  const limits = useGetWithdrawLimits(asset);
-
-  const max = useMemo(() => {
-    if (!asset) {
-      return {
-        balance: new BigNumber(0),
-        threshold: new BigNumber(0),
-      };
-    }
-
-    const balance = account
-      ? new BigNumber(addDecimal(account.balance, asset.decimals))
-      : new BigNumber(0);
-
-    return {
-      balance,
-      threshold: limits ? limits.max : new BigNumber(Infinity),
-    };
-  }, [asset, account, limits]);
-
-  const min = useMemo(() => {
-    return asset
-      ? new BigNumber(addDecimal('1', asset.decimals))
-      : new BigNumber(0);
-  }, [asset]);
-
-  const handleSubmit = useCallback(
-    (args: WithdrawalFields) => {
-      reset();
-      setDialogOpen(true);
-      submit(args);
-      dialogDismissed.current = false;
+      update({ asset, balance, min, threshold, delay });
     },
-    [submit, reset]
+    [accounts, assets, update, getThreshold, getDelay]
   );
-
-  // Close dialog if error is due to user rejecting the tx
-  useEffect(() => {
-    if (
-      ethTx.status === EthTxStatus.Error &&
-      isExpectedEthereumError(ethTx.error)
-    ) {
-      setDialogOpen(false);
-    }
-  }, [ethTx.status, ethTx.error]);
 
   return (
-    <>
-      <WithdrawForm
-        selectedAsset={asset}
-        onSelectAsset={(id) => setAssetId(id)}
-        assets={sortBy(assets, 'name')}
-        max={max}
-        min={min}
-        submitWithdraw={handleSubmit}
-        limits={limits}
-      />
-      <WithdrawDialog
-        vegaTx={vegaTx}
-        ethTx={ethTx}
-        approval={approval}
-        dialogOpen={dialogOpen}
-        onDialogChange={(isOpen) => {
-          setDialogOpen(isOpen);
-
-          if (!isOpen) {
-            dialogDismissed.current = true;
-          }
-        }}
-      />
-    </>
+    <WithdrawForm
+      selectedAsset={asset}
+      onSelectAsset={handleSelectAsset}
+      assets={sortBy(assets, 'name')}
+      balance={balance}
+      min={min}
+      submitWithdraw={submit}
+      threshold={threshold}
+      delay={delay}
+    />
   );
 };

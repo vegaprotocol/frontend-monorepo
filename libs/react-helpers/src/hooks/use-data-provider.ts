@@ -19,6 +19,8 @@ export function useDataProvider<Data, Delta>({
   update,
   insert,
   variables,
+  noUpdate,
+  skip,
 }: {
   dataProvider: Subscribe<Data, Delta>;
   update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
@@ -32,11 +34,13 @@ export function useDataProvider<Data, Delta>({
     totalCount?: number;
   }) => boolean;
   variables?: OperationVariables;
+  noUpdate?: boolean;
+  skip?: boolean;
 }) {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
   const [totalCount, setTotalCount] = useState<number>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(!skip);
   const [error, setError] = useState<Error | undefined>(undefined);
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
@@ -75,7 +79,12 @@ export function useDataProvider<Data, Delta>({
         // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
         if (initialized.current && data) {
-          if (isUpdate && update && (!delta || update({ delta, data }))) {
+          if (
+            isUpdate &&
+            !noUpdate &&
+            update &&
+            (!delta || update({ delta, data }))
+          ) {
             return;
           }
           if (
@@ -91,9 +100,12 @@ export function useDataProvider<Data, Delta>({
         setData(data);
       }
     },
-    [update, insert]
+    [update, insert, noUpdate]
   );
   useEffect(() => {
+    if (skip) {
+      return;
+    }
     const { unsubscribe, flush, reload, load } = dataProvider(
       callback,
       client,
@@ -103,6 +115,6 @@ export function useDataProvider<Data, Delta>({
     reloadRef.current = reload;
     loadRef.current = load;
     return unsubscribe;
-  }, [client, initialized, dataProvider, callback, variables]);
+  }, [client, initialized, dataProvider, callback, variables, skip]);
   return { data, loading, error, flush, reload, load, totalCount };
 }

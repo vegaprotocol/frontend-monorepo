@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type { EthereumError } from './ethereum-error';
 import { isExpectedEthereumError } from './ethereum-error';
 import { isEthereumError } from './ethereum-error';
-import { TransactionDialog } from './transaction-dialog';
+import { EthereumTransactionDialog } from './ethereum-transaction-dialog';
 
 export enum EthTxStatus {
   Default = 'Default',
@@ -152,8 +152,8 @@ export const useEthereumTransaction = <
 
   const Dialog = useMemo(() => {
     return () => (
-      <TransactionDialog
-        name={formatLabel(methodName as string)}
+      <EthereumTransactionDialog
+        title={formatLabel(methodName as string)}
         onChange={() => {
           reset();
         }}

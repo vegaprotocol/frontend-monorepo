@@ -37,7 +37,7 @@ export const AmountInput = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="flex">
+    <div className="flex gap-4">
       <div className="flex-1">
         <Input
           data-testid="token-amount-input"
@@ -61,14 +61,12 @@ export const AmountInput = ({
         />
       </div>
       {maximum && (
-        <div className="flex flex-col justify-center p-8 h-28 my-0 mx-8">
-          <ButtonLink
-            onClick={() => setAmount(maximum.toString())}
-            data-testid="token-amount-use-maximum"
-          >
-            {t('Use maximum')}
-          </ButtonLink>
-        </div>
+        <ButtonLink
+          onClick={() => setAmount(maximum.toString())}
+          data-testid="token-amount-use-maximum"
+        >
+          {t('Use maximum')}
+        </ButtonLink>
       )}
     </div>
   );
@@ -169,7 +167,7 @@ export const TokenInput = ({
   } else if (requireApproval) {
     approveContent = (
       <Callout iconName="tick" intent={Intent.Success}>
-        <p>{`${currency} are approved for staking`}</p>
+        <p className="mb-0">{`${currency} are approved for staking`}</p>
       </Callout>
     );
   }
@@ -188,7 +186,7 @@ export const TokenInput = ({
           currency={currency}
         />
       </FormGroup>
-      {approveContent ? <div className="mb-24">{approveContent}</div> : null}
+      {approveContent ? <div className="mb-4">{approveContent}</div> : null}
       <Button
         data-testid="token-input-submit-button"
         fill={true}

@@ -1,0 +1,16 @@
+query PartyDelegations($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    delegations {
+      amount
+      amountFormatted @client
+      node {
+        id
+      }
+      epoch
+    }
+  }
+  epoch {
+    id
+  }
+}

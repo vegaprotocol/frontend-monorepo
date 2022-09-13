@@ -5,11 +5,12 @@ import { Children, isValidElement, useState } from 'react';
 
 interface TabsProps {
   children: ReactElement<TabProps>[];
+  active?: string;
 }
 
-export const Tabs = ({ children }: TabsProps) => {
+export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
   const [activeTab, setActiveTab] = useState<string>(() => {
-    return children[0].props.id;
+    return activeDefaultId ?? children[0].props.id;
   });
 
   return (
@@ -18,18 +19,22 @@ export const Tabs = ({ children }: TabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="border-b border-neutral-300 dark:border-neutral-700">
+      <div className="border-b border-default">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
         >
           {Children.map(children, (child) => {
-            if (!isValidElement(child)) return null;
+            if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === activeTab;
             const triggerClass = classNames(
-              'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-700',
-              'text-black dark:text-white',
-              'uppercase'
+              'relative px-4 py-2 border-r border-default',
+              'uppercase',
+              {
+                'cursor-default': isActive,
+                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
+                  !isActive,
+              }
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
@@ -51,7 +56,7 @@ export const Tabs = ({ children }: TabsProps) => {
       </div>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
-          if (!isValidElement(child)) return null;
+          if (!isValidElement(child) || child.props.hidden) return null;
           return (
             <TabsPrimitive.Content
               value={child.props.id}
@@ -71,6 +76,7 @@ interface TabProps {
   children: ReactNode;
   id: string;
   name: string;
+  hidden?: boolean;
 }
 
 export const Tab = ({ children, ...props }: TabProps) => {

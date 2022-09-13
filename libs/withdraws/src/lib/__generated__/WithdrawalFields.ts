@@ -3,11 +3,25 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { WithdrawalStatus } from "@vegaprotocol/types";
+import { WithdrawalStatus, AssetStatus } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL fragment: WithdrawalFields
 // ====================================================
+
+export interface WithdrawalFields_asset_source_BuiltinAsset {
+  __typename: "BuiltinAsset";
+}
+
+export interface WithdrawalFields_asset_source_ERC20 {
+  __typename: "ERC20";
+  /**
+   * The address of the ERC20 contract
+   */
+  contractAddress: string;
+}
+
+export type WithdrawalFields_asset_source = WithdrawalFields_asset_source_BuiltinAsset | WithdrawalFields_asset_source_ERC20;
 
 export interface WithdrawalFields_asset {
   __typename: "Asset";
@@ -16,6 +30,10 @@ export interface WithdrawalFields_asset {
    */
   id: string;
   /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+  /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
@@ -23,6 +41,14 @@ export interface WithdrawalFields_asset {
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
+  /**
+   * The status of the asset in the Vega network
+   */
+  status: AssetStatus;
+  /**
+   * The origin source of the asset (e.g: an ERC20 asset)
+   */
+  source: WithdrawalFields_asset_source;
 }
 
 export interface WithdrawalFields_details {

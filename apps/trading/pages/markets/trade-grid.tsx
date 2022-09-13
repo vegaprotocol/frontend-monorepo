@@ -1,49 +1,46 @@
-import 'allotment/dist/style.css';
-import {
-  DealTicketContainer,
-  MarketInfoContainer,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import {
-  addDecimalsFormatNumber,
-  getDateFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
-import {
-  AuctionTrigger,
-  AuctionTriggerMapping,
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
-import type { CandleClose } from '@vegaprotocol/types';
-import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
 import {
   Tab,
   Tabs,
+  ResizableGrid,
+  ResizableGridPanel,
+  ButtonLink,
   PriceCellChange,
   Link,
-  Tooltip,
-  ResizableGrid,
-  ButtonLink,
-  ResizableGridPanel,
 } from '@vegaprotocol/ui-toolkit';
+import {
+  addDecimalsFormatNumber,
+  getDateFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
+import { SelectMarketPopover } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { CandleClose } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  AuctionTriggerMapping,
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
+import { useRouter } from 'next/router';
+import { Header, HeaderStat } from '../../components/header';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -65,15 +62,16 @@ type ExpiryLabelProps = {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
+  let content = null;
   if (market.marketTimestamps.close === null) {
-    return <>{t('Not time-based')}</>;
+    content = t('Not time-based');
+  } else {
+    const closeDate = new Date(market.marketTimestamps.close);
+    const isExpired = Date.now() - closeDate.valueOf() > 0;
+    const expiryDate = getDateFormat().format(closeDate);
+    content = `${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`;
   }
-
-  const closeDate = new Date(market.marketTimestamps.close);
-  const isExpired = Date.now() - closeDate.valueOf() > 0;
-  const expiryDate = getDateFormat().format(closeDate);
-
-  return <>{`${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`}</>;
+  return <div data-testid="trading-expiry">{content}</div>;
 };
 
 type ExpiryTooltipContentProps = {
@@ -111,141 +109,120 @@ const ExpiryTooltipContent = ({
 
 interface TradeMarketHeaderProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
+export const TradeMarketHeader = ({
+  market,
+  onSelect,
+}: TradeMarketHeaderProps) => {
+  const { push } = useRouter();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
-  }));
-
-  const onSelect = (marketId: string) => {
-    if (marketId && marketId !== marketId) {
-      update({ marketId });
-    }
-  };
 
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
-  const hasExpiry = market.marketTimestamps.close !== null;
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
-  const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
-  const itemHeading = 'text-neutral-400';
-
   return (
-    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
-      <div className="xl:flex xl:gap-4  items-start">
-        <div className="px-4 mb-2 xl:mb-0">
-          <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+    <Header
+      title={
+        <SelectMarketPopover
+          marketName={market.tradableInstrument.instrument.name}
+          onSelect={onSelect}
+        />
+      }
+    >
+      <HeaderStat
+        heading={t('Expiry')}
+        description={
+          <ExpiryTooltipContent
+            market={market}
+            explorerUrl={VEGA_EXPLORER_URL}
+          />
+        }
+      >
+        <ExpiryLabel market={market} />
+      </HeaderStat>
+      <HeaderStat heading={t('Change (24h)')}>
+        <PriceCellChange
+          candles={candlesClose}
+          decimalPlaces={market.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat heading={t('Volume')}>
+        <div data-testid="trading-volume">
+          {market.data && market.data.indicativeVolume !== '0'
+            ? addDecimalsFormatNumber(
+                market.data.indicativeVolume,
+                market.positionDecimalPlaces
+              )
+            : '-'}
         </div>
-        <div
-          data-testid="market-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
-        >
-          <div className={itemClass}>
-            <div className={itemHeading}>{t('Expiry')}</div>
-            <Tooltip
-              align="start"
-              description={
-                <ExpiryTooltipContent
-                  market={market}
-                  explorerUrl={VEGA_EXPLORER_URL}
-                />
-              }
-            >
-              <div
-                data-testid="trading-expiry"
-                className={classNames({
-                  'underline decoration-dashed': !hasExpiry,
-                })}
-              >
-                <ExpiryLabel market={market} />
-              </div>
-            </Tooltip>
-          </div>
-          <div className={itemClass}>
-            <div className={itemHeading}>{t('Change (24h)')}</div>
-            <PriceCellChange
-              candles={candlesClose}
-              decimalPlaces={market.decimalPlaces}
-            />
-          </div>
-          <div className={itemClass}>
-            <div className={itemHeading}>{t('Volume')}</div>
-            <div data-testid="trading-volume">
-              {market.data && market.data.indicativeVolume !== '0'
-                ? addDecimalsFormatNumber(
-                    market.data.indicativeVolume,
-                    market.positionDecimalPlaces
-                  )
-                : '-'}
-            </div>
-          </div>
-
-          <div className={itemClass}>
-            <div className={itemHeading}>{t('Trading mode')}</div>
-            <Tooltip
-              align="start"
-              description={<TradingModeTooltip market={market} />}
-            >
-              <div data-testid="trading-mode">
-                {market.tradingMode ===
-                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-                market.data?.trigger &&
-                market.data.trigger !==
-                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-                  ? `${MarketTradingModeMapping[market.tradingMode]}
+      </HeaderStat>
+      <HeaderStat
+        heading={t('Trading mode')}
+        description={
+          <TradingModeTooltip
+            market={market}
+            onSelect={(marketId: string) => {
+              onSelect(marketId);
+              push(`/liquidity/${marketId}`);
+            }}
+          />
+        }
+      >
+        <div data-testid="trading-mode">
+          {market.tradingMode ===
+            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger &&
+          market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+            ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
-                  : MarketTradingModeMapping[market.tradingMode]}
-              </div>
-            </Tooltip>
-          </div>
-          <div className={itemClass}>
-            <div className={itemHeading}>{t('Price')}</div>
-            <div data-testid="mark-price">
-              {market.data && market.data.markPrice !== '0'
-                ? addDecimalsFormatNumber(
-                    market.data.markPrice,
-                    market.decimalPlaces
-                  )
-                : '-'}
-            </div>
-          </div>
-          {symbol && (
-            <div className={itemClass}>
-              <div className={itemHeading}>{t('Settlement asset')}</div>
-              <div data-testid="trading-mode">
-                <ButtonLink
-                  onClick={() => {
-                    setAssetDetailsDialogOpen(true);
-                    setAssetDetailsDialogSymbol(symbol);
-                  }}
-                >
-                  {symbol}
-                </ButtonLink>
-              </div>
-            </div>
-          )}
+            : MarketTradingModeMapping[market.tradingMode]}
         </div>
-      </div>
-    </header>
+      </HeaderStat>
+      <HeaderStat heading={t('Price')}>
+        <div data-testid="mark-price">
+          {market.data && market.data.markPrice !== '0'
+            ? addDecimalsFormatNumber(
+                market.data.markPrice,
+                market.decimalPlaces
+              )
+            : '-'}
+        </div>
+      </HeaderStat>
+      {symbol ? (
+        <HeaderStat heading={t('Settlement asset')}>
+          <div data-testid="trading-mode">
+            <ButtonLink
+              onClick={() => {
+                setAssetDetailsDialogOpen(true);
+                setAssetDetailsDialogSymbol(symbol);
+              }}
+            >
+              {symbol}
+            </ButtonLink>
+          </div>
+        </HeaderStat>
+      ) : null}
+    </Header>
   );
 };
 
 interface TradeGridProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradeGrid = ({ market }: TradeGridProps) => {
+export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
+  const { push } = useRouter();
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} />
+      <TradeMarketHeader market={market} onSelect={onSelect} />
       <ResizableGrid vertical={true}>
         <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
           <ResizableGrid proportionalLayout={false} minSize={200}>
@@ -267,7 +244,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={330}
               minSize={300}
             >
               <TradeGridChild>
@@ -276,14 +253,20 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                     <TradingViews.Ticket marketId={market.id} />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info marketId={market.id} />
+                    <TradingViews.Info
+                      marketId={market.id}
+                      onSelect={(id: string) => {
+                        onSelect(id);
+                        push(`/liquidity/${id}`);
+                      }}
+                    />
                   </Tab>
                 </Tabs>
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
-              preferredSize="25%"
+              preferredSize={430}
               minSize={200}
             >
               <TradeGridChild>
@@ -301,7 +284,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </ResizableGridPanel>
         <ResizableGridPanel
           priority={LayoutPriority.Low}
-          preferredSize="33%"
+          preferredSize="25%"
           minSize={50}
         >
           <TradeGridChild>
@@ -334,11 +317,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
   return (
     <section className="h-full">
       <AutoSizer>
-        {({ width, height }) => (
-          <div style={{ width, height }} className="overflow-auto">
-            {children}
-          </div>
-        )}
+        {({ width, height }) => <div style={{ width, height }}>{children}</div>}
       </AutoSizer>
     </section>
   );
@@ -346,9 +325,11 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 
 interface TradePanelsProps {
   market: Market_market;
+  onSelect: (marketId: string) => void;
 }
 
-export const TradePanels = ({ market }: TradePanelsProps) => {
+export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
+  const { push } = useRouter();
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
@@ -358,20 +339,30 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component marketId={market.id} />;
+    return (
+      <Component
+        marketId={market.id}
+        onSelect={(id: string) => {
+          onSelect(id);
+          push(`/liquidity/${id}`);
+        }}
+      />
+    );
   };
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <TradeMarketHeader market={market} />
+      <TradeMarketHeader market={market} onSelect={onSelect} />
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (
-            <div style={{ width, height }}>{renderView()}</div>
+            <div style={{ width, height }} className="overflow-auto">
+              {renderView()}
+            </div>
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('p-4 min-w-[100px] capitalize', {

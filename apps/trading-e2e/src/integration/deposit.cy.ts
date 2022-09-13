@@ -3,28 +3,28 @@ import { generateDepositPage } from '../support/mocks/generate-deposit-page';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
+const assetSelectField = 'select[name="asset"]';
+const toAddressField = 'input[name="to"]';
+const amountField = 'input[name="amount"]';
+const formFieldError = 'input-error-text';
 
 describe('deposit form validation', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'AssetsConnection', generateDepositPage());
+      aliasQuery(req, 'DepositPage', generateDepositPage());
     });
     cy.visit('/portfolio/deposit');
 
-    cy.wait('@AssetsConnection');
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
+
+    cy.wait('@DepositPage');
   });
 
   it('handles empty fields', () => {
-    const assetSelectField = 'select[name="asset"]';
-    const toAddressField = 'input[name="to"]';
-    const amountField = 'input[name="amount"]';
-    const formFieldError = 'input-error-text';
-
     // Submit form to trigger any empty validaion messages
     cy.getByTestId('deposit-submit').click();
 
@@ -54,6 +54,14 @@ describe('deposit form validation', () => {
       .type('100')
       .next(`[data-testid="${formFieldError}"]`)
       .should('have.text', 'Insufficient amount in Ethereum wallet');
+  });
+
+  it('unable to select assets not enabled', () => {
+    cy.getByTestId('deposit-submit').click();
+    // Assets not enabled in mocks
+    cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 3)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist');
   });
 
   it('able to disconnect eth wallet', () => {

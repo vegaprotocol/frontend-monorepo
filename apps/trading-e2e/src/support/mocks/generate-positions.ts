@@ -42,7 +42,6 @@ export const generatePositions = (
       },
       market: {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
-        name: 'UNIDAI Monthly (30 Jun 2022)',
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '17588787',
@@ -57,6 +56,59 @@ export const generatePositions = (
         tradableInstrument: {
           instrument: {
             name: 'UNIDAI Monthly (30 Jun 2022)',
+            __typename: 'Instrument',
+          },
+          __typename: 'TradableInstrument',
+        },
+        __typename: 'Market',
+      },
+    },
+    {
+      __typename: 'Position',
+      realisedPNL: '100',
+      openVolume: '20',
+      unrealisedPNL: '895000',
+      averageEntryPrice: '8509338',
+      updatedAt: '2022-07-28T15:09:34.441143Z',
+      marginsConnection: {
+        __typename: 'MarginConnection',
+        edges: [
+          {
+            __typename: 'MarginEdge',
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+              },
+              asset: {
+                __typename: 'Asset',
+                symbol: 'tDAI',
+              },
+            },
+          },
+        ],
+      },
+      market: {
+        id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        data: {
+          markPrice: '8649338',
+          __typename: 'MarketData',
+          market: {
+            __typename: 'Market',
+            id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+          },
+        },
+        decimalPlaces: 5,
+        positionDecimalPlaces: 0,
+        tradableInstrument: {
+          instrument: {
+            name: 'AAVEDAI Monthly (30 Jun 2022)',
             __typename: 'Instrument',
           },
           __typename: 'TradableInstrument',
@@ -95,7 +147,6 @@ export const generatePositions = (
       },
       market: {
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
-        name: 'Tesla Quarterly (30 Jun 2022)',
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '84377569',

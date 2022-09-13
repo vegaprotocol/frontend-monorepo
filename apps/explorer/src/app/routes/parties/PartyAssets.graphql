@@ -1,0 +1,32 @@
+query PartyAssetsQuery($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    delegations {
+      amount
+      node {
+        id
+        name
+      }
+      epoch
+    }
+    stake {
+      currentStakeAvailable
+    }
+    accounts {
+      asset {
+        name
+        id
+        decimals
+        symbol
+        source {
+          __typename
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+      type
+      balance
+    }
+  }
+}

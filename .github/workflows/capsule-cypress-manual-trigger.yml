@@ -47,6 +47,14 @@ jobs:
       ## Checkout capsule
       #######
 
+      # Checkout front ends
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          path: './frontend-monorepo'
+
       # Checkout capsule to build local network
       - name: Checkout capsule
         uses: actions/checkout@v2
@@ -70,7 +78,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vega
-          ref: develop
+          ref: v0.55.0
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 
@@ -120,18 +128,13 @@ jobs:
       ## Run some tests
       ######
 
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-
       - name: Install root dependencies
         run: yarn install
+        working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
