@@ -92,7 +92,7 @@ const MarketPage = ({ id }: { id?: string }) => {
   const { update: updateStore } = useGlobalStore((store) => ({
     update: store.update,
   }));
-  const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   // Default to first marketId query item if found
   const marketId =

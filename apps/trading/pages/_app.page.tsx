@@ -20,12 +20,7 @@ function AppBody({ Component, pageProps }: AppProps) {
     connectDialog: store.connectDialog,
     update: store.update,
   }));
-  const {
-    isAssetDetailsDialogOpen,
-    assetDetailsDialogSymbol,
-    assetDetailsDialogTrigger,
-    setAssetDetailsDialogOpen,
-  } = useAssetDetailsDialogStore();
+  const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
@@ -47,10 +42,10 @@ function AppBody({ Component, pageProps }: AppProps) {
             setDialogOpen={(open) => update({ connectDialog: open })}
           />
           <AssetDetailsDialog
-            assetSymbol={assetDetailsDialogSymbol}
-            trigger={assetDetailsDialogTrigger || null}
-            open={isAssetDetailsDialogOpen}
-            onChange={(open) => setAssetDetailsDialogOpen(open)}
+            assetSymbol={symbol}
+            trigger={trigger || null}
+            open={isOpen}
+            onChange={setOpen}
           />
           <RiskNoticeDialog />
         </AppLoader>

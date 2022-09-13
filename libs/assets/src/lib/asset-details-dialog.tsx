@@ -14,39 +14,26 @@ import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
 export type AssetDetailsDialogStore = {
-  isAssetDetailsDialogOpen: boolean;
-  assetDetailsDialogSymbol: string | Asset;
-  assetDetailsDialogTrigger: HTMLElement | null | undefined;
-  setAssetDetailsDialogOpen: (isOpen: boolean) => void;
-  setAssetDetailsDialogSymbol: (symbol: string | Asset) => void;
-  setAssetDetailsDialogTrigger: (
-    trigger: HTMLElement | null | undefined
-  ) => void;
-  openAssetDetailsDialog: (
-    symbol: string | Asset,
-    trigger?: HTMLElement | null
-  ) => void;
+  isOpen: boolean;
+  symbol: string | Asset;
+  trigger: HTMLElement | null | undefined;
+  setOpen: (isOpen: boolean) => void;
+  open: (symbol: string | Asset, trigger?: HTMLElement | null) => void;
 };
 
 export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
   (set) => ({
-    isAssetDetailsDialogOpen: false,
-    assetDetailsDialogSymbol: '',
-    assetDetailsDialogTrigger: null,
-    setAssetDetailsDialogOpen: (isOpen) => {
-      set({ isAssetDetailsDialogOpen: isOpen });
+    isOpen: false,
+    symbol: '',
+    trigger: null,
+    setOpen: (isOpen) => {
+      set({ isOpen: isOpen });
     },
-    setAssetDetailsDialogSymbol: (symbol) => {
-      set({ assetDetailsDialogSymbol: symbol });
-    },
-    setAssetDetailsDialogTrigger: (trigger) => {
-      set({ assetDetailsDialogTrigger: trigger });
-    },
-    openAssetDetailsDialog: (symbol, trigger?) => {
+    open: (symbol, trigger?) => {
       set({
-        isAssetDetailsDialogOpen: true,
-        assetDetailsDialogSymbol: symbol,
-        assetDetailsDialogTrigger: trigger,
+        isOpen: true,
+        symbol: symbol,
+        trigger: trigger,
       });
     },
   })

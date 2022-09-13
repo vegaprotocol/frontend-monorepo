@@ -117,7 +117,7 @@ export const TradeMarketHeader = ({
   onSelect,
 }: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const candlesClose: string[] = (market?.candlesConnection?.edges || [])
     .map((candle) => candle?.node.close)

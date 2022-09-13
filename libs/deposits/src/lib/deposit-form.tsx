@@ -65,7 +65,7 @@ export const DepositForm = ({
   allowance,
   isFaucetable,
 }: DepositFormProps) => {
-  const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
   const {

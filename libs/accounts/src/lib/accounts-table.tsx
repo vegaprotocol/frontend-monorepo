@@ -92,7 +92,7 @@ const comparator = (
 
 export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
-    const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
+    const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}

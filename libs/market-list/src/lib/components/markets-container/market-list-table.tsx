@@ -37,7 +37,7 @@ type MarketListTableValueFormatterParams = Omit<
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
-  const { openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
