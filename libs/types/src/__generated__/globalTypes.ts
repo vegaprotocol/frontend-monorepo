@@ -10,7 +10,7 @@
 /**
  * The various account types in Vega (used by collateral)
  */
-export enum AccountType {
+ export enum AccountType {
   ACCOUNT_TYPE_BOND = "ACCOUNT_TYPE_BOND",
   ACCOUNT_TYPE_EXTERNAL = "ACCOUNT_TYPE_EXTERNAL",
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE = "ACCOUNT_TYPE_FEES_INFRASTRUCTURE",

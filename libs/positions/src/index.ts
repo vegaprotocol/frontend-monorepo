@@ -1,4 +1,5 @@
 export * from './lib/__generated__/Positions';
+export * from './lib/__generated__/PositionsSubscription';
 export * from './lib/positions-container';
 export * from './lib/positions-data-providers';
 export * from './lib/positions-table';

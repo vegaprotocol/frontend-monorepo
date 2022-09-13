@@ -55,11 +55,16 @@ describe('home', () => {
     it('redirects to a the market list page if no sensible default is found', () => {
       // Mock markets query that is triggered by home page to find default market
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketList', { markets: [] });
+        const data = {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: [],
+          },
+        };
+        aliasQuery(req, 'Markets', data);
       });
-
       cy.visit('/');
-      cy.wait('@MarketList');
+      cy.wait('@Markets');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

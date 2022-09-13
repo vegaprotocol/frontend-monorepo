@@ -83,7 +83,7 @@ export const Positions = memo(
     return (
       <AsyncRenderer loading={loading} error={error} data={data}>
         <div className="flex justify-between items-center px-3 py-1">
-          <h4 className="text-m">
+          <h4>
             {assetSymbol} {t('markets')}
           </h4>
           <div className="text-sm text-neutral-500 dark:text-neutral-300">

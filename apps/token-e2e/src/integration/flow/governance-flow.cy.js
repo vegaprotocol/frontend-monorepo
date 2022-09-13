@@ -23,6 +23,8 @@ const proposalVoteProgressForTokens =
 const proposalVoteProgressAgainstTokens =
   '[data-testid="vote-progress-indicator-tokens-against"]';
 const changeVoteButton = '[data-testid="change-vote-button"]';
+const proposalDetailsTitle = '[data-testid="proposal-title"]';
+const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const voteButtons = '[data-testid="vote-buttons"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
@@ -170,7 +172,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
     });
 
-    it('Newly created freeform proposal - able to filter by proposalID to show it in list', function () {
+    it('Newly created freeform proposals list - able to filter by proposalID to show it in list', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -196,15 +198,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .then((proposalId) => {
           cy.get('[data-testid="set-proposals-filter-visible"]').click();
           cy.get('[data-testid="filter-input"]').type(proposalId);
-          cy.get(`#${proposalId}`).should(
-            'contain',
-            `Freeform proposal: ${proposalId}`,
-            txTimeout
-          );
+          cy.get(`#${proposalId}`).should('contain', proposalId);
         });
     });
 
-    it('Newly created freeform proposal - able to filter by proposerID to show it in list', function () {
+    it('Newly created freeform proposals list - able to filter by proposerID to show it in list', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -230,15 +228,57 @@ context('Governance flow - with eth and vega wallets connected', function () {
         let proposalId = proposal.response.body.data.busEvents[0].event.id;
         cy.get('[data-testid="set-proposals-filter-visible"]').click();
         cy.get('[data-testid="filter-input"]').type(proposerId);
-        cy.get(`#${proposalId}`).should(
-          'contain',
-          `Freeform proposal: ${proposalId}`,
-          txTimeout
-        );
+        cy.get(`#${proposalId}`).should('contain', proposalId);
       });
     });
 
-    it('Newly created freeform proposal - shows in an open state', function () {
+    it('Newly created freeform proposals list - shows title and portion of summary', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
+            'freeformProposal'
+          );
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.wait_for_proposal_sync();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.wait('@proposalSubmissionCompletion')
+        .its(proposalResponseProposalIdPath)
+        .then((proposalId) => {
+          cy.get(openProposals).within(() => {
+            cy.get('@freeformProposal').then((freeformProposal) => {
+              // 1004-VOTE-008
+              // 1004-VOTE-034
+              cy.get(`#${proposalId}`)
+                .should('contain', freeformProposal.rationale.title)
+                .and('be.visible');
+              cy.get(`#${proposalId}`)
+                .should(
+                  'contain',
+                  freeformProposal.rationale.description.substring(0, 59)
+                )
+                .and('be.visible');
+            });
+          });
+        });
+    });
+
+    it('Newly created freeform proposals list - shows open proposals in an open state', function () {
+      // 1004-VOTE-004
+      // 1004-VOTE-035
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -263,13 +303,131 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .its(proposalResponseProposalIdPath)
         .then((proposalId) => {
           cy.get(openProposals).within(() => {
+            // 1004-VOTE-035
             cy.get(`#${proposalId}`)
-              .should('contain', `Freeform proposal: ${proposalId}`, txTimeout)
+              .should('contain', proposalId)
               .and('contain', 'Open')
-              .and('be.visible')
-              .within(() => {
-                cy.get(viewProposalButton).should('be.visible').click();
-              });
+              .and('be.visible');
+          });
+        });
+    });
+
+    it('Newly created freeform proposal details - shows proposal title and full description', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
+            'freeformProposal'
+          );
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.wait_for_proposal_sync();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.wait('@proposalSubmissionCompletion')
+        .its(proposalResponseProposalIdPath)
+        .then((proposalId) => {
+          cy.get(openProposals).within(() => {
+            cy.get(`#${proposalId}`).within(() => {
+              cy.get(viewProposalButton).should('be.visible').click();
+            });
+          });
+          cy.get('@freeformProposal').then((freeformProposal) => {
+            // 1004-VOTE-054
+            cy.get(proposalDetailsTitle)
+              .should('contain', freeformProposal.rationale.title)
+              .and('be.visible');
+            cy.get(proposalDetailsDescription)
+              .should('contain', freeformProposal.rationale.description)
+              .and('be.visible');
+          });
+        });
+    });
+
+    it('Newly created freeform proposal details - shows full link included in description', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
+            'freeformProposal'
+          );
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.wait_for_proposal_sync();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.wait('@proposalSubmissionCompletion')
+        .its(proposalResponseProposalIdPath)
+        .then((proposalId) => {
+          cy.get(openProposals).within(() => {
+            cy.get(`#${proposalId}`).within(() => {
+              cy.get(viewProposalButton).should('be.visible').click();
+            });
+          });
+          cy.get('@freeformProposal').then((freeformProposal) => {
+            // 1004-VOTE-055
+            cy.get(proposalDetailsDescription)
+              .should('contain', freeformProposal.rationale.description)
+              .and('have.attr', 'href')
+              .and(
+                'equal',
+                'https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si'
+              )
+              .and('be.visible');
+          });
+        });
+    });
+
+    it('Newly created freeform proposal details - shows open proposal in an open state', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.wait_for_proposal_sync();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.wait('@proposalSubmissionCompletion')
+        .its(proposalResponseProposalIdPath)
+        .then((proposalId) => {
+          cy.get(openProposals).within(() => {
+            cy.get(`#${proposalId}`).within(() => {
+              cy.get(viewProposalButton).should('be.visible').click();
+            });
           });
           cy.get_proposal_information_from_table('ID')
             .contains(proposalId)
@@ -283,7 +441,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    it('Newly created freeform proposal - shows proposed and closing dates', function () {
+    it('Newly created freeform proposal details - shows proposed and closing dates', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -322,10 +480,14 @@ context('Governance flow - with eth and vega wallets connected', function () {
             .should('be.visible');
         }
       );
+      // 1004-VOTE-043
       cy.contains('9 days left to vote').should('be.visible');
     });
 
-    it('Newly created freeform proposal - shows default status set to fail', function () {
+    it('Newly created freeform proposal details - shows default status set to fail', function () {
+      // 1004-VOTE-037
+      // 1004-VOTE-039
+      // 1004-VOTE-040
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -356,6 +518,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_proposal_information_from_table('Will pass')
         .contains('👎')
         .should('be.visible');
+      // 1004-VOTE-062
       cy.get_proposal_information_from_table('Majority met')
         .contains('👎')
         .should('be.visible');
@@ -364,7 +527,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to vote for proposal - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal details - ability to vote for proposal - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -393,6 +556,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
         '0',
         'shortMonth'
       ).then((votedDate) => {
+        // 1004-VOTE-051
+        // 1004-VOTE-093
         cy.contains('You voted:')
           .siblings()
           .contains('For')
@@ -416,9 +581,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_proposal_information_from_table('Tokens against proposal')
         .should('have.text', '0.00')
         .and('be.visible');
+      // 1004-VOTE-061
       cy.get_proposal_information_from_table('Participation required')
         .contains(`${this.requiredParticipation}%`)
         .should('be.visible');
+      // 1004-VOTE-066
       cy.get_proposal_information_from_table('Majority Required')
         .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
         .should('be.visible');
@@ -427,7 +594,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to vote against proposal - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal details - ability to vote against proposal - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -456,6 +623,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         '0',
         'shortMonth'
       ).then((votedDate) => {
+        // 1004-VOTE-051
         cy.contains('You voted:')
           .siblings()
           .contains('Against')
@@ -490,7 +658,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to change vote from against to for - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal details - ability to change vote from against to for - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -515,6 +683,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .as('submittedProposal')
         .within(() => cy.get(viewProposalButton).click());
       cy.vote_for_proposal('against');
+      // 1004-VOTE-090
       cy.get(changeVoteButton).should('be.visible').click();
       cy.wait_for_spinner();
       cy.vote_for_proposal('for');
@@ -528,6 +697,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
+      // 1004-VOTE-064
       cy.get_proposal_information_from_table('Tokens for proposal')
         .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
         .and('be.visible');
@@ -545,7 +715,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to change vote from for to against - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal details - ability to change vote from for to against - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -572,6 +742,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.vote_for_proposal('for');
       cy.get(changeVoteButton).should('be.visible').click();
       cy.wait_for_spinner();
+      // 1004-VOTE-080
       cy.vote_for_proposal('against');
       cy.get(proposalVoteProgressForPercentage)
         .contains('0.00%')
@@ -600,7 +771,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to increase associated tokens - so that vote sways result', function () {
+    it('Newly created freeform proposal details - ability to increase associated tokens - so that vote sways result', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -624,6 +795,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_submitted_proposal_from_proposal_list()
         .as('submittedProposal')
         .within(() => cy.get(viewProposalButton).click());
+      // 1004-VOTE-080
       cy.vote_for_proposal('for');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
@@ -645,6 +817,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.get(proposalVoteProgressAgainstPercentage)
             .contains('0.00%')
             .and('be.visible');
+          // 1004-VOTE-065
+          // 1004-VOTE-079
           cy.get(proposalVoteProgressForTokens)
             .contains(tokensRequiredToAcheiveResult)
             .and('be.visible');
@@ -660,6 +834,22 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.get_proposal_information_from_table('Number of voting parties')
             .should('have.text', '1')
             .and('be.visible');
+          cy.get_proposal_information_from_table('Will pass')
+            .contains('👍')
+            .should('be.visible');
+          // 1004-VOTE-062
+          cy.get_proposal_information_from_table('Majority met')
+            .contains('👍')
+            .should('be.visible');
+          cy.get_proposal_information_from_table('Participation met')
+            .contains('👍')
+            .should('be.visible');
+          // 1004-VOTE-042
+          // 1004-VOTE-057
+          // 1004-VOTE-058
+          // 1004-VOTE-059
+          // 1004-VOTE-060
+          cy.contains('Currently set to pass').should('be.visible');
         });
     });
 
@@ -852,6 +1042,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
           parseSpecialCharSequences: false,
           delay: 2,
         });
+
+        cy.wrap(freeformProposal);
       });
     });
 

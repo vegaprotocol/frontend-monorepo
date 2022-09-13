@@ -1,210 +1,59 @@
-import type { MarketList } from '../__generated__/MarketList';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import type { Market } from '../markets-provider';
 import { mapDataToMarketList } from './market-utils';
+
+const MARKET_A: Partial<Market> = {
+  id: '1',
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    open: '2022-05-18T13:08:27.693537312Z',
+    close: null,
+  },
+  state: MarketState.STATE_ACTIVE,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+};
+
+const MARKET_B: Partial<Market> = {
+  id: '2',
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    open: '2022-05-18T13:00:39.328347732Z',
+    close: null,
+  },
+  state: MarketState.STATE_ACTIVE,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+};
+
+const MARKET_C: Partial<Market> = {
+  id: '3',
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    open: '2022-05-17T13:00:39.328347732Z',
+    close: null,
+  },
+  state: MarketState.STATE_REJECTED,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+};
+
+const MARKET_D: Partial<Market> = {
+  id: '4',
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    open: '2022-05-16T13:00:39.328347732Z',
+    close: null,
+  },
+  state: MarketState.STATE_ACTIVE,
+  tradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
+};
 
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
-    const result = mapDataToMarketList(mockData.data as unknown as MarketList);
-    expect(result).toEqual(mockList);
+    const result = mapDataToMarketList([
+      MARKET_A,
+      MARKET_B,
+      MARKET_C,
+      MARKET_D,
+    ] as unknown as Market[]);
+    expect(result).toEqual([MARKET_B, MARKET_A]);
   });
 });
-
-const mockList = [
-  {
-    __typename: 'Market',
-    id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
-    decimalPlaces: 5,
-    candles: [
-      {
-        open: '16141155',
-        close: '16293551',
-        high: '16320190',
-        low: '16023805',
-        __typename: 'Candle',
-      },
-      {
-        open: '16293548',
-        close: '16322118',
-        high: '16365861',
-        low: '16192970',
-        __typename: 'Candle',
-      },
-    ],
-    fees: {
-      factors: {
-        makerFee: 0.0002,
-        infrastructureFee: 0.0005,
-        liquidityFee: 0.001,
-      },
-    },
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        name: 'Apple Monthly (30 Jun 2022)',
-        code: 'AAPL.MF21',
-        product: {
-          settlementAsset: { symbol: 'AAPL.MF21', __typename: 'Asset' },
-          __typename: 'Future',
-        },
-      },
-    },
-    marketTimestamps: {
-      __typename: 'MarketTimestamps',
-      open: '2022-05-18T13:00:39.328347732Z',
-      close: null,
-    },
-    open: 1652878839328,
-    close: null,
-  },
-  {
-    __typename: 'Market',
-    id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
-    decimalPlaces: 2,
-    fees: {
-      factors: {
-        makerFee: 0.0002,
-        infrastructureFee: 0.0005,
-        liquidityFee: 0.001,
-      },
-    },
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        name: 'APEUSD (May 2022)',
-        code: 'APEUSD',
-        product: {
-          settlementAsset: { symbol: 'APEUSD', __typename: 'Asset' },
-          __typename: 'Future',
-        },
-      },
-    },
-    marketTimestamps: {
-      __typename: 'MarketTimestamps',
-      open: '2022-05-18T13:08:27.693537312Z',
-      close: null,
-    },
-    candles: [
-      {
-        open: '16141155',
-        close: '16293551',
-        high: '16320190',
-        low: '16023805',
-        __typename: 'Candle',
-      },
-      {
-        open: '16293548',
-        close: '16322118',
-        high: '16365861',
-        low: '16192970',
-        __typename: 'Candle',
-      },
-    ],
-    open: 1652879307693,
-    close: null,
-  },
-];
-
-const mockData = {
-  data: {
-    markets: [
-      {
-        __typename: 'Market',
-        id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
-        decimalPlaces: 2,
-        fees: {
-          factors: {
-            makerFee: 0.0002,
-            infrastructureFee: 0.0005,
-            liquidityFee: 0.001,
-          },
-        },
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            __typename: 'Instrument',
-            name: 'APEUSD (May 2022)',
-            code: 'APEUSD',
-            product: {
-              settlementAsset: {
-                symbol: 'APEUSD',
-                __typename: 'Asset',
-              },
-              __typename: 'Future',
-            },
-          },
-        },
-
-        marketTimestamps: {
-          __typename: 'MarketTimestamps',
-          open: '2022-05-18T13:08:27.693537312Z',
-          close: null,
-        },
-        candles: [
-          {
-            open: '16141155',
-            close: '16293551',
-            high: '16320190',
-            low: '16023805',
-            __typename: 'Candle',
-          },
-          {
-            open: '16293548',
-            close: '16322118',
-            high: '16365861',
-            low: '16192970',
-            __typename: 'Candle',
-          },
-        ],
-      },
-      {
-        __typename: 'Market',
-        id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
-        decimalPlaces: 5,
-        candles: [
-          {
-            open: '16141155',
-            close: '16293551',
-            high: '16320190',
-            low: '16023805',
-            __typename: 'Candle',
-          },
-          {
-            open: '16293548',
-            close: '16322118',
-            high: '16365861',
-            low: '16192970',
-            __typename: 'Candle',
-          },
-        ],
-        fees: {
-          factors: {
-            makerFee: 0.0002,
-            infrastructureFee: 0.0005,
-            liquidityFee: 0.001,
-          },
-        },
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            __typename: 'Instrument',
-            name: 'Apple Monthly (30 Jun 2022)',
-            code: 'AAPL.MF21',
-            product: {
-              settlementAsset: {
-                symbol: 'AAPL.MF21',
-                __typename: 'Asset',
-              },
-              __typename: 'Future',
-            },
-          },
-        },
-        marketTimestamps: {
-          __typename: 'MarketTimestamps',
-          open: '2022-05-18T13:00:39.328347732Z',
-          close: null,
-        },
-      },
-    ],
-  },
-};

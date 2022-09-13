@@ -19,7 +19,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="border-b border-neutral-300 dark:border-neutral-600">
+      <div className="border-b border-default">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -28,11 +28,11 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === activeTab;
             const triggerClass = classNames(
-              'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-600',
+              'relative px-4 py-2 border-r border-default',
               'uppercase',
-              'inline-block after:content-[attr(data-testid)] after:block after:invisible after:overflow-hidden after:h-0 after:tracking-wider',
               {
-                'text-neutral-400 dark:text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
+                'cursor-default': isActive,
+                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
                   !isActive,
               }
             );
