@@ -1,21 +1,18 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import {
-  useDataProvider,
-  makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
-import { useCallback, useMemo, useRef } from 'react';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
+import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
+import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
+import type { OrderFields } from '@vegaprotocol/orders';
+import { useOrderListData } from '@vegaprotocol/orders';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { ConsoleLiteGrid } from '../../console-lite-grid';
+import useColumnDefinitions from './use-column-definitions';
 
-import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
-import { useOrderListData } from './use-order-list-data';
-
-interface OrderListManagerProps {
+interface Props {
   partyId: string;
 }
 
-export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
+const OrdersManager = ({ partyId }: Props) => {
+  const { columnDefs, defaultColDef } = useColumnDefinitions();
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
 
@@ -37,13 +34,17 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <OrderList
+      <ConsoleLiteGrid<OrderFields>
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
       />
     </AsyncRenderer>
   );
 };
+
+export default OrdersManager;

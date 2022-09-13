@@ -326,7 +326,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
 /**
  * Check if an order is active to determine if it can be edited or cancelled
  */
-const isOrderActive = (status: OrderStatus) => {
+export const isOrderActive = (status: OrderStatus) => {
   return ![
     OrderStatus.STATUS_CANCELLED,
     OrderStatus.STATUS_REJECTED,

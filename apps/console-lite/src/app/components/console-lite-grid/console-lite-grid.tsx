@@ -14,30 +14,21 @@ import React, {
 } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type {
+  GridOptions,
   GetRowIdParams,
   TabToNextCellParams,
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
-  ColDef,
-  ColGroupDef,
-  GetRowIdFunc,
 } from 'ag-grid-community';
 
-import type { Datasource } from '@vegaprotocol/positions';
-
-interface Props<T> {
-  columnDefs: (ColDef | ColGroupDef)[] | null;
-  data: T[];
-  defaultColDef: ColDef;
+interface Props<T> extends GridOptions {
+  data?: T[];
   handleRowClicked?: (event: { data: T }) => void;
   components?: Record<string, unknown>;
-  getRowId?: GetRowIdFunc;
-  rowData?: T[] | null;
-  datasource?: Datasource;
 }
 
 const ConsoleLiteGrid = <T extends { id?: string }>(
-  { columnDefs, data, defaultColDef, handleRowClicked, getRowId }: Props<T>,
+  { data, handleRowClicked, getRowId, ...props }: Props<T>,
   ref?: React.Ref<AgGridReact>
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
@@ -80,8 +71,6 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
   return (
     <AgGrid
       className="mb-32 min-h-[300px]"
-      defaultColDef={defaultColDef}
-      columnDefs={columnDefs}
       rowData={data}
       rowHeight={60}
       customThemeParams={
@@ -102,6 +91,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
       onCellKeyDown={onCellKeyDown}
       tabToNextCell={onTabToNextCell}
       suppressHorizontalScroll={shouldSuppressHorizontalScroll}
+      {...props}
     />
   );
 };

@@ -25,11 +25,11 @@ const PositionsAsset = ({ partyId, assetSymbol }: Props) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <ConsoleLiteGrid<Position & { id: undefined }>
         ref={gridRef}
-        data={data as (Position & { id: undefined })[]}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         getRowId={getRowId}
-        rowData={data?.length ? undefined : []}
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        data={data?.length ? undefined : []}
         datasource={{ getRows }}
       />
     </AsyncRenderer>
