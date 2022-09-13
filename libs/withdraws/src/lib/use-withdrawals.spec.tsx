@@ -1,24 +1,21 @@
-import { WithdrawalStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
 import { updateQuery } from './use-withdrawals';
 import type {
-  WithdrawalEvent,
-  WithdrawalEvent_busEvents_event_Withdrawal,
-} from './__generated__/WithdrawalEvent';
-import type {
-  Withdrawals,
-  Withdrawals_party_withdrawalsConnection_edges_node,
-} from './__generated__/Withdrawals';
+  WithdrawalsQuery,
+  WithdrawalEventSubscription,
+  WithdrawalFieldsFragment,
+} from './__generated__/Withdrawal';
 
 describe('updateQuery', () => {
   it('updates existing withdrawals', () => {
     const withdrawal = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.STATUS_OPEN,
+      status: Schema.WithdrawalStatus.STATUS_OPEN,
     });
     const withdrawalUpdate = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.STATUS_FINALIZED,
+      status: Schema.WithdrawalStatus.STATUS_FINALIZED,
     });
     const prev = mockQuery([withdrawal]);
     const incoming = mockSub([withdrawalUpdate]);
@@ -102,14 +99,14 @@ describe('updateQuery', () => {
   it('Handles updates and inserts simultaneously', () => {
     const withdrawal1 = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.STATUS_OPEN,
+      status: Schema.WithdrawalStatus.STATUS_OPEN,
     });
     const withdrawal2 = generateWithdrawal({
       id: '2',
     });
     const withdrawalUpdate = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.STATUS_FINALIZED,
+      status: Schema.WithdrawalStatus.STATUS_FINALIZED,
     });
     const withdrawalNew = generateWithdrawal({
       id: '3',
@@ -144,8 +141,8 @@ describe('updateQuery', () => {
 });
 
 const mockQuery = (
-  withdrawals: Withdrawals_party_withdrawalsConnection_edges_node[]
-): Withdrawals => {
+  withdrawals: WithdrawalFieldsFragment[]
+): WithdrawalsQuery => {
   return {
     party: {
       __typename: 'Party',
@@ -162,10 +159,10 @@ const mockQuery = (
 };
 
 const mockSub = (
-  withdrawals: WithdrawalEvent_busEvents_event_Withdrawal[]
+  withdrawals: WithdrawalFieldsFragment[]
 ): {
   subscriptionData: {
-    data: WithdrawalEvent;
+    data: WithdrawalEventSubscription;
   };
 } => {
   return {

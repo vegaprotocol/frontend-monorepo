@@ -1,12 +1,11 @@
-import type { Asset, AssetWithStatus } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { Account } from './types';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import type { WithdrawalFieldsFragment, WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
 
-export const generateAsset = (override?: PartialDeep<Asset>) => {
-  const defaultAsset: AssetWithStatus = {
+export const generateAsset = (override?: PartialDeep<WithdrawalAssetFieldsFragment>) => {
+  const defaultAsset: WithdrawalAssetFieldsFragment = {
     __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',

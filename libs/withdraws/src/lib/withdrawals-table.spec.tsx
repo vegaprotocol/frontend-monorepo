@@ -4,7 +4,7 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
-import { WithdrawalStatus, WithdrawalStatusMapping } from '@vegaprotocol/types';
+import { Schema, WithdrawalStatusMapping } from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
 import type {
   StatusCellProps,
@@ -12,7 +12,7 @@ import type {
 } from './withdrawals-table';
 import { StatusCell } from './withdrawals-table';
 import { WithdrawalsTable } from './withdrawals-table';
-import type { Withdrawals_party_withdrawalsConnection_edges_node } from './__generated__/Withdrawals';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
@@ -59,7 +59,7 @@ describe('renders the correct columns', () => {
   it('completed withdrawal', async () => {
     const withdrawal = generateWithdrawal({
       txHash: '0x1234567891011121314',
-      status: WithdrawalStatus.STATUS_FINALIZED,
+      status: Schema.WithdrawalStatus.STATUS_FINALIZED,
     });
 
     await act(async () => {
@@ -83,7 +83,7 @@ describe('renders the correct columns', () => {
 
 describe('StatusCell', () => {
   let props: StatusCellProps;
-  let withdrawal: Withdrawals_party_withdrawalsConnection_edges_node;
+  let withdrawal: WithdrawalFieldsFragment;
   let mockComplete: jest.Mock;
 
   beforeEach(() => {
@@ -98,7 +98,7 @@ describe('StatusCell', () => {
   });
 
   it('Open', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
+    props.value = Schema.WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = null;
     render(<StatusCell {...props} />);
@@ -109,7 +109,7 @@ describe('StatusCell', () => {
   });
 
   it('Pending', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
+    props.value = Schema.WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = true;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
@@ -122,7 +122,7 @@ describe('StatusCell', () => {
   });
 
   it('Finalized', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
+    props.value = Schema.WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);

@@ -4,13 +4,13 @@ import { useWeb3React } from '@web3-react/core';
 import { WithdrawForm } from './withdraw-form';
 import { generateAsset } from './test-helpers';
 import type { WithdrawFormProps } from './withdraw-form';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
 
 jest.mock('@web3-react/core');
 
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
-let assets: Asset[];
+let assets: WithdrawalAssetFieldsFragment[];
 let props: WithdrawFormProps;
 
 beforeEach(() => {
