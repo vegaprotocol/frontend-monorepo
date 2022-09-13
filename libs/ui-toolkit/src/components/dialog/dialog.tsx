@@ -63,7 +63,7 @@ export function Dialog({
         />
         <DialogPrimitives.Content
           className={contentClasses}
-          onCloseAutoFocus={(e) => onCloseAutoFocus?.(e)}
+          onCloseAutoFocus={onCloseAutoFocus}
         >
           <div className={wrapperClasses}>
             {onChange && (
