@@ -313,24 +313,28 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-     it('Newly created freeform proposals list - proposals closest to closing date first appear higher in list', function () {
+    it('Newly created freeform proposals list - proposals closest to closing date first appear higher in list', function () {
       // 1004-VOTE-005
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
 
-      // Ensuring that proposals are not posted in same order as sort order 
-      let proposalDays = [this.minCloseDays+1, this.maxCloseDays, this.minCloseDays+3, this.minCloseDays+2]
-      for (var index = 0; index < proposalDays.length; index++) 
-      { 
+      // Ensuring that proposals are not posted in same order as sort order
+      let proposalDays = [
+        this.minCloseDays + 1,
+        this.maxCloseDays,
+        this.minCloseDays + 3,
+        this.minCloseDays + 2,
+      ];
+      for (var index = 0; index < proposalDays.length; index++) {
         cy.navigate_to('governance');
         cy.wait_for_spinner();
         cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days(proposalDays[index]).then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.create_ten_digit_unix_timestamp_for_specified_days(
+          proposalDays[index]
+        ).then((closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        });
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -345,13 +349,16 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.navigate_to('governance');
       cy.wait_for_spinner();
 
-      cy.get(proposalDetailsTitle).each(proposalTitleElement => {
-          arrayOfProposals.push(proposalTitleElement.text())
+      cy.get(proposalDetailsTitle)
+        .each((proposalTitleElement) => {
+          arrayOfProposals.push(proposalTitleElement.text());
         })
         .then(() => {
-          cy.get_sort_order_of_supplied_array(arrayOfProposals).should('equal', 'descending')
-        })
-
+          cy.get_sort_order_of_supplied_array(arrayOfProposals).should(
+            'equal',
+            'descending'
+          );
+        });
     });
 
     it('Newly created freeform proposal list - shows parcipitation met against proposal - when met', function () {
@@ -1230,14 +1237,19 @@ context('Governance flow - with eth and vega wallets connected', function () {
       });
     });
 
-    Cypress.Commands.add('get_sort_order_of_supplied_array', (suppliedArray) => {
-      const tempArray = [];
-      for (let index = 1; index < suppliedArray.length; index++) {
-        tempArray.push(suppliedArray[index - 1].localeCompare(suppliedArray[index]));
+    Cypress.Commands.add(
+      'get_sort_order_of_supplied_array',
+      (suppliedArray) => {
+        const tempArray = [];
+        for (let index = 1; index < suppliedArray.length; index++) {
+          tempArray.push(
+            suppliedArray[index - 1].localeCompare(suppliedArray[index])
+          );
+        }
+        if (tempArray.every((n) => n <= 0)) return 'ascending';
+        else if (tempArray.every((n) => n >= 0)) return 'descending';
+        else return 'unsorted';
       }
-      if (tempArray.every((n) => n <= 0)) return 'ascending';
-      else if (tempArray.every((n) => n >= 0)) return 'descending';
-      else return 'unsorted'
-    })
+    );
   });
 });
