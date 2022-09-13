@@ -7,9 +7,11 @@ import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
+import { Schema } from '@vegaprotocol/types';
 import { useOrderCancel } from './use-order-cancel';
-import type { OrderEvent, OrderEvent_busEvents } from './';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import { OrderBusEventDocument } from './__generated__/Orders';
+import type { OrderBusEventSubscription } from './__generated__/Orders';
+
 
 const defaultWalletContext = {
   keypair: null,
@@ -22,9 +24,9 @@ const defaultWalletContext = {
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {
-  const mocks: MockedResponse<OrderEvent> = {
+  const mocks: MockedResponse<OrderBusEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderBusEventDocument,
       variables: {
         partyId: context?.keypair?.pub || '',
       },
@@ -33,33 +35,43 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: Schema.BusEventType.Order,
             event: {
-              type: 'Limit',
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
+              remaining: '1',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: '1',
                 decimalPlaces: 5,
-                __typename: 'Market',
+                positionDecimalPlaces: 0,
+                name: 'UNIDAI Monthly (30 Jun 2022)',
+                tradableInstrument: {
+                  instrument: {
+                    id: '001',
+                    name: 'UNIDAI',
+                    code: 'UNIDAI',
+                    __typename: 'Instrument',
+                  }
+                },
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },
   };
-  const filterMocks: MockedResponse<OrderEvent> = {
+  const filterMocks: MockedResponse<OrderBusEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderBusEventDocument,
       variables: {
         partyId: context?.keypair?.pub || '',
       },
@@ -68,26 +80,36 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: Schema.BusEventType.Order,
             event: {
-              type: 'Limit',
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
+              remaining: '1',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: '1',
                 decimalPlaces: 5,
-                __typename: 'Market',
+                positionDecimalPlaces: 0,
+                name: 'UNIDAI Monthly (30 Jun 2022)',
+                tradableInstrument: {
+                  instrument: {
+                    id: '001',
+                    name: 'UNIDAI',
+                    code: 'UNIDAI',
+                    __typename: 'Instrument',
+                  }
+                },
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },

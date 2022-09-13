@@ -1,27 +1,22 @@
 import { act, render, screen } from '@testing-library/react';
 import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { OrderType } from '@vegaprotocol/types';
 import {
-  OrderRejectionReasonMapping,
-  OrderTimeInForceMapping,
-} from '@vegaprotocol/types';
-import {
-  OrderStatus,
-  OrderRejectionReason,
+  Schema,
   OrderTypeMapping,
   OrderStatusMapping,
+  OrderRejectionReasonMapping,
+  OrderTimeInForceMapping,
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-
 import { OrderListTable } from '../';
-import type { Orders_party_ordersConnection_edges_node } from '../';
+import type { OrderFieldsFragment } from '../../order-hooks/__generated__/Orders';
 import { limitOrder, marketOrder } from '../mocks/generate-orders';
 
 const generateJsx = (
-  orders: Orders_party_ordersConnection_edges_node[] | null,
+  orders: OrderFieldsFragment[] | null,
   context: PartialDeep<VegaWalletContextShape> = { keypair: { pub: '0x123' } }
 ) => {
   return (
@@ -76,7 +71,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[marketOrder.type as OrderType] || '',
+      OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       OrderStatusMapping[marketOrder.status],
       '5',
       '-',
@@ -100,7 +95,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[limitOrder.type || OrderType.TYPE_LIMIT],
+      OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       OrderStatusMapping[limitOrder.status],
       '5',
       addDecimal(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
@@ -120,9 +115,9 @@ describe('OrderListTable', () => {
   it('should apply correct formatting for a rejected order', async () => {
     const rejectedOrder = {
       ...marketOrder,
-      status: OrderStatus.STATUS_REJECTED,
+      status: Schema.OrderStatus.STATUS_REJECTED,
       rejectionReason:
-        OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
+        Schema.OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
     };
     await act(async () => {
       render(generateJsx([rejectedOrder]));

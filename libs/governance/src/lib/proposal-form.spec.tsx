@@ -3,11 +3,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  BusEventType,
-  ProposalRejectionReason,
-  ProposalState,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { ProposalForm } from './proposal-form';
 import { ProposalEventDocument } from './proposals-hooks';
 import type { ProposalEventSubscription } from './proposals-hooks/__generated__/Proposal';
@@ -26,14 +22,14 @@ describe('ProposalForm', () => {
         busEvents: [
           {
             __typename: 'BusEvent',
-            type: BusEventType.Proposal,
+            type: Schema.BusEventType.Proposal,
             event: {
               __typename: 'Proposal',
               id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
               reference: 'proposal-reference',
-              state: ProposalState.STATE_OPEN,
+              state: Schema.ProposalState.STATE_OPEN,
               rejectionReason:
-                ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+                Schema.ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
               errorDetails: 'error-details',
             },
           },

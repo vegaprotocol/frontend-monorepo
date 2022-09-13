@@ -4,19 +4,12 @@ import type {
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  MarketState,
-  MarketTradingMode,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
-import type { OrderEvent, OrderEvent_busEvents } from './';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import { OrderBusEventDocument } from './__generated__/Orders';
+import type { OrderBusEventSubscription } from './__generated__/Orders';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
@@ -26,8 +19,8 @@ const defaultMarket = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: Schema.MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -58,9 +51,9 @@ const defaultWalletContext = {
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {
-  const mocks: MockedResponse<OrderEvent> = {
+  const mocks: MockedResponse<OrderBusEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderBusEventDocument,
       variables: {
         partyId: context?.keypair?.pub || '',
       },
@@ -69,33 +62,44 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
+              remaining: '1',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: '1',
                 decimalPlaces: 5,
+                positionDecimalPlaces: 0,
+                name: 'UNIDAI Monthly (30 Jun 2022)',
+                tradableInstrument: {
+                  instrument: {
+                    id: '001',
+                    name: 'UNIDAI',
+                    code: 'UNIDAI',
+                    __typename: 'Instrument',
+                  }
+                },
                 __typename: 'Market',
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },
   };
-  const filterMocks: MockedResponse<OrderEvent> = {
+  const filterMocks: MockedResponse<OrderBusEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderBusEventDocument,
       variables: {
         partyId: context?.keypair?.pub || '',
       },
@@ -104,26 +108,37 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
+              remaining: '1',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: '1',
                 decimalPlaces: 5,
+                positionDecimalPlaces: 0,
+                name: 'UNIDAI Monthly (30 Jun 2022)',
+                tradableInstrument: {
+                  instrument: {
+                    id: '001',
+                    name: 'UNIDAI',
+                    code: 'UNIDAI',
+                    __typename: 'Instrument',
+                  }
+                },
                 __typename: 'Market',
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },
@@ -154,10 +169,11 @@ describe('useOrderSubmit', () => {
     });
 
     const order = {
-      type: OrderType.TYPE_LIMIT,
+      type: Schema.OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
-      side: Side.SIDE_BUY,
+      remaining: '1',
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
+      side: Schema.Side.SIDE_BUY,
       price: '123456789',
       expiresAt: new Date('2022-01-01'),
     };
@@ -169,11 +185,12 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: OrderType.TYPE_LIMIT,
+        type: Schema.OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id,
         size: '10',
-        side: Side.SIDE_BUY,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+        remaining: '1',
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789',
         expiresAt: toNanoSeconds(order.expiresAt),
       },
@@ -192,10 +209,11 @@ describe('useOrderSubmit', () => {
     });
 
     const order = {
-      type: OrderType.TYPE_LIMIT,
+      type: Schema.OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-      side: Side.SIDE_BUY,
+      remaining: '1',
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+      side: Schema.Side.SIDE_BUY,
       price: '123456789',
       expiresAt: new Date('2022-01-01'),
     };
@@ -207,11 +225,12 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: OrderType.TYPE_LIMIT,
+        type: Schema.OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id,
         size: '10',
-        side: Side.SIDE_BUY,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        remaining: '1',
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         price: '123456789',
         expiresAt: undefined,
       },
