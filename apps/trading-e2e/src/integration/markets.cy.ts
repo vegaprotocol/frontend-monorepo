@@ -86,7 +86,7 @@ describe('markets table', () => {
     );
     cy.getByTestId('link')
       .should('have.attr', 'href')
-      .and('include', 'https://explorer.fairground.wtf/');
+      .and('include', 'https://staging3.explorer.vega.xyz/oracles');
   });
 
   it('Auction conditions are displayed', () => {
