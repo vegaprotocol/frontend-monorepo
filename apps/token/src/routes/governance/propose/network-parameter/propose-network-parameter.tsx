@@ -60,8 +60,8 @@ const SelectedNetworkParamCurrentValue = ({
 };
 
 export interface NetworkParameterProposalFormFields {
-  proposalVoteDeadline: number;
-  proposalEnactmentDeadline: number;
+  proposalVoteDeadline: string;
+  proposalEnactmentDeadline: string;
   proposalTitle: string;
   proposalDescription: string;
   proposalNetworkParameterKey: string;

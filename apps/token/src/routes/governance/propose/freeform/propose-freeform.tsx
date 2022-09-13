@@ -23,7 +23,7 @@ import { NetworkParams } from '../../../../config';
 import type { ProposalFreeformTerms } from '@vegaprotocol/wallet';
 
 export interface FreeformProposalFormFields {
-  proposalVoteDeadline: number;
+  proposalVoteDeadline: string;
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;

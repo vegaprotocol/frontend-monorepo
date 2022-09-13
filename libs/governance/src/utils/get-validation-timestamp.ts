@@ -1,13 +1,17 @@
 import { addHours, addMinutes, getTime } from 'date-fns';
 
-export const getValidationTimestamp = (proposalValidationDeadline: number) =>
+// If proposalValidationDeadline is at its minimum of 0 hours, then we add
+// 2 extra minutes to the validation timestamp to ensure that there's time
+// to confirm in the wallet.
+
+export const getValidationTimestamp = (proposalValidationDeadline: string) =>
   Math.floor(
     getTime(
-      proposalValidationDeadline === 0
+      proposalValidationDeadline === '0'
         ? addHours(
             addMinutes(new Date(Date.now()), 2),
-            proposalValidationDeadline
+            Number(proposalValidationDeadline)
           )
-        : addHours(new Date(Date.now()), proposalValidationDeadline)
+        : addHours(new Date(Date.now()), Number(proposalValidationDeadline))
     ) / 1000
   );

@@ -2,14 +2,14 @@ import { addHours, fromUnixTime, getTime } from 'date-fns';
 import { getClosingTimestamp } from './get-closing-timestamp';
 
 export const getEnactmentTimestamp = (
-  proposalVoteDeadline: number,
-  enactmentDeadline: number
+  proposalVoteDeadline: string,
+  enactmentDeadline: string
 ) =>
   Math.floor(
     getTime(
       addHours(
         new Date(fromUnixTime(getClosingTimestamp(proposalVoteDeadline))),
-        enactmentDeadline
+        Number(enactmentDeadline)
       )
-    )
-  ) / 1000;
+    ) / 1000
+  );

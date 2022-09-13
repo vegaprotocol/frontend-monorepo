@@ -25,8 +25,8 @@ import { NetworkParams } from '../../../../config';
 import type { ProposalNewMarketTerms } from '@vegaprotocol/wallet';
 
 export interface NewMarketProposalFormFields {
-  proposalVoteDeadline: number;
-  proposalEnactmentDeadline: number;
+  proposalVoteDeadline: string;
+  proposalEnactmentDeadline: string;
   proposalTitle: string;
   proposalDescription: string;
   proposalTerms: string;

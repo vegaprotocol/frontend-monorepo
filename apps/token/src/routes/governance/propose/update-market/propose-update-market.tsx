@@ -53,8 +53,8 @@ const MARKETS_QUERY = gql`
 `;
 
 export interface UpdateMarketProposalFormFields {
-  proposalVoteDeadline: number;
-  proposalEnactmentDeadline: number;
+  proposalVoteDeadline: string;
+  proposalEnactmentDeadline: string;
   proposalTitle: string;
   proposalDescription: string;
   proposalMarketId: string;
