@@ -15,6 +15,7 @@ Cypress.Commands.add('vega_wallet_import', () => {
   cy.exec(
     `vega wallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
+
   cy.exec(`vega wallet version`)
     .its('stdout')
     .then((output) => {

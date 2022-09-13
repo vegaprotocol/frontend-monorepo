@@ -76,7 +76,7 @@ export const SelectAllMarketsTableBody = ({
   if (!data) return null;
   return (
     <>
-      <thead className="bg-neutral-200 dark:bg-neutral-800">
+      <thead className="bg-neutral-100 dark:bg-neutral-800">
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
       {/* Border styles required to create space between tbody elements margin/padding dont work */}
@@ -100,7 +100,8 @@ export const SelectMarketPopover = ({
   marketName: string;
   onSelect: (id: string) => void;
 }) => {
-  const triggerClasses = 'flex items-center gap-4 whitespace-nowrap';
+  const triggerClasses =
+    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
@@ -149,7 +150,7 @@ export const SelectMarketPopover = ({
       trigger={
         <span className={triggerClasses}>
           {marketName}
-          <Icon name="chevron-down" className={iconClass} />
+          <Icon name="chevron-down" className={iconClass} size={6} />
         </span>
       }
     >
@@ -167,7 +168,7 @@ export const SelectMarketPopover = ({
             {keypair &&
               positionMarkets?.markets &&
               positionMarkets.markets.length > 0 && (
-                <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+                <table className="relative text-sm w-full whitespace-nowrap">
                   <TableTitle>{t('My markets')}</TableTitle>
                   <SelectAllMarketsTableBody
                     data={positionMarkets.markets}
@@ -179,7 +180,7 @@ export const SelectMarketPopover = ({
                   />
                 </table>
               )}
-            <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+            <table className="relative text-sm w-full whitespace-nowrap">
               <TableTitle>{t('All markets')}</TableTitle>
               <SelectAllMarketsTableBody
                 data={data}
@@ -197,7 +198,7 @@ const TableTitle = ({ children }: { children: ReactNode }) => {
   return (
     <thead>
       <tr>
-        <th className="font-normal px-2 text-left">
+        <th className="font-normal text-left">
           <h3 className="text-lg">{children}</h3>
         </th>
       </tr>

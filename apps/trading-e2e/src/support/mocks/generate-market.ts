@@ -58,6 +58,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
             },
             quoteName: 'BTCUSD Monthly',
             settlementAsset: {
+              decimals: 0,
               id: '000',
               symbol: 'USD',
               name: 'United States Dollar',

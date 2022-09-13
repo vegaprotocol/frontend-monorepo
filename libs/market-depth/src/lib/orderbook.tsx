@@ -8,10 +8,11 @@ import {
   useState,
   useMemo,
   useCallback,
+  useContext,
 } from 'react';
 import classNames from 'classnames';
 
-import { formatNumber, t, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, ThemeContext } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
@@ -27,7 +28,7 @@ interface OrderbookProps extends OrderbookData {
 
 const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
-    className="absolute border-b border-neutral-300 dark:border-neutral-700 inset-x-0"
+    className="absolute border-b border-default inset-x-0"
     style={{ top }}
     data-testid={testId}
   />
@@ -106,7 +107,7 @@ export const Orderbook = ({
   resolution,
   onResolutionChange,
 }: OrderbookProps) => {
-  const [theme] = useThemeSwitcher();
+  const theme = useContext(ThemeContext);
   const scrollElement = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -309,7 +310,7 @@ export const Orderbook = ({
       </div>
     ) : null;
 
-  const c = theme === 'dark' ? colors.neutral[700] : colors.neutral[300];
+  const c = theme === 'dark' ? colors.neutral[600] : colors.neutral[300];
   const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
 
   return (
@@ -320,7 +321,7 @@ export const Orderbook = ({
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-700"
+        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default"
         style={{ gridAutoRows: '17px' }}
       >
         <div>{t('Bid vol')}</div>
@@ -344,7 +345,7 @@ export const Orderbook = ({
         )}
       </div>
       <div
-        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-neutral-300 dark:border-neutral-700 mt-2 z-10 bg-white dark:bg-black"
+        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-default mt-2 z-10 bg-white dark:bg-black"
         style={{ gridAutoRows: '17px' }}
       >
         <div className="col-start-2">
