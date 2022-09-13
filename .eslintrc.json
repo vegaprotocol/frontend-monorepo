@@ -51,8 +51,7 @@
             "ul": ["list"],
             "ol": ["list"]
           }
-        ],
-        "curly": "warn"
+        ]
       }
     },
     {
@@ -75,7 +74,8 @@
             "prefer": "type-imports",
             "disallowTypeAnnotations": true
           }
-        ]
+        ],
+        "curly": ["warn", "multi-line"]
       }
     },
     {
