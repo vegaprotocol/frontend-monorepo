@@ -46,12 +46,12 @@ export const HeaderStat = ({
 
   return (
     <div className={itemClass}>
+      <div id={id}>{heading}</div>
       <Tooltip description={description}>
-        <div id={id} className={itemHeading}>
-          {heading}
+        <div aria-labelledby={id} className={itemHeading}>
+          {children}
         </div>
       </Tooltip>
-      <div aria-labelledby={id}>{children}</div>
     </div>
   );
 };
