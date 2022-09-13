@@ -7,20 +7,22 @@ interface ProposalFormMinRequirementsProps {
 }
 
 export const ProposalFormMinRequirements = ({
-  minProposerBalance = '1',
+  minProposerBalance,
   spamProtectionMin,
 }: ProposalFormMinRequirementsProps) => {
   const { t } = useTranslation();
-  const minProposerBalanceFormatted = addDecimal(minProposerBalance, 18);
+  const minProposerBalanceFormatted =
+    minProposerBalance && Number(addDecimal(minProposerBalance, 18));
   const spamProtectionMinFormatted =
-    spamProtectionMin && addDecimal(spamProtectionMin, 18, 0);
-  const largestValue =
-    spamProtectionMinFormatted &&
-    spamProtectionMinFormatted > minProposerBalanceFormatted
-      ? spamProtectionMinFormatted
-      : minProposerBalanceFormatted;
+    spamProtectionMin && Number(addDecimal(spamProtectionMin, 18));
+
+  const larger =
+    Number(minProposerBalanceFormatted) > (spamProtectionMinFormatted || 0)
+      ? minProposerBalanceFormatted
+      : spamProtectionMinFormatted;
+
   return (
-    <p className="mb-4">{`${t('MinProposalRequirements1')} ${largestValue} ${t(
+    <p className="mb-4">{`${t('MinProposalRequirements1')} ${larger} ${t(
       'MinProposalRequirements2'
     )}`}</p>
   );
