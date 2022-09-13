@@ -22,7 +22,8 @@ import type { CandleClose } from '@vegaprotocol/types';
 import type { Market, MarketData, Candle } from '../';
 import isNil from 'lodash/isNil';
 
-export const cellClassNames = 'px-0 py-1 first:pl-2 last:pr-2 first:text-left text-right';
+export const cellClassNames =
+  'px-0 py-1 first:pl-2 last:pr-2 first:text-left text-right';
 
 const FeesInfo = () => {
   return (
