@@ -11,7 +11,7 @@ import type {
   Orders,
   Orders_party_ordersConnection_edges,
   OrderSub,
-  OrderFields,
+  OrderSub_orders,
 } from '../';
 
 export const ORDERS_QUERY = gql`
@@ -22,18 +22,6 @@ export const ORDERS_QUERY = gql`
         edges {
           node {
             id
-            market {
-              id
-              decimalPlaces
-              positionDecimalPlaces
-              tradableInstrument {
-                instrument {
-                  id
-                  code
-                  name
-                }
-              }
-            }
             type
             side
             size
@@ -81,7 +69,7 @@ export const ORDERS_SUB = gql`
 
 export const update = (
   data: Orders_party_ordersConnection_edges[],
-  delta: OrderFields[]
+  delta: OrderSub_orders[]
 ) => {
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
@@ -103,7 +91,14 @@ export const update = (
           draft.unshift(...draft.splice(index, 1));
         }
       } else if (newer) {
-        draft.unshift({ node, cursor: '', __typename: 'OrderEdge' });
+        draft.unshift({
+          node: {
+            ...node,
+            __typename: 'Order',
+          },
+          cursor: '',
+          __typename: 'OrderEdge',
+        });
       }
     });
   });
@@ -112,12 +107,12 @@ export const update = (
 const getData = (
   responseData: Orders
 ): Orders_party_ordersConnection_edges[] | null =>
-  responseData?.party?.ordersConnection.edges || null;
+  responseData?.party?.ordersConnection?.edges || null;
 
 const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
 
 const getPageInfo = (responseData: Orders): PageInfo | null =>
-  responseData.party?.ordersConnection.pageInfo || null;
+  responseData.party?.ordersConnection?.pageInfo || null;
 
 export const ordersDataProvider = makeDataProvider({
   query: ORDERS_QUERY,

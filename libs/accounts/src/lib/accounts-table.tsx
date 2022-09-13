@@ -14,7 +14,7 @@ import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { AccountFieldsFragment } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated___/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountType } from '@vegaprotocol/types';

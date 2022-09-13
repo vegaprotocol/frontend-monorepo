@@ -95,14 +95,6 @@ export interface FillsSub_trades {
    * The fee paid by the seller side of the trade
    */
   sellerFee: FillsSub_trades_sellerFee;
-  /**
-   * The batch in which the buyer order was submitted (applies only for auction modes)
-   */
-  buyerAuctionBatch: number | null;
-  /**
-   * The batch in which the seller order was submitted (applies only for auction modes)
-   */
-  sellerAuctionBatch: number | null;
 }
 
 export interface FillsSub {
