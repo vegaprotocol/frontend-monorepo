@@ -35,7 +35,9 @@ const rejectedProposalClosedLastMonth = generateProposal({
   },
 });
 
-const renderComponent = (proposals: Proposals_proposalsConnection_edges_node[]) => (
+const renderComponent = (
+  proposals: Proposals_proposalsConnection_edges_node[]
+) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>
