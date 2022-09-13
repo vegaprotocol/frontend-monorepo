@@ -1,7 +1,7 @@
 const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const proposalDocumentationLink = '[data-testid="external-link"]';
-const newProposalLink = '[data-testid="new-proposal-link"]'
+const newProposalLink = '[data-testid="new-proposal-link"]';
 
 context('Governance Page - verify elements on page', function () {
   before('navigate to governance page', function () {
@@ -20,20 +20,20 @@ context('Governance Page - verify elements on page', function () {
     it('should be able to see link for - Find out more about Vega governance', function () {
       // 1004-VOTE-001
       cy.get(proposalDocumentationLink)
-          .should('be.visible')
-          .and('have.text', 'Find out more about Vega governance')
-          .and('have.attr', 'href')
-          .and('equal', 'https://vega.xyz/governance')
-    })
+        .should('be.visible')
+        .and('have.text', 'Find out more about Vega governance')
+        .and('have.attr', 'href')
+        .and('equal', 'https://vega.xyz/governance');
+    });
 
     it('should be able to see button for - new proposal', function () {
       // 1004-VOTE-002
       cy.get(newProposalLink)
-          .should('be.visible')
-          .and('have.text', 'New proposal')
-          .and('have.attr', 'href')
-          .and('equal', '/governance/propose')
-    })
+        .should('be.visible')
+        .and('have.text', 'New proposal')
+        .and('have.attr', 'href')
+        .and('equal', '/governance/propose');
+    });
 
     it('should be able to see that no proposals exist', function () {
       // 1004-VOTE-003
@@ -43,6 +43,6 @@ context('Governance Page - verify elements on page', function () {
       cy.get(noClosedProposals)
         .should('be.visible')
         .and('have.text', 'There are no enacted or rejected proposals');
-    })
+    });
   });
 });

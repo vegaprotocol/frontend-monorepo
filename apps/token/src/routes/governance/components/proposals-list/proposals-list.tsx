@@ -66,11 +66,11 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           {t(
             `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
           )}{' '}
-          <ExternalLink 
-          data-testid="proposal-documentation-link"
-            href={Links.GOVERNANCE_PAGE} 
+          <ExternalLink
+            data-testid="proposal-documentation-link"
+            href={Links.GOVERNANCE_PAGE}
             className="text-white"
-            >
+          >
             {t(`Find out more about Vega governance`)}
           </ExternalLink>
         </p>
