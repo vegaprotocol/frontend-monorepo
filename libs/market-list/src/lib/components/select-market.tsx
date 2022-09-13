@@ -23,7 +23,7 @@ import {
   SelectMarketTableRow,
 } from './select-market-table';
 import { useMarketList } from '../markets-data-provider';
-import { MarketListItemFragment } from '../__generated__/MarketData';
+import type { MarketListItemFragment } from '../__generated__/MarketData';
 
 export const SelectMarketLandingTable = ({
   data,

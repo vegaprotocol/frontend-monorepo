@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import create from 'zustand';
-import { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
+import type { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
 
 interface WithdrawStore {
   asset: WithdrawalAssetFieldsFragment | undefined;

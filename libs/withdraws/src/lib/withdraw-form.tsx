@@ -13,7 +13,7 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
-import { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
+import type { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
