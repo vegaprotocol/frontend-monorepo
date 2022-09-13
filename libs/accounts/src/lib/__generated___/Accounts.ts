@@ -17,7 +17,7 @@ export type AccountEventsSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } };
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, assetId: string, marketId?: string | null }> };
 
 export const AccountFieldsFragmentDoc = gql`
     fragment AccountFields on Account {
@@ -43,11 +43,25 @@ export const AccountsDocument = gql`
   party(id: $partyId) {
     id
     accounts {
-      ...AccountFields
+      type
+      balance
+      market {
+        id
+        tradableInstrument {
+          instrument {
+            name
+          }
+        }
+      }
+      asset {
+        id
+        symbol
+        decimals
+      }
     }
   }
 }
-    ${AccountFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useAccountsQuery__
@@ -79,10 +93,13 @@ export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQuer
 export const AccountEventsDocument = gql`
     subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    ...AccountFields
+    type
+    balance
+    assetId
+    marketId
   }
 }
-    ${AccountFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useAccountEventsSubscription__

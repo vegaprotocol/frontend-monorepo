@@ -11,47 +11,28 @@ import type {
   Orders,
   Orders_party_ordersConnection_edges,
   OrderSub,
-  OrderFields,
+  OrderSub_orders,
 } from '../';
 
-const ORDER_FRAGMENT = gql`
-  fragment OrderFields on Order {
-    id
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-        }
-      }
-    }
-    type
-    side
-    size
-    status
-    rejectionReason
-    price
-    timeInForce
-    remaining
-    expiresAt
-    createdAt
-    updatedAt
-  }
-`;
-
 export const ORDERS_QUERY = gql`
-  ${ORDER_FRAGMENT}
   query Orders($partyId: ID!, $pagination: Pagination) {
     party(id: $partyId) {
       id
       ordersConnection(pagination: $pagination) {
         edges {
           node {
-            ...OrderFields
+            id
+            type
+            side
+            size
+            status
+            rejectionReason
+            price
+            timeInForce
+            remaining
+            expiresAt
+            createdAt
+            updatedAt
           }
           cursor
         }
@@ -67,17 +48,28 @@ export const ORDERS_QUERY = gql`
 `;
 
 export const ORDERS_SUB = gql`
-  ${ORDER_FRAGMENT}
   subscription OrderSub($partyId: ID!) {
     orders(partyId: $partyId) {
-      ...OrderFields
+      id
+      marketId
+      type
+      side
+      size
+      status
+      rejectionReason
+      price
+      timeInForce
+      remaining
+      expiresAt
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const update = (
   data: Orders_party_ordersConnection_edges[],
-  delta: OrderFields[]
+  delta: OrderSub_orders[]
 ) => {
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
@@ -99,7 +91,14 @@ export const update = (
           draft.unshift(...draft.splice(index, 1));
         }
       } else if (newer) {
-        draft.unshift({ node, cursor: '', __typename: 'OrderEdge' });
+        draft.unshift({
+          node: {
+            ...node,
+            __typename: 'Order',
+          },
+          cursor: '',
+          __typename: 'OrderEdge',
+        });
       }
     });
   });
@@ -108,12 +107,12 @@ export const update = (
 const getData = (
   responseData: Orders
 ): Orders_party_ordersConnection_edges[] | null =>
-  responseData?.party?.ordersConnection.edges || null;
+  responseData?.party?.ordersConnection?.edges || null;
 
 const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
 
 const getPageInfo = (responseData: Orders): PageInfo | null =>
-  responseData.party?.ordersConnection.pageInfo || null;
+  responseData.party?.ordersConnection?.pageInfo || null;
 
 export const ordersDataProvider = makeDataProvider({
   query: ORDERS_QUERY,

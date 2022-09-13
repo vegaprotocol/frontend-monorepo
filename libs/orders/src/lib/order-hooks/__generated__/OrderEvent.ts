@@ -68,7 +68,7 @@ export interface OrderEvent_busEvents_event_Order_market {
 export interface OrderEvent_busEvents_event_Order {
   __typename: "Order";
   /**
-   * Type the order type (defaults to PARTY)
+   * The order type
    */
   type: OrderType | null;
   /**
@@ -80,7 +80,7 @@ export interface OrderEvent_busEvents_event_Order {
    */
   status: OrderStatus;
   /**
-   * Reason for the order to be rejected
+   * Why the order was rejected
    */
   rejectionReason: OrderRejectionReason | null;
   /**
@@ -88,7 +88,7 @@ export interface OrderEvent_busEvents_event_Order {
    */
   createdAt: string;
   /**
-   * Total number of contracts that may be bought or sold (immutable) (uint64)
+   * Total number of units that may be bought or sold (immutable) (uint64)
    */
   size: string;
   /**
