@@ -3,8 +3,8 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { Web3Container } from './web3-container';
 import type { useWeb3React } from '@web3-react/core';
-import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
-import { NETWORK_PARAMS_QUERY } from './use-ethereum-config';
+import { NetworkParametersDocument } from '@vegaprotocol/react-helpers';
+import type { NetworkParametersQuery } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 
 const defaultHookValue = {
@@ -24,19 +24,23 @@ const mockEthereumConfig = {
   },
 };
 
-const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+const networkParamsQueryMock: MockedResponse<NetworkParametersQuery> = {
   request: {
-    query: NETWORK_PARAMS_QUERY,
+    query: NetworkParametersDocument,
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'blockchains.ethereumConfig',
-          value: JSON.stringify(mockEthereumConfig),
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'blockchains.ethereumConfig',
+              value: JSON.stringify(mockEthereumConfig),
+            },
+          },
+        ],
+      },
     },
   },
 };
@@ -133,19 +137,23 @@ it('Passes ethereum config to children', async () => {
 });
 
 it('Shows no config found message if the network parameter doesnt exist', async () => {
-  const mock: MockedResponse<NetworkParamsQuery> = {
+  const mock: MockedResponse<NetworkParametersQuery> = {
     request: {
-      query: NETWORK_PARAMS_QUERY,
+      query: NetworkParametersDocument,
     },
     result: {
       data: {
-        networkParameters: [
-          {
-            __typename: 'NetworkParameter',
-            key: 'nope',
-            value: 'foo',
-          },
-        ],
+        networkParametersConnection: {
+          edges: [
+            {
+              node: {
+                __typename: 'NetworkParameter',
+                key: 'nope',
+                value: 'foo',
+              },
+            },
+          ],
+        },
       },
     },
   };
