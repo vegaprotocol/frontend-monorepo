@@ -50,22 +50,8 @@ const MARKET_DEPTH_QUERY = gql`
 
 export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
   subscription MarketDepthSubscription($marketId: ID!) {
-    marketDepthUpdate(marketId: $marketId) {
-      market {
-        id
-        positionDecimalPlaces
-        data {
-          staticMidPrice
-          marketTradingMode
-          indicativeVolume
-          indicativePrice
-          bestStaticBidPrice
-          bestStaticOfferPrice
-          market {
-            id
-          }
-        }
-      }
+    marketsDepthUpdate(marketIds: [$marketId]) {
+      marketId
       sell {
         price
         volume

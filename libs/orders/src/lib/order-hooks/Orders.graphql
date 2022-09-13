@@ -1,37 +1,33 @@
-fragment OrderFields on Order {
-  id
-  market {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        id
-        code
-      }
-    }
-  }
-  type
-  side
-  size
-  status
-  rejectionReason
-  price
-  timeInForce
-  remaining
-  expiresAt
-  createdAt
-  updatedAt
-}
-
 query Orders($partyId: ID!, $pagination: Pagination) {
   party(id: $partyId) {
     id
     ordersConnection(pagination: $pagination) {
       edges {
         node {
-          ...OrderFields
+          id
+          market {
+            id
+            decimalPlaces
+            positionDecimalPlaces
+            tradableInstrument {
+              instrument {
+                id
+                name
+                code
+              }
+            }
+          }
+          type
+          side
+          size
+          status
+          rejectionReason
+          price
+          timeInForce
+          remaining
+          expiresAt
+          createdAt
+          updatedAt
         }
         cursor
       }
@@ -47,7 +43,19 @@ query Orders($partyId: ID!, $pagination: Pagination) {
 
 subscription OrderSub($partyId: ID!) {
   orders(partyId: $partyId) {
-    ...OrderFields
+    id
+    marketId
+    type
+    side
+    size
+    status
+    rejectionReason
+    price
+    timeInForce
+    remaining
+    expiresAt
+    createdAt
+    updatedAt
   }
 }
 
@@ -68,9 +76,13 @@ subscription OrderEvent($partyId: ID!) {
         side
         market {
           id
-          name
           decimalPlaces
           positionDecimalPlaces
+          tradableInstrument {
+            instrument {
+              name
+            }
+          }
         }
       }
     }

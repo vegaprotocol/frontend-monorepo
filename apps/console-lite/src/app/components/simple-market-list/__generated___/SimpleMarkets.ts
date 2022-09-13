@@ -3,39 +3,36 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type SimpleMarketDataFieldsFragment = { __typename?: 'MarketData', market: { __typename?: 'Market', id: string, state: Types.MarketState } };
+export type SimpleMarketDataFieldsFragment = { __typename?: 'ObservableMarketData', marketId: string, marketState: Types.MarketState };
 
 export type SimpleMarketsQueryVariables = Types.Exact<{
   CandleSince: Types.Scalars['String'];
 }>;
 
 
-export type SimpleMarketsQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, name: string, state: Types.MarketState, data?: { __typename?: 'MarketData', market: { __typename?: 'Market', id: string, state: Types.MarketState } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', symbol: string } } } }, candles?: Array<{ __typename?: 'Candle', open: string, close: string } | null> | null }> | null };
+export type SimpleMarketsQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', symbol: string } } } }, candles?: Array<{ __typename?: 'Candle', open: string, close: string } | null> | null }> | null };
 
-export type SimpleMarketDataSubSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
+export type SimpleMarketDataSubSubscriptionVariables = Types.Exact<{
+  marketIds: Array<Types.Scalars['ID']> | Types.Scalars['ID'];
+}>;
 
 
-export type SimpleMarketDataSubSubscription = { __typename?: 'Subscription', marketData: { __typename?: 'MarketData', market: { __typename?: 'Market', id: string, state: Types.MarketState } } };
+export type SimpleMarketDataSubSubscription = { __typename?: 'Subscription', marketsData: Array<{ __typename?: 'ObservableMarketData', marketId: string, marketState: Types.MarketState }> };
 
 export const SimpleMarketDataFieldsFragmentDoc = gql`
-    fragment SimpleMarketDataFields on MarketData {
-  market {
-    id
-    state
-  }
+    fragment SimpleMarketDataFields on ObservableMarketData {
+  marketId
+  marketState
 }
     `;
 export const SimpleMarketsDocument = gql`
     query SimpleMarkets($CandleSince: String!) {
   markets {
     id
-    name
     state
-    data {
-      ...SimpleMarketDataFields
-    }
     tradableInstrument {
       instrument {
+        name
         code
         metadata {
           tags
@@ -57,7 +54,7 @@ export const SimpleMarketsDocument = gql`
     }
   }
 }
-    ${SimpleMarketDataFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useSimpleMarketsQuery__
@@ -87,8 +84,8 @@ export type SimpleMarketsQueryHookResult = ReturnType<typeof useSimpleMarketsQue
 export type SimpleMarketsLazyQueryHookResult = ReturnType<typeof useSimpleMarketsLazyQuery>;
 export type SimpleMarketsQueryResult = Apollo.QueryResult<SimpleMarketsQuery, SimpleMarketsQueryVariables>;
 export const SimpleMarketDataSubDocument = gql`
-    subscription SimpleMarketDataSub {
-  marketData {
+    subscription SimpleMarketDataSub($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
     ...SimpleMarketDataFields
   }
 }
@@ -106,10 +103,11 @@ export const SimpleMarketDataSubDocument = gql`
  * @example
  * const { data, loading, error } = useSimpleMarketDataSubSubscription({
  *   variables: {
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */
-export function useSimpleMarketDataSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<SimpleMarketDataSubSubscription, SimpleMarketDataSubSubscriptionVariables>) {
+export function useSimpleMarketDataSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<SimpleMarketDataSubSubscription, SimpleMarketDataSubSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<SimpleMarketDataSubSubscription, SimpleMarketDataSubSubscriptionVariables>(SimpleMarketDataSubDocument, options);
       }

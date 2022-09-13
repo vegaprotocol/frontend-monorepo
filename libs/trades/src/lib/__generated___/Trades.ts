@@ -3,36 +3,22 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } };
-
 export type TradesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } } | null };
+export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
 
 export type TradesSubSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } }> | null };
+export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: string, marketId: string }> | null };
 
-export const TradeFieldsFragmentDoc = gql`
-    fragment TradeFields on Trade {
-  id
-  price
-  size
-  createdAt
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-  }
-}
-    `;
+
 export const TradesDocument = gql`
     query Trades($marketId: ID!, $pagination: Pagination) {
   market(id: $marketId) {
@@ -40,7 +26,15 @@ export const TradesDocument = gql`
     tradesConnection(pagination: $pagination) {
       edges {
         node {
-          ...TradeFields
+          id
+          price
+          size
+          createdAt
+          market {
+            id
+            decimalPlaces
+            positionDecimalPlaces
+          }
         }
         cursor
       }
@@ -53,7 +47,7 @@ export const TradesDocument = gql`
     }
   }
 }
-    ${TradeFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useTradesQuery__
@@ -86,10 +80,14 @@ export type TradesQueryResult = Apollo.QueryResult<TradesQuery, TradesQueryVaria
 export const TradesSubDocument = gql`
     subscription TradesSub($marketId: ID!) {
   trades(marketId: $marketId) {
-    ...TradeFields
+    id
+    price
+    size
+    createdAt
+    marketId
   }
 }
-    ${TradeFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useTradesSubSubscription__

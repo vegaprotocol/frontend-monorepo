@@ -14,44 +14,37 @@ import type {
   OrderFields,
 } from '../';
 
-const ORDER_FRAGMENT = gql`
-  fragment OrderFields on Order {
-    id
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-        }
-      }
-    }
-    type
-    side
-    size
-    status
-    rejectionReason
-    price
-    timeInForce
-    remaining
-    expiresAt
-    createdAt
-    updatedAt
-  }
-`;
-
 export const ORDERS_QUERY = gql`
-  ${ORDER_FRAGMENT}
   query Orders($partyId: ID!, $pagination: Pagination) {
     party(id: $partyId) {
       id
       ordersConnection(pagination: $pagination) {
         edges {
           node {
-            ...OrderFields
+            id
+            type
+            side
+            size
+            status
+            rejectionReason
+            price
+            timeInForce
+            remaining
+            expiresAt
+            createdAt
+            updatedAt
+            market {
+              id
+              decimalPlaces
+              positionDecimalPlaces
+              tradableInstrument {
+                instrument {
+                  id
+                  code
+                  name
+                }
+              }
+            }
           }
           cursor
         }
@@ -67,10 +60,21 @@ export const ORDERS_QUERY = gql`
 `;
 
 export const ORDERS_SUB = gql`
-  ${ORDER_FRAGMENT}
   subscription OrderSub($partyId: ID!) {
     orders(partyId: $partyId) {
-      ...OrderFields
+      id
+      type
+      side
+      size
+      status
+      rejectionReason
+      price
+      timeInForce
+      remaining
+      expiresAt
+      createdAt
+      updatedAt
+      marketId
     }
   }
 `;

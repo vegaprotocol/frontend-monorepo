@@ -24,7 +24,7 @@ export interface MarketDepth_market_data {
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous, etc)
+   * what mode the market is in (auction, continuous, etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
@@ -44,7 +44,7 @@ export interface MarketDepth_market_data {
    */
   bestStaticOfferPrice: string;
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: MarketDepth_market_data_market;
 }

@@ -1,4 +1,4 @@
-query MarketNames {
+query DealTicketMarketNames {
   markets {
     id
     state

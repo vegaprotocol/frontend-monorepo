@@ -14,55 +14,6 @@ import type {
 } from './__generated__/Fills';
 import type { FillsSub } from './__generated__/FillsSub';
 
-const FILL_FRAGMENT = gql`
-  fragment FillFields on Trade {
-    id
-    createdAt
-    price
-    size
-    buyOrder
-    sellOrder
-    aggressor
-    buyer {
-      id
-    }
-    seller {
-      id
-    }
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const FILLS_QUERY = gql`
   ${FILL_FRAGMENT}
   query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
@@ -71,7 +22,50 @@ export const FILLS_QUERY = gql`
       tradesConnection(marketId: $marketId, pagination: $pagination) {
         edges {
           node {
-            ...FillFields
+            id
+            createdAt
+            price
+            size
+            buyOrder
+            sellOrder
+            aggressor
+            buyerFee {
+              makerFee
+              infrastructureFee
+              liquidityFee
+            }
+            sellerFee {
+              makerFee
+              infrastructureFee
+              liquidityFee
+            }
+            buyer {
+              id
+            }
+            seller {
+              id
+            }
+            market {
+              id
+              decimalPlaces
+              positionDecimalPlaces
+              tradableInstrument {
+                instrument {
+                  id
+                  code
+                  name
+                  product {
+                    ... on Future {
+                      settlementAsset {
+                        id
+                        symbol
+                        decimals
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
           cursor
         }
@@ -87,10 +81,28 @@ export const FILLS_QUERY = gql`
 `;
 
 export const FILLS_SUB = gql`
-  ${FILL_FRAGMENT}
   subscription FillsSub($partyId: ID!) {
     trades(partyId: $partyId) {
-      ...FillFields
+      id
+      createdAt
+      price
+      size
+      buyOrder
+      sellOrder
+      aggressor
+      buyerId
+      sellerId
+      marketId
+      buyerFee {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
+      sellerFee {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
     }
   }
 `;

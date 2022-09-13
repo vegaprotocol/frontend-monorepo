@@ -1,11 +1,11 @@
-query MarketNames {
+query MarketInfoMarketNames {
   markets {
     id
-    name
     state
     tradableInstrument {
       instrument {
         code
+        name
         metadata {
           tags
         }

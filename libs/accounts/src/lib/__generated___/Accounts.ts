@@ -3,8 +3,6 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AccountFieldsFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
-
 export type AccountsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -17,37 +15,33 @@ export type AccountEventsSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: { __typename?: 'Account', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } };
+export type AccountEventsSubscription = { __typename?: 'Subscription', accounts: Array<{ __typename?: 'AccountUpdate', type: Types.AccountType, balance: string, marketId?: string | null, assetId: string }> };
 
-export const AccountFieldsFragmentDoc = gql`
-    fragment AccountFields on Account {
-  type
-  balance
-  market {
-    id
-    tradableInstrument {
-      instrument {
-        name
-      }
-    }
-  }
-  asset {
-    id
-    symbol
-    decimals
-  }
-}
-    `;
+
 export const AccountsDocument = gql`
     query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
     accounts {
-      ...AccountFields
+      type
+      balance
+      market {
+        id
+        tradableInstrument {
+          instrument {
+            name
+          }
+        }
+      }
+      asset {
+        id
+        symbol
+        decimals
+      }
     }
   }
 }
-    ${AccountFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useAccountsQuery__
@@ -79,10 +73,13 @@ export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQuer
 export const AccountEventsDocument = gql`
     subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    ...AccountFields
+    type
+    balance
+    marketId
+    assetId
   }
 }
-    ${AccountFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useAccountEventsSubscription__

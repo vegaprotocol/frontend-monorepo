@@ -1,32 +1,31 @@
-fragment AccountFields on Account {
-  type
-  balance
-  market {
-    id
-    tradableInstrument {
-      instrument {
-        name
-      }
-    }
-  }
-  asset {
-    id
-    symbol
-    decimals
-  }
-}
-
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
     accounts {
-      ...AccountFields
+      type
+      balance
+      market {
+        id
+        tradableInstrument {
+          instrument {
+            name
+          }
+        }
+      }
+      asset {
+        id
+        symbol
+        decimals
+      }
     }
   }
 }
 
 subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    ...AccountFields
+    type
+    balance
+    marketId
+    assetId
   }
 }

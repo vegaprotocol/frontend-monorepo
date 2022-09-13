@@ -3,40 +3,26 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketDataFieldsFragment = { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } };
-
 export type MarketListQueryVariables = Types.Exact<{
   interval: Types.Interval;
   since: Types.Scalars['String'];
 }>;
 
 
-export type MarketListQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, data?: { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', symbol: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, candles?: Array<{ __typename?: 'Candle', open: string, close: string, high: string, low: string } | null> | null }> | null };
+export type MarketListQuery = { __typename?: 'Query', markets?: Array<{ __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, data?: { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', symbol: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, candles?: Array<{ __typename?: 'Candle', open: string, close: string, high: string, low: string } | null> | null }> | null };
 
-export type MarketDataSubSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
+export type MarketDataSubSubscriptionVariables = Types.Exact<{
+  marketIds: Array<Types.Scalars['ID']> | Types.Scalars['ID'];
+}>;
 
 
-export type MarketDataSubSubscription = { __typename?: 'Subscription', marketData: { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string, market: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode } } };
+export type MarketDataSubSubscription = { __typename?: 'Subscription', marketsData: Array<{ __typename?: 'ObservableMarketData', marketId: string, bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, indicativeVolume: string }> };
 
-export const MarketDataFieldsFragmentDoc = gql`
-    fragment MarketDataFields on MarketData {
-  market {
-    id
-    state
-    tradingMode
-  }
-  bestBidPrice
-  bestOfferPrice
-  markPrice
-  trigger
-  indicativeVolume
-}
-    `;
+
 export const MarketListDocument = gql`
     query MarketList($interval: Interval!, $since: String!) {
   markets {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     state
@@ -120,12 +106,17 @@ export type MarketListQueryHookResult = ReturnType<typeof useMarketListQuery>;
 export type MarketListLazyQueryHookResult = ReturnType<typeof useMarketListLazyQuery>;
 export type MarketListQueryResult = Apollo.QueryResult<MarketListQuery, MarketListQueryVariables>;
 export const MarketDataSubDocument = gql`
-    subscription MarketDataSub {
-  marketData {
-    ...MarketDataFields
+    subscription MarketDataSub($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
+    marketId
+    bestBidPrice
+    bestOfferPrice
+    markPrice
+    trigger
+    indicativeVolume
   }
 }
-    ${MarketDataFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useMarketDataSubSubscription__
@@ -139,10 +130,11 @@ export const MarketDataSubDocument = gql`
  * @example
  * const { data, loading, error } = useMarketDataSubSubscription({
  *   variables: {
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */
-export function useMarketDataSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<MarketDataSubSubscription, MarketDataSubSubscriptionVariables>) {
+export function useMarketDataSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<MarketDataSubSubscription, MarketDataSubSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<MarketDataSubSubscription, MarketDataSubSubscriptionVariables>(MarketDataSubDocument, options);
       }

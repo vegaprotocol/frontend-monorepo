@@ -1,20 +1,6 @@
-fragment MarketDataFields on MarketData {
-  market {
-    id
-    state
-    tradingMode
-  }
-  bestBidPrice
-  bestOfferPrice
-  markPrice
-  trigger
-  indicativeVolume
-}
-
 query MarketList($interval: Interval!, $since: String!) {
   markets {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     state
@@ -68,8 +54,13 @@ query MarketList($interval: Interval!, $since: String!) {
   }
 }
 
-subscription MarketDataSub {
-  marketData {
-    ...MarketDataFields
+subscription MarketDataSub($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
+    marketId
+    bestBidPrice
+    bestOfferPrice
+    markPrice
+    trigger
+    indicativeVolume
   }
 }

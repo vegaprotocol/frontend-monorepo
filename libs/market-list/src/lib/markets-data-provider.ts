@@ -27,21 +27,6 @@ export const useMarketList = () => {
   };
 };
 
-const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketDataFields on MarketData {
-    market {
-      id
-      state
-      tradingMode
-    }
-    bestBidPrice
-    bestOfferPrice
-    markPrice
-    trigger
-    indicativeVolume
-  }
-`;
-
 export const MARKET_LIST_QUERY = gql`
   query MarketList($interval: Interval!, $since: String!) {
     markets {
@@ -101,10 +86,16 @@ export const MARKET_LIST_QUERY = gql`
 `;
 
 const MARKET_DATA_SUB = gql`
-  ${MARKET_DATA_FRAGMENT}
-  subscription MarketDataSub {
-    marketData {
-      ...MarketDataFields
+  subscription MarketDataSub($marketIds: [ID!]!) {
+    marketsData(marketIds: $marketIds) {
+      marketId
+      marketState
+      marketTradingMode
+      bestBidPrice
+      bestOfferPrice
+      markPrice
+      trigger
+      indicativeVolume
     }
   }
 `;

@@ -1,57 +1,52 @@
-fragment FillFields on Trade {
-  id
-  createdAt
-  price
-  size
-  buyOrder
-  sellOrder
-  aggressor
-  buyer {
-    id
-  }
-  seller {
-    id
-  }
-  buyerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
-  }
-  sellerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
-  }
-  market {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        id
-        code
-        product {
-          ... on Future {
-            settlementAsset {
-              id
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
   party(id: $partyId) {
     id
     tradesConnection(marketId: $marketId, pagination: $pagination) {
       edges {
         node {
-          ...FillFields
+          id
+          createdAt
+          price
+          size
+          buyOrder
+          sellOrder
+          aggressor
+          buyer {
+            id
+          }
+          seller {
+            id
+          }
+          buyerFee {
+            makerFee
+            infrastructureFee
+            liquidityFee
+          }
+          sellerFee {
+            makerFee
+            infrastructureFee
+            liquidityFee
+          }
+          market {
+            id
+            decimalPlaces
+            positionDecimalPlaces
+            tradableInstrument {
+              instrument {
+                id
+                code
+                product {
+                  ... on Future {
+                    settlementAsset {
+                      id
+                      symbol
+                      decimals
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
         cursor
       }
@@ -67,6 +62,25 @@ query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
 
 subscription FillsSub($partyId: ID!) {
   trades(partyId: $partyId) {
-    ...FillFields
+    id
+    createdAt
+    price
+    size
+    buyOrder
+    sellOrder
+    aggressor
+    buyerId
+    sellerId
+    buyerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    sellerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    marketId
   }
 }

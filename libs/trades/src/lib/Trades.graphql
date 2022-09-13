@@ -1,22 +1,18 @@
-fragment TradeFields on Trade {
-  id
-  price
-  size
-  createdAt
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-  }
-}
-
 query Trades($marketId: ID!, $pagination: Pagination) {
   market(id: $marketId) {
     id
     tradesConnection(pagination: $pagination) {
       edges {
         node {
-          ...TradeFields
+          id
+          price
+          size
+          createdAt
+          market {
+            id
+            decimalPlaces
+            positionDecimalPlaces
+          }
         }
         cursor
       }
@@ -32,6 +28,10 @@ query Trades($marketId: ID!, $pagination: Pagination) {
 
 subscription TradesSub($marketId: ID!) {
   trades(marketId: $marketId) {
-    ...TradeFields
+    id
+    price
+    size
+    createdAt
+    marketId
   }
 }

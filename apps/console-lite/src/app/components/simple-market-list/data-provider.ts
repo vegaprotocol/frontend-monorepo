@@ -42,12 +42,10 @@ export const MARKETS_QUERY = gql`
 `;
 
 const MARKET_DATA_SUB = gql`
-  subscription SimpleMarketDataSub {
-    marketData {
-      market {
-        id
-        state
-      }
+  subscription SimpleMarketDataSub($marketIds: [ID!]!) {
+    marketsData(marketIds: $marketIds) {
+      marketState
+      marketId
     }
   }
 `;

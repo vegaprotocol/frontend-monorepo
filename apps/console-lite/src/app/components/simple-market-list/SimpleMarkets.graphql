@@ -1,20 +1,15 @@
-fragment SimpleMarketDataFields on MarketData {
-  market {
-    id
-    state
-  }
+fragment SimpleMarketDataFields on ObservableMarketData {
+  marketId
+  marketState
 }
 
 query SimpleMarkets($CandleSince: String!) {
   markets {
     id
-    name
     state
-    data {
-      ...SimpleMarketDataFields
-    }
     tradableInstrument {
       instrument {
+        name
         code
         metadata {
           tags
@@ -37,8 +32,8 @@ query SimpleMarkets($CandleSince: String!) {
   }
 }
 
-subscription SimpleMarketDataSub {
-  marketData {
+subscription SimpleMarketDataSub($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
     ...SimpleMarketDataFields
   }
 }

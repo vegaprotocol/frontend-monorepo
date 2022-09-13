@@ -76,11 +76,7 @@ export interface Orders_party_ordersConnection_edges_node {
    */
   id: string;
   /**
-   * The market the order is trading on (probably stored internally as a hash of the market details)
-   */
-  market: Orders_party_ordersConnection_edges_node_market;
-  /**
-   * Type the order type (defaults to PARTY)
+   * The order type
    */
   type: OrderType | null;
   /**
@@ -88,7 +84,7 @@ export interface Orders_party_ordersConnection_edges_node {
    */
   side: Side;
   /**
-   * Total number of contracts that may be bought or sold (immutable) (uint64)
+   * Total number of units that may be bought or sold (immutable) (uint64)
    */
   size: string;
   /**
@@ -96,7 +92,7 @@ export interface Orders_party_ordersConnection_edges_node {
    */
   status: OrderStatus;
   /**
-   * Reason for the order to be rejected
+   * Why the order was rejected
    */
   rejectionReason: OrderRejectionReason | null;
   /**
@@ -108,7 +104,7 @@ export interface Orders_party_ordersConnection_edges_node {
    */
   timeInForce: OrderTimeInForce;
   /**
-   * Number of contracts remaining of the total that have not yet been bought or sold (uint64)
+   * Number of units remaining of the total that have not yet been bought or sold (uint64)
    */
   remaining: string;
   /**
@@ -123,6 +119,10 @@ export interface Orders_party_ordersConnection_edges_node {
    * RFC3339Nano time the order was altered
    */
   updatedAt: string | null;
+  /**
+   * The market the order is trading on (probably stored internally as a hash of the market details)
+   */
+  market: Orders_party_ordersConnection_edges_node_market;
 }
 
 export interface Orders_party_ordersConnection_edges {
@@ -160,7 +160,7 @@ export interface Orders_party {
   /**
    * Orders relating to a party
    */
-  ordersConnection: Orders_party_ordersConnection;
+  ordersConnection: Orders_party_ordersConnection | null;
 }
 
 export interface Orders {

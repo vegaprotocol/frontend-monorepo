@@ -10,14 +10,13 @@ export type MarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, name: string, tradingMode: Types.MarketTradingMode, state: Types.MarketState, decimalPlaces: number, positionDecimalPlaces: number, data?: { __typename?: 'MarketData', auctionStart?: string | null, auctionEnd?: string | null, markPrice: string, indicativeVolume: string, indicativePrice: string, suppliedStake?: string | null, targetStake?: string | null, bestBidVolume: string, bestOfferVolume: string, bestStaticBidVolume: string, bestStaticOfferVolume: string, trigger: Types.AuctionTrigger, market: { __typename?: 'Market', id: string } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, candles?: Array<{ __typename?: 'Candle', open: string, close: string, volume: string } | null> | null } | null };
+export type MarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradingMode: Types.MarketTradingMode, state: Types.MarketState, decimalPlaces: number, positionDecimalPlaces: number, data?: { __typename?: 'MarketData', auctionStart?: string | null, auctionEnd?: string | null, markPrice: string, indicativeVolume: string, indicativePrice: string, suppliedStake?: string | null, targetStake?: string | null, bestBidVolume: string, bestOfferVolume: string, bestStaticBidVolume: string, bestStaticOfferVolume: string, trigger: Types.AuctionTrigger, market: { __typename?: 'Market', id: string } } | null, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, candles?: Array<{ __typename?: 'Candle', open: string, close: string, volume: string } | null> | null } | null };
 
 
 export const MarketDocument = gql`
     query Market($marketId: ID!, $interval: Interval!, $since: String!) {
   market(id: $marketId) {
     id
-    name
     tradingMode
     state
     decimalPlaces
@@ -57,6 +56,7 @@ export const MarketDocument = gql`
               id
               symbol
               name
+              decimals
             }
           }
         }

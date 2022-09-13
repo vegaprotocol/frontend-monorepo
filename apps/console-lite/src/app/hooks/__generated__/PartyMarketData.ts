@@ -103,7 +103,7 @@ export interface PartyMarketData_party {
   /**
    * Margin levels for a market
    */
-  marginsConnection: PartyMarketData_party_marginsConnection;
+  marginsConnection: PartyMarketData_party_marginsConnection | null;
 }
 
 export interface PartyMarketData {

@@ -91,7 +91,7 @@ export interface MarketPositions_party {
   /**
    * Trading positions relating to a party
    */
-  positionsConnection: MarketPositions_party_positionsConnection;
+  positionsConnection: MarketPositions_party_positionsConnection | null;
 }
 
 export interface MarketPositions {

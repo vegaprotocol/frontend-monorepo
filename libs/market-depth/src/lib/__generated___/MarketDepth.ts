@@ -11,11 +11,11 @@ export type MarketDepthQueryVariables = Types.Exact<{
 export type MarketDepthQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, data?: { __typename?: 'MarketData', staticMidPrice: string, marketTradingMode: Types.MarketTradingMode, indicativeVolume: string, indicativePrice: string, bestStaticBidPrice: string, bestStaticOfferPrice: string, market: { __typename?: 'Market', id: string } } | null, depth: { __typename?: 'MarketDepth', sequenceNumber: string, lastTrade?: { __typename?: 'Trade', price: string } | null, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null } } | null };
 
 export type MarketDepthSubscriptionSubscriptionVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
+  marketIds: Array<Types.Scalars['ID']> | Types.Scalars['ID'];
 }>;
 
 
-export type MarketDepthSubscriptionSubscription = { __typename?: 'Subscription', marketDepthUpdate: { __typename?: 'MarketDepthUpdate', sequenceNumber: string, market: { __typename?: 'Market', id: string, positionDecimalPlaces: number, data?: { __typename?: 'MarketData', staticMidPrice: string, marketTradingMode: Types.MarketTradingMode, indicativeVolume: string, indicativePrice: string, bestStaticBidPrice: string, bestStaticOfferPrice: string, market: { __typename?: 'Market', id: string } } | null }, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null } };
+export type MarketDepthSubscriptionSubscription = { __typename?: 'Subscription', marketsDepthUpdate: Array<{ __typename?: 'ObservableMarketDepthUpdate', marketId: string, sequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null }> };
 
 
 export const MarketDepthDocument = gql`
@@ -83,23 +83,9 @@ export type MarketDepthQueryHookResult = ReturnType<typeof useMarketDepthQuery>;
 export type MarketDepthLazyQueryHookResult = ReturnType<typeof useMarketDepthLazyQuery>;
 export type MarketDepthQueryResult = Apollo.QueryResult<MarketDepthQuery, MarketDepthQueryVariables>;
 export const MarketDepthSubscriptionDocument = gql`
-    subscription MarketDepthSubscription($marketId: ID!) {
-  marketDepthUpdate(marketId: $marketId) {
-    market {
-      id
-      positionDecimalPlaces
-      data {
-        staticMidPrice
-        marketTradingMode
-        indicativeVolume
-        indicativePrice
-        bestStaticBidPrice
-        bestStaticOfferPrice
-        market {
-          id
-        }
-      }
-    }
+    subscription MarketDepthSubscription($marketIds: [ID!]!) {
+  marketsDepthUpdate(marketIds: $marketIds) {
+    marketId
     sell {
       price
       volume
@@ -127,7 +113,7 @@ export const MarketDepthSubscriptionDocument = gql`
  * @example
  * const { data, loading, error } = useMarketDepthSubscriptionSubscription({
  *   variables: {
- *      marketId: // value for 'marketId'
+ *      marketIds: // value for 'marketIds'
  *   },
  * });
  */

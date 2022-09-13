@@ -47,58 +47,51 @@ export interface Data {
   positions: Position[] | null;
 }
 
-const POSITION_FIELDS = gql`
-  fragment PositionFields on Position {
-    realisedPNL
-    openVolume
-    unrealisedPNL
-    averageEntryPrice
-    updatedAt
-    marginsConnection {
-      edges {
-        node {
-          market {
-            id
-          }
-          maintenanceLevel
-          searchLevel
-          initialLevel
-          collateralReleaseLevel
-          asset {
-            symbol
-          }
-        }
-      }
-    }
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradingMode
-      tradableInstrument {
-        instrument {
-          name
-        }
-      }
-      data {
-        markPrice
-        market {
-          id
-        }
-      }
-    }
-  }
-`;
-
 export const POSITIONS_QUERY = gql`
-  ${POSITION_FIELDS}
   query Positions($partyId: ID!) {
     party(id: $partyId) {
       id
       positionsConnection {
         edges {
           node {
-            ...PositionFields
+            realisedPNL
+            openVolume
+            unrealisedPNL
+            averageEntryPrice
+            updatedAt
+            marginsConnection {
+              edges {
+                node {
+                  market {
+                    id
+                  }
+                  maintenanceLevel
+                  searchLevel
+                  initialLevel
+                  collateralReleaseLevel
+                  asset {
+                    symbol
+                  }
+                }
+              }
+            }
+            market {
+              id
+              decimalPlaces
+              positionDecimalPlaces
+              tradingMode
+              tradableInstrument {
+                instrument {
+                  name
+                }
+              }
+              data {
+                markPrice
+                market {
+                  id
+                }
+              }
+            }
           }
         }
       }
@@ -107,10 +100,46 @@ export const POSITIONS_QUERY = gql`
 `;
 
 export const POSITIONS_SUBSCRIPTION = gql`
-  ${POSITION_FIELDS}
   subscription PositionsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
-      ...PositionFields
+      realisedPNL
+      openVolume
+      unrealisedPNL
+      averageEntryPrice
+      updatedAt
+      marginsConnection {
+        edges {
+          node {
+            market {
+              id
+            }
+            maintenanceLevel
+            searchLevel
+            initialLevel
+            collateralReleaseLevel
+            asset {
+              symbol
+            }
+          }
+        }
+      }
+      market {
+        id
+        decimalPlaces
+        positionDecimalPlaces
+        tradingMode
+        tradableInstrument {
+          instrument {
+            name
+          }
+        }
+        data {
+          markPrice
+          market {
+            id
+          }
+        }
+      }
     }
   }
 `;
