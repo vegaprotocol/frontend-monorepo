@@ -387,7 +387,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .within(() => {
           // 1004-VOTE-039
           cy.get(voteStatus).should('have.text', 'Participation not reached');
-          cy.get(viewProposalButton).click()});
+          cy.get(viewProposalButton).click();
+        });
       cy.vote_for_proposal('for');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
@@ -1107,9 +1108,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
         (closingDateTimestamp) => {
           cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
             freeformProposal.terms.closingTimestamp = closingDateTimestamp;
-            freeformProposal.unexpectfield = `i shouldn't be here`
+            freeformProposal.unexpectfield = `i shouldn't be here`;
             let proposalPayload = JSON.stringify(freeformProposal);
-    
+
             cy.get(newProposalDatabox).type(proposalPayload, {
               parseSpecialCharSequences: false,
               delay: 2,
@@ -1121,9 +1122,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
       cy.contains('Transaction failed', epochTimeout).should('be.visible');
       cy.get(feedbackError)
-        .contains(
-          'Unknown field unexpectfield in vega commands'
-        )
+        .contains('Unknown field unexpectfield in vega commands')
         .should('be.visible');
     });
 
@@ -1139,9 +1138,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
         (closingDateTimestamp) => {
           cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
             freeformProposal.terms.closingTimestamp = closingDateTimestamp;
-            freeformProposal.terms.unexpectfield = `i shouldn't be here`
+            freeformProposal.terms.unexpectfield = `i shouldn't be here`;
             let proposalPayload = JSON.stringify(freeformProposal);
-    
+
             cy.get(newProposalDatabox).type(proposalPayload, {
               parseSpecialCharSequences: false,
               delay: 2,
@@ -1153,9 +1152,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
       cy.contains('Transaction failed', epochTimeout).should('be.visible');
       cy.get(feedbackError)
-        .contains(
-          'Unknown field unexpectfield in vega proposal terms'
-        )
+        .contains('Unknown field unexpectfield in vega proposal terms')
         .should('be.visible');
     });
 
