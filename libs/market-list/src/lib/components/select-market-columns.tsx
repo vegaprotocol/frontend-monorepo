@@ -20,7 +20,7 @@ import type { CandleClose } from '@vegaprotocol/types';
 import type { MarketListItemFragment } from '../__generated__/MarketData';
 import isNil from 'lodash/isNil';
 
-export const cellClassNames = 'px-2 py-1 first:text-left text-right capitalize';
+export const cellClassNames = 'px-0 py-1 first:text-left text-right';
 
 const FeesInfo = () => {
   return (
@@ -77,12 +77,12 @@ export const columnHeadersPositionMarkets: Column[] = [
     onlyOnDetailed: false,
   },
   {
-    value: t('24h High'),
+    value: t('24h high'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
-    value: t('24h Low'),
+    value: t('24h low'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
@@ -135,12 +135,12 @@ export const columnHeaders: Column[] = [
     onlyOnDetailed: false,
   },
   {
-    value: t('24h High'),
+    value: t('24h high'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
-    value: t('24h Low'),
+    value: t('24h low'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
@@ -260,7 +260,7 @@ export const columns = (
       ) : (
         '-'
       ),
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
@@ -276,7 +276,7 @@ export const columns = (
       ) : (
         '-'
       ),
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
@@ -301,13 +301,13 @@ export const columns = (
               market.positionDecimalPlaces
             )
           : '-',
-      className: `${cellClassNames} hidden lg:table-cell`,
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
       onlyOnDetailed: true,
       dataTestId: 'market-volume',
     },
     {
       value: <FeesCell feeFactors={market.fees.factors} />,
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
       dataTestId: 'taker-fee',
     },
@@ -414,7 +414,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
@@ -430,7 +430,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
@@ -455,12 +455,12 @@ export const columnsPositionMarkets = (
               market.positionDecimalPlaces
             )
           : '-',
-      className: `${cellClassNames} hidden lg:table-cell`,
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
       value: <FeesCell feeFactors={market.fees.factors} />,
-      className: `${cellClassNames} hidden xl:table-cell`,
+      className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
@@ -468,16 +468,16 @@ export const columnsPositionMarkets = (
         <p
           className={
             market.openVolume.includes('+')
-              ? 'text-vega-green'
+              ? 'text-vega-green-dark dark:text-vega-green'
               : market.openVolume.includes('-')
-              ? 'text-vega-red'
+              ? 'text-vega-red-dark dark:text-vega-red'
               : ''
           }
         >
           {market.openVolume}
         </p>
       ),
-      className: `${cellClassNames} hidden xxl:table-cell`,
+      className: `${cellClassNames} hidden xxl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
   ];
@@ -502,23 +502,23 @@ export const FeesBreakdown = ({
   if (!feeFactors) return null;
   return (
     <dl className="grid grid-cols-2 gap-x-2">
-      <dt>{t('Infrastructure Fee')}</dt>
+      <dt>{t('Infrastructure fee')}</dt>
       <dd className="text-right">
         {formatNumberPercentage(
           new BigNumber(feeFactors.infrastructureFee).times(100)
         )}
       </dd>
-      <dt>{t('Liquidity Fee')}</dt>
+      <dt>{t('Liquidity fee')}</dt>
       <dd className="text-right">
         {formatNumberPercentage(
           new BigNumber(feeFactors.liquidityFee).times(100)
         )}
       </dd>
-      <dt>{t('Maker Fee')}</dt>
+      <dt>{t('Maker fee')}</dt>
       <dd className="text-right">
         {formatNumberPercentage(new BigNumber(feeFactors.makerFee).times(100))}
       </dd>
-      <dt>{t('Total Fees')}</dt>
+      <dt>{t('Total fees')}</dt>
       <dd className="text-right">{totalFees(feeFactors)}</dd>
     </dl>
   );

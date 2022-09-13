@@ -1,16 +1,16 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useMemo } from 'react';
+import { tooltipMapping } from '@vegaprotocol/market-info';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { keypair } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
@@ -22,7 +22,14 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     '';
 
   const {
-    data: { liquidityProviders, suppliedStake, targetStake, code, symbol },
+    data: {
+      liquidityProviders,
+      suppliedStake,
+      targetStake,
+      name,
+      symbol,
+      assetDecimalPlaces,
+    },
     loading,
     error,
   } = useLiquidityProvision({ marketId });
@@ -64,16 +71,36 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <Link href={`/markets/${marketId}`}>
-              {`${code} ${t('liquidity provision')}`}
-            </Link>
+            <button onClick={() => push(`/markets/${marketId}`)}>{`${name} ${t(
+              'liquidity provision'
+            )}`}</button>
           }
         >
-          <HeaderStat heading={t('Target stake')}>
-            <div>{`${targetStake} ${symbol}`}</div>
+          <HeaderStat
+            heading={t('Target stake')}
+            description={tooltipMapping['targetStake']}
+          >
+            <div>
+              {targetStake
+                ? `${addDecimalsFormatNumber(
+                    targetStake,
+                    assetDecimalPlaces ?? 0
+                  )} ${symbol}`
+                : '-'}
+            </div>
           </HeaderStat>
-          <HeaderStat heading={t('Supplied stake')}>
-            <div>{`${suppliedStake} ${symbol}`}</div>
+          <HeaderStat
+            heading={t('Supplied stake')}
+            description={tooltipMapping['suppliedStake']}
+          >
+            <div>
+              {suppliedStake
+                ? `${addDecimalsFormatNumber(
+                    suppliedStake,
+                    assetDecimalPlaces ?? 0
+                  )} ${symbol}`
+                : '-'}
+            </div>
           </HeaderStat>
           <HeaderStat heading={t('Market ID')}>
             <div className="break-word">{marketId}</div>
@@ -85,13 +112,28 @@ const LiquidityPage = ({ id }: { id?: string }) => {
             name={t('My liquidity provision')}
             hidden={!partyId}
           >
-            <LiquidityTable ref={gridRef} data={myLpEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={myLpEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
           <Tab id={LiquidityTabs.Active} name={t('Active')}>
-            <LiquidityTable ref={gridRef} data={activeEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={activeEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
           <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
-            <LiquidityTable ref={gridRef} data={inactiveEdges} />
+            <LiquidityTable
+              ref={gridRef}
+              data={inactiveEdges}
+              symbol={symbol}
+              assetDecimalPlaces={assetDecimalPlaces}
+            />
           </Tab>
         </Tabs>
       </div>

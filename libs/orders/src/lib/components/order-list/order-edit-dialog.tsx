@@ -3,6 +3,7 @@ import {
   addDecimalsFormatNumber,
   toDecimal,
   Size,
+  getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import { OrderType } from '@vegaprotocol/types';
 import {
@@ -13,6 +14,7 @@ import {
   Dialog,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
 import type { OrderFieldsFragment } from '../../';
 
@@ -77,8 +79,15 @@ export const OrderEditDialog = ({
           </p>
         </div>
       </div>
+      {order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+        order.expiresAt && (
+          <div>
+            <p className={headerClassName}>{t(`Expires at`)}</p>
+            <p>{getDateTimeFormat().format(new Date(order.expiresAt))}</p>
+          </div>
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input

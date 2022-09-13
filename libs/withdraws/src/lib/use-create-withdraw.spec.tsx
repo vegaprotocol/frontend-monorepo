@@ -70,8 +70,14 @@ beforeEach(() => {
     asset: {
       __typename: 'Asset',
       id: 'asset-id',
+      name: 'Asset name',
       symbol: 'asset-symbol',
       decimals: 2,
+      status: Schema.AssetStatus.STATUS_ENABLED,
+      source: {
+        __typename: 'ERC20',
+        contractAddress: '0x123',
+      },
     },
     createdTimestamp: '2022-07-05T14:25:47.815283706Z',
     withdrawnTimestamp: '2022-07-05T14:25:47.815283706Z',

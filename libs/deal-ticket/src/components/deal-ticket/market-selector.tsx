@@ -196,7 +196,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       <div className="relative flex flex-col">
         <div className="relative w-full min-h-[30px]">
           <Input
-            className="h-[30px] w-[calc(100%-20px)] border-none"
+            className="h-[30px] w-[calc(100%-20px)] border-none outline-none"
             ref={inputRef}
             tabIndex={0}
             value={lookup}
@@ -205,7 +205,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             onKeyDown={handleInputKeyDown}
             onBlur={handleOnBlur}
           />
-          <span className="absolute self-end top-[7px] right-0 z-10">
+          <span className="absolute self-end top-0 right-0 z-10">
             <ButtonLink
               onClick={openPane}
               ref={arrowButtonRef}
@@ -220,7 +220,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             </ButtonLink>
           </span>
         </div>
-        <hr className="mb-5" />
+        <hr className="mb-2" />
         <div
           className={classNames(
             'md:absolute z-20 flex flex-col top-[30px] md:drop-shadow-md md:border md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',

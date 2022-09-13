@@ -9,6 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
+import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
@@ -68,7 +69,11 @@ const NetworkLabel = ({
   </span>
 );
 
-export const NetworkSwitcher = () => {
+export const NetworkSwitcher = ({
+  fixedBg,
+}: {
+  fixedBg?: 'dark' | 'light';
+}) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
@@ -83,9 +88,15 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
+  const dropdownTriggerClasses = classNames('hover:!bg-neutral-700', {
+    'dark:text-white dark:bg-black text-black bg-white': !fixedBg,
+    'text-black bg-white': fixedBg === 'light',
+    'text-white bg-black': fixedBg === 'dark',
+  });
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger className="text-white dark:text-white">
+      <DropdownMenuTrigger className={dropdownTriggerClasses}>
         {envTriggerMapping[VEGA_ENV]}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">

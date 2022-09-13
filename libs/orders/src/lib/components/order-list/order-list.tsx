@@ -281,7 +281,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
                   onClick={() => {
                     setEditOrder(data);
                   }}
-                  size="sm"
+                  size="xs"
                 >
                   {t('Edit')}
                 </Button>
@@ -298,7 +298,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (isOrderActive(data.status)) {
               return (
                 <Button
-                  size="sm"
+                  size="xs"
                   data-testid="cancel"
                   onClick={() => cancel(data)}
                 >

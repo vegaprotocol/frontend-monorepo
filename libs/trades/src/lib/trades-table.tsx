@@ -13,8 +13,8 @@ import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { TradeFieldsFragment } from './__generated__/Trades';
 import BigNumber from 'bignumber.js';
 
-export const UP_CLASS = 'text-vega-green';
-export const DOWN_CLASS = 'text-vega-red';
+export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
+export const DOWN_CLASS = 'text-vega-red-dark dark:text-vega-red';
 
 const changeCellClass =
   (dataKey: string) =>

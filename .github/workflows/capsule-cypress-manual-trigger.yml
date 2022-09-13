@@ -24,7 +24,7 @@ on:
 jobs:
   manual:
     name: Run capsule tests -- manual trigger
-    runs-on: ubuntu-20.04-16core
+    runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
       GOPROXY: ${{ secrets.GO_PROXY }}
@@ -133,7 +133,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}

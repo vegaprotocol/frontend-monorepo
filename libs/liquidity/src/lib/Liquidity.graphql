@@ -37,6 +37,7 @@ query MarketLiquidity($marketId: ID!, $partyId: String) {
     tradableInstrument {
       instrument {
         code
+        name
         product {
           ... on Future {
             settlementAsset {

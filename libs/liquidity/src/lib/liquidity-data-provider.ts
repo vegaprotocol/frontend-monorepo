@@ -28,6 +28,7 @@ export interface LiquidityData {
   decimalPlaces?: number;
   positionDecimalPlaces?: number;
   assetDecimalPlaces?: number;
+  name?: string;
 }
 
 export const useLiquidityProvision = ({
@@ -91,6 +92,7 @@ export const useLiquidityProvision = ({
     decimalPlaces: data?.market?.decimalPlaces,
     positionDecimalPlaces: data?.market?.positionDecimalPlaces,
     code: data?.market?.tradableInstrument.instrument.code,
+    name: data?.market?.tradableInstrument.instrument.name,
     assetDecimalPlaces:
       data?.market?.tradableInstrument.instrument.product.settlementAsset
         .decimals,

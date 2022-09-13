@@ -1,20 +1,19 @@
 import React, { useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Input } from '@vegaprotocol/ui-toolkit';
 import type { InputProps } from '@vegaprotocol/ui-toolkit';
 
 interface InputSetterProps {
   buttonLabel?: string;
-  value: string | number;
   isInputVisible?: boolean;
-  onValueChange?: () => string;
+  children?: ReactNode;
 }
 
 export const InputSetter = ({
   buttonLabel = t('set'),
-  value = '',
   isInputVisible = false,
-  onValueChange,
+  children,
   ...props
 }: InputSetterProps & InputProps) => {
   const [isInputToggled, setIsInputToggled] = useState(isInputVisible);
@@ -35,7 +34,7 @@ export const InputSetter = ({
 
   return isInputToggled ? (
     <div className="flex items-center">
-      <Input {...props} value={value} onKeyDown={onInputEnter} />
+      <Input {...props} onKeyDown={onInputEnter} />
       <button
         type="button"
         className="no-underline hover:underline text-blue ml-2"
@@ -47,10 +46,10 @@ export const InputSetter = ({
   ) : (
     <button
       type="button"
-      className="no-underline hover:underline text-blue"
+      className="no-underline hover:underline text-blue py-1.5"
       onClick={toggleInput}
     >
-      {value}
+      {children || props.value}
     </button>
   );
 };

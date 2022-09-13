@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { useAssetsConnectionQuery } from './__generated__/Assets';
-import { AssetFieldsFragment } from './__generated__/Assets';
+import type { AssetFieldsFragment } from './__generated__/Assets';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 

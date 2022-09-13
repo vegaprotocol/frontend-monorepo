@@ -1,4 +1,4 @@
-import type { MarketInfoQuery } from '@vegaprotocol/deal-ticket';
+import type { MarketInfoQuery } from '@vegaprotocol/market-info';
 import {
   AccountType,
   AuctionTrigger,
@@ -15,7 +15,7 @@ export const generateMarketInfoQuery = (
     market: {
       __typename: 'Market',
       id: 'market-0',
-      decimalPlaces: 2,
+      decimalPlaces: 5,
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
@@ -144,10 +144,10 @@ export const generateMarketInfoQuery = (
             quoteName: 'BTC',
             settlementAsset: {
               __typename: 'Asset',
-              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              id: 'market-0',
               symbol: 'tBTC',
               name: 'tBTC TEST',
-              decimals: 1,
+              decimals: 5,
             },
             oracleSpecForSettlementPrice: {
               __typename: 'OracleSpec',

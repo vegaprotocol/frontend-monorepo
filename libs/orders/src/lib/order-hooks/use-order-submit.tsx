@@ -130,9 +130,11 @@ export const useOrderSubmit = () => {
               order.type === Schema.OrderType.TYPE_LIMIT && order.price
                 ? order.price
                 : undefined,
-            expiresAt: order.expiresAt
-              ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
-              : undefined,
+            expiresAt:
+              order.expiresAt &&
+              order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+                ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+                : undefined,
           },
         });
 

@@ -5,7 +5,8 @@ import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { ThemeSwitcher, VLogo } from '@vegaprotocol/ui-toolkit';
+import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { Vega } from '../icons/vega';
 
 interface NavbarProps {
   theme: 'light' | 'dark';
@@ -19,15 +20,15 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
   return (
-    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
+    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-400 bg-black">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a>
-            <VLogo className="w-6 h-6 fill-white" />
+            <Vega className="w-13" />
           </a>
         </Link>
-        <NetworkSwitcher />
+        <NetworkSwitcher fixedBg="dark" />
       </div>
       <nav className="flex items-center">
         {[
@@ -69,7 +70,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
-    'border-transparent text-neutral-400': !isActive,
+    'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,
   });
   return (
     <Link data-testid={testId} href={path} passHref={true}>
