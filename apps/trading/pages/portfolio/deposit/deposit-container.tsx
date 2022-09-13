@@ -6,11 +6,8 @@ import { Schema } from '@vegaprotocol/types';
 import { getNodes, t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import type {
-  AssetFieldsFragment} from '@vegaprotocol/assets';
-import {
-  AssetFieldsFragmentDoc
-} from '@vegaprotocol/assets';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { AssetFieldsFragmentDoc } from '@vegaprotocol/assets';
 
 const DEPOSIT_PAGE_QUERY = gql`
   ${AssetFieldsFragmentDoc}
