@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import type {
   MarketLiquidity,
   MarketLiquidity_market_data_liquidityProviderFeeShare,
-} from './__generated__';
+} from './__generated__/MarketLiquidity';
 
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
@@ -123,11 +123,11 @@ export const useLiquidityProvision = ({
     ) // if partyId is provided, filter out other parties
     .map((provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
       const liquidityProvisionConnection =
-        data?.market?.liquidityProvisionsConnection.edges?.find(
+        data?.market?.liquidityProvisionsConnection?.edges?.find(
           (e) => e?.node.party.id === provider.party.id
         );
       const balance =
-        liquidityProvisionConnection?.node?.party.accountsConnection.edges?.reduce(
+        liquidityProvisionConnection?.node?.party.accountsConnection?.edges?.reduce(
           (acc, e) => {
             return e?.node.type === AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
               ? acc.plus(new BigNumber(e?.node.balance ?? 0))
