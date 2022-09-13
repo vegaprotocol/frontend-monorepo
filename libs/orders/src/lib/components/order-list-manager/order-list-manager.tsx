@@ -8,7 +8,10 @@ import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
 import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFieldsFragment, OrderConnectionFieldsFragment } from '../../order-hooks/__generated__/Orders';
+import type {
+  OrderFieldsFragment,
+  OrderConnectionFieldsFragment,
+} from '../../order-hooks/__generated__/Orders';
 
 interface OrderListManagerProps {
   partyId: string;
@@ -16,9 +19,7 @@ interface OrderListManagerProps {
 
 export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(OrderConnectionFieldsFragment | null)[] | null>(
-    null
-  );
+  const dataRef = useRef<(OrderConnectionFieldsFragment | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -88,13 +89,12 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows =
-    makeInfiniteScrollGetRows<OrderConnectionFieldsFragment>(
-      newRows,
-      dataRef,
-      totalCountRef,
-      load
-    );
+  const getRows = makeInfiniteScrollGetRows<OrderConnectionFieldsFragment>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {

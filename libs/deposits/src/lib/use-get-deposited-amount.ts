@@ -7,7 +7,9 @@ import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { useWeb3React } from '@web3-react/core';
 
-export const useGetDepositedAmount = (asset: AssetFieldsFragment | undefined) => {
+export const useGetDepositedAmount = (
+  asset: AssetFieldsFragment | undefined
+) => {
   const { account, provider } = useWeb3React();
   const { config } = useEthereumConfig();
 

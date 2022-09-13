@@ -1,14 +1,15 @@
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import type {
-  DepositPage,
-} from './__generated__/DepositPage';
+import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { Schema } from '@vegaprotocol/types';
 import { getNodes, t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { AssetFieldsFragmentDoc, AssetFieldsFragment } from '@vegaprotocol/assets';
+import {
+  AssetFieldsFragmentDoc,
+  AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 
 const DEPOSIT_PAGE_QUERY = gql`
   ${AssetFieldsFragmentDoc}

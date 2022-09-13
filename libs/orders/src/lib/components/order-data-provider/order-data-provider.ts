@@ -6,7 +6,10 @@ import {
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import { OrdersDocument, OrderEventDocument } from '../../order-hooks/__generated__/Orders';
+import {
+  OrdersDocument,
+  OrderEventDocument,
+} from '../../order-hooks/__generated__/Orders';
 import type {
   OrdersQuery,
   OrderEventSubscription,
@@ -49,7 +52,8 @@ const getData = (
 ): OrderConnectionFieldsFragment[] | null =>
   responseData?.party?.ordersConnection.edges || null;
 
-const getDelta = (subscriptionData: OrderEventSubscription) => subscriptionData.orders || [];
+const getDelta = (subscriptionData: OrderEventSubscription) =>
+  subscriptionData.orders || [];
 
 const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
   responseData.party?.ordersConnection.pageInfo || null;

@@ -23,7 +23,10 @@ export const useWithdrawals = () => {
   useEffect(() => {
     if (!keypair?.pub) return;
 
-    const unsub = subscribeToMore<WithdrawalEventSubscription, WithdrawalEventSubscriptionVariables>({
+    const unsub = subscribeToMore<
+      WithdrawalEventSubscription,
+      WithdrawalEventSubscriptionVariables
+    >({
       document: WithdrawalEventDocument,
       variables: { partyId: keypair.pub },
       updateQuery,
@@ -64,19 +67,20 @@ export const updateQuery: UpdateQueryFn<
   }
 
   const curr = prev.party?.withdrawalsConnection.edges || [];
-  const incoming = subscriptionData.data.busEvents
-    .reduce<WithdrawalEdgeFieldsFragment[]>((acc, busEvent) => {
-      if (busEvent.event.__typename === 'Withdrawal') {
-        acc.push({
-          __typename: 'WithdrawalEdge',
-          node: {
-            ...busEvent.event,
-            pendingOnForeignChain: false,
-          }
-        })
-      }
-      return acc;
-    }, []);
+  const incoming = subscriptionData.data.busEvents.reduce<
+    WithdrawalEdgeFieldsFragment[]
+  >((acc, busEvent) => {
+    if (busEvent.event.__typename === 'Withdrawal') {
+      acc.push({
+        __typename: 'WithdrawalEdge',
+        node: {
+          ...busEvent.event,
+          pendingOnForeignChain: false,
+        },
+      });
+    }
+    return acc;
+  }, []);
 
   const edges = uniqBy([...incoming, ...curr], 'node.id');
 

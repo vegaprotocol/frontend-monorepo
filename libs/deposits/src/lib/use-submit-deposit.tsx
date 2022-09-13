@@ -7,10 +7,7 @@ import type {
 } from './__generated__/Deposit';
 import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
-import {
-  remove0x,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { remove0x, removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   useBridgeContract,
   useEthereumConfig,

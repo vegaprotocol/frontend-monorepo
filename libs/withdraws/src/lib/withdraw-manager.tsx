@@ -10,7 +10,7 @@ import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { captureException } from '@sentry/react';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useWithdrawStore } from './withdraw-store';
-import { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal'
+import { WithdrawalAssetFieldsFragment } from './__generated__/Withdrawal';
 
 export interface WithdrawManagerProps {
   assets: WithdrawalAssetFieldsFragment[];

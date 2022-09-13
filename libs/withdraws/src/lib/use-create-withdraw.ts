@@ -16,9 +16,12 @@ export interface WithdrawalArgs {
 export const useCreateWithdraw = () => {
   const waitForWithdrawalApproval = useWithdrawalApproval();
   const waitForWithdrawal = useWithdrawalEvent();
-  const [approval, setApproval] =
-    useState<Erc20ApprovalQuery['erc20WithdrawalApproval'] | null>(null);
-  const [withdrawal, setWithdrawal] = useState<WithdrawalFieldsFragment | null>(null);
+  const [approval, setApproval] = useState<
+    Erc20ApprovalQuery['erc20WithdrawalApproval'] | null
+  >(null);
+  const [withdrawal, setWithdrawal] = useState<WithdrawalFieldsFragment | null>(
+    null
+  );
   const [availableTimestamp, setAvailableTimestamp] = useState<number | null>(
     null
   );

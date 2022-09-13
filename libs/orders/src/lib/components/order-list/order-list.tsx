@@ -40,7 +40,9 @@ type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderFieldsFragment | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderFieldsFragment | null>(
+      null
+    );
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
@@ -127,16 +129,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            [positiveClassNames]: ({
-              data,
-            }: {
-              data: OrderFieldsFragment;
-            }) => data?.side === Schema.Side.SIDE_BUY,
-            [negativeClassNames]: ({
-              data,
-            }: {
-              data: OrderFieldsFragment;
-            }) => data?.side === Schema.Side.SIDE_SELL,
+            [positiveClassNames]: ({ data }: { data: OrderFieldsFragment }) =>
+              data?.side === Schema.Side.SIDE_BUY,
+            [negativeClassNames]: ({ data }: { data: OrderFieldsFragment }) =>
+              data?.side === Schema.Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
@@ -333,7 +329,9 @@ const isOrderActive = (status: Schema.OrderStatus) => {
   ].includes(status);
 };
 
-const getEditDialogTitle = (status?: Schema.OrderStatus): string | undefined => {
+const getEditDialogTitle = (
+  status?: Schema.OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }
@@ -360,7 +358,9 @@ const getEditDialogTitle = (status?: Schema.OrderStatus): string | undefined => 
   }
 };
 
-const getCancelDialogIntent = (status?: Schema.OrderStatus): Intent | undefined => {
+const getCancelDialogIntent = (
+  status?: Schema.OrderStatus
+): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -373,7 +373,9 @@ const getCancelDialogIntent = (status?: Schema.OrderStatus): Intent | undefined 
   }
 };
 
-const getCancelDialogTitle = (status?: Schema.OrderStatus): string | undefined => {
+const getCancelDialogTitle = (
+  status?: Schema.OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }

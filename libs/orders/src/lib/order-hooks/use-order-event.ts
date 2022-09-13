@@ -5,7 +5,7 @@ import type {
   OrderBusEventSubscription,
   OrderBusEventSubscriptionVariables,
   OrderFieldsFragment,
-} from './__generated__/Orders'
+} from './__generated__/Orders';
 
 import type { Subscription } from 'zen-observable-ts';
 
@@ -20,7 +20,10 @@ export const useOrderEvent = () => {
       callback: (order: OrderFieldsFragment) => void
     ) => {
       subRef.current = client
-        .subscribe<OrderBusEventSubscription, OrderBusEventSubscriptionVariables>({
+        .subscribe<
+          OrderBusEventSubscription,
+          OrderBusEventSubscriptionVariables
+        >({
           query: OrderBusEventDocument,
           variables: { partyId },
         })

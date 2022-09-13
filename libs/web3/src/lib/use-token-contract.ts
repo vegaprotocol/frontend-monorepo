@@ -3,7 +3,10 @@ import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
-export const useTokenContract = (asset?: AssetFieldsFragment, faucetable = false) => {
+export const useTokenContract = (
+  asset?: AssetFieldsFragment,
+  faucetable = false
+) => {
   const { provider } = useWeb3React();
 
   const contract = useMemo(() => {

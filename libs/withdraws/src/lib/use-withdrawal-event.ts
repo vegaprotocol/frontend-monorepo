@@ -20,7 +20,10 @@ export const useWithdrawalEvent = () => {
     (id, partyId) => {
       return new Promise((resolve) => {
         subRef.current = client
-          .subscribe<WithdrawalEventSubscription, WithdrawalEventSubscriptionVariables>({
+          .subscribe<
+            WithdrawalEventSubscription,
+            WithdrawalEventSubscriptionVariables
+          >({
             query: WithdrawalEventDocument,
             variables: { partyId },
           })

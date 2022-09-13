@@ -184,7 +184,10 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
 };
 
 export interface RecipientCellProps
-  extends VegaICellRendererParams<WithdrawalFieldsFragment, 'details.receiverAddress'> {
+  extends VegaICellRendererParams<
+    WithdrawalFieldsFragment,
+    'details.receiverAddress'
+  > {
   ethUrl: string;
 }
 

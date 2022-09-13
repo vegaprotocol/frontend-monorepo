@@ -11,7 +11,7 @@ interface DepositStore {
   update: (state: Partial<DepositStore>) => void;
 }
 
-export const useDepositStore = create<DepositStore>(set => ({
+export const useDepositStore = create<DepositStore>((set) => ({
   balance: new BigNumber(0),
   allowance: new BigNumber(0),
   deposited: new BigNumber(0),

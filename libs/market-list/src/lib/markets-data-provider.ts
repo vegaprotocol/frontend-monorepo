@@ -1,6 +1,10 @@
 import produce from 'immer';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import { useMarketListQuery, MarketListDocument, MarketDataEventDocument } from './__generated__/MarketData';
+import {
+  useMarketListQuery,
+  MarketListDocument,
+  MarketDataEventDocument,
+} from './__generated__/MarketData';
 import type {
   MarketListQuery,
   MarketListItemFragment,
@@ -40,11 +44,13 @@ const update = (
   });
 };
 
-const getData = (responseData: MarketListQuery): MarketListItemFragment[] | null =>
-  responseData?.markets || null;
+const getData = (
+  responseData: MarketListQuery
+): MarketListItemFragment[] | null => responseData?.markets || null;
 
-const getDelta = (subscriptionData: MarketDataEventSubscription): MarketDataFieldsFragment =>
-  subscriptionData.marketData;
+const getDelta = (
+  subscriptionData: MarketDataEventSubscription
+): MarketDataFieldsFragment => subscriptionData.marketData;
 
 export const marketsDataProvider = makeDataProvider<
   MarketListQuery,

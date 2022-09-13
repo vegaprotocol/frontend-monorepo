@@ -13,8 +13,9 @@ export interface EditOrderArgs {
 export const useOrderEdit = (order: OrderFieldsFragment | null) => {
   const { keypair } = useVegaWallet();
 
-  const [updatedOrder, setUpdatedOrder] =
-    useState<OrderFieldsFragment | null>(null);
+  const [updatedOrder, setUpdatedOrder] = useState<OrderFieldsFragment | null>(
+    null
+  );
 
   const {
     send,

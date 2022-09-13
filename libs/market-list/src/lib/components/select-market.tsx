@@ -23,7 +23,7 @@ import {
   SelectMarketTableRow,
 } from './select-market-table';
 import { useMarketList } from '../markets-data-provider';
-import { MarketListItemFragment } from '../__generated__/MarketData'
+import { MarketListItemFragment } from '../__generated__/MarketData';
 
 export const SelectMarketLandingTable = ({
   data,
@@ -102,7 +102,10 @@ export const SelectMarketPopover = ({
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
-  const variables = useMemo(() => ({ partyId: keypair?.pub ?? '' }), [keypair?.pub]);
+  const variables = useMemo(
+    () => ({ partyId: keypair?.pub ?? '' }),
+    [keypair?.pub]
+  );
   const { data: marketDataPositions, loading: positionsLoading } =
     usePositionsQuery({
       variables,

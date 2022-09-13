@@ -111,11 +111,13 @@ export const WithdrawForm = ({
                 name="asset"
               >
                 <option value="">{t('Please select')}</option>
-                {assets.filter(asset => isAssetTypeERC20(asset.source)).map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
+                {assets
+                  .filter((asset) => isAssetTypeERC20(asset.source))
+                  .map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
+                    </option>
+                  ))}
               </Select>
             )}
           />
