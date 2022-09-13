@@ -313,7 +313,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    it('Newly created freeform proposals list - proposals closest to closing date first appear higher in list', function () {
+    it('Newly created freeform proposals list - proposals closest to closing date appear higher in list', function () {
       // 1004-VOTE-005
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
@@ -361,7 +361,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    it('Newly created freeform proposal list - shows parcipitation met against proposal - when met', function () {
+    it('Newly created freeform proposals list - shows parcipitation met against proposal - when met', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -384,7 +384,10 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wait_for_spinner();
       cy.get_submitted_proposal_from_proposal_list()
         .as('submittedProposal')
-        .within(() => cy.get(viewProposalButton).click());
+        .within(() => {
+          // 1004-VOTE-039
+          cy.get(voteStatus).should('have.text', 'Participation not reached');
+          cy.get(viewProposalButton).click()});
       cy.vote_for_proposal('for');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
@@ -585,7 +588,6 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
     it('Newly created freeform proposal details - shows default status set to fail', function () {
       // 1004-VOTE-037
-      // 1004-VOTE-039
       // 1004-VOTE-040
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
@@ -618,6 +620,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .contains('👎')
         .should('be.visible');
       // 1004-VOTE-062
+      // 1004-VOTE-040
       cy.get_proposal_information_from_table('Majority met')
         .contains('👎')
         .should('be.visible');
@@ -1088,6 +1091,70 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(feedbackError)
         .contains(
           'Party has insufficient associated governance tokens in their staking account to submit proposal request'
+        )
+        .should('be.visible');
+    });
+
+    it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
+      // 1004-VOTE-038
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+        (closingDateTimestamp) => {
+          cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
+            freeformProposal.terms.closingTimestamp = closingDateTimestamp;
+            freeformProposal.unexpectfield = `i shouldn't be here`
+            let proposalPayload = JSON.stringify(freeformProposal);
+    
+            cy.get(newProposalDatabox).type(proposalPayload, {
+              parseSpecialCharSequences: false,
+              delay: 2,
+            });
+          });
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+
+      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.get(feedbackError)
+        .contains(
+          'Unknown field unexpectfield in vega commands'
+        )
+        .should('be.visible');
+    });
+
+    it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
+      // 1004-VOTE-038
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+        (closingDateTimestamp) => {
+          cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
+            freeformProposal.terms.closingTimestamp = closingDateTimestamp;
+            freeformProposal.terms.unexpectfield = `i shouldn't be here`
+            let proposalPayload = JSON.stringify(freeformProposal);
+    
+            cy.get(newProposalDatabox).type(proposalPayload, {
+              parseSpecialCharSequences: false,
+              delay: 2,
+            });
+          });
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+
+      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.get(feedbackError)
+        .contains(
+          'Unknown field unexpectfield in vega proposal terms'
         )
         .should('be.visible');
     });
