@@ -16,5 +16,9 @@ html {
 
 html.dark {
   --focus-border: theme('colors.vega.yellow');
-  --separator-border: theme('colors.neutral.700');
+  --separator-border: theme('colors.neutral.600');
+}
+
+.border-default {
+  @apply border-neutral-300 dark:border-neutral-600;
 }

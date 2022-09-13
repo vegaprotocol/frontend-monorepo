@@ -64,6 +64,15 @@ jest.mock('@vegaprotocol/market-depth', () => ({
   useOrderBookData: jest.fn(() => mockOrderBookData),
 }));
 
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  useDataProvider: jest.fn(() => ({
+    data: {
+      marketsConnection: [],
+    },
+  })),
+}));
+
 describe('useCalculateSlippage Hook', () => {
   describe('calculate proper result', () => {
     afterEach(() => {

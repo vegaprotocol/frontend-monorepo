@@ -1,141 +1,45 @@
-import produce from 'immer';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type {
-  MarketDataSub,
-  MarketDataSub_marketData,
-  MarketList,
-  MarketList_markets,
-} from './';
-import { useMemo } from 'react';
-import { Interval } from '@vegaprotocol/types';
-import { mapDataToMarketList } from './utils';
+import type { MarketsDataQuery } from './__generated__/MarketsDataQuery';
+import type { MarketData } from './market-data-provider';
 
-export const useMarketList = () => {
-  const since = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
-  const { data, loading, error } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: { interval: Interval.INTERVAL_I1H, since },
-  });
-
-  return {
-    data: useMemo(() => data && mapDataToMarketList(data), [data]),
-    loading,
-    error,
-  };
-};
-
-const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketDataFields on MarketData {
-    market {
-      id
-      state
-      tradingMode
-    }
-    bestBidPrice
-    bestOfferPrice
-    markPrice
-    trigger
-    indicativeVolume
-  }
-`;
-
-export const MARKET_LIST_QUERY = gql`
-  query MarketList($interval: Interval!, $since: String!) {
-    markets {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
-        }
-      }
-      data {
-        market {
-          id
-          state
-          tradingMode
-        }
-        bestBidPrice
-        bestOfferPrice
-        markPrice
-        trigger
-        indicativeVolume
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              settlementAsset {
-                symbol
-              }
+export const MARKETS_DATA_QUERY = gql`
+  query MarketsDataQuery {
+    marketsConnection {
+      edges {
+        node {
+          data {
+            market {
+              id
             }
+            bestBidPrice
+            bestOfferPrice
+            markPrice
+            trigger
+            staticMidPrice
+            marketTradingMode
+            indicativeVolume
+            indicativePrice
+            bestStaticBidPrice
+            bestStaticOfferPrice
           }
         }
       }
-      marketTimestamps {
-        open
-        close
-      }
-      candles(interval: $interval, since: $since) {
-        open
-        close
-        high
-        low
-      }
     }
   }
 `;
 
-const MARKET_DATA_SUB = gql`
-  ${MARKET_DATA_FRAGMENT}
-  subscription MarketDataSub {
-    marketData {
-      ...MarketDataFields
-    }
-  }
-`;
-
-const update = (
-  data: MarketList_markets[],
-  delta: MarketDataSub_marketData
-) => {
-  return produce(data, (draft) => {
-    const index = draft.findIndex((m) => m.id === delta.market.id);
-    if (index !== -1) {
-      draft[index].data = delta;
-    }
-    // @TODO - else push new market to draft
-  });
-};
-
-const getData = (responseData: MarketList): MarketList_markets[] | null =>
-  responseData.markets;
-const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
-  subscriptionData.marketData;
+const getData = (responseData: MarketsDataQuery): MarketData[] | null =>
+  responseData.marketsConnection.edges
+    .filter((edge) => edge.node.data)
+    .map((edge) => edge.node.data as MarketData) || null;
 
 export const marketsDataProvider = makeDataProvider<
-  MarketList,
-  MarketList_markets[],
-  MarketDataSub,
-  MarketDataSub_marketData
+  MarketsDataQuery,
+  MarketData[],
+  never,
+  never
 >({
-  query: MARKET_LIST_QUERY,
-  subscriptionQuery: MARKET_DATA_SUB,
-  update,
+  query: MARKETS_DATA_QUERY,
   getData,
-  getDelta,
 });

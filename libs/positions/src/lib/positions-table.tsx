@@ -23,7 +23,7 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, Button } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -133,7 +133,7 @@ const ButtonCell = ({
     <Button
       data-testid="close-position"
       onClick={() => onClick(data)}
-      size="sm"
+      size="xs"
     >
       {t('Close')}
     </Button>
@@ -151,9 +151,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         getRowId={getRowId}
         rowHeight={34}
         ref={ref}
+        tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
           resizable: true,
+          tooltipComponent: TooltipCellComponent,
         }}
         components={{ PriceFlashCell, ProgressBarCell }}
         {...props}
@@ -179,7 +181,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
           valueGetter={({ node, data }: ValueGetterParams) => {
             return node?.rowPinned ? data?.notional : data?.openVolume;

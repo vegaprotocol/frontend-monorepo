@@ -9,7 +9,7 @@ export const defaultFormElement = (hasError?: boolean) =>
     'p-2 border-2 rounded-none',
     'bg-transparent',
     'border border-neutral-500 focus:border-black dark:focus:border-white',
-    'disabled:opacity-40',
+    'disabled:opacity-60',
     {
       'border-vega-pink': hasError,
     }

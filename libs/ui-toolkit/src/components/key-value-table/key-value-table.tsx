@@ -72,9 +72,9 @@ export const KeyValueTableRow = ({
     { 'flex-row items-center': inline },
     className
   );
-  const dtClassNames = `break-words capitalize ${dtClassName}`;
+  const dtClassNames = `break-words ${dtClassName}`;
   const ddClassNames = classNames(
-    'break-words text-neutral-500',
+    'break-words text-neutral-500 dark:text-neutral-300',
     {
       'font-mono': numerical,
     },

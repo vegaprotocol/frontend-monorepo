@@ -4,13 +4,15 @@ import { mockTradingPage } from '../support/trading';
 
 describe('home', () => {
   const selectMarketOverlay = 'select-market-list';
+  beforeEach(() => {
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+    });
+    cy.visit('/');
+  });
 
   describe('default market found', () => {
     it('redirects to a default market with the landing dialog open', () => {
-      cy.mockGQL((req) => {
-        // Mock all market page queries
-        mockTradingPage(req, MarketState.STATE_ACTIVE);
-      });
       cy.visit('/');
       cy.wait('@Market');
 
@@ -53,11 +55,16 @@ describe('home', () => {
     it('redirects to a the market list page if no sensible default is found', () => {
       // Mock markets query that is triggered by home page to find default market
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketList', { markets: [] });
+        const data = {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: [],
+          },
+        };
+        aliasQuery(req, 'Markets', data);
       });
-
       cy.visit('/');
-      cy.wait('@MarketList');
+      cy.wait('@Markets');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

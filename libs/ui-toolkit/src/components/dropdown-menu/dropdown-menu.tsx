@@ -26,9 +26,10 @@ export const DropdownMenuTrigger = forwardRef<
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
 >(({ className, children, ...props }, forwardedRef) => {
   const triggerClasses = classNames(
+    className,
     'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500',
     'focus:border-black dark:focus:border-white whitespace-nowrap',
-    className
+    'hover:bg-neutral-200 dark:hover:bg-neutral-700'
   );
   return (
     <DropdownMenuPrimitive.Trigger

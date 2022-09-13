@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Splash,
+  Accordion,
+  Link,
+} from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
@@ -19,7 +24,6 @@ import type {
 } from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -29,6 +33,7 @@ const Links = {
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
+  onSelect: (id: string) => void;
 }
 
 export const calcCandleVolume = (
@@ -43,8 +48,12 @@ export const calcCandleVolume = (
 
 export interface MarketInfoContainerProps {
   marketId: string;
+  onSelect: (id: string) => void;
 }
-export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+export const MarketInfoContainer = ({
+  marketId,
+  onSelect,
+}: MarketInfoContainerProps) => {
   const yTimestamp = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
@@ -63,7 +72,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   return (
     <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <Info market={data.market} />
+        <Info market={data.market} onSelect={onSelect} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -73,8 +82,8 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   );
 };
 
-export const Info = ({ market }: InfoProps) => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
+export const Info = ({ market, onSelect }: InfoProps) => {
+  const { VEGA_TOKEN_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
@@ -153,7 +162,6 @@ export const Info = ({ market }: InfoProps) => {
         ),
       })),
   ];
-  const { VEGA_EXPLORER_URL } = useEnvironment();
   const keyDetails = {
     ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
     state: MarketStateMapping[market.state],
@@ -219,16 +227,6 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Risk factors'),
-      content: (
-        <MarketInfoTable
-          data={market.riskFactors}
-          unformatted={true}
-          omits={['market', '__typename']}
-        />
-      ),
-    },
-    {
       title: t('Risk model'),
       content: (
         <MarketInfoTable
@@ -282,35 +280,30 @@ export const Info = ({ market }: InfoProps) => {
               .decimals
           }
           assetSymbol={assetSymbol}
-          link={
-            <ExternalLink href={`/liquidity/${market.id}`}>
-              {t('View liquidity provision table')}
-            </ExternalLink>
-          }
-        />
+        >
+          <Link onClick={() => onSelect(market.id)}>
+            {t('View liquidity provision table')}
+          </Link>
+        </MarketInfoTable>
       ),
     },
     {
       title: t('Oracle'),
       content: (
         <MarketInfoTable
-          data={{
-            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
-            priceOracle:
-              market.tradableInstrument.instrument.product
-                .oracleSpecForSettlementPrice.id,
-            terminationOracle:
-              market.tradableInstrument.instrument.product
-                .oracleSpecForTradingTermination.id,
-          }}
-          link={
-            <ExternalLink
-              href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
-            >
-              {t('View full oracle details')}
-            </ExternalLink>
-          }
-        />
+          data={market.tradableInstrument.instrument.product.oracleSpecBinding}
+        >
+          <ExternalLink
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForSettlementPrice.id}`}
+          >
+            {t('View price oracle specification')}
+          </ExternalLink>
+          <ExternalLink
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
+          >
+            {t('View termination oracle specification')}
+          </ExternalLink>
+        </MarketInfoTable>
       ),
     },
   ];
@@ -319,32 +312,30 @@ export const Info = ({ market }: InfoProps) => {
     {
       title: t('Proposal'),
       content: (
-        <p>
-          <ExternalLink
-            href={generatePath(Links.PROPOSAL_PAGE, {
-              tokenUrl: VEGA_TOKEN_URL,
-              proposalId: market.proposal?.id || '',
-            })}
-            title={
-              market.proposal?.rationale.title ||
-              market.proposal?.rationale.description ||
-              ''
-            }
-          >
-            {t('View governance proposal')}
-          </ExternalLink>
-        </p>
+        <ExternalLink
+          href={generatePath(Links.PROPOSAL_PAGE, {
+            tokenUrl: VEGA_TOKEN_URL,
+            proposalId: market.proposal?.id || '',
+          })}
+          title={
+            market.proposal?.rationale.title ||
+            market.proposal?.rationale.description ||
+            ''
+          }
+        >
+          {t('View governance proposal')}
+        </ExternalLink>
       ),
     },
   ];
 
   return (
     <div className="p-4">
-      <div className="mb-4">
+      <div className="mb-8">
         <p className={headerClassName}>{t('Market data')}</p>
         <Accordion panels={marketDataPanels} />
       </div>
-      <div className="mb-4">
+      <div className="mb-8">
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>
