@@ -15,8 +15,11 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useMarketInfoQuery } from '../__generated__/MarketInfo'
-import { MarketInfoQuery, MarketInfoCandleFieldsFragment } from '../__generated__/MarketInfo';
+import { useMarketInfoQuery } from '../__generated__/MarketInfo';
+import type {
+  MarketInfoQuery,
+  MarketInfoCandleFieldsFragment,
+} from '../__generated__/MarketInfo';
 import { MarketInfoTable } from './info-key-value-table';
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -53,7 +56,11 @@ export const MarketInfoContainer = ({
     return new Date(yesterday * 1000).toISOString();
   }, []);
   const variables = useMemo(
-    () => ({ marketId, since: yTimestamp, interval: Schema.Interval.INTERVAL_I1H }),
+    () => ({
+      marketId,
+      since: yTimestamp,
+      interval: Schema.Interval.INTERVAL_I1H,
+    }),
     [marketId, yTimestamp]
   );
   const { data, loading, error } = useMarketInfoQuery({
@@ -87,7 +94,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           <MarketInfoTable
             data={{
               ...market?.fees.factors,
-              totalFees: market?.fees.factors ? totalFees(market?.fees.factors) : undefined,
+              totalFees: market?.fees.factors
+                ? totalFees(market?.fees.factors)
+                : undefined,
             }}
             asPercentage={true}
           />
@@ -207,11 +216,13 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...(market?.tradableInstrument?.instrument?.metadata?.tags?.
-              reduce((acc, tag) => {
+            ...(market?.tradableInstrument?.instrument?.metadata?.tags?.reduce(
+              (acc, tag) => {
                 const [key, value] = tag.split(':');
-                return {...acc, [key]: value };
-              }, {}) || {}),
+                return { ...acc, [key]: value };
+              },
+              {}
+            ) || {}),
           }}
         />
       ),

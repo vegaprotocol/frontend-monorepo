@@ -29,7 +29,10 @@ import type { MarketNamesFieldsFragment } from '@vegaprotocol/market-info';
 interface Props {
   market: DealTicketQuery['market'];
   setMarket: (marketId: string) => void;
-  ItemRenderer?: React.FC<{ market: MarketNamesFieldsFragment; isMobile?: boolean }>;
+  ItemRenderer?: React.FC<{
+    market: MarketNamesFieldsFragment;
+    isMobile?: boolean;
+  }>;
 }
 
 function escapeRegExp(str: string) {
