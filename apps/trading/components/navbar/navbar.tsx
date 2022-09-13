@@ -20,7 +20,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
   return (
-    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-400 bg-black">
+    <div className="px-4 flex items-stretch border-b border-default bg-black text-white">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -28,7 +28,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
             <Vega className="w-13" />
           </a>
         </Link>
-        <NetworkSwitcher fixedBg="dark" />
+        <NetworkSwitcher theme="dark" />
       </div>
       <nav className="flex items-center">
         {[
