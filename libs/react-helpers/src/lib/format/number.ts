@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumber as EthersBigNumber } from 'ethers';
+import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 import React from 'react';
 import { getUserLocale } from './utils';
@@ -36,10 +37,11 @@ export function removeDecimal(value: string, decimals: number): string {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 export const getNumberFormat = memoize((digits: number) => {
-  if (!digits || digits < 0) return new Intl.NumberFormat(getUserLocale());
+  if (isNil(digits) || digits < 0)
+    return new Intl.NumberFormat(getUserLocale());
   return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
+    minimumFractionDigits: Math.max(0, digits),
+    maximumFractionDigits: Math.max(0, digits),
   });
 });
 

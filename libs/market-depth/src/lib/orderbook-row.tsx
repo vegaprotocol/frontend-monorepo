@@ -61,6 +61,7 @@ export const OrderbookRow = React.memo(
         />
         <CumulativeVol
           testId={`cumulative-vol-${price}`}
+          positionDecimalPlaces={positionDecimalPlaces}
           bid={cumulativeBid}
           ask={cumulativeAsk}
           relativeAsk={cumulativeRelativeAsk}
