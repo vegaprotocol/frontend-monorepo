@@ -2,13 +2,9 @@ import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type {
-  MarketList,
-  MarketList_markets,
-  MarketList_markets_fees_factors,
-} from '../__generated__/MarketList';
+import type { Market, Candle } from '../';
 
-export const totalFees = (fees: MarketList_markets_fees_factors) => {
+export const totalFees = (fees: Market['fees']['factors']) => {
   if (!fees) {
     return undefined;
   }
@@ -20,7 +16,7 @@ export const totalFees = (fees: MarketList_markets_fees_factors) => {
   );
 };
 
-export const mapDataToMarketList = ({ markets }: MarketList) => {
+export const mapDataToMarketList = (markets: Market[]) => {
   const tradingModesOrdering = [
     MarketTradingMode.TRADING_MODE_CONTINUOUS,
     MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -29,24 +25,12 @@ export const mapDataToMarketList = ({ markets }: MarketList) => {
     MarketTradingMode.TRADING_MODE_NO_TRADING,
   ];
   const orderedMarkets = orderBy(
-    markets
-      ?.filter(
-        (m) =>
-          m.state !== MarketState.STATE_REJECTED &&
-          m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
-      )
-      .map((m) => {
-        return {
-          ...m,
-          open: m.marketTimestamps.open
-            ? new Date(m.marketTimestamps.open).getTime()
-            : null,
-          close: m.marketTimestamps.close
-            ? new Date(m.marketTimestamps.close).getTime()
-            : null,
-        };
-      }) || [],
-    ['open', 'id'],
+    markets?.filter(
+      (m) =>
+        m.state !== MarketState.STATE_REJECTED &&
+        m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
+    ) || [],
+    ['marketTimestamps.open', 'id'],
     ['asc', 'asc']
   );
   return orderedMarkets.sort(
@@ -56,8 +40,8 @@ export const mapDataToMarketList = ({ markets }: MarketList) => {
   );
 };
 
-export const calcCandleLow = (m: MarketList_markets): string | undefined => {
-  return m.candles
+export const calcCandleLow = (candles: Candle[]): string | undefined => {
+  return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.low) {
         if (acc.isLessThan(new BigNumber(c.low))) {
@@ -66,12 +50,12 @@ export const calcCandleLow = (m: MarketList_markets): string | undefined => {
         return new BigNumber(c.low);
       }
       return acc;
-    }, new BigNumber(m.candles?.[0]?.high ?? 0))
+    }, new BigNumber(candles?.[0]?.high ?? 0))
     .toString();
 };
 
-export const calcCandleHigh = (m: MarketList_markets): string | undefined => {
-  return m.candles
+export const calcCandleHigh = (candles: Candle[]): string | undefined => {
+  return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.high) {
         if (acc.isGreaterThan(new BigNumber(c.high))) {

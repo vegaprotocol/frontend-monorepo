@@ -3,6 +3,7 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
   PriceCell,
+  signedNumberCssClass,
   t,
 } from '@vegaprotocol/react-helpers';
 import {
@@ -18,10 +19,7 @@ import Link from 'next/link';
 import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketList_markets,
-  MarketList_markets_fees_factors,
-} from '../__generated__/MarketList';
+import type { Market, MarketData, Candle } from '../';
 import isNil from 'lodash/isNil';
 
 export const cellClassNames = 'py-1 first:text-left text-right';
@@ -171,10 +169,12 @@ export const columnHeaders: Column[] = [
 ];
 
 export const columns = (
-  market: MarketList_markets,
+  market: Market,
+  marketData: MarketData | undefined,
+  candles: Candle[] | undefined,
   onSelect: (id: string) => void
 ) => {
-  const candlesClose = market.candles
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const handleKeyPress = (
@@ -185,8 +185,8 @@ export const columns = (
       return onSelect(id);
     }
   };
-  const candleLow = calcCandleLow(market);
-  const candleHigh = calcCandleHigh(market);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
   const selectMarketColumns: Column[] = [
     {
       value: (
@@ -207,11 +207,11 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
-      value: market.data?.markPrice ? (
+      value: marketData?.markPrice ? (
         <PriceCell
-          value={Number(market.data?.markPrice)}
+          value={Number(marketData?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.data?.markPrice.toString(),
+            marketData?.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -240,7 +240,7 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
-      value: market.candles && (
+      value: candles && (
         <Sparkline
           width={100}
           height={20}
@@ -287,10 +287,10 @@ export const columns = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData?.trigger &&
+        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                     - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -298,9 +298,9 @@ export const columns = (
     },
     {
       value:
-        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
+        marketData?.indicativeVolume && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
+              marketData.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',
@@ -325,14 +325,17 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: MarketList_markets & { openVolume: string },
-  onSelect: (id: string) => void
+  market: Market,
+  marketData: MarketData | undefined,
+  candles: Candle[] | undefined,
+  onSelect: (id: string) => void,
+  openVolume?: string
 ) => {
-  const candlesClose = market.candles
+  const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = calcCandleLow(market);
-  const candleHigh = calcCandleHigh(market);
+  const candleLow = candles && calcCandleLow(candles);
+  const candleHigh = candles && calcCandleHigh(candles);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -361,11 +364,11 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.data?.markPrice ? (
+      value: marketData?.markPrice ? (
         <PriceCell
-          value={Number(market.data.markPrice)}
+          value={Number(marketData.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.data.markPrice.toString(),
+            marketData.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -440,10 +443,10 @@ export const columnsPositionMarkets = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData?.trigger &&
+        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                     - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -451,9 +454,9 @@ export const columnsPositionMarkets = (
     },
     {
       value:
-        market.data && market.data.indicativeVolume !== '0'
+        marketData && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
+              marketData.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',
@@ -467,17 +470,7 @@ export const columnsPositionMarkets = (
     },
     {
       value: (
-        <p
-          className={
-            market.openVolume.includes('+')
-              ? 'text-vega-green-dark dark:text-vega-green'
-              : market.openVolume.includes('-')
-              ? 'text-vega-red-dark dark:text-vega-red'
-              : ''
-          }
-        >
-          {market.openVolume}
-        </p>
+        <p className={signedNumberCssClass(openVolume || '')}>{openVolume}</p>
       ),
       className: `${cellClassNames} hidden xxl:table-cell font-mono`,
       onlyOnDetailed: true,
@@ -489,7 +482,7 @@ export const columnsPositionMarkets = (
 const FeesCell = ({
   feeFactors,
 }: {
-  feeFactors: MarketList_markets_fees_factors;
+  feeFactors: Market['fees']['factors'];
 }) => (
   <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
     <span>{totalFees(feeFactors) ?? '-'}</span>
@@ -499,7 +492,7 @@ const FeesCell = ({
 export const FeesBreakdown = ({
   feeFactors,
 }: {
-  feeFactors?: MarketList_markets_fees_factors;
+  feeFactors?: Market['fees']['factors'];
 }) => {
   if (!feeFactors) return null;
   return (
