@@ -40,7 +40,7 @@ export const DepositContainer = () => {
       acc.push(edge.node);
     }
     return acc;
-  }, [])
+  }, []);
 
   return (
     <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>

@@ -33,7 +33,8 @@ export const DepositContainer = () => {
       query={DEPOSIT_PAGE_QUERY}
       render={(data) => {
         const assets = getNodes<AssetFieldsFragment>(
-          data,
+          // @ts-ignore @TODO: remove this comment once migrated these types to non-clashing
+          data.assetsConnection,
           (node) => node?.status === Schema.AssetStatus.STATUS_ENABLED
         );
         if (!assets.length) {

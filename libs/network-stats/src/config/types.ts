@@ -1,19 +1,21 @@
+import { Schema } from '@vegaprotocol/types';
 import type { NetworkStatsQuery } from '../components/stats-manager/__generated__/Stats';
 
-export type Stats = Omit<NetworkStatsQuery['nodeData'], '__typename'> &
-  Omit<NetworkStatsQuery['statistics'], '__typename'>;
+
+type NodeData = Pick<Schema.NodeData, 'inactiveNodes' | 'stakedTotal' | 'totalNodes' | 'uptime' | 'validatingNodes'>
+export type Stats = Omit<NodeData & NetworkStatsQuery['statistics'], '__typename'>;
 
 // eslint-disable-next-line
-export type value = any;
-export type goodThreshold = (...args: value[]) => boolean;
+export type Value = any;
+export type GoodThreshold = (...args: Value[]) => boolean;
 
 export interface StatFields {
   title: string;
-  goodThreshold?: goodThreshold;
+  goodThreshold?: GoodThreshold;
   // eslint-disable-next-line
-  formatter?: (arg0: value) => any;
+  formatter?: (arg0: Value) => any;
   promoted?: boolean;
-  value?: value;
+  value?: Value;
   description?: string;
 }
 

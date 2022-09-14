@@ -1,10 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, getNodes } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import { getProposals } from '@vegaprotocol/governance';
 import type {
   ProposalsQuery,
   ProposalsQuery_proposalsConnection_edges_node,
@@ -99,9 +98,7 @@ const Governance = () => {
   const { data } = useQuery<ProposalsQuery>(PROPOSALS_QUERY, {
     errorPolicy: 'ignore',
   });
-  const proposals = getProposals(
-    data
-  ) as ProposalsQuery_proposalsConnection_edges_node[];
+  const proposals = getNodes<ProposalsQuery_proposalsConnection_edges_node>(data?.proposalsConnection);
 
   if (!data) return null;
   return (

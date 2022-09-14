@@ -1,12 +1,12 @@
 import type { Schema } from '@vegaprotocol/types';
 
 type Node<T> = {
-  [key: string]: unknown;
+  __typename?: string;
   node: T;
 };
 
 type Connection<A> = {
-  [key: string]: unknown;
+  __typename?: string;
   edges?: Schema.Maybe<Array<Schema.Maybe<A>>>;
 };
 
