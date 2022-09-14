@@ -9,6 +9,14 @@ import { Pagination, Side } from "@vegaprotocol/types";
 // GraphQL query operation: Fills
 // ====================================================
 
+export interface Fills_party_tradesConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
 export interface Fills_party_tradesConnection_edges_node_buyer {
   __typename: "Party";
   /**
@@ -57,20 +65,16 @@ export interface Fills_party_tradesConnection_edges_node_sellerFee {
   liquidityFee: string;
 }
 
-export interface Fills_party_tradesConnection_edges_node_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
 export interface Fills_party_tradesConnection_edges_node {
   __typename: "Trade";
   /**
    * The hash of the trade data
    */
   id: string;
+  /**
+   * The market the trade occurred on
+   */
+  market: Fills_party_tradesConnection_edges_node_market;
   /**
    * RFC3339Nano time for when the trade occurred
    */
@@ -111,10 +115,6 @@ export interface Fills_party_tradesConnection_edges_node {
    * The fee paid by the seller side of the trade
    */
   sellerFee: Fills_party_tradesConnection_edges_node_sellerFee;
-  /**
-   * The market the trade occurred on
-   */
-  market: Fills_party_tradesConnection_edges_node_market;
 }
 
 export interface Fills_party_tradesConnection_edges {
