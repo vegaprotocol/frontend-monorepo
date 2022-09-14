@@ -33,7 +33,7 @@ context('Governance Page - verify elements on page', function () {
             assert.include(
               body,
               'Govern the network',
-              `Checking that governance link includes 'Govern the network' text`
+              `Checking that governance link destination includes 'Govern the network' text`
             );
           }
         });
