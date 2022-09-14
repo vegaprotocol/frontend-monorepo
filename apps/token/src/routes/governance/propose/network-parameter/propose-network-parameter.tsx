@@ -87,9 +87,9 @@ export const ProposeNetworkParameter = () => {
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const selectedParamEntry = Object.entries(params).find(
-    ([key]) => key === selectedNetworkParam
-  );
+  const selectedParamEntry = params
+    ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
+    : null;
 
   const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
     const acutalNetworkParamKey = fields.proposalNetworkParameterKey
