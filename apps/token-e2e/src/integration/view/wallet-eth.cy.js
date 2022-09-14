@@ -181,7 +181,7 @@ context('Ethereum Wallet - verify elements on widget', function () {
               .as('unlocked');
           })
           .then(function () {
-            expect(this.value).to.equal(this.locked + this.unlocked);
+            expect(parseFloat(this.value).toFixed(1)).to.equal(parseFloat((Math.round((this.locked + this.unlocked) * 100) / 100)).toFixed(1))
           });
       });
     });
