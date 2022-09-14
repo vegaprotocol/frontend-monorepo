@@ -2,7 +2,10 @@ import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import dataProvider from './market-depth-data-provider';
+import marketDepthProvider from './market-depth-provider';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
+import { Schema } from '@vegaprotocol/types';
+import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthEventSubscription } from './__generated__/MarketDepth';
 import {
@@ -24,93 +27,116 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     rows: null,
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
-  const deltaRef = useRef<MarketDepthEventSubscription['marketDepthUpdate']>();
+  const marketDataRef = useRef<MarketData | null>(null);
+  const deltaRef = useRef<{
+    sell: Schema.PriceLevel[];
+    buy: Schema.PriceLevel[];
+  }>({
+    sell: [],
+    buy: [],
+  });
   const updateOrderbookData = useRef(
     throttle(() => {
-      if (!deltaRef.current) {
-        return;
-      }
       dataRef.current = {
-        ...deltaRef.current.market.data,
-        ...mapMarketData(
-          deltaRef.current.market.data || null,
-          resolutionRef.current
-        ),
-        rows: updateCompactedRows(
-          dataRef.current.rows ?? [],
-          deltaRef.current.sell ?? null,
-          deltaRef.current.buy ?? null,
-          resolutionRef.current
-        ),
+        ...marketDataRef.current,
+        ...mapMarketData(marketDataRef.current, resolutionRef.current),
+        rows:
+          deltaRef.current.buy.length || deltaRef.current.sell.length
+            ? updateCompactedRows(
+                dataRef.current.rows ?? [],
+                deltaRef.current.sell,
+                deltaRef.current.buy,
+                resolutionRef.current
+              )
+            : dataRef.current.rows,
       };
-      deltaRef.current = undefined;
+      deltaRef.current.buy = [];
+      deltaRef.current.sell = [];
       setOrderbookData(dataRef.current);
     }, 1000)
   );
 
   const update = useCallback(
     ({
-      delta,
+      delta: deltas,
     }: {
-      delta: MarketDepthEventSubscription['marketDepthUpdate'];
+      delta: MarketDepthEventSubscription['marketDepthUpdate'][];
     }) => {
       if (!dataRef.current.rows) {
         return false;
       }
-      if (deltaRef.current) {
-        deltaRef.current.market = delta.market;
+      for (const delta of deltas) {
+        if (delta.market.id !== marketId) {
+          continue;
+        }
         if (delta.sell) {
-          if (deltaRef.current.sell) {
-            deltaRef.current.sell.push(...delta.sell);
-          } else {
-            deltaRef.current.sell = delta.sell;
-          }
+          deltaRef.current.sell.push(...delta.sell);
         }
         if (delta.buy) {
-          if (deltaRef.current.buy) {
-            deltaRef.current.buy.push(...delta.buy);
-          } else {
-            deltaRef.current.buy = delta.buy;
-          }
+          deltaRef.current.buy.push(...delta.buy);
         }
-      } else {
-        deltaRef.current = delta;
+        updateOrderbookData.current();
       }
-      updateOrderbookData.current();
       return true;
     },
-    // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change
-    []
+    [marketId, updateOrderbookData]
   );
 
   const { data, error, loading, flush } = useDataProvider({
-    dataProvider,
+    dataProvider: marketDepthProvider,
     update,
     variables,
   });
 
+  const {
+    data: market,
+    error: marketError,
+    loading: marketLoading,
+  } = useDataProvider({
+    dataProvider: marketProvider,
+    noUpdate: true,
+    variables,
+  });
+
+  const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
+    marketDataRef.current = data;
+    updateOrderbookData.current();
+    return true;
+  }, []);
+
+  const {
+    data: marketData,
+    error: marketDataError,
+    loading: marketDataLoading,
+  } = useDataProvider({
+    dataProvider: marketDataProvider,
+    update: marketDataUpdate,
+    variables,
+  });
+
+  marketDataRef.current = marketData;
+
   useEffect(() => {
     const throttleRunnner = updateOrderbookData.current;
+    if (!marketDataRef.current) {
+      return;
+    }
     if (!data) {
       dataRef.current = { rows: null };
       setOrderbookData(dataRef.current);
       return;
     }
     dataRef.current = {
-      ...data.data,
-      rows: compactRows(
-        data.depth.sell ?? null,
-        data.depth.buy ?? null,
-        resolution
-      ),
-      ...mapMarketData(data.data ?? null, resolution),
+      ...marketDataRef.current,
+      ...mapMarketData(marketDataRef.current, resolution),
+      rows: compactRows(data.depth.sell, data.depth.buy, resolution),
     };
     setOrderbookData(dataRef.current);
 
     return () => {
       throttleRunnner.cancel();
     };
-  }, [data, resolution]);
+  }, [data, marketData, resolution]);
 
   useEffect(() => {
     resolutionRef.current = resolution;
@@ -118,11 +144,15 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   }, [resolution, flush]);
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading || marketDataLoading || marketLoading}
+      error={error || marketDataError || marketError}
+      data={data}
+    >
       <Orderbook
         {...orderbookData}
-        decimalPlaces={data?.decimalPlaces ?? 0}
-        positionDecimalPlaces={data?.positionDecimalPlaces ?? 0}
+        decimalPlaces={market?.decimalPlaces ?? 0}
+        positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
       />

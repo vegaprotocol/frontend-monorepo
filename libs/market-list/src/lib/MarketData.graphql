@@ -8,58 +8,23 @@ fragment MarketDataFields on MarketData {
   bestOfferPrice
   markPrice
   trigger
+  staticMidPrice
+  marketTradingMode
   indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
 }
 
-fragment MarketListItem on Market {
-  id
-  name
-  decimalPlaces
-  positionDecimalPlaces
-  state
-  tradingMode
-  fees {
-    factors {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-  }
-  data {
-    ...MarketDataFields
-  }
-  tradableInstrument {
-    instrument {
-      id
-      name
-      code
-      metadata {
-        tags
-      }
-      product {
-        ... on Future {
-          settlementAsset {
-            symbol
-          }
+query MarketsData {
+  marketsConnection {
+    edges {
+      node {
+        data {
+          ...MarketDataFields
         }
       }
     }
-  }
-  marketTimestamps {
-    open
-    close
-  }
-  candles(interval: $interval, since: $since) {
-    open
-    close
-    high
-    low
-  }
-}
-
-query MarketList($interval: Interval!, $since: String!) {
-  markets {
-    ...MarketListItem
   }
 }
 

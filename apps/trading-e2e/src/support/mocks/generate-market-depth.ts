@@ -29,7 +29,6 @@ export const generateMarketDepth = (
         __typename: 'MarketDepth',
         buy: [],
         sell: [],
-        lastTrade: null,
         sequenceNumber: '',
       },
       __typename: 'Market',

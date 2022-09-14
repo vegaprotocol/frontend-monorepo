@@ -37,25 +37,29 @@ query MarketDepth($marketId: ID!) {
   }
 }
 
+fragment MarketDepthUpdateFields on MarketDepthUpdate{
+  market {
+    id
+    positionDecimalPlaces
+    data {
+      ...MarketDepthDataFields
+    }
+  }
+  sell {
+    price
+    volume
+    numberOfOrders
+  }
+  buy {
+    price
+    volume
+    numberOfOrders
+  }
+  sequenceNumber
+}
+
 subscription MarketDepthEvent($marketId: ID!) {
   marketDepthUpdate(marketId: $marketId) {
-    market {
-      id
-      positionDecimalPlaces
-      data {
-        ...MarketDepthDataFields
-      }
-    }
-    sell {
-      price
-      volume
-      numberOfOrders
-    }
-    buy {
-      price
-      volume
-      numberOfOrders
-    }
-    sequenceNumber
+    ...MarketDepthUpdateFields
   }
 }

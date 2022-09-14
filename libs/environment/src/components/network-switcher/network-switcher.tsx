@@ -69,11 +69,7 @@ const NetworkLabel = ({
   </span>
 );
 
-export const NetworkSwitcher = ({
-  fixedBg,
-}: {
-  fixedBg?: 'dark' | 'light';
-}) => {
+export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
@@ -88,10 +84,9 @@ export const NetworkSwitcher = ({
     [setOpen, setAdvancedView]
   );
 
-  const dropdownTriggerClasses = classNames('hover:!bg-neutral-700', {
-    'dark:text-white dark:bg-black text-black bg-white': !fixedBg,
-    'text-black bg-white': fixedBg === 'light',
-    'text-white bg-black': fixedBg === 'dark',
+  const dropdownTriggerClasses = classNames({
+    'text-black hover:!bg-neutral-300': theme === 'light',
+    'text-white hover:!bg-neutral-700': theme === 'dark',
   });
 
   return (

@@ -21,7 +21,7 @@ import {
   MarketTradingModeMapping,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
-import type { MarketListItemFragment } from '../../';
+import type { MarketWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;
@@ -30,7 +30,7 @@ type MarketListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: MarketListItemFragment;
+  data: MarketWithData;
 };
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
@@ -82,7 +82,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Trading mode')}
         field="data"
         minWidth={170}
-        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
+        valueGetter={({ data }: { data?: MarketWithData }) => {
           if (!data?.data) return undefined;
           const { market, trigger } = data.data;
           return market &&
@@ -101,7 +101,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
+        valueGetter={({ data }: { data?: MarketWithData }) => {
           return data?.data?.bestBidPrice === undefined
             ? undefined
             : toBigNum(data?.data?.bestBidPrice, data.decimalPlaces).toNumber();
@@ -121,7 +121,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
+        valueGetter={({ data }: { data?: MarketWithData }) => {
           return data?.data?.bestOfferPrice === undefined
             ? undefined
             : toBigNum(
@@ -144,7 +144,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         filter="agNumberColumnFilter"
-        valueGetter={({ data }: { data?: MarketListItemFragment }) => {
+        valueGetter={({ data }: { data?: MarketWithData }) => {
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();

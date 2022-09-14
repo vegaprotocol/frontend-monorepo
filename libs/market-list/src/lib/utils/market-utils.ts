@@ -1,10 +1,10 @@
 import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type {
-  MarketListQuery,
   MarketListItemFragment,
+  MarketCandleFieldsFragment,
 } from '../__generated__/MarketData';
 
 export const totalFees = (fees: MarketListItemFragment['fees']['factors']) => {
@@ -19,33 +19,21 @@ export const totalFees = (fees: MarketListItemFragment['fees']['factors']) => {
   );
 };
 
-export const mapDataToMarketList = ({ markets }: MarketListQuery) => {
+export const mapDataToMarketList = (markets: MarketListItemFragment[]) => {
   const tradingModesOrdering = [
-    MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-    MarketTradingMode.TRADING_MODE_NO_TRADING,
+    Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_NO_TRADING,
   ];
   const orderedMarkets = orderBy(
-    markets
-      ?.filter(
-        (m) =>
-          m.state !== MarketState.STATE_REJECTED &&
-          m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
-      )
-      .map((m) => {
-        return {
-          ...m,
-          open: m.marketTimestamps.open
-            ? new Date(m.marketTimestamps.open).getTime()
-            : null,
-          close: m.marketTimestamps.close
-            ? new Date(m.marketTimestamps.close).getTime()
-            : null,
-        };
-      }) || [],
-    ['open', 'id'],
+    markets?.filter(
+      (m: MarketListItemFragment) =>
+        m.state !== Schema.MarketState.STATE_REJECTED &&
+        m.tradingMode !== Schema.MarketTradingMode.TRADING_MODE_NO_TRADING
+    ) || [],
+    ['marketTimestamps.open', 'id'],
     ['asc', 'asc']
   );
   return orderedMarkets.sort(
@@ -55,10 +43,8 @@ export const mapDataToMarketList = ({ markets }: MarketListQuery) => {
   );
 };
 
-export const calcCandleLow = (
-  m: MarketListItemFragment
-): string | undefined => {
-  return m.candles
+export const calcCandleLow = (candles: MarketCandleFieldsFragment[]): string | undefined => {
+  return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.low) {
         if (acc.isLessThan(new BigNumber(c.low))) {
@@ -67,14 +53,12 @@ export const calcCandleLow = (
         return new BigNumber(c.low);
       }
       return acc;
-    }, new BigNumber(m.candles?.[0]?.high ?? 0))
+    }, new BigNumber(candles?.[0]?.high ?? 0))
     .toString();
 };
 
-export const calcCandleHigh = (
-  m: MarketListItemFragment
-): string | undefined => {
-  return m.candles
+export const calcCandleHigh = (candles: MarketCandleFieldsFragment[]): string | undefined => {
+  return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.high) {
         if (acc.isGreaterThan(new BigNumber(c.high))) {

@@ -11,7 +11,9 @@ describe('markets table', () => {
   it('renders markets correctly', () => {
     cy.visit('/');
     cy.wait('@Market');
-    cy.wait('@MarketList');
+    cy.wait('@Markets');
+    cy.wait('@MarketsDataQuery');
+    cy.wait('@MarketsCandlesQuery');
     cy.get('[data-testid^="market-link-"]')
       .should('not.be.empty')
       .and('have.attr', 'href');
@@ -24,7 +26,9 @@ describe('markets table', () => {
 
   it('renders market list drop down', () => {
     cy.visit('/');
-    cy.wait('@MarketList');
+    cy.wait('@Markets');
+    cy.wait('@MarketsDataQuery');
+    cy.wait('@MarketsCandlesQuery');
     openMarketDropDown();
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('trading-mode').should('not.be.empty');
@@ -35,7 +39,9 @@ describe('markets table', () => {
 
   it('Able to select market from dropdown', () => {
     cy.visit('/');
-    cy.wait('@MarketList');
+    cy.wait('@Markets');
+    cy.wait('@MarketsDataQuery');
+    cy.wait('@MarketsCandlesQuery');
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();
 
@@ -53,7 +59,9 @@ describe('markets table', () => {
       'SOLUSD',
     ];
     cy.visit('/');
-    cy.wait('@MarketList');
+    cy.wait('@Markets');
+    cy.wait('@MarketsDataQuery');
+    cy.wait('@MarketsCandlesQuery');
     cy.getByTestId('link').should('have.attr', 'href', '/markets').click();
     cy.url().should('eq', Cypress.config('baseUrl') + '/markets');
     cy.contains('AAPL.MF21').should('be.visible');
@@ -127,7 +135,7 @@ describe('markets table', () => {
   }
 
   function verifyMarketSummaryDisplayed() {
-    const marketSummaryBlock = 'market-summary';
+    const marketSummaryBlock = 'header-summary';
     const percentageValue = 'price-change-percentage';
     const priceChangeValue = 'price-change';
     const tradingVolume = 'trading-volume';

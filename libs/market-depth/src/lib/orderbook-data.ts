@@ -293,7 +293,7 @@ export const updateCompactedRows = (
 };
 
 export const mapMarketData = (
-  data: MarketDepthDataFieldsFragment | null,
+  data: Pick<MarketDepthDataFieldsFragment, 'staticMidPrice' | 'bestStaticBidPrice' | 'bestStaticOfferPrice' | 'indicativePrice'> | null,
   resolution: number
 ) => ({
   staticMidPrice:
@@ -366,7 +366,7 @@ export const generateMockData = ({
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
-  const sell: Schema.PriceLevel[] = matrix.map((row, i) => ({
+  const sell: Schema.PriceLevel[] = matrix.map((_row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= 1).toString(),
     volume: (numberOfSellRows - i + 1).toString(),
@@ -374,7 +374,7 @@ export const generateMockData = ({
   }));
   price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
-  const buy: Schema.PriceLevel[] = matrix.map((row, i) => ({
+  const buy: Schema.PriceLevel[] = matrix.map((_row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= 1).toString(),
     volume: (i + 2).toString(),
@@ -385,22 +385,16 @@ export const generateMockData = ({
     rows,
     resolution,
     indicativeVolume: indicativeVolume?.toString(),
+    marketTradingMode:
+      overlap > 0
+        ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+        : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     ...mapMarketData(
       {
-        __typename: 'MarketData',
         staticMidPrice: '',
-        marketTradingMode:
-          overlap > 0
-            ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-            : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         bestStaticBidPrice: bestStaticBidPrice.toString(),
         bestStaticOfferPrice: bestStaticOfferPrice.toString(),
         indicativePrice: indicativePrice?.toString() ?? '',
-        indicativeVolume: indicativeVolume?.toString() ?? '',
-        market: {
-          __typename: 'Market',
-          id: '',
-        },
       },
       resolution
     ),

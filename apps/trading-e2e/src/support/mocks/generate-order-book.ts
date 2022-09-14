@@ -24,10 +24,6 @@ export const generateOrderBook = (
       __typename: 'MarketData',
     },
     depth: {
-      lastTrade: {
-        price: '826338',
-        __typename: 'Trade',
-      },
       sell: [
         {
           price: '826338',
