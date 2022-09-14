@@ -2,7 +2,7 @@ const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const proposalDocumentationLink = '[data-testid="external-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
-const governanceDocsUrl = 'https://vega.xyz/governance'
+const governanceDocsUrl = 'https://vega.xyz/governance';
 
 context('Governance Page - verify elements on page', function () {
   before('navigate to governance page', function () {
@@ -24,13 +24,19 @@ context('Governance Page - verify elements on page', function () {
         .should('be.visible')
         .and('have.text', 'Find out more about Vega governance')
         .and('have.attr', 'href')
-        .and('equal', governanceDocsUrl)
-      
-      cy.request(governanceDocsUrl).its('body').then((body) => {
-        if (!body.includes('Govern the network')) {
-         assert.include(body, 'Govern the network', `Checking that governance link includes 'Govern the network' text`);
-        }
-      })
+        .and('equal', governanceDocsUrl);
+
+      cy.request(governanceDocsUrl)
+        .its('body')
+        .then((body) => {
+          if (!body.includes('Govern the network')) {
+            assert.include(
+              body,
+              'Govern the network',
+              `Checking that governance link includes 'Govern the network' text`
+            );
+          }
+        });
     });
 
     it('should be able to see button for - new proposal', function () {
