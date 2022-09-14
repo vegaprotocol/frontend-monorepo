@@ -52,11 +52,13 @@ export const DealTicketContainer = () => {
   const container = marketId ? (
     <Container marketId={marketId}>
       {(data) => {
-        const balance = data.market?.tradableInstrument.instrument.product?.settlementAsset ? (
+        const balance = data.market?.tradableInstrument.instrument.product
+          ?.settlementAsset ? (
           <DealTicketBalance
             className="mb-4"
             settlementAsset={
-              data.market?.tradableInstrument.instrument.product?.settlementAsset
+              data.market?.tradableInstrument.instrument.product
+                ?.settlementAsset
             }
             accounts={partyData?.party?.accounts || []}
             isWalletConnected={!!keypair?.pub}
@@ -66,10 +68,14 @@ export const DealTicketContainer = () => {
         return (
           <DealTicketManager market={data.market ?? undefined}>
             {loading ? loader : balance}
-            {data.market && <DealTicketSteps market={data.market ?? undefined} partyData={partyData} />}
+            {data.market && (
+              <DealTicketSteps
+                market={data.market ?? undefined}
+                partyData={partyData}
+              />
+            )}
           </DealTicketManager>
         );
-
       }}
     </Container>
   ) : (

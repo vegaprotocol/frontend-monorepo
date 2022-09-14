@@ -98,11 +98,14 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(({ data }: { data: MarketDataFieldsFragment }) => {
-    marketDataRef.current = data;
-    updateOrderbookData.current();
-    return true;
-  }, []);
+  const marketDataUpdate = useCallback(
+    ({ data }: { data: MarketDataFieldsFragment }) => {
+      marketDataRef.current = data;
+      updateOrderbookData.current();
+      return true;
+    },
+    []
+  );
 
   const {
     data: marketData,

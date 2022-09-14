@@ -19,17 +19,17 @@ const orderByDate = (arr: Proposal[]) =>
   );
 
 export const getNotRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getNodes<Proposal>(data?.proposalsConnection, node => node?.state !== Schema.ProposalState.STATE_REJECTED);
-  return flow([
-    compact,
-    orderByDate,
-  ])(proposals);
+  const proposals = getNodes<Proposal>(
+    data?.proposalsConnection,
+    (node) => node?.state !== Schema.ProposalState.STATE_REJECTED
+  );
+  return flow([compact, orderByDate])(proposals);
 };
 
 export const getRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getNodes<Proposal>(data?.proposalsConnection, node => node?.state === Schema.ProposalState.STATE_REJECTED);
-  return flow([
-    compact,
-    orderByDate,
-  ])(proposals);
+  const proposals = getNodes<Proposal>(
+    data?.proposalsConnection,
+    (node) => node?.state === Schema.ProposalState.STATE_REJECTED
+  );
+  return flow([compact, orderByDate])(proposals);
 };

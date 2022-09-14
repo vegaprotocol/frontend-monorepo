@@ -20,18 +20,19 @@ export const DealTicketManager = ({
 
   return (
     <>
-      {children || market && (
-        <DealTicket
-          market={market}
-          submit={(order) => submit(order)}
-          transactionStatus={
-            transaction.status === VegaTxStatus.Requested ||
-            transaction.status === VegaTxStatus.Pending
-              ? 'pending'
-              : 'default'
-          }
-        />
-      )}
+      {children ||
+        (market && (
+          <DealTicket
+            market={market}
+            submit={(order) => submit(order)}
+            transactionStatus={
+              transaction.status === VegaTxStatus.Requested ||
+              transaction.status === VegaTxStatus.Pending
+                ? 'pending'
+                : 'default'
+            }
+          />
+        ))}
       <Dialog
         title={getOrderDialogTitle(finalizedOrder?.status)}
         intent={getOrderDialogIntent(finalizedOrder?.status)}

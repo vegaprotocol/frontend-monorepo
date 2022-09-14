@@ -22,4 +22,4 @@ export function getNodes<
     }
     return acc;
   }, []);
-};
+}

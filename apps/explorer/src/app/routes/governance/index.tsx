@@ -98,7 +98,9 @@ const Governance = () => {
   const { data } = useQuery<ProposalsQuery>(PROPOSALS_QUERY, {
     errorPolicy: 'ignore',
   });
-  const proposals = getNodes<ProposalsQuery_proposalsConnection_edges_node>(data?.proposalsConnection);
+  const proposals = getNodes<ProposalsQuery_proposalsConnection_edges_node>(
+    data?.proposalsConnection
+  );
 
   if (!data) return null;
   return (

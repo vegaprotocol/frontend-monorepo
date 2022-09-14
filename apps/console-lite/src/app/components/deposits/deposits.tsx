@@ -7,7 +7,10 @@ import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
 import type { Deposits } from './__generated__/Deposits';
-import { AssetFieldsFragmentDoc, AssetFieldsFragment } from '@vegaprotocol/assets';
+import {
+  AssetFieldsFragmentDoc,
+  AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 
 const DEPOSITS_QUERY = gql`
   ${AssetFieldsFragmentDoc}
@@ -34,7 +37,9 @@ export const DepositContainer = () => {
     skip: !keypair?.pub,
   });
 
-  const assets = (data?.assetsConnection.edges || []).reduce<AssetFieldsFragment[]>((acc, edge) => {
+  const assets = (data?.assetsConnection.edges || []).reduce<
+    AssetFieldsFragment[]
+  >((acc, edge) => {
     if (edge?.node && edge.node?.status === AssetStatus.STATUS_ENABLED) {
       // @ts-ignore temporary fix until this whole thing gets migrated over so it recognizes each other's types
       acc.push(edge.node);

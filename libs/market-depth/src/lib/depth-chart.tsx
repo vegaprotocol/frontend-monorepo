@@ -130,10 +130,13 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(({ data }: { data: MarketDataFieldsFragment }) => {
-    marketDataRef.current = data;
-    return true;
-  }, []);
+  const marketDataUpdate = useCallback(
+    ({ data }: { data: MarketDataFieldsFragment }) => {
+      marketDataRef.current = data;
+      return true;
+    },
+    []
+  );
 
   const {
     data: marketData,

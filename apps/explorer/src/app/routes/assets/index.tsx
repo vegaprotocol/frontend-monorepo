@@ -43,8 +43,8 @@ const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
 
   const assets = (data?.assetsConnection.edges || [])
-    .filter(e => !!e?.node)
-    .map(e => e?.node) as AssetsQuery_assetsConnection_edges_node[];
+    .filter((e) => !!e?.node)
+    .map((e) => e?.node) as AssetsQuery_assetsConnection_edges_node[];
 
   return (
     <section>
