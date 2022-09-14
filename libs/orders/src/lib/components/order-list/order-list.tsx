@@ -29,7 +29,6 @@ import type {
   AgGridReactProps,
   AgReactUiProps,
 } from 'ag-grid-react';
-import type { Market } from '@vegaprotocol/market-list';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
 import type { Orders_party_ordersConnection_edges_node } from '../';
@@ -38,22 +37,16 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
+import type { OrderFields } from '../';
 import { OrderFeedback } from '../order-feedback';
 
-type OrderListProps = (AgGridReactProps | AgReactUiProps) & {
-  markets: Market[];
-};
+type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] =
-      useState<Orders_party_ordersConnection_edges_node | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
     const orderCancel = useOrderCancel();
-    const market: Market | null =
-      (editOrder &&
-        props.markets.find((market) => market.id === editOrder.market.id)) ||
-      null;
-    const orderEdit = useOrderEdit(editOrder, market);
+    const orderEdit = useOrderEdit(editOrder);
 
     return (
       <>
@@ -86,9 +79,8 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={orderEdit.updatedOrder}
           />
         </orderEdit.Dialog>
-        {editOrder && market && (
+        {editOrder && (
           <OrderEditDialog
-            market={market}
             isOpen={Boolean(editOrder)}
             onChange={(isOpen) => {
               if (!isOpen) setEditOrder(null);
@@ -112,13 +104,13 @@ type OrderListTableValueFormatterParams = Omit<
   data: Orders_party_ordersConnection_edges_node | null;
 };
 
-type OrderListTableProps = OrderListProps & {
-  cancel: (order: Orders_party_ordersConnection_edges_node) => void;
-  setEditOrder: (order: Orders_party_ordersConnection_edges_node) => void;
+type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
+  cancel: (order: OrderFields) => void;
+  setEditOrder: (order: OrderFields) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, markets, ...props }, ref) => {
+  ({ cancel, setEditOrder, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -165,12 +157,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
                 : '-'
               : '';
             return (
-              prefix +
-              addDecimal(
-                value,
-                markets.find((market) => market.id === data.market.id)
-                  ?.positionDecimalPlaces ?? 0
-              )
+              prefix + addDecimal(value, data.market.positionDecimalPlaces)
             );
           }}
         />
@@ -216,9 +203,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            const dps =
-              markets.find((market) => market.id === data.market.id)
-                ?.positionDecimalPlaces ?? 0;
+            const dps = data.market.positionDecimalPlaces;
             const size = new BigNumber(data.size);
             const remaining = new BigNumber(value);
             const fills = size.minus(remaining);
@@ -246,11 +231,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             ) {
               return '-';
             }
-            return addDecimal(
-              value,
-              markets.find((market) => market.id === data.market.id)
-                ?.decimalPlaces ?? 0
-            );
+            return addDecimal(value, data.market.decimalPlaces);
           }}
         />
         <AgGridColumn

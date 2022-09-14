@@ -1,7 +1,6 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
-import type { Market } from '@vegaprotocol/market-list';
 import type { OrderEvent_busEvents_event_Order } from './';
 import * as Sentry from '@sentry/react';
 import type { Orders_party_ordersConnection_edges_node } from '../components';
@@ -13,8 +12,7 @@ export interface EditOrderArgs {
 }
 
 export const useOrderEdit = (
-  order: Orders_party_ordersConnection_edges_node | null,
-  market: Market | null
+  order: Orders_party_ordersConnection_edges_node | null
 ) => {
   const { keypair } = useVegaWallet();
 
@@ -38,7 +36,7 @@ export const useOrderEdit = (
 
   const edit = useCallback(
     async (args: EditOrderArgs) => {
-      if (!keypair || !order || !market) {
+      if (!keypair || !order || !order.market) {
         return;
       }
 
@@ -51,7 +49,7 @@ export const useOrderEdit = (
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
-            price: removeDecimal(args.price, market.decimalPlaces),
+            price: removeDecimal(args.price, order.market.decimalPlaces),
             timeInForce: order.timeInForce,
             sizeDelta: 0,
             expiresAt: order.expiresAt
@@ -69,7 +67,7 @@ export const useOrderEdit = (
         return;
       }
     },
-    [keypair, send, order, market, setComplete, waitForOrderEvent]
+    [keypair, send, order, setComplete, waitForOrderEvent]
   );
 
   return {

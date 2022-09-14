@@ -3,8 +3,11 @@ import orderBy from 'lodash/orderBy';
 import { gql } from '@apollo/client';
 import {
   makeDataProvider,
+  makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type {
   Fills,
@@ -21,6 +24,9 @@ export const FILLS_QUERY = gql`
         edges {
           node {
             id
+            market {
+              id
+            }
             createdAt
             price
             size
@@ -102,11 +108,15 @@ const update = (
       } else {
         const firstNode = draft[0]?.node;
         if (firstNode && node.createdAt >= firstNode.createdAt) {
-          const { buyerId, sellerId, ...trade } = node;
+          const { buyerId, sellerId, marketId, ...trade } = node;
           draft.unshift({
             node: {
               ...trade,
               __typename: 'Trade',
+              market: {
+                __typename: 'Market',
+                id: marketId,
+              },
               buyer: { id: buyerId, __typename: 'Party' },
               seller: { id: buyerId, __typename: 'Party' },
             },
@@ -119,6 +129,9 @@ const update = (
   });
 };
 
+export type Trade = Fills_party_tradesConnection_edges_node;
+export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
+
 const getData = (
   responseData: Fills
 ): Fills_party_tradesConnection_edges[] | null =>
@@ -129,7 +142,7 @@ const getPageInfo = (responseData: Fills): PageInfo | null =>
 
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
 
-export const fillsDataProvider = makeDataProvider({
+export const fillsProvider = makeDataProvider({
   query: FILLS_QUERY,
   subscriptionQuery: FILLS_SUB,
   update,
@@ -141,3 +154,14 @@ export const fillsDataProvider = makeDataProvider({
     first: 100,
   },
 });
+
+export const fillsWithMarketProvider = makeDerivedDataProvider(
+  [fillsProvider, marketsProvider],
+  (parts): TradeWithMarket[] =>
+    (parts[0] as Fills_party_tradesConnection_edges[]).map((edge) => ({
+      ...edge.node,
+      market: (parts[1] as Market[]).find(
+        (market) => market.id === edge.node.market.id
+      ),
+    }))
+);

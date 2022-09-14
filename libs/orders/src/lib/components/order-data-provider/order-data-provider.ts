@@ -4,12 +4,16 @@ import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 import {
   makeDataProvider,
+  makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type {
   Orders,
   Orders_party_ordersConnection_edges,
+  Orders_party_ordersConnection_edges_node,
   OrderSub,
   OrderSub_orders,
 } from '../';
@@ -112,6 +116,9 @@ export const update = (
   });
 };
 
+export type Order = Orders_party_ordersConnection_edges_node;
+export type OrderWithMarket = Omit<Order, 'market'> & { market?: Market };
+
 const getData = (
   responseData: Orders
 ): Orders_party_ordersConnection_edges[] | null =>
@@ -122,7 +129,7 @@ const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
 const getPageInfo = (responseData: Orders): PageInfo | null =>
   responseData.party?.ordersConnection?.pageInfo || null;
 
-export const ordersDataProvider = makeDataProvider({
+export const ordersProvider = makeDataProvider({
   query: ORDERS_QUERY,
   subscriptionQuery: ORDERS_SUB,
   update,
@@ -134,3 +141,14 @@ export const ordersDataProvider = makeDataProvider({
     first: 100,
   },
 });
+
+export const ordersWithMarketProvider = makeDerivedDataProvider(
+  [ordersProvider, marketsProvider],
+  (parts): OrderWithMarket[] =>
+    (parts[0] as Orders_party_ordersConnection_edges[]).map((edge) => ({
+      ...edge.node,
+      market: (parts[1] as Market[]).find(
+        (market) => market.id === edge.node.market.id
+      ),
+    }))
+);

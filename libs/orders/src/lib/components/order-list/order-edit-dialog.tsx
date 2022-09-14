@@ -14,17 +14,15 @@ import {
   Dialog,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import type { Market } from '@vegaprotocol/market-list';
 import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
-import type { Orders_party_ordersConnection_edges_node } from '../order-data-provider';
+import type { OrderFields } from '../order-data-provider';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: Orders_party_ordersConnection_edges_node;
+  order: OrderFields;
   onSubmit: (fields: FormFields) => void;
-  market: Market;
 }
 
 interface FormFields {
@@ -36,7 +34,6 @@ export const OrderEditDialog = ({
   onChange,
   order,
   onSubmit,
-  market,
 }: OrderEditDialogProps) => {
   const headerClassName = 'text-lg font-bold text-black dark:text-white';
   const {
@@ -45,7 +42,7 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>();
 
-  const step = toDecimal(market.decimalPlaces);
+  const step = toDecimal(order.market?.decimalPlaces ?? 0);
 
   return (
     <Dialog
@@ -58,13 +55,15 @@ export const OrderEditDialog = ({
         {order.market && (
           <div>
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${market.tradableInstrument.instrument.name}`)}</p>
+            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={headerClassName}>{t(`Current price`)}</p>
-            <p>{addDecimalsFormatNumber(order.price, market.decimalPlaces)}</p>
+            <p>
+              {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
+            </p>
           </div>
         )}
         <div>
@@ -74,7 +73,7 @@ export const OrderEditDialog = ({
               <Size
                 value={order.size}
                 side={order.side}
-                positionDecimalPlaces={market.positionDecimalPlaces}
+                positionDecimalPlaces={order.market.positionDecimalPlaces}
               />
             }
           </p>

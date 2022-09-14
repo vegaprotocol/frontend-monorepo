@@ -7,8 +7,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
-import { marketsProvider } from '@vegaprotocol/market-list';
-import { OrderList, ordersDataProvider as dataProvider } from '../';
+import { OrderList, ordersWithMarketProvider } from '../';
 import type { Orders_party_ordersConnection_edges, OrderSub_orders } from '../';
 
 interface OrderListManagerProps {
@@ -80,16 +79,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     []
   );
 
-  const {
-    data: markets,
-    error: marketsError,
-    loading: marketsLoading,
-  } = useDataProvider({
-    dataProvider: marketsProvider,
-  });
-
   const { data, error, loading, load, totalCount } = useDataProvider({
-    dataProvider,
+    dataProvider: ordersWithMarketProvider,
     update,
     insert,
     variables,
@@ -116,21 +107,14 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   };
 
   return (
-    <AsyncRenderer
-      loading={loading || marketsLoading}
-      error={error || marketsError}
-      data={data && markets}
-    >
-      {markets && (
-        <OrderList
-          ref={gridRef}
-          markets={markets}
-          rowModelType="infinite"
-          datasource={{ getRows }}
-          onBodyScrollEnd={onBodyScrollEnd}
-          onBodyScroll={onBodyScroll}
-        />
-      )}
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      <OrderList
+        ref={gridRef}
+        rowModelType="infinite"
+        datasource={{ getRows }}
+        onBodyScrollEnd={onBodyScrollEnd}
+        onBodyScroll={onBodyScroll}
+      />
     </AsyncRenderer>
   );
 };

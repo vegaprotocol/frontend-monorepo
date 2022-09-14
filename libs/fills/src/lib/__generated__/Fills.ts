@@ -57,6 +57,14 @@ export interface Fills_party_tradesConnection_edges_node_sellerFee {
   liquidityFee: string;
 }
 
+export interface Fills_party_tradesConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
 export interface Fills_party_tradesConnection_edges_node {
   __typename: "Trade";
   /**
@@ -103,6 +111,10 @@ export interface Fills_party_tradesConnection_edges_node {
    * The fee paid by the seller side of the trade
    */
   sellerFee: Fills_party_tradesConnection_edges_node_sellerFee;
+  /**
+   * The market the trade occurred on
+   */
+  market: Fills_party_tradesConnection_edges_node_market;
 }
 
 export interface Fills_party_tradesConnection_edges {

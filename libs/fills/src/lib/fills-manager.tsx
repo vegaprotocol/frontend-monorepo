@@ -8,7 +8,8 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 
-import { fillsDataProvider as dataProvider } from './fills-data-provider';
+import type { TradeWithMarket } from './fills-data-provider';
+import { fillsProvider } from './fills-data-provider';
 import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
 import type { FillsSub_trades } from './__generated__/FillsSub';
 
@@ -83,9 +84,9 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
-    (Fills_party_tradesConnection_edges | null)[],
+    (TradeWithMarket | null)[],
     FillsSub_trades[]
-  >({ dataProvider, update, insert, variables });
+  >({ dataProvider: fillsProvider, update, insert, variables });
   totalCountRef.current = totalCount;
   dataRef.current = data;
 

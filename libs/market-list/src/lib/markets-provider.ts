@@ -72,7 +72,7 @@ export const MARKET_LIST_QUERY = gql`
 `;
 
 const getData = (responseData: Markets): Market[] | null =>
-  responseData.marketsConnection.edges.map((edge) => edge.node);
+  responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
 
 export const marketsProvider = makeDataProvider<
   Markets,
