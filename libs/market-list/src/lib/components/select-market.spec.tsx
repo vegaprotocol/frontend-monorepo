@@ -2,12 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { Schema } from '@vegaprotocol/types';
 
 import type { ReactNode } from 'react';
-import type {
-  MarketListItemFragment,
-} from '../__generated__/MarketList';
-import type {
-  MarketDataFieldsFragment,
-} from '../__generated__/MarketData';
+import type { MarketListItemFragment } from '../__generated__/MarketList';
+import type { MarketDataFieldsFragment } from '../__generated__/MarketData';
 import type { MarketCandles } from '../markets-candles-provider';
 
 import {
@@ -209,10 +205,7 @@ describe('SelectMarket', () => {
       <SelectMarketLandingTable
         markets={[MARKET_A, MARKET_B]}
         marketsData={[MARKET_DATA_A, MARKET_DATA_B]}
-        marketsCandles={[
-          MARKET_CANDLES_A,
-          MARKET_CANDLES_B,
-        ]}
+        marketsCandles={[MARKET_CANDLES_A, MARKET_CANDLES_B]}
         onSelect={onSelect}
       />
     );

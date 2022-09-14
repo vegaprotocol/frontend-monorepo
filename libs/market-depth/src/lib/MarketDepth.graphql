@@ -37,7 +37,7 @@ query MarketDepth($marketId: ID!) {
   }
 }
 
-fragment MarketDepthUpdateFields on MarketDepthUpdate{
+fragment MarketDepthUpdateFields on MarketDepthUpdate {
   market {
     id
     positionDecimalPlaces

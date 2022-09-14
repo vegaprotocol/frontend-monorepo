@@ -25,11 +25,7 @@ fragment MarketItemFields on Market {
   }
 }
 
-query MarketCandles(
-  $interval: Interval!
-  $since: String!
-  $marketId: ID!
-) {
+query MarketCandles($interval: Interval!, $since: String!, $marketId: ID!) {
   marketsConnection(id: $marketId) {
     edges {
       node {

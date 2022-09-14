@@ -10,7 +10,10 @@ interface MarketsContainerProps {
 }
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
-  const { data, error, loading } = useDataProvider<MarketListItemFragment[], never>({
+  const { data, error, loading } = useDataProvider<
+    MarketListItemFragment[],
+    never
+  >({
     dataProvider,
     noUpdate: true,
   });

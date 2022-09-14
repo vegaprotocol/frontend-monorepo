@@ -293,7 +293,13 @@ export const updateCompactedRows = (
 };
 
 export const mapMarketData = (
-  data: Pick<MarketDepthDataFieldsFragment, 'staticMidPrice' | 'bestStaticBidPrice' | 'bestStaticOfferPrice' | 'indicativePrice'> | null,
+  data: Pick<
+    MarketDepthDataFieldsFragment,
+    | 'staticMidPrice'
+    | 'bestStaticBidPrice'
+    | 'bestStaticOfferPrice'
+    | 'indicativePrice'
+  > | null,
   resolution: number
 ) => ({
   staticMidPrice:

@@ -11,7 +11,10 @@ import type {
 } from './__generated__/MarketList';
 import type { MarketDataFieldsFragment } from './__generated__/MarketData';
 import { marketsDataProvider } from './markets-data-provider';
-import { marketsCandlesProvider, MarketCandles } from './markets-candles-provider';
+import {
+  marketsCandlesProvider,
+  MarketCandles,
+} from './markets-candles-provider';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
@@ -26,10 +29,9 @@ export const marketsProvider = makeDataProvider<
   getData: (data) => getNodes<MarketListItemFragment>(data),
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<MarketListItemFragment[]>(
-  [marketsProvider],
-  ([markets]) => mapDataToMarketList(markets)
-);
+export const activeMarketsProvider = makeDerivedDataProvider<
+  MarketListItemFragment[]
+>([marketsProvider], ([markets]) => mapDataToMarketList(markets));
 
 interface MarketsListData {
   markets: MarketListItemFragment[];
@@ -53,8 +55,8 @@ export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
 );
 
 export type MarketWithData = MarketListItemFragment & {
-  data?: MarketDataFieldsFragment
-}
+  data?: MarketDataFieldsFragment;
+};
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
   MarketWithData[]
