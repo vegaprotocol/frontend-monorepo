@@ -102,8 +102,8 @@ const mapRawData =
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
 export const compactRows = (
-  sell: Schema.PriceLevel[] | null,
-  buy: Schema.PriceLevel[] | null,
+  sell: Schema.PriceLevel[] | null | undefined,
+  buy: Schema.PriceLevel[] | null | undefined,
   resolution: number
 ) => {
   // map raw sell data to OrderbookData

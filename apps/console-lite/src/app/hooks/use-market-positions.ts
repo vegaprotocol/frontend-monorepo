@@ -3,7 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import type {
   MarketPositions,
   MarketPositionsVariables,
-} from './__generated__/marketPositions';
+} from './__generated__/MarketPositions';
 
 const MARKET_POSITIONS_QUERY = gql`
   query MarketPositions($partyId: ID!) {

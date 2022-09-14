@@ -22,7 +22,7 @@ import type {
 } from './__generated__/MarketDepth';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { Schema } from '@vegaprotocol/types';
-import type { MarketData } from '@vegaprotocol/market-list';
+import type { MarketDataFieldsFragment } from '@vegaprotocol/market-list';
 import type { DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
 
@@ -40,7 +40,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
   const dataRef = useRef<DepthData | null>(null);
-  const marketDataRef = useRef<MarketData | null>(null);
+  const marketDataRef = useRef<MarketDataFieldsFragment | null>(null);
   const deltaRef = useRef<{
     sell: Schema.PriceLevel[];
     buy: Schema.PriceLevel[];
@@ -95,7 +95,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
         return false;
       }
       for (const delta of deltas) {
-        if (delta.market.id !== marketId) {
+        if (delta.marketId !== marketId) {
           continue;
         }
         if (delta.sell) {
@@ -130,7 +130,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
+  const marketDataUpdate = useCallback(({ data }: { data: MarketDataFieldsFragment }) => {
     marketDataRef.current = data;
     return true;
   }, []);

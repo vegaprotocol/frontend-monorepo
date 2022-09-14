@@ -1,16 +1,13 @@
 import { gql, useQuery } from '@apollo/client';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { getNodes, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
-import type {
-  Deposits,
-  Deposits_assetsConnection_edges_node,
-} from './__generated__/Deposits';
-import { AssetFieldsFragmentDoc } from '@vegaprotocol/assets';
+import type { Deposits } from './__generated__/Deposits';
+import { AssetFieldsFragmentDoc, AssetFieldsFragment } from '@vegaprotocol/assets';
 
 const DEPOSITS_QUERY = gql`
   ${AssetFieldsFragmentDoc}
@@ -37,10 +34,13 @@ export const DepositContainer = () => {
     skip: !keypair?.pub,
   });
 
-  const assets = getNodes<Deposits_assetsConnection_edges_node>(
-    data,
-    (node) => node?.status === AssetStatus.STATUS_ENABLED
-  );
+  const assets = (data?.assetsConnection.edges || []).reduce<AssetFieldsFragment[]>((acc, edge) => {
+    if (edge?.node && edge.node?.status === AssetStatus.STATUS_ENABLED) {
+      // @ts-ignore temporary fix until this whole thing gets migrated over so it recognizes each other's types
+      acc.push(edge.node);
+    }
+    return acc;
+  }, [])
 
   return (
     <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>

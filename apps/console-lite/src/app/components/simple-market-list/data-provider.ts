@@ -15,6 +15,7 @@ export const MARKETS_QUERY = gql`
     markets {
       id
       state
+      name
       tradableInstrument {
         instrument {
           code

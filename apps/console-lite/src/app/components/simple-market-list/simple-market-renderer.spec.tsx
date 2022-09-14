@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import type { MarketNames_markets } from '@vegaprotocol/deal-ticket';
+import type { MarketNamesFieldsFragment } from '@vegaprotocol/market-info';
 import { MarketState } from '@vegaprotocol/types';
 import MarketNameRenderer from './simple-market-renderer';
 
@@ -20,7 +20,7 @@ describe('SimpleMarketRenderer', () => {
         },
       },
     },
-  } as MarketNames_markets;
+  } as MarketNamesFieldsFragment;
 
   it('should properly render not mobile', () => {
     render(<MarketNameRenderer market={market} isMobile={false} />);

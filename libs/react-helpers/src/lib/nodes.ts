@@ -14,10 +14,12 @@ export function getNodes<
   T,
   A extends Node<T> = Node<T>,
   B extends Connection<A> = Connection<A>
->(data?: B | null, filterBy?: (item: T | null) => boolean): T[] {
-  return (
-    data?.edges
-      ?.filter((e) => e && e?.node && (filterBy ? filterBy(e.node) : e.node))
-      .map((e) => (e as Node<T>).node as T) || []
-  );
-}
+>(data?: B | null, filterBy?: (item?: T | null) => boolean) {
+  const edges = data?.edges || [];
+  return edges.reduce<T[]>((acc, edge) => {
+    if (edge?.node && (filterBy ? filterBy(edge?.node) : true)) {
+      acc.push(edge.node);
+    }
+    return acc;
+  }, []);
+};

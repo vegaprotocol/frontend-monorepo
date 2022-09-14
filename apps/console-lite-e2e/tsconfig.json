@@ -8,5 +8,5 @@
     "allowJs": true,
     "types": ["cypress", "node", "cypress-real-events"]
   },
-  "include": ["src/**/*.ts", "src/**/*.js"]
+  "include": ["./declaration.d.ts", "src/**/*.ts", "src/**/*.js"]
 }

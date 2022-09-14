@@ -10,7 +10,7 @@ import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketFieldsFragment } from '../';
 import { ExpirySelector } from './expiry-selector';
 import type { Order } from '@vegaprotocol/orders';
 import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
@@ -19,7 +19,7 @@ import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: DealTicketQuery_market;
+  market: DealTicketFieldsFragment;
   submit: (order: Order) => void;
   transactionStatus: TransactionStatus;
   defaultOrder?: Order;

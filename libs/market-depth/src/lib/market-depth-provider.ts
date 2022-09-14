@@ -1,65 +1,23 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
-import type {
-  MarketDepth,
-  MarketDepth_market,
+import {
+  MarketDepthDocument,
+  MarketDepthEventDocument,
 } from './__generated__/MarketDepth';
 import type {
-  MarketDepthSubscription,
-  MarketDepthSubscription_marketsDepthUpdate,
-} from './__generated__/MarketDepthSubscription';
-
-const MARKET_DEPTH_QUERY = gql`
-  query MarketDepth($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      depth {
-        sell {
-          price
-          volume
-          numberOfOrders
-        }
-        buy {
-          price
-          volume
-          numberOfOrders
-        }
-        sequenceNumber
-      }
-    }
-  }
-`;
-
-export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
-  subscription MarketDepthSubscription($marketId: ID!) {
-    marketsDepthUpdate(marketIds: [$marketId]) {
-      marketId
-      sell {
-        price
-        volume
-        numberOfOrders
-      }
-      buy {
-        price
-        volume
-        numberOfOrders
-      }
-      sequenceNumber
-      previousSequenceNumber
-    }
-  }
-`;
+  MarketDepthQuery,
+  MarketDepthEventSubscription,
+} from './__generated__/MarketDepth';
 
 const sequenceNumbers: Record<string, number> = {};
 
 const update: Update<
-  MarketDepth_market,
-  MarketDepthSubscription_marketsDepthUpdate[]
-> = (data, deltas, reload) => {
+  MarketDepthQuery['market'],
+  MarketDepthEventSubscription['marketsDepthUpdate']
+> = (data, deltas) => {
   for (const delta of deltas) {
-    if (delta.marketId !== data.id) {
+    if (delta.marketId !== data?.id) {
       continue;
     }
     const sequenceNumber = Number(delta.sequenceNumber);
@@ -76,20 +34,20 @@ const update: Update<
     sequenceNumbers[delta.marketId] = sequenceNumber;
     const updatedData = {
       ...data,
-      depth: { ...data.depth },
+      depth: { ...data?.depth },
     };
     if (delta.buy) {
-      updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
+      updatedData.depth.buy = updateLevels(data?.depth.buy ?? [], delta.buy);
     }
     if (delta.sell) {
-      updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
+      updatedData.depth.sell = updateLevels(data?.depth.sell ?? [], delta.sell);
     }
     return updatedData;
   }
   return data;
 };
 
-const getData = (responseData: MarketDepth) => {
+const getData = (responseData: MarketDepthQuery) => {
   if (responseData.market?.id) {
     sequenceNumbers[responseData.market.id] = Number(
       responseData.market.depth.sequenceNumber
@@ -97,12 +55,12 @@ const getData = (responseData: MarketDepth) => {
   }
   return responseData.market;
 };
-const getDelta = (subscriptionData: MarketDepthSubscription) =>
+const getDelta = (subscriptionData: MarketDepthEventSubscription) =>
   subscriptionData.marketsDepthUpdate;
 
 export const marketDepthProvider = makeDataProvider({
-  query: MARKET_DEPTH_QUERY,
-  subscriptionQuery: MARKET_DEPTH_SUBSCRIPTION_QUERY,
+  query: MarketDepthDocument,
+  subscriptionQuery: MarketDepthEventDocument,
   update,
   getData,
   getDelta,

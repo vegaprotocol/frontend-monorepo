@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketFieldsFragment } from '../';
 import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
 import { Schema } from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 export interface DealTicketManagerProps {
-  market: DealTicketQuery_market;
+  market?: DealTicketFieldsFragment;
   children?: ReactNode | ReactNode[];
 }
 
@@ -20,7 +20,7 @@ export const DealTicketManager = ({
 
   return (
     <>
-      {children || (
+      {children || market && (
         <DealTicket
           market={market}
           submit={(order) => submit(order)}

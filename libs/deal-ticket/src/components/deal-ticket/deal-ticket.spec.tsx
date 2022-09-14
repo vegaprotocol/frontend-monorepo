@@ -2,7 +2,7 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketFieldsFragment } from '../';
 import {
   MarketState,
   MarketTradingMode,
@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/types';
 import type { Order } from '@vegaprotocol/orders';
 
-const market: DealTicketQuery_market = {
+const market: DealTicketFieldsFragment = {
   __typename: 'Market',
   id: 'market-id',
   name: 'market-name',
@@ -23,6 +23,8 @@ const market: DealTicketQuery_market = {
     __typename: 'TradableInstrument',
     instrument: {
       __typename: 'Instrument',
+      id: '1',
+      name: 'Instrument name',
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
@@ -75,7 +77,7 @@ describe('DealTicket', () => {
       screen.queryByTestId('order-side-SIDE_SELL-selected')
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
-      String(1 / Math.pow(10, market.positionDecimalPlaces))
+      String(1 / Math.pow(10, market?.positionDecimalPlaces))
     );
     expect(screen.getByTestId('order-tif')).toHaveValue(
       OrderTimeInForce.TIME_IN_FORCE_IOC

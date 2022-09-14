@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import type { MarketNames_markets } from '@vegaprotocol/deal-ticket';
+import type { MarketNamesFieldsFragment } from '@vegaprotocol/market-info';
 import SimpleMarketExpires from './simple-market-expires';
 
 interface Props {
-  market: MarketNames_markets;
+  market: MarketNamesFieldsFragment;
   isMobile?: boolean;
 }
 
@@ -21,7 +21,7 @@ const MarketNameRenderer = ({ market, isMobile }: Props) => {
           ? market.tradableInstrument.instrument.code
           : market.tradableInstrument.instrument.name}{' '}
         <SimpleMarketExpires
-          tags={market.tradableInstrument.instrument.metadata.tags}
+          tags={market.tradableInstrument.instrument.metadata.tags ?? null}
         />
       </div>
       <div className="col-span-2 text-ui-tiny md:text-ui-small text-deemphasise dark:text-midGrey self-start leading-3">

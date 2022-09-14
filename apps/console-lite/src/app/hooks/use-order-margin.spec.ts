@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
 import type { Order } from '@vegaprotocol/orders';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketFieldsFragment } from '@vegaprotocol/deal-ticket';
 import type { PositionMargin } from './use-market-positions';
 import useOrderMargin from './use-order-margin';
 
@@ -54,7 +54,7 @@ describe('useOrderMargin Hook', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as Order,
-        market: market as DealTicketQuery_market,
+        market: market as DealTicketFieldsFragment,
         partyId,
       })
     );
@@ -72,7 +72,7 @@ describe('useOrderMargin Hook', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as Order,
-        market: market as DealTicketQuery_market,
+        market: market as DealTicketFieldsFragment,
         partyId,
       })
     );
@@ -84,7 +84,7 @@ describe('useOrderMargin Hook', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as Order,
-        market: market as DealTicketQuery_market,
+        market: market as DealTicketFieldsFragment,
         partyId,
       })
     );
@@ -111,7 +111,7 @@ describe('useOrderMargin Hook', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as Order,
-        market: market as DealTicketQuery_market,
+        market: market as DealTicketFieldsFragment,
         partyId,
       })
     );

@@ -88,6 +88,10 @@ export interface SimpleMarkets_markets {
    */
   state: MarketState;
   /**
+   * Market full name
+   */
+  name: string;
+  /**
    * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: SimpleMarkets_markets_tradableInstrument;

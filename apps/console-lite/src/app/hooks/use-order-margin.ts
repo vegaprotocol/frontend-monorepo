@@ -5,8 +5,8 @@ import type {
   EstimateOrder,
   EstimateOrderVariables,
   EstimateOrder_estimateOrder_fee,
-} from './__generated__/estimateOrder';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+} from './__generated__/EstimateOrder';
+import type { DealTicketFieldsFragment } from '@vegaprotocol/deal-ticket';
 import { Side } from '@vegaprotocol/types';
 import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import useMarketPositions from './use-market-positions';
@@ -47,7 +47,7 @@ export const ESTIMATE_ORDER_QUERY = gql`
 
 interface Props {
   order: Order;
-  market: DealTicketQuery_market;
+  market: DealTicketFieldsFragment;
   partyId: string;
 }
 

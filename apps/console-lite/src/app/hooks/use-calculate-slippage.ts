@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
 import { marketProvider } from '@vegaprotocol/market-list';
-import type { Market } from '@vegaprotocol/market-list';
+import type { MarketListItemFragment } from '@vegaprotocol/market-list';
 import type { Order } from '@vegaprotocol/orders';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -22,7 +22,7 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
     variables,
     throttleMilliseconds: 5000,
   });
-  const { data: market } = useDataProvider<Market, never>({
+  const { data: market } = useDataProvider<MarketListItemFragment, never>({
     dataProvider: marketProvider,
     noUpdate: true,
     variables,

@@ -5,7 +5,7 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import marketDepthProvider from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { Schema } from '@vegaprotocol/types';
-import type { MarketData } from '@vegaprotocol/market-list';
+import type { MarketDataFieldsFragment } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthEventSubscription } from './__generated__/MarketDepth';
 import {
@@ -27,7 +27,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     rows: null,
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
-  const marketDataRef = useRef<MarketData | null>(null);
+  const marketDataRef = useRef<MarketDataFieldsFragment | null>(null);
   const deltaRef = useRef<{
     sell: Schema.PriceLevel[];
     buy: Schema.PriceLevel[];
@@ -60,13 +60,13 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta: MarketDepthEventSubscription['marketDepthUpdate'][];
+      delta: MarketDepthEventSubscription['marketsDepthUpdate'];
     }) => {
       if (!dataRef.current.rows) {
         return false;
       }
       for (const delta of deltas) {
-        if (delta.market.id !== marketId) {
+        if (delta.marketId !== marketId) {
           continue;
         }
         if (delta.sell) {
@@ -98,7 +98,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(({ data }: { data: MarketData }) => {
+  const marketDataUpdate = useCallback(({ data }: { data: MarketDataFieldsFragment }) => {
     marketDataRef.current = data;
     updateOrderbookData.current();
     return true;

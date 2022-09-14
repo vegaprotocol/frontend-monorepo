@@ -1,31 +1,35 @@
-query DealTicket($marketId: ID!) {
-  market(id: $marketId) {
-    id
-    name
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    tradingMode
-    tradableInstrument {
-      instrument {
-        id
-        name
-        product {
-          ... on Future {
-            quoteName
-            settlementAsset {
-              id
-              symbol
-              name
-            }
+fragment DealTicketFields on Market {
+  id
+  name
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  tradableInstrument {
+    instrument {
+      id
+      name
+      product {
+        ... on Future {
+          quoteName
+          settlementAsset {
+            id
+            symbol
+            name
           }
         }
       }
     }
-    depth {
-      lastTrade {
-        price
-      }
+  }
+  depth {
+    lastTrade {
+      price
     }
+  }
+}
+
+query DealTicket($marketId: ID!) {
+  market(id: $marketId) {
+    ...DealTicketFields
   }
 }
