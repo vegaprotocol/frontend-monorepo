@@ -9,9 +9,9 @@ export const getValidationTimestamp = (proposalValidationDeadline: string) =>
     getTime(
       proposalValidationDeadline === '0'
         ? addHours(
-            addMinutes(new Date(Date.now()), 2),
+            addMinutes(new Date(), 2),
             Number(proposalValidationDeadline)
           )
-        : addHours(new Date(Date.now()), Number(proposalValidationDeadline))
+        : addHours(new Date(), Number(proposalValidationDeadline))
     ) / 1000
   );

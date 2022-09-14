@@ -8,10 +8,7 @@ export const getClosingTimestamp = (proposalVoteDeadline: string) =>
   Math.floor(
     getTime(
       proposalVoteDeadline === '1'
-        ? addHours(
-            addMinutes(new Date(Date.now()), 2),
-            Number(proposalVoteDeadline)
-          )
-        : addHours(new Date(Date.now()), Number(proposalVoteDeadline))
+        ? addHours(addMinutes(new Date(), 2), Number(proposalVoteDeadline))
+        : addHours(new Date(), Number(proposalVoteDeadline))
     ) / 1000
   );

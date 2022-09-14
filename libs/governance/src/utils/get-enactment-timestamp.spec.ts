@@ -6,9 +6,8 @@ describe('getEnactmentTimestamp', () => {
     const proposalVoteDeadline = 1;
     const enactmentDeadline = 1;
     const expected = Math.floor(
-      getTime(
-        addHours(new Date(Date.now()), proposalVoteDeadline + enactmentDeadline)
-      ) / 1000
+      getTime(addHours(new Date(), proposalVoteDeadline + enactmentDeadline)) /
+        1000
     );
     const actual = getEnactmentTimestamp(
       proposalVoteDeadline,
