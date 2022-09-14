@@ -284,7 +284,7 @@ export const updateCompactedRows = (
     );
   });
 
-  // update cummulative ask only below hihgest modified price level
+  // update cumulative ask only below highest modified price level
   if (sellModifiedIndex !== -1) {
     for (let i = Math.min(sellModifiedIndex, data.length - 2); i >= 0; i--) {
       data[i] = {
@@ -296,7 +296,7 @@ export const updateCompactedRows = (
       };
     }
   }
-  // update cummulative bid only above lowest modified price level
+  // update cumulative bid only above lowest modified price level
   if (buyModifiedIndex !== data.length) {
     for (let i = Math.max(buyModifiedIndex, 1), l = data.length; i < l; i++) {
       data[i] = {
