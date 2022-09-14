@@ -59,6 +59,18 @@ export const marketOrder = generateOrder({
   status: OrderStatus.STATUS_ACTIVE,
 });
 
+export const generateMany = (
+  num: number
+): Orders_party_ordersConnection_edges_node[] => {
+  let i = 0;
+  const ret: Orders_party_ordersConnection_edges_node[] = [];
+  while (i <= num) {
+    ret.push(generateOrder({ id: `order-gen-${i}` }));
+    i++;
+  }
+  return ret;
+};
+
 export const generateMockOrders =
   (): Orders_party_ordersConnection_edges_node[] => {
     return [

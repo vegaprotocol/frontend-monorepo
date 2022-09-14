@@ -1,19 +1,18 @@
+import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useMemo } from 'react';
-import {
-  useDataProvider,
-  makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
+import type { Fills_party_tradesConnection_edges_node } from '@vegaprotocol/fills';
+import { useFillsList } from '@vegaprotocol/fills';
+import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { FillsTable } from './fills-table';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
-import { useFillsList } from './use-fills-list';
+import { ConsoleLiteGrid } from '../../console-lite-grid';
+import useColumnDefinitions from './use-column-definitions';
 
-interface FillsManagerProps {
+interface Props {
   partyId: string;
 }
 
-export const FillsManager = ({ partyId }: FillsManagerProps) => {
+const FillsManager = ({ partyId }: Props) => {
+  const { columnDefs, defaultColDef } = useColumnDefinitions({ partyId });
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const { data, error, loading, addNewRows, getRows } = useFillsList({
@@ -34,14 +33,17 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <FillsTable
+      <ConsoleLiteGrid<Fills_party_tradesConnection_edges_node>
         ref={gridRef}
-        partyId={partyId}
-        datasource={{ getRows }}
         rowModelType="infinite"
+        datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
       />
     </AsyncRenderer>
   );
 };
+
+export default FillsManager;
