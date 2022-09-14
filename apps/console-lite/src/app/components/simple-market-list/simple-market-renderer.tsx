@@ -24,7 +24,7 @@ const MarketNameRenderer = ({ market, isMobile }: Props) => {
         />
       </div>
       <div className="col-span-2 text-ui-tiny md:text-ui-small text-deemphasise dark:text-midGrey self-start leading-3">
-        {/* {market.tradableInstrument.instrument.product.quoteName} */}
+        {market.tradableInstrument.instrument.product.quoteName}
       </div>
     </div>
   );

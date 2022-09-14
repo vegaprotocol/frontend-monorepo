@@ -24,10 +24,9 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({}),
 }));
 
-let mockData = [
+let marketsMock = [
   {
-    id: '1',
-    name: 'Market 1',
+    id: 'MARKET_A',
     state: MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
@@ -43,8 +42,7 @@ let mockData = [
     },
   },
   {
-    id: '2',
-    name: 'Market 2',
+    id: 'MARKET_B',
     state: MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
@@ -63,7 +61,13 @@ let mockData = [
 
 const LIB = '@vegaprotocol/market-list';
 const useMarketList = () => {
-  return { data: mockData, loading: false, error: false };
+  return {
+    data: {
+      markets: marketsMock,
+    },
+    loading: false,
+    error: false,
+  };
 };
 jest.mock(LIB, () => ({
   ...jest.requireActual(LIB),
@@ -87,7 +91,7 @@ describe('SimpleMarketList', () => {
       query: MARKET_LIST_QUERY,
     },
     result: {
-      data: { markets: mockData, marketsCandles: [], marketsData: [] },
+      data: { markets: marketsMock, marketsCandles: [], marketsData: [] },
     },
   };
 
@@ -130,19 +134,23 @@ describe('SimpleMarketList', () => {
     mockIsTradable.mockClear();
     const container = document.querySelector('.ag-center-cols-container');
     const firstRow = getAllByRole(container as HTMLDivElement, 'row')[0];
-    expect(firstRow).toHaveAttribute('row-id', '1');
+    expect(firstRow).toHaveAttribute('row-id', marketsMock[0].id);
     fireEvent.click(firstRow);
     await waitFor(() => {
-      expect(mockIsTradable).toHaveBeenCalledWith({
-        ...mockData[0],
-        percentChange: '-',
-      });
-      expect(mockedNavigate).toHaveBeenCalledWith(`/trading/${mockData[0].id}`);
+      expect(mockIsTradable).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: marketsMock[0].id,
+          percentChange: '-',
+        })
+      );
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        `/trading/${marketsMock[0].id}`
+      );
     });
   });
 
   it('should be properly renderer as empty', async () => {
-    mockData = [];
+    marketsMock = [];
     await act(async () => {
       render(
         <MockedProvider mocks={[mocks]}>
