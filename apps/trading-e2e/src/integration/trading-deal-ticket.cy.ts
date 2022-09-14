@@ -147,7 +147,7 @@ describe('deal ticket orders', () => {
     );
     cy.getByTestId(orderTransactionHash)
       .invoke('attr', 'href')
-      .should('include', 'https://explorer.fairground.wtf/txs/0xtest-tx-hash');
+      .should('include', 'https://staging3.explorer.vega.xyz/txs/0xtest-tx-hash');
     cy.getByTestId('dialog-close').click();
   };
 
