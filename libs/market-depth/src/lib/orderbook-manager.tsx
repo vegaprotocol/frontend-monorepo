@@ -4,7 +4,7 @@ import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import marketDepthProvider from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthEventSubscription } from './__generated__/MarketDepth';

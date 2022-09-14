@@ -3,7 +3,7 @@ import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type { MarketListItemFragment } from '../__generated__/MarketList';
-import { MarketCandleFieldsFragment } from '../__generated__/MarketCandles';
+import type { MarketCandleFieldsFragment } from '../__generated__/MarketCandles';
 
 export const totalFees = (fees: MarketListItemFragment['fees']['factors']) => {
   if (!fees) {
