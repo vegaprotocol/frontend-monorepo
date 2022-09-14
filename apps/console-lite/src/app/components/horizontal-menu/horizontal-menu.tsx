@@ -19,9 +19,9 @@ interface Props {
   'aria-label'?: string;
 }
 
-const MenuItem = ({ name, url, isActive, cssClass }: Item): JSX.Element => {
+const MenuItem = ({ id, name, url, isActive, cssClass }: Item): JSX.Element => {
   if (!url) {
-    return <span>{name}</span>;
+    return <span data-testid={id}>{name}</span>;
   }
   return (
     <Link
@@ -30,6 +30,7 @@ const MenuItem = ({ name, url, isActive, cssClass }: Item): JSX.Element => {
       className={classNames('pl-0 hover:opacity-75', cssClass, {
         active: isActive,
       })}
+      data-testid={id}
     >
       {name}
     </Link>

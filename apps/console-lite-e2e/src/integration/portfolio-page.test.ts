@@ -19,19 +19,20 @@ describe('Portfolio page', () => {
   it('certain tabs should exist', () => {
     cy.visit('/portfolio');
     connectVegaWallet();
-    cy.getByTestId('Assets').should('exist');
-    cy.getByTestId('tab-assets').should('exist');
 
-    cy.getByTestId('Positions').click();
-    cy.getByTestId('tab-positions').should('exist');
+    cy.getByTestId('assets').click();
+    cy.location('pathname').should('eq', '/portfolio/assets');
 
-    cy.getByTestId('Orders').click();
-    cy.getByTestId('tab-orders').should('exist');
+    cy.getByTestId('positions').click();
+    cy.location('pathname').should('eq', '/portfolio/positions');
 
-    cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').should('exist');
+    cy.getByTestId('orders').click();
+    cy.location('pathname').should('eq', '/portfolio/orders');
 
-    cy.getByTestId('Deposits').click();
-    cy.getByTestId('tab-deposits').should('exist');
+    cy.getByTestId('fills').click();
+    cy.location('pathname').should('eq', '/portfolio/fills');
+
+    cy.getByTestId('deposits').click();
+    cy.location('pathname').should('eq', '/portfolio/deposits');
   });
 });
