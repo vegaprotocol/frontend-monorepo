@@ -118,6 +118,10 @@ export const update = (
 
 export type Order = Orders_party_ordersConnection_edges_node;
 export type OrderWithMarket = Omit<Order, 'market'> & { market?: Market };
+export type OrderWithMarketEdge = {
+  node: OrderWithMarket;
+  cursor: Orders_party_ordersConnection_edges['cursor'];
+};
 
 const getData = (
   responseData: Orders
@@ -142,13 +146,34 @@ export const ordersProvider = makeDataProvider({
   },
 });
 
-export const ordersWithMarketProvider = makeDerivedDataProvider(
+export const ordersWithMarketProvider = makeDerivedDataProvider<
+  OrderWithMarketEdge[],
+  OrderWithMarket[]
+>(
   [ordersProvider, marketsProvider],
-  (parts): OrderWithMarket[] =>
-    (parts[0] as Orders_party_ordersConnection_edges[]).map((edge) => ({
-      ...edge.node,
-      market: (parts[1] as Market[]).find(
-        (market) => market.id === edge.node.market.id
-      ),
-    }))
+  (partsData): OrderWithMarketEdge[] =>
+    (partsData[0] as Orders_party_ordersConnection_edges[]).map((edge) => ({
+      cursor: edge.cursor,
+      node: {
+        ...edge.node,
+        market: (partsData[1] as Market[]).find(
+          (market) => market.id === edge.node.market.id
+        ),
+      },
+    })),
+  (parts) => {
+    if (!parts[0].isUpdate) {
+      return;
+    }
+    return (parts[0].delta as ReturnType<typeof getDelta>).map(
+      (deltaOrder) => ({
+        ...((parts[0].data as ReturnType<typeof getData>)?.find(
+          (order) => order.node.id === deltaOrder.id
+        )?.node as Orders_party_ordersConnection_edges_node),
+        market: (parts[1].data as Market[]).find(
+          (market) => market.id === deltaOrder.marketId
+        ),
+      })
+    );
+  }
 );

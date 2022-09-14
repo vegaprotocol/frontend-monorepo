@@ -84,7 +84,7 @@ export const marketsProvider = makeDataProvider<
   getData,
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<Market[]>(
+export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => mapDataToMarketList(markets)
 );
@@ -95,7 +95,10 @@ export interface MarketsListData {
   marketsCandles: MarketCandles[];
 }
 
-export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
+export const marketListProvider = makeDerivedDataProvider<
+  MarketsListData,
+  never
+>(
   [
     (callback, client) => activeMarketsProvider(callback, client),
     (callback, client) => marketsDataProvider(callback, client),
@@ -113,7 +116,8 @@ export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
 export type MarketWithData = Market & { data?: MarketData };
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketWithData[]
+  MarketWithData[],
+  never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
   (parts[0] as Market[]).map((market) => ({
     ...market,
