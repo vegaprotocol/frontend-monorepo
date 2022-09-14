@@ -47,12 +47,11 @@ describe('vega wallet', () => {
   });
 
   it('can change selected public key and disconnect', () => {
-    const key2 = Cypress.env('VEGA_PUBLIC_KEY2');
     const truncatedKey2 = Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY2');
     connectVegaWallet();
     cy.getByTestId('manage-vega-wallet').click();
     cy.getByTestId('keypair-list').should('exist');
-    cy.getByTestId(`key-${key2}`).click();
+    cy.contains(truncatedKey2).click();
     cy.getByTestId('manage-vega-wallet').contains(truncatedKey2);
     cy.getByTestId('disconnect').click();
     cy.getByTestId('connect-vega-wallet').should('exist');
