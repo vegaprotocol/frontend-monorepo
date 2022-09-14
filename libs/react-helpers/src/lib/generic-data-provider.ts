@@ -473,17 +473,23 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
 export type CombineDerivedData<Data> = (
-  parts: Parameters<DependencyUpdateCallback>['0']['data'][],
+  data: Parameters<DependencyUpdateCallback>['0']['data'][],
   variables?: OperationVariables
 ) => Data | null;
 
-function makeDerivedDataProviderInternal<Data>(
+export type CombineDerivedDelta<Delta> = (
+  parts: Parameters<DependencyUpdateCallback>['0'][],
+  variables?: OperationVariables
+) => Delta | undefined;
+
+function makeDerivedDataProviderInternal<Data, Delta>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDerivedData<Data>
-): Subscribe<Data, never> {
+  combineData: CombineDerivedData<Data>,
+  combineDelta?: CombineDerivedDelta<Delta>
+): Subscribe<Data, Delta> {
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
   let client: ApolloClient<object>;
-  const callbacks: UpdateCallback<Data, never>[] = [];
+  const callbacks: UpdateCallback<Data, Delta>[] = [];
   let variables: OperationVariables | undefined;
   const parts: Parameters<DependencyUpdateCallback>['0'][] = [];
   let data: Data | null = null;
@@ -491,10 +497,9 @@ function makeDerivedDataProviderInternal<Data>(
   let loading = true;
   let loaded = false;
 
-  // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
-    callback: UpdateCallback<Data, never>,
-    updateData?: UpdateData<Data, never>
+    callback: UpdateCallback<Data, Delta>,
+    updateData?: UpdateData<Data, Delta>
   ) => {
     callback({
       data,
@@ -507,12 +512,15 @@ function makeDerivedDataProviderInternal<Data>(
   };
 
   // notify all callbacks
-  const notifyAll = (updateData?: UpdateData<Data, never>) =>
+  const notifyAll = (updateData?: UpdateData<Data, Delta>) =>
     callbacks.forEach((callback) => {
       notify(callback, updateData);
     });
 
-  const combine = (isUpdate = false) => {
+  const combine = (updatedPartIndex?: number) => {
+    let delta: Delta | undefined;
+    let isUpdate = false;
+    const isInsert = false;
     let newError: Error | undefined;
     let newLoading = false;
     let newLoaded = true;
@@ -523,13 +531,19 @@ function makeDerivedDataProviderInternal<Data>(
         newLoading = newLoading || !part || part.loading;
         newLoaded = newLoaded && part && part.loaded;
       });
-
-    const newData = newLoaded
-      ? combineData(
-          parts.map((part) => part.data),
-          variables
-        )
-      : data;
+    const dataParts = dependencies.map((dependency, i) => parts[i].data);
+    const newData = newLoaded ? combineData(dataParts, variables) : data;
+    if (updatedPartIndex !== undefined) {
+      const updatedPart = parts[updatedPartIndex];
+      if (updatedPart.isUpdate && updatedPart.delta && combineDelta) {
+        delta = combineDelta(parts, variables);
+        delete updatedPart.isUpdate;
+        delete updatedPart.delta;
+        if (delta) {
+          isUpdate = true;
+        }
+      }
+    }
     if (
       newLoading !== loading ||
       newError !== error ||
@@ -540,7 +554,11 @@ function makeDerivedDataProviderInternal<Data>(
       error = newError;
       loaded = newLoaded;
       data = newData;
-      notifyAll({ isUpdate });
+      notifyAll({
+        isUpdate,
+        isInsert,
+        delta,
+      });
     }
   };
 
@@ -552,7 +570,7 @@ function makeDerivedDataProviderInternal<Data>(
       dependency(
         (updateData) => {
           parts[i] = updateData;
-          combine(updateData.isUpdate);
+          combine(i);
         },
         client,
         variables
@@ -561,7 +579,7 @@ function makeDerivedDataProviderInternal<Data>(
   };
 
   // remove callback from list, and unsubscribe if there is no more callbacks registered
-  const unsubscribe = (callback: UpdateCallback<Data, never>) => {
+  const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
       subscriptions?.forEach((subscription) => subscription.unsubscribe());
@@ -594,13 +612,13 @@ function makeDerivedDataProviderInternal<Data>(
   };
 }
 
-// Derived data provider has no subscription, hence there is no delta (never)
-export function makeDerivedDataProvider<Data>(
+export function makeDerivedDataProvider<Data, Delta>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDerivedData<Data>
-): Subscribe<Data, never> {
-  const getInstance = memoize<Data, never>(() =>
-    makeDerivedDataProviderInternal(dependencies, combineData)
+  combineData: CombineDerivedData<Data>,
+  combineDelta?: CombineDerivedDelta<Delta>
+): Subscribe<Data, Delta> {
+  const getInstance = memoize<Data, Delta>(() =>
+    makeDerivedDataProviderInternal(dependencies, combineData, combineDelta)
   );
   return (callback, client, variables) =>
     getInstance(variables)(callback, client, variables);

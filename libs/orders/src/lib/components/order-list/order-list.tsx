@@ -37,14 +37,14 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../';
+import type { OrderWithMarket } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
