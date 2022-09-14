@@ -28,7 +28,7 @@ const MenuItem = ({ name, url, isActive, cssClass }: Item): JSX.Element => {
       to={url}
       aria-label={name}
       className={classNames('pl-0 hover:opacity-75', cssClass, {
-        active: !isActive,
+        active: isActive,
       })}
     >
       {name}
