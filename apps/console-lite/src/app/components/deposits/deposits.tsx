@@ -7,10 +7,8 @@ import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
 import type { Deposits } from './__generated__/Deposits';
-import {
-  AssetFieldsFragmentDoc,
-  AssetFieldsFragment,
-} from '@vegaprotocol/assets';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { AssetFieldsFragmentDoc } from '@vegaprotocol/assets';
 
 const DEPOSITS_QUERY = gql`
   ${AssetFieldsFragmentDoc}

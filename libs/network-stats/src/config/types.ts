@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import type { NetworkStatsQuery } from '../components/stats-manager/__generated__/Stats';
 
 type NodeData = Pick<
