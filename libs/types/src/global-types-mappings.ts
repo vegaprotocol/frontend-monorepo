@@ -14,7 +14,6 @@ export enum AccountTypeMapping {
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = 'Reward Maker received fees',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = 'Reward Market Proposers',
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES = 'Reward Maker paid fees',
-  ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES = 'Reward Taker paid fees',
   ACCOUNT_TYPE_SETTLEMENT = 'Settlement',
 }
 
