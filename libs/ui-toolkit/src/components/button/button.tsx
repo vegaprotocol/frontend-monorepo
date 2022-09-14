@@ -21,7 +21,7 @@ const defaultClasses = [
   'text-black dark:text-white',
   'border-black dark:border-white',
   'bg-white dark:bg-black',
-  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700',
+  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700 enabled:focus-visible:underline',
   'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700',
   'enabled:active:border-neutral-400',
 ];
@@ -29,15 +29,17 @@ const primary = [
   'text-black',
   'border-vega-yellow',
   'bg-vega-yellow',
+  'enabled:focus:bg-vega-yellow-dark enabled:focus:border-vega-yellow-dark enabled:focus-visible:underline',
   'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
-  'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark',
+  'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark enabled:active:font-medium',
 ];
 const secondary = [
   'text-white',
   'border-vega-pink',
   'bg-vega-pink',
+  'enabled:focus:bg-vega-pink-dark enabled:focus:border-vega-pink-dark enabled:focus-visible:underline',
   'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
-  'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark',
+  'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark enabled:active:font-medium',
 ];
 
 const getClassname = ({

@@ -12,9 +12,9 @@ module.exports = {
     current: 'currentColor',
     vega: {
       yellow: '#DFFF0B',
-      'yellow-dark': '#B6DC26',
+      'yellow-dark': '#D1F100',
       pink: '#FF077F',
-      'pink-dark': '#D70068',
+      'pink-dark': '#E0006D',
       green: '#00F780',
       'green-dark': '#008545',
       red: '#FF261A',
