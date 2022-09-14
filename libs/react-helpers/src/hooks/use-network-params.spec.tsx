@@ -67,7 +67,7 @@ describe('useNetworkParams', () => {
             {
               __typename: 'NetworkParameter',
               key: 'governance.proposal.updateMarket.minProposerBalance',
-              value: '1',
+              value: '2',
             },
             {
               __typename: 'NetworkParameter',
@@ -95,7 +95,7 @@ describe('useNetworkParams', () => {
     await waitFor(() => {
       expect(result.current.params).toEqual({
         spam_protection_proposal_min_tokens: '1',
-        governance_proposal_updateMarket_minProposerBalance: '1',
+        governance_proposal_updateMarket_minProposerBalance: '2',
       });
     });
   });
@@ -108,7 +108,7 @@ describe('useNetworkParams', () => {
     await waitFor(() => {
       expect(result.current.params).toEqual({
         spam_protection_proposal_min_tokens: '1',
-        governance_proposal_updateMarket_minProposerBalance: '1',
+        governance_proposal_updateMarket_minProposerBalance: '2',
         reward_staking_delegation_payoutDelay: '200',
       });
     });

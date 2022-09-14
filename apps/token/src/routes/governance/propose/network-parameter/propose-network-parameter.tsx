@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import type { NetworkParamsKey } from '@vegaprotocol/react-helpers';
-import { NetworkParams } from '@vegaprotocol/react-helpers';
 import { isJsonObject, useNetworkParams } from '@vegaprotocol/react-helpers';
 import {
   useProposalSubmit,
@@ -71,21 +69,14 @@ export interface NetworkParameterProposalFormFields {
 
 export const ProposeNetworkParameter = () => {
   const [selectedNetworkParam, setSelectedNetworkParam] = useState<
-    NetworkParamsKey | undefined
+    string | undefined
   >(undefined);
 
   const {
     params,
     loading: networkParamsLoading,
     error: networkParamsError,
-  } = useNetworkParams([
-    NetworkParams.governance_proposal_updateNetParam_maxClose,
-    NetworkParams.governance_proposal_updateNetParam_minClose,
-    NetworkParams.governance_proposal_updateNetParam_maxEnact,
-    NetworkParams.governance_proposal_updateNetParam_minEnact,
-    NetworkParams.governance_proposal_updateNetParam_minProposerBalance,
-    NetworkParams.spam_protection_proposal_min_tokens,
-  ]);
+  } = useNetworkParams();
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -96,7 +87,14 @@ export const ProposeNetworkParameter = () => {
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
+  const selectedParamEntry = Object.entries(params).find(
+    ([key]) => key === selectedNetworkParam
+  );
+
   const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
+    const acutalNetworkParamKey = fields.proposalNetworkParameterKey
+      .split('_')
+      .join('.');
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -105,7 +103,7 @@ export const ProposeNetworkParameter = () => {
       terms: {
         updateNetworkParameter: {
           changes: {
-            key: fields.proposalNetworkParameterKey,
+            key: acutalNetworkParamKey,
             value: fields.proposalNetworkParameterValue,
           },
         },
@@ -189,19 +187,18 @@ export const ProposeNetworkParameter = () => {
                     {...register('proposalNetworkParameterKey', {
                       required: t('Required'),
                     })}
-                    onChange={(e) =>
-                      setSelectedNetworkParam(
-                        e.target.value as NetworkParamsKey
-                      )
-                    }
+                    onChange={(e) => setSelectedNetworkParam(e.target.value)}
                     value={selectedNetworkParam}
                   >
                     <option value="">{t('SelectParameter')}</option>
-                    {Object.keys(params).map((key) => (
-                      <option key={key} value={key}>
-                        {key}
-                      </option>
-                    ))}
+                    {Object.keys(params).map((key) => {
+                      const actualKey = key.split('_').join('.');
+                      return (
+                        <option key={key} value={key}>
+                          {actualKey}
+                        </option>
+                      );
+                    })}
                   </Select>
                   {errors?.proposalNetworkParameterKey?.message && (
                     <InputError intent="danger">
@@ -212,9 +209,11 @@ export const ProposeNetworkParameter = () => {
 
                 {selectedNetworkParam && (
                   <div className="mt-[-10px]">
-                    <SelectedNetworkParamCurrentValue
-                      value={params[selectedNetworkParam]}
-                    />
+                    {selectedParamEntry && (
+                      <SelectedNetworkParamCurrentValue
+                        value={selectedParamEntry[1]}
+                      />
+                    )}
 
                     <FormGroup
                       label={t('NewProposedValue')}
