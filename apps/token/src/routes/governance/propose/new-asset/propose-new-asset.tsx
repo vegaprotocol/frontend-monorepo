@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -22,9 +21,8 @@ import {
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
-import { NetworkParams } from '../../../../config';
 import type { ProposalNewAssetTerms } from '@vegaprotocol/wallet';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -38,48 +36,17 @@ export interface NewAssetProposalFormFields {
 
 export const ProposeNewAsset = () => {
   const {
-    data: networkParamsData,
+    params,
     loading: networkParamsLoading,
     error: networkParamsError,
-  } = useNetworkParamWithKeys([
-    NetworkParams.GOV_ASSET_MIN_CLOSE,
-    NetworkParams.GOV_ASSET_MAX_CLOSE,
-    NetworkParams.GOV_ASSET_MIN_ENACT,
-    NetworkParams.GOV_ASSET_MAX_ENACT,
-    NetworkParams.GOV_ASSET_MIN_PROPOSER_BALANCE,
-    NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_asset_minClose,
+    NetworkParams.governance_proposal_asset_maxClose,
+    NetworkParams.governance_proposal_asset_minEnact,
+    NetworkParams.governance_proposal_asset_maxEnact,
+    NetworkParams.governance_proposal_asset_minProposerBalance,
+    NetworkParams.spam_protection_proposal_min_tokens,
   ]);
-
-  const {
-    minVoteDeadline,
-    maxVoteDeadline,
-    minEnactmentDeadline,
-    maxEnactmentDeadline,
-    minProposerBalance,
-    minSpamBalance,
-  } = useMemo(
-    () => ({
-      minVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_ASSET_MIN_CLOSE
-      )?.value,
-      maxVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_ASSET_MAX_CLOSE
-      )?.value,
-      minEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_ASSET_MIN_ENACT
-      )?.value,
-      maxEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_ASSET_MAX_ENACT
-      )?.value,
-      minProposerBalance: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_ASSET_MIN_PROPOSER_BALANCE
-      )?.value,
-      minSpamBalance: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
-      )?.value,
-    }),
-    [networkParamsData]
-  );
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -116,15 +83,17 @@ export const ProposeNewAsset = () => {
     <AsyncRenderer
       loading={networkParamsLoading}
       error={networkParamsError}
-      data={networkParamsData}
+      data={params}
     >
       <Heading title={t('NewAssetProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
             <ProposalFormMinRequirements
-              minProposerBalance={minProposerBalance}
-              spamProtectionMin={minSpamBalance}
+              minProposerBalance={
+                params.governance_proposal_asset_minProposerBalance
+              }
+              spamProtectionMin={params.spam_protection_proposal_min_tokens}
             />
 
             {VEGA_DOCS_URL && (
@@ -190,16 +159,16 @@ export const ProposeNewAsset = () => {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={minVoteDeadline as string}
-                  voteMaxClose={maxVoteDeadline as string}
+                  voteMinClose={params.governance_proposal_asset_minClose}
+                  voteMaxClose={params.governance_proposal_asset_maxClose}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
                   enactmentErrorMessage={
                     errors?.proposalEnactmentDeadline?.message
                   }
-                  enactmentMinClose={minEnactmentDeadline as string}
-                  enactmentMaxClose={maxEnactmentDeadline as string}
+                  enactmentMinClose={params.governance_proposal_asset_minEnact}
+                  enactmentMaxClose={params.governance_proposal_asset_maxEnact}
                   validationRequired={true}
                   validationRegister={register('proposalValidationDeadline', {
                     required: t('Required'),
