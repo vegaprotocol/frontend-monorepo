@@ -29,10 +29,9 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
-import { NetworkParams } from '../../../../config';
 import type { ProposalUpdateMarketTerms } from '@vegaprotocol/wallet';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
 const MARKETS_QUERY = gql`
   query ProposalMarketsQuery {
@@ -64,16 +63,16 @@ export interface UpdateMarketProposalFormFields {
 
 export const ProposeUpdateMarket = () => {
   const {
-    data: networkParamsData,
+    params,
     loading: networkParamsLoading,
     error: networkParamsError,
-  } = useNetworkParamWithKeys([
-    NetworkParams.GOV_UPDATE_MARKET_MIN_CLOSE,
-    NetworkParams.GOV_UPDATE_MARKET_MAX_CLOSE,
-    NetworkParams.GOV_UPDATE_MARKET_MIN_ENACT,
-    NetworkParams.GOV_UPDATE_MARKET_MAX_ENACT,
-    NetworkParams.GOV_UPDATE_MARKET_MIN_PROPOSER_BALANCE,
-    NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_updateMarket_maxClose,
+    NetworkParams.governance_proposal_updateMarket_minClose,
+    NetworkParams.governance_proposal_updateMarket_maxEnact,
+    NetworkParams.governance_proposal_updateMarket_minEnact,
+    NetworkParams.governance_proposal_updateMarket_minProposerBalance,
+    NetworkParams.spam_protection_proposal_min_tokens,
   ]);
 
   const {
@@ -102,38 +101,6 @@ export const ProposeUpdateMarket = () => {
         return 0;
       });
   }, [marketsData]);
-
-  const {
-    minVoteDeadline,
-    maxVoteDeadline,
-    minEnactmentDeadline,
-    maxEnactmentDeadline,
-    minProposerBalance,
-    minSpamBalance,
-  } = useMemo(
-    () => ({
-      minVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_MARKET_MIN_CLOSE
-      )?.value,
-      maxVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_MARKET_MAX_CLOSE
-      )?.value,
-      minEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_MARKET_MIN_ENACT
-      )?.value,
-      maxEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_MARKET_MAX_ENACT
-      )?.value,
-      minProposerBalance: networkParamsData?.find(
-        ({ key }) =>
-          key === NetworkParams.GOV_UPDATE_MARKET_MIN_PROPOSER_BALANCE
-      )?.value,
-      minSpamBalance: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
-      )?.value,
-    }),
-    [networkParamsData]
-  );
 
   const [selectedMarket, setSelectedMarket] = useState<string | undefined>(
     undefined
@@ -174,15 +141,17 @@ export const ProposeUpdateMarket = () => {
     <AsyncRenderer
       loading={networkParamsLoading && marketsLoading}
       error={networkParamsError && marketsError}
-      data={networkParamsData && marketsData}
+      data={params && marketsData}
     >
       <Heading title={t('UpdateMarketProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
             <ProposalFormMinRequirements
-              minProposerBalance={minProposerBalance}
-              spamProtectionMin={minSpamBalance}
+              minProposerBalance={
+                params.governance_proposal_updateMarket_minProposerBalance
+              }
+              spamProtectionMin={params.spam_protection_proposal_min_tokens}
             />
 
             {VEGA_EXPLORER_URL && (
@@ -296,16 +265,24 @@ export const ProposeUpdateMarket = () => {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={minVoteDeadline as string}
-                  voteMaxClose={maxVoteDeadline as string}
+                  voteMinClose={
+                    params.governance_proposal_updateMarket_minClose
+                  }
+                  voteMaxClose={
+                    params.governance_proposal_updateMarket_maxClose
+                  }
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
                   enactmentErrorMessage={
                     errors?.proposalEnactmentDeadline?.message
                   }
-                  enactmentMinClose={minEnactmentDeadline as string}
-                  enactmentMaxClose={maxEnactmentDeadline as string}
+                  enactmentMinClose={
+                    params.governance_proposal_updateMarket_minEnact
+                  }
+                  enactmentMaxClose={
+                    params.governance_proposal_updateMarket_maxEnact
+                  }
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />

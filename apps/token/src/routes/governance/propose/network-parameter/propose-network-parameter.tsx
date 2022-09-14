@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { isJson } from '@vegaprotocol/react-helpers';
+import { isJson, useNetworkParams } from '@vegaprotocol/react-helpers';
 import {
   useProposalSubmit,
   getClosingTimestamp,
@@ -30,9 +30,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useNetworkParamWithKeys } from '../../../../hooks/use-network-param';
-import { NetworkParams } from '../../../../config';
-import type { ProposalNetworkParameterTerms } from '@vegaprotocol/wallet';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -76,42 +73,10 @@ export const ProposeNetworkParameter = () => {
   >(undefined);
 
   const {
-    data: networkParamsData,
+    params,
     loading: networkParamsLoading,
     error: networkParamsError,
-  } = useNetworkParamWithKeys([]);
-
-  const {
-    minVoteDeadline,
-    maxVoteDeadline,
-    minEnactmentDeadline,
-    maxEnactmentDeadline,
-    minProposerBalance,
-    minSpamBalance,
-  } = useMemo(
-    () => ({
-      minVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_NET_PARAM_MIN_CLOSE
-      )?.value,
-      maxVoteDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_NET_PARAM_MAX_CLOSE
-      )?.value,
-      minEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_NET_PARAM_MIN_ENACT
-      )?.value,
-      maxEnactmentDeadline: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.GOV_UPDATE_NET_PARAM_MAX_ENACT
-      )?.value,
-      minProposerBalance: networkParamsData?.find(
-        ({ key }) =>
-          key === NetworkParams.GOV_UPDATE_NET_PARAM_MIN_PROPOSER_BALANCE
-      )?.value,
-      minSpamBalance: networkParamsData?.find(
-        ({ key }) => key === NetworkParams.SPAM_PROTECTION_PROPOSAL_MIN_TOKENS
-      )?.value,
-    }),
-    [networkParamsData]
-  );
+  } = useNetworkParams();
 
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -122,7 +87,14 @@ export const ProposeNetworkParameter = () => {
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
+  const selectedParamEntry = params
+    ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
+    : null;
+
   const onSubmit = async (fields: NetworkParameterProposalFormFields) => {
+    const acutalNetworkParamKey = fields.proposalNetworkParameterKey
+      .split('_')
+      .join('.');
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -131,7 +103,7 @@ export const ProposeNetworkParameter = () => {
       terms: {
         updateNetworkParameter: {
           changes: {
-            key: fields.proposalNetworkParameterKey,
+            key: acutalNetworkParamKey,
             value: fields.proposalNetworkParameterValue,
           },
         },
@@ -140,7 +112,7 @@ export const ProposeNetworkParameter = () => {
           fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline
         ),
-      } as ProposalNetworkParameterTerms,
+      },
     });
   };
 
@@ -148,15 +120,17 @@ export const ProposeNetworkParameter = () => {
     <AsyncRenderer
       loading={networkParamsLoading}
       error={networkParamsError}
-      data={networkParamsData}
+      data={params}
     >
       <Heading title={t('NetworkParameterProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
             <ProposalFormMinRequirements
-              minProposerBalance={minProposerBalance}
-              spamProtectionMin={minSpamBalance}
+              minProposerBalance={
+                params.governance_proposal_updateNetParam_minProposerBalance
+              }
+              spamProtectionMin={params.spam_protection_proposal_min_tokens}
             />
 
             {VEGA_DOCS_URL && (
@@ -217,11 +191,14 @@ export const ProposeNetworkParameter = () => {
                     value={selectedNetworkParam}
                   >
                     <option value="">{t('SelectParameter')}</option>
-                    {networkParamsData?.map(({ key }) => (
-                      <option key={key} value={key}>
-                        {key}
-                      </option>
-                    ))}
+                    {Object.keys(params).map((key) => {
+                      const actualKey = key.split('_').join('.');
+                      return (
+                        <option key={key} value={key}>
+                          {actualKey}
+                        </option>
+                      );
+                    })}
                   </Select>
                   {errors?.proposalNetworkParameterKey?.message && (
                     <InputError intent="danger">
@@ -232,13 +209,11 @@ export const ProposeNetworkParameter = () => {
 
                 {selectedNetworkParam && (
                   <div className="mt-[-10px]">
-                    <SelectedNetworkParamCurrentValue
-                      value={
-                        networkParamsData?.find(
-                          ({ key }) => key === selectedNetworkParam
-                        )?.value || ''
-                      }
-                    />
+                    {selectedParamEntry && (
+                      <SelectedNetworkParamCurrentValue
+                        value={selectedParamEntry[1]}
+                      />
+                    )}
 
                     <FormGroup
                       label={t('NewProposedValue')}
@@ -265,16 +240,24 @@ export const ProposeNetworkParameter = () => {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={minVoteDeadline as string}
-                  voteMaxClose={maxVoteDeadline as string}
+                  voteMinClose={
+                    params.governance_proposal_updateNetParam_minClose
+                  }
+                  voteMaxClose={
+                    params.governance_proposal_updateNetParam_maxClose
+                  }
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
                   enactmentErrorMessage={
                     errors?.proposalEnactmentDeadline?.message
                   }
-                  enactmentMinClose={minEnactmentDeadline as string}
-                  enactmentMaxClose={maxEnactmentDeadline as string}
+                  enactmentMinClose={
+                    params.governance_proposal_updateNetParam_minEnact
+                  }
+                  enactmentMaxClose={
+                    params.governance_proposal_updateNetParam_maxEnact
+                  }
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
