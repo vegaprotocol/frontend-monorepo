@@ -2,10 +2,8 @@ import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type {
-  MarketListItemFragment,
-  MarketCandleFieldsFragment,
-} from '../__generated__/MarketData';
+import type { MarketListItemFragment } from '../__generated__/MarketList';
+import { MarketCandleFieldsFragment } from '../__generated__/MarketCandles';
 
 export const totalFees = (fees: MarketListItemFragment['fees']['factors']) => {
   if (!fees) {
