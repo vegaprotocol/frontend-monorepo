@@ -1,16 +1,18 @@
 import { gql } from '@apollo/client';
 import {
   makeDataProvider,
+  makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import type { TradeFields } from './__generated__/TradeFields';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import type {
   Trades,
   Trades_market_tradesConnection_edges,
   Trades_market_tradesConnection_edges_node,
 } from './__generated__/Trades';
-import type { TradesSub } from './__generated__/TradesSub';
+import type { TradesSub, TradesSub_trades } from './__generated__/TradesSub';
 import orderBy from 'lodash/orderBy';
 import produce from 'immer';
 
@@ -29,8 +31,6 @@ export const TRADES_QUERY = gql`
             createdAt
             market {
               id
-              decimalPlaces
-              positionDecimalPlaces
             }
           }
           cursor
@@ -60,7 +60,7 @@ export const TRADES_SUB = gql`
 
 const update = (
   data: (Trades_market_tradesConnection_edges | null)[],
-  delta: TradeFields[]
+  delta: TradesSub_trades[]
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt', 'desc').forEach((node) => {
@@ -82,18 +82,25 @@ const update = (
   });
 };
 
+export type Trade = Trades_market_tradesConnection_edges_node;
+export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
+export type TradeWithMarketEdge = {
+  cursor: Trades_market_tradesConnection_edges['cursor'];
+  node: TradeWithMarket;
+};
+
 const getData = (
   responseData: Trades
 ): Trades_market_tradesConnection_edges[] | null =>
-  responseData.market ? responseData.market.tradesConnection.edges : null;
+  responseData?.market?.tradesConnection?.edges || null;
 
-const getDelta = (subscriptionData: TradesSub): TradeFields[] =>
+const getDelta = (subscriptionData: TradesSub): TradesSub_trades[] =>
   subscriptionData?.trades || [];
 
 const getPageInfo = (responseData: Trades): PageInfo | null =>
-  responseData.market?.tradesConnection.pageInfo || null;
+  responseData.market?.tradesConnection?.pageInfo || null;
 
-export const tradesDataProvider = makeDataProvider({
+export const tradesProvider = makeDataProvider({
   query: TRADES_QUERY,
   subscriptionQuery: TRADES_SUB,
   update,
@@ -105,3 +112,36 @@ export const tradesDataProvider = makeDataProvider({
     first: 100,
   },
 });
+
+export const tradesWithMarketProvider = makeDerivedDataProvider<
+  TradeWithMarketEdge[],
+  TradeWithMarket[]
+>(
+  [tradesProvider, marketsProvider],
+  (partsData): TradeWithMarketEdge[] | null =>
+    (partsData[0] as ReturnType<typeof getData>)?.map((edge) => ({
+      cursor: edge.cursor,
+      node: {
+        ...edge.node,
+        market: (partsData[1] as Market[]).find(
+          (market) => market.id === edge.node.market.id
+        ),
+      },
+    })) || null,
+  (parts): TradeWithMarket[] | undefined => {
+    if (!parts[0].isUpdate) {
+      return;
+    }
+    // map FillsSub_trades[] from subscription to updated TradeWithMarket[]
+    return (parts[0].delta as ReturnType<typeof getDelta>).map(
+      (deltaTrade) => ({
+        ...((parts[0].data as ReturnType<typeof getData>)?.find(
+          (trade) => trade.node.id === deltaTrade.id
+        )?.node as Trades_market_tradesConnection_edges_node),
+        market: (parts[1].data as Market[]).find(
+          (market) => market.id === deltaTrade.marketId
+        ),
+      })
+    );
+  }
+);

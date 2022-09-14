@@ -47,6 +47,10 @@ export interface Markets_marketsConnection_edges_node_tradableInstrument_instrum
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
 
 export interface Markets_marketsConnection_edges_node_tradableInstrument_instrument_product {

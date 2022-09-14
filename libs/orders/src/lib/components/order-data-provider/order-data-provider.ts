@@ -161,10 +161,11 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
         ),
       },
     })),
-  (parts) => {
+  (parts): OrderWithMarket[] | undefined => {
     if (!parts[0].isUpdate) {
       return;
     }
+    // map OrderSub_orders[] from subscription to updated OrderWithMarket[]
     return (parts[0].delta as ReturnType<typeof getDelta>).map(
       (deltaOrder) => ({
         ...((parts[0].data as ReturnType<typeof getData>)?.find(

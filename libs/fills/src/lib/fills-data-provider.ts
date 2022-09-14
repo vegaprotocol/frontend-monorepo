@@ -131,6 +131,10 @@ const update = (
 
 export type Trade = Fills_party_tradesConnection_edges_node;
 export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
+export type TradeWithMarketEdge = {
+  cursor: Fills_party_tradesConnection_edges['cursor'];
+  node: TradeWithMarket;
+};
 
 const getData = (
   responseData: Fills
@@ -155,13 +159,35 @@ export const fillsProvider = makeDataProvider({
   },
 });
 
-export const fillsWithMarketProvider = makeDerivedDataProvider(
+export const fillsWithMarketProvider = makeDerivedDataProvider<
+  TradeWithMarketEdge[],
+  TradeWithMarket[]
+>(
   [fillsProvider, marketsProvider],
-  (parts): TradeWithMarket[] =>
-    (parts[0] as Fills_party_tradesConnection_edges[]).map((edge) => ({
-      ...edge.node,
-      market: (parts[1] as Market[]).find(
-        (market) => market.id === edge.node.market.id
-      ),
-    }))
+  (partsData): TradeWithMarketEdge[] =>
+    (partsData[0] as Fills_party_tradesConnection_edges[]).map((edge) => ({
+      cursor: edge.cursor,
+      node: {
+        ...edge.node,
+        market: (partsData[1] as Market[]).find(
+          (market) => market.id === edge.node.market.id
+        ),
+      },
+    })),
+  (parts): TradeWithMarket[] | undefined => {
+    if (!parts[0].isUpdate) {
+      return;
+    }
+    // map FillsSub_trades[] from subscription to updated TradeWithMarket[]
+    return (parts[0].delta as ReturnType<typeof getDelta>).map(
+      (deltaTrade) => ({
+        ...((parts[0].data as ReturnType<typeof getData>)?.find(
+          (trade) => trade.node.id === deltaTrade.id
+        )?.node as Fills_party_tradesConnection_edges_node),
+        market: (parts[1].data as Market[]).find(
+          (market) => market.id === deltaTrade.marketId
+        ),
+      })
+    );
+  }
 );

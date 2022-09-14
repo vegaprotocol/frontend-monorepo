@@ -268,15 +268,15 @@ export const positionsDataProvider = makeDataProvider<
     subscriptionData.positions,
 });
 
-export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
-  [positionsDataProvider, accountsDataProvider],
-  ([positions, accounts]) => {
-    return sortBy(
-      getMetrics(
-        positions as Positions_party | null,
-        accounts as AccountFieldsFragment[] | null
-      ),
-      'updatedAt'
-    ).reverse();
-  }
-);
+export const positionsMetricsDataProvider = makeDerivedDataProvider<
+  Position[],
+  never
+>([positionsDataProvider, accountsDataProvider], ([positions, accounts]) => {
+  return sortBy(
+    getMetrics(
+      positions as Positions_party | null,
+      accounts as AccountFieldsFragment[] | null
+    ),
+    'updatedAt'
+  ).reverse();
+});

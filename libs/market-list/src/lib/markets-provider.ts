@@ -45,6 +45,7 @@ const MARKET_DATA_FRAGMENT = gql`
           ... on Future {
             settlementAsset {
               symbol
+              decimals
             }
             quoteName
           }

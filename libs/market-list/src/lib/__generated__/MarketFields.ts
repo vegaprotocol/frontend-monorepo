@@ -47,6 +47,10 @@ export interface MarketFields_tradableInstrument_instrument_product_settlementAs
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
 
 export interface MarketFields_tradableInstrument_instrument_product {
