@@ -1,8 +1,10 @@
 const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const proposalDocumentationLink = '[data-testid="external-link"]';
+const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';
+const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]'
 
 context('Governance Page - verify elements on page', function () {
   before('navigate to governance page', function () {
@@ -56,6 +58,12 @@ context('Governance Page - verify elements on page', function () {
       cy.get(noClosedProposals)
         .should('be.visible')
         .and('have.text', 'There are no enacted or rejected proposals');
+    });
+
+    it('should be able to see a connect wallet button - if vega wallet disconnected and new proposal selected', function () {
+      // 1004-VOTE-003
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(connectToVegaWalletButton).should('be.visible').and('have.text', 'Connect Vega wallet');
     });
   });
 });
