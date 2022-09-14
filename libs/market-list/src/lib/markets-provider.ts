@@ -11,9 +11,10 @@ import type {
 } from './__generated__/MarketList';
 import type { MarketDataFieldsFragment } from './__generated__/MarketData';
 import { marketsDataProvider } from './markets-data-provider';
+import type {
+  MarketCandles} from './markets-candles-provider';
 import {
-  marketsCandlesProvider,
-  MarketCandles,
+  marketsCandlesProvider
 } from './markets-candles-provider';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
