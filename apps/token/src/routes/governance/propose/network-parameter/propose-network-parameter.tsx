@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { isJsonObject } from '@vegaprotocol/react-helpers';
+import { isJson } from '@vegaprotocol/react-helpers';
 import {
   useProposalSubmit,
   getClosingTimestamp,
@@ -47,7 +47,7 @@ const SelectedNetworkParamCurrentValue = ({
     <div className="mb-4">
       <p className="text-sm text-white">{t('CurrentValue')}</p>
 
-      {isJsonObject(value) ? (
+      {isJson(value) ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : (
         <Input
