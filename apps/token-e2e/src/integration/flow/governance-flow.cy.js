@@ -10,7 +10,7 @@ const vegaWallet = '[data-testid="vega-wallet"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]'
+const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalDatabox = '[data-testid="proposal-data"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
@@ -38,7 +38,6 @@ const feedbackError = '[data-testid="Error"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const restConnectorForm = '[data-testid="rest-connector-form"]';
-
 
 context('Governance flow - with eth and vega wallets connected', function () {
   before('connect wallets and set approval limit', function () {
@@ -124,7 +123,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
     it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
       cy.get(newProposalButton).should('be.visible').click();
-      cy.contains(`You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`).should('be.visible')
+      cy.contains(
+        `You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`
+      ).should('be.visible');
     });
 
     it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
@@ -898,7 +899,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .within(() => cy.get(viewProposalButton).click());
       cy.vote_for_proposal('for');
       // 1004-VOTE-079
-      cy.contains('You voted: For').should('be.visible') 
+      cy.contains('You voted: For').should('be.visible');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
         .then((totalSupply) => {
@@ -1182,50 +1183,53 @@ context('Governance flow - with eth and vega wallets connected', function () {
     });
 
     it('Unable to vote on a freeform proposal - when vega wallet disconnected - option to connect from within', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Proposal submitted', epochTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-        cy.wait_for_proposal_sync();
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get('[data-testid="manage-vega-wallet"]').click();
-        cy.get('[data-testid="disconnect"]').click();
-        cy.get_submitted_proposal_from_proposal_list()
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
-        // 1004-VOTE-075
-        // 1004-VOTE-076
-        cy.get(connectToVegaWalletButton).should('be.visible').and('have.text', 'Connect Vega wallet').click();
-        cy.contains('rest provider').click();
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(vegaWalletName);
-          cy.get('#passphrase').click().type(vegaWalletPassphrase);
-          cy.get('button').contains('Connect').click();
-        });
-        cy.get(vegaWalletNameElement).should('be.visible');
-        cy.get(connectToVegaWalletButton).should('not.exist');
-        // 1004-VOTE-100
-        cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
-          '1.000000000000000000',
-          txTimeout
-        );
-        cy.vote_for_proposal('against');
-        // 1004-VOTE-079
-        cy.contains('You voted: Against').should('be.visible') 
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to_page_if_not_allready_loaded('governance');
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.wait_for_proposal_sync();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get('[data-testid="manage-vega-wallet"]').click();
+      cy.get('[data-testid="disconnect"]').click();
+      cy.get_submitted_proposal_from_proposal_list()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
+      // 1004-VOTE-075
+      // 1004-VOTE-076
+      cy.get(connectToVegaWalletButton)
+        .should('be.visible')
+        .and('have.text', 'Connect Vega wallet')
+        .click();
+      cy.contains('rest provider').click();
+      cy.get(restConnectorForm).within(() => {
+        cy.get('#wallet').click().type(vegaWalletName);
+        cy.get('#passphrase').click().type(vegaWalletPassphrase);
+        cy.get('button').contains('Connect').click();
       });
+      cy.get(vegaWalletNameElement).should('be.visible');
+      cy.get(connectToVegaWalletButton).should('not.exist');
+      // 1004-VOTE-100
+      cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+        '1.000000000000000000',
+        txTimeout
+      );
+      cy.vote_for_proposal('against');
+      // 1004-VOTE-079
+      cy.contains('You voted: Against').should('be.visible');
+    });
 
     Cypress.Commands.add(
       'convert_unix_timestamp_to_governance_data_table_date_format',
@@ -1363,15 +1367,17 @@ context('Governance flow - with eth and vega wallets connected', function () {
       });
     });
 
-    Cypress.Commands.add('navigate_to_page_if_not_allready_loaded', (section) => {
-      cy.url().then(url => {
-        if (url != `http://localhost:4210/${section}`)
-        {
-          cy.navigate_to(section);
-          cy.wait_for_spinner();
-        }
-      })
-    })
+    Cypress.Commands.add(
+      'navigate_to_page_if_not_allready_loaded',
+      (section) => {
+        cy.url().then((url) => {
+          if (url != `http://localhost:4210/${section}`) {
+            cy.navigate_to(section);
+            cy.wait_for_spinner();
+          }
+        });
+      }
+    );
 
     Cypress.Commands.add(
       'get_sort_order_of_supplied_array',
