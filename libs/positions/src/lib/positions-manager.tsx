@@ -1,7 +1,5 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 import type { Position } from './positions-data-providers';
 import { Positions } from './positions';
 import { useClosePosition, usePositionsAssets } from '../';

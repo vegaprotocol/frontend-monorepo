@@ -34,7 +34,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       return;
     }
     gridRef.current.api.refreshInfiniteCache();
-  }, []);
+  }, [gridRef]);
 
   const update = useCallback(
     ({
@@ -59,7 +59,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       gridRef.current.api.refreshInfiniteCache();
       return true;
     },
-    []
+    [gridRef, scrolledToTop]
   );
 
   const insert = useCallback(

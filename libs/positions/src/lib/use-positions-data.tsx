@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { RefObject } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { AgGridReact } from 'ag-grid-react';
@@ -53,7 +53,7 @@ export const usePositionsData = ({ partyId, assetSymbol, gridRef }: Props) => {
       gridRef.current.api.refreshInfiniteCache();
       return true;
     },
-    [assetSymbol]
+    [assetSymbol, gridRef]
   );
   const { data, error, loading } = useDataProvider<Position[], never>({
     dataProvider,

@@ -39,7 +39,7 @@ export const useOrderListData = ({
       return;
     }
     gridRef.current.api.refreshInfiniteCache();
-  }, []);
+  }, [gridRef]);
 
   const update = useCallback(
     ({
@@ -64,7 +64,7 @@ export const useOrderListData = ({
       gridRef.current.api.refreshInfiniteCache();
       return true;
     },
-    []
+    [gridRef, scrolledToTop]
   );
 
   const insert = useCallback(

@@ -1,14 +1,9 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import {
-  useDataProvider,
-  makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
-import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
+import { OrderList } from '../';
 import { useOrderListData } from './use-order-list-data';
 
 interface OrderListManagerProps {

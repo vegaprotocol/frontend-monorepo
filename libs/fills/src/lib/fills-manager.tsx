@@ -1,9 +1,5 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useMemo } from 'react';
-import {
-  useDataProvider,
-  makeInfiniteScrollGetRows,
-} from '@vegaprotocol/react-helpers';
+import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { FillsTable } from './fills-table';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';

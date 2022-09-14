@@ -1,13 +1,9 @@
-import { useRef, useCallback, useMemo, memo } from 'react';
+import { useRef, memo } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { BigNumber } from 'bignumber.js';
-import { t, toBigNum, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
-import filter from 'lodash/filter';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
-import type { GetRowsParams } from './positions-table';
-import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 import { AssetBalance } from '@vegaprotocol/accounts';
 import { usePositionsData } from './use-positions-data';
 
