@@ -74,7 +74,7 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
 
   const marginMaintenanceLevel = new BigNumber(
     addDecimal(
-      data?.party?.marginsConnection.edges?.find(
+      data?.party?.marginsConnection?.edges?.find(
         (nodes) => nodes.node.market.id === market.id
       )?.node.maintenanceLevel || 0,
       market.decimalPlaces
