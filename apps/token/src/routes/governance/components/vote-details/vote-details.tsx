@@ -34,7 +34,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
   const { voteState, voteDatetime, castVote } = useUserVote(
     proposal.id ?? '',
     proposal.votes.yes.votes ?? null,
-    proposal.votes.no.votes ?? null,
+    proposal.votes.no.votes ?? null
   );
 
   const defaultDecimals = 2;

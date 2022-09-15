@@ -1,7 +1,10 @@
 import orderBy from 'lodash/orderBy';
 import { Schema } from '@vegaprotocol/types';
 import { getNodes } from '@vegaprotocol/react-helpers';
-import { ProposalsQuery, ProposalFieldsFragment } from '@vegaprotocol/governance';
+import {
+  ProposalsQuery,
+  ProposalFieldsFragment,
+} from '@vegaprotocol/governance';
 
 export const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -14,18 +17,18 @@ export const orderByDate = (arr: ProposalFieldsFragment[]) =>
     ['desc', 'desc', 'desc']
   );
 
-export function getNotRejectedProposals (data?: ProposalsQuery) {
+export function getNotRejectedProposals(data?: ProposalsQuery) {
   const proposals = getNodes<ProposalFieldsFragment>(
     data?.proposalsConnection,
     (node) => node?.state !== Schema.ProposalState.STATE_REJECTED
   );
   return orderByDate(proposals);
-};
+}
 
-export function getRejectedProposals (data?: ProposalsQuery) {
+export function getRejectedProposals(data?: ProposalsQuery) {
   const proposals = getNodes<ProposalFieldsFragment>(
     data?.proposalsConnection,
     (node) => node?.state === Schema.ProposalState.STATE_REJECTED
   );
   return orderByDate(proposals);
-};
+}

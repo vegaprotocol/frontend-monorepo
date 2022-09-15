@@ -108,7 +108,9 @@ export const StakingForm = ({
   );
 
   const minTokensWithDecimals = React.useMemo(() => {
-    const minTokens = new BigNumber(data && data.length === 1 && data[0] || '');
+    const minTokens = new BigNumber(
+      (data && data.length === 1 && data[0]) || ''
+    );
     return addDecimal(minTokens, appState.decimals);
   }, [appState.decimals, data]);
 

@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
-import { getRejectedProposals, useProposalsQuery } from '@vegaprotocol/governance';
+import {
+  getRejectedProposals,
+  useProposalsQuery,
+} from '@vegaprotocol/governance';
 
 export const RejectedProposalsContainer = () => {
   const { t } = useTranslation();

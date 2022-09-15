@@ -2,7 +2,7 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { ProposalFieldsFragment } from '@vegaprotocol/governance'
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import { Schema } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
 

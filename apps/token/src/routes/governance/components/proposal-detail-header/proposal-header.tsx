@@ -1,11 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
-import { isAssetTypeERC20, isAssetTypeBuiltIn } from '@vegaprotocol/react-helpers';
+import {
+  isAssetTypeERC20,
+  isAssetTypeBuiltIn,
+} from '@vegaprotocol/react-helpers';
 import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import type { ReactNode } from 'react';
 import { shorten } from '@vegaprotocol/react-helpers';
 
-export const ProposalHeader = ({ proposal }: { proposal: ProposalFieldsFragment }) => {
+export const ProposalHeader = ({
+  proposal,
+}: {
+  proposal: ProposalFieldsFragment;
+}) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
@@ -49,8 +56,12 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalFieldsFragment 
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
-            {isAssetTypeERC20(change.source) && `ERC20 ${change.source.contractAddress}`}
-            {isAssetTypeBuiltIn(change.source) && `${t('Max faucet amount mint')}: ${change.source.maxFaucetAmountMint}`}
+            {isAssetTypeERC20(change.source) &&
+              `ERC20 ${change.source.contractAddress}`}
+            {isAssetTypeBuiltIn(change.source) &&
+              `${t('Max faucet amount mint')}: ${
+                change.source.maxFaucetAmountMint
+              }`}
           </Lozenge>
         </>
       );
