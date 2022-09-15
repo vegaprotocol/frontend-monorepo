@@ -116,7 +116,8 @@ export const update = (
   });
 };
 
-export type Order = Orders_party_ordersConnection_edges_node;
+// #TODO Order name is in conflict with interface defines in use-order-submit
+type Order = Orders_party_ordersConnection_edges_node;
 export type OrderWithMarket = Omit<Order, 'market'> & { market?: Market };
 export type OrderWithMarketEdge = {
   node: OrderWithMarket;
