@@ -2,10 +2,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
+import type { TradeWithMarket } from './fills-data-provider';
 
 import { FillsTable } from './fills-table';
 import { generateFill } from './test-helpers';
-import type { FillFields } from './__generated__/FillFields';
 
 const waitForGridToBeInTheDOM = () => {
   return waitFor(() => {
@@ -21,7 +21,7 @@ const waitForDataToHaveLoaded = () => {
 };
 
 describe('FillsTable', () => {
-  let defaultFill: PartialDeep<FillFields>;
+  let defaultFill: PartialDeep<TradeWithMarket>;
 
   beforeEach(() => {
     defaultFill = {
@@ -87,7 +87,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.tradableInstrument.instrument.name,
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '+3.00000',
       '1.00 BTC',
       '3.00 BTC',
@@ -124,7 +124,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.tradableInstrument.instrument.name,
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '+3.00000',
       '1.00 BTC',
       '3.00 BTC',
@@ -161,7 +161,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market.tradableInstrument.instrument.name,
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '-3.00000',
       '1.00 BTC',
       '3.00 BTC',
