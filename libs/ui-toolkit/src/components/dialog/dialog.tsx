@@ -64,7 +64,7 @@ export function Dialog({
           <div className={wrapperClasses}>
             {onChange && (
               <DialogPrimitives.Close
-                className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
+                className="absolute p-0 m-1 w-7 h-7 top-0 right-0 md:top-2 md:right-2 text-neutral-500 dark:text-neutral-300 hover:text-black dark:hover:text-white border-[1px] border-transparent focus-visible:border-neutral-300 dark:focus-visible:border-neutral-500 focus-visible:text-black dark:focus-visible:text-white"
                 data-testid="dialog-close"
               >
                 <Icon name="cross" />

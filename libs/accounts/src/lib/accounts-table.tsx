@@ -101,6 +101,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         rowData={data}
         getRowId={({ data }) => getId(data)}
         ref={ref}
+        suppressCellFocus={true}
         defaultColDef={{
           flex: 1,
           resizable: true,
