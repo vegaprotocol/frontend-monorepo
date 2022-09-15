@@ -17,7 +17,7 @@ export const ThemeSwitcher = ({
   moonClassName?: string;
   fixedBg?: 'light' | 'dark';
 }) => {
-  const sharedClasses = classNames('hover:text-white', {
+  const sharedClasses = classNames('hover:text-white group-focus-visible:text-white', {
     'text-neutral-800 dark:text-neutral-300': !fixedBg,
     'text-neutral-800': fixedBg === 'light',
     'text-neutral-300': fixedBg === 'dark',
@@ -32,7 +32,7 @@ export const ThemeSwitcher = ({
     <button
       type="button"
       onClick={() => onToggle()}
-      className={className}
+      className={classNames('group', className)}
       data-testid="theme-switcher"
     >
       <span className={sunClasses}>
