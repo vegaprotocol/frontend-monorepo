@@ -868,8 +868,8 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       'teardown environment to prevent test data bleeding into other tests',
       function () {
         if (Cypress.env('teardownNetworkAfterFlows')) {
-          cy.restartVegacapsuleNetwork()
-        };
+          cy.restartVegacapsuleNetwork();
+        }
       }
     );
   });

@@ -41,12 +41,15 @@ Cypress.Commands.add('restartVegacapsuleNetwork', () => {
   Cypress.on('uncaught:exception', () => {
     // stopping the network causes errors with pending transactions
     // This stops those errors from prevents the teardown
-    return false
-  })
-  cy.exec('vegacapsule network destroy').its('stderr')
-    .should('contain', 'network cleaning up success')
-
-  cy.exec('vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force')
+    return false;
+  });
+  cy.exec('vegacapsule network destroy')
     .its('stderr')
-    .should('contain', 'starting network success')
+    .should('contain', 'network cleaning up success');
+
+  cy.exec(
+    'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force'
+  )
+    .its('stderr')
+    .should('contain', 'starting network success');
 });
