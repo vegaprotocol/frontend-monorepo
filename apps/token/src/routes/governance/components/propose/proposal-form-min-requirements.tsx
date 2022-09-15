@@ -23,8 +23,6 @@ export const ProposalFormMinRequirements = ({
       : spamProtectionMinFormatted;
 
   return (
-    <p className="mb-4">{`${t('MinProposalRequirements1')} ${larger} ${t(
-      'MinProposalRequirements2'
-    )}`}</p>
+    <p className="mb-4">{t('MinProposalRequirements', { value: larger })}</p>
   );
 };
