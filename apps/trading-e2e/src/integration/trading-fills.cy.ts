@@ -22,12 +22,7 @@ const fills = [
       infrastructureFee: '5000',
     },
     market: {
-      tradableInstrument: {
-        instrument: {
-          name: 'Apples Daily v3',
-        },
-      },
-      positionDecimalPlaces: 2,
+      id: 'market-1',
     },
   }),
   generateFill({
@@ -41,11 +36,7 @@ const fills = [
     id: '3',
     aggressor: Side.SIDE_SELL,
     market: {
-      tradableInstrument: {
-        instrument: {
-          name: 'ETHBTC Quarterly (30 Jun 2022)',
-        },
-      },
+      id: 'market-2',
     },
     buyer: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),

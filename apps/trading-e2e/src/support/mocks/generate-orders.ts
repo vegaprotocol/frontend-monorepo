@@ -19,17 +19,6 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            id: '',
-            __typename: 'Instrument',
-            code: 'AAVEDAI.MF21',
-            name: 'AAVEDAI Monthly (30 Jun 2022)',
-          },
-        },
       },
       size: '10',
       type: OrderType.TYPE_LIMIT,
@@ -49,17 +38,6 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            id: '',
-            __typename: 'Instrument',
-            code: 'TSLA.QM21',
-            name: 'Tesla Quarterly (30 Jun 2022)',
-          },
-        },
       },
       size: '1',
       type: OrderType.TYPE_LIMIT,
@@ -79,18 +57,6 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'c6f4337b31ed57a961969c3ba10297b369d01b9e75a4cbb96db4fc62886444e6',
-
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            id: '',
-            __typename: 'Instrument',
-            code: 'BTCUSD.MF21',
-            name: 'BTCUSD Monthly (30 Jun 2022)',
-          },
-        },
       },
       size: '1',
       type: OrderType.TYPE_LIMIT,
@@ -110,17 +76,6 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'a316fa51dab97d76a1472c2f22906f4e461728e04355096788165d5b13999ed5',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            id: '',
-            __typename: 'Instrument',
-            code: 'UNIDAI.MF21',
-            name: 'UNIDAI Monthly (30 Jun 2022)',
-          },
-        },
       },
       size: '1',
       type: OrderType.TYPE_LIMIT,
@@ -140,17 +95,6 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'a316fa51dab97d76a1472c2f22906f4e461728e04355096788165d5b13999ed5',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            id: '',
-            __typename: 'Instrument',
-            code: 'UNIDAI.MF21',
-            name: 'UNIDAI Monthly (30 Jun 2022)',
-          },
-        },
       },
       size: '10',
       type: OrderType.TYPE_LIMIT,

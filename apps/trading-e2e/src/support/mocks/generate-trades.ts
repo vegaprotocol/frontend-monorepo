@@ -14,8 +14,6 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
       createdAt: '2022-04-06T16:19:42.692598951Z',
       market: {
         id: '0c3c1490db767f926d24fb674b4235a9aa339614915a4ab96cbfc0e1ad83c0ff',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
         __typename: 'Market',
       },
       __typename: 'Trade',
@@ -27,8 +25,6 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
       createdAt: '2022-04-07T06:59:44.835686754Z',
       market: {
         id: '0c3c1490db767f926d24fb674b4235a9aa339614915a4ab96cbfc0e1ad83c0ff',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
         __typename: 'Market',
       },
       __typename: 'Trade',
@@ -40,8 +36,6 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
       createdAt: '2022-04-07T17:56:47.997938583Z',
       market: {
         id: '0c3c1490db767f926d24fb674b4235a9aa339614915a4ab96cbfc0e1ad83c0ff',
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
         __typename: 'Market',
       },
       __typename: 'Trade',
