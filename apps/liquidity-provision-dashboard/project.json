@@ -78,6 +78,15 @@
         "jestConfig": "apps/liquidity-provision-dashboard/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "build-netlify": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "cp apps/liquidity-provision-dashboard/netlify.toml netlify.toml",
+          "nx build liquidity-provision-dashboard"
+        ]
+      }
     }
   },
   "tags": []
