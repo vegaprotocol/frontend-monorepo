@@ -36,3 +36,17 @@ Cypress.Commands.add('verify_page_header', (text) => {
 Cypress.Commands.add('wait_for_spinner', () => {
   cy.get(navigation.pageSpinner, { timeout: 20000 }).should('not.exist');
 });
+
+Cypress.Commands.add('restartVegacapsuleNetwork', () => {
+  Cypress.on('uncaught:exception', () => {
+    // stopping the network causes errors with pending transactions
+    // This stops those errors from prevents the teardown
+    return false
+  })
+  cy.exec('vegacapsule network destroy').its('stderr')
+    .should('contain', 'network cleaning up success')
+
+  cy.exec('vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force')
+    .its('stderr')
+    .should('contain', 'starting network success')
+});

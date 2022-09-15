@@ -8,7 +8,6 @@ const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
-const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
@@ -1147,7 +1146,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
     });
 
     // Have to skip because #1326 bug doesn't handle below scenario
-    it.only('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+    it.skip('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -1230,6 +1229,15 @@ context('Governance flow - with eth and vega wallets connected', function () {
       // 1004-VOTE-079
       cy.contains('You voted: Against').should('be.visible');
     });
+
+    after(
+      'teardown environment to prevent test data bleeding into other tests',
+      function () {
+        if (Cypress.env('teardownNetworkAfterFlows')) {
+          cy.restartVegacapsuleNetwork()
+        };
+      }
+    );
 
     Cypress.Commands.add(
       'convert_unix_timestamp_to_governance_data_table_date_format',

@@ -865,9 +865,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     after(
-      'teardown wallet so state/results dont bleed into other test suites',
+      'teardown environment to prevent test data bleeding into other tests',
       function () {
-        cy.vega_wallet_teardown();
+        if (Cypress.env('teardownNetworkAfterFlows')) {
+          cy.restartVegacapsuleNetwork()
+        };
       }
     );
   });

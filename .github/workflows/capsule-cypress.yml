@@ -130,7 +130,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.teardownNetworkAfterFlows=true
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
