@@ -199,7 +199,7 @@ function parseCandle(
   decimalPlaces: number
 ): Candle {
   return {
-    date: new Date(candle.datetime),
+    date: new Date(candle.periodStart),
     high: Number(addDecimal(candle.high, decimalPlaces)),
     low: Number(addDecimal(candle.low, decimalPlaces)),
     open: Number(addDecimal(candle.open, decimalPlaces)),

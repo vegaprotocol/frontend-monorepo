@@ -1,5 +1,6 @@
 fragment CandleFields on Candle {
-  datetime
+  periodStart
+  lastUpdateInPeriod
   high
   low
   open

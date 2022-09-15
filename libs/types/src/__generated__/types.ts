@@ -306,18 +306,18 @@ export type Candle = {
   __typename?: 'Candle';
   /** Close price (uint64) */
   close: Scalars['String'];
-  /** RFC3339Nano formatted date and time for the candle */
-  datetime: Scalars['String'];
   /** High price (uint64) */
   high: Scalars['String'];
   /** Interval price (string) */
   interval: Interval;
+  /** RFC3339Nano formatted date and time for the candle end time, or last updated time if the candle is still open */
+  lastUpdateInPeriod: Scalars['String'];
   /** Low price (uint64) */
   low: Scalars['String'];
   /** Open price (uint64) */
   open: Scalars['String'];
-  /** Unix epoch+nanoseconds for when the candle occurred */
-  timestamp: Scalars['String'];
+  /** RFC3339Nano formatted date and time for the candle start time */
+  periodStart: Scalars['String'];
   /** Volume price (uint64) */
   volume: Scalars['String'];
 };
