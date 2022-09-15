@@ -90,12 +90,12 @@ type Response =
       error: WalletError;
     };
 
-const Errors: { [key: string]: WalletError } = {
+export const Errors = {
   NO_TOKEN: new WalletError('No token', 1),
   INVALID_RESPONSE: new WalletError('Invalid response from wallet', 2),
   NO_SERVICE: new WalletError('No service', 3),
   INVALID_WALLET: new WalletError('Wallet version invalid', 4),
-};
+} as const;
 
 export class JsonRpcConnector implements VegaConnector {
   version = VERSION;

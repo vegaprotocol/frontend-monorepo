@@ -6,15 +6,17 @@ import {
   Input,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
-import { JsonRpcConnector } from '../connectors';
-import { RestConnector } from '../connectors';
-import { RestConnectorForm } from '../rest-connector-form';
-import { JsonRpcConnectorForm } from '../json-rpc-connector-form';
+import { JsonRpcConnector, RestConnector } from '../connectors';
+import { RestConnectorForm } from './rest-connector-form';
+import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
+import {
+  ConnectDialogContent,
+  ConnectDialogTitle,
+} from './connect-dialog-elements';
 
 type Connectors = { [name: string]: VegaConnector };
 export interface VegaConnectDialogProps {
@@ -23,11 +25,11 @@ export interface VegaConnectDialogProps {
   setDialogOpen: (isOpen: boolean) => void;
 }
 
-export function VegaConnectDialog({
+export const VegaConnectDialog = ({
   connectors,
   dialogOpen,
   setDialogOpen,
-}: VegaConnectDialogProps) {
+}: VegaConnectDialogProps) => {
   const { data } = useChainIdQuery();
 
   return (
@@ -39,7 +41,7 @@ export function VegaConnectDialog({
       />
     </Dialog>
   );
-}
+};
 
 const ConnectDialogContainer = ({
   connectors,
@@ -135,6 +137,7 @@ const ConnectorList = ({
                   connector instanceof JsonRpcConnector ? 'primary' : 'default'
                 }
                 fill={true}
+                data-testid={`connector-${key}`}
               >
                 <span className="-mx-6 flex text-left justify-between items-center">
                   {getButtonText(connector)}
@@ -215,12 +218,4 @@ const SelectedForm = ({
   }
 
   throw new Error('No connector selected');
-};
-
-export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
-  return <h1 className="text-2xl uppercase mb-6 text-center">{children}</h1>;
-};
-
-export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
-  return <div className="mb-6">{children}</div>;
 };

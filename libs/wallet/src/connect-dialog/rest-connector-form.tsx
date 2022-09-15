@@ -2,9 +2,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { RestConnector } from '.';
-import { useVegaWallet } from './use-vega-wallet';
-import { ConnectDialogTitle } from './connect-dialog';
+import type { RestConnector } from '../connectors';
+import { useVegaWallet } from '../use-vega-wallet';
 
 interface FormFields {
   wallet: string;

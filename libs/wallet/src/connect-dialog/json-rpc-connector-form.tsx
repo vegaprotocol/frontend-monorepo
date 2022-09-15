@@ -1,10 +1,10 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useState } from 'react';
-import type { JsonRpcConnector } from './connectors';
-import { useVegaWallet } from './use-vega-wallet';
-import { WalletError } from './connectors';
-import { ConnectDialogTitle } from './connect-dialog';
+import type { JsonRpcConnector } from '../connectors';
+import { useVegaWallet } from '../use-vega-wallet';
+import { WalletError } from '../connectors';
+import { ConnectDialogTitle } from './connect-dialog-elements';
 
 type Status =
   | 'idle'
@@ -114,7 +114,7 @@ const Connecting = ({
         text = t(`No service running at ${connector.url}`);
       } else if (error.code === 3001) {
         title = t('Connection declined');
-        text = t('Your wallet connect was rejected');
+        text = t('Your wallet connection was rejected');
       } else {
         title = `${error.message} ${error.code}`;
         text = error.data;
@@ -134,6 +134,20 @@ const Connecting = ({
     );
   }
 
+  if (status === 'checkingVersion') {
+    return (
+      <>
+        <ConnectDialogTitle>{t('Checking wallet version')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Icon name="repeat" size={10} />
+        </div>
+        <p className="text-center">
+          {t('Checking your wallet is compatible with this app')}
+        </p>
+      </>
+    );
+  }
+
   if (status === 'connected') {
     return (
       <>
@@ -145,7 +159,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'connecting') {
+  if (status === 'connecting' || status === 'gettingPerms') {
     return (
       <>
         <ConnectDialogTitle>{t('Connecting...')}</ConnectDialogTitle>
