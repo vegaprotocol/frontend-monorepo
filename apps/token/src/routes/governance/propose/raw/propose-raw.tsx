@@ -43,7 +43,11 @@ export const ProposeRaw = () => {
           <>
             {VEGA_DOCS_URL && (
               <p className="text-sm">
-                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
+                <span className="mr-1">{t('ProposalTermsText')}</span>
+                <Link
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals`}
+                  target="_blank"
+                >{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
               </p>
             )}
 

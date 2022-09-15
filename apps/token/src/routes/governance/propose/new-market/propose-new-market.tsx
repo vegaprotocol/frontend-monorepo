@@ -31,6 +31,8 @@ export interface NewMarketProposalFormFields {
   proposalReference: string;
 }
 
+const docsLink = '/new-market-proposal';
+
 export const ProposeNewMarket = () => {
   const {
     params,
@@ -92,7 +94,11 @@ export const ProposeNewMarket = () => {
 
             {VEGA_DOCS_URL && (
               <p className="text-sm">
-                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/new-market-proposal`}</Link>
+                <span className="mr-1">{t('ProposalTermsText')}</span>
+                <Link
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}
+                  target="_blank"
+                >{`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}</Link>
               </p>
             )}
 
@@ -144,6 +150,7 @@ export const ProposeNewMarket = () => {
                   })}
                   labelOverride={'Terms.newMarket (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
+                  customDocLink={docsLink}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline

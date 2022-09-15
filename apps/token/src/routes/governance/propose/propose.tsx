@@ -8,78 +8,77 @@ import { Heading } from '../../../components/heading';
 export const Propose = () => {
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
   const { t } = useTranslation();
-  const linkStyles = classnames('block underline mb-2');
 
   return (
     <>
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
-        {VEGA_DOCS_URL && (
-          <p className="text-sm">
-            <Link>{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
-          </p>
-        )}
-        {VEGA_EXPLORER_URL && (
-          <p>
-            {t('MoreProposalsInfo')}{' '}
-            <Link
-              href={`${VEGA_EXPLORER_URL}/governance`}
-              target="_blank"
-            >{`${VEGA_EXPLORER_URL}/governance`}</Link>
-          </p>
-        )}
+        <div className="text-sm">
+          {VEGA_DOCS_URL && (
+            <p>
+              <span className="mr-1">{t('ProposalTermsText')}</span>
+              <Link
+                href={`${VEGA_DOCS_URL}/tutorials/proposals`}
+                target="_blank"
+              >{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
+            </p>
+          )}
+          {VEGA_EXPLORER_URL && (
+            <p>
+              {t('MoreProposalsInfo')}{' '}
+              <Link
+                href={`${VEGA_EXPLORER_URL}/governance`}
+                target="_blank"
+              >{`${VEGA_EXPLORER_URL}/governance`}</Link>
+            </p>
+          )}
+        </div>
       </section>
 
       <section>
         <h2 className="text-h5">{t('ProposalTypeQuestion')}</h2>
         <ul>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/network-parameter`}
-              className={linkStyles}
-            >
-              {t('NetworkParameter')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/network-parameter`}>
+                {t('NetworkParameter')}
+              </Link>
+            </p>
           </li>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/new-market`}
-              className={linkStyles}
-            >
-              {t('NewMarket')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/new-market`}>
+                {t('NewMarket')}
+              </Link>
+            </p>
           </li>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/update-market`}
-              className={linkStyles}
-            >
-              {t('UpdateMarket')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/update-market`}>
+                {t('UpdateMarket')}
+              </Link>
+            </p>
           </li>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/new-asset`}
-              className={linkStyles}
-            >
-              {t('NewAsset')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/new-asset`}>
+                {t('NewAsset')}
+              </Link>
+            </p>
           </li>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/freeform`}
-              className={linkStyles}
-            >
-              {t('Freeform')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/freeform`}>
+                {t('Freeform')}
+              </Link>
+            </p>
           </li>
           <li>
-            <Link
-              href={`${Routes.GOVERNANCE}/propose/raw`}
-              className={linkStyles}
-            >
-              {t('RawProposal')}
-            </Link>
+            <p>
+              <Link href={`${Routes.GOVERNANCE}/propose/raw`}>
+                {t('RawProposal')}
+              </Link>
+            </p>
           </li>
         </ul>
       </section>

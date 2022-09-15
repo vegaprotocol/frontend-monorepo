@@ -12,12 +12,14 @@ interface ProposalFormTermsProps {
   registerField: UseFormRegisterReturn<'proposalTerms'>;
   errorMessage: string | undefined;
   labelOverride?: string;
+  customDocLink?: string;
 }
 
 export const ProposalFormTerms = ({
   registerField: register,
   errorMessage,
   labelOverride,
+  customDocLink,
 }: ProposalFormTermsProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -28,7 +30,11 @@ export const ProposalFormTerms = ({
     >
       {VEGA_DOCS_URL && (
         <div className="mt-[-4px] mb-2 text-sm font-light">
-          <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/freeform-proposal`}</Link>
+          <span className="mr-1">{t('ProposalTermsText')}</span>
+          <Link
+            href={`${VEGA_DOCS_URL}/tutorials/proposals${customDocLink || ''}`}
+            target="_blank"
+          >{`${VEGA_DOCS_URL}/tutorials/proposals${customDocLink || ''}`}</Link>
         </div>
       )}
 

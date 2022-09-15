@@ -658,7 +658,7 @@
   "ProposalDescription": "Description",
   "ProposalDescriptionText": "Full justification for what you are proposing (20,000 characters or less). Markdown is recommended. When linking to external resources please use IPFS",
   "ProposalTerms": "Proposal terms (JSON format)",
-  "ProposalTermsText": "For more information visit the",
+  "ProposalTermsText": "For more information visit",
   "ProposalReference": "Reference",
   "ProposalVoteTitle": "Vote deadline",
   "ProposalVoteAndEnactmentTitle": "Vote deadline and enactment",

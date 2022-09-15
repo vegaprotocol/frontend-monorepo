@@ -28,6 +28,8 @@ export interface FreeformProposalFormFields {
   proposalReference: string;
 }
 
+const docsLink = 'freeform-proposal';
+
 export const ProposeFreeform = () => {
   const { params, loading, error } = useNetworkParams([
     NetworkParams.governance_proposal_freeform_minClose,
@@ -73,7 +75,11 @@ export const ProposeFreeform = () => {
 
             {VEGA_DOCS_URL && (
               <p className="text-sm">
-                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/freeform-proposal`}</Link>
+                <span className="mr-1">{t('ProposalTermsText')}</span>
+                <Link
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}
+                  target="_blank"
+                >{`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}</Link>
               </p>
             )}
 

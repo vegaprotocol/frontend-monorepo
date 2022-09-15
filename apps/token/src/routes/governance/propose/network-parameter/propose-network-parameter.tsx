@@ -69,6 +69,8 @@ export interface NetworkParameterProposalFormFields {
   proposalReference: string;
 }
 
+const docsLink = '/network-parameter-proposal';
+
 export const ProposeNetworkParameter = () => {
   const [selectedNetworkParam, setSelectedNetworkParam] = useState<
     string | undefined
@@ -137,7 +139,11 @@ export const ProposeNetworkParameter = () => {
 
             {VEGA_DOCS_URL && (
               <p className="text-sm">
-                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/network-parameter-proposal`}</Link>
+                <span className="mr-1">{t('ProposalTermsText')}</span>
+                <Link
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  target="_blank"
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
               </p>
             )}
 

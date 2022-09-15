@@ -18,20 +18,14 @@ export const ProposalFormTransactionDialog = ({
   TransactionDialog,
 }: ProposalFormTransactionDialogProps) => (
   <div data-testid="proposal-transaction-dialog">
-    {finalizedProposal?.rejectionReason ? (
-      <TransactionDialog
-        title={t('Proposal rejected')}
-        intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
-        icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
-      >
+    <TransactionDialog
+      title={getProposalDialogTitle(finalizedProposal?.state)}
+      intent={getProposalDialogIntent(finalizedProposal?.state)}
+      icon={getProposalDialogIcon(finalizedProposal?.state)}
+    >
+      {finalizedProposal?.rejectionReason ? (
         <p>{finalizedProposal.rejectionReason}</p>
-      </TransactionDialog>
-    ) : (
-      <TransactionDialog
-        title={getProposalDialogTitle(finalizedProposal?.state)}
-        intent={getProposalDialogIntent(finalizedProposal?.state)}
-        icon={getProposalDialogIcon(finalizedProposal?.state)}
-      />
-    )}
+      ) : undefined}
+    </TransactionDialog>
   </div>
 );

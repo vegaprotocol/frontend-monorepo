@@ -61,6 +61,8 @@ export interface UpdateMarketProposalFormFields {
   proposalReference: string;
 }
 
+const docsLink = '/update-market-proposal';
+
 export const ProposeUpdateMarket = () => {
   const {
     params,
@@ -106,7 +108,7 @@ export const ProposeUpdateMarket = () => {
     undefined
   );
 
-  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
     register,
@@ -153,6 +155,16 @@ export const ProposeUpdateMarket = () => {
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
             />
+
+            {VEGA_DOCS_URL && (
+              <p className="text-sm">
+                <span className="mr-1">{t('ProposalTermsText')}</span>
+                <Link
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  target="_blank"
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+              </p>
+            )}
 
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
@@ -258,6 +270,7 @@ export const ProposeUpdateMarket = () => {
                   })}
                   labelOverride={t('ProposeUpdateMarketTerms')}
                   errorMessage={errors?.proposalTerms?.message}
+                  customDocLink={docsLink}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
