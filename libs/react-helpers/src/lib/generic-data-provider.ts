@@ -531,9 +531,13 @@ function makeDerivedDataProviderInternal<Data, Delta>(
         newLoading = newLoading || !part || part.loading;
         newLoaded = newLoaded && part && part.loaded;
       });
-    const dataParts = dependencies.map((dependency, i) => parts[i].data);
-    const newData = newLoaded ? combineData(dataParts, variables) : data;
-    if (updatedPartIndex !== undefined) {
+    const newData = newLoaded
+      ? combineData(
+          parts.map((part) => part.data),
+          variables
+        )
+      : data;
+    if (newLoaded && updatedPartIndex !== undefined) {
       const updatedPart = parts[updatedPartIndex];
       if (updatedPart.isUpdate && updatedPart.delta && combineDelta) {
         delta = combineDelta(parts, variables);
