@@ -69,9 +69,10 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <button onClick={() => push(`/markets/${marketId}`)}>{`${name} ${t(
-              'liquidity provision'
-            )}`}</button>
+            <button
+              className="hover:underline"
+              onClick={() => push(`/markets/${marketId}`)}
+            >{`${name} ${t('liquidity provision')}`}</button>
           }
         >
           <HeaderStat

@@ -147,7 +147,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate="No positions"
+        overlayNoRowsTemplate={t('No positions')}
         getRowId={getRowId}
         rowHeight={34}
         ref={ref}
@@ -254,6 +254,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               '</div>',
           }}
           flex={2}
+          headerTooltip={t(
+            'Liquidation prices are based on the amount of collateral you have available, the risk of your position and the liquidity on the order book. They can change rapidly based on the profit and loss of your positions and any changes to collateral from opening/closing other positions and making deposits/withdrawals.'
+          )}
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
@@ -354,7 +357,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
-          headerTooltip={t('P&L excludes any fees paid.')}
+          headerTooltip={t(
+            'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
+          )}
         />
         <AgGridColumn
           headerName={t('Unrealised PNL')}
@@ -372,6 +377,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
+          headerTooltip={t(
+            'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
+          )}
         />
         <AgGridColumn
           headerName={t('Updated')}
