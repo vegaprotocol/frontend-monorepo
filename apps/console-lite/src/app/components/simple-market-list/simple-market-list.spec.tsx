@@ -103,14 +103,11 @@ describe('SimpleMarketList', () => {
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
-      await new Promise((resolve) => setTimeout(resolve, 0));
     });
     await waitFor(() => {
       expect(
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
-    });
-    await waitFor(() => {
       const container = document.querySelector('.ag-center-cols-container');
       expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
     });
@@ -124,18 +121,14 @@ describe('SimpleMarketList', () => {
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    await waitFor(() => {
-      expect(
-        document.querySelector('.ag-center-cols-container')
-      ).toBeInTheDocument();
     });
     mockIsTradable.mockClear();
     const container = document.querySelector('.ag-center-cols-container');
     const firstRow = getAllByRole(container as HTMLDivElement, 'row')[0];
     expect(firstRow).toHaveAttribute('row-id', marketsMock[0].id);
-    fireEvent.click(firstRow);
+    await act(async () => {
+      fireEvent.click(firstRow);
+    });
     await waitFor(() => {
       expect(mockIsTradable).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -158,7 +151,6 @@ describe('SimpleMarketList', () => {
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
-      await new Promise((resolve) => setTimeout(resolve, 0));
     });
     await waitFor(() => {
       expect(screen.getByText('No data to display')).toBeInTheDocument();
