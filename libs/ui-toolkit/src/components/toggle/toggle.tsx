@@ -37,7 +37,8 @@ export const Toggle = ({
     'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
     'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
-    'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full'
+    'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full',
+    'peer-focus-visible:bg-neutral-600'
   );
 
   return (
@@ -45,7 +46,11 @@ export const Toggle = ({
       {toggles.map(({ label, value }, key) => {
         const isSelected = value === checkedValue;
         return (
-          <label key={key} className={labelClasses} htmlFor={label}>
+          <label
+            key={key}
+            className={labelClasses}
+            htmlFor={label}
+          >
             <input
               type="radio"
               id={label}
