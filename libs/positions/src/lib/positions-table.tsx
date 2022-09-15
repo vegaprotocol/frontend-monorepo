@@ -152,6 +152,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}
+        suppressCellFocus={true}
         defaultColDef={{
           flex: 1,
           resizable: true,

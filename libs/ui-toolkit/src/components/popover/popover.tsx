@@ -16,7 +16,7 @@ export const Popover = ({
 }: PopoverProps) => {
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
-      <PopoverPrimitive.Trigger data-testid="popover-trigger">
+      <PopoverPrimitive.Trigger data-testid="popover-trigger" className="focus-visible:underline">
         {trigger}
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>
