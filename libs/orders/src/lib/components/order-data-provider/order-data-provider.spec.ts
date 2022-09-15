@@ -49,10 +49,12 @@ describe('order data provider', () => {
     ] as OrderSub_orders[];
 
     const updatedData = update(data, delta);
-    expect(updatedData.findIndex((edge) => edge.node === delta[0])).toEqual(-1);
+    expect(
+      updatedData.findIndex((edge) => edge.node.id === delta[0].id)
+    ).toEqual(-1);
     expect(updatedData[2].node.id).toEqual(delta[2].id);
     expect(updatedData[2].node.updatedAt).toEqual(delta[2].updatedAt);
-    expect(updatedData[0].node).toEqual(delta[3]);
+    expect(updatedData[0].node.id).toEqual(delta[3].id);
     expect(updatedData[1].node.id).toEqual(delta[4].id);
     expect(updatedData[1].node.updatedAt).toEqual(delta[4].updatedAt);
   });
