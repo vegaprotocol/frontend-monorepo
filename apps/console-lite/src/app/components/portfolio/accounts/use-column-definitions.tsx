@@ -50,11 +50,12 @@ const useAccountColumnDefinitions = () => {
   const columnDefs = useMemo(() => {
     return [
       {
-        colId: 'asset',
+        colId: 'account-asset',
         headerName: t('Asset'),
         field: 'asset.symbol',
         comparator,
-        cellClass: 'uppercase flex h-full items-center',
+        headerClass: 'uppercase justify-start',
+        cellClass: 'uppercase flex h-full items-center md:pl-4',
         cellRenderer: ({ value }: GroupCellRendererParams) =>
           value && value.length > 0 ? (
             <div className="md:pl-4 grid h-full items-center" title={value}>
@@ -127,6 +128,8 @@ const useAccountColumnDefinitions = () => {
     return {
       sortable: true,
       unSortIcon: true,
+      headerClass: 'uppercase',
+      editable: false,
     };
   }, []);
   return { columnDefs, defaultColDef };

@@ -83,7 +83,7 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
       <ProgressBar
         value={valueFormatted.value}
         intent={valueFormatted.intent}
-        className="mt-2"
+        className="mt-2 w-full"
       />
     </>
   ) : null;

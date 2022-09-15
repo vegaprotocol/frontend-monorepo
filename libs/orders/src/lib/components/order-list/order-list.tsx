@@ -337,7 +337,9 @@ export const isOrderActive = (status: OrderStatus) => {
   ].includes(status);
 };
 
-const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getEditDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }
@@ -364,7 +366,9 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 };
 
-const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
+export const getCancelDialogIntent = (
+  status?: OrderStatus
+): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -377,7 +381,9 @@ const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
   }
 };
 
-const getCancelDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getCancelDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }

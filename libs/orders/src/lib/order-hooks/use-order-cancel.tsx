@@ -4,7 +4,7 @@ import type { OrderEvent_busEvents_event_Order } from './';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
 
-interface CancelOrderArgs {
+export interface CancelOrderArgs {
   orderId: string;
   marketId: string;
 }

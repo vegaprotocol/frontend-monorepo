@@ -11,7 +11,6 @@ const Positions = ({ partyId }: Props) => {
   const { data, error, loading, assetSymbols } = usePositionsAssets({
     partyId,
   });
-  console.log('data', data);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <div className="w-full h-max">

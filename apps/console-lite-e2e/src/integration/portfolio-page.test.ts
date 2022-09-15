@@ -5,6 +5,8 @@ import {
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generatePositions } from '../support/mocks/generate-positions';
 import { generateAccounts } from '../support/mocks/generate-accounts';
+import { generateOrders } from '../support/mocks/generate-orders';
+import { generateFills } from '../support/mocks/generate-fills';
 
 describe('Portfolio page', () => {
   afterEach(() => {
@@ -39,6 +41,21 @@ describe('Portfolio page', () => {
     cy.location('pathname').should('eq', '/portfolio/deposits');
   });
 
+  describe('Assets view', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'Positions', generatePositions());
+        aliasQuery(req, 'Accounts', generateAccounts());
+      });
+      cy.visit('/portfolio/assets');
+      connectVegaWallet();
+    });
+
+    it('data should be properly rendered', () => {
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
+    });
+  });
+
   describe('Positions view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
@@ -52,6 +69,34 @@ describe('Portfolio page', () => {
     it('data should be properly rendered', () => {
       cy.getByTestId('positions-asset-tDAI').should('exist');
       cy.getByTestId('positions-asset-tEURO').should('exist');
+    });
+  });
+
+  describe('Orders view', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'Orders', generateOrders());
+      });
+      cy.visit('/portfolio/orders');
+      connectVegaWallet();
+    });
+
+    it('data should be properly rendered', () => {
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
+    });
+  });
+
+  describe('Fills view', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'Fills', generateFills());
+      });
+      cy.visit('/portfolio/fills');
+      connectVegaWallet();
+    });
+
+    it('data should be properly rendered', () => {
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 4);
     });
   });
 });

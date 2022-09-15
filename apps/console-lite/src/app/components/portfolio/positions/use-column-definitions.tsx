@@ -30,6 +30,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'market',
         headerName: t('Market'),
+        headerClass: 'uppercase justify-start',
+        cellClass: '!flex h-full items-center !md:pl-4',
         field: 'marketName',
         cellRenderer: ({ value }: GroupCellRendererParams) => {
           if (!value) {
@@ -57,6 +59,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'amount',
         headerName: t('Amount'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center',
         field: 'openVolume',
         valueGetter: ({ node, data }: ValueGetterParams) => {
           return node?.rowPinned ? data?.notional : data?.openVolume;
@@ -89,8 +93,9 @@ const useColumnDefinitions = () => {
       {
         colId: 'markprice',
         headerName: t('Mark price'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center justify-center',
         field: 'markPrice',
-        type: 'rightAligned',
         cellRendererSelector: (
           params: ICellRendererParams
         ): CellRendererSelectorResult => {
@@ -123,6 +128,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'entryprice',
         headerName: t('Entry price'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center',
         field: 'averageEntryPrice',
         headerComponentParams: {
           template:
@@ -131,7 +138,6 @@ const useColumnDefinitions = () => {
             '  <span ref="eText" class="ag-header-cell-text"></span>' +
             '</div>',
         },
-        flex: 2,
         cellRenderer: ({ node, data }: GroupCellRendererParams) => {
           const valueFormatted =
             data && !node?.rowPinned
@@ -166,6 +172,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'leverage',
         headerName: t('Leverage'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center justify-center',
         field: 'currentLeverage',
         type: 'rightAligned',
         cellRendererSelector: (
@@ -185,9 +193,10 @@ const useColumnDefinitions = () => {
       {
         colId: 'marginallocated',
         headerName: t('Margin allocated'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full flex-col justify-center',
         field: 'capitalUtilisation',
         type: 'rightAligned',
-        flex: 2,
         cellRenderer: ({ value, node, data }: GroupCellRendererParams) => {
           const valueFormatted =
             data && value
@@ -212,6 +221,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'realisedpnl',
         headerName: t('Realised PNL'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center',
         field: 'realisedPNL',
         type: 'rightAligned',
         cellClassRules: signedNumberCssClassRules,
@@ -230,6 +241,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'unrealisedpnl',
         headerName: t('Unrealised PNL'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center',
         field: 'unrealisedPNL',
         type: 'rightAligned',
         cellClassRules: signedNumberCssClassRules,
@@ -247,6 +260,8 @@ const useColumnDefinitions = () => {
       {
         colId: 'updated',
         headerName: t('Updated'),
+        headerClass: 'uppercase',
+        cellClass: '!flex h-full items-center',
         field: 'updatedAt',
         type: 'rightAligned',
         valueFormatter: ({
@@ -266,6 +281,8 @@ const useColumnDefinitions = () => {
     return {
       sortable: true,
       unSortIcon: true,
+      headerClass: 'uppercase',
+      cellClass: '!flex h-full items-center',
     };
   }, []);
   return { columnDefs, defaultColDef };

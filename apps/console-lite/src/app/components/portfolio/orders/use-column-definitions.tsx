@@ -11,8 +11,12 @@ import {
   positiveClassNames,
   t,
 } from '@vegaprotocol/react-helpers';
-import type { Orders_party_ordersConnection_edges_node } from '@vegaprotocol/orders';
-import { isOrderActive, useOrderCancel } from '@vegaprotocol/orders';
+import type {
+  Orders_party_ordersConnection_edges_node,
+  OrderFields,
+  CancelOrderArgs,
+} from '@vegaprotocol/orders';
+import { isOrderActive } from '@vegaprotocol/orders';
 import {
   OrderRejectionReasonMapping,
   OrderStatus,
@@ -30,22 +34,31 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 type StatusKey = keyof typeof OrderStatusMapping;
 type RejectReasonKey = keyof typeof OrderRejectionReasonMapping;
 type OrderTimeKey = keyof typeof OrderTimeInForceMapping;
+interface Props {
+  setEditOrder: (order: OrderFields) => void;
+  orderCancel: {
+    cancel: (args: CancelOrderArgs) => void;
+    [key: string]: unknown;
+  };
+}
 
-const useColumnDefinitions = () => {
-  const orderCancel = useOrderCancel();
+const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
   const columnDefs: ColDef[] = useMemo(() => {
     return [
       {
         colId: 'market',
         headerName: t('Market'),
         field: 'market.tradableInstrument.instrument.code',
+        headerClass: 'uppercase justify-start',
+        cellClass: '!flex h-full items-center !md:pl-4',
       },
       {
         colId: 'size',
         headerName: t('Size'),
         field: 'size',
-        cellClass: 'font-mono text-right',
-        type: 'rightAligned',
+        headerClass: 'uppercase',
+        cellClass: 'font-mono !flex h-full items-center',
+        width: 80,
         cellClassRules: {
           [positiveClassNames]: ({
             data,
@@ -75,6 +88,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'type',
         field: 'type',
+        width: 80,
         valueFormatter: ({
           value,
         }: ValueFormatterParams & {
@@ -84,6 +98,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'status',
         field: 'status',
+        cellClass: 'text-center font-mono !flex h-full items-center',
         valueFormatter: ({
           value,
           data,
@@ -107,9 +122,10 @@ const useColumnDefinitions = () => {
       {
         colId: 'filled',
         headerName: t('Filled'),
+        headerClass: 'uppercase',
         field: 'remaining',
-        cellClass: 'font-mono text-right',
-        type: 'rightAligned',
+        cellClass: 'font-mono text-center !flex h-full items-center',
+        width: 80,
         valueFormatter: ({
           data,
           value,
@@ -133,7 +149,9 @@ const useColumnDefinitions = () => {
         colId: 'price',
         field: 'price',
         type: 'rightAligned',
-        cellClass: 'font-mono text-right',
+        width: 125,
+        headerClass: 'uppercase text-right',
+        cellClass: 'font-mono text-right !flex h-full items-center',
         valueFormatter: ({
           value,
           data,
@@ -154,6 +172,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'timeInForce',
         field: 'timeInForce',
+        minWidth: 120,
         valueFormatter: ({
           value,
           data,
@@ -192,6 +211,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'updated',
         field: 'updatedAt',
+        cellClass: '!flex h-full items-center justify-center',
         valueFormatter: ({
           value,
         }: ValueFormatterParams & {
@@ -203,6 +223,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'edit',
         field: 'edit',
+        width: 75,
         cellRenderer: ({ data }: ICellRendererParams) => {
           if (!data) return null;
           if (isOrderActive(data.status)) {
@@ -210,7 +231,7 @@ const useColumnDefinitions = () => {
               <Button
                 data-testid="edit"
                 onClick={() => {
-                  /*setEditOrder(data);*/
+                  setEditOrder(data);
                 }}
                 size="xs"
               >
@@ -225,6 +246,7 @@ const useColumnDefinitions = () => {
       {
         colId: 'cancel',
         field: 'cancel',
+        minWidth: 130,
         cellRenderer: ({ data }: ICellRendererParams) => {
           if (!data) return null;
           if (isOrderActive(data.status)) {
@@ -250,11 +272,13 @@ const useColumnDefinitions = () => {
         },
       },
     ];
-  }, [orderCancel]);
+  }, [orderCancel, setEditOrder]);
   const defaultColDef = useMemo(() => {
     return {
       sortable: true,
       unSortIcon: true,
+      headerClass: 'uppercase',
+      cellClass: '!flex h-full items-center',
     };
   }, []);
   return { columnDefs, defaultColDef };

@@ -29,14 +29,17 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         colId: 'market',
         headerName: t('Market'),
         field: 'market.tradableInstrument.instrument.name',
+        cellClass: '!flex h-full items-center !md:pl-4',
+        minWidth: 150,
       },
       {
         colId: 'size',
         headerName: t('Size'),
-        type: 'rightAligned',
+        headerClass: 'uppercase',
         field: 'size',
+        width: 100,
         cellClass: ({ data }: { data: FillFields }) => {
-          return classNames('text-right', {
+          return classNames('!flex h-full items-center justify-center', {
             [positiveClassNames]: data?.buyer.id === partyId,
             [negativeClassNames]: data?.seller.id,
           });
@@ -67,6 +70,8 @@ const useColumnDefinitions = ({ partyId }: Props) => {
       {
         colId: 'value',
         headerName: t('Value'),
+        headerClass: 'uppercase text-center',
+        cellClass: '!flex h-full items-center',
         field: 'price',
         valueFormatter: ({
           value,
@@ -91,6 +96,8 @@ const useColumnDefinitions = ({ partyId }: Props) => {
       {
         colId: 'filledvalue',
         headerName: t('Filled value'),
+        headerClass: 'uppercase text-center',
+        cellClass: '!flex h-full items-center',
         field: 'price',
         valueFormatter: ({
           value,
@@ -124,6 +131,7 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         colId: 'role',
         headerName: t('Role'),
         field: 'aggressor',
+        width: 100,
         valueFormatter: ({
           value,
           data,
@@ -153,6 +161,8 @@ const useColumnDefinitions = ({ partyId }: Props) => {
       {
         colId: 'fee',
         headerName: t('Fee'),
+        headerClass: 'uppercase text-center',
+        cellClass: '!flex h-full items-center',
         field: 'market.tradableInstrument.instrument.product',
         valueFormatter: ({
           value,
@@ -203,6 +213,8 @@ const useColumnDefinitions = ({ partyId }: Props) => {
     return {
       sortable: true,
       unSortIcon: true,
+      headerClass: 'uppercase',
+      cellClass: '!flex h-full items-center',
     };
   }, []);
   return { columnDefs, defaultColDef };

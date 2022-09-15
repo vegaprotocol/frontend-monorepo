@@ -1,8 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import type { OrderFields } from '@vegaprotocol/orders';
-import { useOrderListData } from '@vegaprotocol/orders';
+import {
+  useOrderCancel,
+  useOrderListData,
+  useOrderEdit,
+  OrderFeedback,
+  getCancelDialogTitle,
+  getCancelDialogIntent,
+  getEditDialogTitle,
+  OrderEditDialog,
+} from '@vegaprotocol/orders';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
 import useColumnDefinitions from './use-column-definitions';
@@ -12,7 +21,14 @@ interface Props {
 }
 
 const OrdersManager = ({ partyId }: Props) => {
-  const { columnDefs, defaultColDef } = useColumnDefinitions();
+  const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+  const orderCancel = useOrderCancel();
+  const orderEdit = useOrderEdit(editOrder);
+  const { columnDefs, defaultColDef } = useColumnDefinitions({
+    setEditOrder,
+    orderCancel,
+  });
+
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
 
@@ -43,6 +59,36 @@ const OrdersManager = ({ partyId }: Props) => {
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
       />
+      <orderCancel.Dialog
+        title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
+        intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
+      >
+        <OrderFeedback
+          transaction={orderCancel.transaction}
+          order={orderCancel.cancelledOrder}
+        />
+      </orderCancel.Dialog>
+      <orderEdit.Dialog
+        title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
+      >
+        <OrderFeedback
+          transaction={orderEdit.transaction}
+          order={orderEdit.updatedOrder}
+        />
+      </orderEdit.Dialog>
+      {editOrder && (
+        <OrderEditDialog
+          isOpen={Boolean(editOrder)}
+          onChange={(isOpen) => {
+            if (!isOpen) setEditOrder(null);
+          }}
+          order={editOrder}
+          onSubmit={(fields) => {
+            setEditOrder(null);
+            orderEdit.edit({ price: fields.entryPrice });
+          }}
+        />
+      )}
     </AsyncRenderer>
   );
 };
