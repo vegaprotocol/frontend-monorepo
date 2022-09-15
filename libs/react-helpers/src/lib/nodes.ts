@@ -1,11 +1,11 @@
 import type { Schema } from '@vegaprotocol/types';
 
-type Node<T> = {
+export type Node<T> = {
   __typename?: string;
   node: T;
 };
 
-type Connection<A> = {
+export type Connection<A> = {
   __typename?: string;
   edges?: Schema.Maybe<Array<Schema.Maybe<A>>>;
 };

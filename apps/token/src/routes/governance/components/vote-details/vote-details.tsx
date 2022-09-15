@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
@@ -9,11 +10,10 @@ import { useUserVote } from './use-user-vote';
 import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ProposalState } from '@vegaprotocol/types';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import { Schema } from '@vegaprotocol/types';
 
 interface VoteDetailsProps {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment;
 }
 
 export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
@@ -32,9 +32,9 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
 
   const { t } = useTranslation();
   const { voteState, voteDatetime, castVote } = useUserVote(
-    proposal.id,
-    proposal.votes.yes.votes,
-    proposal.votes.no.votes
+    proposal.id ?? '',
+    proposal.votes.yes.votes ?? null,
+    proposal.votes.no.votes ?? null,
   );
 
   const defaultDecimals = 2;
@@ -50,7 +50,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
           <CurrentProposalStatus proposal={proposal} />
         </span>
         {'. '}
-        {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
+        {proposal.state === Schema.ProposalState.STATE_OPEN ? daysLeft : null}
       </p>
       <table className="w-full">
         <thead>

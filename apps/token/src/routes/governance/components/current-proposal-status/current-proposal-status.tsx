@@ -2,9 +2,9 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { ProposalState } from '@vegaprotocol/types';
+import { ProposalFieldsFragment } from '@vegaprotocol/governance'
+import { Schema } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 export const StatusPass = ({ children }: { children: React.ReactNode }) => (
   <span className="text-vega-green">{children}</span>
@@ -17,7 +17,7 @@ export const StatusFail = ({ children }: { children: React.ReactNode }) => (
 export const CurrentProposalStatus = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }) => {
   const { willPass, majorityMet, participationMet } = useVoteInformation({
     proposal,
@@ -35,7 +35,7 @@ export const CurrentProposalStatus = ({
       addSuffix: true,
     });
 
-  if (proposal.state === ProposalState.STATE_OPEN) {
+  if (proposal.state === Schema.ProposalState.STATE_OPEN) {
     if (willPass) {
       return (
         <>
@@ -54,9 +54,9 @@ export const CurrentProposalStatus = ({
   }
 
   if (
-    proposal.state === ProposalState.STATE_FAILED ||
-    proposal.state === ProposalState.STATE_DECLINED ||
-    proposal.state === ProposalState.STATE_REJECTED
+    proposal.state === Schema.ProposalState.STATE_FAILED ||
+    proposal.state === Schema.ProposalState.STATE_DECLINED ||
+    proposal.state === Schema.ProposalState.STATE_REJECTED
   ) {
     if (!participationMet) {
       return (
@@ -87,8 +87,8 @@ export const CurrentProposalStatus = ({
     );
   }
   if (
-    proposal.state === ProposalState.STATE_ENACTED ||
-    proposal.state === ProposalState.STATE_PASSED
+    proposal.state === Schema.ProposalState.STATE_ENACTED ||
+    proposal.state === Schema.ProposalState.STATE_PASSED
   ) {
     return (
       <>
@@ -96,7 +96,7 @@ export const CurrentProposalStatus = ({
         <StatusPass>&nbsp;{proposal.state}</StatusPass>
         <span>
           &nbsp;
-          {proposal.state === ProposalState.STATE_ENACTED
+          {proposal.state === Schema.ProposalState.STATE_ENACTED
             ? daysEnactedAgo
             : daysClosedAgo}
           .
@@ -105,7 +105,7 @@ export const CurrentProposalStatus = ({
     );
   }
 
-  if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
+  if (proposal.state === Schema.ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
     return (
       <span>{t('subjectToFurtherActions', { daysAgo: daysClosedAgo })}</span>
     );

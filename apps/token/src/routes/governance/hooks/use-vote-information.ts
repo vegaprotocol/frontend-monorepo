@@ -1,20 +1,16 @@
-import { useNetworkParams } from '@vegaprotocol/react-helpers';
 import React from 'react';
+import { useNetworkParams } from '@vegaprotocol/react-helpers';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 
 import { NetworkParams } from '../../../config';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { addDecimal } from '../../../lib/decimals';
-import type {
-  ProposalFields,
-  ProposalFields_votes_no_votes,
-  ProposalFields_votes_yes_votes,
-} from '../__generated__/ProposalFields';
 
 const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }) => {
   const { data, loading } = useNetworkParams([
     NetworkParams.GOV_UPDATE_MARKET_REQUIRED_MAJORITY,
@@ -52,22 +48,22 @@ const useProposalNetworkParams = ({
     case 'UpdateMarket':
       return {
         requiredMajority: updateMarketMajority,
-        requiredParticipation: new BigNumber(updateMarketParticipation),
+        requiredParticipation: new BigNumber(updateMarketParticipation ?? 0),
       };
     case 'UpdateNetworkParameter':
       return {
         requiredMajority: paramMajority,
-        requiredParticipation: new BigNumber(paramParticipation),
+        requiredParticipation: new BigNumber(paramParticipation ?? 0),
       };
     case 'NewAsset':
       return {
         requiredMajority: assetMajority,
-        requiredParticipation: new BigNumber(assetParticipation),
+        requiredParticipation: new BigNumber(assetParticipation ?? 0),
       };
     case 'NewMarket':
       return {
         requiredMajority: newMarketMajority,
-        requiredParticipation: new BigNumber(newMarketParticipation),
+        requiredParticipation: new BigNumber(newMarketParticipation ?? 0),
       };
     case 'NewFreeform':
       return {
@@ -82,7 +78,7 @@ const useProposalNetworkParams = ({
 export const useVoteInformation = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }) => {
   const {
     appState: { totalSupply },
@@ -105,7 +101,7 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalNoVotes = proposal.votes.no.votes.reduce(
-      (prevValue: BigNumber, newValue: ProposalFields_votes_no_votes) => {
+      (prevValue: BigNumber, newValue) => {
         return new BigNumber(
           newValue.party.stakingSummary.currentStakeAvailable
         ).plus(prevValue);
@@ -120,7 +116,7 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalYesVotes = proposal.votes.yes.votes.reduce(
-      (prevValue: BigNumber, newValue: ProposalFields_votes_yes_votes) => {
+      (prevValue: BigNumber, newValue) => {
         return new BigNumber(
           newValue.party.stakingSummary.currentStakeAvailable
         ).plus(prevValue);
@@ -149,7 +145,7 @@ export const useVoteInformation = ({
     [noTokens, totalTokensVoted]
   );
   const participationMet = React.useMemo(() => {
-    const tokensNeeded = totalSupply.multipliedBy(requiredParticipation);
+    const tokensNeeded = totalSupply.multipliedBy(requiredParticipation ?? 1);
     return totalTokensVoted.isGreaterThan(tokensNeeded);
   }, [requiredParticipation, totalTokensVoted, totalSupply]);
 
@@ -188,7 +184,7 @@ export const useVoteInformation = ({
       proposal.votes.no.totalNumber
     ),
     requiredMajorityPercentage,
-    requiredParticipation: new BigNumber(requiredParticipation).times(100),
+    requiredParticipation: new BigNumber(requiredParticipation ?? 0).times(100),
     majorityMet,
   };
 };

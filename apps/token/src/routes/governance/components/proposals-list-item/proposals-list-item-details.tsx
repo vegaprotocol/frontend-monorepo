@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import { useVoteInformation } from '../../hooks';
 import { useUserVote } from '../vote-details/use-user-vote';
 import {
@@ -15,7 +16,6 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ const ParticipationNotReached = () => {
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }) => {
   const { state } = proposal;
   const { willPass, majorityMet, participationMet } = useVoteInformation({
@@ -45,9 +45,9 @@ export const ProposalsListItemDetails = ({
   });
   const { t } = useTranslation();
   const { voteState } = useUserVote(
-    proposal.id,
-    proposal.votes.yes.votes,
-    proposal.votes.no.votes
+    proposal.id ?? '',
+    proposal.votes.yes.votes ?? null,
+    proposal.votes.no.votes ?? null
   );
 
   let proposalStatus: ReactNode;

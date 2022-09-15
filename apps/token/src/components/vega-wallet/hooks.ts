@@ -118,7 +118,7 @@ export const usePollForDelegations = () => {
                 .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
                 .map((a) => {
                   const isVega =
-                    isAssetTypeERC20(a.asset) &&
+                    isAssetTypeERC20(a.asset.source) &&
                     a.asset.source.contractAddress === vegaToken.address;
 
                   return {
@@ -132,7 +132,7 @@ export const usePollForDelegations = () => {
                     ),
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,
-                    address: isAssetTypeERC20(a.asset)
+                    address: isAssetTypeERC20(a.asset.source)
                       ? a.asset.source.contractAddress
                       : undefined,
                   };

@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { Proposals_proposalsConnection_edges_node } from '../../proposals/__generated__/Proposals';
 
 interface ProposalsListProps {
-  proposals: Proposals_proposalsConnection_edges_node[];
+  proposals: ProposalFieldsFragment[];
 }
 
 export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const filterPredicate = (p: Proposals_proposalsConnection_edges_node) =>
+  const filterPredicate = (p: ProposalFieldsFragment) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 

@@ -1,23 +1,23 @@
-import { ProposalState } from '@vegaprotocol/types';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import { Schema } from '@vegaprotocol/types';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 
 export const CurrentProposalState = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }) => {
   const { state } = proposal;
   let className = 'text-white';
 
   if (
-    state === ProposalState.STATE_DECLINED ||
-    state === ProposalState.STATE_FAILED ||
-    state === ProposalState.STATE_REJECTED
+    state === Schema.ProposalState.STATE_DECLINED ||
+    state === Schema.ProposalState.STATE_FAILED ||
+    state === Schema.ProposalState.STATE_REJECTED
   ) {
     className = 'text-danger';
   } else if (
-    state === ProposalState.STATE_ENACTED ||
-    state === ProposalState.STATE_PASSED
+    state === Schema.ProposalState.STATE_ENACTED ||
+    state === Schema.ProposalState.STATE_PASSED
   ) {
     className = 'text-white';
   }

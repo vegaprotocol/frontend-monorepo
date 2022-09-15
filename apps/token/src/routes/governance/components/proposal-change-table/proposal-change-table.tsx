@@ -1,13 +1,13 @@
 import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { CurrentProposalState } from '../current-proposal-state';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 interface ProposalChangeTableProps {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }
 
 export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {

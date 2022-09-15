@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import type { ProposalFieldsFragment } from '@vegaprotocol/governance';
 import {
   formatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 interface ProposalVotesTableProps {
-  proposal: ProposalFields;
+  proposal: ProposalFieldsFragment;
 }
 
 export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {

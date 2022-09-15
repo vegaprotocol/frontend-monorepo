@@ -1,13 +1,9 @@
-import compact from 'lodash/compact';
-import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import { Schema } from '@vegaprotocol/types';
 import { getNodes } from '@vegaprotocol/react-helpers';
+import { ProposalsQuery, ProposalFieldsFragment } from '@vegaprotocol/governance';
 
-type ProposalsConnection = Pick<Schema.Query, 'proposalsConnection'>;
-type Proposal = Partial<Schema.Proposal>;
-
-const orderByDate = (arr: Proposal[]) =>
+export const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
     arr,
     [
@@ -18,18 +14,18 @@ const orderByDate = (arr: Proposal[]) =>
     ['desc', 'desc', 'desc']
   );
 
-export const getNotRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getNodes<Proposal>(
+export function getNotRejectedProposals (data?: ProposalsQuery) {
+  const proposals = getNodes<ProposalFieldsFragment>(
     data?.proposalsConnection,
     (node) => node?.state !== Schema.ProposalState.STATE_REJECTED
   );
-  return flow([compact, orderByDate])(proposals);
+  return orderByDate(proposals);
 };
 
-export const getRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getNodes<Proposal>(
+export function getRejectedProposals (data?: ProposalsQuery) {
+  const proposals = getNodes<ProposalFieldsFragment>(
     data?.proposalsConnection,
     (node) => node?.state === Schema.ProposalState.STATE_REJECTED
   );
-  return flow([compact, orderByDate])(proposals);
+  return orderByDate(proposals);
 };
