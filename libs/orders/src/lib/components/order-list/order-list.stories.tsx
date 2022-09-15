@@ -3,27 +3,14 @@ import { OrderList, OrderListTable } from './order-list';
 import { useState } from 'react';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
-import type { Market } from '@vegaprotocol/market-list';
 import { generateOrdersArray } from '../mocks';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { Orders_party_ordersConnection_edges_node } from '../order-data-provider';
+import type { OrderWithMarket } from '../order-data-provider';
 
 export default {
   component: OrderList,
   title: 'OrderList',
 } as Meta;
-
-const generateMatchingMarkets = (
-  orders: Orders_party_ordersConnection_edges_node[]
-) =>
-  orders.map(
-    (order) =>
-      ({
-        id: order.market.id,
-        decimalPlaces: 5,
-        positionDecimalPlaces: 0,
-      } as Market)
-  );
 
 const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
@@ -31,9 +18,6 @@ const Template: Story = (args) => {
     <div style={{ height: 1000 }}>
       <OrderListTable
         rowData={args.data}
-        markets={generateMatchingMarkets(
-          args.data as Orders_party_ordersConnection_edges_node[]
-        )}
         cancel={cancel}
         setEditOrder={() => {
           return;
@@ -45,8 +29,7 @@ const Template: Story = (args) => {
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
-  const [editOrder, setEditOrder] =
-    useState<Orders_party_ordersConnection_edges_node>();
+  const [editOrder, setEditOrder] = useState<OrderWithMarket>();
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();
@@ -63,13 +46,8 @@ const Template2: Story = (args) => {
       <div style={{ height: 1000 }}>
         <OrderListTable
           rowData={args.data}
-          markets={generateMatchingMarkets(
-            args.data as Orders_party_ordersConnection_edges_node[]
-          )}
           cancel={cancel}
-          setEditOrder={(order) => {
-            setEditOrder(order);
-          }}
+          setEditOrder={setEditOrder}
         />
       </div>
       <VegaTransactionDialog
@@ -79,7 +57,6 @@ const Template2: Story = (args) => {
       />
       {editOrder && (
         <OrderEditDialog
-          market={generateMatchingMarkets([editOrder])[0]}
           isOpen={Boolean(editOrder)}
           onChange={(isOpen) => {
             if (!isOpen) setEditOrder(undefined);
