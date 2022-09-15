@@ -46,11 +46,7 @@ export const Toggle = ({
       {toggles.map(({ label, value }, key) => {
         const isSelected = value === checkedValue;
         return (
-          <label
-            key={key}
-            className={labelClasses}
-            htmlFor={label}
-          >
+          <label key={key} className={labelClasses} htmlFor={label}>
             <input
               type="radio"
               id={label}
