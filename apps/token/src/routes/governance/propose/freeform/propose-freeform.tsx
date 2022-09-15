@@ -56,7 +56,7 @@ export const ProposeFreeform = () => {
       terms: {
         newFreeform: {},
         closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
-      } as ProposalFreeformTerms,
+      },
     });
   };
 

@@ -135,7 +135,7 @@ export const ProposeUpdateMarket = () => {
           fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline
         ),
-      } as ProposalUpdateMarketTerms,
+      },
     });
   };
 

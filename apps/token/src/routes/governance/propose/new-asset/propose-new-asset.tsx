@@ -76,7 +76,7 @@ export const ProposeNewAsset = () => {
         validationTimestamp: getValidationTimestamp(
           fields.proposalValidationDeadline
         ),
-      } as ProposalNewAssetTerms,
+      },
     });
   };
 

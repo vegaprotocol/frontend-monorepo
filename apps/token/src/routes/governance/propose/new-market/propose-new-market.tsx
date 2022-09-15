@@ -71,7 +71,7 @@ export const ProposeNewMarket = () => {
           fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline
         ),
-      } as ProposalNewMarketTerms,
+      },
     });
   };
 
