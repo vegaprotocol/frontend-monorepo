@@ -76,10 +76,14 @@ const useColumnDefinitions = () => {
         }: PositionsTableValueFormatterParams & {
           value: Position['openVolume'];
         }) => {
-          if (value && data && node?.rowPinned) {
-            return addDecimalsFormatNumber(value, data.decimals);
+          let ret;
+          if (value && data) {
+            ret = node?.rowPinned
+              ? addDecimalsFormatNumber(value, data.decimals)
+              : data;
           }
-          return '-';
+          // FIXME this column needs refactoring
+          return ret as unknown as string;
         },
       },
       {
@@ -129,28 +133,29 @@ const useColumnDefinitions = () => {
         },
         flex: 2,
         cellRenderer: ({ node, data }: GroupCellRendererParams) => {
-          const valueFormatted = data
-            ? (() => {
-                const min = BigInt(data.averageEntryPrice);
-                const max = BigInt(data.liquidationPrice);
-                const mid = BigInt(data.markPrice);
-                const range = max - min;
-                return {
-                  low: addDecimalsFormatNumber(
-                    min.toString(),
-                    data.marketDecimalPlaces
-                  ),
-                  high: addDecimalsFormatNumber(
-                    max.toString(),
-                    data.marketDecimalPlaces
-                  ),
-                  value: range
-                    ? Number(((mid - min) * BigInt(100)) / range)
-                    : 0,
-                  intent: data.lowMarginLevel ? Intent.Warning : undefined,
-                };
-              })()
-            : undefined;
+          const valueFormatted =
+            data && !node?.rowPinned
+              ? (() => {
+                  const min = BigInt(data.averageEntryPrice);
+                  const max = BigInt(data.liquidationPrice);
+                  const mid = BigInt(data.markPrice);
+                  const range = max - min;
+                  return {
+                    low: addDecimalsFormatNumber(
+                      min.toString(),
+                      data.marketDecimalPlaces
+                    ),
+                    high: addDecimalsFormatNumber(
+                      max.toString(),
+                      data.marketDecimalPlaces
+                    ),
+                    value: range
+                      ? Number(((mid - min) * BigInt(100)) / range)
+                      : 0,
+                    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+                  };
+                })()
+              : undefined;
           return node.rowPinned ? (
             ''
           ) : (

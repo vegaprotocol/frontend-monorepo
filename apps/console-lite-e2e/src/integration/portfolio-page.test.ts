@@ -2,6 +2,9 @@ import {
   connectVegaWallet,
   disconnectVegaWallet,
 } from '../support/connect-wallet';
+import { aliasQuery } from '@vegaprotocol/cypress';
+import { generatePositions } from '../support/mocks/generate-positions';
+import { generateAccounts } from '../support/mocks/generate-accounts';
 
 describe('Portfolio page', () => {
   afterEach(() => {
@@ -34,5 +37,21 @@ describe('Portfolio page', () => {
 
     cy.getByTestId('deposits').click();
     cy.location('pathname').should('eq', '/portfolio/deposits');
+  });
+
+  describe('Positions view', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'Positions', generatePositions());
+        aliasQuery(req, 'Accounts', generateAccounts());
+      });
+      cy.visit('/portfolio/positions');
+      connectVegaWallet();
+    });
+
+    it('data should be properly rendered', () => {
+      cy.getByTestId('positions-asset-tDAI').should('exist');
+      cy.getByTestId('positions-asset-tEURO').should('exist');
+    });
   });
 });

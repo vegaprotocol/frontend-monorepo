@@ -1,10 +1,3 @@
-import * as constants from '../simple-market-list/constants';
-import {
-  t,
-  ThemeContext,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import React, {
   forwardRef,
   useCallback,
@@ -12,7 +5,14 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import classNames from 'classnames';
 import type { AgGridReact } from 'ag-grid-react';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import {
+  t,
+  ThemeContext,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import type {
   GridOptions,
   GetRowIdParams,
@@ -20,15 +20,17 @@ import type {
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
 } from 'ag-grid-community';
+import * as constants from '../simple-market-list/constants';
 
 interface Props<T> extends GridOptions {
   data?: T[];
   handleRowClicked?: (event: { data: T }) => void;
   components?: Record<string, unknown>;
+  classNamesParam?: string | string[];
 }
 
 const ConsoleLiteGrid = <T extends { id?: string }>(
-  { data, handleRowClicked, getRowId, ...props }: Props<T>,
+  { data, handleRowClicked, getRowId, classNamesParam, ...props }: Props<T>,
   ref?: React.Ref<AgGridReact>
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
@@ -70,7 +72,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
 
   return (
     <AgGrid
-      className="mb-32 min-h-[300px]"
+      className={classNames(classNamesParam)}
       rowData={data}
       rowHeight={60}
       customThemeParams={

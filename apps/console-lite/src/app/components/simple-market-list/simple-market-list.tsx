@@ -88,6 +88,7 @@ const SimpleMarketList = () => {
       <SimpleMarketToolbar data={data || []} />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <ConsoleLiteGrid<SimpleMarketsType>
+          classNamesParam="mb-32 min-h-[300px]"
           columnDefs={columnDefs}
           data={localData}
           defaultColDef={defaultColDef}
