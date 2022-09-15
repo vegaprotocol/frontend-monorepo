@@ -140,7 +140,7 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       description: t('Tendermint software version on this node'),
     },
   ],
-  uptime: [
+  upTime: [
     {
       title: t('Uptime'),
       formatter: (t: string) => {

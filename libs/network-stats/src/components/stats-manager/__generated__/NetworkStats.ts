@@ -25,10 +25,6 @@ export interface NetworkStats_nodeData {
    * Number of nodes validating
    */
   validatingNodes: number;
-  /**
-   * Total uptime for all epochs across all nodes. Or specify a number of epochs
-   */
-  uptime: number;
 }
 
 export interface NetworkStats_statistics {
@@ -81,6 +77,10 @@ export interface NetworkStats_statistics {
    * Current chain id
    */
   chainId: string;
+  /**
+   * RFC3339Nano uptime of the node
+   */
+  upTime: string;
 }
 
 export interface NetworkStats {
