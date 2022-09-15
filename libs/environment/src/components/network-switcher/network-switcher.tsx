@@ -85,7 +85,7 @@ export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
   );
 
   const dropdownTriggerClasses = classNames(
-    'hover:border-white hover:!bg-neutral-700 focus:!border-white',
+    'hover:border-white hover:!bg-neutral-700 focus:!border-white focus-visible:!bg-neutral-700',
     {
       'text-black hover:!bg-neutral-300': theme === 'light',
       'text-white hover:!bg-neutral-700': theme === 'dark',
