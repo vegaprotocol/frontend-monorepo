@@ -9,12 +9,10 @@ import {
   fireEvent,
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import type { MockedResponse } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import type { Market, MarketsListData } from '@vegaprotocol/market-list';
-import { MARKET_LIST_QUERY } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 
 const mockedNavigate = jest.fn();
 
@@ -85,20 +83,10 @@ describe('SimpleMarketList', () => {
     jest.clearAllMocks();
     cleanup();
   });
-
-  const mocks: MockedResponse<MarketsListData> = {
-    request: {
-      query: MARKET_LIST_QUERY,
-    },
-    result: {
-      data: { markets: marketsMock, marketsCandles: [], marketsData: [] },
-    },
-  };
-
   it('should be properly rendered with some data', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]}>
+        <MockedProvider mocks={[]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -116,7 +104,7 @@ describe('SimpleMarketList', () => {
   it('click on row should be properly handled', async () => {
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]}>
+        <MockedProvider mocks={[]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -146,7 +134,7 @@ describe('SimpleMarketList', () => {
     marketsMock = [];
     await act(async () => {
       render(
-        <MockedProvider mocks={[mocks]}>
+        <MockedProvider mocks={[]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
