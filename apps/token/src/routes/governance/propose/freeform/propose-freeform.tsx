@@ -13,7 +13,6 @@ import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
-  ProposalDocsLink,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -73,13 +72,11 @@ export const ProposeFreeform = () => {
             />
 
             {VEGA_DOCS_URL && (
-              <div className="text-sm">
-                <ProposalDocsLink
-                  urlPart1={VEGA_DOCS_URL}
-                  urlPart2={'/tutorials/proposals/freeform-proposal'}
-                />
-              </div>
+              <p className="text-sm">
+                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/freeform-proposal`}</Link>
+              </p>
             )}
+
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreProposalsInfo')}{' '}

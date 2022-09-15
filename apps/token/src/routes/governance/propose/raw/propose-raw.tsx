@@ -11,7 +11,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
-  ProposalDocsLink,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
 } from '../../components/propose';
@@ -43,9 +42,9 @@ export const ProposeRaw = () => {
         {() => (
           <>
             {VEGA_DOCS_URL && (
-              <div className="text-sm">
-                <ProposalDocsLink urlPart1={VEGA_DOCS_URL} />
-              </div>
+              <p className="text-sm">
+                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
+              </p>
             )}
 
             {VEGA_EXPLORER_URL && (

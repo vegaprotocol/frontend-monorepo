@@ -15,7 +15,6 @@ import {
   ProposalFormTransactionDialog,
   ProposalFormSubheader,
   ProposalFormVoteAndEnactmentDeadline,
-  ProposalDocsLink,
 } from '../../components/propose';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -92,12 +91,9 @@ export const ProposeNewMarket = () => {
             />
 
             {VEGA_DOCS_URL && (
-              <div className="text-sm">
-                <ProposalDocsLink
-                  urlPart1={VEGA_DOCS_URL}
-                  urlPart2={'/tutorials/proposals/new-market-proposal'}
-                />
-              </div>
+              <p className="text-sm">
+                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/new-market-proposal`}</Link>
+              </p>
             )}
 
             {VEGA_EXPLORER_URL && (

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
-import { ProposalDocsLink } from '../components/propose';
 
 export const Propose = () => {
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
@@ -15,7 +14,11 @@ export const Propose = () => {
     <>
       <section className="pb-6">
         <Heading title={t('NewProposal')} />
-        {VEGA_DOCS_URL && <ProposalDocsLink urlPart1={VEGA_DOCS_URL} />}
+        {VEGA_DOCS_URL && (
+          <p className="text-sm">
+            <Link>{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
+          </p>
+        )}
         {VEGA_EXPLORER_URL && (
           <p>
             {t('MoreProposalsInfo')}{' '}

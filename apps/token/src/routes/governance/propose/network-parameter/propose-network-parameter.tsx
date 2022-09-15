@@ -16,7 +16,6 @@ import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
-  ProposalDocsLink,
 } from '../../components/propose';
 import {
   AsyncRenderer,
@@ -134,12 +133,9 @@ export const ProposeNetworkParameter = () => {
             />
 
             {VEGA_DOCS_URL && (
-              <div className="text-sm">
-                <ProposalDocsLink
-                  urlPart1={VEGA_DOCS_URL}
-                  urlPart2={'/tutorials/proposals/network-parameter-proposal'}
-                />
-              </div>
+              <p className="text-sm">
+                <Link>{`${VEGA_DOCS_URL}/tutorials/proposals/network-parameter-proposal`}</Link>
+              </p>
             )}
 
             {VEGA_EXPLORER_URL && (
