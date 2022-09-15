@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 interface ProposalFormMinRequirementsProps {
@@ -12,9 +13,9 @@ export const ProposalFormMinRequirements = ({
 }: ProposalFormMinRequirementsProps) => {
   const { t } = useTranslation();
   const minProposerBalanceFormatted =
-    minProposerBalance && Number(addDecimal(minProposerBalance, 18));
+    minProposerBalance && new BigNumber(addDecimal(minProposerBalance, 18));
   const spamProtectionMinFormatted =
-    spamProtectionMin && Number(addDecimal(spamProtectionMin, 18));
+    spamProtectionMin && new BigNumber(addDecimal(spamProtectionMin, 18));
 
   const larger =
     Number(minProposerBalanceFormatted) > (spamProtectionMinFormatted || 0)
