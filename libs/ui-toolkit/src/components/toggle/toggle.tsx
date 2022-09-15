@@ -24,7 +24,7 @@ export const Toggle = ({
   ...props
 }: ToggleProps) => {
   const fieldsetClasses =
-    'flex rounded-full bg-neutral-100 dark:bg-neutral-700 text-sm';
+    'flex rounded-full bg-neutral-100 dark:bg-neutral-800 text-sm';
   const labelClasses = classnames(
     'group flex-1',
     '-ml-[1px] first-of-type:ml-0'
@@ -34,11 +34,11 @@ export const Toggle = ({
     'relative inline-block w-full text-center',
     'peer-checked:rounded-full',
     'px-10 py-2',
-    'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
+    'peer-checked:bg-neutral-400 dark:peer-checked:bg-neutral-300',
     'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
     'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full',
-    'peer-focus-visible:bg-neutral-600'
+    'peer-focus-visible:bg-neutral-600 dark:peer-focus-visible:bg-white'
   );
 
   return (
