@@ -9,40 +9,17 @@ import {
 } from '../../test-helpers/mocks';
 import { ProposeNewAsset } from './propose-new-asset';
 
-jest.mock('../../../../hooks/use-network-param.tsx', () => ({
-  useNetworkParamWithKeys: () => ({
-    data: [
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.asset.maxClose',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.asset.maxEnact',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.asset.minClose',
-        value: '1h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.asset.minEnact',
-        value: '2h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.asset.minProposerBalance',
-        value: '1',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'spam.protection.proposal.min.tokens',
-        value: '1000000000000000000',
-      },
-    ],
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  useNetworkParams: () => ({
+    params: {
+      governance_proposal_asset_maxClose: '8760h0m0s',
+      governance_proposal_asset_maxEnact: '8760h0m0s',
+      governance_proposal_asset_minClose: '1h0m0s',
+      governance_proposal_asset_minEnact: '2h0m0s',
+      governance_proposal_asset_minProposerBalance: '1',
+      spam_protection_proposal_min_tokens: '1000000000000000000',
+    },
     loading: false,
     error: undefined,
   }),

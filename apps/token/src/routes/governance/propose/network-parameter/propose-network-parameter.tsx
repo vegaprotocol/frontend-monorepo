@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { isJson, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  suitableForSyntaxHighlighter,
+  useNetworkParams,
+} from '@vegaprotocol/react-helpers';
 import {
   useProposalSubmit,
   getClosingTimestamp,
@@ -43,7 +46,7 @@ const SelectedNetworkParamCurrentValue = ({
     <div className="mb-4">
       <p className="text-sm text-white">{t('CurrentValue')}</p>
 
-      {isJson(value) ? (
+      {suitableForSyntaxHighlighter(value) ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : (
         <Input

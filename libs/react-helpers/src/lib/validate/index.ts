@@ -37,9 +37,10 @@ export const maxSafe = (max: BigNumber) => (value: string) => {
   return true;
 };
 
-export const isJson = (str: string) => {
+export const suitableForSyntaxHighlighter = (str: string) => {
   try {
-    return JSON.parse(str) && true;
+    const test = JSON.parse(str);
+    return test && Object.keys(test).length > 0;
   } catch (e) {
     return false;
   }

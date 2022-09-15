@@ -9,52 +9,18 @@ import { AppStateProvider } from '../../../../contexts/app-state/app-state-provi
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-jest.mock('../../../../hooks/use-network-param.tsx', () => ({
-  useNetworkParamWithKeys: () => ({
-    data: [
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateNetParam.maxClose',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateNetParam.maxEnact',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateNetParam.minClose',
-        value: '1h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateNetParam.minEnact',
-        value: '2h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateNetParam.minProposerBalance',
-        value: '1',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'spam.protection.proposal.min.tokens',
-        value: '1000000000000000000',
-      },
-      {
-        key: 'limits.assets.proposeEnabledFrom',
-        value: '',
-      },
-      {
-        key: 'limits.markets.proposeEnabledFrom',
-        value: '',
-      },
-      {
-        key: 'market.auction.maximumDuration',
-        value: '168h0m0s',
-      },
-    ],
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  useNetworkParams: () => ({
+    params: {
+      governance_proposal_updateNetParam_maxClose: '8760h0m0s',
+      governance_proposal_updateNetParam_maxEnact: '8760h0m0s',
+      governance_proposal_updateNetParam_minClose: '1h0m0s',
+      governance_proposal_updateNetParam_minEnact: '2h0m0s',
+      governance_proposal_updateNetParam_minProposerBalance: '1',
+      spam_protection_proposal_min_tokens: '1000000000000000000',
+      market_auction_maximumDuration: '168h0m0s',
+    },
     loading: false,
     error: undefined,
   }),
@@ -99,11 +65,11 @@ describe('Propose Network Parameter', () => {
 
     fireEvent.change(screen.getByTestId('proposal-parameter-select'), {
       target: {
-        value: 'spam.protection.proposal.min.tokens',
+        value: 'spam_protection_proposal_min_tokens',
       },
     });
 
-    expect(select).toHaveValue('spam.protection.proposal.min.tokens');
+    expect(select).toHaveValue('spam_protection_proposal_min_tokens');
     expect(
       screen.getByTestId('selected-proposal-param-current-value')
     ).toHaveValue('1000000000000000000');

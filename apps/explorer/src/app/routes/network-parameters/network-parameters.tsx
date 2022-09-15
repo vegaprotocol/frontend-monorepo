@@ -10,7 +10,7 @@ import {
   formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
-import { isJson } from '@vegaprotocol/react-helpers';
+import { suitableForSyntaxHighlighter } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import type {
   NetworkParametersQuery,
@@ -59,7 +59,7 @@ export const NetworkParameterRow = ({
 }: {
   row: NetworkParametersQuery_networkParameters;
 }) => {
-  const isSyntaxRow = isJson(value);
+  const isSyntaxRow = suitableForSyntaxHighlighter(value);
 
   return (
     <KeyValueTableRow

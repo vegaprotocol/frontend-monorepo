@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
+import { addHours, getTime } from 'date-fns';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
@@ -128,8 +129,8 @@ describe('Raw proposal form', () => {
             value: '300',
           },
         },
-        closingTimestamp: 1657721401,
-        enactmentTimestamp: 1657807801,
+        closingTimestamp: Math.floor(getTime(addHours(new Date(), 2)) / 1000),
+        enactmentTimestamp: Math.floor(getTime(addHours(new Date(), 3)) / 1000),
       },
     });
     fireEvent.change(screen.getByTestId('proposal-data'), {
@@ -163,7 +164,7 @@ describe('Raw proposal form', () => {
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-      'Proposal submitted'
+      'Proposal rejected'
     );
   });
 

@@ -9,40 +9,17 @@ import {
 } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
 
-jest.mock('../../../../hooks/use-network-param.tsx', () => ({
-  useNetworkParamWithKeys: () => ({
-    data: [
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateMarket.maxClose',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateMarket.maxEnact',
-        value: '8760h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateMarket.minClose',
-        value: '1h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateMarket.minEnact',
-        value: '2h0m0s',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'governance.proposal.updateMarket.minProposerBalance',
-        value: '1',
-      },
-      {
-        __typename: 'NetworkParameter',
-        key: 'spam.protection.proposal.min.tokens',
-        value: '1000000000000000000',
-      },
-    ],
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  useNetworkParams: () => ({
+    params: {
+      governance_proposal_updateMarket_maxClose: '8760h0m0s',
+      governance_proposal_updateMarket_maxEnact: '8760h0m0s',
+      governance_proposal_updateMarket_minClose: '1h0m0s',
+      governance_proposal_updateMarket_minEnact: '2h0m0s',
+      governance_proposal_updateMarket_minProposerBalance: '1',
+      spam_protection_proposal_min_tokens: '1000000000000000000',
+    },
     loading: false,
     error: undefined,
   }),
