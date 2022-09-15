@@ -98,7 +98,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
           </Link>
         </li>
         {products.map((product, i) => (
-          <li key={product} className="mx-2 whitespace-nowrap">
+          <li key={`${product}-${i}`} className="mx-2 whitespace-nowrap">
             <Link
               to={`/markets/${
                 params.state || MarketState.STATE_ACTIVE
