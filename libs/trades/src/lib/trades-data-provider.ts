@@ -75,7 +75,19 @@ const update = (
       } else {
         const firstNode = draft[0]?.node;
         if (firstNode && node.createdAt >= firstNode.createdAt) {
-          draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
+          const { marketId, ...nodeData } = node;
+          draft.unshift({
+            node: {
+              ...nodeData,
+              __typename: 'Trade',
+              market: {
+                __typename: 'Market',
+                id: marketId,
+              },
+            },
+            cursor: '',
+            __typename: 'TradeEdge',
+          });
         }
       }
     });

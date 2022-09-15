@@ -101,12 +101,12 @@ type OrderListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: Orders_party_ordersConnection_edges_node | null;
+  data: OrderWithMarket | null;
 };
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
-  cancel: (order: OrderFields) => void;
-  setEditOrder: (order: OrderFields) => void;
+  cancel: (order: OrderWithMarket) => void;
+  setEditOrder: (order: OrderWithMarket) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -131,22 +131,16 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            [positiveClassNames]: ({
-              data,
-            }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_BUY,
-            [negativeClassNames]: ({
-              data,
-            }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_SELL,
+            [positiveClassNames]: ({ data }: { data: OrderWithMarket }) =>
+              data?.side === Side.SIDE_BUY,
+            [negativeClassNames]: ({ data }: { data: OrderWithMarket }) =>
+              data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['size'];
+            value?: OrderWithMarket['size'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
