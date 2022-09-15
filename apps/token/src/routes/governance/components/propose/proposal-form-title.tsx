@@ -7,10 +7,10 @@ interface ProposalFormTitleProps {
   errorMessage: string | undefined;
 }
 
-export const ProposalFormTitle = function ({
+export const ProposalFormTitle = ({
   registerField: register,
   errorMessage,
-}: ProposalFormTitleProps) {
+}: ProposalFormTitleProps) => {
   const { t } = useTranslation();
   return (
     <FormGroup

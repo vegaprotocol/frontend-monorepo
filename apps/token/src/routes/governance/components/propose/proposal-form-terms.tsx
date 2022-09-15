@@ -14,11 +14,11 @@ interface ProposalFormTermsProps {
   labelOverride?: string;
 }
 
-export const ProposalFormTerms = function ({
+export const ProposalFormTerms = ({
   registerField: register,
   errorMessage,
   labelOverride,
-}: ProposalFormTermsProps) {
+}: ProposalFormTermsProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   return (

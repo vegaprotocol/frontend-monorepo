@@ -7,10 +7,10 @@ interface ProposalFormDescriptionProps {
   errorMessage: string | undefined;
 }
 
-export const ProposalFormDescription = function ({
+export const ProposalFormDescription = ({
   registerField: register,
   errorMessage,
-}: ProposalFormDescriptionProps) {
+}: ProposalFormDescriptionProps) => {
   const { t } = useTranslation();
   return (
     <FormGroup

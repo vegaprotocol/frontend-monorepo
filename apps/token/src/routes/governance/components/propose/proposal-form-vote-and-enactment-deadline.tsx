@@ -26,7 +26,7 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps {
   validationErrorMessage?: string;
 }
 
-export const ProposalFormVoteAndEnactmentDeadline = function ({
+export const ProposalFormVoteAndEnactmentDeadline = ({
   voteRegister,
   voteErrorMessage,
   voteMinClose,
@@ -38,7 +38,7 @@ export const ProposalFormVoteAndEnactmentDeadline = function ({
   validationRequired,
   validationRegister,
   validationErrorMessage,
-}: ProposalFormVoteAndEnactmentDeadlineProps) {
+}: ProposalFormVoteAndEnactmentDeadlineProps) => {
   const {
     minVoteSeconds,
     maxVoteSeconds,
