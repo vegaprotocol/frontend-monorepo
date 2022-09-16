@@ -98,6 +98,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
   const { data, loading, error } = useQuery<NetworkParamsResponse, never>(
     NETWORK_PARAMETERS_QUERY
   );
+  console.log(data, loading, error);
 
   const paramsObj = useMemo(() => {
     if (!data?.networkParameters) return null;

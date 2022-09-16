@@ -1,33 +1,70 @@
+import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter as Router } from 'react-router-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import {
-  mockWalletContext,
-  networkParamsQueryMock,
-} from '../../test-helpers/mocks';
+import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
+import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import { MARKETS_QUERY } from './propose-update-market';
+import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
+import { gql } from '@apollo/client';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useNetworkParams: () => ({
-    params: {
-      governance_proposal_updateMarket_maxClose: '8760h0m0s',
-      governance_proposal_updateMarket_maxEnact: '8760h0m0s',
-      governance_proposal_updateMarket_minClose: '1h0m0s',
-      governance_proposal_updateMarket_minEnact: '2h0m0s',
-      governance_proposal_updateMarket_minProposerBalance: '1',
-      spam_protection_proposal_min_tokens: '1000000000000000000',
+const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+  request: {
+    query: gql`
+      query NetworkParams {
+        networkParameters {
+          key
+          value
+        }
+      }
+    `,
+  },
+  result: {
+    data: {
+      networkParameters: [
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.maxClose',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.maxEnact',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.minClose',
+          value: '1h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.minEnact',
+          value: '2h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'spam.protection.proposal.min.tokens',
+          value: '1000000000000000000',
+        },
+      ],
     },
-    loading: false,
-    error: undefined,
-  }),
-}));
+  },
+};
 
-jest.mock('@apollo/client', () => ({
-  ...jest.requireActual('@apollo/client'),
-  useQuery: jest.fn(() => ({
+const marketQueryMock: MockedResponse<ProposalMarketsQuery> = {
+  request: {
+    query: MARKETS_QUERY,
+  },
+  result: {
     data: {
       marketsConnection: {
         __typename: 'MarketConnection',
@@ -95,46 +132,55 @@ jest.mock('@apollo/client', () => ({
         ],
       },
     },
-    loading: false,
-    error: undefined,
-  })),
-}));
+  },
+};
 
 const renderComponent = () =>
   render(
-    <Router>
-      <MockedProvider mocks={[networkParamsQueryMock]}>
+    <MockedProvider
+      mocks={[updateMarketNetworkParamsQueryMock, marketQueryMock]}
+      addTypename={false}
+    >
+      <Router>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposeUpdateMarket />
           </VegaWalletContext.Provider>
         </AppStateProvider>
-      </MockedProvider>
-    </Router>
+      </Router>
+    </MockedProvider>
   );
 
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.
 
 describe('Propose Update Market', () => {
-  it('should render successfully', () => {
+  it('should render successfully', async () => {
     const { baseElement } = renderComponent();
-    expect(baseElement).toBeTruthy();
+    await expect(baseElement).toBeTruthy();
   });
 
-  it('should render the title', () => {
+  it('should render the title', async () => {
     renderComponent();
-    expect(screen.getByText('Update market proposal')).toBeTruthy();
+
+    await waitFor(() =>
+      expect(screen.getByText('Update market proposal')).toBeInTheDocument()
+    );
   });
 
-  it('should render the select element with no initial value', () => {
+  it('should render the select element with no initial value', async () => {
     renderComponent();
+    await waitFor(() =>
+      expect(screen.getByText('Update market proposal')).toBeInTheDocument()
+    );
     expect(screen.getByTestId('proposal-market-select')).toHaveValue('');
   });
 
-  it('should render the correct market details when the market select is used', () => {
+  it('should render the correct market details when the market select is used', async () => {
     renderComponent();
-
+    await waitFor(() =>
+      expect(screen.getByText('Update market proposal')).toBeInTheDocument()
+    );
     fireEvent.change(screen.getByTestId('proposal-market-select'), {
       target: {
         value:

@@ -1,34 +1,67 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { ProposeFreeform } from './propose-freeform';
 import { MockedProvider } from '@apollo/client/testing';
-import {
-  mockWalletContext,
-  networkParamsQueryMock,
-} from '../../test-helpers/mocks';
+import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter as Router } from 'react-router-dom';
+import { gql } from '@apollo/client';
+import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { MockedResponse } from '@apollo/client/testing';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useNetworkParams: () => ({
-    params: {
-      governance_proposal_freeform_maxClose: '8760h0m0s',
-      governance_proposal_freeform_maxEnact: '8760h0m0s',
-      governance_proposal_freeform_minClose: '1h0m0s',
-      governance_proposal_freeform_minEnact: '2h0m0s',
-      governance_proposal_freeform_minProposerBalance: '1',
-      spam_protection_freeform_min_tokens: '1000000000000000000',
+const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+  request: {
+    query: gql`
+      query NetworkParams {
+        networkParameters {
+          key
+          value
+        }
+      }
+    `,
+  },
+  result: {
+    data: {
+      networkParameters: [
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.maxClose',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.maxEnact',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.minClose',
+          value: '1h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.minEnact',
+          value: '2h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'spam.protection.proposal.min.tokens',
+          value: '1000000000000000000',
+        },
+      ],
     },
-    loading: false,
-    error: undefined,
-  }),
-}));
+  },
+};
 
 const renderComponent = () =>
   render(
     <Router>
-      <MockedProvider mocks={[networkParamsQueryMock]}>
+      <MockedProvider mocks={[updateMarketNetworkParamsQueryMock]}>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposeFreeform />
@@ -42,13 +75,15 @@ const renderComponent = () =>
 // components are tested in their own directory.
 
 describe('Propose Freeform', () => {
-  it('should render successfully', () => {
+  it('should render successfully', async () => {
     const { baseElement } = renderComponent();
     expect(baseElement).toBeTruthy();
   });
 
-  it('should render the title', () => {
+  it('should render the title', async () => {
     renderComponent();
-    expect(screen.getByText('New freeform proposal')).toBeTruthy();
+    await waitFor(() =>
+      expect(screen.getByText('New freeform proposal')).toBeInTheDocument()
+    );
   });
 });

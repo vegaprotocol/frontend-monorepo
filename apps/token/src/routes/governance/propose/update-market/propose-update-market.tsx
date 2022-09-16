@@ -29,11 +29,10 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import type { ProposalUpdateMarketTerms } from '@vegaprotocol/wallet';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
-const MARKETS_QUERY = gql`
+export const MARKETS_QUERY = gql`
   query ProposalMarketsQuery {
     marketsConnection {
       edges {
@@ -77,12 +76,18 @@ export const ProposeUpdateMarket = () => {
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
 
+  console.log(
+    `params: ${params}, networkParamsLoading: ${networkParamsLoading}, networkParamsError: ${networkParamsError}`
+  );
+
   const {
     data: marketsData,
     loading: marketsLoading,
     error: marketsError,
   } = useQuery<ProposalMarketsQuery>(MARKETS_QUERY);
-
+  console.log(
+    `marketsData: ${marketsData}, marketsLoading: ${marketsLoading}, marketsError: ${marketsError}`
+  );
   const sortedMarkets = useMemo(() => {
     if (!marketsData) {
       return [];

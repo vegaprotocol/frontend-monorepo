@@ -1,35 +1,67 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ProposeNetworkParameter } from './propose-network-parameter';
 import { MockedProvider } from '@apollo/client/testing';
-import {
-  mockWalletContext,
-  networkParamsQueryMock,
-} from '../../test-helpers/mocks';
+import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter as Router } from 'react-router-dom';
+import { gql } from '@apollo/client';
+import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { MockedResponse } from '@apollo/client/testing';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useNetworkParams: () => ({
-    params: {
-      governance_proposal_updateNetParam_maxClose: '8760h0m0s',
-      governance_proposal_updateNetParam_maxEnact: '8760h0m0s',
-      governance_proposal_updateNetParam_minClose: '1h0m0s',
-      governance_proposal_updateNetParam_minEnact: '2h0m0s',
-      governance_proposal_updateNetParam_minProposerBalance: '1',
-      spam_protection_proposal_min_tokens: '1000000000000000000',
-      market_auction_maximumDuration: '168h0m0s',
+const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+  request: {
+    query: gql`
+      query NetworkParams {
+        networkParameters {
+          key
+          value
+        }
+      }
+    `,
+  },
+  result: {
+    data: {
+      networkParameters: [
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.maxClose',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.maxEnact',
+          value: '8760h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.minClose',
+          value: '1h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.minEnact',
+          value: '2h0m0s',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'spam.protection.proposal.min.tokens',
+          value: '1000000000000000000',
+        },
+      ],
     },
-    loading: false,
-    error: undefined,
-  }),
-}));
+  },
+};
 
 const renderComponent = () =>
   render(
     <Router>
-      <MockedProvider mocks={[networkParamsQueryMock]}>
+      <MockedProvider mocks={[updateMarketNetworkParamsQueryMock]}>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposeNetworkParameter />
@@ -43,25 +75,30 @@ const renderComponent = () =>
 // components are tested in their own directory.
 
 describe('Propose Network Parameter', () => {
-  it('should render successfully', () => {
+  it('should render successfully', async () => {
     const { baseElement } = renderComponent();
-    expect(baseElement).toBeTruthy();
+    await expect(baseElement).toBeTruthy();
   });
 
-  it('should render the correct title', () => {
+  it('should render the correct title', async () => {
     renderComponent();
-    expect(screen.getByText('Update network parameter proposal')).toBeTruthy();
+    await waitFor(() =>
+      expect(screen.getByText('Update network parameter proposal')).toBeTruthy()
+    );
   });
 
-  it('should render the network param select element with no initial value', () => {
+  it('should render the network param select element with no initial value', async () => {
     renderComponent();
-    expect(screen.getByTestId('proposal-parameter-select')).toHaveValue('');
+    await waitFor(() =>
+      expect(screen.getByTestId('proposal-parameter-select')).toHaveValue('')
+    );
   });
 
-  it('should render the current param value and a new value input when the network param select element is changed', () => {
+  it('should render the current param value and a new value input when the network param select element is changed', async () => {
     renderComponent();
-    const select = screen.getByTestId('proposal-parameter-select');
-    expect(select).toHaveValue('');
+    await waitFor(() =>
+      expect(screen.getByTestId('proposal-parameter-select')).toHaveValue('')
+    );
 
     fireEvent.change(screen.getByTestId('proposal-parameter-select'), {
       target: {
@@ -69,7 +106,9 @@ describe('Propose Network Parameter', () => {
       },
     });
 
-    expect(select).toHaveValue('spam_protection_proposal_min_tokens');
+    expect(screen.getByTestId('proposal-parameter-select')).toHaveValue(
+      'spam_protection_proposal_min_tokens'
+    );
     expect(
       screen.getByTestId('selected-proposal-param-current-value')
     ).toHaveValue('1000000000000000000');
