@@ -78,8 +78,7 @@ jest.mock('../../constants', () => ({
   IS_MARKET_TRADABLE: jest.fn((arg) => mockIsTradable(arg)),
 }));
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('SimpleMarketList', () => {
+describe('SimpleMarketList', () => {
   afterEach(() => {
     jest.clearAllMocks();
     cleanup();
