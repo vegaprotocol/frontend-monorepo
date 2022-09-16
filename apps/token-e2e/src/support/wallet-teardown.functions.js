@@ -52,13 +52,13 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
       });
   });
 
-  cy.get(vegaWalletContainer).within(() => {
-    cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
-      'contain',
-      '0.000000000000000000',
-      { timeout: transactionTimeout }
-    );
-  });
+  // cy.get(vegaWalletContainer).within(() => {
+  //   cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
+  //     'contain',
+  //     '0.000000000000000000',
+  //     { timeout: transactionTimeout }
+  //   );
+  // });
 });
 
 Cypress.Commands.add(

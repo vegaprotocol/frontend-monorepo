@@ -61,36 +61,38 @@ function ethPreparation() {
 Cypress.Commands.add(
   'eth_associate_tokens',
   function (amount, type = 'wallet') {
-    if (!this.vestingContract || !this.stakingBridgeContract) {
-      ethPreparation();
+    if (amount > 0) {
+      if (!this.vestingContract || !this.stakingBridgeContract) {
+        ethPreparation();
+      }
+      cy.highlight(`Staking ${amount} tokens from ${type}`);
+      if (type === 'wallet') {
+        cy.wrap(
+          this.stakingBridgeContract.stake(
+            new BigNumber(amount).multipliedBy(1e18).toString(),
+            vegaWalletPubKey
+          ),
+          {
+            timeout: transactionTimeout,
+            log: false,
+          }
+        ).then((tx) => {
+          cy.wait_for_transaction(tx);
+        });
+      } else if (type === 'contract') {
+        cy.wrap(
+          this.vestingContract.stake_tokens(
+            new BigNumber(amount).multipliedBy(1e18).toString(),
+            vegaWalletPubKey
+          ),
+          {
+            timeout: transactionTimeout,
+            log: false,
+          }
+        ).then((tx) => {
+          cy.wait_for_transaction(tx);
+        });
+      } else throw Error(`Invalid type ${type}`);
     }
-    cy.highlight(`Staking ${amount} tokens from ${type}`);
-    if (type === 'wallet') {
-      cy.wrap(
-        this.stakingBridgeContract.stake(
-          new BigNumber(amount).multipliedBy(1e18).toString(),
-          vegaWalletPubKey
-        ),
-        {
-          timeout: transactionTimeout,
-          log: false,
-        }
-      ).then((tx) => {
-        cy.wait_for_transaction(tx);
-      });
-    } else if (type === 'contract') {
-      cy.wrap(
-        this.vestingContract.stake_tokens(
-          new BigNumber(amount).multipliedBy(1e18).toString(),
-          vegaWalletPubKey
-        ),
-        {
-          timeout: transactionTimeout,
-          log: false,
-        }
-      ).then((tx) => {
-        cy.wait_for_transaction(tx);
-      });
-    } else throw Error(`Invalid type ${type}`);
   }
 );
