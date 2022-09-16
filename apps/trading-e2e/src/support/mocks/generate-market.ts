@@ -18,7 +18,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
       positionDecimalPlaces: 0,
       data: {
         market: {
-          id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
+          id: 'market-0',
           __typename: 'Market',
         },
         auctionStart: '2022-08-12T11:13:47.611014117Z',
