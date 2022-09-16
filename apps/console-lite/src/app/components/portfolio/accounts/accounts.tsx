@@ -8,6 +8,10 @@ import {
   getId,
 } from '@vegaprotocol/accounts';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import {
+  AssetDetailsDialog,
+  useAssetDetailsDialogStore,
+} from '@vegaprotocol/assets';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
 import { useAccountColumnDefinitions } from '.';
 
@@ -20,6 +24,11 @@ interface Props {
 }
 
 const AccountsManager = ({ partyId }: Props) => {
+  const {
+    isAssetDetailsDialogOpen,
+    assetDetailsDialogSymbol,
+    setAssetDetailsDialogOpen,
+  } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = accountsManagerUpdate(gridRef);
@@ -29,15 +38,22 @@ const AccountsManager = ({ partyId }: Props) => {
   >({ dataProvider: accountsDataProvider, update, variables });
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <ConsoleLiteGrid<AccountObj>
-        data={data as AccountObj[]}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        components={{ PriceCell }}
-        getRowId={({ data }) => getId(data)}
+    <>
+      <AsyncRenderer loading={loading} error={error} data={data}>
+        <ConsoleLiteGrid<AccountObj>
+          data={data as AccountObj[]}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          components={{ PriceCell }}
+          getRowId={({ data }) => getId(data)}
+        />
+      </AsyncRenderer>
+      <AssetDetailsDialog
+        assetSymbol={assetDetailsDialogSymbol}
+        open={isAssetDetailsDialogOpen}
+        onChange={(open) => setAssetDetailsDialogOpen(open)}
       />
-    </AsyncRenderer>
+    </>
   );
 };
 
