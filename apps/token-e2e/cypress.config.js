@@ -44,6 +44,6 @@ module.exports = defineConfig({
     txTimeout: { timeout: 70000 },
     epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
-    teardownNetworkAfterFlows: false
+    teardownNetworkAfterFlows: false,
   },
 });

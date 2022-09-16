@@ -44,23 +44,28 @@ Cypress.Commands.add('restartVegacapsuleNetwork', () => {
     return false;
   });
   // We stop the network twice - since it does not always shutdown correctly on first attempt
-  cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
-  cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
-    .its('stderr').should('contain', 'network cleaning up success');
+  cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
+  cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false })
+    .its('stderr')
+    .should('contain', 'network cleaning up success');
 
   cy.exec(
-    'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force', {failOnNonZeroExit: false, timeout: 100000}
+    'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
+    { failOnNonZeroExit: false, timeout: 100000 }
   )
-    .its('stderr').then(response => {
-      if (!response.includes('starting network success'))
-      {
-        cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
+    .its('stderr')
+    .then((response) => {
+      if (!response.includes('starting network success')) {
+        cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
         cy.exec(
-          'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force', {failOnNonZeroExit: false, timeout: 100000}
+          'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
+          { failOnNonZeroExit: false, timeout: 100000 }
         )
           .its('stderr')
-          .then(response => {return response})
+          .then((response) => {
+            return response;
+          });
       }
     })
-    .should('contain', 'starting network success');  
+    .should('contain', 'starting network success');
 });
