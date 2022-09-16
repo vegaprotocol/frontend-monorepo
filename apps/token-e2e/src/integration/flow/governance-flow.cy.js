@@ -495,7 +495,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
               cy.get(viewProposalButton).should('be.visible').click();
             });
           });
-          cy.get('@freeformProposal').then((freeformProposal) => {
+          cy.get('@freeformProposal').then(() => {
             // 1004-VOTE-055
             cy.get(proposalDetailsDescription)
               .should('have.attr', 'href')

@@ -17,8 +17,6 @@ const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletStakedBalances =
   '[data-testid="vega-wallet-balance-staked-validators"]';
-const vegaWalletThisEpochBalances =
-  '[data-testid="vega-wallet-balance-this-epoch"]';
 const ethWalletAssociatedBalances =
   '[data-testid="eth-wallet-associated-balances"]';
 const ethWalletTotalAssociatedBalance = '[data-testid="currency-locked"]';
