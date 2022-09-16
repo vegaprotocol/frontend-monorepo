@@ -1,9 +1,5 @@
 import React, { useMemo } from 'react';
-import {
-  addDecimalsFormatNumber,
-  t,
-  PriceCell,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
