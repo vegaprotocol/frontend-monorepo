@@ -208,39 +208,6 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-details')).toHaveTextContent('long');
   });
 
-  it('Renders Freeform proposal - extra long rationale (165 chars)', () => {
-    render(
-      renderComponent(
-        generateProposal({
-          id: 'extraLong',
-          rationale: {
-            title:
-              'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
-            description:
-              'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
-          },
-          terms: {
-            change: {
-              __typename: 'NewFreeform',
-            },
-          },
-        })
-      )
-    );
-    // For a rationale over 160 chars, we expect the header to be truncated at 100
-    // chars with ellipsis and the details-one element to contain 60 chars and also
-    // be truncated with an ellipsis.
-    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
-      'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra…'
-    );
-    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
-      'Aenean sem odio, eleifend non sodales vitae, porttitor eu e…'
-    );
-    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
-      'extraLong'
-    );
-  });
-
   // Remove once proposals have rationale and re-enable above tests
   it('Renders Freeform proposal - id for title', () => {
     render(
