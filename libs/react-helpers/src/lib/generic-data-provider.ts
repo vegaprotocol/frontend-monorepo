@@ -241,6 +241,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
         pagination: paginationVariables,
       },
       fetchPolicy: fetchPolicy || 'no-cache',
+      errorPolicy: 'ignore',
     });
     const insertionData = getData(res.data);
     const insertionPageInfo = pagination.getPageInfo(res.data);
