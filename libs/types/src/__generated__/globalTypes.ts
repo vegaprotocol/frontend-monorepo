@@ -157,7 +157,7 @@ export enum OracleSpecStatus {
 }
 
 /**
- * Reason for the order being rejected by the core node
+ * Why the order was rejected by the core node
  */
 export enum OrderRejectionReason {
   ORDER_ERROR_AMEND_FAILURE = "ORDER_ERROR_AMEND_FAILURE",
@@ -252,7 +252,7 @@ export enum PropertyKeyType {
 }
 
 /**
- * Reason for the proposal being rejected by the core node
+ * Why the proposal was rejected by the core node
  */
 export enum ProposalRejectionReason {
   PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = "PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE",

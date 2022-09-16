@@ -10,7 +10,7 @@ import { Interval } from "@vegaprotocol/types";
 // ====================================================
 
 export interface MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node {
-  __typename: "CandleNode";
+  __typename: "Candle";
   /**
    * High price (uint64)
    */

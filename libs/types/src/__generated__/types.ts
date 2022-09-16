@@ -85,7 +85,7 @@ export enum AccountType {
   ACCOUNT_TYPE_PENDING_TRANSFERS = 'ACCOUNT_TYPE_PENDING_TRANSFERS',
   /** RewardLpReceivedFees - an account holding rewards for a liquidity provider's received fees */
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES',
-  /** RewardMakerPaidFees - an account holding rewards for taker paid fees */
+  /** RewardMakerPaidFees - an account holding rewards for maker paid fees */
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES = 'ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES',
   /** RewardMakerReceivedFees - an account holding rewards for maker received fees */
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES',
@@ -333,18 +333,16 @@ export type Candle = {
   __typename?: 'Candle';
   /** Close price (uint64) */
   close: Scalars['String'];
-  /** RFC3339Nano formatted date and time for the candle */
-  datetime: Scalars['String'];
   /** High price (uint64) */
   high: Scalars['String'];
-  /** Interval price (string) */
-  interval: Interval;
+  /** RFC3339Nano formatted date and time for the candle end time, or last updated time if the candle is still open */
+  lastUpdateInPeriod: Scalars['String'];
   /** Low price (uint64) */
   low: Scalars['String'];
   /** Open price (uint64) */
   open: Scalars['String'];
-  /** Unix epoch+nanoseconds for when the candle occurred */
-  timestamp: Scalars['String'];
+  /** RFC3339Nano formatted date and time for the candle start time */
+  periodStart: Scalars['String'];
   /** Volume price (uint64) */
   volume: Scalars['String'];
 };
@@ -360,25 +358,7 @@ export type CandleDataConnection = {
 export type CandleEdge = {
   __typename?: 'CandleEdge';
   cursor: Scalars['String'];
-  node: CandleNode;
-};
-
-export type CandleNode = {
-  __typename?: 'CandleNode';
-  /** Close price (uint64) */
-  close: Scalars['String'];
-  /** High price (uint64) */
-  high: Scalars['String'];
-  /** RFC3339Nano formatted date and time for the candle */
-  lastUpdate: Scalars['String'];
-  /** Low price (uint64) */
-  low: Scalars['String'];
-  /** Open price (uint64) */
-  open: Scalars['String'];
-  /** Unix epoch+nanoseconds for when the candle occurred */
-  start: Scalars['String'];
-  /** Volume price (uint64) */
-  volume: Scalars['String'];
+  node: Candle;
 };
 
 /** Condition describes the condition that must be validated by the oracle engine */
@@ -824,8 +804,8 @@ export type Future = {
   quoteName: Scalars['String'];
   /** The name of the asset (string) */
   settlementAsset: Asset;
-  /** The number of decimal places implied by the settlement price emitted by the settlement oracle */
-  settlementPriceDecimals: Scalars['Int'];
+  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
+  settlementDataDecimals: Scalars['Int'];
 };
 
 export type FutureProduct = {
@@ -843,8 +823,8 @@ export type FutureProduct = {
   quoteName: Scalars['String'];
   /** Product asset */
   settlementAsset: Asset;
-  /** The number of decimal places implied by the settlement price emitted by the settlement oracle */
-  settlementPriceDecimals: Scalars['Int'];
+  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
+  settlementDataDecimals: Scalars['Int'];
 };
 
 /** Describes something that can be traded on Vega */
@@ -1178,11 +1158,6 @@ export type Market = {
   accounts?: Maybe<Array<Account>>;
   /** Get account for a party or market */
   accountsConnection?: Maybe<AccountsConnection>;
-  /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
-   * @deprecated Use the 'candlesConnection' field instead
-   */
-  candles?: Maybe<Array<Maybe<Candle>>>;
   /** Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination */
   candlesConnection?: Maybe<CandleDataConnection>;
   /** marketData for the given market */
@@ -1271,13 +1246,6 @@ export type MarketaccountsArgs = {
 export type MarketaccountsConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
-};
-
-
-/** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
-export type MarketcandlesArgs = {
-  interval: Interval;
-  since: Scalars['String'];
 };
 
 
@@ -2117,7 +2085,7 @@ export type OrderEstimate = {
   totalFeeAmount: Scalars['String'];
 };
 
-/** Reason for the order being rejected by the core node */
+/** Why the order was rejected by the core node */
 export enum OrderRejectionReason {
   /** Amending the order failed */
   ORDER_ERROR_AMEND_FAILURE = 'ORDER_ERROR_AMEND_FAILURE',
@@ -2805,7 +2773,7 @@ export type Proposal = {
   rationale: ProposalRationale;
   /** A UUID reference to aid tracking proposals on Vega */
   reference: Scalars['String'];
-  /** Reason for the proposal to be rejected by the core */
+  /** Why the proposal was rejected by the core */
   rejectionReason?: Maybe<ProposalRejectionReason>;
   /** Required liquidity provider equity like share majority for this proposal to succeed */
   requiredLpMajority?: Maybe<Scalars['String']>;
@@ -2849,7 +2817,7 @@ export type ProposalRationale = {
   title: Scalars['String'];
 };
 
-/** Reason for the proposal being rejected by the core node */
+/** Why the proposal was rejected by the core node */
 export enum ProposalRejectionReason {
   /** The specified close time is too late based on network parameters */
   PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = 'PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE',
@@ -4102,7 +4070,7 @@ export type Trade = {
   sellerAuctionBatch?: Maybe<Scalars['Int']>;
   /** The fee paid by the seller side of the trade */
   sellerFee: TradeFee;
-  /** The number of contracts trades, will always be <= the remaining size of both orders immediately before the trade (uint64) */
+  /** The number of units traded, will always be <= the remaining size of both orders immediately before the trade (uint64) */
   size: Scalars['String'];
   /** The type of trade */
   type: TradeType;

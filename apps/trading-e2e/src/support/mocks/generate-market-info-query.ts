@@ -113,7 +113,7 @@ export const generateMarketInfoQuery = (
         },
         __typename: 'LiquidityMonitoringParameters',
       },
-      candles: [],
+      candlesConnection: null,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {

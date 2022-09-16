@@ -84,7 +84,7 @@ export interface Fills_party_tradesConnection_edges_node {
    */
   price: string;
   /**
-   * The number of contracts trades, will always be <= the remaining size of both orders immediately before the trade (uint64)
+   * The number of units traded, will always be <= the remaining size of both orders immediately before the trade (uint64)
    */
   size: string;
   /**

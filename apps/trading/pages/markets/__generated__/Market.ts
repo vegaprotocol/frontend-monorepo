@@ -169,7 +169,7 @@ export interface Market_market_marketTimestamps {
   close: string | null;
 }
 
-export interface Market_market_candles {
+export interface Market_market_candlesConnection_edges_node {
   __typename: "Candle";
   /**
    * Open price (uint64)
@@ -183,6 +183,19 @@ export interface Market_market_candles {
    * Volume price (uint64)
    */
   volume: string;
+}
+
+export interface Market_market_candlesConnection_edges {
+  __typename: "CandleEdge";
+  node: Market_market_candlesConnection_edges_node;
+}
+
+export interface Market_market_candlesConnection {
+  __typename: "CandleDataConnection";
+  /**
+   * The candles
+   */
+  edges: (Market_market_candlesConnection_edges | null)[] | null;
 }
 
 export interface Market_market {
@@ -236,9 +249,9 @@ export interface Market_market {
    */
   marketTimestamps: Market_market_marketTimestamps;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candles: (Market_market_candles | null)[] | null;
+  candlesConnection: Market_market_candlesConnection | null;
 }
 
 export interface Market {

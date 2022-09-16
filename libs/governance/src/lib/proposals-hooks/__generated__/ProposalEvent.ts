@@ -28,7 +28,7 @@ export interface ProposalEvent_busEvents_event_Proposal {
    */
   state: ProposalState;
   /**
-   * Reason for the proposal to be rejected by the core
+   * Why the proposal was rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**

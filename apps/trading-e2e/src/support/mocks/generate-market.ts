@@ -75,20 +75,29 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
         close: null,
         __typename: 'MarketTimestamps',
       },
-      candles: [
-        {
-          open: '2095312844',
-          close: '2090090607',
-          volume: '4847',
-          __typename: 'Candle',
-        },
-        {
-          open: '2090090000',
-          close: '2090090607',
-          volume: '4847',
-          __typename: 'Candle',
-        },
-      ],
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
+          {
+            __typename: 'CandleEdge',
+            node: {
+              open: '2095312844',
+              close: '2090090607',
+              volume: '4847',
+              __typename: 'Candle',
+            },
+          },
+          {
+            __typename: 'CandleEdge',
+            node: {
+              open: '2090090000',
+              close: '2090090607',
+              volume: '4847',
+              __typename: 'Candle',
+            },
+          },
+        ],
+      },
       __typename: 'Market',
     },
   };
