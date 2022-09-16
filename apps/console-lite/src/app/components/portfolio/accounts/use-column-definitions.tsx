@@ -8,6 +8,7 @@ import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type {
+  ColDef,
   GroupCellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
@@ -47,7 +48,7 @@ const comparator = (
 const useAccountColumnDefinitions = () => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const columnDefs = useMemo(() => {
+  const columnDefs: ColDef[] = useMemo(() => {
     return [
       {
         colId: 'account-asset',
@@ -79,47 +80,25 @@ const useAccountColumnDefinitions = () => {
         colId: 'type',
         headerName: t('Type'),
         field: 'type',
-        cellClass: 'uppercase flex h-full items-center',
-        cellRenderer: ({ value }: GroupCellRendererParams) => (
-          <div className="grid h-full items-center" title={value}>
-            <div className="truncate min-w-0">
-              {value ? AccountTypeMapping[value as AccountType] : '-'}
-            </div>
-          </div>
-        ),
+        cellClass: 'uppercase !flex h-full items-center',
+        valueFormatter: ({ value }: ValueFormatterParams) =>
+          value ? AccountTypeMapping[value as AccountType] : '-',
       },
       {
         colId: 'market',
         headerName: t('Market'),
-        cellClass: 'uppercase flex h-full items-center',
+        cellClass: 'uppercase !flex h-full items-center',
         field: 'market.tradableInstrument.instrument.name',
-        cellRenderer: ({ value }: GroupCellRendererParams) => (
-          <div className="grid h-full items-center" title={value || '—'}>
-            <div className="truncate min-w-0">{value || '—'}</div>
-          </div>
-        ),
+        valueFormatter: "value || '—'",
       },
       {
         colId: 'balance',
         headerName: t('Balance'),
         field: 'balance',
-        cellClass: 'uppercase flex h-full items-center',
-        cellRenderer: ({ value, data }: AccountsTableValueFormatterParams) => (
-          <div
-            className="grid h-full items-center"
-            title={addDecimalsFormatNumber(value, data.asset.decimals)}
-          >
-            <div className="truncate min-w-0">
-              <PriceCell
-                value={value}
-                valueFormatted={addDecimalsFormatNumber(
-                  value,
-                  data.asset.decimals
-                )}
-              />
-            </div>
-          </div>
-        ),
+        cellClass: 'uppercase !flex h-full items-center',
+        cellRenderer: 'PriceCell',
+        valueFormatter: ({ value, data }: AccountsTableValueFormatterParams) =>
+          addDecimalsFormatNumber(value, data.asset.decimals),
       },
     ];
   }, [setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol]);
