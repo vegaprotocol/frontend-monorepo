@@ -7,7 +7,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import type { MarketState } from '@vegaprotocol/types';
-import filterMarkets from '../../hooks/filter-markets';
+import useMarketsFilterData from '../../hooks/use-markets-filter-data';
 import useColumnDefinitions from '../../hooks/use-column-definitions';
 import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
@@ -20,7 +20,7 @@ import type {
   GetRowIdParams,
   TabToNextCellParams,
 } from 'ag-grid-community/dist/lib/entities/iCallbackParams';
-import type { Market } from '@vegaprotocol/market-list';
+import type { Market, MarketsListData } from '@vegaprotocol/market-list';
 import { useMarketList } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {
@@ -42,17 +42,7 @@ const SimpleMarketList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
 
   const { data, error, loading } = useMarketList();
-
-  const localData = useMemo(
-    () =>
-      filterMarkets(data?.markets || [], params).map((m) => ({
-        ...m,
-        candles: (data?.marketsCandles || [])
-          .filter((c) => c.marketId === m.id)
-          .map((c) => c.candles),
-      })),
-    [data, params]
-  );
+  const localData = useMarketsFilterData(data as MarketsListData, params);
 
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
