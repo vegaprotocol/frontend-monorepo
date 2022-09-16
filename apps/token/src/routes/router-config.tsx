@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Home from './home';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
@@ -195,14 +196,12 @@ const LazyWithdrawals = React.lazy(
 const routerConfig = [
   {
     path: Routes.HOME,
-    name: 'Home',
     // Not lazy as loaded when a user first hits the site
-    component: Home,
+    element: <Home name="Home" />,
   },
   {
     path: Routes.TRANCHES,
-    name: 'Tranches',
-    component: LazyTranches,
+    element: <LazyTranches name="Tranches" />,
     children: [
       { index: true, element: <LazyTranchesTranches /> },
       { path: ':trancheId', element: <LazyTranchesTranche /> },
@@ -210,13 +209,11 @@ const routerConfig = [
   },
   {
     path: Routes.CLAIM,
-    name: 'Claim',
-    component: LazyClaim,
+    element: <LazyClaim name="Claim" />,
   },
   {
     path: Routes.STAKING,
-    name: 'Staking',
-    component: LazyStaking,
+    element: <LazyStaking name="Staking" />,
     children: [
       { path: 'associate', element: <LazyStakingAssociate /> },
       { path: 'disassociate', element: <LazyStakingDisassociate /> },
@@ -233,18 +230,15 @@ const routerConfig = [
   },
   {
     path: Routes.REWARDS,
-    name: 'Rewards',
-    component: LazyRewards,
+    element: <LazyRewards name="Rewards" />,
   },
   {
     path: Routes.WITHDRAWALS,
-    name: 'Withdrawals',
-    component: LazyWithdrawals,
+    element: <LazyWithdrawals name="Withdrawals" />,
   },
   {
     path: Routes.VESTING,
-    name: 'Vesting',
-    component: LazyRedemption,
+    element: <LazyRedemption name="Vesting" />,
     children: [
       {
         index: true,
@@ -258,46 +252,48 @@ const routerConfig = [
   },
   {
     path: Routes.GOVERNANCE,
-    name: 'Governance',
-    component: LazyGovernance,
+    element: <LazyGovernance name="Governance" />,
     children: [
+      {
+        path: 'propose',
+        element: <Outlet />,
+        children: [
+          {
+            path: 'network-parameter',
+            element: <LazyGovernanceProposeNetworkParameter />,
+          },
+          {
+            path: 'new-market',
+            element: <LazyGovernanceProposeNewMarket />,
+          },
+          {
+            path: 'update-market',
+            element: <LazyGovernanceProposeUpdateMarket />,
+          },
+          { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
+          { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
+          { path: 'raw', element: <LazyGovernanceProposeRaw /> },
+          { index: true, element: <LazyGovernancePropose /> },
+        ],
+      },
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
-      {
-        path: 'propose/network-parameter',
-        element: <LazyGovernanceProposeNetworkParameter />,
-      },
-      {
-        path: 'propose/new-market',
-        element: <LazyGovernanceProposeNewMarket />,
-      },
-      {
-        path: 'propose/update-market',
-        element: <LazyGovernanceProposeUpdateMarket />,
-      },
-      { path: 'propose/new-asset', element: <LazyGovernanceProposeNewAsset /> },
-      { path: 'propose/freeform', element: <LazyGovernanceProposeFreeform /> },
-      { path: 'propose/raw', element: <LazyGovernanceProposeRaw /> },
-      { path: 'propose', element: <LazyGovernancePropose /> },
       { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
       { index: true, element: <LazyGovernanceProposals /> },
     ],
   },
   {
     path: Routes.NOT_PERMITTED,
-    name: 'Not permitted',
     // Not lazy as loaded when a user first hits the site
-    component: NotPermitted,
+    element: <NotPermitted name="Not permitted" />,
   },
   {
     path: Routes.CONTRACTS,
-    name: 'Contracts',
-    component: LazyContracts,
+    element: <LazyContracts name="Contracts" />,
   },
   {
     path: '*',
-    name: 'NotFound',
     // Not lazy as loaded when a user first hits the site
-    component: NotFound,
+    element: <NotFound name="NotFound" />,
   },
 ];
 
