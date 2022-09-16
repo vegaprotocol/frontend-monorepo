@@ -129,10 +129,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Set environment to Testnet
-        run: cp .env.testnet .env ./frontend-monorepo/app/**
-
-      - name: Use Cypress testnet env file
-        run: mv cypress.env.testnet.json cypress.env.json ./frontend-monorepo/app/**
+        run: node ./scripts/update-test-env.js
 
       - name: Run Cypress tests
         run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env=testnet
