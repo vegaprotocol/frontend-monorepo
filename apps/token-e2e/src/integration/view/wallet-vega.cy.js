@@ -170,7 +170,7 @@ context('Vega Wallet - verify elements on widget', function () {
       });
     });
 
-    it('should have wallet name visible', function () {
+    it.skip('should have wallet name visible', function () {
       cy.get(walletContainer).within(() => {
         cy.get(walletName)
           .should('be.visible')
@@ -238,7 +238,7 @@ context('Vega Wallet - verify elements on widget', function () {
       });
     });
 
-    it('should have vega wallet public key and name visible', function () {
+    it.skip('should have vega wallet public key and name visible', function () {
       cy.get(dialog).within(() => {
         cy.get(dialogVegaKey)
           .should('be.visible')

@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumber as EthersBigNumber } from 'ethers';
+import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 import React from 'react';
 import { getUserLocale } from './utils';
@@ -23,6 +24,9 @@ export function addDecimal(
   decimalPrecision = decimals
 ): string {
   if (!decimals) return value.toString();
+  if (!decimalPrecision || decimalPrecision < 0) {
+    return toBigNum(value, decimals).toFixed(0);
+  }
   return toBigNum(value, decimals).toFixed(decimalPrecision);
 }
 
@@ -32,13 +36,15 @@ export function removeDecimal(value: string, decimals: number): string {
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
-export const getNumberFormat = memoize(
-  (digits: number) =>
-    new Intl.NumberFormat(getUserLocale(), {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    })
-);
+export const getNumberFormat = memoize((digits: number) => {
+  if (isNil(digits) || digits < 0) {
+    return new Intl.NumberFormat(getUserLocale());
+  }
+  return new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: Math.max(0, digits),
+    maximumFractionDigits: Math.max(0, digits),
+  });
+});
 
 export const getDecimalSeparator = memoize(
   () =>
