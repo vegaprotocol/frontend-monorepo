@@ -5,37 +5,32 @@ import type { MarketsListData } from '@vegaprotocol/market-list';
 
 const useMarketsFilterData = (data: MarketsListData, params: RouterParams) => {
   const markets =
-    useMemo(
-      () =>
-        data?.markets?.filter((item) => {
-          if (
-            params.product &&
-            params.product !==
-              item.tradableInstrument.instrument.product.__typename
-          ) {
-            return false;
-          }
-          if (
-            params.asset &&
-            params.asset !== 'all' &&
-            params.asset !==
-              item.tradableInstrument.instrument.product.settlementAsset.symbol
-          ) {
-            return false;
-          }
-          const state =
-            params.state === 'all'
-              ? ''
-              : params.state
-              ? params.state
-              : MarketState.STATE_ACTIVE;
-          if (state && state !== item.state) {
-            return false;
-          }
-          return true;
-        }),
-      [data, params.state, params.product, params.asset]
-    ) || [];
+    data?.markets?.filter((item) => {
+      if (
+        params.product &&
+        params.product !== item.tradableInstrument.instrument.product.__typename
+      ) {
+        return false;
+      }
+      if (
+        params.asset &&
+        params.asset !== 'all' &&
+        params.asset !==
+          item.tradableInstrument.instrument.product.settlementAsset.symbol
+      ) {
+        return false;
+      }
+      const state =
+        params.state === 'all'
+          ? ''
+          : params.state
+          ? params.state
+          : MarketState.STATE_ACTIVE;
+      if (state && state !== item.state) {
+        return false;
+      }
+      return true;
+    }) || [];
 
   return useMemo(
     () =>
