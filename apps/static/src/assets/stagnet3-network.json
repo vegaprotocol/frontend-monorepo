@@ -1,3 +1,14 @@
 {
-  "hosts": ["https://api.n01.stagnet3.vega.xyz/graphql"]
+  "hosts": [
+    "https://api.n01.stagnet3.vega.xyz/graphql",
+    "https://api.n02.stagnet3.vega.xyz/graphql",
+    "https://api.n03.stagnet3.vega.xyz/graphql",
+    "https://api.n04.stagnet3.vega.xyz/graphql",
+    "https://api.n05.stagnet3.vega.xyz/graphql",
+    "https://api.n06.stagnet3.vega.xyz/graphql",
+    "https://api.n07.stagnet3.vega.xyz/graphql",
+    "https://api.n08.stagnet3.vega.xyz/graphql",
+    "https://api.n09.stagnet3.vega.xyz/graphql",
+    "https://api.n10.stagnet3.vega.xyz/graphql"
+  ]
 }
