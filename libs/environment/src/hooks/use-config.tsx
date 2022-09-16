@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { ErrorType } from '../types';
-import type { Environment, Configuration, Networks } from '../types';
+import type { Environment, Configuration } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 
 export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
