@@ -89,6 +89,7 @@ describe('SimpleMarketList', () => {
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
     await waitFor(() => {
       expect(
