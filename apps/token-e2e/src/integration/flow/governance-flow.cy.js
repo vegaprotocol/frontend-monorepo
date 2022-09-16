@@ -36,7 +36,7 @@ const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
-const proposalTimeout = { timeout: 12000 };
+const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 
 context('Governance flow - with eth and vega wallets connected', function () {
