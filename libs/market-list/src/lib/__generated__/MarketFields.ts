@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
+import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: MarketList
+// GraphQL fragment: MarketFields
 // ====================================================
 
-export interface MarketList_markets_fees_factors {
+export interface MarketFields_fees_factors {
   __typename: "FeeFactors";
   /**
    * The factor applied to calculate MakerFees, a non-negative float
@@ -25,59 +25,15 @@ export interface MarketList_markets_fees_factors {
   liquidityFee: string;
 }
 
-export interface MarketList_markets_fees {
+export interface MarketFields_fees {
   __typename: "Fees";
   /**
    * The factors used to calculate the different fees
    */
-  factors: MarketList_markets_fees_factors;
+  factors: MarketFields_fees_factors;
 }
 
-export interface MarketList_markets_data_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-  /**
-   * Current state of the market
-   */
-  state: MarketState;
-  /**
-   * Current mode of execution of the market
-   */
-  tradingMode: MarketTradingMode;
-}
-
-export interface MarketList_markets_data {
-  __typename: "MarketData";
-  /**
-   * market ID of the associated mark price
-   */
-  market: MarketList_markets_data_market;
-  /**
-   * the highest price level on an order book for buy orders.
-   */
-  bestBidPrice: string;
-  /**
-   * the lowest price level on an order book for offer orders.
-   */
-  bestOfferPrice: string;
-  /**
-   * the mark price (an unsigned integer)
-   */
-  markPrice: string;
-  /**
-   * what triggered an auction (if an auction was started)
-   */
-  trigger: AuctionTrigger;
-  /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
-   */
-  indicativeVolume: string;
-}
-
-export interface MarketList_markets_tradableInstrument_instrument_metadata {
+export interface MarketFields_tradableInstrument_instrument_metadata {
   __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
@@ -85,7 +41,7 @@ export interface MarketList_markets_tradableInstrument_instrument_metadata {
   tags: string[] | null;
 }
 
-export interface MarketList_markets_tradableInstrument_instrument_product_settlementAsset {
+export interface MarketFields_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The symbol of the asset (e.g: GBP)
@@ -93,15 +49,15 @@ export interface MarketList_markets_tradableInstrument_instrument_product_settle
   symbol: string;
 }
 
-export interface MarketList_markets_tradableInstrument_instrument_product {
+export interface MarketFields_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: MarketList_markets_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: MarketFields_tradableInstrument_instrument_product_settlementAsset;
 }
 
-export interface MarketList_markets_tradableInstrument_instrument {
+export interface MarketFields_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
@@ -118,22 +74,22 @@ export interface MarketList_markets_tradableInstrument_instrument {
   /**
    * Metadata for this instrument
    */
-  metadata: MarketList_markets_tradableInstrument_instrument_metadata;
+  metadata: MarketFields_tradableInstrument_instrument_metadata;
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: MarketList_markets_tradableInstrument_instrument_product;
+  product: MarketFields_tradableInstrument_instrument_product;
 }
 
-export interface MarketList_markets_tradableInstrument {
+export interface MarketFields_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of, or reference to, a fully specified instrument.
    */
-  instrument: MarketList_markets_tradableInstrument_instrument;
+  instrument: MarketFields_tradableInstrument_instrument;
 }
 
-export interface MarketList_markets_marketTimestamps {
+export interface MarketFields_marketTimestamps {
   __typename: "MarketTimestamps";
   /**
    * Time when the market is open and ready to accept trades
@@ -145,27 +101,7 @@ export interface MarketList_markets_marketTimestamps {
   close: string | null;
 }
 
-export interface MarketList_markets_candles {
-  __typename: "Candle";
-  /**
-   * Open price (uint64)
-   */
-  open: string;
-  /**
-   * Close price (uint64)
-   */
-  close: string;
-  /**
-   * High price (uint64)
-   */
-  high: string;
-  /**
-   * Low price (uint64)
-   */
-  low: string;
-}
-
-export interface MarketList_markets {
+export interface MarketFields {
   __typename: "Market";
   /**
    * Market ID
@@ -206,33 +142,13 @@ export interface MarketList_markets {
   /**
    * Fees related data
    */
-  fees: MarketList_markets_fees;
-  /**
-   * marketData for the given market
-   */
-  data: MarketList_markets_data | null;
+  fees: MarketFields_fees;
   /**
    * An instance of, or reference to, a tradable instrument.
    */
-  tradableInstrument: MarketList_markets_tradableInstrument;
+  tradableInstrument: MarketFields_tradableInstrument;
   /**
    * timestamps for state changes in the market
    */
-  marketTimestamps: MarketList_markets_marketTimestamps;
-  /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
-   */
-  candles: (MarketList_markets_candles | null)[] | null;
-}
-
-export interface MarketList {
-  /**
-   * One or more instruments that are trading on the VEGA network
-   */
-  markets: MarketList_markets[] | null;
-}
-
-export interface MarketListVariables {
-  interval: Interval;
-  since: string;
+  marketTimestamps: MarketFields_marketTimestamps;
 }

@@ -1,5 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateSimpleMarkets } from '../support/mocks/generate-markets';
+import {
+  generateSimpleMarkets,
+  generateMarkets,
+} from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
@@ -14,6 +17,7 @@ describe('Market trade', () => {
   let markets;
   beforeEach(() => {
     cy.mockGQL((req) => {
+      aliasQuery(req, 'Markets', generateMarkets());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
