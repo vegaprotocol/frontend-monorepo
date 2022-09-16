@@ -1236,7 +1236,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
     after(
       'teardown environment to prevent test data bleeding into other tests',
       function () {
-        if (Cypress.env('teardownNetworkAfterFlows')) {
+        if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
           cy.restartVegacapsuleNetwork();
         }
       }

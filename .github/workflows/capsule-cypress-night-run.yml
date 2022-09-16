@@ -117,7 +117,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: yarn nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.teardownNetworkAfterFlows=true
+        run: yarn nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
@@ -125,6 +125,7 @@ jobs:
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_NIGHTLY_RUN: true
           CYPRESS_INCLUDE_FLOWS: true
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
       ## Upload logs
