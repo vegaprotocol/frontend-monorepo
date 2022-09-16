@@ -323,11 +323,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       // 1002-STKE-049
       cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
 
-      cy.get(vegaWalletThisEpochBalances, txTimeout)
-        .should('contain', 3.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'This Epoch');
-
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         2.0,
@@ -386,12 +381,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.get(stakeNextEpochValue, epochTimeout)
         .contains(0.0, epochTimeout)
         .should('be.visible');
-
-      cy.get(vegaWalletThisEpochBalances, txTimeout).should(
-        'contain',
-        1.0,
-        txTimeout
-      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
