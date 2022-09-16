@@ -49,5 +49,6 @@ module.exports = defineConfig({
     TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
+    BLOCK_EXPLORER_URL: 'https://staging3.explorer.vega.xyz',
   },
 });

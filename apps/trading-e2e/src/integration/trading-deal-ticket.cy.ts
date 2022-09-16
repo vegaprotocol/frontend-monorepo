@@ -107,6 +107,7 @@ describe('deal ticket orders', () => {
     const placeOrderBtn = 'place-order';
     const dialogTitle = 'dialog-title';
     const orderTransactionHash = 'tx-block-explorer';
+    const blockExplorerUrl = Cypress.env('BLOCK_EXPLORER_URL');
 
     const { type, side, size, price, timeInForce, expiresAt } = order;
 
@@ -147,10 +148,7 @@ describe('deal ticket orders', () => {
     );
     cy.getByTestId(orderTransactionHash)
       .invoke('attr', 'href')
-      .should(
-        'include',
-        'https://staging3.explorer.vega.xyz/txs/0xtest-tx-hash'
-      );
+      .should('include', blockExplorerUrl + '/txs/0xtest-tx-hash');
     cy.getByTestId('dialog-close').click();
   };
 
