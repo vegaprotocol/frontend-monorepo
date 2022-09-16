@@ -3,8 +3,6 @@ import { ErrorType } from '../types';
 import type { Environment, Configuration } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 
-export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
-
 export type EnvironmentWithOptionalUrl = Partial<Environment> &
   Omit<Environment, 'VEGA_URL'>;
 
