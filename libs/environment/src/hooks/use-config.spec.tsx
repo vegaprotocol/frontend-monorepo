@@ -87,24 +87,6 @@ describe('useConfig hook', () => {
     });
   });
 
-  it('caches the configuration', async () => {
-    const { result: firstResult } = renderHook(() =>
-      useConfig({ environment: mockEnvironment }, onError)
-    );
-
-    await waitFor(() => {
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(firstResult.current.config).toEqual(mockConfig);
-    });
-
-    const { result: secondResult } = renderHook(() =>
-      useConfig({ environment: mockEnvironment }, onError)
-    );
-
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(secondResult.current.config).toEqual(mockConfig);
-  });
-
   it('executes the error callback when the config endpoint fails', async () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     global.fetch.mockImplementation(() => Promise.reject());
