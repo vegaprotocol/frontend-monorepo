@@ -36,6 +36,7 @@ const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
+const proposalPostTimeout = '{timeout:12000}'
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 
 context('Governance flow - with eth and vega wallets connected', function () {
@@ -145,7 +146,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
     });
 
@@ -182,7 +183,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
     });
 
@@ -201,7 +202,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -230,7 +231,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -261,7 +262,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -304,7 +305,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -346,7 +347,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
         );
-        cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+        cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
         cy.get(dialogCloseButton).click();
         cy.wait_for_proposal_sync();
       }
@@ -384,7 +385,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -438,7 +439,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -481,7 +482,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -522,7 +523,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -561,7 +562,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.contains('Awaiting network confirmation', epochTimeout).should(
             'be.visible'
           );
-          cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+          cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
           cy.get(dialogCloseButton).click();
           cy.wait_for_proposal_sync();
           cy.navigate_to('governance');
@@ -606,7 +607,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -646,7 +647,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -715,7 +716,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -778,7 +779,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -834,7 +835,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -888,7 +889,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -968,7 +969,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal rejected', epochTimeout).should('be.visible');
+      cy.contains('Proposal rejected', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -995,7 +996,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal rejected', epochTimeout).should('be.visible');
+      cy.contains('Proposal rejected', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -1022,7 +1023,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal rejected', epochTimeout).should('be.visible');
+      cy.contains('Proposal rejected', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');
@@ -1058,7 +1059,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
-      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.contains('Transaction failed', proposalPostTimeout).should('be.visible');
       cy.get(feedbackError)
         .contains(
           'Party has insufficient associated governance tokens in their staking account to submit proposal request'
@@ -1079,7 +1080,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
-      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.contains('Transaction failed', proposalPostTimeout).should('be.visible');
       cy.get(feedbackError)
         .contains(
           'Party has insufficient associated governance tokens in their staking account to submit proposal request'
@@ -1110,7 +1111,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
-      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.contains('Transaction failed', proposalPostTimeout).should('be.visible');
       cy.get(feedbackError)
         .contains('Unknown field unexpectfield in vega commands')
         .should('be.visible');
@@ -1139,7 +1140,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
 
-      cy.contains('Transaction failed', epochTimeout).should('be.visible');
+      cy.contains('Transaction failed', proposalPostTimeout).should('be.visible');
       cy.get(feedbackError)
         .contains('Unknown field unexpectfield in vega proposal terms')
         .should('be.visible');
@@ -1161,7 +1162,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.staking_page_disassociate_tokens('0.0001');
@@ -1196,7 +1197,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
       );
-      cy.contains('Proposal submitted', epochTimeout).should('be.visible');
+      cy.contains('Proposal submitted', proposalPostTimeout).should('be.visible');
       cy.get(dialogCloseButton).click();
       cy.wait_for_proposal_sync();
       cy.navigate_to('governance');

@@ -18,5 +18,5 @@ Cypress.Commands.add('ethereum_wallet_connect', () => {
   // Even once eth wallet connected - attempting a transaction will fail
   // It needs a few seconds before becoming operational
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait(3000);
+  cy.wait(4000);
 });
