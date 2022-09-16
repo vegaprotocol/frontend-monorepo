@@ -25,7 +25,6 @@ export function Dialog({
   icon,
   intent,
   size = 'small',
-  titleClassName,
 }: DialogProps) {
   const contentClasses = classNames(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-scroll',
@@ -75,10 +74,7 @@ export function Dialog({
               <div data-testid="dialog-content" className="flex-1">
                 {title && (
                   <h1
-                    className={classNames(
-                      'text-xl uppercase mb-4 pr-2',
-                      titleClassName
-                    )}
+                    className="text-xl uppercase mb-4 pr-2"
                     data-testid="dialog-title"
                   >
                     {title}
