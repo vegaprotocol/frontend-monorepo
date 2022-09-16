@@ -136,10 +136,8 @@ export type TradeWithMarketEdge = {
   node: TradeWithMarket;
 };
 
-const getData = (
-  responseData: Fills
-): Fills_party_tradesConnection_edges[] | null =>
-  responseData.party?.tradesConnection?.edges || null;
+const getData = (responseData: Fills): Fills_party_tradesConnection_edges[] =>
+  responseData.party?.tradesConnection?.edges || [];
 
 const getPageInfo = (responseData: Fills): PageInfo | null =>
   responseData.party?.tradesConnection?.pageInfo || null;
@@ -160,20 +158,23 @@ export const fillsProvider = makeDataProvider({
 });
 
 export const fillsWithMarketProvider = makeDerivedDataProvider<
-  TradeWithMarketEdge[],
+  (TradeWithMarketEdge | null)[],
   TradeWithMarket[]
 >(
   [fillsProvider, marketsProvider],
-  (partsData): TradeWithMarketEdge[] =>
-    (partsData[0] as Fills_party_tradesConnection_edges[]).map((edge) => ({
-      cursor: edge.cursor,
-      node: {
-        ...edge.node,
-        market: (partsData[1] as Market[]).find(
-          (market) => market.id === edge.node.market.id
-        ),
-      },
-    })),
+  (partsData): (TradeWithMarketEdge | null)[] =>
+    (partsData[0] as ReturnType<typeof getData>)?.map(
+      (edge) =>
+        edge && {
+          cursor: edge.cursor,
+          node: {
+            ...edge.node,
+            market: (partsData[1] as Market[]).find(
+              (market) => market.id === edge.node.market.id
+            ),
+          },
+        }
+    ) || null,
   (parts): TradeWithMarket[] | undefined => {
     if (!parts[0].isUpdate) {
       return;

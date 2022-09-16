@@ -507,7 +507,7 @@ function makeDerivedDataProviderInternal<Data, Delta>(
       error,
       loading,
       loaded,
-      pageInfo: null,
+      pageInfo: parts[0]?.pageInfo || null,
       ...updateData,
     });
   };
@@ -518,7 +518,7 @@ function makeDerivedDataProviderInternal<Data, Delta>(
       notify(callback, updateData);
     });
 
-  const combine = (updatedPartIndex?: number) => {
+  const combine = (updatedPartIndex: number) => {
     let delta: Delta | undefined;
     let isUpdate = false;
     const isInsert = false;
@@ -538,7 +538,7 @@ function makeDerivedDataProviderInternal<Data, Delta>(
           variables
         )
       : data;
-    if (newLoaded && updatedPartIndex !== undefined) {
+    if (newLoaded) {
       const updatedPart = parts[updatedPartIndex];
       if (updatedPart.isUpdate && updatedPart.delta && combineDelta) {
         delta = combineDelta(parts, variables);
@@ -613,6 +613,7 @@ function makeDerivedDataProviderInternal<Data, Delta>(
           subscription.reload(forceReset)
         ),
       flush: () => notify(callback),
+      load: subscriptions && subscriptions[0]?.load,
     };
   };
 }

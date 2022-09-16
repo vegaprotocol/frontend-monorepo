@@ -20,7 +20,7 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<TradeWithMarketEdge[] | null>(null);
+  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -49,7 +49,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       delta,
     }: {
-      data: TradeWithMarketEdge[];
+      data: (TradeWithMarketEdge | null)[];
       delta: TradeWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
@@ -75,7 +75,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       totalCount,
     }: {
-      data: TradeWithMarketEdge[];
+      data: (TradeWithMarketEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;

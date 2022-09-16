@@ -16,7 +16,7 @@ interface OrderListManagerProps {
 
 export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<OrderWithMarketEdge[] | null>(null);
+  const dataRef = useRef<(OrderWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -41,7 +41,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       delta,
     }: {
-      data: OrderWithMarketEdge[];
+      data: (OrderWithMarketEdge | null)[];
       delta: OrderWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
@@ -67,7 +67,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       totalCount,
     }: {
-      data: OrderWithMarketEdge[];
+      data: (OrderWithMarketEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;

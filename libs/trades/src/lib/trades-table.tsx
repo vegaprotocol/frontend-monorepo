@@ -39,7 +39,10 @@ const changeCellClass =
   };
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
-  successCallback(rowsThisBlock: TradeWithMarket[], lastRow?: number): void;
+  successCallback(
+    rowsThisBlock: (TradeWithMarket | null)[],
+    lastRow?: number
+  ): void;
 }
 
 export interface Datasource extends IDatasource {

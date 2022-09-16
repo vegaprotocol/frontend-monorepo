@@ -20,7 +20,7 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<TradeWithMarketEdge[] | null>(null);
+  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -44,7 +44,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       delta,
     }: {
-      data: TradeWithMarketEdge[];
+      data: (TradeWithMarketEdge | null)[] | null;
       delta: TradeWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
@@ -70,7 +70,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       totalCount,
     }: {
-      data: TradeWithMarketEdge[];
+      data: (TradeWithMarketEdge | null)[] | null;
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -83,7 +83,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
-    TradeWithMarketEdge[],
+    (TradeWithMarketEdge | null)[],
     TradeWithMarket[]
   >({ dataProvider: fillsWithMarketProvider, update, insert, variables });
   totalCountRef.current = totalCount;

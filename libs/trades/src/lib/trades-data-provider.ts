@@ -126,7 +126,7 @@ export const tradesProvider = makeDataProvider({
 });
 
 export const tradesWithMarketProvider = makeDerivedDataProvider<
-  TradeWithMarketEdge[],
+  (TradeWithMarketEdge | null)[],
   TradeWithMarket[]
 >(
   [tradesProvider, marketsProvider],

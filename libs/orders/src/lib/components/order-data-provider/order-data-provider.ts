@@ -153,7 +153,7 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
 >(
   [ordersProvider, marketsProvider],
   (partsData): OrderWithMarketEdge[] =>
-    (partsData[0] as Orders_party_ordersConnection_edges[]).map((edge) => ({
+    (partsData[0] as Parameters<typeof update>['0']).map((edge) => ({
       cursor: edge.cursor,
       node: {
         ...edge.node,
