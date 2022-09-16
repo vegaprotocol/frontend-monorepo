@@ -4,7 +4,6 @@ import {
   render,
   screen,
   waitFor,
-  cleanup,
   getAllByRole,
   fireEvent,
 } from '@testing-library/react';
@@ -81,7 +80,6 @@ jest.mock('../../constants', () => ({
 describe('SimpleMarketList', () => {
   afterEach(() => {
     jest.clearAllMocks();
-    cleanup();
   });
   it('should be properly rendered with some data', async () => {
     await act(async () => {
