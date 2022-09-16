@@ -40,16 +40,27 @@ Cypress.Commands.add('wait_for_spinner', () => {
 Cypress.Commands.add('restartVegacapsuleNetwork', () => {
   Cypress.on('uncaught:exception', () => {
     // stopping the network causes errors with pending transactions
-    // This stops those errors from prevents the teardown
+    // This stops those errors from preventing the teardown
     return false;
   });
-  cy.exec('vegacapsule network destroy')
-    .its('stderr')
-    .should('contain', 'network cleaning up success');
+  // We stop the network twice - since it does not always shutdown correctly on first attempt
+  cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
+  cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
+    .its('stderr').should('contain', 'network cleaning up success');
 
   cy.exec(
-    'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force'
+    'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force', {failOnNonZeroExit: false, timeout: 100000}
   )
-    .its('stderr')
-    .should('contain', 'starting network success');
+    .its('stderr').then(response => {
+      if (!response.includes('starting network success'))
+      {
+        cy.exec('vegacapsule network destroy', {failOnNonZeroExit: false})
+        cy.exec(
+          'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force', {failOnNonZeroExit: false, timeout: 100000}
+        )
+          .its('stderr')
+          .then(response => {return response})
+      }
+    })
+    .should('contain', 'starting network success');  
 });
