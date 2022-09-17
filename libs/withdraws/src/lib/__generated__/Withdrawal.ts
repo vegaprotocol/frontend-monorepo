@@ -25,6 +25,8 @@ export type WithdrawalEventSubscriptionVariables = Types.Exact<{
 
 export type WithdrawalEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: string, withdrawnTimestamp?: string | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } }> | null };
 
+export type WithdrawalFormAccountFieldsFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string } };
+
 export type WithdrawFormQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -78,6 +80,16 @@ export const WithdrawalEdgeFieldsFragmentDoc = gql`
   }
 }
     ${WithdrawalFieldsFragmentDoc}`;
+export const WithdrawalFormAccountFieldsFragmentDoc = gql`
+    fragment WithdrawalFormAccountFields on Account {
+  type
+  balance
+  asset {
+    id
+    symbol
+  }
+}
+    `;
 export const WithdrawalsDocument = gql`
     query Withdrawals($partyId: ID!) {
   party(id: $partyId) {
@@ -161,12 +173,7 @@ export const WithdrawFormDocument = gql`
       txHash
     }
     accounts {
-      type
-      balance
-      asset {
-        id
-        symbol
-      }
+      ...WithdrawalFormAccountFields
     }
   }
   assetsConnection {
@@ -177,7 +184,8 @@ export const WithdrawFormDocument = gql`
     }
   }
 }
-    ${WithdrawalAssetFieldsFragmentDoc}`;
+    ${WithdrawalFormAccountFieldsFragmentDoc}
+${WithdrawalAssetFieldsFragmentDoc}`;
 
 /**
  * __useWithdrawFormQuery__

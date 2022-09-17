@@ -1,24 +1,20 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Orders,
-  Orders_party_ordersConnection_edges_node,
+  OrdersQuery,
+  OrderFieldsFragment,
 } from '@vegaprotocol/orders';
-import {
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
-export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
-  const orders: Orders_party_ordersConnection_edges_node[] = [
+export const generateOrders = (override?: PartialDeep<OrdersQuery>): OrdersQuery => {
+  const orders: OrderFieldsFragment[] = [
     {
       __typename: 'Order',
       id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
       market: {
         __typename: 'Market',
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        name: 'Market name',
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
@@ -32,12 +28,12 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         },
       },
       size: '10',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '20000000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 30).toISOString(),
       updatedAt: null,
       expiresAt: null,
@@ -49,6 +45,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        name: 'Market name',
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
@@ -62,12 +59,12 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         },
       },
       size: '1',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '100',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 29).toISOString(),
       updatedAt: null,
       expiresAt: null,
@@ -80,6 +77,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         __typename: 'Market',
         id: 'c6f4337b31ed57a961969c3ba10297b369d01b9e75a4cbb96db4fc62886444e6',
 
+        name: 'Market name',
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
@@ -93,12 +91,12 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         },
       },
       size: '1',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '20000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 28).toISOString(),
       updatedAt: null,
       expiresAt: null,
@@ -110,6 +108,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'a316fa51dab97d76a1472c2f22906f4e461728e04355096788165d5b13999ed5',
+        name: 'Market name',
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
@@ -123,12 +122,12 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         },
       },
       size: '1',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_ACTIVE,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '100000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 27).toISOString(),
       updatedAt: null,
       expiresAt: null,
@@ -140,6 +139,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       market: {
         __typename: 'Market',
         id: 'a316fa51dab97d76a1472c2f22906f4e461728e04355096788165d5b13999ed5',
+        name: 'Market name',
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
@@ -153,12 +153,12 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         },
       },
       size: '10',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_PARTIALLY_FILLED,
-      side: Side.SIDE_SELL,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_PARTIALLY_FILLED,
+      side: Schema.Side.SIDE_SELL,
       remaining: '3',
       price: '100000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 27).toISOString(),
       updatedAt: null,
       expiresAt: null,
@@ -166,7 +166,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
     },
   ];
 
-  const defaultResult: Orders = {
+  const defaultResult: OrdersQuery = {
     party: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),
       ordersConnection: {

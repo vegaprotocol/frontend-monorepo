@@ -11,6 +11,7 @@ export const generateDealTicketQuery = (
       __typename: 'Market',
       id: 'market-0',
       decimalPlaces: 5,
+      name: 'Market name',
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,

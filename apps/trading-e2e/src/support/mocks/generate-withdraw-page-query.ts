@@ -1,23 +1,36 @@
-import { AccountType, AssetStatus } from '@vegaprotocol/types';
 import type {
   WithdrawFormQuery,
-  WithdrawFormQuery_assetsConnection_edges,
-  WithdrawFormQuery_party_accounts,
-  WithdrawFormQuery_party_withdrawals,
+  WithdrawalFieldsFragment,
+  WithdrawalAssetFieldsFragment,
+  WithdrawalFormAccountFieldsFragment,
 } from '@vegaprotocol/withdraws';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
 export const generateWithdrawFormQuery = (
   override?: PartialDeep<WithdrawFormQuery>
 ): WithdrawFormQuery => {
-  const withdrawal: WithdrawFormQuery_party_withdrawals = {
+  const withdrawal: WithdrawalFieldsFragment = {
     id: 'withdrawal-0',
     txHash: null,
+    status: Schema.WithdrawalStatus.STATUS_FINALIZED,
+    amount: '10',
+    createdTimestamp: new Date(2020, 1, 30).toISOString(),
+    pendingOnForeignChain: false,
+    asset: {
+      __typename: 'Asset',
+      id: 'asset-id',
+      symbol: 'tEURO',
+      name: 'tEURO',
+      status: Schema.AssetStatus.STATUS_ENABLED,
+      source: {},
+      decimals: 5,
+    },
     __typename: 'Withdrawal',
   };
-  const account: WithdrawFormQuery_party_accounts = {
-    type: AccountType.ACCOUNT_TYPE_GENERAL,
+  const account: WithdrawalFormAccountFieldsFragment = {
+    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000000',
     asset: {
       __typename: 'Asset',
@@ -26,37 +39,31 @@ export const generateWithdrawFormQuery = (
     },
     __typename: 'Account',
   };
-  const assetEdge1: WithdrawFormQuery_assetsConnection_edges = {
-    node: {
-      id: 'asset-0',
-      symbol: 'AST0',
-      name: 'Asset 0',
-      decimals: 5,
-      status: AssetStatus.STATUS_ENABLED,
-      source: {
-        __typename: 'ERC20',
-        contractAddress: '0x5E4b9aDA947130Fc320a144cd22bC1641e5c9d81',
-      },
-      __typename: 'Asset',
+  const asset1: WithdrawalAssetFieldsFragment = {
+    id: 'asset-0',
+    symbol: 'AST0',
+    name: 'Asset 0',
+    decimals: 5,
+    status: Schema.AssetStatus.STATUS_ENABLED,
+    source: {
+      __typename: 'ERC20',
+      contractAddress: '0x5E4b9aDA947130Fc320a144cd22bC1641e5c9d81',
     },
-    __typename: 'AssetEdge',
+    __typename: 'Asset',
   };
-  const assetEdge2: WithdrawFormQuery_assetsConnection_edges = {
-    node: {
-      id: 'asset-1',
-      symbol: 'AST1',
-      name: 'Asset 1',
-      decimals: 5,
-      status: AssetStatus.STATUS_ENABLED,
-      source: {
-        __typename: 'ERC20',
-        contractAddress: '0x444b9aDA947130Fc320a144cd22bC1641e5c9d81',
-      },
-      __typename: 'Asset',
+  const asset2: WithdrawalAssetFieldsFragment = {
+    id: 'asset-1',
+    symbol: 'AST1',
+    name: 'Asset 1',
+    decimals: 5,
+    status: Schema.AssetStatus.STATUS_ENABLED,
+    source: {
+      __typename: 'ERC20',
+      contractAddress: '0x444b9aDA947130Fc320a144cd22bC1641e5c9d81',
     },
-    __typename: 'AssetEdge',
+    __typename: 'Asset',
   };
-  const defaultResult = {
+  const defaultResult: WithdrawFormQuery = {
     party: {
       id: 'party-0',
       withdrawals: [withdrawal],
@@ -65,7 +72,10 @@ export const generateWithdrawFormQuery = (
     },
     assetsConnection: {
       __typename: 'AssetsConnection',
-      edges: [assetEdge1, assetEdge2],
+      edges: [
+        { node: asset1 },
+        { node: asset2 },
+      ],
     },
   };
 

@@ -71,13 +71,6 @@ export const generateMarketInfoQuery = (
           ],
         },
       },
-      riskFactors: {
-        __typename: 'RiskFactor',
-        market:
-          '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
-        short: '0.008571790367285281',
-        long: '0.008508132993273576',
-      },
       data: {
         __typename: 'MarketData',
         market: {

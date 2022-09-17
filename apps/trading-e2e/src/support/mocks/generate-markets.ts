@@ -1,27 +1,26 @@
 import merge from 'lodash/merge';
 import {
-  AuctionTrigger,
-  MarketState,
+  Schema,
   MarketTradingMode,
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Markets,
-  Markets_marketsConnection_edges_node,
+  MarketListQuery,
+  MarketListItemFragment,
   MarketsCandlesQuery,
-  MarketsCandlesQuery_marketsConnection_edges_node,
+  MarketItemFieldsFragment,
   MarketsDataQuery,
-  MarketsDataQuery_marketsConnection_edges_node,
+  MarketDataFieldsFragment,
 } from '@vegaprotocol/market-list';
 
-export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
-  const markets: Markets_marketsConnection_edges_node[] = [
+export const generateMarkets = (override?: PartialDeep<MarketListQuery>): MarketListQuery => {
+  const markets: MarketListItemFragment[] = [
     {
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -63,7 +62,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -105,7 +104,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      state: MarketState.STATE_SUSPENDED,
+      state: Schema.MarketState.STATE_SUSPENDED,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '2022-08-26T11:36:32.252490405Z',
@@ -147,7 +146,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '2022-08-26T11:36:32.252490405Z',
@@ -186,7 +185,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
     },
   ];
 
-  const defaultResult: Markets = {
+  const defaultResult: MarketListQuery = {
     marketsConnection: {
       __typename: 'MarketConnection',
       edges: markets.map((node) => ({
@@ -202,95 +201,94 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
 export const generateMarketsData = (
   override?: PartialDeep<MarketsDataQuery>
 ): MarketsDataQuery => {
-  const markets: MarketsDataQuery_marketsConnection_edges_node[] = [
+  const markets: MarketDataFieldsFragment[] = [
     {
-      data: {
-        market: {
-          id: 'market-0',
-          __typename: 'Market',
-        },
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
+      market: {
+        id: 'market-0',
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        __typename: 'Market',
       },
-      __typename: 'Market',
+      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '4612690058',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
     },
     {
-      data: {
-        market: {
-          id: 'market-1',
-          __typename: 'Market',
-        },
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '8441',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
+      market: {
+        id: 'market-1',
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        __typename: 'Market',
       },
-      __typename: 'Market',
+      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '8441',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
     },
     {
-      data: {
-        market: {
-          id: 'market-2',
-          __typename: 'Market',
-        },
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-        __typename: 'MarketData',
+      market: {
+        id: 'market-2',
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        __typename: 'Market',
       },
-      __typename: 'Market',
+      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '4612690058',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+      __typename: 'MarketData',
     },
     {
-      data: {
-        market: {
-          id: 'market-3',
-          __typename: 'Market',
-        },
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '4612690058',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-        __typename: 'MarketData',
+      market: {
+        id: 'market-3',
+        state: Schema.MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        __typename: 'Market',
       },
-      __typename: 'Market',
+      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '4612690058',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+      __typename: 'MarketData',
     },
   ];
 
   const defaultResult: MarketsDataQuery = {
     marketsConnection: {
       __typename: 'MarketConnection',
-      edges: markets.map((node) => ({
+      edges: markets.map((data) => ({
         __typename: 'MarketEdge',
-        node,
+        node: {
+          data,
+          __typename: 'Market',
+        },
       })),
     },
   };
@@ -301,7 +299,7 @@ export const generateMarketsData = (
 export const generateMarketsCandles = (
   override?: PartialDeep<MarketsCandlesQuery>
 ): MarketsCandlesQuery => {
-  const markets: MarketsCandlesQuery_marketsConnection_edges_node[] = [
+  const markets: MarketItemFieldsFragment[] = [
     {
       __typename: 'Market',
       id: 'market-0',

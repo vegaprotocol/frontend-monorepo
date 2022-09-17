@@ -1,10 +1,10 @@
-import { AssetStatus, WithdrawalStatus } from '@vegaprotocol/types';
-import type { Withdrawals } from '@vegaprotocol/withdraws';
+import { Schema } from '@vegaprotocol/types';
+import type { WithdrawalsQuery } from '@vegaprotocol/withdraws';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
-  const defaultResult: Withdrawals = {
+export const generateWithdrawals = (override?: PartialDeep<WithdrawalsQuery>) => {
+  const defaultResult: WithdrawalsQuery = {
     party: {
       id: 'party-0',
       withdrawalsConnection: {
@@ -14,7 +14,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
             __typename: 'WithdrawalEdge',
             node: {
               id: 'withdrawal-0',
-              status: WithdrawalStatus.STATUS_FINALIZED,
+              status: Schema.WithdrawalStatus.STATUS_FINALIZED,
               amount: '100',
               txHash: null,
               createdTimestamp: new Date('2022-02-02').toISOString(),
@@ -30,7 +30,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
                 name: 'asset-0 name',
                 symbol: 'AST0',
                 decimals: 5,
-                status: AssetStatus.STATUS_ENABLED,
+                status: Schema.AssetStatus.STATUS_ENABLED,
                 source: {
                   __typename: 'ERC20',
                   contractAddress: '0x123',
@@ -43,7 +43,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
             __typename: 'WithdrawalEdge',
             node: {
               id: 'withdrawal-1',
-              status: WithdrawalStatus.STATUS_FINALIZED,
+              status: Schema.WithdrawalStatus.STATUS_FINALIZED,
               amount: '100',
               txHash:
                 '0x5d7b1a35ba6bd23be17bb7a159c13cdbb3121fceb94e9c6c510f5503dce48d03',
@@ -60,7 +60,7 @@ export const generateWithdrawals = (override?: PartialDeep<Withdrawals>) => {
                 name: 'asset-0 name',
                 symbol: 'AST0',
                 decimals: 5,
-                status: AssetStatus.STATUS_ENABLED,
+                status: Schema.AssetStatus.STATUS_ENABLED,
                 source: {
                   __typename: 'ERC20',
                   contractAddress: '0x123',

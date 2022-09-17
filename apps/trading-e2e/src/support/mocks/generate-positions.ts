@@ -1,15 +1,15 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Positions,
-  Positions_party_positionsConnection_edges_node,
+  PositionsQuery,
+  PositionFieldsFragment,
 } from '@vegaprotocol/positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 export const generatePositions = (
-  override?: PartialDeep<Positions>
-): Positions => {
-  const nodes: Positions_party_positionsConnection_edges_node[] = [
+  override?: PartialDeep<PositionsQuery>
+): PositionsQuery => {
+  const nodes: PositionFieldsFragment[] = [
     {
       __typename: 'Position',
       realisedPNL: '0',
@@ -42,6 +42,7 @@ export const generatePositions = (
       },
       market: {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        name: 'Market name',
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '17588787',
@@ -95,6 +96,7 @@ export const generatePositions = (
       },
       market: {
         id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+        name: 'Market name',
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '8649338',
@@ -147,6 +149,7 @@ export const generatePositions = (
       },
       market: {
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        name: 'Market name',
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '84377569',
@@ -171,7 +174,7 @@ export const generatePositions = (
     },
   ];
 
-  const defaultResult: Positions = {
+  const defaultResult: PositionsQuery = {
     party: {
       __typename: 'Party',
       id: Cypress.env('VEGA_PUBLIC_KEY'),
