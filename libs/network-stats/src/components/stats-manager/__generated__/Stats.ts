@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type NetworkStatsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NetworkStatsQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string, totalNodes: number, inactiveNodes: number, validatingNodes: number, uptime: number } | null, statistics: { __typename?: 'Statistics', status: string, blockHeight: string, blockDuration: string, backlogLength: string, txPerBlock: string, tradesPerSecond: string, ordersPerSecond: string, averageOrdersPerBlock: string, vegaTime: string, appVersion: string, chainVersion: string, chainId: string } };
+export type NetworkStatsQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string, totalNodes: number, inactiveNodes: number, validatingNodes: number } | null, statistics: { __typename?: 'Statistics', status: string, blockHeight: string, blockDuration: string, backlogLength: string, txPerBlock: string, tradesPerSecond: string, ordersPerSecond: string, averageOrdersPerBlock: string, vegaTime: string, appVersion: string, chainVersion: string, chainId: string, upTime: string } };
 
 
 export const NetworkStatsDocument = gql`
@@ -16,7 +16,6 @@ export const NetworkStatsDocument = gql`
     totalNodes
     inactiveNodes
     validatingNodes
-    uptime
   }
   statistics {
     status
@@ -31,6 +30,7 @@ export const NetworkStatsDocument = gql`
     appVersion
     chainVersion
     chainId
+    upTime
   }
 }
     `;

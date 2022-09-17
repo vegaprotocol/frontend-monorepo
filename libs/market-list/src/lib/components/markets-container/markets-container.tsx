@@ -3,7 +3,7 @@ import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
-import type { MarketListItemFragment } from '../../__generated__/MarketList';
+import type { MarketWithData } from '../../';
 
 interface MarketsContainerProps {
   onSelect: (marketId: string) => void;
@@ -11,7 +11,7 @@ interface MarketsContainerProps {
 
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const { data, error, loading } = useDataProvider<
-    MarketListItemFragment[],
+    MarketWithData[],
     never
   >({
     dataProvider,
@@ -25,9 +25,12 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         onRowClicked={(rowEvent: RowClickedEvent) => {
           const { data, event } = rowEvent;
           // filters out clicks on the symbol column because it should display asset details
-          if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
+          if (
+            (event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON'
+          ) {
             return;
-          onSelect((data as MarketListItemFragment).id);
+          }
+          onSelect((data as MarketWithData).id);
         }}
       />
     </AsyncRenderer>

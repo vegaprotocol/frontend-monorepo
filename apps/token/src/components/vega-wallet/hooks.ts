@@ -197,14 +197,16 @@ export const usePollForDelegations = () => {
                   new BigNumber(a.currentEpochStake || 0).isLessThan(
                     b.currentEpochStake || 0
                   )
-                )
+                ) {
                   return 1;
+                }
                 if (
                   new BigNumber(a.currentEpochStake || 0).isGreaterThan(
                     b.currentEpochStake || 0
                   )
-                )
+                ) {
                   return -1;
+                }
                 if ((!a.name && b.name) || a.name < b.name) return 1;
                 if ((!b.name && a.name) || a.name > b.name) return -1;
                 if (a.nodeId > b.nodeId) return 1;

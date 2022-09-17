@@ -10,7 +10,7 @@ describe('formatNumber and formatNumberPercentage', () => {
     { v: new BigNumber(123), d: undefined, o: '123.00' }, // it default to 2 decimal places
     { v: new BigNumber(30000), d: undefined, o: '30,000.00' },
     { v: new BigNumber(3.000001), d: undefined, o: '3.000001' },
-  ])('formats given number correctly', ({ v, d, o }) => {
+  ])(`formats given number with decimals correctly`, ({ v, d, o }) => {
     expect(formatNumber(v, d)).toStrictEqual(o);
   });
 });

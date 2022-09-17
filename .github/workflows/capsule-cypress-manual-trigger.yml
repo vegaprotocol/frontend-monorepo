@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vega
-          ref: v0.54.0
+          ref: v0.55.0
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 
@@ -140,6 +140,7 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_INCLUDE_FLOWS: ${{ github.event.inputs.includeFlows }}
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
       ## Upload logs
