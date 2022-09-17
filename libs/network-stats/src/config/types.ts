@@ -3,7 +3,7 @@ import type { NetworkStatsQuery } from '../components/stats-manager/__generated_
 
 type NodeData = Pick<
   Schema.NodeData,
-  'inactiveNodes' | 'stakedTotal' | 'totalNodes' | 'uptime' | 'validatingNodes'
+  'inactiveNodes' | 'stakedTotal' | 'totalNodes' | 'validatingNodes'
 >;
 export type Stats = Omit<
   NodeData & NetworkStatsQuery['statistics'],
