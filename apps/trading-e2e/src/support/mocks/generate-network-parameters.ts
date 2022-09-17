@@ -33,8 +33,8 @@ export const generateNetworkParameters = (
               confirmations: 3,
             }),
           },
-        }
-      ]
+        },
+      ],
     },
   };
   return merge(defaultResult, override);

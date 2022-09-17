@@ -72,10 +72,7 @@ export const generateWithdrawFormQuery = (
     },
     assetsConnection: {
       __typename: 'AssetsConnection',
-      edges: [
-        { node: asset1 },
-        { node: asset2 },
-      ],
+      edges: [{ node: asset1 }, { node: asset2 }],
     },
   };
 

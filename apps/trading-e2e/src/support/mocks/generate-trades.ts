@@ -1,11 +1,10 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  TradesQuery,
-  TradeFieldsFragment,
-} from '@vegaprotocol/trades';
+import type { TradesQuery, TradeFieldsFragment } from '@vegaprotocol/trades';
 
-export const generateTrades = (override?: PartialDeep<TradesQuery>): TradesQuery => {
+export const generateTrades = (
+  override?: PartialDeep<TradesQuery>
+): TradesQuery => {
   const trades: TradeFieldsFragment[] = [
     {
       id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',

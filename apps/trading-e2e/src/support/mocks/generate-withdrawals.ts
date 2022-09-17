@@ -3,7 +3,9 @@ import type { WithdrawalsQuery } from '@vegaprotocol/withdraws';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateWithdrawals = (override?: PartialDeep<WithdrawalsQuery>) => {
+export const generateWithdrawals = (
+  override?: PartialDeep<WithdrawalsQuery>
+) => {
   const defaultResult: WithdrawalsQuery = {
     party: {
       id: 'party-0',

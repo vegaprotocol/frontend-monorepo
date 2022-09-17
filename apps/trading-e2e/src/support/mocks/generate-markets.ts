@@ -1,8 +1,5 @@
 import merge from 'lodash/merge';
-import {
-  Schema,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema, MarketTradingMode } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
   MarketListQuery,
@@ -13,7 +10,9 @@ import type {
   MarketDataFieldsFragment,
 } from '@vegaprotocol/market-list';
 
-export const generateMarkets = (override?: PartialDeep<MarketListQuery>): MarketListQuery => {
+export const generateMarkets = (
+  override?: PartialDeep<MarketListQuery>
+): MarketListQuery => {
   const markets: MarketListItemFragment[] = [
     {
       id: 'market-0',
