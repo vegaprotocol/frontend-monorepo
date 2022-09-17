@@ -1,10 +1,10 @@
 import orderBy from 'lodash/orderBy';
 import { Schema } from '@vegaprotocol/types';
 import { getNodes } from '@vegaprotocol/react-helpers';
-import {
+import type {
   ProposalsQuery,
   ProposalFieldsFragment,
-} from '@vegaprotocol/governance';
+} from '../';
 
 export const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
