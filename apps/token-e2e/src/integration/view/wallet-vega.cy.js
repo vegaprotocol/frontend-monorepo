@@ -9,7 +9,6 @@ const dialogHeader = '[data-testid="dialog-title"]';
 const connectorsList = '[data-testid="connectors-list"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
-const restUrl = '#url';
 const restWallet = '#wallet';
 const restPassphrase = '#passphrase';
 const restConnectBtn = '[type="submit"]';
@@ -93,14 +92,6 @@ context('Vega Wallet - verify elements on widget', function () {
     before('click rest provider link', function () {
       cy.get(connectorsList).within(() => {
         cy.get('button').click();
-      });
-    });
-
-    it('should have url field visible', function () {
-      cy.get(restConnectorForm).within(() => {
-        cy.get(restUrl)
-          .should('be.visible')
-          .and('have.value', 'http://localhost:1789/api/v1');
       });
     });
 

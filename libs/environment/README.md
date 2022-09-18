@@ -8,8 +8,6 @@ The environment variables needed to be present for any app consuming this librar
 
 `NX_VEGA_ENV` is the name of the environment.
 
-`NX_VEGA_REST` is the REST endpoint for the environment.
-
 `NX_VEGA_URL` OR `NX_VEGA_CONFIG_URL` - either the network configuration url or a url to a node to directly connect to
 
 `NX_VEGA_WALLET_URL` the default vega wallet URL
