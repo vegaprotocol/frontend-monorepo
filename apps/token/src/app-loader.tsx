@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +16,12 @@ import {
 } from './contexts/app-state/app-state-context';
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
-import { getDataNodeUrl } from './lib/get-data-node-url';
 import { Connectors } from './lib/vega-connectors';
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
+  const { VEGA_URL } = useEnvironment();
   const { keypair } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
@@ -73,9 +74,8 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   }, [setAssociatedBalances, account, keypair]);
 
   React.useEffect(() => {
-    const { base } = getDataNodeUrl();
-    const networkLimitsEndpoint = new URL('/network/limits', base).href;
-    const statsEndpoint = new URL('/statistics', base).href;
+    const networkLimitsEndpoint = new URL('/network/limits', VEGA_URL).href;
+    const statsEndpoint = new URL('/statistics', VEGA_URL).href;
 
     // eslint-disable-next-line
     let interval: any = null;
