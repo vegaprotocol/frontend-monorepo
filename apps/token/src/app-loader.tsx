@@ -137,7 +137,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     return () => {
       stopPoll();
     };
-  }, [appDispatch, t]);
+  }, [appDispatch, VEGA_URL, t]);
 
   if (Flags.NETWORK_DOWN) {
     return (
