@@ -32,7 +32,8 @@ import { ENV } from './config/env';
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   const { config, loading, error } = useEthereumConfig();
-  const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } =
+    useEnvironment();
   const Connectors = useMemo(() => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
@@ -53,7 +54,10 @@ const AppContainer = () => {
           if (event.request?.url?.includes('/claim?')) {
             return {
               ...event,
-              request: { ...event.request, url: event.request?.url.split('?')[0] },
+              request: {
+                ...event.request,
+                url: event.request?.url.split('?')[0],
+              },
             };
           }
           return event;
@@ -62,7 +66,7 @@ const AppContainer = () => {
       Sentry.setTag('branch', GIT_BRANCH);
       Sentry.setTag('commit', GIT_COMMIT_HASH);
     }
-  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV])
+  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV]);
 
   return (
     <Router>
