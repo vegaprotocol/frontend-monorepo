@@ -1,6 +1,8 @@
 import './i18n';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
@@ -25,17 +27,43 @@ import {
 } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { createConnectors } from './lib/web3-connectors';
+import { ENV } from './config/env';
 
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   const { config, loading, error } = useEthereumConfig();
-  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_ENV, GIT_COMMIT_HASH, GIT_BRANCH, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const Connectors = useMemo(() => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
     }
     return undefined;
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
+
+  useEffect(() => {
+    if (ENV.dsn) {
+      Sentry.init({
+        dsn: ENV.dsn,
+        integrations: [new Integrations.BrowserTracing()],
+        tracesSampleRate: 0.1,
+        enabled: true,
+        environment: VEGA_ENV,
+        release: GIT_COMMIT_HASH,
+        beforeSend(event) {
+          if (event.request?.url?.includes('/claim?')) {
+            return {
+              ...event,
+              request: { ...event.request, url: event.request?.url.split('?')[0] },
+            };
+          }
+          return event;
+        },
+      });
+      Sentry.setTag('branch', GIT_BRANCH);
+      Sentry.setTag('commit', GIT_COMMIT_HASH);
+    }
+  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV])
+
   return (
     <Router>
       <AppStateProvider>

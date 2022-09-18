@@ -12,10 +12,12 @@ const windowOrDefault = (key: string, defaultValue?: string) => {
  * So must provide the default with the key so that next can figure it out.
  */
 export const ENV = {
+  envName: windowOrDefault(
+    'NX_VEGA_ENV',
+    process.env['NX_VEGA_ENV'],
+  ),
   dsn: windowOrDefault(
     'NX_TRADING_SENTRY_DSN',
     process.env['NX_TRADING_SENTRY_DSN']
   ),
-  envName: windowOrDefault('NX_VEGA_ENV', process.env['NX_VEGA_ENV']),
-  vegaUrl: windowOrDefault('NX_VEGA_URL', process.env['NX_VEGA_URL']),
 };
