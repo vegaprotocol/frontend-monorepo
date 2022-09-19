@@ -23,7 +23,6 @@ describe('market selector', () => {
       aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
       aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
-      aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
@@ -68,7 +67,7 @@ describe('market selector', () => {
     }
   });
 
-  it('typing should change list', () => {
+  it.only('typing should change list', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();

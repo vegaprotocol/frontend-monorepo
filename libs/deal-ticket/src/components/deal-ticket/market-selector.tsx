@@ -20,11 +20,12 @@ import {
   t,
   useScreenDimensions,
   useOutsideClick,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { IconNames } from '@blueprintjs/icons';
 import { MarketState } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 
 interface Props {
   market: DealTicketQuery_market;
@@ -53,7 +54,10 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     null
   );
 
-  const { data, loading, error } = useMarketList();
+  const { data, loading, error } = useDataProvider({
+    dataProvider: marketsProvider,
+    noUpdate: true,
+  });
 
   const outsideClickCb = useCallback(() => {
     if (!isMobile) {
@@ -240,7 +244,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   useEffect(() => {
     setResults(
-      data?.markets?.filter(
+      data?.filter(
         (item) =>
           item.state === MarketState.STATE_ACTIVE &&
           item.tradableInstrument.instrument.name.match(
