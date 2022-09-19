@@ -9,8 +9,6 @@ let mockDataProviderData = {
   data: mockData as (Fills_party_tradesConnection_edges | null)[] | null,
   error: undefined,
   loading: true,
-  addNewRows: jest.fn(),
-  getRows: jest.fn(),
 };
 
 let updateMock: jest.Mock;
@@ -24,9 +22,6 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 }));
 
 describe('useFillsList Hook', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
   const mockRefreshAgGridApi = jest.fn();
   const partyId = 'partyId';
   const gridRef = {
@@ -39,6 +34,10 @@ describe('useFillsList Hook', () => {
   const scrolledToTop = {
     current: false,
   };
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should return proper dataProvider results', () => {
     const { result } = renderHook(
