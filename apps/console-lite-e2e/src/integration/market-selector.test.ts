@@ -67,7 +67,7 @@ describe('market selector', () => {
     }
   });
 
-  it.only('typing should change list', () => {
+  it('typing should change list', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
@@ -124,7 +124,7 @@ describe('market selector', () => {
     }
   });
 
-  it('mobile view', () => {
+  it.only('mobile view', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
@@ -136,7 +136,7 @@ describe('market selector', () => {
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
-        .should('have.length', 3);
+        .should('have.length', 9);
       cy.get('div[role="dialog"]').should('have.class', 'w-screen');
       cy.getByTestId('dialog-close').click();
       cy.get('input[placeholder="Search"]').should(
