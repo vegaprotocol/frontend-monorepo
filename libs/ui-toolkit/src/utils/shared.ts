@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 
 export const defaultSelectElement = (hasError?: boolean) =>
-  classnames(defaultFormElement(hasError), 'dark:bg-black');
+  classnames(defaultFormElement(hasError));
 
 export const defaultFormElement = (hasError?: boolean) =>
   classnames(

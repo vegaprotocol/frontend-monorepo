@@ -13,14 +13,14 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, hasError, ...props }, ref) => (
-    <div className="flex items-center relative">
+    <div className="flex items-center relative bg-white dark:bg-black">
       <select
         ref={ref}
         {...props}
         className={classNames(
           defaultSelectElement(hasError),
           className,
-          'appearance-none outline-none rounded-md'
+          'appearance-none outline-none rounded-md z-20'
         )}
       />
       <Icon name="chevron-down" className="absolute right-4 z-10" />
