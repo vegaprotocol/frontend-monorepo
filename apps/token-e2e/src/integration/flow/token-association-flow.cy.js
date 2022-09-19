@@ -14,28 +14,9 @@ const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const ethWalletDissociateButton = '[href="/staking/disassociate"]';
 const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
 const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
-const associatedKey = '[data-test-id="associated-key"]';
 const associatedAmount = '[data-test-id="associated-amount"]';
-const currencyLocked = '[data-testid="currency-locked"]';
-const currencyUnlocked = '[data-testid="currency-unlocked"]';
 const disassocitiationWarning = '[data-testid="disassociation-warning"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
-
-function setUp(wallet = 0, contract = 0) {
-  cy.vega_wallet_teardown();
-  cy.eth_associate_tokens(wallet, 'wallet');
-  cy.eth_associate_tokens(contract, 'contract');
-
-  cy.get(vegaWallet).within(() => {
-    cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-      'contain',
-      (wallet === 0) & (contract === 0) ? '0.0' : wallet + contract
-    );
-  });
-
-  cy.reload();
-  cy.ethereum_wallet_connect();
-}
 
 context(
   'Token association flow - with eth and vega wallets connected',
@@ -45,22 +26,12 @@ context(
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.vega_wallet_set_specified_approval_amount('1000');
-
       cy.vega_wallet_connect();
       cy.navigate_to('staking');
       cy.wait_for_spinner();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
-      // beforeEach(
-      //   'teardown wallet & drill into a specific validator',
-      //   function () {
-      //     cy.vega_wallet_teardown();
-      //     cy.navigate_to('staking');
-      //     cy.wait_for_spinner();
-      //   }
-      // );
-
       it('Able to associate tokens - from wallet', function () {
         //1000-ASSO-0008
         //1000-ASSO-0009
@@ -70,7 +41,7 @@ context(
         //1000-ASSO-0014
         //1000-ASSO-0015
         //1000-ASSO-0030
-        setUp();
+        cy.set_up_tokens();
 
         cy.staking_page_associate_tokens('2');
 
@@ -96,7 +67,7 @@ context(
         // 1000-ASSO-0028
         // 1000-ASSO-0029
 
-        setUp(10);
+        cy.set_up_tokens(10);
 
         cy.staking_page_disassociate_tokens('10');
 
@@ -110,7 +81,7 @@ context(
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
         //1000-ASSO-0011
 
-        setUp();
+        cy.set_up_tokens();
 
         cy.staking_page_associate_tokens('1001', { approve: true });
 
@@ -132,7 +103,7 @@ context(
       });
 
       it('Able to disassociate a partial amount of tokens currently associated', function () {
-        setUp(8);
+        cy.set_up_tokens(8);
 
         cy.staking_page_disassociate_tokens('1');
 
@@ -156,7 +127,7 @@ context(
         const warningText =
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
 
-        setUp(13);
+        cy.set_up_tokens(13);
 
         cy.get(ethWalletDissociateButton).click();
         cy.get(disassocitiationWarning).should('contain', warningText);
@@ -219,7 +190,7 @@ context(
         // 1000-ASSO-0021
         // 1000-ASSO-0022
 
-        setUp(21, 37);
+        cy.set_up_tokens(21, 37);
 
         cy.staking_page_disassociate_tokens('6', { type: 'wallet' });
 
@@ -248,7 +219,7 @@ context(
         // 1000-ASSO-0010
         // No warning visible as described in AC, but the button is disabled
 
-        setUp();
+        cy.set_up_tokens();
 
         cy.get(ethWalletAssociateButton).first().click();
         cy.get(associateWalletRadioButton, { timeout: 30000 }).click();

@@ -24,19 +24,23 @@ Cypress.Commands.add('vega_wallet_import', () => {
 });
 
 Cypress.Commands.add('vega_wallet_connect', () => {
-  cy.highlight('Connecting Vega Wallet');
-  cy.get(vegaWalletContainer).within(() => {
-    cy.get('button')
-      .contains('Connect Vega wallet to use associated $VEGA')
-      .should('be.enabled')
-      .and('be.visible')
-      .click({ force: true });
+  cy.get(vegaWalletContainer).then((container) => {
+    if (container.text().includes('Connect Vega')) {
+      cy.highlight('Connecting Vega Wallet');
+      cy.get(vegaWalletContainer).within(() => {
+        cy.get('button')
+          .contains('Connect Vega wallet to use associated $VEGA')
+          .should('be.enabled')
+          .and('be.visible')
+          .click({ force: true });
+      });
+      cy.contains('rest provider').click();
+      cy.get(restConnectorForm).within(() => {
+        cy.get('#wallet').click().type(vegaWalletName);
+        cy.get('#passphrase').click().type(vegaWalletPassphrase);
+        cy.get('button').contains('Connect').click();
+      });
+      cy.get(vegaWalletNameElement).should('be.visible');
+    }
   });
-  cy.contains('rest provider').click();
-  cy.get(restConnectorForm).within(() => {
-    cy.get('#wallet').click().type(vegaWalletName);
-    cy.get('#passphrase').click().type(vegaWalletPassphrase);
-    cy.get('button').contains('Connect').click();
-  });
-  cy.get(vegaWalletNameElement).should('be.visible');
 });

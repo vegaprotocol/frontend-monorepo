@@ -69,3 +69,29 @@ Cypress.Commands.add('restartVegacapsuleNetwork', () => {
     })
     .should('contain', 'starting network success');
 });
+
+Cypress.Commands.add('set_up_tokens', (wallet = 0, contract = 0) => {
+  const vegaWallet = '[data-testid="vega-wallet"]';
+  const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
+  const txTimeout = Cypress.env('txTimeout');
+
+  cy.vega_wallet_teardown();
+
+  cy.get(vegaWallet).within(() => {
+    cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '0.0');
+  });
+
+  cy.eth_associate_tokens(wallet, 'wallet');
+  cy.eth_associate_tokens(contract, 'contract');
+
+  cy.get(vegaWallet).within(() => {
+    cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+      'contain',
+      (wallet === 0) & (contract === 0) ? '0.0' : wallet + contract
+    );
+  });
+
+  cy.reload();
+  cy.vega_wallet_connect();
+  cy.ethereum_wallet_connect();
+});
