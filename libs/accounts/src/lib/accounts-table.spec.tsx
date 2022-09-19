@@ -1,9 +1,9 @@
 import AccountsTable from './accounts-table';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import type { AccountFieldsFragment } from './__generated__/Accounts';
 import { AccountType } from '@vegaprotocol/types';
+import type { AccountFields } from './accounts-manager';
 
-const singleRow: AccountFieldsFragment = {
+const singleRow: AccountFields = {
   __typename: 'Account',
   type: AccountType.ACCOUNT_TYPE_MARGIN,
   balance: '125600000',
@@ -24,6 +24,9 @@ const singleRow: AccountFieldsFragment = {
     symbol: 'tBTC',
     decimals: 5,
   },
+  available: '125600000',
+  used: '125600000',
+  deposited: '125600000',
 };
 const singleRowData = [singleRow];
 
