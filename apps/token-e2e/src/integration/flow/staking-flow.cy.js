@@ -225,7 +225,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.staking_validator_page_remove_stake('1');
 
       // 1002-STKE-049
-      cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
+      cy.get(stakeNextEpochValue, txTimeout).contains(2.0, txTimeout);
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -463,6 +463,8 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     it('Disassociating some tokens - prioritizes unstaked tokens', function () {
       cy.set_up_tokens(3);
 
+      cy.click_on_validator_from_list(0);
+
       cy.staking_validator_page_add_stake('2');
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -662,7 +664,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     after(
       'teardown environment to prevent test data bleeding into other tests',
       function () {
-        if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+        if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS' === 'true')) {
           cy.restartVegacapsuleNetwork();
         }
       }
