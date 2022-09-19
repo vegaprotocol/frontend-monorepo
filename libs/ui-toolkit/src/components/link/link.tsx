@@ -13,7 +13,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 export const Link = ({ className, children, ...props }: LinkProps) => {
   const anchorClassName = classNames(className, {
     underline: typeof children === 'string',
-    'cursor-pointer': props['aria-disabled'] !== true,
+    'cursor-pointer hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300': props['aria-disabled'] !== true,
     'opacity-50 pointer-events-none': props['aria-disabled'] === true,
   });
 

@@ -146,6 +146,17 @@ export const WithdrawForm = ({
           </div>
         )}
         <FormGroup label={t('Amount')} labelFor="amount">
+          {selectedAsset && (
+            <UseButton
+              data-testid="use-maximum"
+              onClick={() => {
+                setValue('amount', balance.toFixed(selectedAsset.decimals));
+                clearErrors('amount');
+              }}
+            >
+              {t('Use maximum')}
+            </UseButton>
+          )}
           <Input
             type="number"
             autoComplete="off"
@@ -167,17 +178,6 @@ export const WithdrawForm = ({
           {errors.amount?.message && (
             <InputError intent="danger">{errors.amount.message}</InputError>
           )}
-          {selectedAsset && (
-            <UseButton
-              data-testid="use-maximum"
-              onClick={() => {
-                setValue('amount', balance.toFixed(selectedAsset.decimals));
-                clearErrors('amount');
-              }}
-            >
-              {t('Use maximum')}
-            </UseButton>
-          )}
         </FormGroup>
         <Button data-testid="submit-withdrawal" type="submit" variant="primary">
           Release funds
@@ -196,7 +196,7 @@ const UseButton = ({ children, ...rest }: UseButtonProps) => {
     <button
       {...rest}
       type="button"
-      className="ml-auto text-sm absolute top-0 right-0 underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
     >
       {children}
     </button>

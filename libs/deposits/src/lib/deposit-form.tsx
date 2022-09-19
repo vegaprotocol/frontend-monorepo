@@ -1,4 +1,5 @@
 import type { Asset } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
 import {
   ethereumAddress,
   t,
@@ -176,15 +177,10 @@ export const DepositForm = ({
             {errors.asset.message}
           </InputError>
         )}
-        {isFaucetable && selectedAsset && (
-          <UseButton onClick={requestFaucet}>
-            {t(`Get ${selectedAsset.symbol}`)}
-          </UseButton>
-        )}
         {!errors.asset?.message && selectedAsset && (
           <button
             data-testid="view-asset-details"
-            className="text-sm underline"
+            className="text-sm underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
             onClick={() => {
               setAssetDetailsDialogOpen(true);
               setAssetDetailsDialogSymbol(selectedAsset);
@@ -193,17 +189,13 @@ export const DepositForm = ({
             {t('View asset details')}
           </button>
         )}
+        {isFaucetable && selectedAsset && (
+          <UseButton onClick={requestFaucet} className="bottom-0 top-auto">
+            {t(`Get ${selectedAsset.symbol}`)}
+          </UseButton>
+        )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to">
-        <Input
-          {...register('to', { validate: { required, vegaPublicKey } })}
-          id="to"
-        />
-        {errors.to?.message && (
-          <InputError intent="danger" forInput="to">
-            {errors.to.message}
-          </InputError>
-        )}
         {keypair?.pub && (
           <UseButton
             onClick={() => {
@@ -214,6 +206,15 @@ export const DepositForm = ({
             {t('Use connected')}
           </UseButton>
         )}
+        <Input
+          {...register('to', { validate: { required, vegaPublicKey } })}
+          id="to"
+        />
+        {errors.to?.message && (
+          <InputError intent="danger" forInput="to">
+            {errors.to.message}
+          </InputError>
+        )}
       </FormGroup>
       {selectedAsset && max && deposited && (
         <div className="mb-6">
@@ -221,6 +222,16 @@ export const DepositForm = ({
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount">
+        {selectedAsset && balance && (
+          <UseButton
+            onClick={() => {
+              setValue('amount', balance.toFixed(selectedAsset.decimals));
+              clearErrors('amount');
+            }}
+          >
+            {t('Use maximum')}
+          </UseButton>
+        )}
         <Input
           type="number"
           autoComplete="off"
@@ -247,16 +258,6 @@ export const DepositForm = ({
           <InputError intent="danger" forInput="amount">
             {errors.amount.message}
           </InputError>
-        )}
-        {selectedAsset && balance && (
-          <UseButton
-            onClick={() => {
-              setValue('amount', balance.toFixed(selectedAsset.decimals));
-              clearErrors('amount');
-            }}
-          >
-            {t('Use maximum')}
-          </UseButton>
         )}
       </FormGroup>
       <FormButton
@@ -340,13 +341,14 @@ const FormButton = ({
 interface UseButtonProps {
   children: ReactNode;
   onClick: () => void;
+  className: string;
 }
 
-const UseButton = ({ children, onClick }: UseButtonProps) => {
+const UseButton = ({ children, onClick, className }: UseButtonProps) => {
   return (
     <button
       type="button"
-      className="ml-auto text-sm absolute top-0 right-0 underline"
+      className={classNames('ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300', className)}
       onClick={onClick}
     >
       {children}
