@@ -1,7 +1,7 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Icon, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
@@ -69,9 +69,10 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <button onClick={() => push(`/markets/${marketId}`)}>{`${name} ${t(
-              'liquidity provision'
-            )}`}</button>
+            <button className="hover:text-neutral-500 dark:hover:text-neutral-300 sm:text-lg md:text-xl lg:text-2xl " onClick={() => push(`/markets/${marketId}`)}>
+              <Icon name="chevron-left" size={6} />
+              {`${name}`}
+            </button>
           }
         >
           <HeaderStat

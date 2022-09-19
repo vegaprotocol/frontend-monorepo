@@ -348,7 +348,10 @@ const UseButton = ({ children, onClick, className }: UseButtonProps) => {
   return (
     <button
       type="button"
-      className={classNames('ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300', className)}
+      className={classNames(
+        'ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300',
+        className
+      )}
       onClick={onClick}
     >
       {children}
