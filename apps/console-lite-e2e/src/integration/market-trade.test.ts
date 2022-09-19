@@ -1,7 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateSimpleMarkets,
-  generateMarkets,
+  generateMarketsCandles,
+  generateMarketsData,
 } from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
@@ -17,7 +18,9 @@ describe('Market trade', () => {
   let markets;
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Markets', generateMarkets());
+      aliasQuery(req, 'Markets', generateSimpleMarkets());
+      aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
+      aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
@@ -29,7 +32,7 @@ describe('Market trade', () => {
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
     });
     cy.visit('/markets');
-    cy.wait('@SimpleMarkets').then((response) => {
+    cy.wait('@Markets').then((response) => {
       if (response.response.body.data?.markets?.length) {
         markets = response.response.body.data.markets;
       }

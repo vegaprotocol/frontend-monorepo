@@ -1,6 +1,10 @@
 import { connectVegaWallet } from '../support/connect-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateSimpleMarkets } from '../support/mocks/generate-markets';
+import {
+  generateMarketsCandles,
+  generateMarketsData,
+  generateSimpleMarkets,
+} from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
@@ -10,12 +14,16 @@ import { generatePartyMarketData } from '../support/mocks/generate-party-market-
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketNames } from '../support/mocks/generate-market-names';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
+import type { Market, Markets } from '@vegaprotocol/market-list';
 
 describe('market selector', () => {
-  let markets;
+  let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
+      aliasQuery(req, 'Markets', generateSimpleMarkets());
+      aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
+      aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+      aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
@@ -28,9 +36,10 @@ describe('market selector', () => {
     });
 
     cy.visit('/markets');
-    cy.wait('@SimpleMarkets').then((response) => {
-      if (response.response.body.data?.markets?.length) {
-        markets = response.response.body.data.markets;
+    cy.wait('@Markets').then((response) => {
+      const data: Markets | undefined = response?.response?.body?.data;
+      if (data.marketsConnection.edges.length) {
+        markets = data.marketsConnection.edges.map((edge) => edge.node);
       }
     });
   });
