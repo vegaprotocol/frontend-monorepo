@@ -31,7 +31,7 @@ const DEPOSITS_QUERY = gql`
 /**
  *  Fetches data required for the Deposit page
  */
-export const DepositContainer = ({ assetId }: { assetId: string }) => {
+export const DepositContainer = ({ assetId }: { assetId?: string }) => {
   const { VEGA_ENV } = useEnvironment();
   const { keypair } = useVegaWallet();
 

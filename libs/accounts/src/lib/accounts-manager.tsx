@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
-import { AsyncRenderer, Dialog } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import {
   addSummaryRows,
   t,
@@ -86,6 +86,7 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
     AccountFieldsFragment[],
     AccountFieldsFragment
   >({ dataProvider: accountsDataProvider, update, variables });
+  const [depositDialog, setDepositDialog] = useState(false);
 
   const symbols = data && getSymbols(data);
   return (
@@ -102,6 +103,15 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
             />
           ))}
       </AsyncRenderer>
+      <div className="m-auto ml-4">
+        <Button size="sm" onClick={() => setDepositDialog(true)}>
+          {t('Deposit new asset')}
+        </Button>
+      </div>
+      <DepositDialog
+        depositDialog={depositDialog}
+        setDepositDialog={setDepositDialog}
+      />
     </Web3Container>
   );
 };
@@ -159,7 +169,7 @@ export const AssetAccountTable = forwardRef<
 });
 
 export interface DepositDialogProps {
-  assetId: string;
+  assetId?: string;
   depositDialog: boolean;
   setDepositDialog: (open: boolean) => void;
 }
