@@ -25,7 +25,7 @@ export const Web3WalletInput = ({ inputProps }: Web3WalletInputProps) => {
       <Input
         {...inputProps}
         appendIconName="chevron-down"
-        className="cursor-pointer select-none"
+        className="cursor-pointer select-none rounded-md z-20"
         onChange={noop}
         onClick={() => setDialogOpen(true)}
       />
