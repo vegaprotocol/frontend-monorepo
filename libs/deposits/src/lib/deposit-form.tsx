@@ -50,6 +50,7 @@ export interface DepositFormProps {
   deposited: BigNumber | undefined;
   allowance: BigNumber | undefined;
   isFaucetable?: boolean;
+  disableSelect?: boolean;
 }
 
 export const DepositForm = ({
@@ -64,6 +65,7 @@ export const DepositForm = ({
   requestFaucet,
   allowance,
   isFaucetable,
+  disableSelect,
 }: DepositFormProps) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -78,7 +80,6 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id,
       from: account,
       to: keypair?.pub,
     },
@@ -156,11 +157,13 @@ export const DepositForm = ({
           render={({ field }) => (
             <Select
               id="asset"
+              disabled={disableSelect}
               {...field}
               onChange={(e) => {
                 field.onChange(e);
                 onSelectAsset(e.target.value);
               }}
+              value={selectedAsset?.id || ''}
             >
               <option value="">{t('Please select')}</option>
               {assets.filter(isAssetTypeERC20).map((a) => (

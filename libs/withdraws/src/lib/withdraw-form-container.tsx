@@ -51,9 +51,11 @@ const WITHDRAW_FORM_QUERY = gql`
 interface WithdrawFormContainerProps {
   partyId?: string;
   submit: (args: WithdrawalArgs) => void;
+  assetId?: string;
 }
 
 export const WithdrawFormContainer = ({
+  assetId,
   partyId,
   submit,
 }: WithdrawFormContainerProps) => {
@@ -82,6 +84,7 @@ export const WithdrawFormContainer = ({
 
   return (
     <WithdrawManager
+      assetId={assetId}
       assets={assets}
       accounts={data.party?.accounts || []}
       submit={submit}

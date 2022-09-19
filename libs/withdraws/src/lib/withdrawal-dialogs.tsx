@@ -9,9 +9,11 @@ import { WithdrawalFeedback } from './withdrawal-feedback';
 export const WithdrawalDialogs = ({
   withdrawDialog,
   setWithdrawDialog,
+  assetId,
 }: {
   withdrawDialog: boolean;
   setWithdrawDialog: (open: boolean) => void;
+  assetId?: string;
 }) => {
   const { keypair } = useVegaWallet();
   const createWithdraw = useCreateWithdraw();
@@ -24,13 +26,16 @@ export const WithdrawalDialogs = ({
         onChange={(isOpen) => setWithdrawDialog(isOpen)}
         size="small"
       >
-        <WithdrawFormContainer
-          partyId={keypair?.pub}
-          submit={(args) => {
-            setWithdrawDialog(false);
-            createWithdraw.submit(args);
-          }}
-        />
+        {withdrawDialog && (
+          <WithdrawFormContainer
+            assetId={assetId}
+            partyId={keypair?.pub}
+            submit={(args) => {
+              setWithdrawDialog(false);
+              createWithdraw.submit(args);
+            }}
+          />
+        )}
       </Dialog>
       <createWithdraw.Dialog>
         <WithdrawalFeedback

@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import type BigNumber from 'bignumber.js';
 
 interface DepositLimitsProps {
@@ -6,6 +6,10 @@ interface DepositLimitsProps {
   deposited: BigNumber;
   balance?: BigNumber;
 }
+
+const format = (value: string) => {
+  return !isNaN(Number(value)) ? formatNumber(value) : value;
+};
 
 export const DepositLimits = ({
   max,
@@ -36,21 +40,23 @@ export const DepositLimits = ({
       <tbody>
         <tr>
           <th className="text-left font-normal">{t('Balance available')}</th>
-          <td className="text-right">{balance ? balance.toString() : 0}</td>
+          <td className="text-right">
+            {balance ? formatNumber(balance) : '-'}
+          </td>
         </tr>
         <tr>
           <th className="text-left font-normal">
             {t('Maximum total deposit amount')}
           </th>
-          <td className="text-right">{maxLimit}</td>
+          <td className="text-right">{format(maxLimit)}</td>
         </tr>
         <tr>
           <th className="text-left font-normal">{t('Deposited')}</th>
-          <td className="text-right">{deposited.toString()}</td>
+          <td className="text-right">{formatNumber(deposited)}</td>
         </tr>
         <tr>
           <th className="text-left font-normal">{t('Remaining')}</th>
-          <td className="text-right">{remaining}</td>
+          <td className="text-right">{format(remaining)}</td>
         </tr>
       </tbody>
     </table>

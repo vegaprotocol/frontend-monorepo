@@ -36,6 +36,7 @@ export interface WithdrawFormProps {
   delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
+  disableSelect?: boolean;
 }
 
 export const WithdrawForm = ({
@@ -47,6 +48,7 @@ export const WithdrawForm = ({
   delay,
   onSelectAsset,
   submitWithdraw,
+  disableSelect,
 }: WithdrawFormProps) => {
   const { account: address } = useWeb3React();
   const {
@@ -109,6 +111,7 @@ export const WithdrawForm = ({
                 value={selectedAsset?.id || ''}
                 id="asset"
                 name="asset"
+                disabled={disableSelect}
               >
                 <option value="">{t('Please select')}</option>
                 {assets.filter(isAssetTypeERC20).map((a) => (

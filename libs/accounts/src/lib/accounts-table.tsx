@@ -11,18 +11,19 @@ import {
   addDecimalsFormatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
-import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFieldsFragment } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { AccountFields } from './accounts-manager';
+import BigNumber from 'bignumber.js';
 import type { AccountType } from '@vegaprotocol/types';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 
-export interface PriceCellProps {
+export interface ValueProps {
   valueFormatted?: {
     low: string;
     high: string;
@@ -31,9 +32,9 @@ export interface PriceCellProps {
   };
 }
 
-const EmptyCell = () => '';
+export const EmptyCell = () => '';
 
-export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
+export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
   return valueFormatted ? (
     <>
       <div className="flex justify-between leading-tight font-mono">
@@ -49,8 +50,42 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   ) : null;
 };
 
+export const progressBarValueFormatter = ({
+  data,
+  node,
+}: ValueFormatterParams): ValueProps['valueFormatted'] | undefined => {
+  if (!data || node?.rowPinned) {
+    return undefined;
+  }
+  const min = new BigNumber(data.used);
+  const max = new BigNumber(data.deposited);
+  const range = max;
+  return {
+    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
+    high: addDecimalsFormatNumber(max.toString(), data.asset.decimals),
+    value: range ? min.times(100).dividedBy(range).toNumber() : 0,
+    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+  };
+};
+
+export const progressBarHeaderComponentParams = {
+  template:
+    '<div class="ag-cell-label-container" role="presentation">' +
+    `  <span>${t('Available')}</span>` +
+    '  <span ref="eText" class="ag-header-cell-text"></span>' +
+    '</div>',
+};
+
+export const progressBarCellRendererSelector = (
+  params: ICellRendererParams
+): CellRendererSelectorResult => {
+  return {
+    component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+  };
+};
+
 interface AccountsTableProps extends AgGridReactProps {
-  data: AccountFieldsFragment[] | null;
+  data: AccountFields[] | null;
   style?: CSSProperties;
 }
 
@@ -82,6 +117,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
       ) : (
         ''
       );
+    console.log('data', data);
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -91,19 +127,10 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         ref={ref}
         rowHeight={34}
         components={{ PriceCell }}
-        autoGroupColumnDef={{
-          field: 'asset.symbol',
-          headerName: t('Asset'),
-          rowGroup: true,
-          hide: true,
-          cellRenderer: assetDialogCellRenderer,
-        }}
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
           resizable: true,
-          sortable: true,
-          tooltipComponent: TooltipCellComponent,
         }}
       >
         <AgGridColumn
@@ -112,79 +139,15 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           headerTooltip={t(
             'Asset is the collateral that is deposited into the Vega protocol.'
           )}
-        />
-        <AgGridColumn
-          headerName={t('Type')}
-          field="type"
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            value ? AccountTypeMapping[value as AccountType] : '-'
-          }
-          headerTooltip={t(
-            'Type is the type of account that is used to deposit collateral.'
-          )}
+          cellRenderer={assetDialogCellRenderer}
         />
         <AgGridColumn
           headerName={t('Used')}
-          field="balance"
-          headerComponentParams={{
-            template:
-              '<div class="ag-cell-label-container" role="presentation">' +
-              `  <span>${t('Available')}</span>` +
-              '  <span ref="eText" class="ag-header-cell-text"></span>' +
-              '</div>',
-          }}
+          field="used"
           flex={2}
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
-            return {
-              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
-            };
-          }}
-          valueFormatter={({
-            data,
-            node,
-          }: ValueFormatterParams):
-            | PriceCellProps['valueFormatted']
-            | undefined => {
-            if (!data || node?.rowPinned) {
-              return undefined;
-            }
-            const min = BigInt(data.balance);
-            const max = BigInt(data.balance);
-            const mid = BigInt(data.balance);
-            const range = max - min;
-            return {
-              low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
-              high: addDecimalsFormatNumber(
-                max.toString(),
-                data.asset.decimals
-              ),
-              value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-              intent: data.lowMarginLevel ? Intent.Warning : undefined,
-            };
-          }}
-        />
-        <AgGridColumn
-          headerName={t('Deposited')}
-          field="balance"
-          cellRenderer="PriceCell"
-          type="rightAligned"
-          valueFormatter={assetDecimalsFormatter}
-        />
-        <AgGridColumn
-          headerName={t('Used')}
-          field="balance"
-          cellRenderer="PriceCell"
-          type="rightAligned"
-          valueFormatter={assetDecimalsFormatter}
-        />
-        <AgGridColumn
-          headerName={t('Balance')}
-          field="balance"
-          cellRenderer="PriceCell"
-          type="rightAligned"
-          valueFormatter={assetDecimalsFormatter}
+          headerComponentParams={progressBarHeaderComponentParams}
+          cellRendererSelector={progressBarCellRendererSelector}
+          valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
           headerName={t('Market')}
@@ -192,16 +155,11 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           valueFormatter="value || '—'"
         />
         <AgGridColumn
-          field="close"
-          cellRenderer={({ data }: ICellRendererParams) => {
-            if (!data) return null;
-
-            return (
-              <Button size="xs" data-testid="close" onClick={() => null}>
-                Close
-              </Button>
-            );
-          }}
+          headerName={t('Type')}
+          field="type"
+          valueFormatter={({ value }: ValueFormatterParams) =>
+            value ? AccountTypeMapping[value as AccountType] : '—'
+          }
         />
       </AgGrid>
     );

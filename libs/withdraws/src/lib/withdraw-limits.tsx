@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -35,7 +35,7 @@ export const WithdrawLimits = ({
       <tbody>
         <tr data-testid="balance-available">
           <th className="text-left font-normal">{t('Balance available')}</th>
-          <td className="text-right">{balance.toString()}</td>
+          <td className="text-right">{formatNumber(balance)}</td>
         </tr>
         <tr data-testid="withdrawal-threshold">
           <th className="text-left font-normal">

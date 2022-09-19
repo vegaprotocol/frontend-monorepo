@@ -16,18 +16,20 @@ export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   submit: (args: WithdrawalArgs) => void;
+  assetId?: string;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
   submit,
+  assetId,
 }: WithdrawManagerProps) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
 
-  // Everytime an asset is selected we need to find the corresponding
+  // Every time an asset is selected we need to find the corresponding
   // account, balance, min viable amount and delay threshold
   const handleSelectAsset = useCallback(
     async (id: string) => {
@@ -63,8 +65,13 @@ export const WithdrawManager = ({
     [accounts, assets, update, getThreshold, getDelay]
   );
 
+  if (assetId) {
+    handleSelectAsset(assetId);
+  }
+
   return (
     <WithdrawForm
+      disableSelect={!!assetId}
       selectedAsset={asset}
       onSelectAsset={handleSelectAsset}
       assets={sortBy(assets, 'name')}
