@@ -50,7 +50,6 @@ export interface DepositFormProps {
   deposited: BigNumber | undefined;
   allowance: BigNumber | undefined;
   isFaucetable?: boolean;
-  disableSelect?: boolean;
 }
 
 export const DepositForm = ({
@@ -65,7 +64,6 @@ export const DepositForm = ({
   requestFaucet,
   allowance,
   isFaucetable,
-  disableSelect,
 }: DepositFormProps) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -157,7 +155,6 @@ export const DepositForm = ({
           render={({ field }) => (
             <Select
               id="asset"
-              disabled={disableSelect}
               {...field}
               onChange={(e) => {
                 field.onChange(e);

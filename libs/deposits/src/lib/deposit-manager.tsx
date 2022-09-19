@@ -61,7 +61,6 @@ export const DepositManager = ({
         max={max}
         allowance={allowance}
         isFaucetable={isFaucetable}
-        disableSelect={!!assetId}
       />
       <approve.Dialog />
       <faucet.Dialog />

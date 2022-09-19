@@ -71,7 +71,6 @@ export const WithdrawManager = ({
 
   return (
     <WithdrawForm
-      disableSelect={!!assetId}
       selectedAsset={asset}
       onSelectAsset={handleSelectAsset}
       assets={sortBy(assets, 'name')}
