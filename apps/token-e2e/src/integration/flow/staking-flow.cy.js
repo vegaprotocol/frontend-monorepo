@@ -17,10 +17,6 @@ const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletStakedBalances =
   '[data-testid="vega-wallet-balance-staked-validators"]';
-const vegaWalletThisEpochBalances =
-  '[data-testid="vega-wallet-balance-this-epoch"]';
-const vegaWalletNextEpochBalances =
-  '[data-testid="vega-wallet-balance-next-epoch"]';
 const ethWalletAssociatedBalances =
   '[data-testid="eth-wallet-associated-balances"]';
 const ethWalletTotalAssociatedBalance = '[data-testid="currency-locked"]';
@@ -80,12 +76,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       // 1002-STKE-033, 1002-STKE-034, 1002-STKE-037
       cy.staking_validator_page_add_stake('2');
-
-      // 1002-STKE-038
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -331,17 +321,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       // 1002-STKE-049
       cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
-        'contain',
-        2.0,
-        txTimeout
-      );
-
-      cy.get(vegaWalletThisEpochBalances, txTimeout)
-        .should('contain', 3.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'This Epoch');
-
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         2.0,
@@ -400,12 +379,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.get(stakeNextEpochValue, epochTimeout)
         .contains(0.0, epochTimeout)
         .should('be.visible');
-
-      cy.get(vegaWalletThisEpochBalances, txTimeout).should(
-        'contain',
-        1.0,
-        txTimeout
-      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -865,9 +838,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     after(
-      'teardown wallet so state/results dont bleed into other test suites',
+      'teardown environment to prevent test data bleeding into other tests',
       function () {
-        cy.vega_wallet_teardown();
+        if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          cy.restartVegacapsuleNetwork();
+        }
       }
     );
   });

@@ -125,6 +125,7 @@ jobs:
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_NIGHTLY_RUN: true
           CYPRESS_INCLUDE_FLOWS: true
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
       ## Upload logs
