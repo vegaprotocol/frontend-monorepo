@@ -167,6 +167,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         />
         <AgGridColumn
           headerName={t('Asset')}
+          colId="asset.symbol"
           field="asset.symbol"
           maxWidth={300}
           headerTooltip={t(

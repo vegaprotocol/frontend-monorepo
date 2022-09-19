@@ -83,6 +83,7 @@ export const AccountDeposit = forwardRef<AgGridReact, AccountsTableProps>(
       >
         <AgGridColumn
           headerName={t('Asset')}
+          colId="asset.symbol"
           field="asset.symbol"
           headerTooltip={t(
             'Asset is the collateral that is deposited into the Vega protocol.'

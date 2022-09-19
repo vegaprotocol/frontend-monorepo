@@ -69,7 +69,7 @@ describe('withdraw', () => {
   it('can set amount using use maximum button', () => {
     cy.get(assetSelectField).select('Asset 0');
     cy.getByTestId(useMaximumAmount).click();
-    cy.get(amountField).should('have.value', '1000.00000');
+    cy.get(amountField).should('have.value', '1,000.00000');
   });
 
   it('triggers transaction when submitted', () => {
@@ -86,7 +86,7 @@ describe('withdraw', () => {
     cy.getByTestId('balance-available')
       .should('contain.text', 'Balance available')
       .find('td')
-      .should('have.text', '1000');
+      .should('have.text', '1,000');
     cy.getByTestId('withdrawal-threshold')
       .should('contain.text', 'Delayed withdrawal threshold')
       .find('td')
