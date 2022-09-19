@@ -53,12 +53,18 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
 
   const symbols = data && getSymbols(data);
   return (
-    <AsyncRenderer loading={loading} error={error} data={assetSymbols}>
-      {symbols &&
-        symbols.map((assetSymbol) => (
-          <AssetAccountTable assetSymbol={assetSymbol} data={data} />
-        ))}
-    </AsyncRenderer>
+    <Web3Container>
+      <AsyncRenderer loading={loading} error={error} data={assetSymbols}>
+        {symbols &&
+          symbols.map((assetSymbol) => (
+            <AssetAccountTable
+              key={assetSymbol}
+              assetSymbol={assetSymbol}
+              data={data}
+            />
+          ))}
+      </AsyncRenderer>
+    </Web3Container>
   );
 };
 
@@ -75,14 +81,14 @@ export const AssetAccountTable = ({
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [depositDialog, setDepositDialog] = useState(false);
   return (
-    <Web3Container>
+    <>
       <div className="h-[50px]">
         <AccountDeposit
           ref={gridRef}
           data={[depositRow]}
           expanded={open}
-          onClickAsset={() => setOpen(!open)}
           showRows={positionRows?.length > 0}
+          onClickAsset={() => setOpen(!open)}
           onClickWithdraw={() => setWithdrawDialog(true)}
           onClickDeposit={() => setDepositDialog(true)}
         />
@@ -106,7 +112,7 @@ export const AssetAccountTable = ({
         depositDialog={depositDialog}
         setDepositDialog={setDepositDialog}
       />
-    </Web3Container>
+    </>
   );
 };
 

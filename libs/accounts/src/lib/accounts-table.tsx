@@ -10,6 +10,7 @@ import {
   PriceCell,
   addDecimalsFormatNumber,
   t,
+  formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
@@ -20,13 +21,12 @@ import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountFields } from './accounts-manager';
 import BigNumber from 'bignumber.js';
-import type { AccountType } from '@vegaprotocol/types';
-import { AccountTypeMapping } from '@vegaprotocol/types';
 
 export interface ValueProps {
   valueFormatted?: {
     low: string;
     high: string;
+    percentage: string;
     value: number;
     intent?: Intent;
   };
@@ -39,7 +39,9 @@ export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
     <>
       <div className="flex justify-between leading-tight font-mono">
         <div>{valueFormatted.low}</div>
-        <div>{valueFormatted.high}</div>
+        <div>
+          {valueFormatted.high} ({valueFormatted.percentage})
+        </div>
       </div>
       <ProgressBar
         value={valueFormatted.value}
@@ -59,12 +61,15 @@ export const progressBarValueFormatter = ({
   }
   const min = new BigNumber(data.used);
   const max = new BigNumber(data.deposited);
+  const mid = max.minus(min);
   const range = max;
+  const value = range ? min.times(100).dividedBy(range || 1) : new BigNumber(0);
   return {
     low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
-    high: addDecimalsFormatNumber(max.toString(), data.asset.decimals),
-    value: range ? min.times(100).dividedBy(range).toNumber() : 0,
-    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals),
+    value: value.toNumber(),
+    intent: Intent.None,
+    percentage: value ? formatNumberPercentage(value, 2) : '0.00',
   };
 };
 
@@ -150,16 +155,14 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
+          headerName={t('Deposited')}
+          field="deposited"
+          valueFormatter={assetDecimalsFormatter}
+        />
+        <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
           valueFormatter="value || '—'"
-        />
-        <AgGridColumn
-          headerName={t('Type')}
-          field="type"
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            value ? AccountTypeMapping[value as AccountType] : '—'
-          }
         />
       </AgGrid>
     );
