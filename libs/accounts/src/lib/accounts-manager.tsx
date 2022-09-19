@@ -1,14 +1,27 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import { AsyncRenderer, Dialog } from '@vegaprotocol/ui-toolkit';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  addSummaryRows,
+  t,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
 import type { AccountFieldsFragment } from './__generated__/Accounts';
-import { accountsDataProvider, getAccountData } from './accounts-data-provider';
+import {
+  accountsDataProvider,
+  getAccountData,
+  getGroupId,
+  getGroupSummaryRow,
+  getId,
+} from './accounts-data-provider';
 import AccountsTable from './accounts-table';
 import type { AgGridReact } from 'ag-grid-react';
 import { AccountDeposit } from './account-deposit';
 import { WithdrawalDialogs } from '@vegaprotocol/withdraws';
 import { Web3Container } from '@vegaprotocol/web3';
 import { DepositContainer } from '@vegaprotocol/deposits';
+import produce from 'immer';
+import merge from 'lodash/merge';
+import classNames from 'classnames';
 
 export interface AccountFields extends AccountFieldsFragment {
   available: string;
@@ -27,23 +40,46 @@ interface AccountsManagerProps {
 export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const assetSymbols = useRef<string[] | undefined>();
-
+  const gridRef = useRef<AgGridReact | null>(null);
   const update = useCallback(
-    ({ data }: { data: AccountFieldsFragment[] | null }) => {
-      if (data?.length) {
-        const newAssetSymbols = getSymbols(data);
-        if (
-          !newAssetSymbols.every(
-            (symbol) =>
-              assetSymbols.current && assetSymbols.current.includes(symbol)
-          )
-        ) {
-          return false;
+    ({ delta }: { delta: AccountFieldsFragment }) => {
+      const update: AccountFieldsFragment[] = [];
+      const add: AccountFieldsFragment[] = [];
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      const rowNode = gridRef.current.api.getRowNode(getId(delta));
+      if (rowNode) {
+        const updatedData = produce<AccountFieldsFragment>(
+          rowNode.data,
+          (draft: AccountFieldsFragment) => {
+            merge(draft, delta);
+          }
+        );
+        if (updatedData !== rowNode.data) {
+          update.push(updatedData);
         }
+      } else {
+        add.push(delta);
+      }
+      if (update.length || add.length) {
+        gridRef.current.api.applyTransactionAsync({
+          update,
+          add,
+          addIndex: 0,
+        });
+      }
+      if (add.length) {
+        addSummaryRows(
+          gridRef.current.api,
+          gridRef.current.columnApi,
+          getGroupId,
+          getGroupSummaryRow
+        );
       }
       return true;
     },
-    []
+    [gridRef]
   );
 
   const { data, error, loading } = useDataProvider<
@@ -56,11 +92,13 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
     <Web3Container>
       <AsyncRenderer loading={loading} error={error} data={assetSymbols}>
         {symbols &&
-          symbols.map((assetSymbol) => (
+          symbols.map((assetSymbol, i) => (
             <AssetAccountTable
+              ref={gridRef}
               key={assetSymbol}
               assetSymbol={assetSymbol}
               data={data}
+              hideHeader={i !== 0}
             />
           ))}
       </AsyncRenderer>
@@ -68,38 +106,42 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   );
 };
 
-export const AssetAccountTable = ({
-  data,
-  assetSymbol,
-}: {
+export interface AssetAccountTableProps {
   assetSymbol: string;
   data: AccountFieldsFragment[];
-}) => {
-  const { positionRows, depositRow } = getAccountData(data, assetSymbol);
+  hideHeader?: boolean;
+}
+
+export const AssetAccountTable = forwardRef<
+  AgGridReact,
+  AssetAccountTableProps
+>(({ data, assetSymbol, hideHeader }, ref) => {
+  const { accountRows, depositRow } = getAccountData(data, assetSymbol);
   const [open, setOpen] = useState(false);
-  const gridRef = useRef<AgGridReact | null>(null);
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [depositDialog, setDepositDialog] = useState(false);
   return (
     <>
-      <div className="h-[50px]">
+      <div
+        className={classNames({
+          'h-[50px]': hideHeader,
+          'h-[85px]': !hideHeader,
+        })}
+      >
         <AccountDeposit
-          ref={gridRef}
+          ref={ref}
           data={[depositRow]}
           expanded={open}
-          showRows={positionRows?.length > 0}
+          showRows={accountRows?.length > 0}
+          hideHeader={hideHeader}
           onClickAsset={() => setOpen(!open)}
           onClickWithdraw={() => setWithdrawDialog(true)}
           onClickDeposit={() => setDepositDialog(true)}
         />
       </div>
-      {open && positionRows.length > 0 && (
+      {open && accountRows.length > 0 && (
         <div className="h-[15vh]">
-          <AccountsTable
-            ref={gridRef}
-            data={positionRows}
-            domLayout="autoHeight"
-          />
+          <AccountsTable ref={ref} data={accountRows} domLayout="autoHeight" />
         </div>
       )}
       <WithdrawalDialogs
@@ -114,7 +156,7 @@ export const AssetAccountTable = ({
       />
     </>
   );
-};
+});
 
 export interface DepositDialogProps {
   assetId: string;

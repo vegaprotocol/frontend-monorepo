@@ -12,7 +12,7 @@ import {
   t,
   formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
-import { Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
@@ -21,6 +21,8 @@ import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountFields } from './accounts-manager';
 import BigNumber from 'bignumber.js';
+import { AccountTypeMapping } from '@vegaprotocol/types';
+import type { AccountType } from '@vegaprotocol/types';
 
 export interface ValueProps {
   valueFormatted?: {
@@ -108,21 +110,22 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
     const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
       useAssetDetailsDialogStore();
-    const assetDialogCellRenderer = ({ value }: GroupCellRendererParams) =>
-      value && value.length > 0 ? (
-        <button
+    const assetDialogCellRenderer = ({ value }: GroupCellRendererParams) => {
+      if (!value || value.length <= 0) return '-';
+      return (
+        <Button
+          size="xs"
           className="hover:underline"
           onClick={() => {
             setAssetDetailsDialogOpen(true);
             setAssetDetailsDialogSymbol(value);
           }}
         >
-          {value}
-        </button>
-      ) : (
-        ''
+          {t('Asset details')}
+        </Button>
       );
-    console.log('data', data);
+    };
+
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -131,6 +134,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         getRowId={({ data }) => getId(data)}
         ref={ref}
         rowHeight={34}
+        headerHeight={0}
         components={{ PriceCell }}
         tooltipShowDelay={500}
         defaultColDef={{
@@ -139,30 +143,36 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         }}
       >
         <AgGridColumn
-          headerName={t('Asset')}
-          field="asset.symbol"
-          headerTooltip={t(
-            'Asset is the collateral that is deposited into the Vega protocol.'
-          )}
-          cellRenderer={assetDialogCellRenderer}
+          headerName={t('Market')}
+          field="market.tradableInstrument.instrument.name"
+          valueFormatter="value || '—'"
+          maxWidth={300}
         />
         <AgGridColumn
           headerName={t('Used')}
           field="used"
           flex={2}
+          maxWidth={500}
           headerComponentParams={progressBarHeaderComponentParams}
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
-          headerName={t('Deposited')}
-          field="deposited"
-          valueFormatter={assetDecimalsFormatter}
+          headerName={t('Type')}
+          field="type"
+          maxWidth={300}
+          valueFormatter={({ value }: ValueFormatterParams) =>
+            AccountTypeMapping[value as AccountType]
+          }
         />
         <AgGridColumn
-          headerName={t('Market')}
-          field="market.tradableInstrument.instrument.name"
-          valueFormatter="value || '—'"
+          headerName={t('Asset')}
+          field="asset.symbol"
+          maxWidth={300}
+          headerTooltip={t(
+            'Asset is the collateral that is deposited into the Vega protocol.'
+          )}
+          cellRenderer={assetDialogCellRenderer}
         />
       </AgGrid>
     );

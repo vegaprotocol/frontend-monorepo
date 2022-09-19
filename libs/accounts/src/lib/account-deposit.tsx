@@ -25,6 +25,7 @@ interface AccountsTableProps extends AgGridReactProps {
   onClickDeposit: () => void;
   expanded: boolean;
   showRows: boolean;
+  hideHeader?: boolean;
 }
 
 interface AccountsTableValueFormatterParams extends ValueFormatterParams {
@@ -39,7 +40,15 @@ export const assetDecimalsFormatter = ({
 
 export const AccountDeposit = forwardRef<AgGridReact, AccountsTableProps>(
   (
-    { data, onClickAsset, expanded, showRows, onClickWithdraw, onClickDeposit },
+    {
+      data,
+      onClickAsset,
+      expanded,
+      showRows,
+      hideHeader,
+      onClickWithdraw,
+      onClickDeposit,
+    },
     ref
   ) => {
     const openAssetAccountCellRenderer = ({ value }: GroupCellRendererParams) =>
@@ -65,7 +74,7 @@ export const AccountDeposit = forwardRef<AgGridReact, AccountsTableProps>(
         ref={ref}
         rowHeight={34}
         tooltipShowDelay={500}
-        headerHeight={0}
+        headerHeight={hideHeader ? 0 : undefined}
         defaultColDef={{
           flex: 1,
           resizable: true,
@@ -79,18 +88,27 @@ export const AccountDeposit = forwardRef<AgGridReact, AccountsTableProps>(
             'Asset is the collateral that is deposited into the Vega protocol.'
           )}
           cellRenderer={openAssetAccountCellRenderer}
+          maxWidth={300}
         />
         <AgGridColumn
           headerName={t('Used')}
           field="used"
           flex={2}
+          maxWidth={500}
           headerComponentParams={progressBarHeaderComponentParams}
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
+          headerName={t('Deposited')}
+          field="deposited"
+          valueFormatter={assetDecimalsFormatter}
+          maxWidth={300}
+        />
+        <AgGridColumn
           headerName=""
           field="deposit"
+          maxWidth={300}
           cellRenderer={() => {
             return (
               <Button size="xs" data-testid="deposit" onClick={onClickDeposit}>
@@ -102,6 +120,7 @@ export const AccountDeposit = forwardRef<AgGridReact, AccountsTableProps>(
         <AgGridColumn
           headerName=""
           field="withdraw"
+          maxWidth={300}
           cellRenderer={() => {
             return (
               <Button
