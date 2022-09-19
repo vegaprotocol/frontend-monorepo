@@ -5,7 +5,7 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 const agGridLightVariables = `
   .ag-theme-balham {
     --ag-background-color: ${colors};
-    --ag-border-color: ${colors.neutral[300]};
+    --ag-border-color: ${colors.neutral[200]};
     --ag-header-background-color: ${colors.white};
     --ag-odd-row-background-color: ${colors.white};
     --ag-header-column-separator-color: ${colors.neutral[300]};
