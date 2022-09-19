@@ -98,7 +98,11 @@ export const WithdrawForm = ({
           <Controller
             control={control}
             name="asset"
-            rules={{ validate: { required: (value: string) => !!selectedAsset || required(value) } }}
+            rules={{
+              validate: {
+                required: (value: string) => !!selectedAsset || required(value),
+              },
+            }}
             render={({ field }) => (
               <Select
                 {...field}
