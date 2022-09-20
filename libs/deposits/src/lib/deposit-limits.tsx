@@ -7,10 +7,6 @@ interface DepositLimitsProps {
   balance?: BigNumber;
 }
 
-const format = (value: string) => {
-  return !isNaN(Number(value)) ? formatNumber(value) : value;
-};
-
 export const DepositLimits = ({
   max,
   deposited,
@@ -48,7 +44,7 @@ export const DepositLimits = ({
           <th className="text-left font-normal">
             {t('Maximum total deposit amount')}
           </th>
-          <td className="text-right">{format(maxLimit)}</td>
+          <td className="text-right">{maxLimit}</td>
         </tr>
         <tr>
           <th className="text-left font-normal">{t('Deposited')}</th>
@@ -56,7 +52,7 @@ export const DepositLimits = ({
         </tr>
         <tr>
           <th className="text-left font-normal">{t('Remaining')}</th>
-          <td className="text-right">{format(remaining)}</td>
+          <td className="text-right">{remaining}</td>
         </tr>
       </tbody>
     </table>

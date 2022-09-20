@@ -61,17 +61,16 @@ export const progressBarValueFormatter = ({
   if (!data || node?.rowPinned) {
     return undefined;
   }
-  const min = new BigNumber(data.used);
-  const max = new BigNumber(data.deposited);
-  const mid = max.minus(min);
+  const min = BigInt(data.used);
+  const max = BigInt(data.deposited);
   const range = max;
-  const value = range ? min.times(100).dividedBy(range || 1) : new BigNumber(0);
+  const value = range ? Number((min * BigInt(100)) / range) : 0;
   return {
     low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
-    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals),
-    value: value.toNumber(),
+    high: addDecimalsFormatNumber((max - min).toString(), data.asset.decimals),
+    value: value,
     intent: Intent.None,
-    percentage: value ? formatNumberPercentage(value, 2) : '0.00',
+    percentage: value ? formatNumberPercentage(new BigNumber(value), 2) : '0.00%',
   };
 };
 

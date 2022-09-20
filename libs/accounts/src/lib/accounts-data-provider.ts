@@ -11,7 +11,6 @@ import type {
 import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
 import type { ColumnApi } from 'ag-grid-community';
 import type { AccountFields } from './accounts-manager';
 
@@ -40,17 +39,7 @@ export const getGroupSummaryRow = (
   if (!data.length) {
     return null;
   }
-  const sortColumnId = columnApi.getColumnState().find((c) => c.sort)?.colId;
-  switch (sortColumnId) {
-    case 'asset.symbol':
-      return {
-        __summaryRow: true,
-        balance: data
-          .reduce((a, i) => a + (parseFloat(i.balance) || 0), 0)
-          .toString(),
-        asset: data[0].asset,
-      };
-  }
+  // TODO to be updated for sorting or summary
   return null;
 };
 
@@ -61,10 +50,11 @@ const update = (
   return produce(data, (draft) => {
     const id = getId(delta);
     const index = draft.findIndex((a) => getId(a) === id);
+    const newDelta = getAccountData([delta], delta.asset.symbol).depositRow;
     if (index !== -1) {
-      draft[index] = delta;
+      draft[index] = newDelta;
     } else {
-      draft.push(delta);
+      draft.push(newDelta);
     }
   });
 };
@@ -117,19 +107,19 @@ export const getAccountData = (
 
   const deposited = assetData
     .filter((a) => [AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
-    .reduce((acc, a) => acc.plus(a.balance), new BigNumber(0));
+    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
   const incoming = assetData
     .filter((a) => INCOMING_ACCOUNT_TYPES.includes(a.type))
-    .reduce((acc, a) => acc.plus(a.balance), new BigNumber(0));
+    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
   const used = assetData
     .filter((a) => OUTCOMING_ACCOUNT_TYPES.includes(a.type))
-    .reduce((acc, a) => acc.plus(a.balance), new BigNumber(0));
+    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
   const depositRow = {
     ...assetData[0],
-    available: incoming.minus(used).toString(),
+    available: (incoming - used).toString(),
     deposited: deposited.toString(),
     used: used.toString(),
   };
@@ -137,7 +127,7 @@ export const getAccountData = (
     .filter((a) => !INCOMING_ACCOUNT_TYPES.includes(a.type))
     .map((a) => ({
       ...a,
-      available: incoming.minus(a.balance).toString(),
+      available: (incoming - BigInt(a.balance)).toString(),
       deposited: deposited.toString(),
       used: a.balance.toString(),
     }));
