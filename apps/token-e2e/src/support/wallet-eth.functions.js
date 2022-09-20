@@ -15,4 +15,8 @@ Cypress.Commands.add('ethereum_wallet_connect', () => {
     // this check is required since it ensures the wallet is fully (not partially) loaded
     cy.contains('Locked', { timeout: 15000 }).should('be.visible');
   });
+  // Even once eth wallet connected - attempting a transaction will fail
+  // It needs a few seconds before becoming operational
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(4000);
 });
