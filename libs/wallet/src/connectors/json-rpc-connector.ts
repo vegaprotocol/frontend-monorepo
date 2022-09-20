@@ -79,6 +79,12 @@ const SendTransactionSchema = BaseSchema.extend({
   }),
 });
 
+type JsonRpcError = {
+  message: string;
+  code: number;
+  data?: string;
+};
+
 type Response =
   | z.infer<typeof ConnectWalletSchema>
   | z.infer<typeof ListKeysSchema>
@@ -86,15 +92,13 @@ type Response =
   | z.infer<typeof GetPermissionsSchema>
   | z.infer<typeof RequestPermissionsSchema>
   | z.infer<typeof SendTransactionSchema>
-  | {
-      error: WalletError;
-    };
+  | { error: JsonRpcError };
 
-export const Errors = {
-  NO_TOKEN: new WalletError('No token', 1),
-  INVALID_RESPONSE: new WalletError('Invalid response from wallet', 2),
-  NO_SERVICE: new WalletError('No service', 3),
-  INVALID_WALLET: new WalletError('Wallet version invalid', 4),
+export const ClientErrors = {
+  NO_SERVICE: new WalletError('No service', 100),
+  NO_TOKEN: new WalletError('No token', 101),
+  INVALID_RESPONSE: new WalletError('Something went wrong', 102),
+  INVALID_WALLET: new WalletError('Wallet version invalid', 103),
 } as const;
 
 export class JsonRpcConnector implements VegaConnector {
@@ -113,12 +117,14 @@ export class JsonRpcConnector implements VegaConnector {
 
   async getChainId() {
     const result = await this.request(Methods.GetChainId);
-    this.verifyResponse(result);
+    if ('error' in result) {
+      throw this.wrapError(result.error);
+    }
     const parseResult = GetChainIdSchema.safeParse(result);
     if (parseResult.success) {
       return parseResult.data.result;
     } else {
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
@@ -126,7 +132,9 @@ export class JsonRpcConnector implements VegaConnector {
     const result = await this.request(Methods.ConnectWallet, {
       hostname: window.location.host,
     });
-    this.verifyResponse(result);
+    if ('error' in result) {
+      throw this.wrapError(result.error);
+    }
     const parseResult = ConnectWalletSchema.safeParse(result);
 
     if (parseResult.success) {
@@ -138,31 +146,33 @@ export class JsonRpcConnector implements VegaConnector {
       });
       return parseResult.data.result;
     } else {
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
   async getPermissions() {
     const cfg = getConfig();
     if (!cfg?.token) {
-      throw Errors.NO_TOKEN;
+      throw ClientErrors.NO_TOKEN;
     }
     const result = await this.request(Methods.GetPermissions, {
       token: cfg.token,
     });
-    this.verifyResponse(result);
+    if ('error' in result) {
+      throw this.wrapError(result.error);
+    }
     const parseResult = GetPermissionsSchema.safeParse(result);
     if (parseResult.success) {
       return parseResult.data.result;
     } else {
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
   async requestPermissions() {
     const cfg = getConfig();
     if (!cfg?.token) {
-      throw Errors.NO_TOKEN;
+      throw ClientErrors.NO_TOKEN;
     }
     const result = await this.request(Methods.RequestPermisssions, {
       token: cfg.token,
@@ -170,12 +180,14 @@ export class JsonRpcConnector implements VegaConnector {
         public_keys: 'read',
       },
     });
-    this.verifyResponse(result);
+    if ('error' in result) {
+      throw this.wrapError(result.error);
+    }
     const parseResult = RequestPermissionsSchema.safeParse(result);
     if (parseResult.success) {
       return parseResult.data.result;
     } else {
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
@@ -184,17 +196,19 @@ export class JsonRpcConnector implements VegaConnector {
   async connect() {
     const cfg = getConfig();
     if (!cfg?.token) {
-      throw Errors.NO_TOKEN;
+      throw ClientErrors.NO_TOKEN;
     }
     const result = await this.request(Methods.ListKeys, {
       token: cfg.token,
     });
-    this.verifyResponse(result);
+    if ('error' in result) {
+      throw this.wrapError(result.error);
+    }
     const parseResult = ListKeysSchema.safeParse(result);
     if (parseResult.success) {
       return parseResult.data.result.keys;
     } else {
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
@@ -213,7 +227,7 @@ export class JsonRpcConnector implements VegaConnector {
   async sendTx(pubKey: string, transaction: Transaction) {
     const cfg = getConfig();
     if (!cfg?.token) {
-      throw Errors.NO_TOKEN;
+      throw ClientErrors.NO_TOKEN;
     }
 
     const result = await this.request(Methods.SendTransaction, {
@@ -233,11 +247,13 @@ export class JsonRpcConnector implements VegaConnector {
         signature: parsedResult.data.result.transaction.signature.value,
       };
     } else {
-      // prevent an error when the user rejects the transaction
+      // In the case of sending a tx, return null instead of throwing
+      // this indicates to the app that the user rejected the tx rather
+      // than it being a true erroor
       if ('error' in result && result.error.code === 3001) {
         return null;
       }
-      throw Errors.INVALID_RESPONSE;
+      throw ClientErrors.INVALID_RESPONSE;
     }
   }
 
@@ -245,7 +261,7 @@ export class JsonRpcConnector implements VegaConnector {
     try {
       const result = await fetch(`${this.url}/api/${this.version}/methods`);
       if (!result.ok) {
-        const err = Errors.INVALID_WALLET;
+        const err = ClientErrors.INVALID_WALLET;
         err.data = `The wallet running at ${this.url} is not supported. Required version is ${this.version}`;
         throw err;
       }
@@ -255,11 +271,11 @@ export class JsonRpcConnector implements VegaConnector {
         throw err;
       }
 
-      throw Errors.NO_SERVICE;
+      throw ClientErrors.NO_SERVICE;
     }
   }
 
-  private async request(method: Methods, params?: object) {
+  private async request(method: Methods, params?: object): Promise<Response> {
     try {
       const result = await fetch(`${this.url}/api/${this.version}/requests`, {
         method: 'post',
@@ -276,17 +292,11 @@ export class JsonRpcConnector implements VegaConnector {
       const json = await result.json();
       return json;
     } catch (err) {
-      throw Errors.NO_SERVICE;
+      throw ClientErrors.NO_SERVICE;
     }
   }
 
-  private verifyResponse(result: Response) {
-    if ('error' in result) {
-      throw new WalletError(
-        result.error.message,
-        result.error.code,
-        result.error.data
-      );
-    }
+  private wrapError(error: JsonRpcError) {
+    return new WalletError(error.message, error.code, error.data);
   }
 }

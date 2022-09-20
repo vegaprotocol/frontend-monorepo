@@ -10,20 +10,38 @@ import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
 import { HOSTED_WALLET_URL, VegaConnectDialog } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
-import { JsonRpcConnector, RestConnector, WalletError } from '../connectors';
-import { Errors } from '../connectors/json-rpc-connector';
+import {
+  ClientErrors,
+  JsonRpcConnector,
+  RestConnector,
+  WalletError,
+} from '../connectors';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
+import { CLOSE_DELAY } from './json-rpc-connector-form';
 
 let defaultProps: VegaConnectDialogProps;
 
+const restConnector = new RestConnector();
+const jsonRpcConnector = new JsonRpcConnector();
+
 beforeEach(() => {
   defaultProps = {
-    connectors: {
-      rest: new RestConnector(),
-      jsonRpc: new JsonRpcConnector(),
-    },
+    connectors: [
+      {
+        type: 'gui',
+        instance: restConnector,
+      },
+      {
+        type: 'cli',
+        instance: jsonRpcConnector,
+      },
+      {
+        type: 'hosted',
+        instance: restConnector,
+      },
+    ],
     dialogOpen: true,
     setDialogOpen: jest.fn(),
   };
@@ -76,25 +94,28 @@ describe('VegaConnectDialog', () => {
     expect(list.children).toHaveLength(
       Object.keys(defaultProps.connectors).length
     );
-    expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
-      /vega wallet/i
+    expect(screen.getByTestId('connector-gui')).toHaveTextContent(
+      'Desktop wallet app'
     );
-    expect(screen.getByTestId('connector-rest')).toHaveTextContent(
-      /hosted wallet/i
+    expect(screen.getByTestId('connector-cli')).toHaveTextContent(
+      'Command line wallet app'
+    );
+    expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
+      'Hosted Fairground wallet'
     );
   });
 
   describe('RestConnector', () => {
     it('connects', async () => {
       const spy = jest
-        .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
+        .spyOn(restConnector, 'authenticate')
         .mockImplementation(() =>
           Promise.resolve({ success: true, error: null })
         );
 
       render(generateJSX());
       // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted wallet'));
+      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
 
       // Client side validation
       fireEvent.submit(screen.getByTestId('rest-connector-form'));
@@ -119,14 +140,14 @@ describe('VegaConnectDialog', () => {
       const errMessage = 'Error message';
       // Error from service
       let spy = jest
-        .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
+        .spyOn(restConnector, 'authenticate')
         .mockImplementation(() =>
           Promise.resolve({ success: false, error: errMessage })
         );
 
       render(generateJSX());
       // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted wallet'));
+      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
 
       const fields = fillInForm();
       fireEvent.submit(screen.getByTestId('rest-connector-form'));
@@ -143,7 +164,7 @@ describe('VegaConnectDialog', () => {
 
       // Fetch failed due to wallet not running
       spy = jest
-        .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
+        .spyOn(restConnector, 'authenticate')
         // @ts-ignore test fetch failed with typeerror
         .mockImplementation(() =>
           Promise.reject(new TypeError('fetch failed'))
@@ -159,7 +180,7 @@ describe('VegaConnectDialog', () => {
 
       // Reject eg non 200 results
       spy = jest
-        .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
+        .spyOn(restConnector, 'authenticate')
         // @ts-ignore test fetch failed with typeerror
         .mockImplementation(() => Promise.reject(new Error('Error!')));
 
@@ -195,19 +216,17 @@ describe('VegaConnectDialog', () => {
     let spyOnRequestPermissions: jest.SpyInstance;
 
     beforeEach(() => {
-      const connector = defaultProps.connectors.jsonRpc as JsonRpcConnector;
-
       spyOnCheckCompat = jest
-        .spyOn(connector, 'checkCompat')
+        .spyOn(jsonRpcConnector, 'checkCompat')
         .mockImplementation(() => delayedResolve(true));
       spyOnGetChainId = jest
-        .spyOn(connector, 'getChainId')
+        .spyOn(jsonRpcConnector, 'getChainId')
         .mockImplementation(() => delayedResolve({ chainID: mockChainId }));
       spyOnConnectWallet = jest
-        .spyOn(connector, 'connectWallet')
+        .spyOn(jsonRpcConnector, 'connectWallet')
         .mockImplementation(() => delayedResolve({ token: 'token' }));
       spyOnGetPermissions = jest
-        .spyOn(connector, 'getPermissions')
+        .spyOn(jsonRpcConnector, 'getPermissions')
         .mockImplementation(() =>
           delayedResolve({
             permissions: {
@@ -216,7 +235,7 @@ describe('VegaConnectDialog', () => {
           })
         );
       spyOnRequestPermissions = jest
-        .spyOn(connector, 'requestPermissions')
+        .spyOn(jsonRpcConnector, 'requestPermissions')
         .mockImplementation(() =>
           delayedResolve({
             permissions: {
@@ -225,7 +244,7 @@ describe('VegaConnectDialog', () => {
           })
         );
       spyOnConnect = jest
-        .spyOn(connector, 'connect')
+        .spyOn(jsonRpcConnector, 'connect')
         .mockImplementation(() => delayedResolve(['pubkey']));
     });
 
@@ -283,13 +302,19 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         jest.advanceTimersByTime(delay);
       });
+
+      expect(screen.getByText('Successfully connected')).toBeInTheDocument();
+
+      await act(async () => {
+        jest.advanceTimersByTime(CLOSE_DELAY);
+      });
       expect(mockSetDialog).toHaveBeenCalledWith(false);
     });
 
     it('handles incompatible wallet', async () => {
       spyOnCheckCompat
         .mockClear()
-        .mockImplementation(() => delayedReject(Errors.INVALID_WALLET));
+        .mockImplementation(() => delayedReject(ClientErrors.INVALID_WALLET));
 
       render(generateJSX());
       await selectJsonRpc();
@@ -358,7 +383,7 @@ describe('VegaConnectDialog', () => {
 
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
-      fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
+      fireEvent.click(await screen.findByTestId('connector-cli'));
     }
   });
 });

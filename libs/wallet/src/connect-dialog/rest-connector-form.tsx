@@ -82,7 +82,7 @@ export function RestConnectorForm({
           </InputError>
         )}
       </FormGroup>
-      <Button variant="primary" type="submit">
+      <Button variant="primary" type="submit" fill={true}>
         {t('Connect')}
       </Button>
     </form>

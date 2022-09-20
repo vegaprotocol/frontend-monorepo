@@ -5,6 +5,7 @@ import {
   Icon,
   Input,
   Link,
+  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
@@ -15,12 +16,17 @@ import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
+  ConnectDialogFooter,
   ConnectDialogTitle,
 } from './connect-dialog-elements';
 
-type Connectors = { [name: string]: VegaConnector };
+export type Connector = {
+  type: 'gui' | 'cli' | 'hosted';
+  instance: VegaConnector;
+};
+
 export interface VegaConnectDialogProps {
-  connectors: Connectors;
+  connectors: Connector[];
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
 }
@@ -48,54 +54,39 @@ const ConnectDialogContainer = ({
   closeDialog,
   appChainId,
 }: {
-  connectors: Connectors;
+  connectors: Connector[];
   closeDialog: () => void;
   appChainId?: string;
 }) => {
   const { VEGA_WALLET_URL } = useEnvironment();
-  // Selected connector, we need to show the auth form if the rest connector (which is
-  // currently the only way to connect) is selected.
-  const [selectedConnector, setSelectedConnector] =
-    useState<VegaConnector | null>(null);
+  const [selectedConnector, setSelectedConnector] = useState<Connector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
 
   if (!appChainId) {
     return (
       <ConnectDialogContent>
-        <p>Awaiting chainId</p>
+        <ConnectDialogTitle>{t('Fetching chain ID')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Loader />
+        </div>
       </ConnectDialogContent>
     );
   }
 
-  return (
-    <>
-      <ConnectDialogContent>
-        {selectedConnector !== null ? (
-          <SelectedForm
-            connector={selectedConnector}
-            onConnect={closeDialog}
-            walletUrl={walletUrl}
-            appChainId={appChainId}
-          />
-        ) : (
-          <ConnectorList
-            walletUrl={walletUrl}
-            setWalletUrl={setWalletUrl}
-            connectors={connectors}
-            onSelect={setSelectedConnector}
-          />
-        )}
-      </ConnectDialogContent>
-      <footer className="flex justify-center gap-4 pt-6 -px-4 md:-mx-8 border-t border-neutral-500 text-neutral-600 dark:text-neutral-400">
-        <Link href="https://github.com/vegaprotocol/vega/releases">
-          {t('Get a Vega Wallet')}
-        </Link>
-        {' | '}
-        <Link href="https://docs.vega.xyz/docs/mainnet/concepts/vega-wallet">
-          {t('Having trouble?')}
-        </Link>
-      </footer>
-    </>
+  return selectedConnector !== undefined ? (
+    <SelectedForm
+      connector={selectedConnector}
+      onConnect={closeDialog}
+      walletUrl={walletUrl}
+      appChainId={appChainId}
+    />
+  ) : (
+    <ConnectorList
+      walletUrl={walletUrl}
+      setWalletUrl={setWalletUrl}
+      connectors={connectors}
+      onSelect={setSelectedConnector}
+    />
   );
 };
 
@@ -105,76 +96,80 @@ const ConnectorList = ({
   walletUrl,
   setWalletUrl,
 }: {
-  connectors: Connectors;
-  onSelect: (connector: VegaConnector) => void;
+  connectors: Connector[];
+  onSelect: (connector: Connector) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
 }) => {
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
-  const getButtonText = (c: VegaConnector) => {
-    if (c instanceof RestConnector) {
-      return t('Hosted wallet');
-    } else {
-      return t('Vega wallet (CLI or GUI)');
+  const getConnectorName = (c: Connector) => {
+    if (c.type === 'cli') {
+      return t('Command line wallet app');
     }
+    if (c.type === 'gui') {
+      return t('Desktop wallet app');
+    }
+    if (c.type === 'hosted') {
+      return t('Hosted Fairground wallet');
+    }
+    return t('Unknown connector');
   };
   return (
     <>
-      <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-      <ul data-testid="connectors-list" className="mb-6">
-        {Object.entries(connectors)
-          .sort(([key]) => {
-            // ensure rest (hosted wallet is below)
-            return key === 'rest' ? 1 : -1;
-          })
-          .map(([key, connector]) => (
-            <li key={key} className="mb-4 last:mb-0">
+      <ConnectDialogContent>
+        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+        <ul data-testid="connectors-list" className="mb-6">
+          {connectors.map((connector) => (
+            <li key={connector.type} className="mb-4 last:mb-0">
               <Button
-                key={key}
                 onClick={() => onSelect(connector)}
                 size="lg"
-                variant={
-                  connector instanceof JsonRpcConnector ? 'primary' : 'default'
-                }
                 fill={true}
-                data-testid={`connector-${key}`}
+                variant={
+                  connector.type === 'gui' || connector.type === 'cli'
+                    ? 'primary'
+                    : 'default'
+                }
+                data-testid={`connector-${connector.type}`}
               >
                 <span className="-mx-6 flex text-left justify-between items-center">
-                  {getButtonText(connector)}
+                  {getConnectorName(connector)}
                   <Icon name="chevron-right" />
                 </span>
               </Button>
             </li>
           ))}
-      </ul>
-      {urlInputExpanded ? (
-        <FormGroup label={t('Wallet location')} labelFor="wallet-url">
-          <div className="flex gap-4 items-center">
-            <Input
-              value={walletUrl}
-              onChange={(e) => setWalletUrl(e.target.value)}
-              name="wallet-url"
-            />
+        </ul>
+        {urlInputExpanded ? (
+          <FormGroup label={t('Wallet location')} labelFor="wallet-url">
+            <div className="flex gap-4 items-center">
+              <Input
+                value={walletUrl}
+                onChange={(e) => setWalletUrl(e.target.value)}
+                name="wallet-url"
+              />
+              <button
+                className="underline"
+                onClick={() => setUrlInputExpanded(false)}
+              >
+                {t('Update')}
+              </button>
+            </div>
+          </FormGroup>
+        ) : (
+          <p className="mb-6 text-center text-neutral-600 dark:text-neutral-400">
+            {t('Or')}{' '}
             <button
               className="underline"
-              onClick={() => setUrlInputExpanded(false)}
+              onClick={() => setUrlInputExpanded(true)}
             >
-              {t('Update')}
-            </button>
-          </div>
-        </FormGroup>
-      ) : (
-        <p className="mb-6 text-center text-neutral-600 dark:text-neutral-400">
-          {t('Or')}{' '}
-          <button
-            className="underline"
-            onClick={() => setUrlInputExpanded(true)}
-          >
-            {t('enter a custom wallet location')}
-          </button>{' '}
-          {t('to change port or service URL')}
-        </p>
-      )}
+              {t('enter a custom wallet location')}
+            </button>{' '}
+            {t('to change port or service URL')}
+          </p>
+        )}
+      </ConnectDialogContent>
+      <ConnectDialogFooter />
     </>
   );
 };
@@ -187,33 +182,64 @@ const SelectedForm = ({
   walletUrl,
   appChainId,
 }: {
-  connector: VegaConnector;
+  connector: Connector;
   onConnect: () => void;
   walletUrl: string;
   appChainId: string;
 }) => {
-  if (connector instanceof RestConnector) {
+  if (connector.instance instanceof RestConnector) {
     return (
       <>
-        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-        <RestConnectorForm
-          connector={connector}
-          onConnect={onConnect}
-          // Rest connector form is only used for hosted wallet
-          walletUrl={HOSTED_WALLET_URL}
-        />
+        <ConnectDialogContent>
+          <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+          <div className="mb-2">
+            <RestConnectorForm
+              connector={connector.instance}
+              onConnect={onConnect}
+              // Rest connector form is only used for hosted wallet
+              walletUrl={HOSTED_WALLET_URL}
+            />
+          </div>
+          {connector.type === 'hosted' && (
+            <Link
+              href="https://vega-hosted-wallet.on.fleek.co/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button fill={true}>{t('Get a hosted wallet')}</Button>
+            </Link>
+          )}
+        </ConnectDialogContent>
+        {connector.type === 'hosted' ? (
+          <ConnectDialogFooter>
+            <p>
+              {t('For demo purposes only. ')}
+              <Link href="https://github.com/vegaprotocol/vega/releases">
+                {t('Get a Vega Wallet')}
+              </Link>
+              {t(' for the real Vega experience')}
+            </p>
+          </ConnectDialogFooter>
+        ) : (
+          <ConnectDialogFooter />
+        )}
       </>
     );
   }
 
-  if (connector instanceof JsonRpcConnector) {
+  if (connector.instance instanceof JsonRpcConnector) {
     return (
-      <JsonRpcConnectorForm
-        connector={connector}
-        onConnect={onConnect}
-        walletUrl={walletUrl}
-        appChainId={appChainId}
-      />
+      <>
+        <ConnectDialogContent>
+          <JsonRpcConnectorForm
+            connector={connector.instance}
+            onConnect={onConnect}
+            walletUrl={walletUrl}
+            appChainId={appChainId}
+          />
+        </ConnectDialogContent>
+        <ConnectDialogFooter />
+      </>
     );
   }
 

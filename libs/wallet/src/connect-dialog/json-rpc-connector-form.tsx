@@ -1,7 +1,10 @@
+import capitalize from 'lodash/capitalize';
 import { t } from '@vegaprotocol/react-helpers';
-import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Icon, Link, Loader } from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from '../connectors';
+import { ClientErrors } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
 import { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
@@ -16,6 +19,12 @@ type Status =
   | 'listingKeys'
   | 'connected'
   | 'error';
+
+export const CLOSE_DELAY = 1700;
+export const ServiceErrors = {
+  NO_HEALTHY_NODE: 1000,
+  CONNECTION_DECLINED: 3001,
+};
 
 export const JsonRpcConnectorForm = ({
   connector,
@@ -44,11 +53,13 @@ export const JsonRpcConnectorForm = ({
       // Check if wallet is configured for the same chain as the app
       setStatus('gettingChainId');
       const chainIdResult = await connector.getChainId();
+
       if (chainIdResult.chainID !== appChainId) {
+        // Throw wallet error for consitent error handling
         throw new WalletError(
-          'Invalid chain',
+          'Wrong network',
           0,
-          `chain id: ${chainIdResult.chainID} does not match expected chain id: ${appChainId}`
+          `To complete your wallet connection, set your wallet network in your app to "${appChainId}" then try again.`
         );
       }
 
@@ -72,7 +83,13 @@ export const JsonRpcConnectorForm = ({
       // future actions such as sending transactions
       await connect(connector);
 
-      onConnect();
+      setStatus('connected');
+
+      // Briefly allow the success state to be shown then automatically
+      // close the dialog
+      setTimeout(() => {
+        onConnect();
+      }, CLOSE_DELAY);
     } catch (err) {
       if (err instanceof WalletError) {
         setError(err);
@@ -105,19 +122,41 @@ const Connecting = ({
 }) => {
   if (status === 'error') {
     let title = t('Something went wrong');
-    let text: string | undefined = t('An unknown error occurred');
+    let text: ReactNode | undefined = t('An unknown error occurred');
     const icon = null;
 
     if (error) {
-      if (error.code === 3) {
-        title = error.message;
-        text = t(`No service running at ${connector.url}`);
-      } else if (error.code === 3001) {
+      if (error.code === ClientErrors.NO_SERVICE.code) {
+        title = 'No wallet detected';
+        text = t(`No wallet application running at ${connector.url}`);
+      } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
         title = t('Connection declined');
         text = t('Your wallet connection was rejected');
+      } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
+        title = error.message;
+        text = (
+          <>
+            {capitalize(error.data)}
+            {'. '}
+            <Link href="https://docs.vega.xyz/docs/mainnet/concepts/vega-wallet">
+              {t('Read the docs to troubleshoot')}
+            </Link>
+          </>
+        );
+      } else if (error.code === 0) {
+        title = 'Wrong network';
+        text = (
+          <>
+            To complete your wallet connection, set your wallet network in your
+            app to {'TODO: App chain id'} then{' '}
+            <ButtonLink onClick={() => alert('TODO: restart')}>
+              Try again
+            </ButtonLink>
+          </>
+        );
       } else {
-        title = `${error.message} ${error.code}`;
-        text = error.data;
+        title = error.message;
+        text = `${error.data} (${error.code})`;
       }
     }
 
@@ -184,8 +223,7 @@ const Connecting = ({
         </div>
         <p className="text-center">
           {t(`${window.location.host} now has access to your Wallet, however you don't
-        have sufficient permissions to retrieve your public keys. Change your
-        permissions in the wallet app`)}
+        have sufficient permissions to retrieve your public keys. Approve the permissions update in your wallet.`)}
         </p>
       </>
     );
