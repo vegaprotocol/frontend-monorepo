@@ -36,9 +36,11 @@ export interface WithdrawFormProps {
   delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
+  assetId?: string;
 }
 
 export const WithdrawForm = ({
+  assetId,
   assets,
   balance,
   min,
@@ -58,7 +60,7 @@ export const WithdrawForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id,
+      asset: assetId,
       to: address,
     },
   });
@@ -100,7 +102,7 @@ export const WithdrawForm = ({
             name="asset"
             rules={{
               validate: {
-                required: (value: string) => !!selectedAsset || required(value),
+                required
               },
             }}
             render={({ field }) => (

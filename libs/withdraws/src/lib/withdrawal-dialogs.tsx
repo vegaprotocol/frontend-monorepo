@@ -26,16 +26,14 @@ export const WithdrawalDialogs = ({
         onChange={(isOpen) => setWithdrawDialog(isOpen)}
         size="small"
       >
-        {withdrawDialog && (
-          <WithdrawFormContainer
-            assetId={assetId}
-            partyId={keypair?.pub}
-            submit={(args) => {
-              setWithdrawDialog(false);
-              createWithdraw.submit(args);
-            }}
-          />
-        )}
+        <WithdrawFormContainer
+          assetId={assetId}
+          partyId={keypair?.pub}
+          submit={(args) => {
+            setWithdrawDialog(false);
+            createWithdraw.submit(args);
+          }}
+        />
       </Dialog>
       <createWithdraw.Dialog>
         <WithdrawalFeedback

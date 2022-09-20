@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/react-helpers';
 
@@ -35,17 +35,10 @@ export const DepositManager = ({
   const handleSelectAsset = useCallback(
     (id: string) => {
       const asset = assets.find((a) => a.id === id);
-      if (!asset) return;
       update({ asset });
     },
     [assets, update]
   );
-
-  useEffect(() => {
-    if (assetId) {
-      handleSelectAsset(assetId);
-    }
-  }, [assetId, handleSelectAsset]);
 
   return (
     <>

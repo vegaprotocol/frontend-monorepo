@@ -65,12 +65,9 @@ export const WithdrawManager = ({
     [accounts, assets, update, getThreshold, getDelay]
   );
 
-  if (assetId) {
-    handleSelectAsset(assetId);
-  }
-
   return (
     <WithdrawForm
+      assetId={assetId}
       selectedAsset={asset}
       onSelectAsset={handleSelectAsset}
       assets={sortBy(assets, 'name')}
