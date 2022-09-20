@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe('accounts', () => {
   it('renders accounts', () => {
-    const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-tEURO-null"]';
+    const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]';
     cy.getByTestId('Collateral').click();
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 

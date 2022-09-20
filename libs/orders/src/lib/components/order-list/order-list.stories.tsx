@@ -5,7 +5,7 @@ import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../order-data-provider';
+import type { OrderWithMarket } from '../order-data-provider';
 
 export default {
   component: OrderList,
@@ -29,7 +29,7 @@ const Template: Story = (args) => {
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
-  const [editOrder, setEditOrder] = useState<OrderFields>();
+  const [editOrder, setEditOrder] = useState<OrderWithMarket>();
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();
@@ -47,9 +47,7 @@ const Template2: Story = (args) => {
         <OrderListTable
           rowData={args.data}
           cancel={cancel}
-          setEditOrder={(order) => {
-            setEditOrder(order);
-          }}
+          setEditOrder={setEditOrder}
         />
       </div>
       <VegaTransactionDialog

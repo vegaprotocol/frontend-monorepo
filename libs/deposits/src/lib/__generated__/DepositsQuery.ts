@@ -79,7 +79,7 @@ export interface DepositsQuery_party {
   /**
    * The list of all deposits for a party by the party
    */
-  depositsConnection: DepositsQuery_party_depositsConnection;
+  depositsConnection: DepositsQuery_party_depositsConnection | null;
 }
 
 export interface DepositsQuery {

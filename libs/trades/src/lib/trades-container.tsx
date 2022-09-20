@@ -6,16 +6,13 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
-import {
-  MAX_TRADES,
-  tradesDataProvider as dataProvider,
-} from './trades-data-provider';
+import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import type { TradeFields } from './__generated__/TradeFields';
 import type {
-  TradesVariables,
-  Trades_market_tradesConnection_edges,
-} from './__generated__/Trades';
+  TradeWithMarket,
+  TradeWithMarketEdge,
+} from './trades-data-provider';
+import type { TradesVariables } from './__generated__/Trades';
 
 interface TradesContainerProps {
   marketId: string;
@@ -23,9 +20,7 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<
-    (Trades_market_tradesConnection_edges | null)[] | null
-  >(null);
+  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -54,8 +49,8 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       delta,
     }: {
-      data: (Trades_market_tradesConnection_edges | null)[];
-      delta: TradeFields[];
+      data: (TradeWithMarketEdge | null)[];
+      delta: TradeWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -80,7 +75,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       totalCount,
     }: {
-      data: (Trades_market_tradesConnection_edges | null)[];
+      data: (TradeWithMarketEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -91,7 +86,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({
-    dataProvider,
+    dataProvider: tradesWithMarketProvider,
     update,
     insert,
     variables,
@@ -99,13 +94,12 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows =
-    makeInfiniteScrollGetRows<Trades_market_tradesConnection_edges>(
-      newRows,
-      dataRef,
-      totalCountRef,
-      load
-    );
+  const getRows = makeInfiniteScrollGetRows<TradeWithMarketEdge>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {

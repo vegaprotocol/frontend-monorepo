@@ -30,7 +30,6 @@ export const NodesQueryDocument = gql`
       online
     }
     status
-    name
   }
 }
     `;

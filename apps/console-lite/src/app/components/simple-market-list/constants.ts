@@ -2,8 +2,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MarketState } from '@vegaprotocol/types';
 import { IS_MARKET_TRADABLE } from '../../constants';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import colors from 'tailwindcss/colors';
+import type { Market } from '@vegaprotocol/market-list';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
@@ -192,8 +192,10 @@ export const agGridDarkVariables = `
 `;
 
 export const ROW_CLASS_RULES = {
-  'cursor-pointer': ({ data }: { data: SimpleMarkets_markets }) =>
+  'cursor-pointer': ({ data }: { data: Market }) =>
     IS_MARKET_TRADABLE(data || {}),
 };
 
 export const LARGE_SCREENS = ['xl', 'xxl'];
+
+export const AG_GRID_CONTAINER_STYLES = { width: '100%', height: '100%' };

@@ -24,7 +24,6 @@ fragment FillFields on Trade {
   }
   market {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     tradableInstrument {
@@ -67,6 +66,25 @@ query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
 
 subscription FillsSub($partyId: ID!) {
   trades(partyId: $partyId) {
-    ...FillFields
+    id
+    createdAt
+    price
+    size
+    buyOrder
+    sellOrder
+    aggressor
+    buyerId
+    sellerId
+    buyerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    sellerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    marketId
   }
 }

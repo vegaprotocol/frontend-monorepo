@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import type { OrderEvent_busEvents_event_Order } from './';
 import * as Sentry from '@sentry/react';
-import type { OrderFields } from '../components';
+import type { OrderWithMarket } from '../components';
 import { useOrderEvent } from './use-order-event';
 
 // Can only edit price for now
@@ -11,7 +11,7 @@ export interface EditOrderArgs {
   price: string;
 }
 
-export const useOrderEdit = (order: OrderFields | null) => {
+export const useOrderEdit = (order: OrderWithMarket | null) => {
   const { keypair } = useVegaWallet();
 
   const [updatedOrder, setUpdatedOrder] =

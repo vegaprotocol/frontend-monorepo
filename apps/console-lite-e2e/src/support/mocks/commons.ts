@@ -1,4 +1,7 @@
-const protoCandles = [
+import type { Market } from '@vegaprotocol/market-list';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+
+export const protoCandles = [
   { open: '9556163', close: '9587028', __typename: 'Candle' },
   {
     open: '9587028',
@@ -73,11 +76,29 @@ const protoCandles = [
   },
 ];
 
-export const protoMarket = {
+export const protoMarket: Market = {
   id: 'first-btcusd-id',
-  state: 'STATE_ACTIVE',
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: MarketState.STATE_ACTIVE,
+  decimalPlaces: 5,
+  positionDecimalPlaces: 0,
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    close: '',
+    open: '',
+  },
+  fees: {
+    __typename: 'Fees',
+    factors: {
+      __typename: 'FeeFactors',
+      makerFee: '',
+      infrastructureFee: '',
+      liquidityFee: '',
+    },
+  },
   tradableInstrument: {
     instrument: {
+      id: '',
       code: 'AAVEDAI.MF21',
       name: 'AAVEDAI Monthly (30 Jun 2022)',
       metadata: {
@@ -94,12 +115,11 @@ export const protoMarket = {
       product: {
         __typename: 'Future',
         quoteName: 'DAI',
-        settlementAsset: { symbol: 'tDAI', __typename: 'Asset' },
+        settlementAsset: { symbol: 'tDAI', __typename: 'Asset', decimals: 5 },
       },
       __typename: 'Instrument',
     },
     __typename: 'TradableInstrument',
   },
-  candles: protoCandles,
   __typename: 'Market',
 };

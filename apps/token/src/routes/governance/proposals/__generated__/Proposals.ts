@@ -48,7 +48,7 @@ export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket
 export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
-   * Product asset ID
+   * Product asset
    */
   settlementAsset: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }
@@ -293,7 +293,7 @@ export interface Proposals_proposalsConnection_edges_node {
    */
   datetime: string;
   /**
-   * Reason for the proposal to be rejected by the core
+   * Why the proposal was rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**
@@ -334,5 +334,5 @@ export interface Proposals {
   /**
    * All governance proposals in the Vega network
    */
-  proposalsConnection: Proposals_proposalsConnection;
+  proposalsConnection: Proposals_proposalsConnection | null;
 }

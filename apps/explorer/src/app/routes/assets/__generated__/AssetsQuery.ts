@@ -81,6 +81,9 @@ export interface AssetsQuery_assetsConnection_edges_node {
 
 export interface AssetsQuery_assetsConnection_edges {
   __typename: "AssetEdge";
+  /**
+   * The asset information
+   */
   node: AssetsQuery_assetsConnection_edges_node;
 }
 
@@ -96,5 +99,5 @@ export interface AssetsQuery {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: AssetsQuery_assetsConnection;
+  assetsConnection: AssetsQuery_assetsConnection | null;
 }

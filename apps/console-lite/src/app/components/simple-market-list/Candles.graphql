@@ -1,5 +1,0 @@
-subscription CandleLive($marketId: ID!) {
-  candles(marketId: $marketId, interval: INTERVAL_I1H) {
-    close
-  }
-}

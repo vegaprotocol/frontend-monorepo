@@ -22,7 +22,6 @@ fragment PositionFields on Position {
   }
   market {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     tradingMode
