@@ -65,7 +65,7 @@ export const DepositForm = ({
   requestFaucet,
   allowance,
   isFaucetable,
-  assetId
+  assetId,
 }: DepositFormProps) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -156,7 +156,7 @@ export const DepositForm = ({
           name="asset"
           rules={{
             validate: {
-              required
+              required,
             },
           }}
           render={({ field }) => (

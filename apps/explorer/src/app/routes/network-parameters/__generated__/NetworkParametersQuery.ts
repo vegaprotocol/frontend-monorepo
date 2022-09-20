@@ -21,7 +21,7 @@ export interface NetworkParametersQuery_networkParameters {
 
 export interface NetworkParametersQuery {
   /**
-   * return the full list of network parameters
+   * Return the full list of network parameters
    */
   networkParameters: NetworkParametersQuery_networkParameters[] | null;
 }

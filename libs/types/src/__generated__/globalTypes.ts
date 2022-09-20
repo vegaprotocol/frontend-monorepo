@@ -10,7 +10,7 @@
 /**
  * The various account types in Vega (used by collateral)
  */
- export enum AccountType {
+export enum AccountType {
   ACCOUNT_TYPE_BOND = "ACCOUNT_TYPE_BOND",
   ACCOUNT_TYPE_EXTERNAL = "ACCOUNT_TYPE_EXTERNAL",
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE = "ACCOUNT_TYPE_FEES_INFRASTRUCTURE",
@@ -23,9 +23,9 @@
   ACCOUNT_TYPE_MARGIN = "ACCOUNT_TYPE_MARGIN",
   ACCOUNT_TYPE_PENDING_TRANSFERS = "ACCOUNT_TYPE_PENDING_TRANSFERS",
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = "ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES",
+  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES = "ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES",
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = "ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES",
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = "ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS",
-  ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES = "ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES",
   ACCOUNT_TYPE_SETTLEMENT = "ACCOUNT_TYPE_SETTLEMENT",
 }
 
@@ -143,6 +143,9 @@ export enum MarketTradingMode {
   TRADING_MODE_OPENING_AUCTION = "TRADING_MODE_OPENING_AUCTION",
 }
 
+/**
+ * Validating status of a node, i.e. validator or non-validator
+ */
 export enum NodeStatus {
   NODE_STATUS_NON_VALIDATOR = "NODE_STATUS_NON_VALIDATOR",
   NODE_STATUS_VALIDATOR = "NODE_STATUS_VALIDATOR",
@@ -157,7 +160,7 @@ export enum OracleSpecStatus {
 }
 
 /**
- * Reason for the order being rejected by the core node
+ * Why the order was rejected by the core node
  */
 export enum OrderRejectionReason {
   ORDER_ERROR_AMEND_FAILURE = "ORDER_ERROR_AMEND_FAILURE",
@@ -252,7 +255,7 @@ export enum PropertyKeyType {
 }
 
 /**
- * Reason for the proposal being rejected by the core node
+ * Why the proposal was rejected by the core node
  */
 export enum ProposalRejectionReason {
   PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = "PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE",
@@ -327,6 +330,15 @@ export enum StakeLinkingStatus {
   STATUS_ACCEPTED = "STATUS_ACCEPTED",
   STATUS_PENDING = "STATUS_PENDING",
   STATUS_REJECTED = "STATUS_REJECTED",
+}
+
+/**
+ * Valid trade types
+ */
+export enum TradeType {
+  TYPE_DEFAULT = "TYPE_DEFAULT",
+  TYPE_NETWORK_CLOSE_OUT_BAD = "TYPE_NETWORK_CLOSE_OUT_BAD",
+  TYPE_NETWORK_CLOSE_OUT_GOOD = "TYPE_NETWORK_CLOSE_OUT_GOOD",
 }
 
 export enum ValidatorStatus {

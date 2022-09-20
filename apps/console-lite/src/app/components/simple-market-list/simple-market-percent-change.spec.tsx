@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketPercentChange from './simple-market-percent-change';
-import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
+import type { Candle } from '@vegaprotocol/market-list';
 
 describe('SimpleMarketPercentChange should parse proper change', () => {
-  let candles: (SimpleMarkets_markets_candles | null)[] | null;
+  let candles: (Candle | null)[] | null;
   const setValue = () => undefined;
   it('empty array', () => {
     candles = [];
@@ -34,11 +34,7 @@ describe('SimpleMarketPercentChange should parse proper change', () => {
     expect(screen.getByText('-')).toBeInTheDocument();
   });
   it('an appreciated one', () => {
-    candles = [
-      { open: '50' } as SimpleMarkets_markets_candles,
-      { close: '100' } as SimpleMarkets_markets_candles,
-      null,
-    ];
+    candles = [{ open: '50' } as Candle, { close: '100' } as Candle, null];
     render(
       <MockedProvider>
         <SimpleMarketPercentChange
@@ -54,11 +50,7 @@ describe('SimpleMarketPercentChange should parse proper change', () => {
     );
   });
   it('a depreciated one', () => {
-    candles = [
-      { open: '100' } as SimpleMarkets_markets_candles,
-      { close: '50' } as SimpleMarkets_markets_candles,
-      null,
-    ];
+    candles = [{ open: '100' } as Candle, { close: '50' } as Candle, null];
     render(
       <MockedProvider>
         <SimpleMarketPercentChange

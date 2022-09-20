@@ -102,7 +102,7 @@ export const WithdrawForm = ({
             name="asset"
             rules={{
               validate: {
-                required
+                required,
               },
             }}
             render={({ field }) => (

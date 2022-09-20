@@ -66,7 +66,7 @@ export type DepositEventSub_busEvents_event = DepositEventSub_busEvents_event_Ti
 export interface DepositEventSub_busEvents {
   __typename: "BusEvent";
   /**
-   * the payload - the wrapped event
+   * The payload - the wrapped event
    */
   event: DepositEventSub_busEvents_event;
 }

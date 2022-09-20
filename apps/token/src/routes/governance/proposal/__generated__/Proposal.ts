@@ -48,7 +48,7 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
-   * Product asset ID
+   * Product asset
    */
   settlementAsset: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }
@@ -293,7 +293,7 @@ export interface Proposal_proposal {
    */
   datetime: string;
   /**
-   * Reason for the proposal to be rejected by the core
+   * Why the proposal was rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**
@@ -318,7 +318,7 @@ export interface Proposal {
   /**
    * A governance proposal located by either its ID or reference. If both are set, ID is used.
    */
-  proposal: Proposal_proposal;
+  proposal: Proposal_proposal | null;
 }
 
 export interface ProposalVariables {

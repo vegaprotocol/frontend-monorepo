@@ -45,7 +45,9 @@ const MARKET_DATA_FRAGMENT = gql`
           ... on Future {
             settlementAsset {
               symbol
+              decimals
             }
+            quoteName
           }
         }
       }
@@ -71,7 +73,7 @@ export const MARKET_LIST_QUERY = gql`
 `;
 
 const getData = (responseData: Markets): Market[] | null =>
-  responseData.marketsConnection.edges.map((edge) => edge.node);
+  responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
 
 export const marketsProvider = makeDataProvider<
   Markets,
@@ -83,18 +85,21 @@ export const marketsProvider = makeDataProvider<
   getData,
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<Market[]>(
+export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => mapDataToMarketList(markets)
 );
 
-interface MarketsListData {
+export interface MarketsListData {
   markets: Market[];
   marketsData: MarketData[];
   marketsCandles: MarketCandles[];
 }
 
-export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
+export const marketListProvider = makeDerivedDataProvider<
+  MarketsListData,
+  never
+>(
   [
     (callback, client) => activeMarketsProvider(callback, client),
     (callback, client) => marketsDataProvider(callback, client),
@@ -112,7 +117,8 @@ export const marketListProvider = makeDerivedDataProvider<MarketsListData>(
 export type MarketWithData = Market & { data?: MarketData };
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketWithData[]
+  MarketWithData[],
+  never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
   (parts[0] as Market[]).map((market) => ({
     ...market,

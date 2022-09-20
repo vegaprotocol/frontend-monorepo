@@ -1,5 +1,5 @@
 fragment CandleFields on Candle {
-  timestamp
+  periodStart
   high
   low
   open
@@ -18,8 +18,12 @@ query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
         code
       }
     }
-    candles(interval: $interval, since: $since) {
-      ...CandleFields
+    candlesConnection(interval: $interval, since: $since) {
+      edges {
+        node {
+          ...CandleFields
+        }
+      }
     }
   }
 }

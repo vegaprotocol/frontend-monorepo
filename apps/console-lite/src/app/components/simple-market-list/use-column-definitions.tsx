@@ -1,14 +1,13 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
-import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
-import MarketNameRenderer from '../components/simple-market-list/simple-market-renderer';
-import SimpleMarketPercentChange from '../components/simple-market-list/simple-market-percent-change';
+import MarketNameRenderer from './simple-market-renderer';
+import SimpleMarketPercentChange from './simple-market-percent-change';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ValueSetterParams } from 'ag-grid-community';
-import type { SimpleMarketsType } from '../components/simple-market-list/simple-market-list';
 import { IconNames } from '@blueprintjs/icons';
-import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../constants';
+import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../../constants';
+import type { Candle, Market } from '@vegaprotocol/market-list';
 
 interface Props {
   isMobile: boolean;
@@ -24,7 +23,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         minWidth: isMobile ? 160 : 350,
         field: 'tradableInstrument.instrument.name',
         cellClass: 'overflow-visible',
-        cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
+        cellRenderer: ({ data }: { data: Market }) => (
           <MarketNameRenderer market={data} isMobile={isMobile} />
         ),
       },
@@ -35,7 +34,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         minWidth: isMobile ? 50 : 80,
         cellClass: 'uppercase flex h-full items-center',
         field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
-        cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
+        cellRenderer: ({ data }: { data: Market }) => (
           <div
             className="grid h-full items-center text-center"
             title={
@@ -70,7 +69,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
           data,
           setValue,
         }: {
-          data: SimpleMarketsType;
+          data: { id: string; candles: Candle[] };
           setValue: (arg: unknown) => void;
         }) => (
           <SimpleMarketPercentChange
@@ -96,7 +95,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         field: 'state',
         headerClass: 'uppercase',
         minWidth: 100,
-        cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
+        cellRenderer: ({ data }: { data: Market }) => (
           <div className="uppercase flex h-full items-center justify-center">
             <div className="border text-center px-2 md:px-6 leading-4 md:leading-6">
               {MARKET_STATES_MAP[data.state || '']}
@@ -110,7 +109,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         headerClass: 'uppercase',
         sortable: false,
         width: isMobile ? 35 : 100,
-        cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
+        cellRenderer: ({ data }: { data: Market }) => (
           <div className="h-full flex h-full items-center justify-end">
             <div className="uppercase text-center pr-2">
               {!isMobile && t('Trade')}

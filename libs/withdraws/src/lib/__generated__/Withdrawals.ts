@@ -101,6 +101,9 @@ export interface Withdrawals_party_withdrawalsConnection_edges_node {
 
 export interface Withdrawals_party_withdrawalsConnection_edges {
   __typename: "WithdrawalEdge";
+  /**
+   * The withdrawal
+   */
   node: Withdrawals_party_withdrawalsConnection_edges_node;
 }
 
@@ -121,7 +124,7 @@ export interface Withdrawals_party {
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawalsConnection: Withdrawals_party_withdrawalsConnection;
+  withdrawalsConnection: Withdrawals_party_withdrawalsConnection | null;
 }
 
 export interface Withdrawals {

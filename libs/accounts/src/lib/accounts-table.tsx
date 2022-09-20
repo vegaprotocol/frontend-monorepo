@@ -16,7 +16,7 @@ import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { AccountFieldsFragment } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated___/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountFields } from './accounts-manager';
@@ -70,7 +70,9 @@ export const progressBarValueFormatter = ({
     high: addDecimalsFormatNumber((max - min).toString(), data.asset.decimals),
     value: value,
     intent: Intent.None,
-    percentage: value ? formatNumberPercentage(new BigNumber(value), 2) : '0.00%',
+    percentage: value
+      ? formatNumberPercentage(new BigNumber(value), 2)
+      : '0.00%',
   };
 };
 
