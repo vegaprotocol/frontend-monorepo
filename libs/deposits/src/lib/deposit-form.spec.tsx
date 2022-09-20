@@ -250,7 +250,7 @@ describe('Deposit form', () => {
       screen.getByText('Deposit', { selector: '[type="submit"]' })
     );
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(props.submitDeposit).toHaveBeenCalledWith({
         // @ts-ignore contract address definitely defined
         assetSource: asset.source.contractAddress,
