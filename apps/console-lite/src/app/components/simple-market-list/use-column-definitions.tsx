@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
-import MarketNameRenderer from '../components/simple-market-list/simple-market-renderer';
-import SimpleMarketPercentChange from '../components/simple-market-list/simple-market-percent-change';
+import MarketNameRenderer from './simple-market-renderer';
+import SimpleMarketPercentChange from './simple-market-percent-change';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ValueSetterParams } from 'ag-grid-community';
 import { IconNames } from '@blueprintjs/icons';
-import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../constants';
+import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../../constants';
 import type { Candle, Market } from '@vegaprotocol/market-list';
 
 interface Props {

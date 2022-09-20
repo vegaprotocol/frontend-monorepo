@@ -22,6 +22,8 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({}),
 }));
 
+jest.mock('./simple-market-percent-change', () => jest.fn())
+
 let marketsMock = [
   {
     id: 'MARKET_A',
@@ -85,9 +87,7 @@ describe('SimpleMarketList', () => {
     jest.clearAllMocks();
   });
 
-  // constantly failing on ci
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should be properly rendered with some data', async () => {
+  it('should be properly rendered with some data', async () => {
     await act(async () => {
       await render(
         <MockedProvider mocks={[]}>
@@ -108,8 +108,7 @@ describe('SimpleMarketList', () => {
     });
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('click on row should be properly handled', async () => {
+  it('click on row should be properly handled', async () => {
     await act(async () => {
       render(
         <MockedProvider mocks={[]}>
@@ -129,7 +128,7 @@ describe('SimpleMarketList', () => {
       expect(mockIsTradable).toHaveBeenCalledWith(
         expect.objectContaining({
           id: marketsMock[0].id,
-          percentChange: '-',
+          state: MarketState.STATE_ACTIVE
         })
       );
       expect(mockedNavigate).toHaveBeenCalledWith(

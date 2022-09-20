@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import type { RouterParams } from '../components/simple-market-list/simple-market-list';
 import { MarketState } from '@vegaprotocol/types';
 import type { MarketsListData } from '@vegaprotocol/market-list';
+import type { RouterParams } from './simple-market-list';
 
 const useMarketsFilterData = (data: MarketsListData, params: RouterParams) => {
   return useMemo(() => {
