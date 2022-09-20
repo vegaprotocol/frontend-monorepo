@@ -76,18 +76,11 @@ export const ProposeUpdateMarket = () => {
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
 
-  console.log(
-    `params: ${params}, networkParamsLoading: ${networkParamsLoading}, networkParamsError: ${networkParamsError}`
-  );
-
   const {
     data: marketsData,
     loading: marketsLoading,
     error: marketsError,
   } = useQuery<ProposalMarketsQuery>(MARKETS_QUERY);
-  console.log(
-    `marketsData: ${marketsData}, marketsLoading: ${marketsLoading}, marketsError: ${marketsError}`
-  );
   const sortedMarkets = useMemo(() => {
     if (!marketsData) {
       return [];
