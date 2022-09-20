@@ -95,8 +95,9 @@ Cypress.Commands.add(
       );
     });
 
-    cy.reload();
-    cy.vega_wallet_connect();
-    cy.ethereum_wallet_connect();
-  }
-);
+  cy.reload();
+  cy.get('header h1').should('be.visible')
+  cy.wait_for_spinner();
+  cy.vega_wallet_connect();
+  cy.ethereum_wallet_connect();
+});
