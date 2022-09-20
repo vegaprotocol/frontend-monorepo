@@ -12,6 +12,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import type { Market } from '@vegaprotocol/market-list';
+import * as constants from './constants';
 
 const mockedNavigate = jest.fn();
 
@@ -88,7 +89,9 @@ describe('SimpleMarketList', () => {
     await act(async () => {
       await render(
         <MockedProvider mocks={[]}>
-          <SimpleMarketList />
+          <div style={constants.AG_GRID_CONTAINER_STYLES}>
+            <SimpleMarketList />
+          </div>
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
