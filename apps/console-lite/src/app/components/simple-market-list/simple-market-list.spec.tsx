@@ -22,7 +22,7 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({}),
 }));
 
-jest.mock('./simple-market-percent-change', () => jest.fn())
+jest.mock('./simple-market-percent-change', () => jest.fn());
 
 let marketsMock = [
   {
@@ -128,7 +128,7 @@ describe('SimpleMarketList', () => {
       expect(mockIsTradable).toHaveBeenCalledWith(
         expect.objectContaining({
           id: marketsMock[0].id,
-          state: MarketState.STATE_ACTIVE
+          state: MarketState.STATE_ACTIVE,
         })
       );
       expect(mockedNavigate).toHaveBeenCalledWith(
