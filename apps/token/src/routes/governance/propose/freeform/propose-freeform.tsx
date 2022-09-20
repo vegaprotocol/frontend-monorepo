@@ -17,7 +17,6 @@ import {
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import type { ProposalFreeformTerms } from '@vegaprotocol/wallet';
 import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 
 export interface FreeformProposalFormFields {

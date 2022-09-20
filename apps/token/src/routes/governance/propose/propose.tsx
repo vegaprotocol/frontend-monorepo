@@ -1,5 +1,4 @@
 import Routes from '../../routes';
-import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';

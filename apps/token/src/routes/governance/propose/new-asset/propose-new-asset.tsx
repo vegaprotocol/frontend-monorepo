@@ -20,7 +20,6 @@ import {
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import type { ProposalNewAssetTerms } from '@vegaprotocol/wallet';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
 export interface NewAssetProposalFormFields {

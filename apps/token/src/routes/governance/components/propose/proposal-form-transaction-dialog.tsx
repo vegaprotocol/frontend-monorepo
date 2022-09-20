@@ -3,8 +3,6 @@ import {
   getProposalDialogIntent,
   getProposalDialogTitle,
 } from '@vegaprotocol/governance';
-import { t } from '@vegaprotocol/react-helpers';
-import { ProposalState } from '@vegaprotocol/types';
 import type { ProposalEvent_busEvents_event_Proposal } from '@vegaprotocol/governance';
 import type { DialogProps } from '@vegaprotocol/wallet';
 

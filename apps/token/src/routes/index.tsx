@@ -3,7 +3,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import type { WithTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
-import { Route, Routes, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 
 import { SplashLoader } from '../components/splash-loader';
 import routerConfig from './router-config';
