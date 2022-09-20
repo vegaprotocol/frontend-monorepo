@@ -238,7 +238,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <MarketInfoTable
           data={market.riskFactors}
           unformatted={true}
-          omits={['market', '__typename']}
+          omits={['market']}
         />
       ),
     },
