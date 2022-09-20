@@ -83,7 +83,7 @@ describe('SimpleMarketList', () => {
   });
   it('should be properly rendered with some data', async () => {
     await act(async () => {
-      render(
+      await render(
         <MockedProvider mocks={[]}>
           <SimpleMarketList />
         </MockedProvider>,
