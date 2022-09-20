@@ -21,7 +21,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
-          className="flex flex-nowrap overflow-visible"
+          className="flex flex-nowrap overflow-visible bg-neutral-50 dark:bg-neutral-800"
           role="tablist"
         >
           {Children.map(children, (child) => {
@@ -32,8 +32,8 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
               'uppercase',
               'focus-visible:underline',
               {
-                'cursor-default': isActive,
-                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
+                'cursor-default bg-white dark:bg-black': isActive,
+                'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300':
                   !isActive,
               }
             );

@@ -173,7 +173,10 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
     return (
       <div className="flex justify-between gap-8">
         {t('Open')}
-        <button className="underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300" onClick={() => complete(data)}>
+        <button
+          className="underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
+          onClick={() => complete(data)}
+        >
           {t('Complete')}
         </button>
       </div>
