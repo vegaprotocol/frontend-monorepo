@@ -80,19 +80,12 @@ jest.mock('../../constants', () => ({
 }));
 
 describe('SimpleMarketList', () => {
-  beforeAll(() => {
-    jest.setTimeout(15000);
-  });
-
-  afterAll(() => {
-    jest.setTimeout(5000);
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should be properly rendered with some data', async () => {
+    jest.setTimeout(50);
     await act(async () => {
       await render(
         <MockedProvider mocks={[]}>
