@@ -33,7 +33,6 @@ context(
       cy.ethereum_wallet_connect();
       cy.navigate_to('staking');
       cy.wait_for_spinner();
-      cy.wait_for_begining_of_epoch();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -276,6 +275,15 @@ context(
         cy.get(tokenAmountInputBox, { timeout: 10000 }).type(6500000);
         cy.get(tokenSubmitButton, txTimeout).should('be.disabled');
       });
+
+      after(
+        'teardown environment to prevent test data bleeding into other tests',
+        function () {
+          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+            cy.restartVegacapsuleNetwork();
+          }
+        }
+      );
     });
   }
 );

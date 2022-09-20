@@ -30,7 +30,7 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     responseTimeout: 50000,
-    requestTimeout: 10000,
+    requestTimeout: 20000,
   },
   env: {
     TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',

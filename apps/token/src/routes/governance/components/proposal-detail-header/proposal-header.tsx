@@ -18,7 +18,6 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
   }
 
   const titleContent = shorten(title, 100);
-  const descriptionContent = shorten(description, 60);
 
   switch (change.__typename) {
     case 'NewMarket': {
@@ -90,15 +89,9 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
           {titleContent || t('Unknown proposal')}
         </h2>
       </header>
-      {descriptionContent && (
-        <div
-          className="mb-4"
-          {...(description.length > descriptionContent.length && {
-            title: description,
-          })}
-          data-testid="proposal-description"
-        >
-          {descriptionContent}
+      {description && (
+        <div className="mb-4" data-testid="proposal-description">
+          {description}
         </div>
       )}
       {details && <div data-testid="proposal-details">{details}</div>}
