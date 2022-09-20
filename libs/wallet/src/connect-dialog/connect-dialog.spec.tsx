@@ -74,7 +74,7 @@ it('Renders list of connectors', () => {
 
 const fillInForm = () => {
   const walletValue = 'test-wallet';
-  fireEvent.change(screen.getByLabelText('Wallet'), {
+  fireEvent.change(screen.getByLabelText('Wallet name'), {
     target: { value: walletValue },
   });
   const passphraseValue = 'test-passphrase';
@@ -129,7 +129,7 @@ it('Successful connection using custom url', async () => {
   });
 
   // Set custom URL
-  fireEvent.change(screen.getByLabelText('Url'), {
+  fireEvent.change(screen.getByLabelText('URL'), {
     target: { value: 'localhost:1234' },
   });
 
