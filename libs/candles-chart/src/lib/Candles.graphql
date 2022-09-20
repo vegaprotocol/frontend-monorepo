@@ -1,5 +1,5 @@
 fragment CandleFields on Candle {
-  datetime
+  timestamp
   high
   low
   open
