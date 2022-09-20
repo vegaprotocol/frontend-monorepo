@@ -46,7 +46,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
   /**
    * Collateral accounts relating to a party
    */
-  accountsConnection: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection;
+  accountsConnection: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection | null;
 }
 
 export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node {
@@ -56,7 +56,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
    */
   id: string | null;
   /**
-   * The Id of the party making this commitment
+   * The party making this commitment
    */
   party: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party;
   /**
@@ -72,7 +72,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
    */
   commitmentAmount: string;
   /**
-   * Nominated liquidity fee factor, which is an input to the calculation of maker fees on the market, as per setting fees and rewarding liquidity providers.
+   * Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers.
    */
   fee: string;
   /**
@@ -174,27 +174,27 @@ export interface MarketLiquidity_market_data_liquidityProviderFeeShare {
 export interface MarketLiquidity_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * Market of the associated mark price
    */
   market: MarketLiquidity_market_data_market;
   /**
-   * the supplied stake for the market
+   * The supplied stake for the market
    */
   suppliedStake: string | null;
   /**
-   * the sum of the size of all positions greater than 0.
+   * The sum of the size of all positions greater than 0.
    */
   openInterest: string;
   /**
-   * the amount of stake targeted for this market
+   * The amount of stake targeted for this market
    */
   targetStake: string | null;
   /**
-   * the market value proxy
+   * The market value proxy
    */
   marketValueProxy: string;
   /**
-   * the equity like share of liquidity fee for each liquidity provider
+   * The equity like share of liquidity fee for each liquidity provider
    */
   liquidityProviderFeeShare: MarketLiquidity_market_data_liquidityProviderFeeShare[] | null;
 }
@@ -206,16 +206,16 @@ export interface MarketLiquidity_market {
    */
   id: string;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -223,7 +223,7 @@ export interface MarketLiquidity_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -232,7 +232,7 @@ export interface MarketLiquidity_market {
   /**
    * The list of the liquidity provision commitments for this market
    */
-  liquidityProvisionsConnection: MarketLiquidity_market_liquidityProvisionsConnection;
+  liquidityProvisionsConnection: MarketLiquidity_market_liquidityProvisionsConnection | null;
   /**
    * An instance of, or reference to, a tradable instrument.
    */
@@ -252,5 +252,5 @@ export interface MarketLiquidity {
 
 export interface MarketLiquidityVariables {
   marketId: string;
-  partyId?: string | null;
+  partyId: string;
 }

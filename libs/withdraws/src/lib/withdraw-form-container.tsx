@@ -65,7 +65,7 @@ export const WithdrawFormContainer = ({
   );
 
   const assets = useMemo(() => {
-    if (!data?.assetsConnection.edges) {
+    if (!data?.assetsConnection?.edges) {
       return [];
     }
 

@@ -1,10 +1,9 @@
-import React from 'react';
 import classNames from 'classnames';
-import type { MarketNames_markets } from '@vegaprotocol/deal-ticket';
 import SimpleMarketExpires from './simple-market-expires';
+import type { Market } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: MarketNames_markets;
+  market: Market;
   isMobile?: boolean;
 }
 

@@ -35,9 +35,9 @@ export interface MarketCandles {
 }
 
 const getData = (responseData: MarketsCandlesQuery): MarketCandles[] | null =>
-  responseData.marketsConnection.edges.map((edge) => ({
+  responseData?.marketsConnection?.edges.map((edge) => ({
     marketId: edge.node.id,
-    candles: edge.node.candlesConnection.edges
+    candles: edge.node.candlesConnection?.edges
       ?.filter((edge) => edge?.node)
       .map((edge) => edge?.node as Candle),
   })) || null;

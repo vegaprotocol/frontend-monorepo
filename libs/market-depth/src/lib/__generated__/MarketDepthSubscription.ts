@@ -71,5 +71,5 @@ export interface MarketDepthSubscription {
 }
 
 export interface MarketDepthSubscriptionVariables {
-  id: string;
+  marketId: string;
 }

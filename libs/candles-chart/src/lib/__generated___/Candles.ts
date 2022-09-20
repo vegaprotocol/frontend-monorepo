@@ -3,7 +3,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type CandleFieldsFragment = { __typename?: 'Candle', timestamp: string, high: string, low: string, open: string, close: string, volume: string };
+export type CandleFieldsFragment = { __typename?: 'Candle', periodStart: string, high: string, low: string, open: string, close: string, volume: string };
 
 export type CandlesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -12,7 +12,7 @@ export type CandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candles?: Array<{ __typename?: 'Candle', timestamp: string, high: string, low: string, open: string, close: string, volume: string } | null> | null } | null };
+export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', periodStart: string, high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } | null };
 
 export type CandlesEventsSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -20,11 +20,11 @@ export type CandlesEventsSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type CandlesEventsSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', timestamp: string, high: string, low: string, open: string, close: string, volume: string } };
+export type CandlesEventsSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', periodStart: string, high: string, low: string, open: string, close: string, volume: string } };
 
 export const CandleFieldsFragmentDoc = gql`
     fragment CandleFields on Candle {
-  timestamp
+  periodStart
   high
   low
   open
@@ -44,8 +44,12 @@ export const CandlesDocument = gql`
         code
       }
     }
-    candles(interval: $interval, since: $since) {
-      ...CandleFields
+    candlesConnection(interval: $interval, since: $since) {
+      edges {
+        node {
+          ...CandleFields
+        }
+      }
     }
   }
 }

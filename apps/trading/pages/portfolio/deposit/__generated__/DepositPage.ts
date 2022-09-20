@@ -53,6 +53,9 @@ export interface DepositPage_assetsConnection_edges_node {
 
 export interface DepositPage_assetsConnection_edges {
   __typename: "AssetEdge";
+  /**
+   * The asset information
+   */
   node: DepositPage_assetsConnection_edges_node;
 }
 
@@ -68,5 +71,5 @@ export interface DepositPage {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: DepositPage_assetsConnection;
+  assetsConnection: DepositPage_assetsConnection | null;
 }

@@ -265,7 +265,7 @@ export interface ProposalsQuery_proposalsConnection_edges_node {
    */
   datetime: string;
   /**
-   * Reason for the proposal to be rejected by the core
+   * Why the proposal was rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**
@@ -302,5 +302,5 @@ export interface ProposalsQuery {
   /**
    * All governance proposals in the Vega network
    */
-  proposalsConnection: ProposalsQuery_proposalsConnection;
+  proposalsConnection: ProposalsQuery_proposalsConnection | null;
 }

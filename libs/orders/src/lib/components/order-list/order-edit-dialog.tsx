@@ -16,12 +16,12 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
-import type { OrderFields } from '../order-data-provider';
+import type { OrderWithMarket } from '../order-data-provider';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderFields;
+  order: OrderWithMarket;
   onSubmit: (fields: FormFields) => void;
 }
 
@@ -69,13 +69,13 @@ export const OrderEditDialog = ({
         <div>
           <p className={headerClassName}>{t(`Size`)}</p>
           <p>
-            {
+            {order.market && (
               <Size
                 value={order.size}
                 side={order.side}
                 positionDecimalPlaces={order.market.positionDecimalPlaces}
               />
-            }
+            )}
           </p>
         </div>
       </div>

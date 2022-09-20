@@ -1,76 +1,14 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateFill, generateFills } from '../support/mocks/generate-fills';
-import { Side } from '@vegaprotocol/types';
+import { generateFills } from '../support/mocks/generate-fills';
 import { MarketState } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { mockTradingPage } from '../support/trading';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-
-const fills = [
-  generateFill({
-    buyer: {
-      id: Cypress.env('VEGA_PUBLIC_KEY'),
-    },
-  }),
-  generateFill({
-    id: '1',
-    seller: {
-      id: Cypress.env('VEGA_PUBLIC_KEY'),
-    },
-    aggressor: Side.SIDE_SELL,
-    buyerFee: {
-      infrastructureFee: '5000',
-    },
-    market: {
-      tradableInstrument: {
-        instrument: {
-          name: 'Apples Daily v3',
-        },
-      },
-      positionDecimalPlaces: 2,
-    },
-  }),
-  generateFill({
-    id: '2',
-    seller: {
-      id: Cypress.env('VEGA_PUBLIC_KEY'),
-    },
-    aggressor: Side.SIDE_BUY,
-  }),
-  generateFill({
-    id: '3',
-    aggressor: Side.SIDE_SELL,
-    market: {
-      tradableInstrument: {
-        instrument: {
-          name: 'ETHBTC Quarterly (30 Jun 2022)',
-        },
-      },
-    },
-    buyer: {
-      id: Cypress.env('VEGA_PUBLIC_KEY'),
-    },
-  }),
-];
-const result = generateFills({
-  party: {
-    tradesConnection: {
-      edges: fills.map((f, i) => {
-        return {
-          __typename: 'TradeEdge',
-          node: f,
-          cursor: i.toString(),
-        };
-      }),
-    },
-  },
-});
 
 describe('fills', () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Fills', result);
-      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+      aliasQuery(req, 'Fills', generateFills());
     });
   });
 

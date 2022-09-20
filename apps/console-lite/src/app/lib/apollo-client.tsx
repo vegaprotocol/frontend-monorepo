@@ -38,6 +38,9 @@ export function createClient(base?: string) {
       Node: {
         keyFields: false,
       },
+      Instrument: {
+        keyFields: false,
+      },
     },
   });
 
