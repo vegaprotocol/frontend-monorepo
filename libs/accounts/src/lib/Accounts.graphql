@@ -1,21 +1,3 @@
-fragment AccountFields on Account {
-  type
-  balance
-  market {
-    id
-    tradableInstrument {
-      instrument {
-        name
-      }
-    }
-  }
-  asset {
-    id
-    symbol
-    decimals
-  }
-}
-
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id

@@ -143,6 +143,9 @@ export enum MarketTradingMode {
   TRADING_MODE_OPENING_AUCTION = "TRADING_MODE_OPENING_AUCTION",
 }
 
+/**
+ * Validating status of a node, i.e. validator or non-validator
+ */
 export enum NodeStatus {
   NODE_STATUS_NON_VALIDATOR = "NODE_STATUS_NON_VALIDATOR",
   NODE_STATUS_VALIDATOR = "NODE_STATUS_VALIDATOR",

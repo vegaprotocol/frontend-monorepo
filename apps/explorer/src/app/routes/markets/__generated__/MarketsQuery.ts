@@ -104,15 +104,15 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
 export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel_params {
   __typename: "LogNormalModelParams";
   /**
-   * r parameter
+   * R parameter
    */
   r: number;
   /**
-   * sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
+   * Sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
    */
   sigma: number;
   /**
-   * mu parameter, annualised growth rate of the underlying asset
+   * Mu parameter, annualised growth rate of the underlying asset
    */
   mu: number;
 }
@@ -158,15 +158,15 @@ export type MarketsQuery_markets_tradableInstrument_riskModel = MarketsQuery_mar
 export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalingFactors {
   __typename: "ScalingFactors";
   /**
-   * the scaling factor that determines the margin level at which Vega has to search for more money
+   * The scaling factor that determines the margin level at which Vega has to search for more money
    */
   searchLevel: number;
   /**
-   * the scaling factor that determines the optimal margin level
+   * The scaling factor that determines the optimal margin level
    */
   initialMargin: number;
   /**
-   * the scaling factor that determines the overflow margin level
+   * The scaling factor that determines the overflow margin level
    */
   collateralRelease: number;
 }
@@ -362,47 +362,47 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
 export interface MarketsQuery_markets_data {
   __typename: "MarketData";
   /**
-   * the mark price (an unsigned integer)
+   * The mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * the highest price level on an order book for buy orders.
+   * The highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
   /**
-   * the aggregated volume being bid at the best bid price.
+   * The aggregated volume being bid at the best bid price.
    */
   bestBidVolume: string;
   /**
-   * the lowest price level on an order book for offer orders.
+   * The lowest price level on an order book for offer orders.
    */
   bestOfferPrice: string;
   /**
-   * the aggregated volume being offered at the best offer price.
+   * The aggregated volume being offered at the best offer price.
    */
   bestOfferVolume: string;
   /**
-   * the highest price level on an order book for buy orders not including pegged orders.
+   * The highest price level on an order book for buy orders not including pegged orders.
    */
   bestStaticBidPrice: string;
   /**
-   * the aggregated volume being offered at the best static bid price, excluding pegged orders
+   * The aggregated volume being offered at the best static bid price, excluding pegged orders
    */
   bestStaticBidVolume: string;
   /**
-   * the lowest price level on an order book for offer orders not including pegged orders.
+   * The lowest price level on an order book for offer orders not including pegged orders.
    */
   bestStaticOfferPrice: string;
   /**
-   * the aggregated volume being offered at the best static offer price, excluding pegged orders.
+   * The aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
   /**
-   * the arithmetic average of the best bid price and best offer price.
+   * The arithmetic average of the best bid price and best offer price.
    */
   midPrice: string;
   /**
-   * the arithmetic average of the best static bid price and best static offer price
+   * The arithmetic average of the best static bid price and best static offer price
    */
   staticMidPrice: string;
   /**
@@ -410,7 +410,7 @@ export interface MarketsQuery_markets_data {
    */
   timestamp: string;
   /**
-   * the sum of the size of all positions greater than 0.
+   * The sum of the size of all positions greater than 0.
    */
   openInterest: string;
   /**
@@ -422,39 +422,39 @@ export interface MarketsQuery_markets_data {
    */
   auctionStart: string | null;
   /**
-   * indicative price if the auction ended now, 0 if not in auction mode
+   * Indicative price if the auction ended now, 0 if not in auction mode
    */
   indicativePrice: string;
   /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
+   * Indicative volume if the auction ended now, 0 if not in auction mode
    */
   indicativeVolume: string;
   /**
-   * what triggered an auction (if an auction was started)
+   * What triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
   /**
-   * what extended the ongoing auction (if an auction was extended)
+   * What extended the ongoing auction (if an auction was extended)
    */
   extensionTrigger: AuctionTrigger;
   /**
-   * the amount of stake targeted for this market
+   * The amount of stake targeted for this market
    */
   targetStake: string | null;
   /**
-   * the supplied stake for the market
+   * The supplied stake for the market
    */
   suppliedStake: string | null;
   /**
-   * a list of valid price ranges per associated trigger
+   * A list of valid price ranges per associated trigger
    */
   priceMonitoringBounds: MarketsQuery_markets_data_priceMonitoringBounds[] | null;
   /**
-   * the market value proxy
+   * The market value proxy
    */
   marketValueProxy: string;
   /**
-   * the equity like share of liquidity fee for each liquidity provider
+   * The equity like share of liquidity fee for each liquidity provider
    */
   liquidityProviderFeeShare: MarketsQuery_markets_data_liquidityProviderFeeShare[] | null;
 }
@@ -474,7 +474,7 @@ export interface MarketsQuery_markets {
    */
   tradableInstrument: MarketsQuery_markets_tradableInstrument;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:

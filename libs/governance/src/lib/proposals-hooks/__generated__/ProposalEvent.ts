@@ -42,11 +42,11 @@ export type ProposalEvent_busEvents_event = ProposalEvent_busEvents_event_TimeUp
 export interface ProposalEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * the type of event
+   * The type of event
    */
   type: BusEventType;
   /**
-   * the payload - the wrapped event
+   * The payload - the wrapped event
    */
   event: ProposalEvent_busEvents_event;
 }

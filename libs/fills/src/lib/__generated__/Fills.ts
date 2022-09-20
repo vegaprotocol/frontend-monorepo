@@ -119,15 +119,33 @@ export interface Fills_party_tradesConnection_edges_node {
 
 export interface Fills_party_tradesConnection_edges {
   __typename: "TradeEdge";
+  /**
+   * The trade
+   */
   node: Fills_party_tradesConnection_edges_node;
+  /**
+   * The cursor for this trade
+   */
   cursor: string;
 }
 
 export interface Fills_party_tradesConnection_pageInfo {
   __typename: "PageInfo";
+  /**
+   * The first cursor in the current page
+   */
   startCursor: string;
+  /**
+   * The last cursor in the current page
+   */
   endCursor: string;
+  /**
+   * The connection has more pages to fetch when traversing forward through the connection
+   */
   hasNextPage: boolean;
+  /**
+   * The connection has more pages to fetch when traversing backward through the connection
+   */
   hasPreviousPage: boolean;
 }
 

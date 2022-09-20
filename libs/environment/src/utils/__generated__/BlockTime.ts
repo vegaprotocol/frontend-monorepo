@@ -24,7 +24,7 @@ export type BlockTime_busEvents_event = BlockTime_busEvents_event_MarketEvent | 
 export interface BlockTime_busEvents {
   __typename: "BusEvent";
   /**
-   * the payload - the wrapped event
+   * The payload - the wrapped event
    */
   event: BlockTime_busEvents_event;
 }
