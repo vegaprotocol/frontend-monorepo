@@ -3,6 +3,7 @@ import { MarketState } from '@vegaprotocol/types';
 import type {
   Market,
   MarketsCandlesQuery_marketsConnection_edges_node,
+  MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges,
   Markets,
   MarketsCandlesQuery,
   MarketsDataQuery,
@@ -520,7 +521,7 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         edges: protoCandles.map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
@@ -604,11 +605,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -687,11 +689,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -758,11 +761,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -841,12 +845,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
-
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -925,11 +929,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -1008,12 +1013,12 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
     {
       id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
-
+      __typename: 'Market',
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
@@ -1033,7 +1038,7 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
         ].map((node) => ({
           __typename: 'CandleEdge',
           node,
-        })),
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
     },
   ];
