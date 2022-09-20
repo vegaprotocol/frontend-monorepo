@@ -109,7 +109,8 @@ const SimpleMarketList = () => {
       <SimpleMarketToolbar data={data?.markets || []} />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <AgGrid
-          className="mb-32 min-h-[300px]"
+          className="mb-32 min-h-[300px] w-full"
+          style={constants.AG_GRID_CONTAINER_STYLES}
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={localData}

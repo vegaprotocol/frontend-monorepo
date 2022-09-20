@@ -197,3 +197,5 @@ export const ROW_CLASS_RULES = {
 };
 
 export const LARGE_SCREENS = ['xl', 'xxl'];
+
+export const AG_GRID_CONTAINER_STYLES = { width: '100%', height: '100%' };
