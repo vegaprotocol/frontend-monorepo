@@ -40,4 +40,4 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-jest.setTimeout(15000);
+jest.setTimeout(30000);

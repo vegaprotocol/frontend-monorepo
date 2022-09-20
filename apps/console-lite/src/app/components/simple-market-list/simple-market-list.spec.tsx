@@ -85,7 +85,6 @@ describe('SimpleMarketList', () => {
   });
 
   it('should be properly rendered with some data', async () => {
-    jest.setTimeout(50);
     await act(async () => {
       await render(
         <MockedProvider mocks={[]}>
