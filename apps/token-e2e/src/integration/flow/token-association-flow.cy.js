@@ -41,7 +41,7 @@ context(
         //1000-ASSO-0014
         //1000-ASSO-0015
         //1000-ASSO-0030
-        cy.set_up_tokens();
+        cy.associate_vega_tokens();
 
         cy.staking_page_associate_tokens('2');
 
@@ -67,7 +67,7 @@ context(
         // 1000-ASSO-0028
         // 1000-ASSO-0029
 
-        cy.set_up_tokens(10);
+        cy.associate_vega_tokens(10);
 
         cy.staking_page_disassociate_tokens('10');
 
@@ -81,7 +81,7 @@ context(
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
         //1000-ASSO-0011
 
-        cy.set_up_tokens();
+        cy.associate_vega_tokens();
 
         cy.staking_page_associate_tokens('1001', { approve: true });
 
@@ -103,7 +103,7 @@ context(
       });
 
       it('Able to disassociate a partial amount of tokens currently associated', function () {
-        cy.set_up_tokens(8);
+        cy.associate_vega_tokens(8);
 
         cy.staking_page_disassociate_tokens('1');
 
@@ -127,7 +127,7 @@ context(
         const warningText =
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
 
-        cy.set_up_tokens(13);
+        cy.associate_vega_tokens(13);
 
         cy.get(ethWalletDissociateButton).click();
         cy.get(disassocitiationWarning).should('contain', warningText);
@@ -190,7 +190,7 @@ context(
         // 1000-ASSO-0021
         // 1000-ASSO-0022
 
-        cy.set_up_tokens(21, 37);
+        cy.associate_vega_tokens(21, 37);
 
         cy.staking_page_disassociate_tokens('6', { type: 'wallet' });
 
@@ -219,7 +219,7 @@ context(
         // 1000-ASSO-0010
         // No warning visible as described in AC, but the button is disabled
 
-        cy.set_up_tokens();
+        cy.associate_vega_tokens();
 
         cy.get(ethWalletAssociateButton).first().click();
         cy.get(associateWalletRadioButton, { timeout: 30000 }).click();

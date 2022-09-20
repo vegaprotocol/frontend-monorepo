@@ -38,7 +38,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
   describe('Eth wallet - contains VEGA tokens', function () {
     it('Able to stake against a validator - using vega from wallet', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       // 1002-STKE-031
       cy.click_on_validator_from_list(0);
@@ -71,7 +71,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Able to stake against a validator - using vega from vesting contract', function () {
-      cy.set_up_tokens(0, 3);
+      cy.associate_vega_tokens(0, 3);
 
       cy.click_on_validator_from_list(0);
 
@@ -101,7 +101,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
-      cy.set_up_tokens(4, 3);
+      cy.associate_vega_tokens(4, 3);
 
       cy.click_on_validator_from_list(0);
 
@@ -131,7 +131,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Able to stake against multiple validators', function () {
-      cy.set_up_tokens(5);
+      cy.associate_vega_tokens(5);
 
       cy.click_on_validator_from_list(0);
 
@@ -201,7 +201,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     // 1002-STKE-041
     it('Able to remove part of a stake against a validator', function () {
-      cy.set_up_tokens(4);
+      cy.associate_vega_tokens(4);
 
       cy.click_on_validator_from_list(0);
 
@@ -256,7 +256,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Able to remove a full stake against a validator', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -303,7 +303,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Unable to remove a stake with a negative value for a validator', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -336,7 +336,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Unable to remove a stake greater than staked amount next epoch for a validator', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -369,7 +369,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Disassociating all wallet tokens max - removes all staked tokens', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list('1');
 
@@ -415,7 +415,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
-      cy.set_up_tokens(0, 3);
+      cy.associate_vega_tokens(0, 3);
 
       cy.click_on_validator_from_list('1');
 
@@ -461,7 +461,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Disassociating some tokens - prioritizes unstaked tokens', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -502,7 +502,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
       // 1002-STKE-004
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -531,7 +531,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
       // 1002-STKE-004
-      cy.set_up_tokens(0, 3);
+      cy.associate_vega_tokens(0, 3);
 
       cy.click_on_validator_from_list(0);
 
@@ -560,7 +560,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
       // 1002-STKE-004
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 
@@ -589,7 +589,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
       // 1002-STKE-004
-      cy.set_up_tokens(6);
+      cy.associate_vega_tokens(6);
 
       cy.click_on_validator_from_list(0);
 
@@ -638,7 +638,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Selecting use maximum where tokens are already staked - suggests the unstaked token amount', function () {
-      cy.set_up_tokens(3);
+      cy.associate_vega_tokens(3);
 
       cy.click_on_validator_from_list(0);
 

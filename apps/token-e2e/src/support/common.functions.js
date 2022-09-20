@@ -70,28 +70,33 @@ Cypress.Commands.add('restartVegacapsuleNetwork', () => {
     .should('contain', 'starting network success');
 });
 
-Cypress.Commands.add('set_up_tokens', (wallet = 0, contract = 0) => {
-  const vegaWallet = '[data-testid="vega-wallet"]';
-  const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-  const txTimeout = Cypress.env('txTimeout');
+Cypress.Commands.add(
+  'associate_vega_tokens',
+  (vegaInWalletTokens = 0, vestingContractTokens = 0) => {
+    const vegaWallet = '[data-testid="vega-wallet"]';
+    const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
+    const txTimeout = Cypress.env('txTimeout');
 
-  cy.vega_wallet_teardown();
+    cy.vega_wallet_teardown();
 
-  cy.get(vegaWallet).within(() => {
-    cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '0.0');
-  });
+    cy.get(vegaWallet).within(() => {
+      cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', '0.0');
+    });
 
-  cy.eth_associate_tokens(wallet, 'wallet');
-  cy.eth_associate_tokens(contract, 'contract');
+    cy.eth_associate_tokens(vegaInWalletTokens, 'wallet');
+    cy.eth_associate_tokens(vestingContractTokens, 'contract');
 
-  cy.get(vegaWallet).within(() => {
-    cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-      'contain',
-      (wallet === 0) & (contract === 0) ? '0.0' : wallet + contract
-    );
-  });
+    cy.get(vegaWallet).within(() => {
+      cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+        'contain',
+        (vegaInWalletTokens === 0) & (vestingContractTokens === 0)
+          ? '0.0'
+          : vegaInWalletTokens + vestingContractTokens
+      );
+    });
 
-  cy.reload();
-  cy.vega_wallet_connect();
-  cy.ethereum_wallet_connect();
-});
+    cy.reload();
+    cy.vega_wallet_connect();
+    cy.ethereum_wallet_connect();
+  }
+);
