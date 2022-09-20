@@ -2,10 +2,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOrderListData } from './use-order-list-data';
-import type {
-  Orders_party_ordersConnection_edges,
-  Orders_party_ordersConnection_edges_node,
-} from '../order-data-provider/__generated__/Orders';
+import type { Orders_party_ordersConnection_edges } from '../order-data-provider/__generated__/Orders';
 import type { IGetRowsParams } from 'ag-grid-community';
 
 const loadMock = jest.fn();
