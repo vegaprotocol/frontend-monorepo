@@ -34,12 +34,11 @@ const primary = [
   'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark enabled:active:font-medium',
 ];
 const secondary = [
-  'text-white',
-  'border-vega-pink',
-  'bg-vega-pink',
-  'enabled:focus:bg-vega-pink-dark enabled:focus:border-vega-pink-dark enabled:focus-visible:underline',
-  'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
-  'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark enabled:active:font-medium',
+  'text-white dark:text-black',
+  'border-none',
+  'bg-neutral-700 dark:bg-neutral-200',
+  'enabled:focus:bg-black dark:enabled:focus:bg-white enabled:focus-visible:underline',
+  'enabled:hover:bg-black dark:enabled:hover:bg-white enabled:active:font-medium',
 ];
 
 const getClassname = ({

@@ -31,7 +31,7 @@ export const Web3ConnectDialog = ({
           return (
             <li key={i} className="mb-2 last:mb-0">
               <button
-                className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
+                className="underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);

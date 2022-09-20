@@ -20,6 +20,8 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
             {t('Connect your Vega wallet')}
           </p>
           <Button
+            size="md"
+            variant="secondary"
             onClick={() => update({ connectDialog: true })}
             data-testid="vega-wallet-connect"
           >

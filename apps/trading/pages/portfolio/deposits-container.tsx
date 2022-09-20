@@ -9,10 +9,15 @@ export const DepositsContainer = () => {
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <header className="flex justify-between items-center p-4">
+      <header className="flex justify-between items-center p-3">
         <h4 className="text-lg text-black dark:text-white">{t('Deposits')}</h4>
         <Link href="/portfolio/deposit" passHref={true}>
-          <Button>Deposit</Button>
+          <Button
+              size="sm"
+              variant="secondary"
+          >
+            Make deposit
+          </Button>
         </Link>
       </header>
       <div>
