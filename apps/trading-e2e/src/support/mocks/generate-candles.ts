@@ -10,7 +10,7 @@ export const generateCandles = (
 ): CandlesQuery => {
   const candles: CandleFieldsFragment[] = [
     {
-      timestamp: '1661515200000000000',
+      periodStart: '1661515200000000000',
       high: '17481092',
       low: '17403651',
       open: '17458833',
@@ -19,7 +19,7 @@ export const generateCandles = (
       __typename: 'Candle',
     },
     {
-      timestamp: '1661516100000000000',
+      periodStart: '1661516100000000000',
       high: '17491202',
       low: '17361138',
       open: '17446470',
@@ -28,7 +28,7 @@ export const generateCandles = (
       __typename: 'Candle',
     },
     {
-      timestamp: '1661517000000000000',
+      periodStart: '1661517000000000000',
       high: '17424522',
       low: '17337719',
       open: '17367174',
@@ -37,7 +37,7 @@ export const generateCandles = (
       __typename: 'Candle',
     },
   ];
-  const defaultResult = {
+  const defaultResult: CandlesQuery = {
     market: {
       id: 'market-0',
       decimalPlaces: 5,
@@ -50,7 +50,11 @@ export const generateCandles = (
         },
         __typename: 'TradableInstrument',
       },
-      candles,
+      candlesConnection: {
+        edges: candles.map((node) => ({
+          node,
+        })),
+      },
       __typename: 'Market',
     },
   };
