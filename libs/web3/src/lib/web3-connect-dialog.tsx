@@ -49,15 +49,17 @@ export const Web3ConnectDialog = ({
 };
 
 function getConnectorInfo(connector: Connector) {
-  if (connector instanceof MetaMask)
+  if (connector instanceof MetaMask) {
     return {
       name: 'MetaMask',
       text: t('MetaMask, Brave or other injected web wallet'),
     };
-  if (connector instanceof WalletConnect)
+  }
+  if (connector instanceof WalletConnect) {
     return {
       name: 'WalletConnect',
       text: t('WalletConnect'),
     };
+  }
   return { name: 'Unknown', text: t('Unknown') };
 }

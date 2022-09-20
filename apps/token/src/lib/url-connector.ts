@@ -34,8 +34,9 @@ export class CustomizedBridge extends Eip1193Bridge {
 
       // If from is present on eth_call it errors, removing it makes the library set
       // from as the connected wallet which works fine
-      if (params && params.length && params[0].from && method === 'eth_call')
+      if (params && params.length && params[0].from && method === 'eth_call') {
         delete params[0].from;
+      }
       let result;
       // For sending a transaction if we call send it will error
       // as it wants gasLimit in sendTransaction but hexlify sets the property gas

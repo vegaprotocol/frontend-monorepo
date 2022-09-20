@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { ErrorType } from '../types';
-import type { Environment, Configuration, Networks } from '../types';
+import type { Environment, Configuration } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
-
-export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
 
 export type EnvironmentWithOptionalUrl = Partial<Environment> &
   Omit<Environment, 'VEGA_URL'>;
@@ -14,36 +11,6 @@ const compileHosts = (hosts: string[], envUrl?: string) => {
     return [...hosts, envUrl];
   }
   return hosts;
-};
-
-const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
-
-const getCachedConfig = (env: Networks, envUrl?: string) => {
-  const cacheKey = getCacheKey(env);
-  const value = LocalStorage.getItem(cacheKey);
-
-  if (value) {
-    try {
-      const config = JSON.parse(value) as Configuration;
-      const hasError = validateConfiguration(config);
-
-      if (hasError) {
-        throw new Error('Invalid configuration found in the storage.');
-      }
-
-      return {
-        ...config,
-        hosts: compileHosts(config.hosts, envUrl),
-      };
-    } catch (err) {
-      LocalStorage.removeItem(cacheKey);
-      console.warn(
-        'Malformed data found for network configuration. Removed cached configuration, continuing...'
-      );
-    }
-  }
-
-  return undefined;
 };
 
 type UseConfigOptions = {
@@ -57,7 +24,7 @@ export const useConfig = (
 ) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<Configuration | undefined>(
-    defaultConfig ?? getCachedConfig(environment.VEGA_ENV, environment.VEGA_URL)
+    defaultConfig
   );
 
   useEffect(() => {
@@ -78,10 +45,6 @@ export const useConfig = (
           const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
 
           isMounted && setConfig({ hosts });
-          LocalStorage.setItem(
-            getCacheKey(environment.VEGA_ENV),
-            JSON.stringify({ hosts })
-          );
           isMounted && setLoading(false);
         } catch (err) {
           if (isMounted) {

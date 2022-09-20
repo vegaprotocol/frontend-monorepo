@@ -9,12 +9,12 @@ body,
 }
 
 /* Styles for allotment */
-html {
+html body {
   --focus-border: theme('colors.vega.pink');
   --separator-border: theme('colors.neutral.300');
 }
 
-html.dark {
+html.dark body {
   --focus-border: theme('colors.vega.yellow');
   --separator-border: theme('colors.neutral.600');
 }

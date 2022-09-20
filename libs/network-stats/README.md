@@ -8,8 +8,6 @@ Two environment variables need to be present for any app consuming this library.
 
 `NX_VEGA_ENV` is the name of the environment.
 
-`NX_VEGA_REST` is the REST endpoint for the environment.
-
 For examples, see Block Explorer's .env files [here](../../apps/explorer)
 
 ## Running unit tests
