@@ -86,6 +86,7 @@ describe('SimpleMarketList', () => {
   });
 
   // constantly failing on ci
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('should be properly rendered with some data', async () => {
     await act(async () => {
       await render(
