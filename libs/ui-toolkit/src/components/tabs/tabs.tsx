@@ -63,7 +63,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
               value={child.props.id}
               className="h-full bg-white dark:bg-black"
               data-testid={`tab-${child.props.id}`}
-              tabIndex="-1"
+              tabIndex={-1}
             >
               {child.props.children}
             </TabsPrimitive.Content>
