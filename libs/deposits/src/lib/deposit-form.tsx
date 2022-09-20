@@ -341,7 +341,7 @@ const FormButton = ({
 interface UseButtonProps {
   children: ReactNode;
   onClick: () => void;
-  className: string;
+  className?: string;
 }
 
 const UseButton = ({ children, onClick, className }: UseButtonProps) => {
