@@ -21,8 +21,11 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         onRowClicked={(rowEvent: RowClickedEvent) => {
           const { data, event } = rowEvent;
           // filters out clicks on the symbol column because it should display asset details
-          if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
+          if (
+            (event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON'
+          ) {
             return;
+          }
           onSelect((data as MarketWithData).id);
         }}
       />

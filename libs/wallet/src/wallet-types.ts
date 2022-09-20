@@ -90,7 +90,7 @@ interface ProposalNewMarketTerms {
         future: {
           settlementAsset: string;
           quoteName: string;
-          settlementPriceDecimals: number;
+          settlementDataDecimals: number;
           oracleSpecForSettlementPrice: OracleSpecFor;
           oracleSpecForTradingTermination: OracleSpecFor;
           oracleSpecBinding: OracleSpecBinding;
@@ -127,7 +127,7 @@ interface ProposalUpdateMarketTerms {
         code: string;
         future: {
           quoteName: string;
-          settlementPriceDecimals: number;
+          settlementDataDecimals: number;
           oracleSpecForSettlementPrice: OracleSpecFor;
           oracleSpecForTradingTermination: OracleSpecFor;
           oracleSpecBinding: OracleSpecBinding;

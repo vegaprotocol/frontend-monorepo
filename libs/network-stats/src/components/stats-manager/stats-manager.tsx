@@ -24,7 +24,6 @@ const STATS_QUERY = gql`
       totalNodes
       inactiveNodes
       validatingNodes
-      uptime
     }
     statistics {
       status
@@ -39,6 +38,7 @@ const STATS_QUERY = gql`
       appVersion
       chainVersion
       chainId
+      upTime
     }
   }
 `;
