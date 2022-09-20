@@ -61,6 +61,8 @@ const useMarketList = () => {
   return {
     data: {
       markets: marketsMock,
+      marketsData: [],
+      marketsCandles: [],
     },
     loading: false,
     error: false,
