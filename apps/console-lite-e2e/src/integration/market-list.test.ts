@@ -68,6 +68,8 @@ describe('market list', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Markets', generateSimpleMarkets());
+        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+        aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
       });
     });
 
