@@ -10,9 +10,8 @@ import {
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
-import SimpleMarketList from './simple-market-list';
 import type { Market } from '@vegaprotocol/market-list';
-import * as constants from './constants';
+import SimpleMarketList from './simple-market-list';
 
 const mockedNavigate = jest.fn();
 
@@ -89,11 +88,9 @@ describe('SimpleMarketList', () => {
 
   it('should be properly rendered with some data', async () => {
     await act(async () => {
-      await render(
+      render(
         <MockedProvider mocks={[]}>
-          <div style={constants.AG_GRID_CONTAINER_STYLES}>
-            <SimpleMarketList />
-          </div>
+          <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
       );
