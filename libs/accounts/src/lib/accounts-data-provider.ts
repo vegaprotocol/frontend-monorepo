@@ -63,14 +63,15 @@ const update = (
   deltas: AccountEventsSubscription['accounts']
 ) => {
   return produce(data, (draft) => {
-    const id = getId(delta);
-    const index = draft.findIndex((a) => getId(a) === id);
-    const newDelta = getAccountData([delta], delta.asset.symbol).depositRow;
-    if (index !== -1) {
-      draft[index] = newDelta;
-    } else {
-      draft.push(newDelta);
-    }
+    deltas.forEach((delta) => {
+      const id = getId(delta);
+      const index = draft.findIndex((a) => getId(a) === id);
+      if (index !== -1) {
+        draft[index].balance = delta.balance;
+      } else {
+        // #TODO handle new account
+      }
+    });
   });
 };
 
@@ -78,7 +79,7 @@ const INCOMING_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_GENERAL,
   AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
   AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-  AccountType.ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES,
+  AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
   AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
 ];
 
