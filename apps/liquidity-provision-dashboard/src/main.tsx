@@ -6,6 +6,32 @@ import { createClient } from './app/lib/apollo-client';
 
 import App from './app/app';
 
+const cache = new InMemoryCache({
+  typePolicies: {
+    Market: {
+      merge: true,
+    },
+    Party: {
+      merge: true,
+    },
+    Query: {},
+    Account: {
+      keyFields: false,
+      fields: {
+        balanceFormatted: {},
+      },
+    },
+    Node: {
+      keyFields: false,
+    },
+  },
+});
+
+const client = new ApolloClient({
+  uri: 'https://api.n01.stagnet3.vega.xyz/graphql',
+  cache,
+});
+
 const rootElement = document.getElementById('root');
 const root = rootElement && createRoot(rootElement);
 
