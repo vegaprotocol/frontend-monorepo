@@ -684,5 +684,8 @@
   "MoreProposalsInfo": "To see Explorer data on proposals visit",
   "MoreNetParamsInfo": "To see Explorer data on network params visit",
   "MoreMarketsInfo": "To see Explorer data on existing markets visit",
-  "MoreAssetsInfo": "To see Explorer data on existing assets visit"
+  "MoreAssetsInfo": "To see Explorer data on existing assets visit",
+  "viaContract": "via vesting",
+  "ProposalNotFound": "Proposal not found",
+  "ProposalNotFoundDetails": "The proposal you are looking for is not here, it may have been enacted before the last chain re-store. You could check forums/discord instead."
 }
