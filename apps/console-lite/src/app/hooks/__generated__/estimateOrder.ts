@@ -28,7 +28,7 @@ export interface EstimateOrder_estimateOrder_fee {
 export interface EstimateOrder_estimateOrder_marginLevels {
   __typename: "MarginLevels";
   /**
-   * This is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
 }
@@ -47,7 +47,7 @@ export interface EstimateOrder_estimateOrder {
 
 export interface EstimateOrder {
   /**
-   * Return an estimation of the potential cost for a new order
+   * return an estimation of the potential cost for a new order
    */
   estimateOrder: EstimateOrder_estimateOrder;
 }

@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface Delegations_epoch {
   __typename: "Epoch";
   /**
-   * Numeric sequence number used to identify the epoch
+   * Presumably this is an integer or something. If there's no such thing, disregard
    */
   id: string;
 }
@@ -131,7 +131,7 @@ export interface Delegations_party {
 
 export interface Delegations {
   /**
-   * Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Delegations_epoch;
   /**

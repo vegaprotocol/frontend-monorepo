@@ -10,7 +10,7 @@
 export interface MarketMarkPrice_market_data {
   __typename: "MarketData";
   /**
-   * The mark price (an unsigned integer)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
 }
@@ -18,7 +18,7 @@ export interface MarketMarkPrice_market_data {
 export interface MarketMarkPrice_market {
   __typename: "Market";
   /**
-   * The number of decimal places that an integer must be shifted by in order to get a correct
+   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
