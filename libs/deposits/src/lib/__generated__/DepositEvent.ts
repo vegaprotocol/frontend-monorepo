@@ -34,7 +34,7 @@ export type DepositEvent_busEvents_event = DepositEvent_busEvents_event_TimeUpda
 export interface DepositEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * The payload - the wrapped event
+   * the payload - the wrapped event
    */
   event: DepositEvent_busEvents_event;
 }

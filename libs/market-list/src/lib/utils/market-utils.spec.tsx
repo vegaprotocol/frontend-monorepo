@@ -1,6 +1,6 @@
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { Market } from '../markets-provider';
-import { mapDataToMarketList } from './market-utils';
+import { mapDataToMarketList, totalFees } from './market-utils';
 
 const MARKET_A: Partial<Market> = {
   id: '1',
@@ -55,5 +55,24 @@ describe('mapDataToMarketList', () => {
       MARKET_D,
     ] as unknown as Market[]);
     expect(result).toEqual([MARKET_B, MARKET_A]);
+  });
+});
+
+describe('totalFees', () => {
+  const createFee = (...f: number[]): Market['fees']['factors'] => ({
+    __typename: 'FeeFactors',
+    infrastructureFee: f[0].toString(),
+    liquidityFee: f[1].toString(),
+    makerFee: f[2].toString(),
+  });
+  it.each([
+    { i: createFee(0, 0, 1), o: '100.00%' },
+    { i: createFee(0, 1, 0), o: '100.00%' },
+    { i: createFee(1, 0, 0), o: '100.00%' },
+    { i: createFee(0.01, 0.02, 0.003), o: '3.30%' },
+    { i: createFee(0.01, 0.056782, 0.003), o: '6.9782%' },
+    { i: createFee(0.01, 0.056782, 0), o: '6.6782%' },
+  ])('adds fees correctly', ({ i, o }) => {
+    expect(totalFees(i)).toEqual(o);
   });
 });
