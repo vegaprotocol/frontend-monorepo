@@ -10,7 +10,7 @@ import { Interval } from "@vegaprotocol/types";
 // ====================================================
 
 export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node {
-  __typename: "Candle";
+  __typename: "CandleNode";
   /**
    * High price (uint64)
    */
@@ -35,9 +35,6 @@ export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnecti
 
 export interface MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges {
   __typename: "CandleEdge";
-  /**
-   * The candle
-   */
   node: MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node;
 }
 
@@ -59,9 +56,6 @@ export interface MarketCandlesQuery_marketsConnection_edges_node {
 
 export interface MarketCandlesQuery_marketsConnection_edges {
   __typename: "MarketEdge";
-  /**
-   * The market
-   */
   node: MarketCandlesQuery_marketsConnection_edges_node;
 }
 
@@ -74,9 +68,6 @@ export interface MarketCandlesQuery_marketsConnection {
 }
 
 export interface MarketCandlesQuery {
-  /**
-   * One or more instruments that are trading on the Vega network
-   */
   marketsConnection: MarketCandlesQuery_marketsConnection | null;
 }
 

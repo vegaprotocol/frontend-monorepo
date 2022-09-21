@@ -54,7 +54,7 @@ const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
         ...data,
         {
           ...delta,
-          __typename: 'Candle',
+          __typename: 'CandleNode',
         } as Candle,
       ]
     : data;

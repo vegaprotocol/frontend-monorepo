@@ -108,7 +108,7 @@ export type WithdrawalEvent_busEvents_event = WithdrawalEvent_busEvents_event_Ti
 export interface WithdrawalEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * The payload - the wrapped event
+   * the payload - the wrapped event
    */
   event: WithdrawalEvent_busEvents_event;
 }

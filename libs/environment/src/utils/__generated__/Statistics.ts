@@ -21,7 +21,7 @@ export interface Statistics_statistics {
 
 export interface Statistics {
   /**
-   * Get statistics about the Vega node
+   * get statistics about the Vega node
    */
   statistics: Statistics_statistics;
 }

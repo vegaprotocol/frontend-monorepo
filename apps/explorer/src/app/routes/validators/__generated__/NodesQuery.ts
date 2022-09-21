@@ -69,19 +69,13 @@ export interface NodesQuery_nodes {
    * Amount of stake on the next epoch
    */
   pendingStake: string;
-  /**
-   * Summary of epoch data across all nodes
-   */
   epochData: NodesQuery_nodes_epochData | null;
-  /**
-   * Validator status of the node
-   */
   status: NodeStatus;
 }
 
 export interface NodesQuery {
   /**
-   * All known network nodes
+   * all known network nodes
    */
   nodes: NodesQuery_nodes[] | null;
 }
