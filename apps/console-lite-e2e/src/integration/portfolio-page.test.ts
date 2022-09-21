@@ -87,6 +87,7 @@ describe('Portfolio page', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Orders', generateOrders());
+        aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/orders');
       connectVegaWallet();
