@@ -12,6 +12,7 @@ describe('market info is displayed', () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
