@@ -65,14 +65,10 @@ const MARKET_QUERY = gql`
         open
         close
       }
-      candlesConnection(interval: $interval, since: $since) {
-        edges {
-          node {
-            open
-            close
-            volume
-          }
-        }
+      candles(interval: $interval, since: $since) {
+        open
+        close
+        volume
       }
     }
   }

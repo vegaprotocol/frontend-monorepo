@@ -9,7 +9,7 @@ import { Interval } from "@vegaprotocol/types";
 // GraphQL query operation: MarketsCandlesQuery
 // ====================================================
 
-export interface MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node {
+export interface MarketsCandlesQuery_marketsConnection_edges_node_candles {
   __typename: "Candle";
   /**
    * High price (uint64)
@@ -33,22 +33,6 @@ export interface MarketsCandlesQuery_marketsConnection_edges_node_candlesConnect
   volume: string;
 }
 
-export interface MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges {
-  __typename: "CandleEdge";
-  /**
-   * The candle
-   */
-  node: MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node;
-}
-
-export interface MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection {
-  __typename: "CandleDataConnection";
-  /**
-   * The candles
-   */
-  edges: (MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges | null)[] | null;
-}
-
 export interface MarketsCandlesQuery_marketsConnection_edges_node {
   __typename: "Market";
   /**
@@ -56,16 +40,13 @@ export interface MarketsCandlesQuery_marketsConnection_edges_node {
    */
   id: string;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
    */
-  candlesConnection: MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection | null;
+  candles: (MarketsCandlesQuery_marketsConnection_edges_node_candles | null)[] | null;
 }
 
 export interface MarketsCandlesQuery_marketsConnection_edges {
   __typename: "MarketEdge";
-  /**
-   * The market
-   */
   node: MarketsCandlesQuery_marketsConnection_edges_node;
 }
 
@@ -78,9 +59,6 @@ export interface MarketsCandlesQuery_marketsConnection {
 }
 
 export interface MarketsCandlesQuery {
-  /**
-   * One or more instruments that are trading on the Vega network
-   */
   marketsConnection: MarketsCandlesQuery_marketsConnection | null;
 }
 

@@ -50,14 +50,10 @@ query Market($marketId: ID!, $interval: Interval!, $since: String!) {
       open
       close
     }
-    candlesConnection(interval: $interval, since: $since) {
-      edges {
-        node {
-          open
-          close
-          volume
-        }
-      }
+    candles(interval: $interval, since: $since) {
+      open
+      close
+      volume
     }
   }
 }

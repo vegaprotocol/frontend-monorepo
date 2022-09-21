@@ -28,7 +28,7 @@ export interface ProposalEvent_busEvents_event_Proposal {
    */
   state: ProposalState;
   /**
-   * Why the proposal was rejected by the core
+   * Reason for the proposal to be rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**
@@ -42,11 +42,11 @@ export type ProposalEvent_busEvents_event = ProposalEvent_busEvents_event_TimeUp
 export interface ProposalEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * The type of event
+   * the type of event
    */
   type: BusEventType;
   /**
-   * The payload - the wrapped event
+   * the payload - the wrapped event
    */
   event: ProposalEvent_busEvents_event;
 }

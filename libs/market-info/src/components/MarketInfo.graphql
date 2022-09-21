@@ -79,12 +79,8 @@ query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
         scalingFactor
       }
     }
-    candlesConnection(interval: $interval, since: $since) {
-      edges {
-        node {
-          volume
-        }
-      }
+    candles(interval: $interval, since: $since) {
+      volume
     }
     tradableInstrument {
       instrument {

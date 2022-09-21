@@ -20,7 +20,7 @@ import { MARKET_INFO_QUERY } from './info-market-query';
 import type {
   MarketInfoQuery,
   MarketInfoQuery_market,
-  MarketInfoQuery_market_candlesConnection_edges,
+  MarketInfoQuery_market_candles,
 } from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -39,16 +39,10 @@ export interface InfoProps {
 export const calcCandleVolume = (
   m: MarketInfoQuery_market
 ): string | undefined => {
-  return m.candlesConnection?.edges
-    ?.reduce(
-      (
-        acc: BigNumber,
-        c: MarketInfoQuery_market_candlesConnection_edges | null
-      ) => {
-        return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-      },
-      new BigNumber(m.candlesConnection?.edges[0]?.node.volume ?? 0)
-    )
+  return m.candles
+    ?.reduce((acc: BigNumber, c: MarketInfoQuery_market_candles | null) => {
+      return acc.plus(new BigNumber(c?.volume ?? 0));
+    }, new BigNumber(m.candles[0]?.volume ?? 0))
     ?.toString();
 };
 

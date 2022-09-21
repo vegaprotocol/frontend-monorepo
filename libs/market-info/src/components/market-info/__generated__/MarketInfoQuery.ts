@@ -168,59 +168,59 @@ export interface MarketInfoQuery_market_data_priceMonitoringBounds {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * Market of the associated mark price
+   * market of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**
-   * The mark price (an unsigned integer)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * The aggregated volume being bid at the best bid price.
+   * the aggregated volume being bid at the best bid price.
    */
   bestBidVolume: string;
   /**
-   * The aggregated volume being offered at the best offer price.
+   * the aggregated volume being offered at the best offer price.
    */
   bestOfferVolume: string;
   /**
-   * The aggregated volume being offered at the best static bid price, excluding pegged orders
+   * the aggregated volume being offered at the best static bid price, excluding pegged orders
    */
   bestStaticBidVolume: string;
   /**
-   * The aggregated volume being offered at the best static offer price, excluding pegged orders.
+   * the aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
   /**
-   * The highest price level on an order book for buy orders.
+   * the highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
   /**
-   * The lowest price level on an order book for offer orders.
+   * the lowest price level on an order book for offer orders.
    */
   bestOfferPrice: string;
   /**
-   * What triggered an auction (if an auction was started)
+   * what triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
   /**
-   * The sum of the size of all positions greater than 0.
+   * the sum of the size of all positions greater than 0.
    */
   openInterest: string;
   /**
-   * The supplied stake for the market
+   * the supplied stake for the market
    */
   suppliedStake: string | null;
   /**
-   * The amount of stake targeted for this market
+   * the amount of stake targeted for this market
    */
   targetStake: string | null;
   /**
-   * The market value proxy
+   * the market value proxy
    */
   marketValueProxy: string;
   /**
-   * A list of valid price ranges per associated trigger
+   * a list of valid price ranges per associated trigger
    */
   priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
 }
@@ -249,28 +249,12 @@ export interface MarketInfoQuery_market_liquidityMonitoringParameters {
   targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
 }
 
-export interface MarketInfoQuery_market_candlesConnection_edges_node {
+export interface MarketInfoQuery_market_candles {
   __typename: "Candle";
   /**
    * Volume price (uint64)
    */
   volume: string;
-}
-
-export interface MarketInfoQuery_market_candlesConnection_edges {
-  __typename: "CandleEdge";
-  /**
-   * The candle
-   */
-  node: MarketInfoQuery_market_candlesConnection_edges_node;
-}
-
-export interface MarketInfoQuery_market_candlesConnection {
-  __typename: "CandleDataConnection";
-  /**
-   * The candles
-   */
-  edges: (MarketInfoQuery_market_candlesConnection_edges | null)[] | null;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
@@ -374,15 +358,15 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument {
 export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params {
   __typename: "LogNormalModelParams";
   /**
-   * R parameter
+   * r parameter
    */
   r: number;
   /**
-   * Sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
+   * sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
    */
   sigma: number;
   /**
-   * Mu parameter, annualised growth rate of the underlying asset
+   * mu parameter, annualised growth rate of the underlying asset
    */
   mu: number;
 }
@@ -460,7 +444,7 @@ export interface MarketInfoQuery_market {
    */
   id: string;
   /**
-   * The number of decimal places that an integer must be shifted by in order to get a correct
+   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
@@ -477,7 +461,7 @@ export interface MarketInfoQuery_market {
    */
   decimalPlaces: number;
   /**
-   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -516,9 +500,9 @@ export interface MarketInfoQuery_market {
    */
   liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
    */
-  candlesConnection: MarketInfoQuery_market_candlesConnection | null;
+  candles: (MarketInfoQuery_market_candles | null)[] | null;
   /**
    * An instance of, or reference to, a tradable instrument.
    */

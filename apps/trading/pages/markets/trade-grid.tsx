@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
@@ -121,8 +122,8 @@ export const TradeMarketHeader = ({
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
 
-  const candlesClose: string[] = (market?.candlesConnection?.edges || [])
-    .map((candle) => candle?.node.close)
+  const candlesClose: string[] = compact(market?.candles)
+    .map((candle) => candle.close)
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;

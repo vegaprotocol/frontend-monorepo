@@ -1,8 +1,9 @@
+import compact from 'lodash/compact';
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandlesQuery,
-  MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node,
+  MarketCandlesQuery_marketsConnection_edges_node_candles,
   MarketCandlesSub,
   MarketCandlesSub_candles,
 } from './__generated__';
@@ -16,16 +17,12 @@ export const MARKET_CANDLES_QUERY = gql`
     marketsConnection(id: $marketId) {
       edges {
         node {
-          candlesConnection(interval: $interval, since: $since) {
-            edges {
-              node {
-                high
-                low
-                open
-                close
-                volume
-              }
-            }
+          candles(interval: $interval, since: $since) {
+            high
+            low
+            open
+            close
+            volume
           }
         }
       }
@@ -45,8 +42,7 @@ const MARKET_CANDLES_SUB = gql`
   }
 `;
 
-export type Candle =
-  MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node;
+export type Candle = MarketCandlesQuery_marketsConnection_edges_node_candles;
 
 const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
   return data && delta
@@ -60,10 +56,9 @@ const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
     : data;
 };
 
-const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
-  responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
-    ?.filter((edge) => edge?.node)
-    .map((edge) => edge?.node as Candle) || null;
+const getData = (responseData: MarketCandlesQuery): Candle[] | null => {
+  return compact(responseData?.marketsConnection?.edges[0]?.node.candles);
+};
 
 const getDelta = (
   subscriptionData: MarketCandlesSub

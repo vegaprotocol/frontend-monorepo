@@ -74,12 +74,8 @@ export const MARKET_INFO_QUERY = gql`
           scalingFactor
         }
       }
-      candlesConnection(interval: $interval, since: $since) {
-        edges {
-          node {
-            volume
-          }
-        }
+      candles(interval: $interval, since: $since) {
+        volume
       }
       tradableInstrument {
         instrument {

@@ -313,82 +313,58 @@ export const generateMarketsCandles = (
     {
       __typename: 'Market',
       id: 'market-0',
-      candlesConnection: {
-        __typename: 'CandleDataConnection',
-        edges: [
-          {
-            __typename: 'CandleEdge',
-            node: {
-              __typename: 'Candle',
-              open: '100',
-              close: '100',
-              high: '110',
-              low: '90',
-              volume: '1',
-            },
-          },
-        ],
-      },
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+          volume: '1',
+        },
+      ],
     },
     {
       __typename: 'Market',
       id: 'market-1',
-      candlesConnection: {
-        __typename: 'CandleDataConnection',
-        edges: [
-          {
-            __typename: 'CandleEdge',
-            node: {
-              __typename: 'Candle',
-              open: '100',
-              close: '100',
-              high: '110',
-              low: '90',
-              volume: '1',
-            },
-          },
-        ],
-      },
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+          volume: '1',
+        },
+      ],
     },
     {
       __typename: 'Market',
       id: 'market-2',
-      candlesConnection: {
-        __typename: 'CandleDataConnection',
-        edges: [
-          {
-            __typename: 'CandleEdge',
-            node: {
-              __typename: 'Candle',
-              open: '100',
-              close: '100',
-              high: '110',
-              low: '90',
-              volume: '1',
-            },
-          },
-        ],
-      },
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+          volume: '1',
+        },
+      ],
     },
     {
       __typename: 'Market',
       id: 'market-3',
-      candlesConnection: {
-        __typename: 'CandleDataConnection',
-        edges: [
-          {
-            __typename: 'CandleEdge',
-            node: {
-              __typename: 'Candle',
-              open: '100',
-              close: '100',
-              high: '110',
-              low: '90',
-              volume: '1',
-            },
-          },
-        ],
-      },
+      candles: [
+        {
+          __typename: 'Candle',
+          open: '100',
+          close: '100',
+          high: '110',
+          low: '90',
+          volume: '1',
+        },
+      ],
     },
   ];
   const defaultResult: MarketsCandlesQuery = {

@@ -143,11 +143,10 @@ export class VegaDataSource implements DataSource {
         fetchPolicy: 'no-cache',
       });
 
-      if (data?.market?.candlesConnection?.edges) {
+      if (data?.market?.candles) {
         const decimalPlaces = data.market.decimalPlaces;
 
-        const candles = data.market.candlesConnection.edges
-          .map((edge) => edge?.node)
+        const candles = data.market.candles
           .filter((node): node is CandleFieldsFragment => !!node)
           .map((node) => parseCandle(node, decimalPlaces));
 
@@ -200,7 +199,7 @@ function parseCandle(
   decimalPlaces: number
 ): Candle {
   return {
-    date: new Date(Number(candle.periodStart) / 1_000_000),
+    date: new Date(candle.datetime),
     high: Number(addDecimal(candle.high, decimalPlaces)),
     low: Number(addDecimal(candle.low, decimalPlaces)),
     open: Number(addDecimal(candle.open, decimalPlaces)),
