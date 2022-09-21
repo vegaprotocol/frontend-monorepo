@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { Fills_party_tradesConnection_edges_node } from '@vegaprotocol/fills';
+import type { TradeWithMarket } from '@vegaprotocol/fills';
 import { useFillsList } from '@vegaprotocol/fills';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -33,7 +33,7 @@ const FillsManager = ({ partyId }: Props) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <ConsoleLiteGrid<Fills_party_tradesConnection_edges_node>
+      <ConsoleLiteGrid<TradeWithMarket>
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}

@@ -2,11 +2,11 @@ import type { AgGridReact } from 'ag-grid-react';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
 import { useFillsList } from './use-fills-list';
-import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
+import type { TradeWithMarketEdge } from './fills-data-provider';
 
 let mockData = null;
 let mockDataProviderData = {
-  data: mockData as (Fills_party_tradesConnection_edges | null)[] | null,
+  data: mockData as (TradeWithMarketEdge | null)[] | null,
   error: undefined,
   loading: true,
 };
@@ -61,12 +61,12 @@ describe('useFillsList Hook', () => {
         node: {
           id: 'data_id_1',
         },
-      } as unknown as Fills_party_tradesConnection_edges,
+      } as unknown as TradeWithMarketEdge,
       {
         node: {
           id: 'data_id_2',
         },
-      } as unknown as Fills_party_tradesConnection_edges,
+      } as unknown as TradeWithMarketEdge,
     ];
     mockDataProviderData = {
       ...mockDataProviderData,

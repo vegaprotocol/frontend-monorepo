@@ -44,23 +44,18 @@ const useColumnDefinitions = ({ partyId }: Props) => {
             [negativeClassNames]: data?.seller.id,
           });
         },
-        valueFormatter: ({
-          value,
-          data,
-        }: ValueFormatterParams & {
-          value?: Fills_party_tradesConnection_edges_node['size'];
-        }) => {
-          if (value && data) {
+        valueFormatter: ({ value, data }: ValueFormatterParams) => {
+          if (value && data?.market) {
             let prefix;
-            if (data?.buyer.id === partyId) {
+            if (data.buyer.id === partyId) {
               prefix = '+';
-            } else if (data?.seller.id) {
+            } else if (data.seller.id) {
               prefix = '-';
             }
 
             const size = addDecimalsFormatNumber(
               value,
-              data?.market.positionDecimalPlaces
+              data.market.positionDecimalPlaces
             );
             return `${prefix}${size}`;
           }
@@ -73,19 +68,14 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerClass: 'uppercase text-center',
         cellClass: '!flex h-full items-center',
         field: 'price',
-        valueFormatter: ({
-          value,
-          data,
-        }: ValueFormatterParams & {
-          value?: Fills_party_tradesConnection_edges_node['price'];
-        }) => {
-          if (value && data) {
+        valueFormatter: ({ value, data }: ValueFormatterParams) => {
+          if (value && data?.market) {
             const asset =
-              data?.market.tradableInstrument.instrument.product.settlementAsset
+              data.market.tradableInstrument.instrument.product.settlementAsset
                 .symbol;
             const valueFormatted = addDecimalsFormatNumber(
               value,
-              data?.market.decimalPlaces
+              data.market.decimalPlaces
             );
             return `${valueFormatted} ${asset}`;
           }
@@ -99,21 +89,16 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerClass: 'uppercase text-center',
         cellClass: '!flex h-full items-center',
         field: 'price',
-        valueFormatter: ({
-          value,
-          data,
-        }: ValueFormatterParams & {
-          value?: Fills_party_tradesConnection_edges_node['price'];
-        }) => {
-          if (value && data) {
+        valueFormatter: ({ value, data }: ValueFormatterParams) => {
+          if (value && data?.market) {
             const asset =
-              data?.market.tradableInstrument.instrument.product.settlementAsset
+              data.market.tradableInstrument.instrument.product.settlementAsset
                 .symbol;
             const size = new BigNumber(
-              addDecimal(data?.size, data?.market.positionDecimalPlaces)
+              addDecimal(data.size, data.market.positionDecimalPlaces)
             );
             const price = new BigNumber(
-              addDecimal(value, data?.market.decimalPlaces)
+              addDecimal(value, data.market.decimalPlaces)
             );
 
             const total = size.times(price).toString();
@@ -132,12 +117,7 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerName: t('Role'),
         field: 'aggressor',
         width: 100,
-        valueFormatter: ({
-          value,
-          data,
-        }: ValueFormatterParams & {
-          value?: Fills_party_tradesConnection_edges_node['aggressor'];
-        }) => {
+        valueFormatter: ({ value, data }: ValueFormatterParams) => {
           if (value && data) {
             const taker = t('Taker');
             const maker = t('Maker');
@@ -164,17 +144,12 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerClass: 'uppercase text-center',
         cellClass: '!flex h-full items-center',
         field: 'market.tradableInstrument.instrument.product',
-        valueFormatter: ({
-          value,
-          data,
-        }: ValueFormatterParams & {
-          value?: FillFields_market_tradableInstrument_instrument_product;
-        }) => {
+        valueFormatter: ({ value, data }: ValueFormatterParams) => {
           if (value && data) {
             const asset = value.settlementAsset;
             let feesObj;
-            if (data?.buyer.id === partyId) {
-              feesObj = data?.buyerFee;
+            if (data.buyer.id === partyId) {
+              feesObj = data.buyerFee;
             } else if (data?.seller.id === partyId) {
               feesObj = data?.sellerFee;
             } else {
@@ -198,11 +173,7 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         colId: 'date',
         headerName: t('Date'),
         field: 'createdAt',
-        valueFormatter: ({
-          value,
-        }: ValueFormatterParams & {
-          value: Fills_party_tradesConnection_edges_node['createdAt'];
-        }) => {
+        valueFormatter: ({ value }: ValueFormatterParams) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '-';
         },
       },

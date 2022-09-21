@@ -13,7 +13,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import type {
   Orders_party_ordersConnection_edges_node,
-  OrderFields,
+  OrderWithMarket,
   CancelOrderArgs,
 } from '@vegaprotocol/orders';
 import { isOrderActive } from '@vegaprotocol/orders';
@@ -35,7 +35,7 @@ type StatusKey = keyof typeof OrderStatusMapping;
 type RejectReasonKey = keyof typeof OrderRejectionReasonMapping;
 type OrderTimeKey = keyof typeof OrderTimeInForceMapping;
 interface Props {
-  setEditOrder: (order: OrderFields) => void;
+  setEditOrder: (order: OrderWithMarket) => void;
   orderCancel: {
     cancel: (args: CancelOrderArgs) => void;
     [key: string]: unknown;

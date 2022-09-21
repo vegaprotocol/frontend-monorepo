@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
-import type { OrderFields } from '@vegaprotocol/orders';
+import type { OrderWithMarket } from '@vegaprotocol/orders';
 import {
   useOrderCancel,
   useOrderListData,
@@ -21,7 +21,7 @@ interface Props {
 }
 
 const OrdersManager = ({ partyId }: Props) => {
-  const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+  const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
   const orderCancel = useOrderCancel();
   const orderEdit = useOrderEdit(editOrder);
   const { columnDefs, defaultColDef } = useColumnDefinitions({
@@ -50,7 +50,7 @@ const OrdersManager = ({ partyId }: Props) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <ConsoleLiteGrid<OrderFields>
+      <ConsoleLiteGrid<OrderWithMarket>
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}

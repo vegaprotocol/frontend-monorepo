@@ -7,6 +7,7 @@ import { generatePositions } from '../support/mocks/generate-positions';
 import { generateAccounts } from '../support/mocks/generate-accounts';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
+import { generateFillsMarkets } from '../support/mocks/generate-markets';
 
 describe('Portfolio page', () => {
   afterEach(() => {
@@ -54,7 +55,7 @@ describe('Portfolio page', () => {
     it('data should be properly rendered', () => {
       cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
       cy.get(
-        '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-tEURO-null"]'
+        '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]'
       )
         .find('button')
         .click();
@@ -100,6 +101,7 @@ describe('Portfolio page', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Fills', generateFills());
+        aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/fills');
       connectVegaWallet();

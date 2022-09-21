@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { PriceCell, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
+import type { AccountFieldsFragment, AccountEventsSubscription } from '@vegaprotocol/accounts';
 import {
   accountsDataProvider,
   accountsManagerUpdate,
@@ -34,7 +34,7 @@ const AccountsManager = ({ partyId }: Props) => {
   const update = accountsManagerUpdate(gridRef);
   const { data, error, loading } = useDataProvider<
     AccountFieldsFragment[],
-    AccountFieldsFragment
+    AccountEventsSubscription['accounts']
   >({ dataProvider: accountsDataProvider, update, variables });
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
   return (

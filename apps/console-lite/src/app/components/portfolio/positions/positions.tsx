@@ -13,15 +13,17 @@ const Positions = ({ partyId }: Props) => {
   });
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <div className="w-full h-max">
-        {assetSymbols?.map((assetSymbol) => (
-          <PositionsAsset
-            key={assetSymbol}
-            partyId={partyId}
-            assetSymbol={assetSymbol}
-          />
-        ))}
-      </div>
+      {assetSymbols && assetSymbols.length && (
+        <div className="w-full, h-max">
+          {assetSymbols?.map((assetSymbol) => (
+            <PositionsAsset
+              key={assetSymbol}
+              partyId={partyId}
+              assetSymbol={assetSymbol}
+            />
+          ))}
+        </div>
+      )}
       {assetSymbols?.length === 0 && <Splash>{t('No data to display')}</Splash>}
     </AsyncRenderer>
   );
