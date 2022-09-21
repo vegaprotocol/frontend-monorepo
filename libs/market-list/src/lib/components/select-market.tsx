@@ -215,10 +215,8 @@ export const SelectMarketPopover = ({
                   tableColumns={(market, marketData, candles, openVolume) =>
                     columnsPositionMarkets(
                       market,
-
                       marketData,
                       candles,
-
                       onSelectMarket,
                       openVolume,
                       onCellClick

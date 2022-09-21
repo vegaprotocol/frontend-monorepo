@@ -345,7 +345,7 @@ export const columnsPositionMarkets = (
   candles: Candle[] | undefined,
   onSelect: (id: string) => void,
   openVolume?: string,
-  onCellClick: OnCellClickHandler
+  onCellClick?: OnCellClickHandler
 ) => {
   const candlesClose = candles
     ?.map((candle) => candle?.close)
@@ -414,14 +414,15 @@ export const columnsPositionMarkets = (
         <button
           data-dialog-trigger
           className="inline hover:underline"
-          onClick={(e) =>
+          onClick={(e) => {
+            if (!onCellClick) return;
             onCellClick(
               e,
               ColumnKind.Asset,
               market.tradableInstrument.instrument.product.settlementAsset
                 .symbol
-            )
-          }
+            );
+          }}
         >
           {market.tradableInstrument.instrument.product.settlementAsset.symbol}
         </button>

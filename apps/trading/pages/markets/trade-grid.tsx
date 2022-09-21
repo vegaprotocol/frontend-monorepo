@@ -203,7 +203,7 @@ export const TradeMarketHeader = ({
         <HeaderStat heading={t('Settlement asset')}>
           <div data-testid="trading-mode">
             <ButtonLink
-              onClick={() => {
+              onClick={(e) => {
                 openAssetDetailsDialog(symbol, e.target as HTMLElement);
               }}
             >
