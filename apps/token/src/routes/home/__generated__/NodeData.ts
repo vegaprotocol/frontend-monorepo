@@ -21,7 +21,7 @@ export interface NodeData_nodeData {
 
 export interface NodeData {
   /**
-   * Returns information about nodes
+   * returns information about nodes
    */
   nodeData: NodeData_nodeData | null;
 }

@@ -60,19 +60,19 @@ export interface PartyMarketData_party_marginsConnection_edges_node_market {
 export interface PartyMarketData_party_marginsConnection_edges_node {
   __typename: "MarginLevels";
   /**
-   * Market in which the margin is required for this party
+   * market in which the margin is required for this party
    */
   market: PartyMarketData_party_marginsConnection_edges_node_market;
   /**
-   * This is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
   /**
-   * Minimal margin for the position to be maintained in the network (unsigned integer)
+   * minimal margin for the position to be maintained in the network (unsigned integer)
    */
   maintenanceLevel: string;
   /**
-   * If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
    */
   searchLevel: string;
 }
