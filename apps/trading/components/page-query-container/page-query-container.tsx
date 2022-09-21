@@ -17,6 +17,7 @@ export const PageQueryContainer = <TData, TVariables = OperationVariables>({
 }: PageQueryContainerProps<TData, TVariables>) => {
   const { data, loading, error } = useQuery<TData, TVariables>(query, {
     ...options,
+    errorPolicy: 'ignore',
   });
 
   return (
