@@ -11,12 +11,12 @@ import type {
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
 const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!, $partyId: ID) {
+  query MarketLiquidity($marketId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces
       positionDecimalPlaces
-      liquidityProvisionsConnection(partyId: $partyId) {
+      liquidityProvisionsConnection {
         edges {
           node {
             id
@@ -111,7 +111,7 @@ export const useLiquidityProvision = ({
   const { data, loading, error } = useQuery<MarketLiquidity>(
     MARKET_LIQUIDITY_QUERY,
     {
-      variables: { marketId, partyId },
+      variables: { marketId },
     }
   );
   const liquidityProviders = (
