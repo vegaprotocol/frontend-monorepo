@@ -9,16 +9,17 @@ import { useVegaWallet } from '../use-vega-wallet';
 import { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 
-type Status =
-  | 'idle'
-  | 'checkingVersion'
-  | 'gettingChainId'
-  | 'connecting'
-  | 'gettingPerms'
-  | 'requestingPerms'
-  | 'listingKeys'
-  | 'connected'
-  | 'error';
+enum Status {
+  'idle',
+  'checkingVersion',
+  'gettingChainId',
+  'connecting',
+  'gettingPerms',
+  'requestingPerms',
+  'listingKeys',
+  'connected',
+  'error',
+}
 
 export const CLOSE_DELAY = 1700;
 export const ServiceErrors = {
@@ -38,7 +39,7 @@ export const JsonRpcConnectorForm = ({
   appChainId: string;
 }) => {
   const { connect } = useVegaWallet();
-  const [status, setStatus] = useState<Status>('idle');
+  const [status, setStatus] = useState(Status.idle);
   const [error, setError] = useState<WalletError | null>(null);
 
   const attempConnect = useCallback(async () => {
@@ -47,11 +48,11 @@ export const JsonRpcConnectorForm = ({
       connector.url = walletUrl;
 
       // Check that the running wallet is compatible with this connector
-      setStatus('checkingVersion');
+      setStatus(Status.checkingVersion);
       await connector.checkCompat();
 
       // Check if wallet is configured for the same chain as the app
-      setStatus('gettingChainId');
+      setStatus(Status.gettingChainId);
       const chainIdResult = await connector.getChainId();
 
       if (chainIdResult.chainID !== appChainId) {
@@ -66,16 +67,16 @@ export const JsonRpcConnectorForm = ({
       // Start connection flow. User will be prompted to select a wallet and enter
       // its password in the wallet application, promise will resolve once successful
       // or it will throw
-      setStatus('connecting');
+      setStatus(Status.connecting);
       await connector.connectWallet();
 
       // Check wallet is permitted to reveal its public keys
-      setStatus('gettingPerms');
+      setStatus(Status.gettingPerms);
       const permsResult = await connector.getPermissions();
       if (permsResult.permissions.public_keys === 'none') {
         // Automatically request new perms. User will again be prompted to permit this change
         // and enter their password
-        setStatus('requestingPerms');
+        setStatus(Status.requestingPerms);
         await connector.requestPermissions();
       }
 
@@ -83,7 +84,7 @@ export const JsonRpcConnectorForm = ({
       // future actions such as sending transactions
       await connect(connector);
 
-      setStatus('connected');
+      setStatus(Status.connected);
 
       // Briefly allow the success state to be shown then automatically
       // close the dialog
@@ -94,17 +95,17 @@ export const JsonRpcConnectorForm = ({
       if (err instanceof WalletError) {
         setError(err);
       }
-      setStatus('error');
+      setStatus(Status.error);
     }
   }, [connector, connect, onConnect, walletUrl, appChainId]);
 
   useEffect(() => {
-    if (status === 'idle') {
+    if (status === Status.idle) {
       attempConnect();
     }
   }, [status, attempConnect]);
 
-  if (status === 'idle') {
+  if (status === Status.idle) {
     return null;
   }
 
@@ -120,7 +121,7 @@ const Connecting = ({
   error: WalletError | null;
   connector: JsonRpcConnector;
 }) => {
-  if (status === 'error') {
+  if (status === Status.error) {
     let title = t('Something went wrong');
     let text: ReactNode | undefined = t('An unknown error occurred');
     const icon = null;
@@ -173,7 +174,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'checkingVersion') {
+  if (status === Status.checkingVersion) {
     return (
       <>
         <ConnectDialogTitle>{t('Checking wallet version')}</ConnectDialogTitle>
@@ -187,7 +188,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'connected') {
+  if (status === Status.connected) {
     return (
       <>
         <ConnectDialogTitle>{t('Successfully connected')}</ConnectDialogTitle>
@@ -198,7 +199,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'connecting' || status === 'gettingPerms') {
+  if (status === Status.connecting || status === Status.gettingPerms) {
     return (
       <>
         <ConnectDialogTitle>{t('Connecting...')}</ConnectDialogTitle>
@@ -214,7 +215,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'requestingPerms') {
+  if (status === Status.requestingPerms) {
     return (
       <>
         <ConnectDialogTitle>{t('Update permissions')}</ConnectDialogTitle>
@@ -229,7 +230,7 @@ const Connecting = ({
     );
   }
 
-  if (status === 'gettingChainId') {
+  if (status === Status.gettingChainId) {
     return (
       <>
         <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
