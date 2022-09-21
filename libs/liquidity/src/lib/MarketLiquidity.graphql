@@ -1,4 +1,4 @@
-query MarketLiquidity($marketId: ID!, $partyId: ID!) {
+query MarketLiquidity($marketId: ID!, $partyId: ID) {
   market(id: $marketId) {
     id
     decimalPlaces
