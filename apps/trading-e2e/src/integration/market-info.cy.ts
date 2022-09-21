@@ -86,6 +86,13 @@ describe('market info is displayed', () => {
     validateMarketDataRow(4, 'Sector', 'crypto');
   });
 
+  it('risk factors displayed', () => {
+    cy.getByTestId(marketTitle).contains('Risk factors').click();
+
+    validateMarketDataRow(0, 'Short', '0.008571790367285281');
+    validateMarketDataRow(1, 'Long', '0.008508132993273576');
+  });
+
   it('risk model displayed', () => {
     cy.getByTestId(marketTitle).contains('Risk model').click();
 
