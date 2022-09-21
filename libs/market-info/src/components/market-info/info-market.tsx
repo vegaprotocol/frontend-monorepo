@@ -233,6 +233,16 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     {
+      title: t('Risk factors'),
+      content: (
+        <MarketInfoTable
+          data={market.riskFactors}
+          unformatted={true}
+          omits={['market']}
+        />
+      ),
+    },
+    {
       title: t('Risk model'),
       content: (
         <MarketInfoTable
