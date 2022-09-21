@@ -1,6 +1,13 @@
 import capitalize from 'lodash/capitalize';
 import { t } from '@vegaprotocol/react-helpers';
-import { ButtonLink, Icon, Link, Loader } from '@vegaprotocol/ui-toolkit';
+import {
+  ButtonLink,
+  Cross,
+  Diamond,
+  Link,
+  Loader,
+  Tick,
+} from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from '../connectors';
@@ -124,7 +131,6 @@ const Connecting = ({
   if (status === Status.error) {
     let title = t('Something went wrong');
     let text: ReactNode | undefined = t('An unknown error occurred');
-    const icon = null;
 
     if (error) {
       if (error.code === ClientErrors.NO_SERVICE.code) {
@@ -164,11 +170,6 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{title}</ConnectDialogTitle>
-        {icon && (
-          <div className="flex justify-center items-center my-6">
-            <Icon name={icon} size={10} />
-          </div>
-        )}
         <p className="text-center">{text}</p>
       </>
     );
@@ -179,11 +180,22 @@ const Connecting = ({
       <>
         <ConnectDialogTitle>{t('Checking wallet version')}</ConnectDialogTitle>
         <div className="flex justify-center items-center my-6">
-          <Icon name="repeat" size={10} />
+          <Loader />
         </div>
         <p className="text-center">
           {t('Checking your wallet is compatible with this app')}
         </p>
+      </>
+    );
+  }
+
+  if (status === Status.gettingChainId) {
+    return (
+      <>
+        <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
+        <div className="flex justify-center items-center my-6">
+          <Loader />
+        </div>
       </>
     );
   }
@@ -193,7 +205,7 @@ const Connecting = ({
       <>
         <ConnectDialogTitle>{t('Successfully connected')}</ConnectDialogTitle>
         <div className="flex justify-center items-center my-6">
-          <Icon name="tick" size={10} />
+          <Tick />
         </div>
       </>
     );
@@ -204,7 +216,7 @@ const Connecting = ({
       <>
         <ConnectDialogTitle>{t('Connecting...')}</ConnectDialogTitle>
         <div className="flex justify-center items-center my-6">
-          <Icon name="exchange" size={10} />
+          <Diamond />
         </div>
         <p className="text-center">
           {t(
@@ -220,23 +232,12 @@ const Connecting = ({
       <>
         <ConnectDialogTitle>{t('Update permissions')}</ConnectDialogTitle>
         <div className="flex justify-center items-center my-6">
-          <Icon name="shield" size={10} />
+          <Cross />
         </div>
         <p className="text-center">
           {t(`${window.location.host} now has access to your Wallet, however you don't
         have sufficient permissions to retrieve your public keys. Approve the permissions update in your wallet.`)}
         </p>
-      </>
-    );
-  }
-
-  if (status === Status.gettingChainId) {
-    return (
-      <>
-        <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
-          <Loader />
-        </div>
       </>
     );
   }

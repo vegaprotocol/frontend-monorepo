@@ -11,7 +11,7 @@ import {
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 export interface VegaWalletConnectButtonProps {
@@ -25,6 +25,10 @@ export const VegaWalletConnectButton = ({
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
 
+  const activeKey = useMemo(() => {
+    return pubKeys?.find((pk) => pk.publicKey === pubKey);
+  }, [pubKey, pubKeys]);
+
   if (isConnected && pubKeys) {
     return (
       <DropdownMenu open={dropdownOpen}>
@@ -32,6 +36,8 @@ export const VegaWalletConnectButton = ({
           data-testid="manage-vega-wallet"
           onClick={() => setDropdownOpen((curr) => !curr)}
         >
+          {activeKey && <span className="uppercase">{activeKey.name}</span>}
+          {': '}
           {truncateByChars(pubKey)}
         </DropdownMenuTrigger>
         <DropdownMenuContent onInteractOutside={() => setDropdownOpen(false)}>
@@ -42,8 +48,8 @@ export const VegaWalletConnectButton = ({
                 selectPubKey(value);
               }}
             >
-              {pubKeys.map((kp) => (
-                <KeypairItem key={kp} kp={kp} />
+              {pubKeys.map((k) => (
+                <KeypairItem key={k.publicKey} kp={k.publicKey} />
               ))}
             </DropdownMenuRadioGroup>
             <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>

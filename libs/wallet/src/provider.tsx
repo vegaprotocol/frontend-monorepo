@@ -2,7 +2,11 @@ import { LocalStorage } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { VegaWalletContextShape } from '.';
-import type { Transaction, VegaConnector } from './connectors/vega-connector';
+import type {
+  PubKey,
+  Transaction,
+  VegaConnector,
+} from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage';
 
@@ -15,7 +19,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   const [pubKey, setPubKey] = useState<string | null>(null);
 
   // Arary of pubkeys retrieved from the connector
-  const [pubKeys, setPubKeys] = useState<string[] | null>(null);
+  const [pubKeys, setPubKeys] = useState<PubKey[] | null>(null);
 
   // Reference to the current connector instance
   const connector = useRef<VegaConnector | null>(null);
@@ -34,10 +38,11 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
         setPubKeys(keys);
 
         const lastUsedPubKey = LocalStorage.getItem(WALLET_KEY);
-        if (lastUsedPubKey) {
-          setPubKey(lastUsedPubKey);
+        const foundKey = keys.find((key) => key.publicKey === lastUsedPubKey);
+        if (foundKey) {
+          setPubKey(foundKey.publicKey);
         } else {
-          setPubKey(keys[0]);
+          setPubKey(keys[0].publicKey);
         }
 
         return keys;

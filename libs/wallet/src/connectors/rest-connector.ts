@@ -148,7 +148,13 @@ export class RestConnector implements VegaConnector {
 
       const data = GetKeysSchema.parse(res.data);
 
-      return data.keys.map((k) => k.pub);
+      return data.keys.map((k) => {
+        const nameMeta = k.meta.find((m) => m.key === 'name');
+        return {
+          publicKey: k.pub,
+          name: nameMeta ? nameMeta.value : 'No name',
+        };
+      });
     } catch (err) {
       // keysGet failed, its likely that the session has expired so remove the token from storage
       clearConfig();

@@ -262,9 +262,14 @@ export class WalletError {
   }
 }
 
+export interface PubKey {
+  publicKey: string;
+  name: string;
+}
+
 export interface VegaConnector {
   /** Connect to wallet and return keys */
-  connect(): Promise<string[] | null>;
+  connect(): Promise<PubKey[] | null>;
 
   /** Disconnect from wallet */
   disconnect(): Promise<void>;

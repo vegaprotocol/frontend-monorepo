@@ -23,25 +23,15 @@ import { CLOSE_DELAY } from './json-rpc-connector-form';
 
 let defaultProps: VegaConnectDialogProps;
 
-const restConnector = new RestConnector();
-const jsonRpcConnector = new JsonRpcConnector();
-
+const rest = new RestConnector();
+const jsonRpc = new JsonRpcConnector();
+const connectors = {
+  rest,
+  jsonRpc,
+};
 beforeEach(() => {
   defaultProps = {
-    connectors: [
-      {
-        type: 'gui',
-        instance: restConnector,
-      },
-      {
-        type: 'cli',
-        instance: jsonRpcConnector,
-      },
-      {
-        type: 'hosted',
-        instance: restConnector,
-      },
-    ],
+    connectors,
     dialogOpen: true,
     setDialogOpen: jest.fn(),
   };
@@ -91,9 +81,7 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(
-      Object.keys(defaultProps.connectors).length
-    );
+    expect(list.children).toHaveLength(3);
     expect(screen.getByTestId('connector-gui')).toHaveTextContent(
       'Desktop wallet app'
     );
@@ -108,7 +96,7 @@ describe('VegaConnectDialog', () => {
   describe('RestConnector', () => {
     it('connects', async () => {
       const spy = jest
-        .spyOn(restConnector, 'authenticate')
+        .spyOn(connectors.rest, 'authenticate')
         .mockImplementation(() =>
           Promise.resolve({ success: true, error: null })
         );
@@ -140,7 +128,7 @@ describe('VegaConnectDialog', () => {
       const errMessage = 'Error message';
       // Error from service
       let spy = jest
-        .spyOn(restConnector, 'authenticate')
+        .spyOn(connectors.rest, 'authenticate')
         .mockImplementation(() =>
           Promise.resolve({ success: false, error: errMessage })
         );
@@ -164,7 +152,7 @@ describe('VegaConnectDialog', () => {
 
       // Fetch failed due to wallet not running
       spy = jest
-        .spyOn(restConnector, 'authenticate')
+        .spyOn(connectors.rest, 'authenticate')
         // @ts-ignore test fetch failed with typeerror
         .mockImplementation(() =>
           Promise.reject(new TypeError('fetch failed'))
@@ -180,7 +168,7 @@ describe('VegaConnectDialog', () => {
 
       // Reject eg non 200 results
       spy = jest
-        .spyOn(restConnector, 'authenticate')
+        .spyOn(connectors.rest, 'authenticate')
         // @ts-ignore test fetch failed with typeerror
         .mockImplementation(() => Promise.reject(new Error('Error!')));
 
@@ -217,16 +205,16 @@ describe('VegaConnectDialog', () => {
 
     beforeEach(() => {
       spyOnCheckCompat = jest
-        .spyOn(jsonRpcConnector, 'checkCompat')
+        .spyOn(connectors.jsonRpc, 'checkCompat')
         .mockImplementation(() => delayedResolve(true));
       spyOnGetChainId = jest
-        .spyOn(jsonRpcConnector, 'getChainId')
+        .spyOn(connectors.jsonRpc, 'getChainId')
         .mockImplementation(() => delayedResolve({ chainID: mockChainId }));
       spyOnConnectWallet = jest
-        .spyOn(jsonRpcConnector, 'connectWallet')
+        .spyOn(connectors.jsonRpc, 'connectWallet')
         .mockImplementation(() => delayedResolve({ token: 'token' }));
       spyOnGetPermissions = jest
-        .spyOn(jsonRpcConnector, 'getPermissions')
+        .spyOn(connectors.jsonRpc, 'getPermissions')
         .mockImplementation(() =>
           delayedResolve({
             permissions: {
@@ -235,7 +223,7 @@ describe('VegaConnectDialog', () => {
           })
         );
       spyOnRequestPermissions = jest
-        .spyOn(jsonRpcConnector, 'requestPermissions')
+        .spyOn(connectors.jsonRpc, 'requestPermissions')
         .mockImplementation(() =>
           delayedResolve({
             permissions: {
@@ -244,8 +232,10 @@ describe('VegaConnectDialog', () => {
           })
         );
       spyOnConnect = jest
-        .spyOn(jsonRpcConnector, 'connect')
-        .mockImplementation(() => delayedResolve(['pubkey']));
+        .spyOn(connectors.jsonRpc, 'connect')
+        .mockImplementation(() =>
+          delayedResolve([{ publicKey: 'pubkey', name: 'test key 1' }])
+        );
     });
 
     beforeAll(() => {

@@ -29,7 +29,12 @@ const ConnectWalletSchema = BaseSchema.extend({
 
 const ListKeysSchema = BaseSchema.extend({
   result: z.object({
-    keys: z.array(z.string()),
+    keys: z.array(
+      z.object({
+        publicKey: z.string(),
+        name: z.string(),
+      })
+    ),
   }),
 });
 

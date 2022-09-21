@@ -21,7 +21,10 @@ describe('VegaWalletProvider', () => {
     localStorage.clear();
   });
 
-  const mockPubKeys = ['public key 1', 'public key 2'];
+  const mockPubKeys = [
+    { publicKey: '111', name: 'public key 1' },
+    { publicKey: '222', name: 'public key 2' },
+  ];
   const spyOnConnect = jest
     .spyOn(restConnector, 'connect')
     .mockImplementation(() => Promise.resolve(mockPubKeys));
@@ -52,20 +55,23 @@ describe('VegaWalletProvider', () => {
     });
     expect(spyOnConnect).toHaveBeenCalled();
     expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
-    expect(result.current.pubKey).toBe(mockPubKeys[0]);
+    expect(result.current.pubKey).toBe(mockPubKeys[0].publicKey);
 
     // Change current pubkey
     await act(async () => {
-      result.current.selectPubKey(mockPubKeys[1]);
+      result.current.selectPubKey(mockPubKeys[1].publicKey);
     });
-    expect(result.current.pubKey).toBe(mockPubKeys[1]);
-    expect(storageSpy).toHaveBeenCalledWith(WALLET_KEY, mockPubKeys[1]);
+    expect(result.current.pubKey).toBe(mockPubKeys[1].publicKey);
+    expect(storageSpy).toHaveBeenCalledWith(
+      WALLET_KEY,
+      mockPubKeys[1].publicKey
+    );
 
     // Send tx
     await act(async () => {
-      result.current.sendTx(mockPubKeys[1], {} as Transaction);
+      result.current.sendTx(mockPubKeys[1].publicKey, {} as Transaction);
     });
-    expect(spyOnSend).toHaveBeenCalledWith(mockPubKeys[1], {});
+    expect(spyOnSend).toHaveBeenCalledWith(mockPubKeys[1].publicKey, {});
   });
 
   it('persists selected pubkey and disconnects', async () => {
@@ -75,7 +81,7 @@ describe('VegaWalletProvider', () => {
     await act(async () => {
       result.current.connect(restConnector);
     });
-    expect(result.current.pubKey).toBe(mockPubKeys[1]);
+    expect(result.current.pubKey).toBe(mockPubKeys[1].publicKey);
 
     // Disconnect
     await act(async () => {

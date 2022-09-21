@@ -34,13 +34,16 @@ it('Not connected', () => {
 });
 
 it('Connected', () => {
-  const pubKey = '123456__123456';
+  const pubKey = { publicKey: '123456__123456', name: 'test' };
   render(
-    generateJsx({ pubKey, pubKeys: [pubKey] } as VegaWalletContextShape, props)
+    generateJsx(
+      { pubKey: pubKey.publicKey, pubKeys: [pubKey] } as VegaWalletContextShape,
+      props
+    )
   );
 
   const button = screen.getByRole('button');
-  expect(button).toHaveTextContent(truncateByChars(pubKey));
+  expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
   fireEvent.click(button);
   expect(props.setConnectDialog).not.toHaveBeenCalled();
 });

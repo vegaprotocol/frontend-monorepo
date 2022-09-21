@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import type {
+  PubKey,
   Transaction,
   TransactionResponse,
   VegaConnector,
@@ -10,10 +11,10 @@ export interface VegaWalletContextShape {
   pubKey: string | null;
 
   /** Public keys stored in users wallet */
-  pubKeys: string[] | null;
+  pubKeys: PubKey[] | null;
 
   /** Calls connect on the supplied connector, storing the returned keys  */
-  connect: (connector: VegaConnector) => Promise<string[] | null>;
+  connect: (connector: VegaConnector) => Promise<PubKey[] | null>;
 
   /** Disconnects from the connector and clears public key state */
   disconnect: () => Promise<boolean>;
