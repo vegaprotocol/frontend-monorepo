@@ -7,8 +7,8 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
-import { OrderList, ordersDataProvider as dataProvider } from '../';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
+import { OrderList, ordersWithMarketProvider } from '../';
+import type { OrderWithMarketEdge, OrderWithMarket } from '../';
 
 interface OrderListManagerProps {
   partyId: string;
@@ -16,9 +16,7 @@ interface OrderListManagerProps {
 
 export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(Orders_party_ordersConnection_edges | null)[] | null>(
-    null
-  );
+  const dataRef = useRef<(OrderWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -43,8 +41,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       delta,
     }: {
-      data: (Orders_party_ordersConnection_edges | null)[];
-      delta: OrderFields[];
+      data: (OrderWithMarketEdge | null)[];
+      delta: OrderWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -69,7 +67,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       data,
       totalCount,
     }: {
-      data: Orders_party_ordersConnection_edges[];
+      data: (OrderWithMarketEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -80,7 +78,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({
-    dataProvider,
+    dataProvider: ordersWithMarketProvider,
     update,
     insert,
     variables,
@@ -88,13 +86,12 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows =
-    makeInfiniteScrollGetRows<Orders_party_ordersConnection_edges>(
-      newRows,
-      dataRef,
-      totalCountRef,
-      load
-    );
+  const getRows = makeInfiniteScrollGetRows<OrderWithMarketEdge>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {

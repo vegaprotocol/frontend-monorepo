@@ -8,6 +8,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
+import type { OrderEvent_busEvents_event_Order } from '../../order-hooks';
 import { generateOrder } from '../mocks/generate-orders';
 import type { OrderFeedbackProps } from './order-feedback';
 import { OrderFeedback } from './order-feedback';
@@ -44,7 +45,9 @@ describe('OrderFeedback', () => {
       status: OrderStatus.STATUS_REJECTED,
       rejectionReason: OrderRejectionReason.ORDER_ERROR_AMEND_FAILURE,
     };
-    const order = generateOrder(orderFields);
+    const order = generateOrder(
+      orderFields
+    ) as OrderEvent_busEvents_event_Order;
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
       `${OrderRejectionReasonMapping[orderFields.rejectionReason]}`
@@ -61,7 +64,7 @@ describe('OrderFeedback', () => {
         decimalPlaces: 2,
         positionDecimalPlaces: 0,
       },
-    });
+    }) as OrderEvent_busEvents_event_Order;
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('order-confirmed')).toBeInTheDocument();
     expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(

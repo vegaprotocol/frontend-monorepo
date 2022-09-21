@@ -20,7 +20,7 @@ export interface Market_market_data_market {
 export interface Market_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * Market of the associated mark price
    */
   market: Market_market_data_market;
   /**
@@ -32,43 +32,43 @@ export interface Market_market_data {
    */
   auctionEnd: string | null;
   /**
-   * the mark price (an unsigned integer)
+   * The mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
+   * Indicative volume if the auction ended now, 0 if not in auction mode
    */
   indicativeVolume: string;
   /**
-   * indicative price if the auction ended now, 0 if not in auction mode
+   * Indicative price if the auction ended now, 0 if not in auction mode
    */
   indicativePrice: string;
   /**
-   * the supplied stake for the market
+   * The supplied stake for the market
    */
   suppliedStake: string | null;
   /**
-   * the amount of stake targeted for this market
+   * The amount of stake targeted for this market
    */
   targetStake: string | null;
   /**
-   * the aggregated volume being bid at the best bid price.
+   * The aggregated volume being bid at the best bid price.
    */
   bestBidVolume: string;
   /**
-   * the aggregated volume being offered at the best offer price.
+   * The aggregated volume being offered at the best offer price.
    */
   bestOfferVolume: string;
   /**
-   * the aggregated volume being offered at the best static bid price, excluding pegged orders
+   * The aggregated volume being offered at the best static bid price, excluding pegged orders
    */
   bestStaticBidVolume: string;
   /**
-   * the aggregated volume being offered at the best static offer price, excluding pegged orders.
+   * The aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
   /**
-   * what triggered an auction (if an auction was started)
+   * What triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
 }
@@ -169,7 +169,7 @@ export interface Market_market_marketTimestamps {
   close: string | null;
 }
 
-export interface Market_market_candles {
+export interface Market_market_candlesConnection_edges_node {
   __typename: "Candle";
   /**
    * Open price (uint64)
@@ -183,6 +183,22 @@ export interface Market_market_candles {
    * Volume price (uint64)
    */
   volume: string;
+}
+
+export interface Market_market_candlesConnection_edges {
+  __typename: "CandleEdge";
+  /**
+   * The candle
+   */
+  node: Market_market_candlesConnection_edges_node;
+}
+
+export interface Market_market_candlesConnection {
+  __typename: "CandleDataConnection";
+  /**
+   * The candles
+   */
+  edges: (Market_market_candlesConnection_edges | null)[] | null;
 }
 
 export interface Market_market {
@@ -200,16 +216,16 @@ export interface Market_market {
    */
   state: MarketState;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -217,7 +233,7 @@ export interface Market_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -232,13 +248,13 @@ export interface Market_market {
    */
   tradableInstrument: Market_market_tradableInstrument;
   /**
-   * timestamps for state changes in the market
+   * Timestamps for state changes in the market
    */
   marketTimestamps: Market_market_marketTimestamps;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candles: (Market_market_candles | null)[] | null;
+  candlesConnection: Market_market_candlesConnection | null;
 }
 
 export interface Market {

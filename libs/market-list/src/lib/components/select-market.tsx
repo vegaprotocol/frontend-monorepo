@@ -148,7 +148,7 @@ export const SelectMarketPopover = ({
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
   const { data: party, loading: positionsLoading } = useDataProvider<
     Positions_party,
-    PositionsSubscription_positions
+    PositionsSubscription_positions[]
   >({
     dataProvider: positionsDataProvider,
     update: () => false,
@@ -165,7 +165,7 @@ export const SelectMarketPopover = ({
   const markets = useMemo(
     () =>
       data?.markets?.filter((market) =>
-        party?.positionsConnection.edges?.find(
+        party?.positionsConnection?.edges?.find(
           (edge) => edge.node.market.id === market.id
         )
       ),
@@ -194,14 +194,14 @@ export const SelectMarketPopover = ({
           </div>
         ) : (
           <>
-            {keypair && (party?.positionsConnection.edges?.length ?? 0) > 0 ? (
+            {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
               <table className="relative text-sm w-full whitespace-nowrap">
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
                   markets={markets}
                   marketsData={data?.marketsData}
                   marketsCandles={data?.marketsCandles}
-                  positions={party?.positionsConnection.edges
+                  positions={party?.positionsConnection?.edges
                     ?.filter((edge) => edge.node)
                     .map((edge) => edge.node)}
                   onSelect={onSelectMarket}

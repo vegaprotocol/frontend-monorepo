@@ -1,90 +1,10 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  Fills,
-  Fills_party_tradesConnection_edges_node,
-} from './__generated__/Fills';
-import { Side } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode, Side } from '@vegaprotocol/types';
+import type { TradeWithMarket } from './fills-data-provider';
 
-export const generateFills = (override?: PartialDeep<Fills>): Fills => {
-  const fills: Fills_party_tradesConnection_edges_node[] = [
-    generateFill({
-      buyer: {
-        id: 'party-id',
-      },
-    }),
-    generateFill({
-      id: '1',
-      seller: {
-        id: 'party-id',
-      },
-      aggressor: Side.SIDE_SELL,
-      buyerFee: {
-        infrastructureFee: '5000',
-      },
-      market: {
-        tradableInstrument: {
-          instrument: {
-            name: 'Apples Daily v3',
-          },
-        },
-        positionDecimalPlaces: 2,
-      },
-    }),
-    generateFill({
-      id: '2',
-      seller: {
-        id: 'party-id',
-      },
-      aggressor: Side.SIDE_BUY,
-    }),
-    generateFill({
-      id: '3',
-      aggressor: Side.SIDE_SELL,
-      market: {
-        tradableInstrument: {
-          instrument: {
-            name: 'ETHBTC Quarterly (30 Jun 2022)',
-          },
-        },
-      },
-      buyer: {
-        id: 'party-id',
-      },
-    }),
-  ];
-
-  const defaultResult: Fills = {
-    party: {
-      id: 'buyer-id',
-      tradesConnection: {
-        __typename: 'TradeConnection',
-        edges: fills.map((f) => {
-          return {
-            __typename: 'TradeEdge',
-            node: f,
-            cursor: '3',
-          };
-        }),
-        pageInfo: {
-          __typename: 'PageInfo',
-          startCursor: '1',
-          endCursor: '2',
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
-      },
-      __typename: 'Party',
-    },
-  };
-
-  return merge(defaultResult, override);
-};
-
-export const generateFill = (
-  override?: PartialDeep<Fills_party_tradesConnection_edges_node>
-) => {
-  const defaultFill: Fills_party_tradesConnection_edges_node = {
+export const generateFill = (override?: PartialDeep<TradeWithMarket>) => {
+  const defaultFill: TradeWithMarket = {
     __typename: 'Trade',
     id: '0',
     createdAt: '2005-04-02T19:37:00.000Z',
@@ -118,6 +38,22 @@ export const generateFill = (
       id: 'market-id',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
+      state: MarketState.STATE_ACTIVE,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      fees: {
+        __typename: 'Fees',
+        factors: {
+          __typename: 'FeeFactors',
+          infrastructureFee: '0.1',
+          liquidityFee: '0.1',
+          makerFee: '0.1',
+        },
+      },
+      marketTimestamps: {
+        __typename: 'MarketTimestamps',
+        open: '2005-04-02T19:37:00.000Z',
+        close: '2005-04-02T19:37:00.000Z',
+      },
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -125,14 +61,18 @@ export const generateFill = (
           id: 'instrument-id',
           code: 'instrument-code',
           name: 'UNIDAI Monthly (30 Jun 2022)',
+          metadata: {
+            __typename: 'InstrumentMetadata',
+            tags: ['tag-a'],
+          },
           product: {
             __typename: 'Future',
             settlementAsset: {
               __typename: 'Asset',
-              id: 'asset-id',
               symbol: 'SYM',
               decimals: 18,
             },
+            quoteName: '',
           },
         },
       },

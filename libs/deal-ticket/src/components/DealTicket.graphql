@@ -1,7 +1,6 @@
 query DealTicketQuery($marketId: ID!) {
   market(id: $marketId) {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     state

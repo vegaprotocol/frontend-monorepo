@@ -121,8 +121,8 @@ export const TradeMarketHeader = ({
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
 
-  const candlesClose: string[] = (market?.candles || [])
-    .map((candle) => candle?.close)
+  const candlesClose: string[] = (market?.candlesConnection?.edges || [])
+    .map((candle) => candle?.node.close)
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;

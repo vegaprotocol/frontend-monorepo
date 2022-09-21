@@ -16,14 +16,15 @@ type Proposal = {
 type ProposalEdge = {
   node: Proposal;
 };
+type ProposalEdges = {
+  edges: (ProposalEdge | null)[] | null;
+};
 type ProposalsConnection = {
-  proposalsConnection: {
-    edges: (ProposalEdge | null)[] | null;
-  };
+  proposalsConnection: ProposalEdges | null;
 };
 
 export const getProposals = (data?: ProposalsConnection) => {
-  const proposals = data?.proposalsConnection.edges
+  const proposals = data?.proposalsConnection?.edges
     ?.filter((e) => e?.node)
     .map((e) => e?.node);
   return proposals ? (proposals as Proposal[]) : [];

@@ -3,8 +3,6 @@ import {
   addDecimalsFormatNumber,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type { AccountFieldsFragment } from './__generated__/Accounts';
-
 import { accountsDataProvider } from './accounts-data-provider';
 
 interface AssetBalanceProps {
@@ -14,10 +12,7 @@ interface AssetBalanceProps {
 
 export const AssetBalance = ({ partyId, assetSymbol }: AssetBalanceProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const { data } = useDataProvider<
-    AccountFieldsFragment[],
-    AccountFieldsFragment
-  >({
+  const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables,
   });

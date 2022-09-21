@@ -67,6 +67,9 @@ export interface MarketPositions_party_positionsConnection_edges_node {
 
 export interface MarketPositions_party_positionsConnection_edges {
   __typename: "PositionEdge";
+  /**
+   * The position
+   */
   node: MarketPositions_party_positionsConnection_edges_node;
 }
 
@@ -91,7 +94,7 @@ export interface MarketPositions_party {
   /**
    * Trading positions relating to a party
    */
-  positionsConnection: MarketPositions_party_positionsConnection;
+  positionsConnection: MarketPositions_party_positionsConnection | null;
 }
 
 export interface MarketPositions {

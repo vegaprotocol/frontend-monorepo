@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
@@ -17,10 +17,10 @@ import {
 import { MarketState } from '@vegaprotocol/types';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
 import { STATES_FILTER } from './constants';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
+import type { Markets_marketsConnection_edges_node } from '@vegaprotocol/market-list';
 
 interface Props {
-  data: SimpleMarkets_markets[];
+  data: Markets_marketsConnection_edges_node[];
 }
 
 const SimpleMarketToolbar = ({ data }: Props) => {
@@ -98,7 +98,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
           </Link>
         </li>
         {products.map((product, i) => (
-          <li key={product} className="mx-2 whitespace-nowrap">
+          <li key={`${product}-${i}`} className="mx-2 whitespace-nowrap">
             <Link
               to={`/markets/${
                 params.state || MarketState.STATE_ACTIVE
