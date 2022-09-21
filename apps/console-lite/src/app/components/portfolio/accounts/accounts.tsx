@@ -1,7 +1,10 @@
 import { useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { PriceCell, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { AccountFieldsFragment, AccountEventsSubscription } from '@vegaprotocol/accounts';
+import type {
+  AccountFieldsFragment,
+  AccountEventsSubscription,
+} from '@vegaprotocol/accounts';
 import {
   accountsDataProvider,
   accountsManagerUpdate,
