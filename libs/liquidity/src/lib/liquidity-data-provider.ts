@@ -11,12 +11,12 @@ import type {
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
 const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!, $partyId: String) {
+  query MarketLiquidity($marketId: ID!, $partyId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces
       positionDecimalPlaces
-      liquidityProvisionsConnection(party: $partyId) {
+      liquidityProvisionsConnection(partyId: $partyId) {
         edges {
           node {
             id
@@ -123,11 +123,11 @@ export const useLiquidityProvision = ({
     ) // if partyId is provided, filter out other parties
     .map((provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
       const liquidityProvisionConnection =
-        data?.market?.liquidityProvisionsConnection.edges?.find(
+        data?.market?.liquidityProvisionsConnection?.edges?.find(
           (e) => e?.node.party.id === provider.party.id
         );
       const balance =
-        liquidityProvisionConnection?.node?.party.accountsConnection.edges?.reduce(
+        liquidityProvisionConnection?.node?.party.accountsConnection?.edges?.reduce(
           (acc, e) => {
             return e?.node.type === AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
               ? acc.plus(new BigNumber(e?.node.balance ?? 0))

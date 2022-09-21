@@ -15,14 +15,13 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { MarketState } from '@vegaprotocol/types';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
-import { STATES_FILTER } from './constants';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
-import * as constants from './constants';
+import type { Markets_marketsConnection_edges_node } from '@vegaprotocol/market-list';
 import { HorizontalMenu } from '../horizontal-menu';
 import type { HorizontalMenuItem } from '../horizontal-menu';
+import * as constants from './constants';
 
 interface Props {
-  data: SimpleMarkets_markets[];
+  data: Markets_marketsConnection_edges_node[];
 }
 
 const SimpleMarketToolbar = ({ data }: Props) => {
@@ -81,7 +80,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
               onClick={() => setOpen(!isOpen)}
             >
               <div className="w-full justify-between uppercase inline-flex items-center justify-center box-border">
-                {STATES_FILTER.find(
+                {constants.STATES_FILTER.find(
                   (state) =>
                     state.value === params.state ||
                     (!params.state && state.value === MarketState.STATE_ACTIVE)
@@ -98,7 +97,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {STATES_FILTER.map(({ value, text }) => (
+              {constants.STATES_FILTER.map(({ value, text }) => (
                 <DropdownMenuCheckboxItem
                   className="uppercase text-ui"
                   key={value}

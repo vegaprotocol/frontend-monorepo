@@ -54,7 +54,7 @@ export const AssetDetailsDialog = ({
   const { data } = useAssetsConnectionQuery();
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
-  const asset = data?.assetsConnection.edges?.find(
+  const asset = data?.assetsConnection?.edges?.find(
     (e) => e?.node.symbol === symbol
   );
 

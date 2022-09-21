@@ -22,7 +22,7 @@ describe('market info is displayed', () => {
     validateMarketDataRow(0, 'Maker Fee', '0.02%');
     validateMarketDataRow(1, 'Infrastructure Fee', '0.05%');
     validateMarketDataRow(2, 'Liquidity Fee', '1.00%');
-    validateMarketDataRow(3, 'Total Fees', '1.04%');
+    validateMarketDataRow(3, 'Total Fees', '1.07%');
   });
 
   it('market price', () => {

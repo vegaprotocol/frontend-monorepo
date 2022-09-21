@@ -11,14 +11,14 @@ export type TradesQueryVariables = Types.Exact<{
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } } | null };
+export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
 
 export type TradesSubSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } }> | null };
+export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: string, type: Types.TradeType, buyerAuctionBatch?: number | null, sellerAuctionBatch?: number | null, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
 
 export const TradeFieldsFragmentDoc = gql`
     fragment TradeFields on Trade {
@@ -86,10 +86,32 @@ export type TradesQueryResult = Apollo.QueryResult<TradesQuery, TradesQueryVaria
 export const TradesSubDocument = gql`
     subscription TradesSub($marketId: ID!) {
   trades(marketId: $marketId) {
-    ...TradeFields
+    id
+    marketId
+    buyOrder
+    sellOrder
+    buyerId
+    sellerId
+    aggressor
+    price
+    size
+    createdAt
+    type
+    buyerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    sellerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    buyerAuctionBatch
+    sellerAuctionBatch
   }
 }
-    ${TradeFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useTradesSubSubscription__

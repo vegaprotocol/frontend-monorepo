@@ -109,6 +109,9 @@ export interface WithdrawFormQuery_assetsConnection_edges_node {
 
 export interface WithdrawFormQuery_assetsConnection_edges {
   __typename: "AssetEdge";
+  /**
+   * The asset information
+   */
   node: WithdrawFormQuery_assetsConnection_edges_node;
 }
 
@@ -128,7 +131,7 @@ export interface WithdrawFormQuery {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: WithdrawFormQuery_assetsConnection;
+  assetsConnection: WithdrawFormQuery_assetsConnection | null;
 }
 
 export interface WithdrawFormQueryVariables {

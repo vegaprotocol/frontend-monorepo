@@ -30,7 +30,7 @@ export const MARKETS_DATA_QUERY = gql`
 `;
 
 const getData = (responseData: MarketsDataQuery): MarketData[] | null =>
-  responseData.marketsConnection.edges
+  responseData.marketsConnection?.edges
     .filter((edge) => edge.node.data)
     .map((edge) => edge.node.data as MarketData) || null;
 

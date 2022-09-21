@@ -86,11 +86,11 @@ describe('orders', () => {
 
   it('orders are sorted by most recent order', () => {
     const expectedOrderList = [
-      'AAVEDAI.MF21',
-      'TSLA.QM21',
       'BTCUSD.MF21',
-      'UNIDAI.MF21',
-      'UNIDAI.MF21',
+      'SOLUSD',
+      'AAPL.MF21',
+      'ETHBTC.QM21',
+      'ETHBTC.QM21',
     ];
 
     cy.getByTestId('tab-orders')

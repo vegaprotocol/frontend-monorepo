@@ -1,22 +1,26 @@
 query OracleSpecs {
-  oracleSpecs {
-    status
-    id
-    createdAt
-    updatedAt
-    pubKeys
-    filters {
-      key {
-        name
-        type
+  oracleSpecsConnection {
+    edges {
+      node {
+        status
+        id
+        createdAt
+        updatedAt
+        pubKeys
+        filters {
+          key {
+            name
+            type
+          }
+          conditions {
+            value
+            operator
+          }
+        }
+        data {
+          pubKeys
+        }
       }
-      conditions {
-        value
-        operator
-      }
-    }
-    data {
-      pubKeys
     }
   }
 }

@@ -54,14 +54,14 @@ const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
         ...data,
         {
           ...delta,
-          __typename: 'CandleNode',
+          __typename: 'Candle',
         } as Candle,
       ]
     : data;
 };
 
 const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
-  responseData.marketsConnection.edges[0].node.candlesConnection.edges
+  responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
     ?.filter((edge) => edge?.node)
     .map((edge) => edge?.node as Candle) || null;
 

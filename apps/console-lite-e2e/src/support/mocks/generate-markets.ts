@@ -1,97 +1,535 @@
 import merge from 'lodash/merge';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import { protoMarket } from './commons';
+import { MarketState } from '@vegaprotocol/types';
+import type {
+  Market,
+  MarketsCandlesQuery_marketsConnection_edges_node,
+  MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges,
+  Markets,
+  MarketsCandlesQuery,
+  MarketsDataQuery,
+} from '@vegaprotocol/market-list';
+import { protoMarket, protoCandles } from './commons';
 
-export const generateSimpleMarkets = () => {
+MarketState.STATE_SUSPENDED;
+export const generateSimpleMarkets = (): Markets => {
+  const markets: Market[] = [
+    { ...protoMarket },
+    {
+      ...protoMarket,
+      id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'CELUSD',
+          name: 'CELUSD (June 2022)',
+          metadata: {
+            tags: [
+              'base:CEL',
+              'quote:USD',
+              'class:fx/crypto',
+              'ad-hoc',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'XYZalpha',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
+      state: MarketState.STATE_SUSPENDED,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'XMRUSD',
+          name: 'XMRUSD market',
+          metadata: {
+            tags: [
+              'base:monero',
+              'quote:usd',
+              'class:fx/crypto',
+              'ad-hoc',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'XYZbeta',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'UNIDAI.MF21',
+          name: 'UNIDAI Monthly (30 Jun 2022)',
+          metadata: {
+            tags: [
+              'formerly:3C58ED2A4A6C5D7E',
+              'base:UNI',
+              'quote:DAI',
+              'class:fx/crypto',
+              'monthly',
+              'sector:defi',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'DAI',
+            settlementAsset: {
+              symbol: 'tDAI',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
+      state: MarketState.STATE_PENDING,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'XMRUSD',
+          name: 'XMRUSD market',
+          metadata: {
+            tags: [
+              'base:monero',
+              'quote:usd',
+              'class:fx/crypto',
+              'ad-hoc',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'XYZbeta',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
+      state: MarketState.STATE_CLOSED,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'APE/USD',
+          name: 'ApeCoin (18 Jul 2022)',
+          metadata: {
+            tags: [
+              'quote:USD',
+              'ticker:APE',
+              'class:equities/single-stock-futures',
+              'sector:tech',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tUSDC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
+      state: MarketState.STATE_SETTLED,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'BTCUSD.MF21',
+          name: 'BTCUSD Monthly (18 Jul 2022)',
+          metadata: {
+            tags: [
+              'formerly:076BB86A5AA41E3E',
+              'base:BTC',
+              'quote:USD',
+              'class:fx/crypto',
+              'monthly',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tBTC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
+      state: MarketState.STATE_SETTLED,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'LTCUSD',
+          name: 'Builders Club x ETHcc',
+          metadata: {
+            tags: [
+              'base:litecoin',
+              'quote:usd',
+              'class:fx/crypto',
+              'ad-hoc',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'XYZgamma',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
+      state: MarketState.STATE_PENDING,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'BTCUSD.MF21',
+          name: 'BTCUSD Monthly (18 Jul 2022)',
+          metadata: {
+            tags: [
+              'formerly:076BB86A5AA41E3E',
+              'base:BTC',
+              'quote:USD',
+              'class:fx/crypto',
+              'monthly',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tBTC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'ETHBTC.QM21',
+          name: 'ETHBTC Quarterly (30 Jun 2022)',
+          metadata: {
+            tags: [
+              'formerly:1F0BB6EB5703B099',
+              'base:ETH',
+              'quote:BTC',
+              'class:fx/crypto',
+              'quarterly',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'BTC',
+            settlementAsset: {
+              symbol: 'tBTC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'AAPL.MF21',
+          name: 'Apple Monthly (30 Jun 2022)',
+          metadata: {
+            tags: [
+              'formerly:4899E01009F1A721',
+              'quote:USD',
+              'ticker:AAPL',
+              'class:equities/single-stock-futures',
+              'sector:tech',
+              'listing_venue:NASDAQ',
+              'country:US',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tUSDC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'TSLA.QM21',
+          name: 'Tesla Quarterly (30 Jun 2022)',
+          metadata: {
+            tags: [
+              'formerly:5A86B190C384997F',
+              'quote:EURO',
+              'ticker:TSLA',
+              'class:equities/single-stock-futures',
+              'sector:tech',
+              'listing_venue:NASDAQ',
+              'country:US',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'EURO',
+            settlementAsset: {
+              symbol: 'tEURO',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'LTCUSD',
+          name: 'Go big or Go home',
+          metadata: {
+            tags: [
+              'base:litecoin',
+              'quote:usd',
+              'class:fx/crypto',
+              'ad-hoc',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'XYZgamma',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'BTCUSD.MF21',
+          name: 'BTCUSD Monthly (08 Jul 2022)',
+          metadata: {
+            tags: [
+              'formerly:076BB86A5AA41E3E',
+              'base:BTC',
+              'quote:USD',
+              'class:fx/crypto',
+              'monthly',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tBTC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+    {
+      ...protoMarket,
+      id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',
+      state: MarketState.STATE_ACTIVE,
+      tradableInstrument: {
+        instrument: {
+          id: '',
+          code: 'BTCUSD.MF21',
+          name: 'BTCUSD Monthly (18 Jul 2022)',
+          metadata: {
+            tags: [
+              'formerly:076BB86A5AA41E3E',
+              'base:BTC',
+              'quote:USD',
+              'class:fx/crypto',
+              'monthly',
+              'sector:crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
+          product: {
+            __typename: 'Future',
+            quoteName: 'USD',
+            settlementAsset: {
+              symbol: 'tBTC',
+              __typename: 'Asset',
+              decimals: 5,
+            },
+          },
+          __typename: 'Instrument',
+        },
+        __typename: 'TradableInstrument',
+      },
+      __typename: 'Market',
+    },
+  ];
   return {
-    markets: [
-      { ...protoMarket },
-      {
-        id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'CELUSD',
-            name: 'CELUSD (June 2022)',
-            metadata: {
-              tags: [
-                'base:CEL',
-                'quote:USD',
-                'class:fx/crypto',
-                'ad-hoc',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'XYZalpha', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
+};
+
+export const generateMarketsCandles = (): MarketsCandlesQuery => {
+  const markets: MarketsCandlesQuery_marketsConnection_edges_node[] = [
+    {
+      id: protoMarket.id,
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: protoCandles.map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
-        state: 'Suspended',
-        tradableInstrument: {
-          instrument: {
-            code: 'XMRUSD',
-            name: 'XMRUSD market',
-            metadata: {
-              tags: [
-                'base:monero',
-                'quote:usd',
-                'class:fx/crypto',
-                'ad-hoc',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'XYZbeta', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-      {
-        id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'UNIDAI.MF21',
-            name: 'UNIDAI Monthly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:3C58ED2A4A6C5D7E',
-                'base:UNI',
-                'quote:DAI',
-                'class:fx/crypto',
-                'monthly',
-                'sector:defi',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'DAI',
-              settlementAsset: { symbol: 'tDAI', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '723082', close: '726800', __typename: 'Candle' },
           {
             open: '726800',
@@ -164,36 +602,18 @@ export const generateSimpleMarkets = () => {
             close: '761777',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
-        state: 'Pending',
-        tradableInstrument: {
-          instrument: {
-            code: 'XMRUSD',
-            name: 'XMRUSD market',
-            metadata: {
-              tags: [
-                'base:monero',
-                'quote:usd',
-                'class:fx/crypto',
-                'ad-hoc',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'XYZbeta', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '14602', close: '14596', __typename: 'Candle' },
           {
             open: '14596',
@@ -266,94 +686,18 @@ export const generateSimpleMarkets = () => {
             close: '14467',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
-        state: 'Closed',
-        tradableInstrument: {
-          instrument: {
-            code: 'APE/USD',
-            name: 'ApeCoin (18 Jul 2022)',
-            metadata: {
-              tags: [
-                'quote:USD',
-                'ticker:APE',
-                'class:equities/single-stock-futures',
-                'sector:tech',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tUSDC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-      {
-        id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
-        state: 'Settled',
-        tradableInstrument: {
-          instrument: {
-            code: 'BTCUSD.MF21',
-            name: 'BTCUSD Monthly (18 Jul 2022)',
-            metadata: {
-              tags: [
-                'formerly:076BB86A5AA41E3E',
-                'base:BTC',
-                'quote:USD',
-                'class:fx/crypto',
-                'monthly',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-      {
-        id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
-        state: 'Settled',
-        tradableInstrument: {
-          instrument: {
-            code: 'LTCUSD',
-            name: 'Builders Club x ETHcc',
-            metadata: {
-              tags: [
-                'base:litecoin',
-                'quote:usd',
-                'class:fx/crypto',
-                'ad-hoc',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'XYZgamma', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '5700', close: '5688', __typename: 'Candle' },
           {
             open: '5688',
@@ -414,67 +758,18 @@ export const generateSimpleMarkets = () => {
             close: '5768',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
-        state: 'Pending',
-        tradableInstrument: {
-          instrument: {
-            code: 'BTCUSD.MF21',
-            name: 'BTCUSD Monthly (18 Jul 2022)',
-            metadata: {
-              tags: [
-                'formerly:076BB86A5AA41E3E',
-                'base:BTC',
-                'quote:USD',
-                'class:fx/crypto',
-                'monthly',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-      {
-        id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'ETHBTC.QM21',
-            name: 'ETHBTC Quarterly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:1F0BB6EB5703B099',
-                'base:ETH',
-                'quote:BTC',
-                'class:fx/crypto',
-                'quarterly',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'BTC',
-              settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '6680', close: '6600', __typename: 'Candle' },
           {
             open: '6600',
@@ -547,38 +842,18 @@ export const generateSimpleMarkets = () => {
             close: '6921',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'AAPL.MF21',
-            name: 'Apple Monthly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:4899E01009F1A721',
-                'quote:USD',
-                'ticker:AAPL',
-                'class:equities/single-stock-futures',
-                'sector:tech',
-                'listing_venue:NASDAQ',
-                'country:US',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tUSDC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '15126319', close: '15087482', __typename: 'Candle' },
           {
             open: '15087482',
@@ -651,38 +926,18 @@ export const generateSimpleMarkets = () => {
             close: '14771411',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'TSLA.QM21',
-            name: 'Tesla Quarterly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:5A86B190C384997F',
-                'quote:EURO',
-                'ticker:TSLA',
-                'class:equities/single-stock-futures',
-                'sector:tech',
-                'listing_venue:NASDAQ',
-                'country:US',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'EURO',
-              settlementAsset: { symbol: 'tEURO', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '71263667', close: '71173749', __typename: 'Candle' },
           {
             open: '71173749',
@@ -755,36 +1010,18 @@ export const generateSimpleMarkets = () => {
             close: '67817444',
             __typename: 'Candle',
           },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'LTCUSD',
-            name: 'Go big or Go home',
-            metadata: {
-              tags: [
-                'base:litecoin',
-                'quote:usd',
-                'class:fx/crypto',
-                'ad-hoc',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'XYZgamma', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: [
+    },
+    {
+      id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
+      __typename: 'Market',
+      candlesConnection: {
+        __typename: 'CandleDataConnection',
+        edges: [
           { open: '5809', close: '5795', __typename: 'Candle' },
           {
             open: '5795',
@@ -798,70 +1035,30 @@ export const generateSimpleMarkets = () => {
             __typename: 'Candle',
           },
           { open: '5710', close: '5691', __typename: 'Candle' },
-        ],
-        __typename: 'Market',
+        ].map((node) => ({
+          __typename: 'CandleEdge',
+          node,
+        })) as unknown as MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges[],
       },
-      {
-        id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'BTCUSD.MF21',
-            name: 'BTCUSD Monthly (08 Jul 2022)',
-            metadata: {
-              tags: [
-                'formerly:076BB86A5AA41E3E',
-                'base:BTC',
-                'quote:USD',
-                'class:fx/crypto',
-                'monthly',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-      {
-        id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',
-        state: 'Active',
-        tradableInstrument: {
-          instrument: {
-            code: 'BTCUSD.MF21',
-            name: 'BTCUSD Monthly (18 Jul 2022)',
-            metadata: {
-              tags: [
-                'formerly:076BB86A5AA41E3E',
-                'base:BTC',
-                'quote:USD',
-                'class:fx/crypto',
-                'monthly',
-                'sector:crypto',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            product: {
-              __typename: 'Future',
-              quoteName: 'USD',
-              settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-            },
-            __typename: 'Instrument',
-          },
-          __typename: 'TradableInstrument',
-        },
-        candles: null,
-        __typename: 'Market',
-      },
-    ],
+    },
+  ];
+  return {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
+};
+
+export const generateMarketsData = (): MarketsDataQuery => {
+  return {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: [],
+    },
   };
 };
 
@@ -880,33 +1077,19 @@ export const generateLongListMarkets = (count: number) => {
       },
     });
   }
-  return { markets };
+  return {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node,
+      })),
+    },
+  };
 };
 
-export const generateMarkets = (override?) => {
-  const markets = [
-    {
-      ...protoMarket,
-      decimalPlaces: 5,
-      positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
-      marketTimestamps: {
-        __typename: 'MarketTimestamps',
-        close: '',
-        open: '',
-      },
-      fees: {
-        __typename: 'Fees',
-        factors: {
-          __typename: 'FeeFactors',
-          makerFee: '',
-          infrastructureFee: '',
-          liquidityFee: '',
-        },
-      },
-    },
-  ];
+export const generateMarkets = (override?): Markets => {
+  const markets = [protoMarket];
 
   const defaultResult = {
     marketsConnection: {

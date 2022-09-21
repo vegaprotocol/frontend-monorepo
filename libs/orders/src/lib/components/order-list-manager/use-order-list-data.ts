@@ -5,8 +5,8 @@ import {
   makeInfiniteScrollGetRows,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type { OrderFields, Orders_party_ordersConnection_edges } from '../';
-import { ordersDataProvider as dataProvider } from '../';
+import { ordersWithMarketProvider } from '../';
+import type { OrderWithMarketEdge, OrderWithMarket } from '../';
 
 interface Props {
   partyId: string;
@@ -19,9 +19,7 @@ export const useOrderListData = ({
   gridRef,
   scrolledToTop,
 }: Props) => {
-  const dataRef = useRef<(Orders_party_ordersConnection_edges | null)[] | null>(
-    null
-  );
+  const dataRef = useRef<(OrderWithMarketEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
@@ -46,8 +44,8 @@ export const useOrderListData = ({
       data,
       delta,
     }: {
-      data: (Orders_party_ordersConnection_edges | null)[];
-      delta: OrderFields[];
+      data: (OrderWithMarketEdge | null)[];
+      delta: OrderWithMarket[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -72,7 +70,7 @@ export const useOrderListData = ({
       data,
       totalCount,
     }: {
-      data: Orders_party_ordersConnection_edges[];
+      data: (OrderWithMarketEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -83,7 +81,7 @@ export const useOrderListData = ({
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({
-    dataProvider,
+    dataProvider: ordersWithMarketProvider,
     update,
     insert,
     variables,
@@ -91,12 +89,11 @@ export const useOrderListData = ({
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows =
-    makeInfiniteScrollGetRows<Orders_party_ordersConnection_edges>(
-      newRows,
-      dataRef,
-      totalCountRef,
-      load
-    );
+  const getRows = makeInfiniteScrollGetRows<OrderWithMarketEdge>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
   return { loading, error, data, addNewRows, getRows };
 };

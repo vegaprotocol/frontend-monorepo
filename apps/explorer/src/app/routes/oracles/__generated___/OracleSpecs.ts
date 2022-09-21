@@ -6,29 +6,33 @@ const defaultOptions = {} as const;
 export type OracleSpecsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type OracleSpecsQuery = { __typename?: 'Query', oracleSpecs?: Array<{ __typename?: 'OracleSpec', status: Types.OracleSpecStatus, id: string, createdAt: string, updatedAt?: string | null, pubKeys?: Array<string> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null, data: Array<{ __typename?: 'OracleData', pubKeys?: Array<string> | null }> }> | null };
+export type OracleSpecsQuery = { __typename?: 'Query', oracleSpecsConnection?: { __typename?: 'OracleSpecsConnection', edges?: Array<{ __typename?: 'OracleSpecEdge', node: { __typename?: 'OracleSpec', status: Types.OracleSpecStatus, id: string, createdAt: string, updatedAt?: string | null, pubKeys?: Array<string> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null, data: Array<{ __typename?: 'OracleData', pubKeys?: Array<string> | null }> } } | null> | null } | null };
 
 
 export const OracleSpecsDocument = gql`
     query OracleSpecs {
-  oracleSpecs {
-    status
-    id
-    createdAt
-    updatedAt
-    pubKeys
-    filters {
-      key {
-        name
-        type
+  oracleSpecsConnection {
+    edges {
+      node {
+        status
+        id
+        createdAt
+        updatedAt
+        pubKeys
+        filters {
+          key {
+            name
+            type
+          }
+          conditions {
+            value
+            operator
+          }
+        }
+        data {
+          pubKeys
+        }
       }
-      conditions {
-        value
-        operator
-      }
-    }
-    data {
-      pubKeys
     }
   }
 }

@@ -1,7 +1,6 @@
 query Market($marketId: ID!, $interval: Interval!, $since: String!) {
   market(id: $marketId) {
     id
-    name
     tradingMode
     state
     decimalPlaces
@@ -51,10 +50,14 @@ query Market($marketId: ID!, $interval: Interval!, $since: String!) {
       open
       close
     }
-    candles(interval: $interval, since: $since) {
-      open
-      close
-      volume
+    candlesConnection(interval: $interval, since: $since) {
+      edges {
+        node {
+          open
+          close
+          volume
+        }
+      }
     }
   }
 }

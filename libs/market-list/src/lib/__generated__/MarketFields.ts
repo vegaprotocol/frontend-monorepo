@@ -47,6 +47,10 @@ export interface MarketFields_tradableInstrument_instrument_product_settlementAs
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
 
 export interface MarketFields_tradableInstrument_instrument_product {
@@ -55,6 +59,10 @@ export interface MarketFields_tradableInstrument_instrument_product {
    * The name of the asset (string)
    */
   settlementAsset: MarketFields_tradableInstrument_instrument_product_settlementAsset;
+  /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
 }
 
 export interface MarketFields_tradableInstrument_instrument {
@@ -108,7 +116,7 @@ export interface MarketFields {
    */
   id: string;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
@@ -125,7 +133,7 @@ export interface MarketFields {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -148,7 +156,7 @@ export interface MarketFields {
    */
   tradableInstrument: MarketFields_tradableInstrument;
   /**
-   * timestamps for state changes in the market
+   * Timestamps for state changes in the market
    */
   marketTimestamps: MarketFields_marketTimestamps;
 }

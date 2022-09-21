@@ -12,11 +12,11 @@ import { OracleSpecStatus, PropertyKeyType, ConditionOperator } from "@vegaproto
 export interface OracleSpecs_oracleSpecs_filters_key {
   __typename: "PropertyKey";
   /**
-   * name is the name of the property.
+   * The name of the property.
    */
   name: string | null;
   /**
-   * type is the type of the property.
+   * The type of the property.
    */
   type: PropertyKeyType;
 }
@@ -24,11 +24,11 @@ export interface OracleSpecs_oracleSpecs_filters_key {
 export interface OracleSpecs_oracleSpecs_filters_conditions {
   __typename: "Condition";
   /**
-   * value is used by the comparator.
+   * The value to compare against.
    */
   value: string | null;
   /**
-   * comparator is the type of comparison to make on the value.
+   * The type of comparison to make on the value.
    */
   operator: ConditionOperator;
 }
@@ -36,11 +36,11 @@ export interface OracleSpecs_oracleSpecs_filters_conditions {
 export interface OracleSpecs_oracleSpecs_filters {
   __typename: "Filter";
   /**
-   * key is the oracle data property key targeted by the filter.
+   * The oracle data property key targeted by the filter.
    */
   key: OracleSpecs_oracleSpecs_filters_key;
   /**
-   * conditions are the conditions that should be matched by the data to be
+   * The conditions that should be matched by the data to be
    * considered of interest.
    */
   conditions: OracleSpecs_oracleSpecs_filters_conditions[] | null;
@@ -49,7 +49,7 @@ export interface OracleSpecs_oracleSpecs_filters {
 export interface OracleSpecs_oracleSpecs_data {
   __typename: "OracleData";
   /**
-   * pubKeys is the list of public keys that signed the data
+   * The list of public keys that signed the data
    */
   pubKeys: string[] | null;
 }
@@ -57,7 +57,7 @@ export interface OracleSpecs_oracleSpecs_data {
 export interface OracleSpecs_oracleSpecs {
   __typename: "OracleSpec";
   /**
-   * status describes the status of the oracle spec
+   * Status describes the status of the oracle spec
    */
   status: OracleSpecStatus;
   /**
@@ -73,18 +73,18 @@ export interface OracleSpecs_oracleSpecs {
    */
   updatedAt: string | null;
   /**
-   * pubKeys is the list of authorized public keys that signed the data for this
+   * The list of authorized public keys that signed the data for this
    * oracle. All the public keys in the oracle data should be contained in these
    * public keys.
    */
   pubKeys: string[] | null;
   /**
-   * filters describes which oracle data are considered of interest or not for
+   * Filters describes which oracle data are considered of interest or not for
    * the product (or the risk model).
    */
   filters: OracleSpecs_oracleSpecs_filters[] | null;
   /**
-   * data list all the oracle data broadcast to this spec
+   * Data list all the oracle data broadcast to this spec
    */
   data: OracleSpecs_oracleSpecs_data[];
 }

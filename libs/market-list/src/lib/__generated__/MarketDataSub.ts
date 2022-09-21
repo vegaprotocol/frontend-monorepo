@@ -12,47 +12,47 @@ import { AuctionTrigger, MarketTradingMode } from "@vegaprotocol/types";
 export interface MarketDataSub_marketsData {
   __typename: "ObservableMarketData";
   /**
-   * market ID of the associated mark price
+   * Market ID of the associated mark price
    */
   marketId: string;
   /**
-   * the highest price level on an order book for buy orders.
+   * The highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
   /**
-   * the lowest price level on an order book for offer orders.
+   * The lowest price level on an order book for offer orders.
    */
   bestOfferPrice: string;
   /**
-   * the mark price (an unsigned integer)
+   * The mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * what triggered an auction (if an auction was started)
+   * What triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
   /**
-   * the arithmetic average of the best static bid price and best static offer price
+   * The arithmetic average of the best static bid price and best static offer price
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous etc)
+   * What mode the market is in (auction, continuous etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
+   * Indicative volume if the auction ended now, 0 if not in auction mode
    */
   indicativeVolume: string;
   /**
-   * indicative price if the auction ended now, 0 if not in auction mode
+   * Indicative price if the auction ended now, 0 if not in auction mode
    */
   indicativePrice: string;
   /**
-   * the highest price level on an order book for buy orders not including pegged orders.
+   * The highest price level on an order book for buy orders not including pegged orders.
    */
   bestStaticBidPrice: string;
   /**
-   * the lowest price level on an order book for offer orders not including pegged orders
+   * The lowest price level on an order book for offer orders not including pegged orders
    */
   bestStaticOfferPrice: string;
 }
@@ -65,5 +65,5 @@ export interface MarketDataSub {
 }
 
 export interface MarketDataSubVariables {
-  id: string;
+  marketId: string;
 }
