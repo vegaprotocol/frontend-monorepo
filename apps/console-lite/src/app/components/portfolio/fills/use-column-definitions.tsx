@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import type {
-  FillFields,
-  Fills_party_tradesConnection_edges_node,
-} from '@vegaprotocol/fills';
+import type { TradeWithMarket } from '@vegaprotocol/fills';
 import classNames from 'classnames';
 import {
   addDecimal,
@@ -16,7 +13,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import { Side } from '@vegaprotocol/types';
-import type { FillFields_market_tradableInstrument_instrument_product } from '@vegaprotocol/fills';
 
 interface Props {
   partyId: string;
@@ -38,7 +34,7 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerClass: 'uppercase',
         field: 'size',
         width: 100,
-        cellClass: ({ data }: { data: FillFields }) => {
+        cellClass: ({ data }: { data: TradeWithMarket }) => {
           return classNames('!flex h-full items-center justify-center', {
             [positiveClassNames]: data?.buyer.id === partyId,
             [negativeClassNames]: data?.seller.id,
