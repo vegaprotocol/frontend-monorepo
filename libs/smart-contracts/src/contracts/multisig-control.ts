@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import abi from '../abis/multisig_abi.json';
-import { prepend0x } from '../utils';
 
 export class MultisigControl {
   public contract: ethers.Contract;
@@ -46,8 +45,8 @@ export class MultisigControl {
     return this.contract.set_threshold(newThreshold, nonce, signatures);
   }
 
-  signers() {
-    return this.contract.signers();
+  signers(address: string) {
+    return this.contract.signers(address);
   }
 
   verify_signatures(nonce: string, message: string, signatures: string) {
