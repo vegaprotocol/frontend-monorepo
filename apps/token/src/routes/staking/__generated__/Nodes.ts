@@ -81,11 +81,11 @@ export interface Nodes_nodeData {
 
 export interface Nodes {
   /**
-   * All known network nodes
+   * all known network nodes
    */
   nodes: Nodes_nodes[] | null;
   /**
-   * Returns information about nodes
+   * returns information about nodes
    */
   nodeData: Nodes_nodeData | null;
 }

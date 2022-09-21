@@ -109,9 +109,6 @@ export interface WithdrawFormQuery_assetsConnection_edges_node {
 
 export interface WithdrawFormQuery_assetsConnection_edges {
   __typename: "AssetEdge";
-  /**
-   * The asset information
-   */
   node: WithdrawFormQuery_assetsConnection_edges_node;
 }
 

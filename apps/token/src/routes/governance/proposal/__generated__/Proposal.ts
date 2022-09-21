@@ -293,7 +293,7 @@ export interface Proposal_proposal {
    */
   datetime: string;
   /**
-   * Why the proposal was rejected by the core
+   * Reason for the proposal to be rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**

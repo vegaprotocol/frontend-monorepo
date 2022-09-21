@@ -67,9 +67,6 @@ export interface MarketPositions_party_positionsConnection_edges_node {
 
 export interface MarketPositions_party_positionsConnection_edges {
   __typename: "PositionEdge";
-  /**
-   * The position
-   */
   node: MarketPositions_party_positionsConnection_edges_node;
 }
 
