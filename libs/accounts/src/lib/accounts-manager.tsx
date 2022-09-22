@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useCallback } from 'react';
 import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -66,7 +66,7 @@ export const accountsManagerUpdate =
 export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = accountsManagerUpdate(gridRef);
+  const update = useMemo(() => accountsManagerUpdate(gridRef), []);
   const { data, error, loading } = useDataProvider<
     AccountFieldsFragment[],
     AccountEventsSubscription['accounts']
