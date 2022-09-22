@@ -142,7 +142,7 @@ jobs:
 
       - name: Import fairground network
         if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force
+        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
 
       - name: Start service using fairground network
         if: ${{ env.RUN_CAPSULE==false }}
