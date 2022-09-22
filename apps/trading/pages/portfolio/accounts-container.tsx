@@ -7,7 +7,7 @@ import { DepositContainer } from '@vegaprotocol/deposits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { AccountsTable } from '@vegaprotocol/accounts';
+import { AccountManager } from '@vegaprotocol/accounts';
 
 export const AccountsContainer = () => {
   const { keypair } = useVegaWallet();
@@ -54,7 +54,7 @@ export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
   const [assetId, setAssetId] = useState<string>();
   return (
     <>
-      <AccountsTable
+      <AccountManager
         partyId={partyId}
         onClickAsset={(value) => {
           if (value) {

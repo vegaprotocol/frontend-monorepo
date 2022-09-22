@@ -1,4 +1,4 @@
-import BreakdownTable from './breakdown-table';
+import AccountsTable from './breakdown-table';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { Schema as Types } from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
@@ -31,32 +31,32 @@ const singleRow: AccountFields = {
 };
 const singleRowData = [singleRow];
 
-describe('BreakdownTable', () => {
+describe('AccountsTable', () => {
   it('should render successfully', async () => {
     await act(async () => {
-      const { baseElement } = render(<BreakdownTable data={[]} />);
+      const { baseElement } = render(<AccountsTable data={[]} />);
       expect(baseElement).toBeTruthy();
     });
   });
 
   it('should render correct columns', async () => {
     act(async () => {
-      render(<BreakdownTable data={singleRowData} />);
+      render(<AccountsTable data={singleRowData} />);
       await waitFor(async () => {
         const headers = await screen.getAllByRole('columnheader');
-        expect(headers).toHaveLength(3);
+        expect(headers).toHaveLength(5);
         expect(
           headers.map((h) =>
             h.querySelector('[ref="eText"]')?.textContent?.trim()
           )
-        ).toEqual(['Market', 'Used', 'Type']);
+        ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
       });
     });
   });
 
   it('should apply correct formatting', async () => {
     act(async () => {
-      render(<BreakdownTable data={singleRowData} />);
+      render(<AccountsTable data={singleRowData} />);
       await waitFor(async () => {
         const cells = await screen.getAllByRole('gridcell');
         const expectedValues = [

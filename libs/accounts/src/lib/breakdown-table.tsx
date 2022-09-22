@@ -22,7 +22,7 @@ interface BreakdownTableProps extends AgGridReactProps {
   style?: CSSProperties;
 }
 
-export const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
+const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
   ({ data }, ref) => {
     return (
       <AgGrid
