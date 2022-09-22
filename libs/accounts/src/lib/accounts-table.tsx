@@ -3,14 +3,18 @@ import type {
   GroupCellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
-import type { Asset, ValueProps } from '@vegaprotocol/react-helpers';
-import {
-  calculateLowHighRange,
-  progressBarCellRendererSelector,
-} from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/react-helpers';
+import {} from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { Button, ButtonLink, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import type { ValueProps } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  Intent,
+  progressBarCellRendererSelector,
+} from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -45,10 +49,13 @@ export const progressBarValueFormatter = ({
   }
   const min = BigInt(data.used);
   const max = BigInt(data.deposited);
-  const mid = max > min ? max - min : max;
-  const intent = Intent.None;
-  const decimals = data.asset.decimals;
-  return calculateLowHighRange(max, min, decimals, mid, intent);
+  const range = max > min ? max : min;
+  return {
+    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 2),
+    high: addDecimalsFormatNumber(max.toString(), data.asset.decimals, 2),
+    value: range ? Number((min * BigInt(100)) / range) : 0,
+    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+  };
 };
 
 export const progressBarHeaderComponentParams = {

@@ -2,9 +2,8 @@ import type {
   CellRendererSelectorResult,
   ICellRendererParams,
 } from 'ag-grid-community';
-import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
-import type { Intent } from '@vegaprotocol/ui-toolkit';
-import { ProgressBar } from '@vegaprotocol/ui-toolkit';
+import type { Intent } from '../../utils/intent';
+import { ProgressBar } from './progress-bar';
 
 export interface ValueProps {
   valueFormatted?: {
@@ -38,21 +37,5 @@ export const progressBarCellRendererSelector = (
 ): CellRendererSelectorResult => {
   return {
     component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
-  };
-};
-
-export const calculateLowHighRange = (
-  max: bigint,
-  min: bigint,
-  decimals: number,
-  mid: bigint,
-  intent: Intent
-) => {
-  const range = max > min ? max - min : max; // coloured range should stay between min max bounds.
-  return {
-    low: addDecimalsFormatNumber(min.toString(), decimals),
-    high: addDecimalsFormatNumber(max.toString(), decimals),
-    value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-    intent,
   };
 };

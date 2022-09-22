@@ -7,7 +7,8 @@ import type {
   ICellRendererParams,
   CellRendererSelectorResult,
 } from 'ag-grid-community';
-import type { ValueProps as PriceCellProps } from '@vegaprotocol/react-helpers';
+import type { ValueProps as PriceCellProps } from '@vegaprotocol/ui-toolkit';
+import { EmptyCell, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -17,9 +18,6 @@ import {
   getDateTimeFormat,
   signedNumberCssClass,
   signedNumberCssClassRules,
-  calculateLowHighRange,
-  EmptyCell,
-  ProgressBarCell,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -129,9 +127,13 @@ const progressBarValueFormatter = ({
   const min = BigInt(data.averageEntryPrice);
   const max = BigInt(data.liquidationPrice);
   const mid = BigInt(data.markPrice);
-  const decimals = data.marketDecimalPlaces;
-  const intent = data.lowMarginLevel ? Intent.Warning : Intent.None;
-  return calculateLowHighRange(max, min, decimals, mid, intent);
+  const range = max - min;
+  return {
+    low: addDecimalsFormatNumber(min.toString(), data.marketDecimalPlaces),
+    high: addDecimalsFormatNumber(max.toString(), data.marketDecimalPlaces),
+    value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
+    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+  };
 };
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(

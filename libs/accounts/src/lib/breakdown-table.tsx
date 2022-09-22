@@ -1,12 +1,11 @@
 import type { CSSProperties } from 'react';
 import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
+import { PriceCell, t } from '@vegaprotocol/react-helpers';
 import {
-  PriceCell,
+  AgGridDynamic as AgGrid,
   progressBarCellRendererSelector,
-  t,
-} from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
