@@ -199,7 +199,7 @@ export const TradeMarketHeader = ({
         <HeaderStat heading={t('Settlement asset')}>
           <div data-testid="trading-mode">
             <ButtonLink
-              className="inline underline hover:text-black dark:hover:text-white"
+              className="hover:text-black dark:hover:text-white"
               onClick={() => {
                 setAssetDetailsDialogOpen(true);
                 setAssetDetailsDialogSymbol(symbol);
