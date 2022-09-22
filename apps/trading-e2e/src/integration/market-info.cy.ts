@@ -7,11 +7,12 @@ const marketTitle = 'accordion-title';
 const link = 'link';
 const externalLink = 'external-link';
 
-describe('market info is displayed', () => {
+describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
@@ -128,7 +129,9 @@ describe('market info is displayed', () => {
   });
 
   it('liquidity displayed', () => {
-    cy.getByTestId('accordion-toggle').eq(13).click();
+    cy.getByTestId(marketTitle)
+      .contains(/Liquidity(?! m)/)
+      .click();
 
     validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');

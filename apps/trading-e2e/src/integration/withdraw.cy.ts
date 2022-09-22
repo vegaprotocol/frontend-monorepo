@@ -6,7 +6,7 @@ import { generateWithdrawFormQuery } from '../support/mocks/generate-withdraw-pa
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
-describe('withdraw', () => {
+describe('withdraw', { tags: '@smoke' }, () => {
   const formFieldError = 'input-error-text';
   const toAddressField = 'input[name="to"]';
   const assetSelectField = 'select[name="asset"]';
@@ -23,6 +23,7 @@ describe('withdraw', () => {
       aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
       aliasQuery(req, 'Accounts', generateAccounts());
     });
+    cy.mockGQLSubscription();
 
     cy.visit('/portfolio');
     cy.getByTestId('Withdrawals').click();

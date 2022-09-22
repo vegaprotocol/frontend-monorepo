@@ -35,7 +35,7 @@ jobs:
           node-version: 16
 
       #######
-      ## Checkout capsule
+      ## Checkout repos
       #######
 
       # Checkout front ends
@@ -55,16 +55,7 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
 
-      #######
-      ## Build binaries
-      #######
-      - name: Build capsule
-        run: go install
-        working-directory: capsule
-
-      - name: Set GOBIN
-        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
-
+      # Checkout vega
       - name: Checkout Vega
         uses: actions/checkout@v2
         with:
@@ -73,28 +64,58 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install
+        working-directory: frontend-monorepo
+
+      # See affected apps to see if building all binaries is necessary
+      - name: See affected apps
+        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{github.base_ref}} --head=${{github.head_ref}} --select=projects) >> $GITHUB_ENV
+        working-directory: frontend-monorepo
+
+      - name: See if capsule is necessary
+        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+
+      #######
+      ## Build binaries
+      #######
+      - name: Build capsule
+        if: ${{ env.RUN_CAPSULE }}
+        run: go install
+        working-directory: capsule
+
+      - name: Set GOBIN
+        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
+
       - name: Install Vega binaries
+        if: ${{ env.RUN_CAPSULE }}
         run: go install -v ./cmd/vega
+        working-directory: vega
+
+      - name: Install date-node binaries
+        if: ${{ env.RUN_CAPSULE }}
+        run: go install ./cmd/data-node
         working-directory: vega
 
       - name: Install Vega wallet binaries
         run: go install ./cmd/vegawallet
         working-directory: vega
 
-      - name: Install date-node binaries
-        run: go install ./cmd/data-node
-        working-directory: vega
-
       ######
       ## Start capsule
       ######
       - name: Login to docker
+        if: ${{ env.RUN_CAPSULE }}
         run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
 
       - name: Start nomad
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule nomad &
 
       - name: Bootstrap network
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
         working-directory: capsule
 
@@ -112,7 +133,17 @@ jobs:
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Start service
+
+      - name: Import fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+
+      - name: Start service using fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
+
+      - name: Start service using capsule network
+        if: ${{ env.RUN_CAPSULE==true }}
         run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
@@ -123,20 +154,15 @@ jobs:
         uses: nrwl/nx-set-shas@v2
         with:
           working-directory: frontend-monorepo
-          main-branch-name: master
-
-      - name: Install root dependencies
-        run: yarn install
-        working-directory: frontend-monorepo
+          main-branch-name: ${{github.base_ref}}
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_INCLUDE_FLOWS: false
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
@@ -144,11 +170,11 @@ jobs:
       ######
 
       - name: Logs
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt

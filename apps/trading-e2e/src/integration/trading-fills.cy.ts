@@ -4,12 +4,13 @@ import { MarketState } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { mockTradingPage } from '../support/trading';
 
-describe('fills', () => {
+describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'Fills', generateFills());
     });
+    cy.mockGQLSubscription();
   });
 
   it('renders fills on portfolio page', () => {

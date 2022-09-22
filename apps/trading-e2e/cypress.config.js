@@ -6,8 +6,8 @@ module.exports = defineConfig({
     fileServerFolder: '.',
     fixturesFolder: false,
     specPattern: '**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: './src/support/index.ts',
-    video: true,
+    supportFile: './src/support/index.js',
+    video: false,
     videosFolder: '../../dist/cypress/apps/trading-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/trading-e2e/screenshots',
     chromeWebSecurity: false,
@@ -15,12 +15,16 @@ module.exports = defineConfig({
     defaultCommandTimeout: 10000,
   },
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4200',
     fileServerFolder: '.',
     fixturesFolder: false,
     specPattern: '**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: './src/support/index.ts',
-    video: true,
+    supportFile: './src/support/index.js',
+    video: false,
     videosFolder: '../../dist/cypress/apps/trading-e2e/videos',
     videoUploadOnPasses: false,
     screenshotsFolder: '../../dist/cypress/apps/trading-e2e/screenshots',
@@ -49,5 +53,8 @@ module.exports = defineConfig({
     TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

@@ -14,3 +14,5 @@
 // ***********************************************************
 
 import '@vegaprotocol/cypress';
+import registerCypressGrep from 'cypress-grep';
+registerCypressGrep();

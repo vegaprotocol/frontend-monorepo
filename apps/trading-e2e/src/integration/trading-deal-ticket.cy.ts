@@ -27,11 +27,12 @@ const mockTx = {
   },
 };
 
-describe('deal ticket orders', () => {
+describe('deal ticket orders', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
@@ -157,7 +158,7 @@ describe('deal ticket orders', () => {
   it.skip('unsuccessful order due to no collateral');
 });
 
-describe('deal ticket validation', () => {
+describe('deal ticket validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);

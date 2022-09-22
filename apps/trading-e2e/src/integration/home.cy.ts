@@ -2,12 +2,13 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
-describe('home', () => {
+describe('home', { tags: '@regression' }, () => {
   const selectMarketOverlay = 'select-market-list';
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/');
   });
 

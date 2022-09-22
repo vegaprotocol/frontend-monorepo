@@ -21,6 +21,7 @@ const vegaWallet = '[data-testid="vega-wallet"]';
 
 context(
   'Token association flow - with eth and vega wallets connected',
+  { tags: '@slow' },
   function () {
     before('visit staking tab and connect vega wallet', function () {
       cy.vega_wallet_import();

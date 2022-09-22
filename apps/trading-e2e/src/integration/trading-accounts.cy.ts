@@ -6,10 +6,11 @@ beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
 });
 
-describe('accounts', () => {
+describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
     const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]';
     cy.getByTestId('Collateral').click();

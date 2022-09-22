@@ -16,7 +16,7 @@ import { generateMarketNames } from '../support/mocks/generate-market-names';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import type { Market, Markets } from '@vegaprotocol/market-list';
 
-describe('market selector', () => {
+describe('market selector', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
