@@ -1,5 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
-import { AccountType } from 'libs/types/src/__generated__/types';
+import { AccountType } from '@vegaprotocol/types';
 import { getAccountData } from './accounts-data-provider';
 import { AccountTable } from './accounts-table';
 
