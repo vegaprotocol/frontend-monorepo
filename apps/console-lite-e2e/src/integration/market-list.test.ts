@@ -124,17 +124,10 @@ describe('market list', () => {
           .find('[role="row"]')
           .its('length')
           .then((length) => expect(length).to.be.closeTo(20, 3));
-        cy.get('.ag-cell-label-container').eq(4).click();
-        cy.get('body').then(($body) => {
-          for (let i = 0; i < 15; i++) {
-            cy.wrap($body).realPress('Tab', { pressDelay: 100 });
-          }
+        cy.get('div.ag-header-viewport').within(() => {
+          cy.contains('Markets').click().click();
         });
-        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '14');
-        cy.get('.ag-center-cols-container')
-          .find('[role="row"]')
-          .its('length')
-          .then((length) => expect(length).to.be.closeTo(26, 2));
+        cy.get('[row-id="first-btcusd-id999"]').should('exist');
       });
     });
   });
