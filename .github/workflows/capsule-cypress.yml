@@ -71,7 +71,7 @@ jobs:
 
       # See affected apps to see if building all binaries is necessary
       - name: See affected apps
-        run: echo AFFECTED=$(yarn nx print-affected --base=${{github.base_ref}} --head=${{github.head_ref}}) >> $GITHUB_ENV
+        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{github.base_ref}} --head=${{github.head_ref}} --select=projects) >> $GITHUB_ENV
         working-directory: frontend-monorepo
 
       - name: See if capsule is necessary
