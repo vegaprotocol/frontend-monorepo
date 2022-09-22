@@ -61,7 +61,7 @@ const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
 };
 
 const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
-  responseData.marketsConnection.edges[0].node.candlesConnection.edges
+  responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
     ?.filter((edge) => edge?.node)
     .map((edge) => edge?.node as Candle) || null;
 

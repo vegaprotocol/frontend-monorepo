@@ -45,10 +45,10 @@ type AssetEdge<T extends Asset> = {
   node: T;
 };
 
+type AssetEdges<T extends Asset> = { edges: (AssetEdge<T> | null)[] | null };
+
 type AssetsConnection<T extends Asset> = {
-  assetsConnection: {
-    edges: (AssetEdge<T> | null)[] | null;
-  };
+  assetsConnection: AssetEdges<T> | null;
 };
 
 export const getAssets = (data?: AssetsConnection<Asset>): Asset[] =>

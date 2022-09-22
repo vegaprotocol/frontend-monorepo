@@ -5,6 +5,7 @@ import {
 } from './generic-data-provider';
 import type {
   CombineDerivedData,
+  CombineDerivedDelta,
   Query,
   UpdateCallback,
   Update,
@@ -82,9 +83,15 @@ const combineData = jest.fn<
   Parameters<CombineDerivedData<CombinedData>>
 >();
 
+const combineDelta = jest.fn<
+  ReturnType<CombineDerivedDelta<never>>,
+  Parameters<CombineDerivedDelta<never>>
+>();
+
 const derivedSubscribe = makeDerivedDataProvider(
   [subscribe, secondSubscribe],
-  combineData
+  combineData,
+  combineDelta
 );
 
 const first = 100;

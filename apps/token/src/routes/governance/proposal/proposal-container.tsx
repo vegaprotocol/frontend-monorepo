@@ -37,7 +37,7 @@ export const ProposalContainer = () => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && <Proposal proposal={data.proposal} />}
+      {data && data.proposal && <Proposal proposal={data.proposal} />}
     </AsyncRenderer>
   );
 };

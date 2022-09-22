@@ -11,7 +11,7 @@ export const totalFees = (fees: Market['fees']['factors']) => {
   return formatNumberPercentage(
     new BigNumber(fees.makerFee)
       .plus(fees.liquidityFee)
-      .plus(fees.makerFee)
+      .plus(fees.infrastructureFee)
       .times(100)
   );
 };

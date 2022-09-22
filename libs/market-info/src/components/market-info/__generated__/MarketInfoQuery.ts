@@ -122,15 +122,15 @@ export interface MarketInfoQuery_market_priceMonitoringSettings {
 export interface MarketInfoQuery_market_riskFactors {
   __typename: "RiskFactor";
   /**
-   * market the risk factor was emitted for
+   * Market the risk factor was emitted for
    */
   market: string;
   /**
-   * short factor
+   * Short factor
    */
   short: string;
   /**
-   * long factor
+   * Long factor
    */
   long: string;
 }
@@ -184,7 +184,7 @@ export interface MarketInfoQuery_market_data_priceMonitoringBounds {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**
@@ -265,12 +265,25 @@ export interface MarketInfoQuery_market_liquidityMonitoringParameters {
   targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
 }
 
-export interface MarketInfoQuery_market_candles {
-  __typename: "Candle";
+export interface MarketInfoQuery_market_candlesConnection_edges_node {
+  __typename: "CandleNode";
   /**
    * Volume price (uint64)
    */
   volume: string;
+}
+
+export interface MarketInfoQuery_market_candlesConnection_edges {
+  __typename: "CandleEdge";
+  node: MarketInfoQuery_market_candlesConnection_edges_node;
+}
+
+export interface MarketInfoQuery_market_candlesConnection {
+  __typename: "CandleDataConnection";
+  /**
+   * The candles
+   */
+  edges: (MarketInfoQuery_market_candlesConnection_edges | null)[] | null;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
@@ -508,7 +521,7 @@ export interface MarketInfoQuery_market {
    */
   priceMonitoringSettings: MarketInfoQuery_market_priceMonitoringSettings;
   /**
-   * risk factors for the market
+   * Risk factors for the market
    */
   riskFactors: MarketInfoQuery_market_riskFactors | null;
   /**
@@ -520,9 +533,9 @@ export interface MarketInfoQuery_market {
    */
   liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candles: (MarketInfoQuery_market_candles | null)[] | null;
+  candlesConnection: MarketInfoQuery_market_candlesConnection | null;
   /**
    * An instance of, or reference to, a tradable instrument.
    */

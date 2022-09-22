@@ -46,7 +46,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
   /**
    * Collateral accounts relating to a party
    */
-  accountsConnection: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection;
+  accountsConnection: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection | null;
 }
 
 export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node {
@@ -56,7 +56,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
    */
   id: string | null;
   /**
-   * The Id of the party making this commitment
+   * The party making this commitment
    */
   party: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party;
   /**
@@ -72,7 +72,7 @@ export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node
    */
   commitmentAmount: string;
   /**
-   * Nominated liquidity fee factor, which is an input to the calculation of maker fees on the market, as per setting fees and rewarding liquidity providers.
+   * Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers.
    */
   fee: string;
   /**
@@ -174,7 +174,7 @@ export interface MarketLiquidity_market_data_liquidityProviderFeeShare {
 export interface MarketLiquidity_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: MarketLiquidity_market_data_market;
   /**
@@ -208,14 +208,14 @@ export interface MarketLiquidity_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -232,7 +232,7 @@ export interface MarketLiquidity_market {
   /**
    * The list of the liquidity provision commitments for this market
    */
-  liquidityProvisionsConnection: MarketLiquidity_market_liquidityProvisionsConnection;
+  liquidityProvisionsConnection: MarketLiquidity_market_liquidityProvisionsConnection | null;
   /**
    * An instance of, or reference to, a tradable instrument.
    */
@@ -252,5 +252,5 @@ export interface MarketLiquidity {
 
 export interface MarketLiquidityVariables {
   marketId: string;
-  partyId?: string | null;
+  partyId: string;
 }

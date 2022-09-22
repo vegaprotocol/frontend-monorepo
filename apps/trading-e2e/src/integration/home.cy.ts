@@ -8,6 +8,7 @@ describe('home', () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/');
   });
 

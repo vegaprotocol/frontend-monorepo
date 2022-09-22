@@ -39,6 +39,11 @@ export const MARKET_INFO_QUERY = gql`
           }
         }
       }
+      riskFactors {
+        market
+        short
+        long
+      }
       data {
         market {
           id
@@ -74,8 +79,12 @@ export const MARKET_INFO_QUERY = gql`
           scalingFactor
         }
       }
-      candles(interval: $interval, since: $since) {
-        volume
+      candlesConnection(interval: $interval, since: $since) {
+        edges {
+          node {
+            volume
+          }
+        }
       }
       tradableInstrument {
         instrument {

@@ -33,33 +33,20 @@ query MarketDepth($marketId: ID!) {
   }
 }
 
-subscription MarketDepthSubscription($marketId: ID!) {
-  marketDepthUpdate(marketId: $marketId) {
-    market {
-      id
-      positionDecimalPlaces
-      data {
-        staticMidPrice
-        marketTradingMode
-        indicativeVolume
-        indicativePrice
-        bestStaticBidPrice
-        bestStaticOfferPrice
-        market {
-          id
-        }
-      }
+subscription MarketDepthSubscription($marketIds: [ID!]!) {
+  marketsDepthUpdate(marketIds: $marketIds) {
+    marketId
+    buy {
+      price
+      volume
+      numberOfOrders
     }
     sell {
       price
       volume
       numberOfOrders
     }
-    buy {
-      price
-      volume
-      numberOfOrders
-    }
     sequenceNumber
+    previousSequenceNumber
   }
 }

@@ -18,6 +18,5 @@ query NodesQuery {
       online
     }
     status
-    name
   }
 }
