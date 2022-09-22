@@ -12,7 +12,7 @@ import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
 import { generateFillsMarkets } from '../support/mocks/generate-markets';
 
-describe('Portfolio page', () => {
+describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
     disconnectVegaWallet();
   });

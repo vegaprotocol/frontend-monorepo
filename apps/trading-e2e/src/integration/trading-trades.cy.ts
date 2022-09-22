@@ -9,7 +9,7 @@ beforeEach(() => {
   cy.visit('/markets/market-0');
 });
 
-describe('trades', () => {
+describe('trades', { tags: '@smoke' }, () => {
   const colIdPrice = 'price';
   const colIdSize = 'size';
   const colIdCreatedAt = 'createdAt';

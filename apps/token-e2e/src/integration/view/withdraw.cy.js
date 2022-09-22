@@ -1,23 +1,27 @@
 const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
 
-context('Withdraw Page - verify elements on page', function () {
-  before('navigate to withdrawals page', function () {
-    cy.visit('/').navigate_to('withdrawals');
-  });
-
-  describe('with wallets disconnected', function () {
-    it('should have withdraw tab highlighted', function () {
-      cy.verify_tab_highlighted('withdrawals');
+context(
+  'Withdraw Page - verify elements on page',
+  { tags: '@smoke' },
+  function () {
+    before('navigate to withdrawals page', function () {
+      cy.visit('/').navigate_to('withdrawals');
     });
 
-    it('should have WITHDRAW header visible', function () {
-      cy.verify_page_header('Withdrawals');
-    });
+    describe('with wallets disconnected', function () {
+      it('should have withdraw tab highlighted', function () {
+        cy.verify_tab_highlighted('withdrawals');
+      });
 
-    it('should have connect Vega wallet button', function () {
-      cy.get(connectToVegaBtn)
-        .should('be.visible')
-        .and('have.text', 'Connect Vega wallet');
+      it('should have WITHDRAW header visible', function () {
+        cy.verify_page_header('Withdrawals');
+      });
+
+      it('should have connect Vega wallet button', function () {
+        cy.get(connectToVegaBtn)
+          .should('be.visible')
+          .and('have.text', 'Connect Vega wallet');
+      });
     });
-  });
-});
+  }
+);
