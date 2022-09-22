@@ -11,6 +11,10 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: './src/fixtures',
+    specPattern: [
+      './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
+      './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
+    ],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.js',
     video: true,
@@ -21,8 +25,6 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     numTestsKeptInMemory: 5,
-    grepFilterSpecs: true,
-    grepOmitFiltered: true,
   },
   env: {
     ethProviderUrl: 'http://localhost:8545/',
@@ -44,6 +46,8 @@ module.exports = defineConfig({
     epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
     CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
-    grepTags: '@slow',
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

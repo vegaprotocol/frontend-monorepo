@@ -137,6 +137,7 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
+          CYPRESS_GREPTAGS: '@smoke'
 
       ######
       ## Upload logs
