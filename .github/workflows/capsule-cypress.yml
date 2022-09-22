@@ -136,7 +136,7 @@ jobs:
 
       - name: Start service using fairground network
         if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet service run --network fairground --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+        run: vegawallet service run --network fairground --automatic-consent &
 
       - name: Start service using capsule network
         if: ${{ env.RUN_CAPSULE==true }}
@@ -167,11 +167,11 @@ jobs:
       ######
 
       - name: Logs
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt
