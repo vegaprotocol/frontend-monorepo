@@ -11,6 +11,182 @@ import { addHours, addMinutes } from 'date-fns';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
+interface DeadlineProps {
+  vote: number;
+  enactment: number;
+  validation: number;
+}
+
+interface DeadlineDatesProps {
+  vote: Date;
+  enactment: Date;
+  validation: Date;
+}
+
+interface ValidationFormProps {
+  validationRegister:
+    | UseFormRegisterReturn<'proposalValidationDeadline'>
+    | undefined;
+  deadlines: DeadlineProps;
+  deadlineDates: DeadlineDatesProps;
+  updateValidationDeadlineAndDate: (hours: number) => void;
+  validationErrorMessage: string | undefined;
+}
+
+const ValidationForm = ({
+  validationRegister,
+  deadlines,
+  deadlineDates,
+  updateValidationDeadlineAndDate,
+  validationErrorMessage,
+}: ValidationFormProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <FormGroup
+      label={t('ProposalValidationDeadline')}
+      labelFor="proposal-validation-deadline"
+    >
+      <div className="flex items-center gap-2">
+        <div className="relative w-28">
+          <Input
+            {...validationRegister}
+            id="proposal-validation-deadline"
+            type="number"
+            value={deadlines.validation}
+            min={0}
+            max={deadlines.vote}
+            onChange={(e) => {
+              updateValidationDeadlineAndDate(Number(e.target.value));
+            }}
+            data-testid="proposal-validation-deadline"
+            className="pr-12"
+          />
+          <span className="absolute right-2 bottom-1/2 translate-y-1/2 text-sm">
+            {t('Hours')}
+          </span>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          <ButtonLink
+            data-testid="min-validation"
+            onClick={() => updateValidationDeadlineAndDate(0)}
+          >
+            {t('UseMin')}
+          </ButtonLink>
+          <ButtonLink
+            data-testid="max-validation"
+            onClick={() => updateValidationDeadlineAndDate(deadlines.vote)}
+          >
+            {t('UseMax')}
+          </ButtonLink>
+        </div>
+      </div>
+      {validationErrorMessage && (
+        <InputError intent="danger">{validationErrorMessage}</InputError>
+      )}
+
+      {deadlineDates.validation && (
+        <p className="mt-2 text-sm text-white">
+          <span className="font-light">
+            {t('ThisWillSetValidationDeadlineTo')}
+          </span>
+          <span data-testid="validation-date" className="pl-2">
+            {deadlineDates.validation?.toLocaleString()}
+          </span>
+          {deadlines.validation === 0 && (
+            <span
+              data-testid="validation-2-mins-extra"
+              className="block mt-4 font-light"
+            >
+              {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+            </span>
+          )}
+        </p>
+      )}
+    </FormGroup>
+  );
+};
+
+interface EnactmentFormProps {
+  enactmentRegister:
+    | UseFormRegisterReturn<'proposalEnactmentDeadline'>
+    | undefined;
+  deadlines: DeadlineProps;
+  deadlineDates: DeadlineDatesProps;
+  updateEnactmentDeadlineAndDate: (hours: number) => void;
+  enactmentErrorMessage: string | undefined;
+  minEnactmentHours: number;
+  maxEnactmentHours: number;
+}
+
+const EnactmentForm = ({
+  enactmentRegister,
+  deadlines,
+  deadlineDates,
+  updateEnactmentDeadlineAndDate,
+  enactmentErrorMessage,
+  minEnactmentHours,
+  maxEnactmentHours,
+}: EnactmentFormProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <FormGroup
+      label={t('ProposalEnactmentDeadline')}
+      labelFor="proposal-enactment-deadline"
+    >
+      <div className="flex items-center gap-2">
+        <div className="relative w-28">
+          <Input
+            {...enactmentRegister}
+            id="proposal-enactment-deadline"
+            type="number"
+            value={deadlines.enactment}
+            min={minEnactmentHours}
+            max={maxEnactmentHours}
+            onChange={(e) => {
+              updateEnactmentDeadlineAndDate(Number(e.target.value));
+            }}
+            data-testid="proposal-enactment-deadline"
+            className="pr-12"
+          />
+          <span className="absolute right-2 bottom-1/2 translate-y-1/2 text-sm">
+            {t('Hours')}
+          </span>
+        </div>
+        <div className="flex items-center gap-4 text-sm">
+          <ButtonLink
+            data-testid="min-enactment"
+            onClick={() => updateEnactmentDeadlineAndDate(minEnactmentHours)}
+          >
+            {t('UseMin')}
+          </ButtonLink>
+          <ButtonLink
+            data-testid="max-enactment"
+            onClick={() => updateEnactmentDeadlineAndDate(maxEnactmentHours)}
+          >
+            {t('UseMax')}
+          </ButtonLink>
+        </div>
+      </div>
+      {enactmentErrorMessage && (
+        <InputError intent="danger">{enactmentErrorMessage}</InputError>
+      )}
+
+      {deadlineDates.enactment && (
+        <p className="mt-2 text-sm text-white">
+          <span className="font-light">
+            {t('ThisWillSetEnactmentDeadlineTo')}
+          </span>
+          <span data-testid="enactment-date" className="pl-2">
+            {deadlineDates.enactment?.toLocaleString()}
+          </span>
+        </p>
+      )}
+    </FormGroup>
+  );
+};
+
 export interface ProposalFormVoteAndEnactmentDeadlineProps {
   voteRegister: UseFormRegisterReturn<'proposalVoteDeadline'>;
   voteErrorMessage: string | undefined;
@@ -82,21 +258,13 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
       [minVoteSeconds, maxVoteSeconds, minEnactmentSeconds, maxEnactmentSeconds]
     );
 
-  const [deadlines, setDeadlines] = useState<{
-    vote: number;
-    enactment: number;
-    validation: number;
-  }>({
+  const [deadlines, setDeadlines] = useState<DeadlineProps>({
     vote: minVoteHours,
     enactment: minEnactmentHours,
     validation: 0,
   });
 
-  const [deadlineDates, setDeadlineDates] = useState<{
-    vote: Date;
-    enactment: Date;
-    validation: Date;
-  }>({
+  const [deadlineDates, setDeadlineDates] = useState<DeadlineDatesProps>({
     vote:
       deadlines.vote === minVoteHours
         ? addHours(addMinutes(new Date(), 2), deadlines.vote)
@@ -253,127 +421,25 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
       </FormGroup>
 
       {validationRequired && (
-        <FormGroup
-          label={t('ProposalValidationDeadline')}
-          labelFor="proposal-validation-deadline"
-        >
-          <div className="flex items-center gap-2">
-            <div className="relative w-28">
-              <Input
-                {...validationRegister}
-                id="proposal-validation-deadline"
-                type="number"
-                value={deadlines.validation}
-                min={0}
-                max={deadlines.vote}
-                onChange={(e) => {
-                  updateValidationDeadlineAndDate(Number(e.target.value));
-                }}
-                data-testid="proposal-validation-deadline"
-                className="pr-12"
-              />
-              <span className="absolute right-2 bottom-1/2 translate-y-1/2 text-sm">
-                {t('Hours')}
-              </span>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <ButtonLink
-                data-testid="min-validation"
-                onClick={() => updateValidationDeadlineAndDate(0)}
-              >
-                {t('UseMin')}
-              </ButtonLink>
-              <ButtonLink
-                data-testid="max-validation"
-                onClick={() => updateValidationDeadlineAndDate(deadlines.vote)}
-              >
-                {t('UseMax')}
-              </ButtonLink>
-            </div>
-          </div>
-          {validationErrorMessage && (
-            <InputError intent="danger">{validationErrorMessage}</InputError>
-          )}
-
-          {deadlineDates.validation && (
-            <p className="mt-2 text-sm text-white">
-              <span className="font-light">
-                {t('ThisWillSetValidationDeadlineTo')}
-              </span>
-              <span data-testid="validation-date" className="pl-2">
-                {deadlineDates.validation?.toLocaleString()}
-              </span>
-              {deadlines.validation === 0 && (
-                <span
-                  data-testid="validation-2-mins-extra"
-                  className="block mt-4 font-light"
-                >
-                  {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
-                </span>
-              )}
-            </p>
-          )}
-        </FormGroup>
+        <ValidationForm
+          validationRegister={validationRegister}
+          deadlines={deadlines}
+          deadlineDates={deadlineDates}
+          updateValidationDeadlineAndDate={updateValidationDeadlineAndDate}
+          validationErrorMessage={validationErrorMessage}
+        />
       )}
 
       {enactmentMinClose && enactmentMaxClose && maxEnactmentHours && (
-        <FormGroup
-          label={t('ProposalEnactmentDeadline')}
-          labelFor="proposal-enactment-deadline"
-        >
-          <div className="flex items-center gap-2">
-            <div className="relative w-28">
-              <Input
-                {...enactmentRegister}
-                id="proposal-enactment-deadline"
-                type="number"
-                value={deadlines.enactment}
-                min={minEnactmentHours}
-                max={maxEnactmentHours}
-                onChange={(e) => {
-                  updateEnactmentDeadlineAndDate(Number(e.target.value));
-                }}
-                data-testid="proposal-enactment-deadline"
-                className="pr-12"
-              />
-              <span className="absolute right-2 bottom-1/2 translate-y-1/2 text-sm">
-                {t('Hours')}
-              </span>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <ButtonLink
-                data-testid="min-enactment"
-                onClick={() =>
-                  updateEnactmentDeadlineAndDate(minEnactmentHours)
-                }
-              >
-                {t('UseMin')}
-              </ButtonLink>
-              <ButtonLink
-                data-testid="max-enactment"
-                onClick={() =>
-                  updateEnactmentDeadlineAndDate(maxEnactmentHours)
-                }
-              >
-                {t('UseMax')}
-              </ButtonLink>
-            </div>
-          </div>
-          {enactmentErrorMessage && (
-            <InputError intent="danger">{enactmentErrorMessage}</InputError>
-          )}
-
-          {deadlineDates.enactment && (
-            <p className="mt-2 text-sm text-white">
-              <span className="font-light">
-                {t('ThisWillSetEnactmentDeadlineTo')}
-              </span>
-              <span data-testid="enactment-date" className="pl-2">
-                {deadlineDates.enactment?.toLocaleString()}
-              </span>
-            </p>
-          )}
-        </FormGroup>
+        <EnactmentForm
+          enactmentRegister={enactmentRegister}
+          deadlines={deadlines}
+          deadlineDates={deadlineDates}
+          updateEnactmentDeadlineAndDate={updateEnactmentDeadlineAndDate}
+          enactmentErrorMessage={enactmentErrorMessage}
+          minEnactmentHours={minEnactmentHours}
+          maxEnactmentHours={maxEnactmentHours}
+        />
       )}
     </>
   );
