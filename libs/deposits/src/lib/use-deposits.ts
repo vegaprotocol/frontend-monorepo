@@ -38,7 +38,10 @@ export const useDeposits = () => {
   useEffect(() => {
     if (!keypair?.pub) return;
 
-    const unsub = subscribeToMore<DepositEventSubscription, DepositEventSubscriptionVariables>({
+    const unsub = subscribeToMore<
+      DepositEventSubscription,
+      DepositEventSubscriptionVariables
+    >({
       document: DepositEventDocument,
       variables: { partyId: keypair?.pub },
       updateQuery,
@@ -62,7 +65,10 @@ const updateQuery: UpdateQueryFn<
   }
 
   const curr = getNodes<DepositFieldsFragment>(prev.party?.depositsConnection);
-  const incoming = getEvents<DepositFieldsFragment>(Schema.BusEventType.Deposit, subscriptionData.data.busEvents)
+  const incoming = getEvents<DepositFieldsFragment>(
+    Schema.BusEventType.Deposit,
+    subscriptionData.data.busEvents
+  );
 
   const deposits = uniqBy([...incoming, ...curr], 'id');
 

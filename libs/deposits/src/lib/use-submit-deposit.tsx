@@ -1,10 +1,10 @@
 import { useSubscription } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import {
-  DepositEventDocument,
+import type {
   DepositEventSubscription,
   DepositEventSubscriptionVariables,
 } from './__generated__/Deposit';
+import { DepositEventDocument } from './__generated__/Deposit';
 import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
 import {
@@ -45,37 +45,40 @@ export const useSubmitDeposit = () => {
     true
   );
 
-  useSubscription<DepositEventSubscription, DepositEventSubscriptionVariables>(DepositEventDocument, {
-    variables: { partyId: partyId ? remove0x(partyId) : '' },
-    skip: !partyId,
-    onSubscriptionData: ({ subscriptionData }) => {
-      if (!subscriptionData.data?.busEvents?.length) {
-        return;
-      }
+  useSubscription<DepositEventSubscription, DepositEventSubscriptionVariables>(
+    DepositEventDocument,
+    {
+      variables: { partyId: partyId ? remove0x(partyId) : '' },
+      skip: !partyId,
+      onSubscriptionData: ({ subscriptionData }) => {
+        if (!subscriptionData.data?.busEvents?.length) {
+          return;
+        }
 
-      const matchingDeposit = subscriptionData.data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Deposit') {
+        const matchingDeposit = subscriptionData.data.busEvents.find((e) => {
+          if (e.event.__typename !== 'Deposit') {
+            return false;
+          }
+
+          if (
+            e.event.txHash === transaction.transaction.txHash &&
+            // Note there is a bug in data node where the subscription is not emitted when the status
+            // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
+            // https://github.com/vegaprotocol/data-node/issues/460
+            e.event.status === DepositStatus.STATUS_FINALIZED
+          ) {
+            return true;
+          }
+
           return false;
+        });
+
+        if (matchingDeposit && matchingDeposit.event.__typename === 'Deposit') {
+          transaction.setConfirmed();
         }
-
-        if (
-          e.event.txHash === transaction.transaction.txHash &&
-          // Note there is a bug in data node where the subscription is not emitted when the status
-          // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
-          // https://github.com/vegaprotocol/data-node/issues/460
-          e.event.status === DepositStatus.STATUS_FINALIZED
-        ) {
-          return true;
-        }
-
-        return false;
-      });
-
-      if (matchingDeposit && matchingDeposit.event.__typename === 'Deposit') {
-        transaction.setConfirmed();
-      }
-    },
-  });
+      },
+    }
+  );
 
   return {
     ...transaction,
