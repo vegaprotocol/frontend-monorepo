@@ -17,7 +17,7 @@ on:
           - trading-e2e
       runAlltests:
         description: 'Run only smoke tests?'
-        required: false
+        required: true
         type: boolean
         default: false
 
@@ -133,11 +133,17 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run smoke Cypress tests
-        if: ${{ env.runAlltests==true}}
+        if: ${{ github.event.inputs.runAlltests == 'true' }}
         run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
+        working-directory: frontend-monorepo
+        env:
+          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       - name: Run Cypress tests
-        if: ${{ env.runAlltests==false}}
+        if: ${{ github.event.inputs.runAlltests == 'false' }}
         run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
         working-directory: frontend-monorepo
         env:
