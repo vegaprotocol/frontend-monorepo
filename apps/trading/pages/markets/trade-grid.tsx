@@ -39,7 +39,6 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
-import { useRouter } from 'next/router';
 import { Header, HeaderStat } from '../../components/header';
 
 const TradingViews = {
