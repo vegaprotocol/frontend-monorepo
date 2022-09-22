@@ -238,7 +238,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <MarketInfoTable
           data={market.riskFactors}
           unformatted={true}
-          omits={['market']}
+          omits={['market', '__typename']}
         />
       ),
     },
@@ -258,12 +258,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
-      ),
-    })),
     ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
       title: t(`Price monitoring bound ${i + 1}`),
       content: (

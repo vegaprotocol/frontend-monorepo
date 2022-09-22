@@ -1103,3 +1103,16 @@ export const generateMarkets = (override?): Markets => {
 
   return merge(defaultResult, override);
 };
+
+export const generateFillsMarkets = () => {
+  const marketIds = ['market-0', 'market-1', 'market-2', 'market-4'];
+  return {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: marketIds.map((id) => ({
+        __typename: 'MarketEdge',
+        node: { ...protoMarket, id },
+      })),
+    },
+  };
+};

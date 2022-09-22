@@ -10,6 +10,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/portfolio');
+    cy.mockGQLSubscription();
     cy.get('main[data-testid="portfolio"]').should('exist');
   });
 

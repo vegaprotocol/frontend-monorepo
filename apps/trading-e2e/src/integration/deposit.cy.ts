@@ -11,6 +11,7 @@ const formFieldError = 'input-error-text';
 describe('deposit form validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
+    cy.mockGQLSubscription();
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'DepositPage', generateDepositPage());

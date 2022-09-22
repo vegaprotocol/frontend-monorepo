@@ -8,6 +8,7 @@ describe('home', { tags: '@regression' }, () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/');
   });
 

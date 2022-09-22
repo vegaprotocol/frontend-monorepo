@@ -15,7 +15,7 @@ module.exports = defineConfig({
     excludeSpecPattern: '**/*.js',
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
-    video: true,
+    video: false,
     videoUploadOnPasses: false,
     videosFolder:
       '../../dist/cypress/apps/liquidity-provision-dashboard-e2e/videos',

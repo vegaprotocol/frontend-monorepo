@@ -6,6 +6,7 @@ beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockGQLSubscription();
 });
 
 describe('positions', { tags: '@smoke' }, () => {

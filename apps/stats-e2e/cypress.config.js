@@ -14,7 +14,7 @@ module.exports = defineConfig({
     excludeSpecPattern: '**/*.js',
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
-    video: true,
+    video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/explorer-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/explorer-e2e/screenshots',
