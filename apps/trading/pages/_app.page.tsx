@@ -3,7 +3,11 @@ import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/environment';
+import {
+  EnvironmentProvider,
+  envTriggerMapping,
+  useEnvironment,
+} from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader } from '../components/app-loader';
 import { RiskNoticeDialog } from '../components/risk-notice-dialog';
@@ -14,19 +18,32 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { Footer } from '../components/footer';
+import { useMemo } from 'react';
+
+const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
 function AppBody({ Component, pageProps }: AppProps) {
-  const { connectDialog, update } = useGlobalStore((store) => ({
+  const { connectDialog, pageTitle, update } = useGlobalStore((store) => ({
     connectDialog: store.connectDialog,
+    pageTitle: store.pageTitle,
     update: store.update,
   }));
   const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 
+  const { VEGA_ENV } = useEnvironment();
+  const networkName = envTriggerMapping[VEGA_ENV];
+
+  const title = useMemo(() => {
+    if (!pageTitle) return DEFAULT_TITLE;
+    if (networkName) return `${pageTitle} [${networkName}]`;
+    return pageTitle;
+  }, [pageTitle, networkName]);
+
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
-        <title>{t('Welcome to Vega trading!')}</title>
+        <title>{title}</title>
       </Head>
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
