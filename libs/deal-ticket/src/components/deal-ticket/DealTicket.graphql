@@ -1,4 +1,4 @@
-query DealTicketQuery($marketId: ID!) {
+query DealTicket($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces

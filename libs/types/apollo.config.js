@@ -17,6 +17,7 @@ module.exports = {
       '../../libs/accounts/**',
       '../../libs/assets/**',
       '../../libs/candles-chart/**',
+      '../../libs/deal-ticket/**',
     ],
   },
 };
