@@ -72,6 +72,7 @@ export const MarketInfoContainer = ({
     MARKET_INFO_QUERY,
     {
       variables,
+      errorPolicy: 'ignore',
     }
   );
 
