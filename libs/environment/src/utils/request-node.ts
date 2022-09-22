@@ -1,6 +1,9 @@
 import createClient from './apollo-client';
 import { StatisticsDocument, BlockTimeDocument } from './__generated__/Node';
-import type { StatisticsQuery, BlockTimeSubscription } from './__generated__/Node';
+import type {
+  StatisticsQuery,
+  BlockTimeSubscription,
+} from './__generated__/Node';
 
 type Callbacks = {
   onStatsSuccess: (data: StatisticsQuery) => void;
