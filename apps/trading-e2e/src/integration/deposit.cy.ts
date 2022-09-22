@@ -8,7 +8,7 @@ const toAddressField = 'input[name="to"]';
 const amountField = 'input[name="amount"]';
 const formFieldError = 'input-error-text';
 
-describe('deposit form validation', () => {
+describe('deposit form validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQLSubscription();
