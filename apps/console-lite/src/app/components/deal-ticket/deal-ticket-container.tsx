@@ -53,7 +53,7 @@ export const DealTicketContainer = () => {
     <Container marketId={marketId}>
       {(data) => {
         if (!data.market) {
-          return <></>;
+          return null as unknown as JSX.Element;
         }
 
         const balance = (
