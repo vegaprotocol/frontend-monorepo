@@ -16,6 +16,7 @@ const Portfolio = () => {
   const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
+      <p> THIS IS A TEST</p>
       <ResizableGrid vertical={true}>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
