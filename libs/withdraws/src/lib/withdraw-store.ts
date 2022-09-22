@@ -1,9 +1,8 @@
 import type { Asset } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import type { SetState } from 'zustand';
 import create from 'zustand';
 
-interface WithdrawStore {
+export interface WithdrawStore {
   asset: Asset | undefined;
   balance: BigNumber;
   min: BigNumber;
@@ -12,7 +11,7 @@ interface WithdrawStore {
   update: (state: Partial<WithdrawStore>) => void;
 }
 
-export const useWithdrawStore = create((set: SetState<WithdrawStore>) => ({
+export const useWithdrawStore = create<WithdrawStore>((set) => ({
   asset: undefined,
   balance: new BigNumber(0),
   min: new BigNumber(0),

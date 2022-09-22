@@ -37,7 +37,7 @@ export const getId = (
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId}`;
 
-const INCOMING_ACCOUNT_TYPES = [
+const IN_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_GENERAL,
   AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
   AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
@@ -45,7 +45,7 @@ const INCOMING_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
 ];
 
-const OUTCOMING_ACCOUNT_TYPES = [
+const OUT_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_MARGIN,
   AccountType.ACCOUNT_TYPE_BOND,
   AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
@@ -110,11 +110,11 @@ export const getAccountData = (
       .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
     const incoming = assetData
-      .filter((a) => INCOMING_ACCOUNT_TYPES.includes(a.type))
+      .filter((a) => IN_ACCOUNT_TYPES.includes(a.type))
       .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
     const used = assetData
-      .filter((a) => OUTCOMING_ACCOUNT_TYPES.includes(a.type))
+      .filter((a) => OUT_ACCOUNT_TYPES.includes(a.type))
       .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
     const depositRow: AccountFields = {
@@ -125,7 +125,7 @@ export const getAccountData = (
     };
 
     const accountRows = assetData
-      .filter((a) => !INCOMING_ACCOUNT_TYPES.includes(a.type))
+      .filter((a) => !IN_ACCOUNT_TYPES.includes(a.type))
       .map((a) => ({
         ...a,
         available: (incoming - BigInt(a.balance)).toString(),

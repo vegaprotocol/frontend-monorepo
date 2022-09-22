@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/react-helpers';
 
@@ -14,13 +14,33 @@ interface DepositManagerProps {
   isFaucetable: boolean;
 }
 
+const useDepositAsset = (assets: Asset[], assetId?: string) => {
+  const { asset, balance, allowance, deposited, max, update } =
+    useDepositStore();
+
+  const handleSelectAsset = useCallback(
+    (id: string) => {
+      const asset = assets.find((a) => a.id === id);
+      update({ asset });
+    },
+    [assets, update]
+  );
+
+  useEffect(() => {
+    handleSelectAsset(assetId || '');
+  }, [assetId, handleSelectAsset]);
+
+  return { asset, balance, allowance, deposited, max, handleSelectAsset };
+};
+
 export const DepositManager = ({
   assetId,
   assets,
   isFaucetable,
 }: DepositManagerProps) => {
-  const { asset, balance, allowance, deposited, max, update } =
-    useDepositStore();
+  const { asset, balance, allowance, deposited, max, handleSelectAsset } =
+    useDepositAsset(assets, assetId);
+
   useDepositBalances(isFaucetable);
 
   // Set up approve transaction
@@ -31,14 +51,6 @@ export const DepositManager = ({
 
   // Set up faucet transaction
   const faucet = useSubmitFaucet();
-
-  const handleSelectAsset = useCallback(
-    (id: string) => {
-      const asset = assets.find((a) => a.id === id);
-      update({ asset });
-    },
-    [assets, update]
-  );
 
   return (
     <>

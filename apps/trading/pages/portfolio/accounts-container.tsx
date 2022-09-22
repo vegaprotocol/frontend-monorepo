@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
-import type { Asset } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { WithdrawalDialogs } from '@vegaprotocol/withdraws';
 import { Web3Container } from '@vegaprotocol/web3';
@@ -52,7 +51,7 @@ export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
   const [depositDialog, setDepositDialog] = useState(false);
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
-  const [asset, setAsset] = useState<Asset | null>(null);
+  const [assetId, setAssetId] = useState<string>();
   return (
     <>
       <AccountsTable
@@ -63,15 +62,22 @@ export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
             setAssetDetailsDialogSymbol(value);
           }
         }}
-        onClickWithdraw={(value) => { setWithdrawDialog(true); setAsset(value || null); }}
-        onClickDeposit={(value) => { setDepositDialog(true); setAsset(value || null); }}
+        onClickWithdraw={(assetId) => {
+          setWithdrawDialog(true);
+          setAssetId(assetId);
+        }}
+        onClickDeposit={(assetId) => {
+          setDepositDialog(true);
+          setAssetId(assetId);
+        }}
       />
       <WithdrawalDialogs
-        asset={asset || undefined}
+        assetId={assetId}
         withdrawDialog={withdrawDialog}
         setWithdrawDialog={setWithdrawDialog}
       />
       <DepositDialog
+        assetId={assetId}
         depositDialog={depositDialog}
         setDepositDialog={setDepositDialog}
       />

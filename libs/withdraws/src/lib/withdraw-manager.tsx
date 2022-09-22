@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
@@ -12,19 +12,11 @@ import { captureException } from '@sentry/react';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useWithdrawStore } from './withdraw-store';
 
-export interface WithdrawManagerProps {
-  assets: Asset[];
-  accounts: Account[];
-  submit: (args: WithdrawalArgs) => void;
-  assetId?: string;
-}
-
-export const WithdrawManager = ({
-  assets,
-  accounts,
-  submit,
-  assetId,
-}: WithdrawManagerProps) => {
+const useWithdrawAsset = (
+  assets: Asset[],
+  accounts: Account[],
+  assetId?: string
+) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
@@ -65,9 +57,30 @@ export const WithdrawManager = ({
     [accounts, assets, update, getThreshold, getDelay]
   );
 
+  useEffect(() => {
+    handleSelectAsset(assetId || '');
+  }, [assetId, handleSelectAsset]);
+
+  return { asset, balance, min, threshold, delay, handleSelectAsset };
+};
+
+export interface WithdrawManagerProps {
+  assets: Asset[];
+  accounts: Account[];
+  submit: (args: WithdrawalArgs) => void;
+  assetId?: string;
+}
+
+export const WithdrawManager = ({
+  assets,
+  accounts,
+  submit,
+  assetId,
+}: WithdrawManagerProps) => {
+  const { asset, balance, min, threshold, delay, handleSelectAsset } =
+    useWithdrawAsset(assets, accounts, assetId);
   return (
     <WithdrawForm
-      assetId={assetId}
       selectedAsset={asset}
       onSelectAsset={handleSelectAsset}
       assets={sortBy(assets, 'name')}

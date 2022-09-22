@@ -31,9 +31,9 @@ import BreakdownTable from './breakdown-table';
 
 interface AccountsTableProps extends AgGridReactProps {
   partyId: string;
-  onClickAsset: (value?: string | Asset) => void;
-  onClickWithdraw?: (value?: Asset) => void;
-  onClickDeposit?: (value?: Asset) => void;
+  onClickAsset: (asset?: string | Asset) => void;
+  onClickWithdraw?: (assetId?: string) => void;
+  onClickDeposit?: (assetId?: string) => void;
 }
 
 export const progressBarValueFormatter = ({
@@ -194,9 +194,13 @@ export const AccountsTable = ({
           maxWidth={200}
           cellRenderer={({ data }: GroupCellRendererParams) => {
             return (
-              <Button size="xs" data-testid="deposit" onClick={() => {
-                onClickDeposit && onClickDeposit(data.asset)
-              }}>
+              <Button
+                size="xs"
+                data-testid="deposit"
+                onClick={() => {
+                  onClickDeposit && onClickDeposit(data.asset.id);
+                }}
+              >
                 {t('Deposit')}
               </Button>
             );
@@ -211,7 +215,9 @@ export const AccountsTable = ({
               <Button
                 size="xs"
                 data-testid="withdraw"
-                onClick={() => onClickWithdraw && onClickWithdraw(data.asset)}
+                onClick={() =>
+                  onClickWithdraw && onClickWithdraw(data.asset.id)
+                }
               >
                 {t('Withdraw')}
               </Button>

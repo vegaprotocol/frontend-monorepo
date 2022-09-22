@@ -50,7 +50,6 @@ export interface DepositFormProps {
   deposited: BigNumber | undefined;
   allowance: BigNumber | undefined;
   isFaucetable?: boolean;
-  assetId?: string;
 }
 
 export const DepositForm = ({
@@ -65,7 +64,6 @@ export const DepositForm = ({
   requestFaucet,
   allowance,
   isFaucetable,
-  assetId,
 }: DepositFormProps) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -82,7 +80,7 @@ export const DepositForm = ({
     defaultValues: {
       from: account,
       to: keypair?.pub,
-      asset: assetId,
+      asset: selectedAsset?.id || '',
     },
   });
 
