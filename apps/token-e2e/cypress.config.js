@@ -16,7 +16,7 @@ module.exports = defineConfig({
         : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
-    video: true,
+    video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/token-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/token-e2e/screenshots',
