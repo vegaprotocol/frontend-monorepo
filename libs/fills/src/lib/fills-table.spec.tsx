@@ -51,7 +51,8 @@ describe('FillsTable', () => {
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
-    await waitFor(() => {
+    await waitFor(async () => {
+      await screen.findByText('Market');
       const headers = screen.getAllByRole('columnheader');
       expect(headers).toHaveLength(7);
       expect(headers.map((h) => h.textContent?.trim())).toEqual([

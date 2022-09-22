@@ -23,6 +23,7 @@ describe('withdraw', () => {
       aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
       aliasQuery(req, 'Accounts', generateAccounts());
     });
+    cy.mockGQLSubscription();
 
     cy.visit('/portfolio');
     cy.getByTestId('Withdrawals').click();
