@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { formatLabel, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';

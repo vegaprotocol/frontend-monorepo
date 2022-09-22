@@ -66,19 +66,8 @@ const SendTransactionSchema = BaseSchema.extend({
     sentAt: z.string(),
     transactionHash: z.string(),
     transaction: z.object({
-      version: z.number(),
-      From: z.object({
-        PubKey: z.string(),
-      }),
-      input_data: z.string(),
-      pow: z.object({
-        tid: z.string(),
-        nonce: z.number(),
-      }),
       signature: z.object({
-        algo: z.string(),
         value: z.string(),
-        version: z.number(),
       }),
     }),
   }),
