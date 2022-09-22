@@ -290,7 +290,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           assetSymbol={assetSymbol}
         >
           <Link passHref={true} href={`/liquidity/${market.id}`}>
-            <UiToolkitLink>{t('View liquidity provision table')}</UiToolkitLink>
+            <UiToolkitLink onClick={() => onSelect(market.id)}>
+              {t('View liquidity provision table')}
+            </UiToolkitLink>
           </Link>
         </MarketInfoTable>
       ),

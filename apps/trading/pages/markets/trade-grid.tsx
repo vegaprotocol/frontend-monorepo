@@ -170,7 +170,6 @@ export const TradeMarketHeader = ({
             market={market}
             onSelect={(marketId: string) => {
               onSelect(marketId);
-              push(`/liquidity/${marketId}`);
             }}
           />
         }
@@ -257,7 +256,6 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
                       marketId={market.id}
                       onSelect={(id: string) => {
                         onSelect(id);
-                        push(`/liquidity/${id}`);
                       }}
                     />
                   </Tab>
@@ -329,7 +327,6 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
-  const { push } = useRouter();
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
@@ -344,7 +341,6 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
         marketId={market.id}
         onSelect={(id: string) => {
           onSelect(id);
-          push(`/liquidity/${id}`);
         }}
       />
     );
