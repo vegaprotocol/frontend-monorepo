@@ -15,6 +15,11 @@ on:
           - stats-e2e
           - token-e2e
           - trading-e2e
+      runAlltests:
+        description: 'Run only smoke tests?'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   manual:
@@ -127,7 +132,12 @@ jobs:
         run: yarn install
         working-directory: frontend-monorepo
 
+      - name: Run smoke Cypress tests
+        if: ${{ env.runAlltests==true}}
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
+
       - name: Run Cypress tests
+        if: ${{ env.runAlltests==false}}
         run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
         working-directory: frontend-monorepo
         env:
