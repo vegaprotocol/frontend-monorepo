@@ -24,12 +24,19 @@ export const AccountsContainer = () => {
   return (
     <Web3Container>
       <div className="h-full">
-        <AssetAccountTable partyId={keypair.pub} />
-        <div className="m-auto ml-4">
-          <Button size="sm" onClick={() => setDepositDialog(true)}>
+        <header className="flex justify-between items-center p-4">
+          <h1 className="text-lg text-black dark:text-white">
+            {t('Collateral')}
+          </h1>
+          <Button
+            size="sm"
+            onClick={() => setDepositDialog(true)}
+            data-testid="deposit-new-dialog-button"
+          >
             {t('Deposit new asset')}
           </Button>
-        </div>
+        </header>
+        <AssetAccountTable partyId={keypair.pub} />
         <DepositDialog
           depositDialog={depositDialog}
           setDepositDialog={setDepositDialog}

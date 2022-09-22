@@ -156,6 +156,12 @@ export const AccountsTable = ({
           maxWidth={300}
         />
         <AgGridColumn
+          headerName={t('Deposited')}
+          field="deposited"
+          valueFormatter={assetDecimalsFormatter}
+          maxWidth={300}
+        />
+        <AgGridColumn
           headerName={t('Used')}
           field="used"
           flex={2}
@@ -165,19 +171,12 @@ export const AccountsTable = ({
           valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
-          headerName={t('Deposited')}
-          field="deposited"
-          valueFormatter={assetDecimalsFormatter}
-          maxWidth={300}
-        />
-        <AgGridColumn
           headerName=""
           field="breakdown"
-          minWidth={250}
+          maxWidth={150}
           cellRenderer={({ value }: GroupCellRendererParams) => {
             return (
-              <Button
-                size="xs"
+              <ButtonLink
                 data-testid="breakdown"
                 onClick={() => {
                   setOpenBreakdown(!openBreakdown);
@@ -185,7 +184,7 @@ export const AccountsTable = ({
                 }}
               >
                 {t('Collateral breakdown')}
-              </Button>
+              </ButtonLink>
             );
           }}
         />
@@ -220,7 +219,7 @@ export const AccountsTable = ({
       </AgGrid>
       <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
         <div className="h-[35vh] w-full m-auto flex flex-col">
-          <h1 className="text-xl mb-4">{'Breakdown'}</h1>
+          <h1 className="text-xl mb-4">{'Collateral breakdown'}</h1>
           <BreakdownTable data={breakdown} domLayout="autoHeight" />
         </div>
       </Dialog>
