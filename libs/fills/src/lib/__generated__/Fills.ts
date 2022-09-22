@@ -1,166 +1,161 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+import { Schema as Types } from '@vegaprotocol/types';
 
-import { Pagination, Side } from "@vegaprotocol/types";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+const defaultOptions = {} as const;
+export type FillFieldsFragment = { __typename?: 'Trade', id: string, createdAt: string, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
 
-// ====================================================
-// GraphQL query operation: Fills
-// ====================================================
+export type FillEdgeFragment = { __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: string, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
 
-export interface Fills_party_tradesConnection_edges_node_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
+export type FillsQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
+  pagination?: Types.InputMaybe<Types.Pagination>;
+}>;
+
+
+export type FillsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: string, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
+
+export type FillsEventSubscriptionVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
+
+
+export type FillsEventSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: string, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
+
+export const FillFieldsFragmentDoc = gql`
+    fragment FillFields on Trade {
+  id
+  market {
+    id
+  }
+  createdAt
+  price
+  size
+  buyOrder
+  sellOrder
+  aggressor
+  buyer {
+    id
+  }
+  seller {
+    id
+  }
+  buyerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
+  sellerFee {
+    makerFee
+    infrastructureFee
+    liquidityFee
+  }
 }
-
-export interface Fills_party_tradesConnection_edges_node_buyer {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
+    `;
+export const FillEdgeFragmentDoc = gql`
+    fragment FillEdge on TradeEdge {
+  node {
+    ...FillFields
+  }
+  cursor
 }
-
-export interface Fills_party_tradesConnection_edges_node_seller {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
+    ${FillFieldsFragmentDoc}`;
+export const FillsDocument = gql`
+    query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
+  party(id: $partyId) {
+    id
+    tradesConnection(marketId: $marketId, pagination: $pagination) {
+      edges {
+        ...FillEdge
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
 }
+    ${FillEdgeFragmentDoc}`;
 
-export interface Fills_party_tradesConnection_edges_node_buyerFee {
-  __typename: "TradeFee";
-  /**
-   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
-   */
-  makerFee: string;
-  /**
-   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
-   */
-  infrastructureFee: string;
-  /**
-   * The fee paid to the liquidity providers that committed liquidity to the market
-   */
-  liquidityFee: string;
+/**
+ * __useFillsQuery__
+ *
+ * To run a query within a React component, call `useFillsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFillsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFillsQuery({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *      marketId: // value for 'marketId'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useFillsQuery(baseOptions: Apollo.QueryHookOptions<FillsQuery, FillsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FillsQuery, FillsQueryVariables>(FillsDocument, options);
+      }
+export function useFillsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FillsQuery, FillsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FillsQuery, FillsQueryVariables>(FillsDocument, options);
+        }
+export type FillsQueryHookResult = ReturnType<typeof useFillsQuery>;
+export type FillsLazyQueryHookResult = ReturnType<typeof useFillsLazyQuery>;
+export type FillsQueryResult = Apollo.QueryResult<FillsQuery, FillsQueryVariables>;
+export const FillsEventDocument = gql`
+    subscription FillsEvent($partyId: ID!) {
+  trades(partyId: $partyId) {
+    id
+    marketId
+    buyOrder
+    sellOrder
+    buyerId
+    sellerId
+    aggressor
+    price
+    size
+    createdAt
+    type
+    buyerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    sellerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+  }
 }
+    `;
 
-export interface Fills_party_tradesConnection_edges_node_sellerFee {
-  __typename: "TradeFee";
-  /**
-   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
-   */
-  makerFee: string;
-  /**
-   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
-   */
-  infrastructureFee: string;
-  /**
-   * The fee paid to the liquidity providers that committed liquidity to the market
-   */
-  liquidityFee: string;
-}
-
-export interface Fills_party_tradesConnection_edges_node {
-  __typename: "Trade";
-  /**
-   * The hash of the trade data
-   */
-  id: string;
-  /**
-   * The market the trade occurred on
-   */
-  market: Fills_party_tradesConnection_edges_node_market;
-  /**
-   * RFC3339Nano time for when the trade occurred
-   */
-  createdAt: string;
-  /**
-   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
-   */
-  price: string;
-  /**
-   * The number of contracts trades, will always be <= the remaining size of both orders immediately before the trade (uint64)
-   */
-  size: string;
-  /**
-   * The order that bought
-   */
-  buyOrder: string;
-  /**
-   * The order that sold
-   */
-  sellOrder: string;
-  /**
-   * The aggressor indicates whether this trade was related to a BUY or SELL
-   */
-  aggressor: Side;
-  /**
-   * The party that bought
-   */
-  buyer: Fills_party_tradesConnection_edges_node_buyer;
-  /**
-   * The party that sold
-   */
-  seller: Fills_party_tradesConnection_edges_node_seller;
-  /**
-   * The fee paid by the buyer side of the trade
-   */
-  buyerFee: Fills_party_tradesConnection_edges_node_buyerFee;
-  /**
-   * The fee paid by the seller side of the trade
-   */
-  sellerFee: Fills_party_tradesConnection_edges_node_sellerFee;
-}
-
-export interface Fills_party_tradesConnection_edges {
-  __typename: "TradeEdge";
-  node: Fills_party_tradesConnection_edges_node;
-  cursor: string;
-}
-
-export interface Fills_party_tradesConnection_pageInfo {
-  __typename: "PageInfo";
-  startCursor: string;
-  endCursor: string;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
-
-export interface Fills_party_tradesConnection {
-  __typename: "TradeConnection";
-  /**
-   * The trade in this connection
-   */
-  edges: Fills_party_tradesConnection_edges[];
-  /**
-   * The pagination information
-   */
-  pageInfo: Fills_party_tradesConnection_pageInfo;
-}
-
-export interface Fills_party {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
-  tradesConnection: Fills_party_tradesConnection | null;
-}
-
-export interface Fills {
-  /**
-   * An entity that is trading on the Vega network
-   */
-  party: Fills_party | null;
-}
-
-export interface FillsVariables {
-  partyId: string;
-  marketId?: string | null;
-  pagination?: Pagination | null;
-}
+/**
+ * __useFillsEventSubscription__
+ *
+ * To run a query within a React component, call `useFillsEventSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useFillsEventSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFillsEventSubscription({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useFillsEventSubscription(baseOptions: Apollo.SubscriptionHookOptions<FillsEventSubscription, FillsEventSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<FillsEventSubscription, FillsEventSubscriptionVariables>(FillsEventDocument, options);
+      }
+export type FillsEventSubscriptionHookResult = ReturnType<typeof useFillsEventSubscription>;
+export type FillsEventSubscriptionResult = Apollo.SubscriptionResult<FillsEventSubscription>;

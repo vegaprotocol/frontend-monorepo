@@ -20,6 +20,7 @@ module.exports = {
       '../../libs/deal-ticket/**',
       '../../libs/deposits/**',
       '../../libs/environment/**',
+      '../../libs/fills/**',
     ],
   },
 };

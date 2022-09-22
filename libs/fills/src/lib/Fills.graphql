@@ -1,5 +1,8 @@
 fragment FillFields on Trade {
   id
+  market {
+    id
+  }
   createdAt
   price
   size
@@ -22,26 +25,13 @@ fragment FillFields on Trade {
     infrastructureFee
     liquidityFee
   }
-  market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    tradableInstrument {
-      instrument {
-        id
-        code
-        product {
-          ... on Future {
-            settlementAsset {
-              id
-              symbol
-              decimals
-            }
-          }
-        }
-      }
-    }
+}
+
+fragment FillEdge on TradeEdge {
+  node {
+    ...FillFields
   }
+  cursor
 }
 
 query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
@@ -49,10 +39,7 @@ query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
     id
     tradesConnection(marketId: $marketId, pagination: $pagination) {
       edges {
-        node {
-          ...FillFields
-        }
-        cursor
+        ...FillEdge
       }
       pageInfo {
         startCursor
@@ -64,17 +51,19 @@ query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
   }
 }
 
-subscription FillsSub($partyId: ID!) {
+subscription FillsEvent($partyId: ID!) {
   trades(partyId: $partyId) {
     id
-    createdAt
-    price
-    size
+    marketId
     buyOrder
     sellOrder
-    aggressor
     buyerId
     sellerId
+    aggressor
+    price
+    size
+    createdAt
+    type
     buyerFee {
       makerFee
       infrastructureFee
@@ -85,6 +74,5 @@ subscription FillsSub($partyId: ID!) {
       infrastructureFee
       liquidityFee
     }
-    marketId
   }
 }
