@@ -75,7 +75,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: See if capsule is necessary
-        if: ${{ contains($AFFECTED, 'token') || contains($AFFECTED, 'token-e2e') || contains($AFFECTED, 'explorer') || contains($AFFECTED, 'explorer-e2e') }}
+        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
         run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       #######
