@@ -5,7 +5,7 @@ import './staking.functions.js';
 import './wallet-eth.functions.js';
 import './wallet-teardown.functions.js';
 import './wallet-vega.functions.js';
-const registerCypressGrep = require('cypress-grep');
+import registerCypressGrep from 'cypress-grep';
 registerCypressGrep();
 
 // Hide fetch/XHR requests - They create a lot of noise in command log

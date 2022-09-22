@@ -4,6 +4,10 @@ module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:3000',
     fileServerFolder: '.',
     fixturesFolder: false,
@@ -24,5 +28,8 @@ module.exports = defineConfig({
     ethUrl: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     commitHash: 'dev',
     tsConfig: 'tsconfig.json',
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });
