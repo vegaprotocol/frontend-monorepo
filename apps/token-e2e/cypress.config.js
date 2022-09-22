@@ -11,14 +11,6 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: './src/fixtures',
-    specPattern:
-      process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
-      process.env.CYPRESS_INCLUDE_FLOWS === true
-        ? [
-            './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
-            './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
-          ]
-        : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.js',
     video: true,
