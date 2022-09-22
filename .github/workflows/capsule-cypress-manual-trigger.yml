@@ -57,7 +57,7 @@ jobs:
 
       # See if we capsule is needed for this project
       - name: See if capsule is necessary
-        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e') }}
+        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
         run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       # Checkout capsule to build local network
