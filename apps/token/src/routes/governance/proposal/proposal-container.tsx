@@ -1,10 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { Proposal } from '../components/proposal';
+import { ProposalNotFound } from '../components/proposal-not-found';
 import { PROPOSAL_FRAGMENT } from '../proposal-fragment';
 import type {
   Proposal as ProposalQueryResult,
@@ -19,20 +19,6 @@ export const PROPOSAL_QUERY = gql`
     }
   }
 `;
-
-const ProposalNotFound = () => {
-  const { t } = useTranslation();
-  return (
-    <section>
-      <header data-testid="proposal-title">
-        <h2 className="text-lg mx-0 mt-0 mb-1 font-semibold">
-          {t('ProposalNotFound')}
-        </h2>
-      </header>
-      <p>{t('ProposalNotFoundDetails')}</p>
-    </section>
-  );
-};
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
