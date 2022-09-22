@@ -1,5 +1,11 @@
-import { StatisticsDocument, BlockTimeDocument } from '../../utils/__generated__/Node';
-import type { StatisticsQuery, BlockTimeSubscription } from '../../utils/__generated__/Node';
+import {
+  StatisticsDocument,
+  BlockTimeDocument,
+} from '../../utils/__generated__/Node';
+import type {
+  StatisticsQuery,
+  BlockTimeSubscription,
+} from '../../utils/__generated__/Node';
 import { Networks } from '../../types';
 import type { RequestHandlerResponse } from 'mock-apollo-client';
 import { createMockClient } from 'mock-apollo-client';

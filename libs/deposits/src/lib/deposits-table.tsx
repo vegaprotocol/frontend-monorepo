@@ -44,7 +44,10 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         field="createdTimestamp"
         valueFormatter={({
           value,
-        }: VegaValueFormatterParams<DepositFieldsFragment, 'createdTimestamp'>) => {
+        }: VegaValueFormatterParams<
+          DepositFieldsFragment,
+          'createdTimestamp'
+        >) => {
           return getDateTimeFormat().format(new Date(value));
         }}
       />
