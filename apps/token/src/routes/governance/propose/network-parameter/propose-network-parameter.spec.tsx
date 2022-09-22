@@ -9,6 +9,12 @@ import { gql } from '@apollo/client';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import type { MockedResponse } from '@apollo/client/testing';
 
+jest.mock('@vegaprotocol/environment', () => ({
+  useEnvironment: () => ({
+    VEGA_DOCS_URL: 'https://docs.vega.xyz',
+  }),
+}));
+
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
     query: gql`
@@ -85,6 +91,21 @@ describe('Propose Network Parameter', () => {
     await waitFor(() =>
       expect(screen.getByText('Update network parameter proposal')).toBeTruthy()
     );
+  });
+
+  it('should render the form components', async () => {
+    renderComponent();
+    await waitFor(() =>
+      expect(screen.getByTestId('network-parameter-proposal-form')).toBeTruthy()
+    );
+    expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
+    expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
+    expect(screen.getByTestId('proposal-title')).toBeTruthy();
+    expect(screen.getByTestId('proposal-description')).toBeTruthy();
+    expect(screen.getByTestId('proposal-vote-deadline')).toBeTruthy();
+    expect(screen.getByTestId('proposal-enactment-deadline')).toBeTruthy();
+    expect(screen.getByTestId('proposal-submit')).toBeTruthy();
+    expect(screen.getByTestId('proposal-transaction-dialog')).toBeTruthy();
   });
 
   it('should render the network param select element with no initial value', async () => {

@@ -168,6 +168,21 @@ describe('Propose Update Market', () => {
     );
   });
 
+  it('should render the form components', async () => {
+    renderComponent();
+    await waitFor(() =>
+      expect(screen.getByTestId('update-market-proposal-form')).toBeTruthy()
+    );
+    expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
+    expect(screen.getByTestId('proposal-title')).toBeTruthy();
+    expect(screen.getByTestId('proposal-description')).toBeTruthy();
+    expect(screen.getByTestId('proposal-terms')).toBeTruthy();
+    expect(screen.getByTestId('proposal-vote-deadline')).toBeTruthy();
+    expect(screen.getByTestId('proposal-enactment-deadline')).toBeTruthy();
+    expect(screen.getByTestId('proposal-submit')).toBeTruthy();
+    expect(screen.getByTestId('proposal-transaction-dialog')).toBeTruthy();
+  });
+
   it('should render the select element with no initial value', async () => {
     renderComponent();
     await waitFor(() =>
