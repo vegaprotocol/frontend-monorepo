@@ -6,6 +6,7 @@ before(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
   cy.getByTestId('Orders').click();
   cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
