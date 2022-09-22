@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
@@ -37,7 +37,7 @@ import { Side, OrderType } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
 
 interface DealTicketMarketProps {
-  market: DealTicketQuery_market;
+  market: DealTicketMarketFragment;
   partyData?: PartyBalanceQuery;
 }
 

@@ -29,7 +29,7 @@ export const useDeposits = () => {
     }
 
     return orderBy(
-      getNodes(data.party?.depositsConnection),
+      getNodes<DepositFieldsFragment>(data.party?.depositsConnection),
       ['createdTimestamp'],
       ['desc']
     );

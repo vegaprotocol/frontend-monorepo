@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import useOrderCloseOut from './use-order-closeout';
 import type { Order } from '@vegaprotocol/orders';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 
 jest.mock('@vegaprotocol/wallet', () => ({
@@ -49,7 +49,7 @@ describe('useOrderCloseOut Hook', () => {
       () =>
         useOrderCloseOut({
           order: order as Order,
-          market: market as DealTicketQuery_market,
+          market: market as DealTicketMarketFragment,
           partyData: partyData as PartyBalanceQuery,
         }),
       {
@@ -66,7 +66,7 @@ describe('useOrderCloseOut Hook', () => {
       () =>
         useOrderCloseOut({
           order: { ...order, side: 'SIDE_SELL' } as Order,
-          market: market as DealTicketQuery_market,
+          market: market as DealTicketMarketFragment,
           partyData: partyData as PartyBalanceQuery,
         }),
       {
@@ -83,7 +83,7 @@ describe('useOrderCloseOut Hook', () => {
       () =>
         useOrderCloseOut({
           order: { ...order, side: 'SIDE_SELL' } as Order,
-          market: market as DealTicketQuery_market,
+          market: market as DealTicketMarketFragment,
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (

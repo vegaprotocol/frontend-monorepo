@@ -10,12 +10,12 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
-import type { DepositFields } from './__generated__/DepositFields';
+import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 
 export interface DepositsTableProps {
-  deposits: DepositFields[];
+  deposits: DepositFieldsFragment[];
 }
 
 export const DepositsTable = ({ deposits }: DepositsTableProps) => {
@@ -35,7 +35,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         valueFormatter={({
           value,
           data,
-        }: VegaValueFormatterParams<DepositFields, 'amount'>) => {
+        }: VegaValueFormatterParams<DepositFieldsFragment, 'amount'>) => {
           return addDecimalsFormatNumber(value, data.asset.decimals);
         }}
       />
@@ -44,7 +44,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         field="createdTimestamp"
         valueFormatter={({
           value,
-        }: VegaValueFormatterParams<DepositFields, 'createdTimestamp'>) => {
+        }: VegaValueFormatterParams<DepositFieldsFragment, 'createdTimestamp'>) => {
           return getDateTimeFormat().format(new Date(value));
         }}
       />
@@ -53,7 +53,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         field="status"
         valueFormatter={({
           value,
-        }: VegaValueFormatterParams<DepositFields, 'status'>) => {
+        }: VegaValueFormatterParams<DepositFieldsFragment, 'status'>) => {
           return DepositStatusMapping[value];
         }}
       />
@@ -62,7 +62,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         field="txHash"
         cellRenderer={({
           value,
-        }: VegaICellRendererParams<DepositFields, 'txHash'>) => {
+        }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
           if (!value) return '-';
           return (
             <Link

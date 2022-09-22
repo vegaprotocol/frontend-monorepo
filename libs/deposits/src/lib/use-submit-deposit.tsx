@@ -5,7 +5,7 @@ import type {
   DepositEventSubscriptionVariables,
 } from './__generated__/Deposit';
 import { DepositEventDocument } from './__generated__/Deposit';
-import { DepositStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
 import {
   isAssetTypeERC20,
@@ -65,7 +65,7 @@ export const useSubmitDeposit = () => {
             // Note there is a bug in data node where the subscription is not emitted when the status
             // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
             // https://github.com/vegaprotocol/data-node/issues/460
-            e.event.status === DepositStatus.STATUS_FINALIZED
+            e.event.status === Schema.DepositStatus.STATUS_FINALIZED
           ) {
             return true;
           }
