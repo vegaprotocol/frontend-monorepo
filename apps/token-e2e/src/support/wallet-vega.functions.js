@@ -32,7 +32,7 @@ Cypress.Commands.add('vega_wallet_connect', () => {
       .and('be.visible')
       .click({ force: true });
   });
-  cy.contains('rest provider').click();
+  cy.contains('Rest provider').click();
   cy.get(restConnectorForm).within(() => {
     cy.get('#wallet').click().type(vegaWalletName);
     cy.get('#passphrase').click().type(vegaWalletPassphrase);
