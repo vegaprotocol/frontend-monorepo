@@ -11,7 +11,6 @@ import {
 } from './use-network-params';
 import type { ReactNode } from 'react';
 import type { NetworkParams as NetworkParamsResponse } from './__generated__';
-import { act } from 'react-dom/test-utils';
 
 describe('useNetworkParam', () => {
   const setup = (arg: NetworkParamsKey) => {
