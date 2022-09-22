@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('liquidity-provision-dashboard', () => {
+describe('liquidity-provision-dashboard', { tags: '@smoke' }, () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {

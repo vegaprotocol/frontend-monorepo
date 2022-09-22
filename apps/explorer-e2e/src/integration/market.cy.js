@@ -1,7 +1,7 @@
 import '../support/common.functions';
 
 //Tests set to skip until market bug for capsule checkpoint is fixed
-context.skip('Market page', function () {
+context.skip('Market page', { tags: '@regression' }, function () {
   describe('Verify elements on page', function () {
     const marketHeaders = '[data-testid="markets-header"]';
     const marketNavigation = 'a[href="/markets"]';

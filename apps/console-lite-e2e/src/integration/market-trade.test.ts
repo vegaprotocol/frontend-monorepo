@@ -15,7 +15,7 @@ import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import { connectVegaWallet } from '../support/connect-wallet';
 import type { Markets, Market } from '@vegaprotocol/market-list';
 
-describe('Market trade', () => {
+describe('Market trade', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {

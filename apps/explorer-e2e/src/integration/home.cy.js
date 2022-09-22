@@ -3,7 +3,7 @@ context('Home Page', function () {
     cy.visit('/');
   });
 
-  describe('Stats page', function () {
+  describe('Stats page', { tags: '@smoke' }, function () {
     const statsValue = '[data-testid="stats-value"]';
 
     it('Should show connected environment', function () {

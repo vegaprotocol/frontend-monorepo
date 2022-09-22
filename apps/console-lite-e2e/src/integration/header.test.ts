@@ -1,4 +1,4 @@
-describe('console lite header', () => {
+describe('console lite header', { tags: '@smoke' }, () => {
   beforeEach(() => {
     window.localStorage.setItem('theme', 'dark');
     cy.visit('/');
