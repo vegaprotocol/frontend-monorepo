@@ -1,8 +1,13 @@
 const { defineConfig } = require('cypress');
+
 module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: './src/fixtures',
@@ -15,7 +20,7 @@ module.exports = defineConfig({
           ]
         : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
+    supportFile: './src/support/index.js',
     video: true,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/token-e2e/videos',
@@ -24,6 +29,8 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     numTestsKeptInMemory: 5,
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
   env: {
     ethProviderUrl: 'http://localhost:8545/',
@@ -45,5 +52,6 @@ module.exports = defineConfig({
     epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
     CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
+    grepTags: '@slow',
   },
 });
