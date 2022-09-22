@@ -128,7 +128,7 @@ export interface WithdrawFormQuery {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: WithdrawFormQuery_assetsConnection;
+  assetsConnection: WithdrawFormQuery_assetsConnection | null;
 }
 
 export interface WithdrawFormQueryVariables {

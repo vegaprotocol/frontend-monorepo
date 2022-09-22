@@ -1,22 +1,23 @@
 const { defineConfig } = require('cypress');
+
 module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: './src/fixtures',
-    specPattern:
-      process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
-      process.env.CYPRESS_INCLUDE_FLOWS === true
-        ? [
-            './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
-            './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
-          ]
-        : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
+    specPattern: [
+      './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
+      './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
+    ],
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
-    video: true,
+    supportFile: './src/support/index.js',
+    video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/token-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/token-e2e/screenshots',
@@ -45,5 +46,8 @@ module.exports = defineConfig({
     epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
     CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

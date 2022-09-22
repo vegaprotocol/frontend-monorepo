@@ -128,7 +128,7 @@ export const updateQuery: UpdateQueryFn<
     return prev;
   }
 
-  const curr = prev.party?.withdrawalsConnection.edges || [];
+  const curr = prev.party?.withdrawalsConnection?.edges || [];
   const incoming = subscriptionData.data.busEvents
     .map((e) => {
       return {

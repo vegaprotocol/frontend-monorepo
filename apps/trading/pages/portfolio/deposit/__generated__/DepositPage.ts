@@ -68,5 +68,5 @@ export interface DepositPage {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: DepositPage_assetsConnection;
+  assetsConnection: DepositPage_assetsConnection | null;
 }

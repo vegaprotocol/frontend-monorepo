@@ -48,8 +48,10 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
           product: {
             settlementAsset: {
               symbol: 'tDAI',
+              decimals: 5,
               __typename: 'Asset',
             },
+            quoteName: 'DAI',
             __typename: 'Future',
           },
           __typename: 'Instrument',
@@ -90,8 +92,10 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
           product: {
             settlementAsset: {
               symbol: 'XYZalpha',
+              decimals: 5,
               __typename: 'Asset',
             },
+            quoteName: 'USD',
             __typename: 'Future',
           },
           __typename: 'Instrument',
@@ -132,8 +136,10 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
           product: {
             settlementAsset: {
               symbol: 'tUSDC',
+              decimals: 5,
               __typename: 'Asset',
             },
+            quoteName: 'USDC',
             __typename: 'Future',
           },
           __typename: 'Instrument',
@@ -174,8 +180,10 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
           product: {
             settlementAsset: {
               symbol: 'tBTC',
+              decimals: 5,
               __typename: 'Asset',
             },
+            quoteName: 'BTC',
             __typename: 'Future',
           },
           __typename: 'Instrument',

@@ -3,7 +3,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, code: string } } } };
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, code: string } } } };
 
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -11,28 +11,27 @@ export type OrdersQueryVariables = Types.Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, code: string } } } } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } } | null };
+export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection?: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, code: string } } } } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } | null } | null };
 
 export type OrderSubSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderSubSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: string | null, createdAt: string, updatedAt?: string | null, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, code: string } } } }> | null };
+export type OrderSubSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, price: string, timeInForce: Types.OrderTimeInForce, side: Types.Side, marketId: string, size: string, remaining: string, partyId: string, createdAt: string, expiresAt?: string | null, status: Types.OrderStatus, reference: string, type?: Types.OrderType | null, rejectionReason?: Types.OrderRejectionReason | null, version: string, updatedAt?: string | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null }> | null };
 
 export type OrderEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: string, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: string | null, side: Types.Side, market: { __typename?: 'Market', id: string, name: string, decimalPlaces: number, positionDecimalPlaces: number } } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type OrderEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Account' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: string, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: string | null, side: Types.Side, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
 
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
   id
   market {
     id
-    name
     decimalPlaces
     positionDecimalPlaces
     tradableInstrument {
@@ -108,10 +107,30 @@ export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVaria
 export const OrderSubDocument = gql`
     subscription OrderSub($partyId: ID!) {
   orders(partyId: $partyId) {
-    ...OrderFields
+    id
+    price
+    timeInForce
+    side
+    marketId
+    size
+    remaining
+    partyId
+    createdAt
+    expiresAt
+    status
+    reference
+    type
+    rejectionReason
+    version
+    updatedAt
+    peggedOrder {
+      reference
+      offset
+    }
+    liquidityProvisionId
   }
 }
-    ${OrderFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useOrderSubSubscription__
@@ -153,7 +172,6 @@ export const OrderEventDocument = gql`
         side
         market {
           id
-          name
           decimalPlaces
           positionDecimalPlaces
         }

@@ -1,9 +1,9 @@
-query MarketLiquidity($marketId: ID!, $partyId: String) {
+query MarketLiquidity($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
-    liquidityProvisionsConnection(party: $partyId) {
+    liquidityProvisionsConnection {
       edges {
         node {
           id

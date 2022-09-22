@@ -37,14 +37,14 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderFields } from '../';
+import type { OrderWithMarket } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
@@ -101,12 +101,12 @@ type OrderListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: Orders_party_ordersConnection_edges_node | null;
+  data: OrderWithMarket | null;
 };
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
-  cancel: (order: OrderFields) => void;
-  setEditOrder: (order: OrderFields) => void;
+  cancel: (order: OrderWithMarket) => void;
+  setEditOrder: (order: OrderWithMarket) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -131,22 +131,16 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            [positiveClassNames]: ({
-              data,
-            }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_BUY,
-            [negativeClassNames]: ({
-              data,
-            }: {
-              data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.SIDE_SELL,
+            [positiveClassNames]: ({ data }: { data: OrderWithMarket }) =>
+              data?.side === Side.SIDE_BUY,
+            [negativeClassNames]: ({ data }: { data: OrderWithMarket }) =>
+              data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: Orders_party_ordersConnection_edges_node['size'];
+            value?: OrderWithMarket['size'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;
@@ -326,7 +320,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
 /**
  * Check if an order is active to determine if it can be edited or cancelled
  */
-const isOrderActive = (status: OrderStatus) => {
+export const isOrderActive = (status: OrderStatus) => {
   return ![
     OrderStatus.STATUS_CANCELLED,
     OrderStatus.STATUS_REJECTED,
@@ -337,7 +331,9 @@ const isOrderActive = (status: OrderStatus) => {
   ].includes(status);
 };
 
-const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getEditDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }
@@ -364,7 +360,9 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 };
 
-const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
+export const getCancelDialogIntent = (
+  status?: OrderStatus
+): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -377,7 +375,9 @@ const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
   }
 };
 
-const getCancelDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getCancelDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }

@@ -1,7 +1,6 @@
 query MarketsQuery {
   markets {
     id
-    name
     fees {
       factors {
         makerFee

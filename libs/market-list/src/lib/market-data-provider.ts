@@ -62,7 +62,7 @@ const update = (data: MarketData, delta: MarketDataSub_marketsData) => {
 };
 
 const getData = (responseData: MarketDataQuery): MarketData | null =>
-  responseData.marketsConnection.edges[0].node.data || null;
+  responseData?.marketsConnection?.edges[0].node.data || null;
 
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketsData =>
   subscriptionData.marketsData[0];

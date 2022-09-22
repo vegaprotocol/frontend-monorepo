@@ -1,7 +1,7 @@
+import type { Market } from '@vegaprotocol/market-list';
 import { useEffect, useState } from 'react';
-import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 
-const useMarketFilters = (data: SimpleMarkets_markets[]) => {
+const useMarketFilters = (data: Market[]) => {
   const [products, setProducts] = useState<string[]>([]);
   const [assetsPerProduct, setAssetsPerProduct] = useState<
     Record<string, string[]>

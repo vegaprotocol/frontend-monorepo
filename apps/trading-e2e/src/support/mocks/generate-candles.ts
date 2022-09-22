@@ -37,7 +37,7 @@ export const generateCandles = (
       __typename: 'Candle',
     },
   ];
-  const defaultResult = {
+  const defaultResult: CandlesQuery = {
     market: {
       id: 'market-0',
       decimalPlaces: 5,

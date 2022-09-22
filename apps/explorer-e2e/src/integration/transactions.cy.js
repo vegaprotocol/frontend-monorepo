@@ -4,7 +4,7 @@ context.skip('Transactions page', function () {
     cy.visit('/');
   });
 
-  describe('Verify elements on page', function () {
+  describe('Verify elements on page', { tags: '@regression' }, function () {
     const transactionNavigation = 'a[href="/txs"]';
     const transactionRow = 'transaction-row';
     const txHash = 'hash';

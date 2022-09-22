@@ -4,14 +4,18 @@ module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4200',
     fileServerFolder: '.',
     fixturesFolder: false,
     specPattern: './src/integration/*.ts',
     excludeSpecPattern: '**/*.js',
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
-    video: true,
+    supportFile: './src/support/index.js',
+    video: false,
     videoUploadOnPasses: false,
     videosFolder:
       '../../dist/cypress/apps/liquidity-provision-dashboard-e2e/videos',
@@ -20,5 +24,10 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,
+  },
+  env: {
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

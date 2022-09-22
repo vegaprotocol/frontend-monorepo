@@ -1,11 +1,12 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
-describe('markets table', () => {
+describe('markets table', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
   });
 
   it('renders markets correctly', () => {

@@ -8,7 +8,7 @@ export type PartyMarketDataQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyMarketDataQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, decimals: number }, market?: { __typename?: 'Market', id: string } | null }> | null, marginsConnection: { __typename?: 'MarginConnection', edges?: Array<{ __typename?: 'MarginEdge', node: { __typename?: 'MarginLevels', initialLevel: string, maintenanceLevel: string, searchLevel: string, market: { __typename?: 'Market', id: string } } }> | null } } | null };
+export type PartyMarketDataQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, decimals: number }, market?: { __typename?: 'Market', id: string } | null }> | null, marginsConnection?: { __typename?: 'MarginConnection', edges?: Array<{ __typename?: 'MarginEdge', node: { __typename?: 'MarginLevels', initialLevel: string, maintenanceLevel: string, searchLevel: string, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };
 
 
 export const PartyMarketDataDocument = gql`
