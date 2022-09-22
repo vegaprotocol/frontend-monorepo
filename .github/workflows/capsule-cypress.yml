@@ -133,7 +133,13 @@ jobs:
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Start service
+
+      - name: Start service using fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet service run --network fairground --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+
+      - name: Start service using capsule network
+        if: ${{ env.RUN_CAPSULE==true }}
         run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
