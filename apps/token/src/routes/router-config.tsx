@@ -133,42 +133,42 @@ const LazyGovernancePropose = React.lazy(
 const LazyGovernanceProposeNetworkParameter = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/network-parameter'
+      /* webpackChunkName: "route-governance-propose-network-parameter", webpackPrefetch: true */ './governance/propose/network-parameter'
     )
 );
 
 const LazyGovernanceProposeNewMarket = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/new-market'
+      /* webpackChunkName: "route-governance-propose-new-market", webpackPrefetch: true */ './governance/propose/new-market'
     )
 );
 
 const LazyGovernanceProposeUpdateMarket = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/update-market'
+      /* webpackChunkName: "route-governance-propose-update-market", webpackPrefetch: true */ './governance/propose/update-market'
     )
 );
 
 const LazyGovernanceProposeNewAsset = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/new-asset'
+      /* webpackChunkName: "route-governance-propose-new-asset", webpackPrefetch: true */ './governance/propose/new-asset'
     )
 );
 
 const LazyGovernanceProposeFreeform = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/freeform'
+      /* webpackChunkName: "route-governance-propose-freeform", webpackPrefetch: true */ './governance/propose/freeform'
     )
 );
 
 const LazyGovernanceProposeRaw = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/raw'
+      /* webpackChunkName: "route-governance-propose-raw", webpackPrefetch: true */ './governance/propose/raw'
     )
 );
 
@@ -254,10 +254,12 @@ const routerConfig = [
     path: Routes.GOVERNANCE,
     element: <LazyGovernance name="Governance" />,
     children: [
+      { index: true, element: <LazyGovernanceProposals /> },
       {
         path: 'propose',
         element: <Outlet />,
         children: [
+          { index: true, element: <LazyGovernancePropose /> },
           {
             path: 'network-parameter',
             element: <LazyGovernanceProposeNetworkParameter />,
@@ -273,12 +275,10 @@ const routerConfig = [
           { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
           { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
           { path: 'raw', element: <LazyGovernanceProposeRaw /> },
-          { index: true, element: <LazyGovernancePropose /> },
         ],
       },
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
       { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
-      { index: true, element: <LazyGovernanceProposals /> },
     ],
   },
   {
