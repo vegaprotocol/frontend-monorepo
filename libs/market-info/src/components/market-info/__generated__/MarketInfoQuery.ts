@@ -122,15 +122,15 @@ export interface MarketInfoQuery_market_priceMonitoringSettings {
 export interface MarketInfoQuery_market_riskFactors {
   __typename: "RiskFactor";
   /**
-   * Market the risk factor was emitted for
+   * market the risk factor was emitted for
    */
   market: string;
   /**
-   * Short factor
+   * short factor
    */
   short: string;
   /**
-   * Long factor
+   * long factor
    */
   long: string;
 }
@@ -524,7 +524,7 @@ export interface MarketInfoQuery_market {
    */
   priceMonitoringSettings: MarketInfoQuery_market_priceMonitoringSettings;
   /**
-   * Risk factors for the market
+   * risk factors for the market
    */
   riskFactors: MarketInfoQuery_market_riskFactors | null;
   /**
