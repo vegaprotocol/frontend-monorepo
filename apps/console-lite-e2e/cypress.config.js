@@ -3,6 +3,10 @@ module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4200',
     fileServerFolder: '.',
     fixturesFolder: false,
@@ -35,5 +39,8 @@ module.exports = defineConfig({
     TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

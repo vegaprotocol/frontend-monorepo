@@ -60,7 +60,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
   });
 });
 
-describe('ethereum wallet', () => {
+describe('ethereum wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection

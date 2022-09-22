@@ -157,7 +157,7 @@ describe('deal ticket orders', { tags: '@regression' }, () => {
   it.skip('unsuccessful order due to no collateral');
 });
 
-describe('deal ticket validation', () => {
+describe('deal ticket validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);

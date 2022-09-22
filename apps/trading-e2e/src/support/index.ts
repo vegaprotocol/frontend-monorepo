@@ -1,4 +1,4 @@
 import '@vegaprotocol/cypress';
 import 'cypress-real-events/support';
-const registerCypressGrep = require('cypress-grep');
+import registerCypressGrep from 'cypress-grep';
 registerCypressGrep();

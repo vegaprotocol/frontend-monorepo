@@ -23,7 +23,7 @@ module.exports = defineConfig({
     fileServerFolder: '.',
     fixturesFolder: false,
     specPattern: '**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: './src/support/index.js',
+    supportFile: './src/support/index.ts',
     video: true,
     videosFolder: '../../dist/cypress/apps/trading-e2e/videos',
     videoUploadOnPasses: false,

@@ -3,7 +3,7 @@ import {
   disconnectVegaWallet,
 } from '../support/connect-wallet';
 
-describe('Portfolio page', () => {
+describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
     disconnectVegaWallet();
   });
