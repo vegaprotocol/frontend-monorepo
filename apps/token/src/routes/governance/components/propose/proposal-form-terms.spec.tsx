@@ -7,26 +7,29 @@ jest.mock('@vegaprotocol/environment', () => ({
   }),
 }));
 
+const renderComponent = () => {
+  const register = jest.fn();
+  render(
+    <ProposalFormTerms
+      registerField={register('proposalTerms')}
+      errorMessage="Error text"
+    />
+  );
+};
+
 describe('Proposal Form Terms', () => {
+  it('should render', () => {
+    renderComponent();
+    expect(screen.getByTestId('proposal-terms')).toBeTruthy();
+  });
+
   it('should display error text', () => {
-    const register = jest.fn();
-    render(
-      <ProposalFormTerms
-        registerField={register('proposalTerms')}
-        errorMessage="Error text"
-      />
-    );
+    renderComponent();
     expect(screen.getByText('Error text')).toBeInTheDocument();
   });
 
   it('should render the generic docs link if no custom override', () => {
-    const register = jest.fn();
-    render(
-      <ProposalFormTerms
-        registerField={register('proposalTerms')}
-        errorMessage="Error text"
-      />
-    );
+    renderComponent();
     expect(
       screen.getByText('https://docs.vega.xyz/tutorials/proposals')
     ).toBeInTheDocument();
