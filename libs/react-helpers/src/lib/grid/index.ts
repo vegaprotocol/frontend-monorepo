@@ -6,3 +6,4 @@ export * from './price-flash-cell';
 export * from './size';
 export * from './summary-rows';
 export * from './vol-cell';
+export * from './grid-progress-bar';

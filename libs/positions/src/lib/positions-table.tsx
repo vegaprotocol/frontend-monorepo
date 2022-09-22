@@ -7,6 +7,7 @@ import type {
   ICellRendererParams,
   CellRendererSelectorResult,
 } from 'ag-grid-community';
+import type { ValueProps as PriceCellProps } from '@vegaprotocol/react-helpers';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -16,8 +17,11 @@ import {
   getDateTimeFormat,
   signedNumberCssClass,
   signedNumberCssClassRules,
+  calculateLowHighRange,
+  EmptyCell,
+  ProgressBarCell,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -63,33 +67,6 @@ export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
   }
   return (valueFormatted && valueFormatted[0]) || undefined;
 };
-
-export interface PriceCellProps {
-  valueFormatted?: {
-    low: string;
-    high: string;
-    value: number;
-    intent?: Intent;
-  };
-}
-
-export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
-  return valueFormatted ? (
-    <>
-      <div className="flex justify-between leading-tight font-mono">
-        <div>{valueFormatted.low}</div>
-        <div>{valueFormatted.high}</div>
-      </div>
-      <ProgressBar
-        value={valueFormatted.value}
-        intent={valueFormatted.intent}
-        className="mt-2"
-      />
-    </>
-  ) : null;
-};
-
-ProgressBarCell.displayName = 'PriceFlashCell';
 
 export interface AmountCellProps {
   valueFormatted?: Pick<
@@ -140,7 +117,22 @@ const ButtonCell = ({
   );
 };
 
-const EmptyCell = () => '';
+const progressBarValueFormatter = ({
+  data,
+  node,
+}: PositionsTableValueFormatterParams):
+  | PriceCellProps['valueFormatted']
+  | undefined => {
+  if (!data || node?.rowPinned) {
+    return undefined;
+  }
+  const min = BigInt(data.averageEntryPrice);
+  const max = BigInt(data.liquidationPrice);
+  const mid = BigInt(data.markPrice);
+  const decimals = data.marketDecimalPlaces;
+  const intent = data.lowMarginLevel ? Intent.Warning : Intent.None;
+  return calculateLowHighRange(max, min, decimals, mid, intent);
+};
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   ({ onClose, ...props }, ref) => {
@@ -264,32 +256,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
             };
           }}
-          valueFormatter={({
-            data,
-            node,
-          }: PositionsTableValueFormatterParams):
-            | PriceCellProps['valueFormatted']
-            | undefined => {
-            if (!data || node?.rowPinned) {
-              return undefined;
-            }
-            const min = BigInt(data.averageEntryPrice);
-            const max = BigInt(data.liquidationPrice);
-            const mid = BigInt(data.markPrice);
-            const range = max - min;
-            return {
-              low: addDecimalsFormatNumber(
-                min.toString(),
-                data.marketDecimalPlaces
-              ),
-              high: addDecimalsFormatNumber(
-                max.toString(),
-                data.marketDecimalPlaces
-              ),
-              value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-              intent: data.lowMarginLevel ? Intent.Warning : undefined,
-            };
-          }}
+          valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
           headerName={t('Leverage')}

@@ -1,7 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
-import { AccountsContainer } from '@vegaprotocol/accounts';
 import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -10,6 +9,7 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
+import { AccountsContainer } from './accounts-container';
 
 const Portfolio = () => {
   const wrapperClasses = 'h-full max-h-full flex flex-col';

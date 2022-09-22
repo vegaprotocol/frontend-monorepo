@@ -9,11 +9,16 @@ import type {
   AccountsQuery,
   AccountEventsSubscription,
 } from './__generated___/Accounts';
-import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
-import type { ColumnApi } from 'ag-grid-community';
-import type { AccountFields } from './accounts-manager';
+
+export interface AccountFields extends AccountFieldsFragment {
+  available: string;
+  used: string;
+  deposited: string;
+  balance: string;
+  breakdown?: AccountFields[];
+}
 
 function isAccount(
   account:
@@ -31,49 +36,6 @@ export const getId = (
   isAccount(account)
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId}`;
-
-export const getGroupId = (
-  data: AccountFields & SummaryRow,
-  columnApi: ColumnApi
-) => {
-  if (data.__summaryRow) {
-    return null;
-  }
-  const sortColumnId = columnApi.getColumnState().find((c) => c.sort)?.colId;
-  switch (sortColumnId) {
-    case 'asset.symbol':
-      return data.asset.id;
-  }
-  return undefined;
-};
-
-export const getGroupSummaryRow = (
-  data: AccountFields[],
-  columnApi: ColumnApi
-): Partial<AccountFields & SummaryRow> | null => {
-  if (!data.length) {
-    return null;
-  }
-  // TODO to be updated for sorting or summary
-  return null;
-};
-
-const update = (
-  data: AccountFieldsFragment[],
-  deltas: AccountEventsSubscription['accounts']
-) => {
-  return produce(data, (draft) => {
-    deltas.forEach((delta) => {
-      const id = getId(delta);
-      const index = draft.findIndex((a) => getId(a) === id);
-      if (index !== -1) {
-        draft[index].balance = delta.balance;
-      } else {
-        // #TODO handle new account
-      }
-    });
-  });
-};
 
 const INCOMING_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_GENERAL,
@@ -102,6 +64,24 @@ const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
 
+const update = (
+  data: AccountFieldsFragment[],
+  deltas: AccountEventsSubscription['accounts']
+) => {
+  return produce(data, (draft) => {
+    deltas.forEach((delta) => {
+      const id = getId(delta);
+      const index = draft.findIndex((a) => getId(a) === id);
+      if (index !== -1) {
+        draft[index].balance = delta.balance;
+      } else {
+        // #TODO handle new account
+        // draft.push(delta);
+      }
+    });
+  });
+};
+
 export const accountsDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
@@ -115,41 +95,46 @@ export const accountsDataProvider = makeDataProvider<
   getDelta,
 });
 
+const getSymbols = (data: AccountFieldsFragment[]) =>
+  Array.from(new Set(data.map((a) => a.asset.symbol))).sort();
+
+// TODO add test for this
 export const getAccountData = (
-  data: AccountFieldsFragment[],
-  assetSymbol: string
-) => {
-  const assetData = data.filter((a) => a.asset.symbol === assetSymbol);
+  data: AccountFieldsFragment[]
+): AccountFields[] => {
+  const collateralData = getSymbols(data).map((assetSymbol) => {
+    const assetData = data.filter((a) => a.asset.symbol === assetSymbol);
 
-  const deposited = assetData
-    .filter((a) => [AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
-    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+    const deposited = assetData
+      .filter((a) => [AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
+      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-  const incoming = assetData
-    .filter((a) => INCOMING_ACCOUNT_TYPES.includes(a.type))
-    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+    const incoming = assetData
+      .filter((a) => INCOMING_ACCOUNT_TYPES.includes(a.type))
+      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-  const used = assetData
-    .filter((a) => OUTCOMING_ACCOUNT_TYPES.includes(a.type))
-    .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+    const used = assetData
+      .filter((a) => OUTCOMING_ACCOUNT_TYPES.includes(a.type))
+      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-  const depositRow = {
-    ...assetData[0],
-    available: (incoming - used).toString(),
-    deposited: deposited.toString(),
-    used: used.toString(),
-  };
-  const accountRows = assetData
-    .filter((a) => !INCOMING_ACCOUNT_TYPES.includes(a.type))
-    .map((a) => ({
-      ...a,
-      available: (incoming - BigInt(a.balance)).toString(),
+    const depositRow: AccountFields = {
+      ...assetData[0],
+      available: (incoming - used).toString(),
       deposited: deposited.toString(),
-      used: a.balance.toString(),
-    }));
+      used: used.toString(),
+    };
 
-  return {
-    accountRows,
-    depositRow,
-  };
+    const accountRows = assetData
+      .filter((a) => !INCOMING_ACCOUNT_TYPES.includes(a.type))
+      .map((a) => ({
+        ...a,
+        available: (incoming - BigInt(a.balance)).toString(),
+        deposited: deposited.toString(),
+        used: a.balance.toString(),
+      }));
+
+    return { ...depositRow, breakdown: accountRows };
+  });
+
+  return collateralData;
 };

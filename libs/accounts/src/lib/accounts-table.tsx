@@ -1,58 +1,40 @@
-import type { CSSProperties } from 'react';
-import { forwardRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
-  CellRendererSelectorResult,
   GroupCellRendererParams,
-  ICellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
+import type { Asset, ValueProps } from '@vegaprotocol/react-helpers';
 import {
-  PriceCell,
-  addDecimalsFormatNumber,
-  t,
-  formatNumberPercentage,
+  calculateLowHighRange,
+  progressBarCellRendererSelector,
 } from '@vegaprotocol/react-helpers';
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { Button, ButtonLink, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { AccountFieldsFragment } from './__generated___/Accounts';
-import { getId } from './accounts-data-provider';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type { AccountFields } from './accounts-manager';
-import BigNumber from 'bignumber.js';
-import { AccountTypeMapping } from '@vegaprotocol/types';
-import type { AccountType } from '@vegaprotocol/types';
+import {
+  accountsDataProvider,
+  getAccountData,
+  getId,
+} from './accounts-data-provider';
+import type { AccountFields } from './accounts-data-provider';
+import type {
+  AccountEventsSubscription,
+  AccountFieldsFragment,
+} from './__generated___/Accounts';
+import BreakdownTable from './breakdown-table';
+import produce from 'immer';
+import merge from 'lodash/merge';
 
-export interface ValueProps {
-  valueFormatted?: {
-    low: string;
-    high: string;
-    percentage: string;
-    value: number;
-    intent?: Intent;
-  };
+interface AccountsTableProps extends AgGridReactProps {
+  partyId: string;
+  onClickAsset: (value?: string | Asset) => void;
+  onClickWithdraw?: () => void;
+  onClickDeposit?: () => void;
 }
-
-export const EmptyCell = () => '';
-
-export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
-  return valueFormatted ? (
-    <>
-      <div className="flex justify-between leading-tight font-mono">
-        <div>{valueFormatted.low}</div>
-        <div>
-          {valueFormatted.high} ({valueFormatted.percentage})
-        </div>
-      </div>
-      <ProgressBar
-        value={valueFormatted.value}
-        intent={valueFormatted.intent}
-        className="mt-2"
-      />
-    </>
-  ) : null;
-};
 
 export const progressBarValueFormatter = ({
   data,
@@ -63,17 +45,10 @@ export const progressBarValueFormatter = ({
   }
   const min = BigInt(data.used);
   const max = BigInt(data.deposited);
-  const range = max;
-  const value = range ? Number((min * BigInt(100)) / range) : 0;
-  return {
-    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals),
-    high: addDecimalsFormatNumber((max - min).toString(), data.asset.decimals),
-    value: value,
-    intent: Intent.None,
-    percentage: value
-      ? formatNumberPercentage(new BigNumber(value), 2)
-      : '0.00%',
-  };
+  const mid = max > min ? max - min : max;
+  const intent = Intent.None;
+  const decimals = data.asset.decimals;
+  return calculateLowHighRange(max, min, decimals, mid, intent);
 };
 
 export const progressBarHeaderComponentParams = {
@@ -83,19 +58,6 @@ export const progressBarHeaderComponentParams = {
     '  <span ref="eText" class="ag-header-cell-text"></span>' +
     '</div>',
 };
-
-export const progressBarCellRendererSelector = (
-  params: ICellRendererParams
-): CellRendererSelectorResult => {
-  return {
-    component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
-  };
-};
-
-interface AccountsTableProps extends AgGridReactProps {
-  data: AccountFields[] | null;
-  style?: CSSProperties;
-}
 
 interface AccountsTableValueFormatterParams extends ValueFormatterParams {
   data: AccountFieldsFragment;
@@ -107,46 +69,90 @@ export const assetDecimalsFormatter = ({
 }: AccountsTableValueFormatterParams) =>
   addDecimalsFormatNumber(value, data.asset.decimals);
 
-export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
-  ({ data }, ref) => {
-    const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-      useAssetDetailsDialogStore();
-    const assetDialogCellRenderer = ({ value }: GroupCellRendererParams) => {
-      if (!value || value.length <= 0) return '-';
-      return (
-        <Button
-          size="xs"
-          className="hover:underline"
-          onClick={() => {
-            setAssetDetailsDialogOpen(true);
-            setAssetDetailsDialogSymbol(value);
-          }}
-        >
-          {t('Asset details')}
-        </Button>
-      );
-    };
+export const AccountsTable = ({
+  onClickAsset,
+  onClickWithdraw,
+  onClickDeposit,
+  partyId,
+}: AccountsTableProps) => {
+  const gridRef = useRef<AgGridReact | null>(null);
+  const update = useCallback(
+    ({ delta: deltas }: { delta: AccountEventsSubscription['accounts'] }) => {
+      const update: AccountFieldsFragment[] = [];
+      const add: AccountFieldsFragment[] = [];
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      const api = gridRef.current.api;
+      deltas.forEach((delta) => {
+        const rowNode = api.getRowNode(getId(delta));
+        if (rowNode) {
+          const updatedData = produce<AccountFieldsFragment>(
+            rowNode.data,
+            (draft: AccountFieldsFragment) => {
+              merge(draft, delta);
+            }
+          );
+          if (updatedData !== rowNode.data) {
+            update.push(updatedData);
+          }
+        } else {
+          // #TODO handle new account (or leave it to data provider to handle it)
+        }
+      });
+      if (update.length || add.length) {
+        gridRef.current.api.applyTransactionAsync({
+          update,
+          add,
+          addIndex: 0,
+        });
+      }
+      return true;
+    },
+    [gridRef]
+  );
 
-    return (
+  const { data: collateralData } = useDataProvider<
+    AccountFieldsFragment[],
+    AccountEventsSubscription['accounts']
+  >({ dataProvider: accountsDataProvider, update, variables: { partyId } });
+  const data = collateralData && getAccountData(collateralData);
+  const [openBreakdown, setOpenBreakdown] = useState(false);
+  const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
+  return (
+    <>
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No accounts')}
         rowData={data}
         getRowId={({ data }) => getId(data)}
-        ref={ref}
+        ref={gridRef}
         rowHeight={34}
-        headerHeight={0}
-        components={{ PriceCell }}
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
           resizable: true,
+          tooltipComponent: TooltipCellComponent,
+          sortable: true,
         }}
       >
         <AgGridColumn
-          headerName={t('Market')}
-          field="market.tradableInstrument.instrument.name"
-          valueFormatter="value || '—'"
+          headerName={t('Asset')}
+          field="asset.symbol"
+          headerTooltip={t(
+            'Asset is the collateral that is deposited into the Vega protocol.'
+          )}
+          cellRenderer={({ value }: ValueFormatterParams) => {
+            return (
+              <ButtonLink
+                data-testid="deposit"
+                onClick={() => {
+                  onClickAsset(value);
+                }}
+              >
+                {value}
+              </ButtonLink>
+            );
+          }}
           maxWidth={300}
         />
         <AgGridColumn
@@ -159,26 +165,67 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
-          headerName={t('Type')}
-          field="type"
+          headerName={t('Deposited')}
+          field="deposited"
+          valueFormatter={assetDecimalsFormatter}
           maxWidth={300}
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            AccountTypeMapping[value as AccountType]
-          }
         />
         <AgGridColumn
-          headerName={t('Asset')}
-          colId="asset.symbol"
-          field="asset.symbol"
-          maxWidth={300}
-          headerTooltip={t(
-            'Asset is the collateral that is deposited into the Vega protocol.'
-          )}
-          cellRenderer={assetDialogCellRenderer}
+          headerName=""
+          field="breakdown"
+          minWidth={250}
+          cellRenderer={({ value }: GroupCellRendererParams) => {
+            return (
+              <Button
+                size="xs"
+                data-testid="breakdown"
+                onClick={() => {
+                  setOpenBreakdown(!openBreakdown);
+                  setBreakdown(value);
+                }}
+              >
+                {t('Collateral breakdown')}
+              </Button>
+            );
+          }}
+        />
+        <AgGridColumn
+          headerName=""
+          field="deposit"
+          maxWidth={200}
+          cellRenderer={() => {
+            return (
+              <Button size="xs" data-testid="deposit" onClick={onClickDeposit}>
+                {t('Deposit')}
+              </Button>
+            );
+          }}
+        />
+        <AgGridColumn
+          headerName=""
+          field="withdraw"
+          maxWidth={200}
+          cellRenderer={() => {
+            return (
+              <Button
+                size="xs"
+                data-testid="withdraw"
+                onClick={onClickWithdraw}
+              >
+                {t('Withdraw')}
+              </Button>
+            );
+          }}
         />
       </AgGrid>
-    );
-  }
-);
+      <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
+        <div className="h-[35vh] w-full m-auto flex flex-col">
+          <h1 className="text-xl mb-4">{'Breakdown'}</h1>
+          <BreakdownTable data={breakdown} domLayout="autoHeight" />
+        </div>
+      </Dialog>
+    </>
+  );
+};
 
 export default AccountsTable;
