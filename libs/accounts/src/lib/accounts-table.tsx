@@ -4,7 +4,6 @@ import type {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/react-helpers';
-import {} from '@vegaprotocol/react-helpers';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { ValueProps } from '@vegaprotocol/ui-toolkit';
 import {
@@ -107,7 +106,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName={t('Deposited')}
+            headerName={t('Balance')}
+            headerTooltip={t(
+              'This is the general account balance for the given asset.'
+            )}
             field="deposited"
             valueFormatter={assetDecimalsFormatter}
             maxWidth={300}

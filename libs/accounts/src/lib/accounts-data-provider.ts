@@ -125,7 +125,7 @@ export const getAccountData = (
     };
 
     const accountRows = assetData
-      .filter((a) => !IN_ACCOUNT_TYPES.includes(a.type))
+      .filter((a) => ![AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
       .map((a) => ({
         ...a,
         available: (incoming - BigInt(a.balance)).toString(),
