@@ -1215,7 +1215,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet')
         .click();
-      cy.contains('rest provider').click();
+      cy.contains('Rest provider').click();
       cy.get(restConnectorForm).within(() => {
         cy.get('#wallet').click().type(vegaWalletName);
         cy.get('#passphrase').click().type(vegaWalletPassphrase);

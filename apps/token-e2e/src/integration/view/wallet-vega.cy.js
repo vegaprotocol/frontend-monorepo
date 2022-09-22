@@ -77,7 +77,7 @@ context('Vega Wallet - verify elements on widget', function () {
 
     it('should have REST connector visible on list', function () {
       cy.get(connectorsList).within(() => {
-        cy.get('button').should('be.visible').and('have.text', 'rest provider');
+        cy.get('button').should('be.visible').and('have.text', 'Rest provider');
       });
     });
 

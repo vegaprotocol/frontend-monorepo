@@ -91,7 +91,7 @@ it('Successful connection using rest auth form', async () => {
 
   render(generateJSX({ dialogOpen: true }));
   // Switches to rest form
-  fireEvent.click(screen.getByText('rest provider'));
+  fireEvent.click(screen.getByText('Rest provider'));
 
   // Client side validation
   fireEvent.submit(screen.getByTestId('rest-connector-form'));
@@ -119,7 +119,7 @@ it('Successful connection using custom url', async () => {
 
   render(generateJSX({ dialogOpen: true }));
   // Switches to rest form
-  fireEvent.click(screen.getByText('rest provider'));
+  fireEvent.click(screen.getByText('Rest provider'));
 
   // Client side validation
   fireEvent.submit(screen.getByTestId('rest-connector-form'));
@@ -156,7 +156,7 @@ it('Unsuccessful connection using rest auth form', async () => {
 
   render(generateJSX({ dialogOpen: true }));
   // Switches to rest form
-  fireEvent.click(screen.getByText('rest provider'));
+  fireEvent.click(screen.getByText('Rest provider'));
 
   const fields = fillInForm();
   fireEvent.submit(screen.getByTestId('rest-connector-form'));

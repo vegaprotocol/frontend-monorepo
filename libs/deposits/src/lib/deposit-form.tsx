@@ -1,5 +1,4 @@
 import type { Asset } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
 import {
   ethereumAddress,
   t,
