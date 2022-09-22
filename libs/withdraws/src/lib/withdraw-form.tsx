@@ -192,14 +192,11 @@ interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 const UseButton = ({ children, ...rest }: UseButtonProps) => {
-    return (
-      <span className="ml-auto text-sm absolute top-0 right-0">
-        <ButtonLink
-          {...rest}
-          type="button"
-        >
-          {children}
-        </ButtonLink>
-      </span>
-    );
+  return (
+    <span className="ml-auto text-sm absolute top-0 right-0">
+      <ButtonLink {...rest} type="button">
+        {children}
+      </ButtonLink>
+    </span>
+  );
 };

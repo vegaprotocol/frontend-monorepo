@@ -173,11 +173,7 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
     return (
       <div className="flex justify-between gap-8">
         {t('Open')}
-        <ButtonLink
-          onClick={() => complete(data)}
-        >
-          {t('Complete')}
-        </ButtonLink>
+        <ButtonLink onClick={() => complete(data)}>{t('Complete')}</ButtonLink>
       </div>
     );
   }

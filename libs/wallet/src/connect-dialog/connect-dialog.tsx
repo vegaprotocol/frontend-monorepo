@@ -65,12 +65,12 @@ export function VegaConnectDialog({
         >
           {Object.entries(connectors).map(([key, connector]) => (
             <li key={key} className="mb-2 last:mb-0">
-
               <ButtonLink
-                  key={key}
-                  onClick={() => setSelectedConnector(connector)}
+                key={key}
+                onClick={() => setSelectedConnector(connector)}
               >
-                  { t(`${key}`).charAt(0).toUpperCase() + t(`${key} provider`).slice(1) }
+                {t(`${key}`).charAt(0).toUpperCase() +
+                  t(`${key} provider`).slice(1)}
               </ButtonLink>
 
               <p>{connector.description}</p>
