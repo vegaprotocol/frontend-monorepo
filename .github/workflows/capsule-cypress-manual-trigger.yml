@@ -146,7 +146,7 @@ jobs:
 
       - name: Start service using fairground network
         if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet service run --network fairground --automatic-consent &
+        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
 
       - name: Start service using capsule network
         if: ${{ env.RUN_CAPSULE==true }}
