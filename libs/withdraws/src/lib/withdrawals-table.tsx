@@ -10,6 +10,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  ButtonLink,
   Dialog,
   Link,
   AgGridDynamic as AgGrid,
@@ -48,7 +49,6 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         components={{ StatusCell, RecipientCell }}
-        suppressCellFocus={true}
       >
         <AgGridColumn headerName="Asset" field="asset.symbol" />
         <AgGridColumn
@@ -173,12 +173,11 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
     return (
       <div className="flex justify-between gap-8">
         {t('Open')}
-        <button
-          className="underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
+        <ButtonLink
           onClick={() => complete(data)}
         >
           {t('Complete')}
-        </button>
+        </ButtonLink>
       </div>
     );
   }

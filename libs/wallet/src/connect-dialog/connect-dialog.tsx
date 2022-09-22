@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 import { RestConnector } from '../connectors';
@@ -65,13 +65,14 @@ export function VegaConnectDialog({
         >
           {Object.entries(connectors).map(([key, connector]) => (
             <li key={key} className="mb-2 last:mb-0">
-              <button
-                key={key}
-                onClick={() => setSelectedConnector(connector)}
-                className="capitalize underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
+
+              <ButtonLink
+                  key={key}
+                  onClick={() => setSelectedConnector(connector)}
               >
-                {t(`${key} provider`)}
-              </button>
+                  { t(`${key}`).charAt(0).toUpperCase() + t(`${key} provider`).slice(1) }
+              </ButtonLink>
+
               <p>{connector.description}</p>
             </li>
           ))}

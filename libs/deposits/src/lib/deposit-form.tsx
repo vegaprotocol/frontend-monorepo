@@ -12,6 +12,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
+  ButtonLink,
   FormGroup,
   Icon,
   Input,
@@ -178,33 +179,36 @@ export const DepositForm = ({
           </InputError>
         )}
         {!errors.asset?.message && selectedAsset && (
-          <button
+          <UseButton
             data-testid="view-asset-details"
-            className="text-sm underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
             onClick={() => {
               setAssetDetailsDialogOpen(true);
               setAssetDetailsDialogSymbol(selectedAsset);
             }}
           >
             {t('View asset details')}
-          </button>
+          </UseButton>
         )}
         {isFaucetable && selectedAsset && (
-          <UseButton onClick={requestFaucet} className="bottom-0 top-auto">
-            {t(`Get ${selectedAsset.symbol}`)}
-          </UseButton>
+          <span className="absolute bottom-0 right-0">
+            <UseButton onClick={requestFaucet}>
+              {t(`Get ${selectedAsset.symbol}`)}
+            </UseButton>
+          </span>
         )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to">
         {keypair?.pub && (
-          <UseButton
-            onClick={() => {
-              setValue('to', keypair.pub);
-              clearErrors('to');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
+          <span className="absolute top-0 right-0">
+            <UseButton
+              onClick={() => {
+                setValue('to', keypair.pub);
+                clearErrors('to');
+              }}
+            >
+              {t('Use connected')}
+            </UseButton>
+          </span>
         )}
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
@@ -223,14 +227,16 @@ export const DepositForm = ({
       )}
       <FormGroup label={t('Amount')} labelFor="amount">
         {selectedAsset && balance && (
-          <UseButton
-            onClick={() => {
-              setValue('amount', balance.toFixed(selectedAsset.decimals));
-              clearErrors('amount');
-            }}
-          >
-            {t('Use maximum')}
-          </UseButton>
+          <span className="absolute top-0 right-0">
+            <UseButton
+              onClick={() => {
+                setValue('amount', balance.toFixed(selectedAsset.decimals));
+                clearErrors('amount');
+              }}
+            >
+              {t('Use maximum')}
+            </UseButton>
+          </span>
         )}
         <Input
           type="number"
@@ -341,20 +347,18 @@ const FormButton = ({
 interface UseButtonProps {
   children: ReactNode;
   onClick: () => void;
-  className?: string;
 }
 
-const UseButton = ({ children, onClick, className }: UseButtonProps) => {
+const UseButton = ({ children, onClick, ...props }: UseButtonProps) => {
   return (
-    <button
-      type="button"
-      className={classNames(
-        'ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300',
-        className
-      )}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+    <span className="text-sm">
+      <ButtonLink
+        type="button"
+        onClick={onClick}
+        {...props} 
+      >
+        {children}
+      </ButtonLink>
+    </span>
   );
 };

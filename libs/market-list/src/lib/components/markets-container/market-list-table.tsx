@@ -52,7 +52,6 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         filter: true,
         filterParams: { buttons: ['reset'] },
       }}
-      suppressCellFocus={true}
       components={{ PriceFlashCell }}
       {...props}
     >

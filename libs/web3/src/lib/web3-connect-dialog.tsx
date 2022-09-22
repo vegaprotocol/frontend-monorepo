@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
@@ -30,8 +30,7 @@ export const Web3ConnectDialog = ({
           const info = getConnectorInfo(connector);
           return (
             <li key={i} className="mb-2 last:mb-0">
-              <button
-                className="underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
+              <ButtonLink
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);
@@ -39,7 +38,7 @@ export const Web3ConnectDialog = ({
                 }}
               >
                 {info.text}
-              </button>
+              </ButtonLink>
             </li>
           );
         })}

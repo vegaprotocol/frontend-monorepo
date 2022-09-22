@@ -26,7 +26,6 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
       overlayNoRowsTemplate={t('No deposits')}
       defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%', height: '100%' }}
-      suppressCellFocus={true}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
       <AgGridColumn

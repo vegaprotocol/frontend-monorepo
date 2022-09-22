@@ -87,7 +87,6 @@ export const Web3Content = ({
         <Button
           onClick={() => setDialogOpen(true)}
           data-testid="connect-eth-wallet-btn"
-          size="md"
           variant="secondary"
         >
           {t('Connect')}

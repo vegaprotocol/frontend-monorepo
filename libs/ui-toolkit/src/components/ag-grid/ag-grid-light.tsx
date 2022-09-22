@@ -22,14 +22,6 @@ const agGridLightVariables = `
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
-  div[data-testid="tab-positions"] .ag-theme-balham .ag-cell {
-    line-height: normal;
-  }
-
-  .ag-theme-balham .ag-floating-bottom-container {
-    --ag-row-hover-color: none;
-  }
 `;
 
 export const AgGrid = ({

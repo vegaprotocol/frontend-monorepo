@@ -248,7 +248,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           columnDefs={colDefs}
           defaultColDef={defaultColDef}
           animateRows={true}
-          suppressCellFocus={true}
           onCellClicked={(event) => {
             navigate(event.data.id);
           }}

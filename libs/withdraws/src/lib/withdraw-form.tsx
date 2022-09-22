@@ -9,6 +9,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
+  ButtonLink,
   FormGroup,
   Input,
   InputError,
@@ -190,15 +191,15 @@ export const WithdrawForm = ({
 interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
-
 const UseButton = ({ children, ...rest }: UseButtonProps) => {
-  return (
-    <button
-      {...rest}
-      type="button"
-      className="ml-auto text-sm absolute top-0 right-0 underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300"
-    >
-      {children}
-    </button>
-  );
+    return (
+      <span className="ml-auto text-sm absolute top-0 right-0">
+        <ButtonLink
+          {...rest}
+          type="button"
+        >
+          {children}
+        </ButtonLink>
+      </span>
+    );
 };
