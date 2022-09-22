@@ -264,12 +264,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
       ),
     })),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
-      ),
-    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (

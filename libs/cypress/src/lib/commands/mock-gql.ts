@@ -17,9 +17,9 @@ export function addMockGQLCommand() {
   });
 }
 
-const mockGraphQlSocket = new Server(
-  Cypress.env('GRAPHQL_URL').replace('http', 'ws')
-);
+const mockSocketServer = Cypress.env('VEGA_URL')
+  ? new Server(Cypress.env('VEGA_URL').replace('http', 'ws'))
+  : null;
 
 interface onMessage {
   (send: (data: object) => void, variables: object): void;
@@ -30,8 +30,11 @@ export function addMockGQLSubscriptionCommand() {
     'mockGQLSubscription',
     (mocks?: Record<string, onMessage>) => {
       cy.on('window:before:load', (win) => {
+        if (!mockSocketServer) {
+          return;
+        }
         win.WebSocket = WebSocket;
-        mockGraphQlSocket.on('connection', (socket) => {
+        mockSocketServer.on('connection', (socket) => {
           socket.on('message', (message) => {
             if (typeof message !== 'string') {
               return;

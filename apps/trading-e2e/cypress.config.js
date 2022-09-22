@@ -33,7 +33,6 @@ module.exports = defineConfig({
     requestTimeout: 20000,
   },
   env: {
-    GRAPHQL_URL: 'https://api.n07.testnet.vega.xyz/graphql',
     TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',
     ETHEREUM_PROVIDER_URL:
       'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',

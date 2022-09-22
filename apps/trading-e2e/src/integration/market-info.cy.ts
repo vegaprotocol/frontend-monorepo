@@ -129,7 +129,9 @@ describe('market info is displayed', () => {
   });
 
   it('liquidity displayed', () => {
-    cy.getByTestId('accordion-toggle').eq(13).click();
+    cy.getByTestId(marketTitle)
+      .contains(/Liquidity(?! m)/)
+      .click();
 
     validateMarketDataRow(0, 'Target Stake', '0.56789 tBTC');
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
