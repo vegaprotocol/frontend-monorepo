@@ -6,6 +6,7 @@ describe('markets table', () => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
   });
 
   it('renders markets correctly', () => {

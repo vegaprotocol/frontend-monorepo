@@ -25,15 +25,15 @@ import type {
   AccountEventsSubscription,
   AccountFieldsFragment,
 } from './__generated___/Accounts';
-import BreakdownTable from './breakdown-table';
 import produce from 'immer';
 import merge from 'lodash/merge';
+import BreakdownTable from './breakdown-table';
 
 interface AccountsTableProps extends AgGridReactProps {
   partyId: string;
   onClickAsset: (value?: string | Asset) => void;
-  onClickWithdraw?: () => void;
-  onClickDeposit?: () => void;
+  onClickWithdraw?: (value?: Asset) => void;
+  onClickDeposit?: (value?: Asset) => void;
 }
 
 export const progressBarValueFormatter = ({
@@ -192,9 +192,11 @@ export const AccountsTable = ({
           headerName=""
           field="deposit"
           maxWidth={200}
-          cellRenderer={() => {
+          cellRenderer={({ data }: GroupCellRendererParams) => {
             return (
-              <Button size="xs" data-testid="deposit" onClick={onClickDeposit}>
+              <Button size="xs" data-testid="deposit" onClick={() => {
+                onClickDeposit && onClickDeposit(data.asset)
+              }}>
                 {t('Deposit')}
               </Button>
             );
@@ -204,12 +206,12 @@ export const AccountsTable = ({
           headerName=""
           field="withdraw"
           maxWidth={200}
-          cellRenderer={() => {
+          cellRenderer={({ data }: GroupCellRendererParams) => {
             return (
               <Button
                 size="xs"
                 data-testid="withdraw"
-                onClick={onClickWithdraw}
+                onClick={() => onClickWithdraw && onClickWithdraw(data.asset)}
               >
                 {t('Withdraw')}
               </Button>
@@ -219,7 +221,7 @@ export const AccountsTable = ({
       </AgGrid>
       <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
         <div className="h-[35vh] w-full m-auto flex flex-col">
-          <h1 className="text-xl mb-4">{'Collateral breakdown'}</h1>
+          <h1 className="text-xl mb-4">{t('Collateral breakdown')}</h1>
           <BreakdownTable data={breakdown} domLayout="autoHeight" />
         </div>
       </Dialog>

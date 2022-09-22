@@ -27,7 +27,7 @@ export const ProgressBarCell = ({ valueFormatted }: ValueProps) => {
       <ProgressBar
         value={valueFormatted.value}
         intent={valueFormatted.intent}
-        className="mt-2"
+        className="mt-2 w-full"
       />
     </>
   ) : null;

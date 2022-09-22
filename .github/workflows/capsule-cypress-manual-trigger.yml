@@ -44,7 +44,7 @@ jobs:
           node-version: 16
 
       #######
-      ## Checkout capsule
+      ## Checkout repos
       #######
 
       # Checkout front ends
@@ -55,8 +55,14 @@ jobs:
           fetch-depth: 0
           path: './frontend-monorepo'
 
+      # See if we capsule is needed for this project
+      - name: See if capsule is necessary
+        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+
       # Checkout capsule to build local network
       - name: Checkout capsule
+        if: ${{ env.RUN_CAPSULE }}
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vegacapsule
@@ -64,46 +70,58 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
 
+      # Checkout vega
+      - name: Checkout Vega
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vega
+          ref: v0.54.0
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+          path: './vega'
+
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install
+        working-directory: frontend-monorepo
+
       #######
       ## Build binaries
       #######
       - name: Build capsule
+        if: ${{ env.RUN_CAPSULE }}
         run: go install
         working-directory: capsule
 
       - name: Set GOBIN
         run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
-      - name: Checkout Vega
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vega
-          ref: v0.55.0
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vega'
-
       - name: Install Vega binaries
+        if: ${{ env.RUN_CAPSULE }}
         run: go install -v ./cmd/vega
+        working-directory: vega
+
+      - name: Install date-node binaries
+        if: ${{ env.RUN_CAPSULE }}
+        run: go install ./cmd/data-node
         working-directory: vega
 
       - name: Install Vega wallet binaries
         run: go install ./cmd/vegawallet
         working-directory: vega
 
-      - name: Install date-node binaries
-        run: go install ./cmd/data-node
-        working-directory: vega
-
       ######
       ## Start capsule
       ######
       - name: Login to docker
+        if: ${{ env.RUN_CAPSULE }}
         run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
 
       - name: Start nomad
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule nomad &
 
       - name: Bootstrap network
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
         working-directory: capsule
 
@@ -121,7 +139,17 @@ jobs:
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Start service
+
+      - name: Import fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+
+      - name: Start service using fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
+
+      - name: Start service using capsule network
+        if: ${{ env.RUN_CAPSULE==true }}
         run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
@@ -147,10 +175,11 @@ jobs:
       ######
 
       - name: Logs
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE==true }}
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
+        if: ${{ env.RUN_CAPSULE==true }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt

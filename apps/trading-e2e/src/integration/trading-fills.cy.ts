@@ -10,6 +10,7 @@ describe('fills', () => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'Fills', generateFills());
     });
+    cy.mockGQLSubscription();
   });
 
   it('renders fills on portfolio page', () => {
