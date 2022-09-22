@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useCallback } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
