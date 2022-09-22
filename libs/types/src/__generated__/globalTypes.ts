@@ -85,15 +85,6 @@ export enum ConditionOperator {
 }
 
 /**
- * The status of a deposit
- */
-export enum DepositStatus {
-  STATUS_CANCELLED = "STATUS_CANCELLED",
-  STATUS_FINALIZED = "STATUS_FINALIZED",
-  STATUS_OPEN = "STATUS_OPEN",
-}
-
-/**
  * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
  */
 export enum Interval {

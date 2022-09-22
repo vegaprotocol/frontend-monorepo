@@ -1,9 +1,10 @@
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import type {
-  DepositEvent,
-  DepositEventVariables,
-} from './__generated__/DepositEvent';
+import {
+  DepositEventDocument,
+  DepositEventSubscription,
+  DepositEventSubscriptionVariables,
+} from './__generated__/Deposit';
 import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
 import {
@@ -21,20 +22,6 @@ import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { useDepositStore } from './deposit-store';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-
-const DEPOSIT_EVENT_SUB = gql`
-  subscription DepositEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
-      event {
-        ... on Deposit {
-          id
-          txHash
-          status
-        }
-      }
-    }
-  }
-`;
 
 export const useSubmitDeposit = () => {
   const { asset, update } = useDepositStore();
@@ -58,7 +45,7 @@ export const useSubmitDeposit = () => {
     true
   );
 
-  useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
+  useSubscription<DepositEventSubscription, DepositEventSubscriptionVariables>(DepositEventDocument, {
     variables: { partyId: partyId ? remove0x(partyId) : '' },
     skip: !partyId,
     onSubscriptionData: ({ subscriptionData }) => {
