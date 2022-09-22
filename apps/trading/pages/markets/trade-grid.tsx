@@ -116,7 +116,6 @@ export const TradeMarketHeader = ({
   market,
   onSelect,
 }: TradeMarketHeaderProps) => {
-  const { push } = useRouter();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -218,7 +217,6 @@ interface TradeGridProps {
 }
 
 export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
-  const { push } = useRouter();
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} onSelect={onSelect} />
