@@ -1,20 +1,21 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRef } from 'react';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
+import type { TradeWithMarket } from '@vegaprotocol/fills';
+import { useFillsList } from '@vegaprotocol/fills';
+import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { ConsoleLiteGrid } from '../../console-lite-grid';
+import useColumnDefinitions from './use-column-definitions';
 
-import { OrderList } from '../';
-import { useOrderListData } from './use-order-list-data';
-
-interface OrderListManagerProps {
+interface Props {
   partyId: string;
 }
 
-export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
+const FillsManager = ({ partyId }: Props) => {
+  const { columnDefs, defaultColDef } = useColumnDefinitions({ partyId });
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
-
-  const { data, error, loading, addNewRows, getRows } = useOrderListData({
+  const { data, error, loading, addNewRows, getRows } = useFillsList({
     partyId,
     gridRef,
     scrolledToTop,
@@ -32,13 +33,17 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <OrderList
+      <ConsoleLiteGrid<TradeWithMarket>
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
       />
     </AsyncRenderer>
   );
 };
+
+export default FillsManager;

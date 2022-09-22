@@ -1,9 +1,9 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MarketState } from '@vegaprotocol/types';
-import { IS_MARKET_TRADABLE } from '../../constants';
 import colors from 'tailwindcss/colors';
 import type { Market } from '@vegaprotocol/market-list';
+import { IS_MARKET_TRADABLE } from '../../constants';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
@@ -197,5 +197,12 @@ export const ROW_CLASS_RULES = {
 };
 
 export const LARGE_SCREENS = ['xl', 'xxl'];
+
+export const ALL_PRODUCTS_ITEM = {
+  name: t('All Markets'),
+  id: 'allmarkets',
+  cssClass: 'text-pink',
+  color: theme.colors.pink,
+};
 
 export const AG_GRID_CONTAINER_STYLES = { width: '100%', height: '100%' };

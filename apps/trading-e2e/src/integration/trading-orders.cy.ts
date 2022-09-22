@@ -73,8 +73,11 @@ describe('orders', () => {
   });
 
   it('partially filled orders should not show close/edit buttons', () => {
+    const partiallyFilledId =
+      '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78';
+
     cy.getByTestId('tab-orders').should('be.visible');
-    cy.get('[row-index="4"]').within(() => {
+    cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
         'PartiallyFilled'
@@ -95,12 +98,21 @@ describe('orders', () => {
     ];
 
     cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderSymbol}']`)
-      .should('have.length.at.least', 4)
-      .each(($symbol, index) => {
-        if (index != 0) {
-          cy.wrap($symbol).should('have.text', expectedOrderList[index - 1]);
-        }
+      .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
+      .should('have.length.at.least', 5)
+      .then(($symbols) => {
+        const symbolNames: string[] = [];
+        cy.wrap($symbols)
+          .each(($symbol) => {
+            cy.wrap($symbol)
+              .invoke('text')
+              .then((text) => {
+                symbolNames.push(text);
+              });
+          })
+          .then(() => {
+            expect(symbolNames).to.include.ordered.members(expectedOrderList);
+          });
       });
   });
 });

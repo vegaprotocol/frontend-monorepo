@@ -51,6 +51,12 @@ export const routerConfig = [
     name: 'Portfolio',
     text: t('Portfolio'),
     element: <Portfolio />,
+    children: [
+      {
+        path: ':module',
+        element: <Portfolio />,
+      },
+    ],
     icon: 'portfolio',
     isNavItem: true,
   },
