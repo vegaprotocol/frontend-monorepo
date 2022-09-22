@@ -13,7 +13,7 @@ module.exports = defineConfig({
     specPattern: './src/integration/*.ts',
     excludeSpecPattern: '**/*.js',
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
+    supportFile: './src/support/index.js',
     video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/console-lite-e2e/videos',

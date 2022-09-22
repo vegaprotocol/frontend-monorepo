@@ -13,7 +13,7 @@ module.exports = defineConfig({
     fixturesFolder: false,
     specPattern: '**/*.cy.{js,jsx,ts,tsx}',
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
+    supportFile: './src/support/index.js',
     video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/explorer-e2e/videos',
