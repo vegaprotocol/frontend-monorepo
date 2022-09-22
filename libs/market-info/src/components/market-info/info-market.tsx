@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Splash,
-  Accordion,
-  Link,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
@@ -26,6 +21,8 @@ import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
+import Link from 'next/link';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -72,6 +69,7 @@ export const MarketInfoContainer = ({
     MARKET_INFO_QUERY,
     {
       variables,
+      errorPolicy: 'ignore',
     }
   );
 
@@ -291,8 +289,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
         >
-          <Link onClick={() => onSelect(market.id)}>
-            {t('View liquidity provision table')}
+          <Link passHref={true} href={`/liquidity/${market.id}`}>
+            <UiToolkitLink>{t('View liquidity provision table')}</UiToolkitLink>
           </Link>
         </MarketInfoTable>
       ),
