@@ -98,7 +98,6 @@ export const accountsDataProvider = makeDataProvider<
 const getSymbols = (data: AccountFieldsFragment[]) =>
   Array.from(new Set(data.map((a) => a.asset.symbol))).sort();
 
-// TODO add test for this
 export const getAccountData = (
   data: AccountFieldsFragment[]
 ): AccountFields[] => {
