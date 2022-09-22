@@ -8,10 +8,7 @@ import {
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import {
-  FillsDocument,
-  FillsEventDocument,
-} from './__generated__/Fills';
+import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,
   FillFieldsFragment,
@@ -20,21 +17,18 @@ import type {
 } from './__generated__/Fills';
 
 const update = (
-  data: (FillEdgeFragment[] | null),
+  data: FillEdgeFragment[] | null,
   delta: FillsEventSubscription['trades']
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt').forEach((node) => {
       if (draft === null) {
-        return
+        return;
       }
       const index = draft.findIndex((edge) => edge?.node.id === node.id);
       if (index !== -1) {
         if (draft[index]?.node) {
-          Object.assign(
-            draft[index]?.node as FillFieldsFragment,
-            node
-          );
+          Object.assign(draft[index]?.node as FillFieldsFragment, node);
         }
       } else {
         const firstNode = draft[0]?.node;
@@ -73,7 +67,8 @@ const getData = (responseData: FillsQuery): FillEdgeFragment[] =>
 const getPageInfo = (responseData: FillsQuery): PageInfo | null =>
   responseData.party?.tradesConnection?.pageInfo || null;
 
-const getDelta = (subscriptionData: FillsEventSubscription) => subscriptionData.trades || [];
+const getDelta = (subscriptionData: FillsEventSubscription) =>
+  subscriptionData.trades || [];
 
 export const fillsProvider = makeDataProvider({
   query: FillsDocument,
