@@ -27,7 +27,7 @@ const mockTx = {
   },
 };
 
-describe('deal ticket orders', () => {
+describe('deal ticket orders', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);

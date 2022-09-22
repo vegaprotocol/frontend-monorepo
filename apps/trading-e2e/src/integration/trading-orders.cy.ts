@@ -13,7 +13,7 @@ before(() => {
   connectVegaWallet();
 });
 
-describe('orders', () => {
+describe('orders', { tags: '@smoke' }, () => {
   const orderSymbol = 'market.tradableInstrument.instrument.code';
   const orderSize = 'size';
   const orderType = 'type';

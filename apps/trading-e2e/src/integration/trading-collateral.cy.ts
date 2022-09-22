@@ -9,7 +9,7 @@ beforeEach(() => {
   cy.visit('/markets/market-0');
 });
 
-describe('collateral', () => {
+describe('collateral', { tags: '@smoke' }, () => {
   const collateralTab = 'Collateral';
   const assetSymbolColumn = "[col-id='asset.symbol']";
   const assetTypeColumn = "[col-id='type']";

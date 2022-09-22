@@ -7,7 +7,7 @@ const marketTitle = 'accordion-title';
 const link = 'link';
 const externalLink = 'external-link';
 
-describe('market info is displayed', () => {
+describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);

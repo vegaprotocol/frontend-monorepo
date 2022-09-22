@@ -1,6 +1,6 @@
 import { connectVegaWallet } from '../support/vega-wallet';
 
-describe('vega wallet', () => {
+describe('vega wallet', { tags: '@smoke' }, () => {
   const connectVegaBtn = 'connect-vega-wallet';
   const manageVegaBtn = 'manage-vega-wallet';
   const form = 'rest-connector-form';

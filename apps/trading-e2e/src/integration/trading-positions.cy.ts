@@ -8,7 +8,7 @@ beforeEach(() => {
   });
 });
 
-describe('positions', () => {
+describe('positions', { tags: '@smoke' }, () => {
   it('renders positions on trading page', () => {
     cy.visit('/markets/market-0');
     cy.getByTestId('Positions').click();
