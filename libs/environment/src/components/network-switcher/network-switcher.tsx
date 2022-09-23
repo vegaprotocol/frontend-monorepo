@@ -9,7 +9,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
-import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
