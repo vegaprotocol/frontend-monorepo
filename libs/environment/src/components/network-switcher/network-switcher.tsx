@@ -69,7 +69,7 @@ const NetworkLabel = ({
   </span>
 );
 
-export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
+export const NetworkSwitcher = () => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
@@ -84,16 +84,9 @@ export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
     [setOpen, setAdvancedView]
   );
 
-  const dropdownTriggerClasses = classNames({
-    'text-black hover:!bg-neutral-300': theme === 'light',
-    'text-white hover:!bg-neutral-700': theme === 'dark',
-  });
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger className={dropdownTriggerClasses}>
-        {envTriggerMapping[VEGA_ENV]}
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger>{envTriggerMapping[VEGA_ENV]}</DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
