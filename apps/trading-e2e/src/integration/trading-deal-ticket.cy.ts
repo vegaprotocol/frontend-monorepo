@@ -27,7 +27,7 @@ const mockTx = {
   },
 };
 
-describe('deal ticket orders', () => {
+describe('deal ticket orders', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
@@ -159,7 +159,7 @@ describe('deal ticket orders', () => {
   it.skip('unsuccessful order due to no collateral');
 });
 
-describe('deal ticket validation', () => {
+describe('deal ticket validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);

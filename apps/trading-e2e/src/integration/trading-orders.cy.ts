@@ -1,12 +1,26 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
+import type { onMessage } from '@vegaprotocol/cypress';
+import type {
+  OrderSub as OrderSubData,
+  OrderSubVariables,
+} from '@vegaprotocol/orders';
 import { connectVegaWallet } from '../support/vega-wallet';
 
+const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = function (send) {
+  send({
+    orders: [],
+  });
+};
+
+const subscriptionMocks = { OrderSub: onOrderSub };
+
 before(() => {
+  cy.spy(subscriptionMocks, 'OrderSub');
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
-  cy.mockGQLSubscription();
+  cy.mockGQLSubscription(subscriptionMocks);
   cy.visit('/markets/market-0');
   cy.getByTestId('Orders').click();
   cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
@@ -14,7 +28,7 @@ before(() => {
   connectVegaWallet();
 });
 
-describe('orders', () => {
+describe('orders', { tags: '@smoke' }, () => {
   const orderSymbol = 'market.tradableInstrument.instrument.code';
   const orderSize = 'size';
   const orderType = 'type';
@@ -28,6 +42,7 @@ describe('orders', () => {
 
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
+    expect(subscriptionMocks.OrderSub).to.be.calledOnce;
 
     cy.getByTestId('tab-orders').within(() => {
       cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {

@@ -4,7 +4,8 @@ import {
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
+import Link from 'next/link';
 import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 import type { Market_market } from '../../pages/markets/__generated__/Market';
 
@@ -83,8 +84,10 @@ const compileGridData = (
   if (isLiquidityMonitoringAuction && market.data?.suppliedStake) {
     grid.push({
       label: (
-        <Link onClick={() => onSelect && onSelect(market.id)}>
-          {t('Current liquidity')}
+        <Link href={`/liquidity/${market.id}`} passHref={true}>
+          <UiToolkitLink onClick={() => onSelect && onSelect(market.id)}>
+            {t('Current liquidity')}
+          </UiToolkitLink>
         </Link>
       ),
       value: formatStake(market.data.suppliedStake, market),
@@ -146,12 +149,9 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <Link
-              href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-happens-in-an-opening-auction"
-              target="_blank"
-            >
+            <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-happens-in-an-opening-auction">
               {t('Find out more')}
-            </Link>
+            </ExternalLink>
           </p>
           <MarketDataGrid grid={compileGridData(market)} />
         </>
@@ -168,12 +168,9 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>{' '}
-                <Link
-                  href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-liquidity-monitoring-auction"
-                  target="_blank"
-                >
+                <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-liquidity-monitoring-auction">
                   {t('Find out more')}
-                </Link>
+                </ExternalLink>
               </p>
               <MarketDataGrid grid={compileGridData(market, onSelect)} />
             </>
@@ -186,12 +183,9 @@ export const TradingModeTooltip = ({
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                <Link
-                  href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-price-monitoring-auction"
-                  target="_blank"
-                >
+                <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-price-monitoring-auction">
                   {t('Find out more')}
-                </Link>
+                </ExternalLink>
               </p>
               <MarketDataGrid grid={compileGridData(market)} />
             </>

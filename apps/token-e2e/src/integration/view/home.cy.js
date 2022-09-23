@@ -23,7 +23,7 @@ const governanceBtn = '[data-testid="governance-button-on-homepage"]';
 const vegaTokenAddress = Cypress.env('vegaTokenAddress');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
-context('Home Page - verify elements on page', function () {
+context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
     cy.visit('/');
   });

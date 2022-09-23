@@ -1,6 +1,6 @@
 import { connectVegaWallet } from '../support/vega-wallet';
 
-describe('vega wallet', () => {
+describe('vega wallet', { tags: '@smoke' }, () => {
   const connectVegaBtn = 'connect-vega-wallet';
   const manageVegaBtn = 'manage-vega-wallet';
   const form = 'rest-connector-form';
@@ -60,7 +60,7 @@ describe('vega wallet', () => {
   });
 });
 
-describe('ethereum wallet', () => {
+describe('ethereum wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
