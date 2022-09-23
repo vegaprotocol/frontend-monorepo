@@ -17,7 +17,9 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const partyId = keypair?.pub;
   // Default to first marketId query item if found
   const marketId =
-    id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId) || '';
+    id ||
+    (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId) ||
+    '';
 
   const {
     data: {

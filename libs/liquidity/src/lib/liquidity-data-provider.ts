@@ -2,13 +2,10 @@ import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import type {
-  FeeShareFieldsFragment,
-} from './__generated__/MarketLiquidity';
+import type { FeeShareFieldsFragment } from './__generated__/MarketLiquidity';
 import { useMarketLiquidityQuery } from './__generated__/MarketLiquidity';
 
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
-
 
 export interface LiquidityProvision {
   party: string;
@@ -50,10 +47,7 @@ export const useLiquidityProvision = ({
   const liquidityProviders = (
     data?.market?.data?.liquidityProviderFeeShare || []
   )
-    ?.filter(
-      (p: FeeShareFieldsFragment) =>
-        !partyId || p.party.id === partyId
-    ) // if partyId is provided, filter out other parties
+    ?.filter((p: FeeShareFieldsFragment) => !partyId || p.party.id === partyId) // if partyId is provided, filter out other parties
     .map((provider: FeeShareFieldsFragment) => {
       const liquidityProvisionConnection =
         data?.market?.liquidityProvisionsConnection?.edges?.find(

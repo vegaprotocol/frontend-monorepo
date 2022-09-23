@@ -12,7 +12,7 @@ import {
   nextWeek,
   lastMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalFields } from '../../__generated__/ProposalFields'
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 const rejectedProposalClosesNextWeek = generateProposal({
   id: 'rejected1',
