@@ -18,8 +18,8 @@ for (const dir of dirs) {
     console.log('exists', copyPath);
     fs.copyFileSync(copyPath, destinationPath);
   }
-  if(fs.existsSync(cypressEnvPath)) {
-    console.log('exists', cypressEnvPath)
-    fs.renameSync(cypressEnvPath, renameCypressEnvPath)
+  if (fs.existsSync(cypressEnvPath)) {
+    console.log('exists', cypressEnvPath);
+    fs.renameSync(cypressEnvPath, renameCypressEnvPath);
   }
 }
