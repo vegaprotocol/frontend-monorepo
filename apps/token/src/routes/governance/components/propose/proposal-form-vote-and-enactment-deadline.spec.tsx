@@ -3,7 +3,7 @@ import { ProposalFormVoteAndEnactmentDeadline } from './proposal-form-vote-and-e
 
 beforeEach(() => {
   jest.useFakeTimers();
-  jest.setSystemTime(0);
+  jest.setSystemTime(new Date('2022-01-01T00:00:00.000Z'));
 });
 
 afterEach(() => {
@@ -132,13 +132,13 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     // Should be adding 2 mins to the vote deadline as the minimum is set by
     // default, and we add 2 mins for wallet confirmation
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/1970, 2:02:00 AM'
+      '1/1/2022, 1:02:00 AM'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/1970, 1:02:00 AM'
+      '1/1/2022, 12:02:00 AM'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/1970, 3:00:00 AM'
+      '1/1/2022, 2:00:00 AM'
     );
   });
 
@@ -149,13 +149,13 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     });
 
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/1970, 2:02:30 AM'
+      '1/1/2022, 1:02:30 AM'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/1970, 1:02:30 AM'
+      '1/1/2022, 12:02:30 AM'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/1970, 3:00:30 AM'
+      '1/1/2022, 2:00:30 AM'
     );
   });
 
@@ -164,10 +164,10 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
     fireEvent.change(voteDeadlineInput, { target: { value: 2 } });
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/1970, 3:00:00 AM'
+      '1/1/2022, 2:00:00 AM'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/1970, 4:00:00 AM'
+      '1/1/2022, 3:00:00 AM'
     );
   });
 
@@ -182,12 +182,12 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     fireEvent.click(voteDeadlineMaxButton);
     fireEvent.click(validationDeadlineMaxButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/1970, 6:00:00 AM'
+      '1/1/2022, 5:00:00 AM'
     );
     expect(validationDeadlineInput).toHaveValue(5);
     fireEvent.click(voteDeadlineMinButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/1970, 2:00:00 AM'
+      '1/1/2022, 1:00:00 AM'
     );
     expect(validationDeadlineInput).toHaveValue(1);
   });
