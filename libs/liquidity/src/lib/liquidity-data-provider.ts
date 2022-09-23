@@ -1,4 +1,4 @@
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
@@ -15,7 +15,7 @@ export interface LiquidityProvision {
   averageEntryValuation: string;
   obligation: string | null;
   supplied: string | null;
-  status?: LiquidityProvisionStatus;
+  status?: Schema.LiquidityProvisionStatus;
   createdAt: string | undefined;
   updatedAt: string | null | undefined;
 }

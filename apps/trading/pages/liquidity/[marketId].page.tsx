@@ -1,6 +1,6 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
@@ -41,14 +41,14 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const activeEdges = useMemo(
     () =>
       liquidityProviders.filter(
-        (e) => e.status === LiquidityProvisionStatus.STATUS_ACTIVE
+        (e) => e.status === Schema.LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]
   );
   const inactiveEdges = useMemo(
     () =>
       liquidityProviders.filter(
-        (e) => e.status !== LiquidityProvisionStatus.STATUS_ACTIVE
+        (e) => e.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
       ),
     [liquidityProviders]
   );
