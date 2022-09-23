@@ -1,6 +1,15 @@
 import { getClosingTimestamp } from './get-closing-timestamp';
 import { addHours, addMinutes, getTime } from 'date-fns';
 
+beforeEach(() => {
+  jest.useFakeTimers();
+  jest.setSystemTime(0);
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 describe('getClosingTimestamp', () => {
   it('should return the correct timestamp if the proposalVoteDeadline is 1 (when 2 mins are added)', () => {
     const proposalVoteDeadline = '1';
