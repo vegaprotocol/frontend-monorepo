@@ -9,7 +9,10 @@ import type {
   AccountsQuery,
   AccountEventsSubscription,
 } from './__generated___/Accounts';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 
 export interface AccountFields extends AccountFieldsFragment {
@@ -82,7 +85,7 @@ const update = (
   });
 };
 
-export const accountsDataProvider = makeDataProvider<
+export const activeAccountsDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
@@ -94,6 +97,11 @@ export const accountsDataProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export const accountsDataProvider = makeDerivedDataProvider<
+  AccountFields[],
+  never
+>([activeAccountsDataProvider], ([accounts]) => getAccountData(accounts));
 
 const getSymbols = (data: AccountFieldsFragment[]) =>
   Array.from(new Set(data.map((a) => a.asset.symbol))).sort();
