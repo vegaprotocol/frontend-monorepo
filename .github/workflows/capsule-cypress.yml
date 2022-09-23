@@ -47,6 +47,20 @@ jobs:
           fetch-depth: 0
           path: './frontend-monorepo'
 
+      # Restore node_modules from cache if possible
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            frontend-monorepo/node_modules
+            /home/runner/.cache/Cypress
+          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
+
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: frontend-monorepo
+
       # See affected apps to see if building all binaries is necessary
       - name: See affected apps
         run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{github.base_ref}} --head=${{github.head_ref}} --select=projects) >> $GITHUB_ENV
@@ -65,20 +79,6 @@ jobs:
           ref: main
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
-
-      # Restore node_modules from cache if possible
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            frontend-monorepo/node_modules
-            /home/runner/.cache/Cypress
-          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
-
-      # Install frontend dependencies
-      - name: Install root dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: frontend-monorepo
 
       #######
       ## Build binaries

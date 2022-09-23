@@ -1,13 +1,16 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { ColumnKind, SelectMarketDialog } from '@vegaprotocol/market-list';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  t,
+  titlefy,
+} from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { PageQueryContainer } from '../../components/page-query-container';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import type { Market, MarketVariables } from './__generated__/Market';
@@ -120,6 +123,30 @@ const MarketPage = ({ id }: { id?: string }) => {
     [marketId, yTimestamp]
   );
 
+  const { data, error, loading } = useQuery<Market, MarketVariables>(
+    MARKET_QUERY,
+    {
+      variables,
+      fetchPolicy: 'network-only',
+      errorPolicy: 'ignore',
+    }
+  );
+
+  useEffect(() => {
+    const marketName = data?.market?.tradableInstrument.instrument.name;
+    const marketPrice =
+      data?.market && data?.market?.data
+        ? addDecimalsFormatNumber(
+            data.market.data.markPrice,
+            data.market.decimalPlaces
+          )
+        : null;
+    if (marketName) {
+      const pageTitle = titlefy([marketName, marketPrice]);
+      update({ pageTitle });
+    }
+  }, [data, update]);
+
   if (!marketId) {
     return (
       <Splash>
@@ -129,18 +156,14 @@ const MarketPage = ({ id }: { id?: string }) => {
   }
 
   return (
-    <PageQueryContainer<Market, MarketVariables>
-      query={MARKET_QUERY}
-      data-testid="market"
-      options={{
-        variables,
-        fetchPolicy: 'network-only',
-      }}
+    <AsyncRenderer<Market>
+      loading={loading}
+      error={error}
+      data={data}
       render={({ market }) => {
         if (!market) {
           return <Splash>{t('Market not found')}</Splash>;
         }
-
         return (
           <>
             {w > 960 ? (
