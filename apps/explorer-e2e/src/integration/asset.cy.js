@@ -1,6 +1,6 @@
 import '../support/common.functions';
 
-context('Asset page', function () {
+context('Asset page', { tags: '@regression' }, function () {
   describe('Verify elements on page', function () {
     const assetsNavigation = 'a[href="/assets"]';
     const assetHeader = '[data-testid="asset-header"]';

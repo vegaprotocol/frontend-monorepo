@@ -15,6 +15,7 @@ import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
+import { NO_DATA_MESSAGE } from '../../../constants';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
 import { useAccountColumnDefinitions } from '.';
 
@@ -34,7 +35,7 @@ const AccountsManager = ({ partyId }: Props) => {
   } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = accountsManagerUpdate(gridRef);
+  const update = useMemo(() => accountsManagerUpdate(gridRef), []);
   const { data, error, loading } = useDataProvider<
     AccountFieldsFragment[],
     AccountEventsSubscription['accounts']
@@ -42,7 +43,12 @@ const AccountsManager = ({ partyId }: Props) => {
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
   return (
     <>
-      <AsyncRenderer loading={loading} error={error} data={data}>
+      <AsyncRenderer
+        loading={loading}
+        error={error}
+        data={data}
+        noDataMessage={NO_DATA_MESSAGE}
+      >
         <ConsoleLiteGrid<AccountObj>
           data={data as AccountObj[]}
           columnDefs={columnDefs}

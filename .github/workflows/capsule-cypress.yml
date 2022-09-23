@@ -133,7 +133,17 @@ jobs:
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Start service
+
+      - name: Import fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+
+      - name: Start service using fairground network
+        if: ${{ env.RUN_CAPSULE==false }}
+        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
+
+      - name: Start service using capsule network
+        if: ${{ env.RUN_CAPSULE==true }}
         run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
@@ -147,13 +157,12 @@ jobs:
           main-branch-name: ${{github.base_ref}}
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_INCLUDE_FLOWS: false
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
@@ -161,11 +170,11 @@ jobs:
       ######
 
       - name: Logs
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        if: ${{ env.RUN_CAPSULE }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt

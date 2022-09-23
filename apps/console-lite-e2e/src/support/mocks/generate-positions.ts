@@ -189,3 +189,13 @@ export const generatePositions = (
 
   return merge(defaultResult, override);
 };
+
+export const emptyPositions = () => {
+  return {
+    party: {
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
+      positionsConnection: { edges: null, __typename: 'PositionConnection' },
+      __typename: 'Party',
+    },
+  };
+};

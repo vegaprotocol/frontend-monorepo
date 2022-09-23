@@ -1,6 +1,6 @@
 import '../support/common.functions';
 
-context('Validator page', function () {
+context('Validator page', { tags: '@smoke' }, function () {
   describe('Verify elements on page', function () {
     const validatorNavigation = 'a[href="/validators"]';
 

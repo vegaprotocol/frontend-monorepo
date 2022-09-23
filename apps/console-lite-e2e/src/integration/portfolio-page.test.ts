@@ -3,13 +3,16 @@ import {
   disconnectVegaWallet,
 } from '../support/connect-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generatePositions } from '../support/mocks/generate-positions';
+import {
+  generatePositions,
+  emptyPositions,
+} from '../support/mocks/generate-positions';
 import { generateAccounts } from '../support/mocks/generate-accounts';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
 import { generateFillsMarkets } from '../support/mocks/generate-markets';
 
-describe('Portfolio page', () => {
+describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
     disconnectVegaWallet();
   });
@@ -110,6 +113,44 @@ describe('Portfolio page', () => {
 
     it('data should be properly rendered', () => {
       cy.get('.ag-center-cols-container .ag-row').should('have.length', 4);
+    });
+  });
+
+  describe('Empty views', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'Positions', emptyPositions());
+        aliasQuery(req, 'Accounts', { party: null });
+        aliasQuery(req, 'Orders', { party: null });
+        aliasQuery(req, 'Fills', { party: null });
+        aliasQuery(req, 'Markets', {
+          marketsConnection: { edges: [], __typename: 'MarketConnection' },
+        });
+      });
+      cy.visit('/portfolio');
+      connectVegaWallet();
+    });
+
+    it('"No data to display" should be always displayed', () => {
+      cy.getByTestId('assets').click();
+      cy.get('div.flex.items-center.justify-center').contains(
+        'No data to display'
+      );
+
+      cy.getByTestId('positions').click();
+      cy.get('div.flex.items-center.justify-center').contains(
+        'No data to display'
+      );
+
+      cy.getByTestId('orders').click();
+      cy.get('div.flex.items-center.justify-center').contains(
+        'No data to display'
+      );
+
+      cy.getByTestId('fills').click();
+      cy.get('div.flex.items-center.justify-center').contains(
+        'No data to display'
+      );
     });
   });
 });
