@@ -8,11 +8,7 @@ import React, {
 import classNames from 'classnames';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import {
-  t,
-  ThemeContext,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
+import { ThemeContext, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import type {
   GridOptions,
   GetRowIdParams,
@@ -20,6 +16,7 @@ import type {
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
 } from 'ag-grid-community';
+import { NO_DATA_MESSAGE } from '../../constants';
 import * as constants from '../simple-market-list/constants';
 
 interface Props<T> extends GridOptions {
@@ -85,7 +82,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
       rowClass={isMobile ? 'mobile' : ''}
       rowClassRules={constants.ROW_CLASS_RULES}
       ref={ref || gridRef}
-      overlayNoRowsTemplate={t('No data to display')}
+      overlayNoRowsTemplate={NO_DATA_MESSAGE}
       suppressContextMenu
       getRowId={getRowId || getRowIdLocal}
       suppressMovableColumns

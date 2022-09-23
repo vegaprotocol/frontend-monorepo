@@ -13,7 +13,7 @@ const Positions = ({ partyId }: Props) => {
   });
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {assetSymbols && assetSymbols.length && (
+      {assetSymbols && assetSymbols.length > 0 && (
         <div className="w-full, h-max">
           {assetSymbols?.map((assetSymbol) => (
             <PositionsAsset
