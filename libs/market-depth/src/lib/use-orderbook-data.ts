@@ -13,9 +13,9 @@ export const useOrderBookData = ({
   variables,
   throttleMilliseconds = 1000,
 }: Props) => {
-  const [orderbookData, setOrderbookData] = useState<MarketDepthQuery['market'] | null>(
-    null
-  );
+  const [orderbookData, setOrderbookData] = useState<
+    MarketDepthQuery['market'] | null
+  >(null);
   const dataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const updateOrderbookData = useRef(
     throttle(() => {

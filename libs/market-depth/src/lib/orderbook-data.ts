@@ -95,30 +95,15 @@ export const createRow = (
 
 const mapRawData =
   (dataType: VolumeType.ask | VolumeType.bid) =>
-  (
-    data: Omit<
-      Schema.PriceLevel,
-      '__typename'
-    >
-  ): PartialOrderbookRowData =>
+  (data: Omit<Schema.PriceLevel, '__typename'>): PartialOrderbookRowData =>
     createPartialRow(data.price, Number(data.volume), dataType);
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
 export const compactRows = (
-  sell:
-    | Omit<
-        Schema.PriceLevel,
-        '__typename'
-      >[]
-    | null,
-  buy:
-    | Omit<
-        Schema.PriceLevel,
-        '__typename'
-      >[]
-    | null,
+  sell: Omit<Schema.PriceLevel, '__typename'>[] | null,
+  buy: Omit<Schema.PriceLevel, '__typename'>[] | null,
   resolution: number
 ) => {
   // map raw sell data to OrderbookData

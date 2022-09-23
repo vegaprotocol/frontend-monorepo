@@ -1,19 +1,22 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
-import { MarketDepthDocument, MarketDepthEventDocument } from './__generated__/MarketDepth';
+import {
+  MarketDepthDocument,
+  MarketDepthEventDocument,
+} from './__generated__/MarketDepth';
 import type {
   MarketDepthQuery,
   MarketDepthEventSubscription,
-  DepthEventFieldsFragment
+  DepthEventFieldsFragment,
 } from './__generated__/MarketDepth';
 
 const sequenceNumbers: Record<string, number> = {};
 
-const update: Update<
-  MarketDepthQuery['market'],
-  DepthEventFieldsFragment[]
-> = (data, deltas) => {
+const update: Update<MarketDepthQuery['market'], DepthEventFieldsFragment[]> = (
+  data,
+  deltas
+) => {
   if (!data) {
     return;
   }

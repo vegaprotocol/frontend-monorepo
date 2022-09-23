@@ -86,11 +86,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   // Apply updates to the table
   const update = useCallback(
-    ({
-      delta: deltas,
-    }: {
-      delta: DepthEventFieldsFragment[];
-    }) => {
+    ({ delta: deltas }: { delta: DepthEventFieldsFragment[] }) => {
       if (!dataRef.current) {
         return false;
       }

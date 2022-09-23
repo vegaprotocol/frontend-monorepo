@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { Orderbook } from './orderbook';
@@ -57,11 +57,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   );
 
   const update = useCallback(
-    ({
-      delta: deltas,
-    }: {
-      delta: DepthEventFieldsFragment[];
-    }) => {
+    ({ delta: deltas }: { delta: DepthEventFieldsFragment[] }) => {
       if (!dataRef.current.rows) {
         return false;
       }
@@ -129,7 +125,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     dataRef.current = {
       ...marketDataRef.current,
       ...mapMarketData(marketDataRef.current, resolution),
-      rows: compactRows(data.depth.sell ?? null, data.depth.buy ?? null, resolution),
+      rows: compactRows(
+        data.depth.sell ?? null,
+        data.depth.buy ?? null,
+        resolution
+      ),
     };
     setOrderbookData(dataRef.current);
 
