@@ -76,7 +76,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     cy.getByTestId('Withdrawals').click();
   });
 
-  it('can connect', () => {
+  it('can connect', { defaultCommandTimeout: 20000 }, () => {
     cy.wait('@NetworkParamsQuery');
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
