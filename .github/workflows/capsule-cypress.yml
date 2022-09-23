@@ -14,7 +14,7 @@ on:
 
 jobs:
   pr:
-    name: Run Cypress tests - PR
+    name: Run capsule tests - PR
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft == false }}
     env:
