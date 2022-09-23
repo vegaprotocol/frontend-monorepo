@@ -63,7 +63,10 @@ context(
           .and('have.text', 'There are no enacted or rejected proposals');
       });
 
-      it('should be able to see a connect wallet button - if vega wallet disconnected and new proposal button selected', function () {
+      // Skipping this test for now, the new proposal button no longer takes a user directly
+      // to a proposal form, instead it takes them to a page where they can select a proposal type.
+      // Keeping this test here for now as it can be repurposed to test the new proposal forms.
+      it.skip('should be able to see a connect wallet button - if vega wallet disconnected and new proposal button selected', function () {
         cy.get(newProposalButton).should('be.visible').click();
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
