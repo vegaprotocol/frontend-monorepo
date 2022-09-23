@@ -1,78 +1,14 @@
-import { gql, useQuery } from '@apollo/client';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import type {
-  MarketLiquidity,
-  MarketLiquidity_market_data_liquidityProviderFeeShare,
-} from './__generated__';
+  FeeShareFieldsFragment,
+} from './__generated__/MarketLiquidity';
+import { useMarketLiquidityQuery } from './__generated__/MarketLiquidity';
 
 const SISKA_NETWORK_PARAMETER = 'market.liquidity.stakeToCcySiskas';
 
-const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      liquidityProvisionsConnection {
-        edges {
-          node {
-            id
-            party {
-              id
-              accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-                edges {
-                  node {
-                    type
-                    balance
-                  }
-                }
-              }
-            }
-            createdAt
-            updatedAt
-            commitmentAmount
-            fee
-            status
-          }
-        }
-      }
-      tradableInstrument {
-        instrument {
-          code
-          name
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-      data {
-        market {
-          id
-        }
-        suppliedStake
-        openInterest
-        targetStake
-        marketValueProxy
-        liquidityProviderFeeShare {
-          party {
-            id
-          }
-          equityLikeShare
-          averageEntryValuation
-        }
-      }
-    }
-  }
-`;
 
 export interface LiquidityProvision {
   party: string;
@@ -104,24 +40,21 @@ export const useLiquidityProvision = ({
   partyId,
 }: {
   partyId?: string;
-  marketId?: string;
+  marketId: string;
 }) => {
   const { data: stakeToCcySiskas } = useNetworkParam(SISKA_NETWORK_PARAMETER);
   const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-  const { data, loading, error } = useQuery<MarketLiquidity>(
-    MARKET_LIQUIDITY_QUERY,
-    {
-      variables: { marketId },
-    }
-  );
+  const { data, loading, error } = useMarketLiquidityQuery({
+    variables: { marketId },
+  });
   const liquidityProviders = (
     data?.market?.data?.liquidityProviderFeeShare || []
   )
     ?.filter(
-      (p: MarketLiquidity_market_data_liquidityProviderFeeShare) =>
+      (p: FeeShareFieldsFragment) =>
         !partyId || p.party.id === partyId
     ) // if partyId is provided, filter out other parties
-    .map((provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
+    .map((provider: FeeShareFieldsFragment) => {
       const liquidityProvisionConnection =
         data?.market?.liquidityProvisionsConnection?.edges?.find(
           (e) => e?.node.party.id === provider.party.id

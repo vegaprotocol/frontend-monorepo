@@ -1,6 +1,6 @@
 import LiquidityTable from './liquidity-table';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { LiquidityProvision } from './liquidity-data-provider';
 
 const singleRow: LiquidityProvision = {
@@ -9,7 +9,7 @@ const singleRow: LiquidityProvision = {
   updatedAt: '2022-08-19T17:18:36.257028Z',
   commitmentAmount: '56298653179',
   fee: '0.001',
-  status: LiquidityProvisionStatus.STATUS_ACTIVE,
+  status: Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
   equityLikeShare: '0.5',
   averageEntryValuation: '0.5',
   supplied: '67895',

@@ -14,7 +14,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { LiquidityProvision } from './liquidity-data-provider';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
@@ -123,7 +123,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerName={t('Status')}
           headerTooltip={t('The current status of this liquidity provision.')}
           field="status"
-          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+          valueFormatter={({ value }: { value: Schema.LiquidityProvisionStatus }) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

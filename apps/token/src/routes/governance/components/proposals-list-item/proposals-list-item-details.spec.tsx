@@ -26,10 +26,10 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 const renderComponent = (
-  proposal: ProposalNode,
+  proposal: ProposalFields,
   mock = networkParamsQueryMock
 ) => (
   <Router>

@@ -1,3 +1,11 @@
+fragment FeeShareFields on LiquidityProviderFeeShare {
+  party {
+    id
+  }
+  equityLikeShare
+  averageEntryValuation
+}
+
 query MarketLiquidity($marketId: ID!) {
   market(id: $marketId) {
     id
@@ -50,11 +58,7 @@ query MarketLiquidity($marketId: ID!) {
       targetStake
       marketValueProxy
       liquidityProviderFeeShare {
-        party {
-          id
-        }
-        equityLikeShare
-        averageEntryValuation
+        ...FeeShareFields
       }
     }
   }
