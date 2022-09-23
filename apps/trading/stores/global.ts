@@ -6,6 +6,7 @@ interface GlobalStore {
   landingDialog: boolean;
   riskNoticeDialog: boolean;
   marketId: string | null;
+  pageTitle: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
 }
 
@@ -15,6 +16,7 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   landingDialog: false,
   riskNoticeDialog: false,
   marketId: null,
+  pageTitle: null,
   update: (state) => {
     set(state);
   },
