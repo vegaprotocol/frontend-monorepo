@@ -79,21 +79,15 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          path: frontend-monorepo/node_modules
+          key: node_modules-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
       # Install frontend dependencies
       - name: Install root dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
         working-directory: frontend-monorepo
 
       #######
