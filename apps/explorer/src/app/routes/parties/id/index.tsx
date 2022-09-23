@@ -122,6 +122,23 @@ const Party = () => {
     </section>
   );
 
+  const staking = (
+    <section>
+      {data?.party?.stake?.currentStakeAvailable ? (
+        <InfoPanel
+          title={t('Current Stake Available')}
+          id={data?.party?.stake?.currentStakeAvailable}
+          type={data?.party?.stake.__typename}
+          copy={false}
+        />
+      ) : (
+        <Panel>
+          <p>Nothing staked for {party}</p>
+        </Panel>
+      )}
+    </section>
+  );
+
   return (
     <section>
       <RouteTitle data-testid="parties-header">{t('Party')}</RouteTitle>
@@ -130,6 +147,8 @@ const Party = () => {
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
           {accounts}
+          <SubHeading>{t('Staking')}</SubHeading>
+          {staking}
           <SubHeading>{t('JSON')}</SubHeading>
           <SyntaxHighlighter data={data} />
         </>
