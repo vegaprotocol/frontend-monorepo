@@ -38,7 +38,6 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
-import { useRouter } from 'next/router';
 import { Header, HeaderStat } from '../../components/header';
 import { AccountsContainer } from '../portfolio/accounts-container';
 
@@ -116,7 +115,6 @@ export const TradeMarketHeader = ({
   market,
   onSelect,
 }: TradeMarketHeaderProps) => {
-  const { push } = useRouter();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -170,7 +168,6 @@ export const TradeMarketHeader = ({
             market={market}
             onSelect={(marketId: string) => {
               onSelect(marketId);
-              push(`/liquidity/${marketId}`);
             }}
           />
         }
@@ -219,7 +216,6 @@ interface TradeGridProps {
 }
 
 export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
-  const { push } = useRouter();
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} onSelect={onSelect} />
@@ -257,7 +253,6 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
                       marketId={market.id}
                       onSelect={(id: string) => {
                         onSelect(id);
-                        push(`/liquidity/${id}`);
                       }}
                     />
                   </Tab>
@@ -329,7 +324,6 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
-  const { push } = useRouter();
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
@@ -344,7 +338,6 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
         marketId={market.id}
         onSelect={(id: string) => {
           onSelect(id);
-          push(`/liquidity/${id}`);
         }}
       />
     );

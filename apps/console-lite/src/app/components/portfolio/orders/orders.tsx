@@ -14,6 +14,7 @@ import {
 } from '@vegaprotocol/orders';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
+import { NO_DATA_MESSAGE } from '../../../constants';
 import useColumnDefinitions from './use-column-definitions';
 
 interface Props {
@@ -49,7 +50,12 @@ const OrdersManager = ({ partyId }: Props) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data?.length ? data : null}
+      noDataMessage={NO_DATA_MESSAGE}
+    >
       <ConsoleLiteGrid<OrderWithMarket>
         ref={gridRef}
         rowModelType="infinite"

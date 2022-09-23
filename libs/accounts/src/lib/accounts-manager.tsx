@@ -1,9 +1,10 @@
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import produce from 'immer';
 import merge from 'lodash/merge';
-import { useRef, useCallback } from 'react';
+import { useRef, useMemo } from 'react';
 import {
   getId,
   accountsDataProvider,
@@ -22,14 +23,8 @@ interface AccountManagerProps {
   onClickDeposit?: (assetId?: string) => void;
 }
 
-export const AccountManager = ({
-  onClickAsset,
-  onClickWithdraw,
-  onClickDeposit,
-  partyId,
-}: AccountManagerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
-  const update = useCallback(
+export const accountsManagerUpdate =
+  (gridRef: React.RefObject<AgGridReact>) =>
     ({ delta: deltas }: { delta: AccountEventsSubscription['accounts'] }) => {
       const update: AccountFieldsFragment[] = [];
       const add: AccountFieldsFragment[] = [];
@@ -60,24 +55,41 @@ export const AccountManager = ({
           addIndex: 0,
         });
       }
+      // if (add.length) {
+      //   addSummaryRows(
+      //     gridRef.current.api,
+      //     gridRef.current.columnApi,
+      //     getGroupId,
+      //     getGroupSummaryRow
+      //   );
+      // }
       return true;
-    },
-    [gridRef]
-  );
+    };
 
-  const { data: collateralData } = useDataProvider<
+export const AccountManager = ({
+  onClickAsset,
+  onClickWithdraw,
+  onClickDeposit,
+  partyId,
+}: AccountManagerProps) => {
+  const gridRef = useRef<AgGridReact | null>(null);
+  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const update = useMemo(() => accountsManagerUpdate(gridRef), []);
+  const { data: collateralData, error, loading } = useDataProvider<
     AccountFieldsFragment[],
     AccountEventsSubscription['accounts']
-  >({ dataProvider: accountsDataProvider, update, variables: { partyId } });
+  >({ dataProvider: accountsDataProvider, update, variables });
   const data = collateralData && getAccountData(collateralData);
   return (
-    <AccountTable
-      data={data}
-      ref={gridRef}
-      onClickAsset={onClickAsset}
-      onClickDeposit={onClickDeposit}
-      onClickWithdraw={onClickWithdraw}
-    />
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      {data && <AccountTable
+        data={data}
+        ref={gridRef}
+        onClickAsset={onClickAsset}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+      />}
+    </AsyncRenderer>
   );
 };
 
