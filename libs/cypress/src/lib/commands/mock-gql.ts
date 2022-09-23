@@ -1,5 +1,10 @@
 import type { RouteHandler } from 'cypress/types/net-stubbing';
 import { Server, WebSocket } from 'mock-socket';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface onMessage<T = any, V = any> {
+  (send: (data: T) => void, variables: V): void;
+}
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -21,10 +26,6 @@ const mockSocketServer = Cypress.env('VEGA_URL')
   ? new Server(Cypress.env('VEGA_URL').replace('http', 'ws'))
   : null;
 
-interface onMessage {
-  (send: (data: object) => void, variables: object): void;
-}
-
 export function addMockGQLSubscriptionCommand() {
   Cypress.Commands.add(
     'mockGQLSubscription',
@@ -35,20 +36,22 @@ export function addMockGQLSubscriptionCommand() {
         }
         win.WebSocket = WebSocket;
         mockSocketServer.on('connection', (socket) => {
-          socket.on('message', (message) => {
-            if (typeof message !== 'string') {
+          socket.on('message', (rawMessage) => {
+            if (typeof rawMessage !== 'string') {
               return;
             }
-            const { id, payload, type } = JSON.parse(message);
+            const message = JSON.parse(rawMessage);
+            const { id, payload, type } = message;
             if (type === 'connection_init') {
               socket.send(JSON.stringify({ type: 'connection_ack' }));
+              return;
             }
             if (payload && mocks && mocks[payload.operationName]) {
               mocks[payload.operationName](
                 (data) =>
                   socket.send(
                     JSON.stringify({
-                      type: 'data',
+                      type: 'next',
                       id,
                       payload: { errors: [], data },
                     })

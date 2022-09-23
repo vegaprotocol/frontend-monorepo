@@ -17,6 +17,7 @@ addMockWeb3ProviderCommand();
 addHighlightLog();
 
 export * from './lib/graphql-test-utils';
+export type { onMessage } from './lib/commands/mock-gql';
 
 Cypress.on(
   'uncaught:exception',
