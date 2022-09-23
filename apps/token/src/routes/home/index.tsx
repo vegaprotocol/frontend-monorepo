@@ -40,6 +40,7 @@ const Home = ({ name }: RouteChildProps) => {
           totalSupply={appState.totalSupply}
           totalStaked={totalStaked}
         />
+        <p>a little test</p>
       </HomeSection>
       <HomeSection>
         <h2>{t('Token Vesting')}</h2>
