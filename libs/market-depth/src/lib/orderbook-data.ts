@@ -1,15 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import { VolumeType } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
-import type {
-  MarketDepth_market_depth_sell,
-  MarketDepth_market_depth_buy,
-} from './__generated__/MarketDepth';
-import type {
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
 
 export interface CumulativeVol {
   bid: number;
@@ -105,10 +97,7 @@ const mapRawData =
   (dataType: VolumeType.ask | VolumeType.bid) =>
   (
     data: Omit<
-      | MarketDepth_market_depth_sell
-      | MarketDepthSubscription_marketsDepthUpdate_sell
-      | MarketDepth_market_depth_buy
-      | MarketDepthSubscription_marketsDepthUpdate_buy,
+      Schema.PriceLevel,
       '__typename'
     >
   ): PartialOrderbookRowData =>
@@ -120,15 +109,13 @@ const mapRawData =
 export const compactRows = (
   sell:
     | Omit<
-        | MarketDepth_market_depth_sell
-        | MarketDepthSubscription_marketsDepthUpdate_sell,
+        Schema.PriceLevel,
         '__typename'
       >[]
     | null,
   buy:
     | Omit<
-        | MarketDepth_market_depth_buy
-        | MarketDepthSubscription_marketsDepthUpdate_buy,
+        Schema.PriceLevel,
         '__typename'
       >[]
     | null,
@@ -201,9 +188,7 @@ export const compactRows = (
 const partiallyUpdateCompactedRows = (
   dataType: VolumeType,
   data: OrderbookRowData[],
-  delta:
-    | MarketDepthSubscription_marketsDepthUpdate_sell
-    | MarketDepthSubscription_marketsDepthUpdate_buy,
+  delta: Schema.PriceLevel,
   resolution: number,
   modifiedIndex: number
 ): [number, OrderbookRowData[]] => {
@@ -258,8 +243,8 @@ const partiallyUpdateCompactedRows = (
  */
 export const updateCompactedRows = (
   rows: OrderbookRowData[],
-  sell: MarketDepthSubscription_marketsDepthUpdate_sell[] | null,
-  buy: MarketDepthSubscription_marketsDepthUpdate_buy[] | null,
+  sell: Schema.PriceLevel[] | null,
+  buy: Schema.PriceLevel[] | null,
   resolution: number
 ) => {
   let sellModifiedIndex = -1;
@@ -351,11 +336,8 @@ export const mapMarketData = (
  * @returns
  */
 export const updateLevels = (
-  draft: (MarketDepth_market_depth_buy | MarketDepth_market_depth_sell)[],
-  updates: (
-    | MarketDepthSubscription_marketsDepthUpdate_buy
-    | MarketDepthSubscription_marketsDepthUpdate_sell
-  )[]
+  draft: Schema.PriceLevel[],
+  updates: Schema.PriceLevel[]
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
@@ -405,8 +387,8 @@ export const generateMockData = ({
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
-  const sell: Omit<MarketDepth_market_depth_sell, '__typename'>[] = matrix.map(
-    (row, i) => ({
+  const sell: Omit<Schema.PriceLevel, '__typename'>[] = matrix.map(
+    (_row, i) => ({
       price: (price -= 1).toString(),
       volume: (numberOfSellRows - i + 1).toString(),
       numberOfOrders: '',
@@ -414,8 +396,8 @@ export const generateMockData = ({
   );
   price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
-  const buy: Omit<MarketDepth_market_depth_buy, '__typename'>[] = matrix.map(
-    (row, i) => ({
+  const buy: Omit<Schema.PriceLevel, '__typename'>[] = matrix.map(
+    (_row, i) => ({
       price: (price -= 1).toString(),
       volume: (i + 2).toString(),
       numberOfOrders: '',
@@ -428,8 +410,8 @@ export const generateMockData = ({
     indicativeVolume: indicativeVolume?.toString(),
     marketTradingMode:
       overlap > 0
-        ? MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-        : MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+        : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     ...mapMarketData(
       {
         staticMidPrice: '',

@@ -23,6 +23,7 @@ module.exports = {
       '../../libs/fills/**',
       '../../libs/governance/**',
       '../../libs/liquidity/**',
+      '../../libs/market-depth/**',
     ],
   },
 };

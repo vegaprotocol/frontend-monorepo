@@ -1,16 +1,13 @@
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import marketDepthProvider from './market-depth-provider';
+import { Schema } from '@vegaprotocol/types';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
+import { Orderbook } from './orderbook';
+import marketDepthProvider from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type {
-  MarketDepthSubscription_marketsDepthUpdate,
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
+import type { DepthEventFieldsFragment } from './__generated__/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,
@@ -32,8 +29,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const dataRef = useRef<OrderbookData>({ rows: null });
   const marketDataRef = useRef<MarketData | null>(null);
   const deltaRef = useRef<{
-    sell: MarketDepthSubscription_marketsDepthUpdate_sell[];
-    buy: MarketDepthSubscription_marketsDepthUpdate_buy[];
+    sell: Schema.PriceLevel[];
+    buy: Schema.PriceLevel[];
   }>({
     sell: [],
     buy: [],
@@ -63,7 +60,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta: MarketDepthSubscription_marketsDepthUpdate[];
+      delta: DepthEventFieldsFragment[];
     }) => {
       if (!dataRef.current.rows) {
         return false;
@@ -132,7 +129,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     dataRef.current = {
       ...marketDataRef.current,
       ...mapMarketData(marketDataRef.current, resolution),
-      rows: compactRows(data.depth.sell, data.depth.buy, resolution),
+      rows: compactRows(data.depth.sell ?? null, data.depth.buy ?? null, resolution),
     };
     setOrderbookData(dataRef.current);
 

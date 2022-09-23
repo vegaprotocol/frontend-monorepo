@@ -1,52 +1,44 @@
+fragment DepthFields on MarketDepth {
+  sell {
+    price
+    volume
+    numberOfOrders
+  }
+  buy {
+    price
+    volume
+    numberOfOrders
+  }
+  sequenceNumber
+}
+
 query MarketDepth($marketId: ID!) {
   market(id: $marketId) {
     id
-    decimalPlaces
-    positionDecimalPlaces
-    data {
-      staticMidPrice
-      marketTradingMode
-      indicativeVolume
-      indicativePrice
-      bestStaticBidPrice
-      bestStaticOfferPrice
-      market {
-        id
-      }
-    }
     depth {
-      lastTrade {
-        price
-      }
-      sell {
-        price
-        volume
-        numberOfOrders
-      }
-      buy {
-        price
-        volume
-        numberOfOrders
-      }
-      sequenceNumber
+      ...DepthFields
     }
   }
 }
 
-subscription MarketDepthSubscription($marketIds: [ID!]!) {
-  marketsDepthUpdate(marketIds: $marketIds) {
-    marketId
-    buy {
-      price
-      volume
-      numberOfOrders
-    }
-    sell {
-      price
-      volume
-      numberOfOrders
-    }
-    sequenceNumber
-    previousSequenceNumber
+fragment DepthEventFields on ObservableMarketDepthUpdate {
+  marketId
+  sell {
+    price
+    volume
+    numberOfOrders
+  }
+  buy {
+    price
+    volume
+    numberOfOrders
+  }
+  sequenceNumber
+  previousSequenceNumber
+}
+
+subscription MarketDepthEvent($marketId: ID!) {
+  marketsDepthUpdate(marketIds: [$marketId]) {
+    ...DepthEventFields
   }
 }

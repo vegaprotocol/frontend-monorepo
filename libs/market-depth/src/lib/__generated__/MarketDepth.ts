@@ -1,79 +1,123 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+import { Schema as Types } from '@vegaprotocol/types';
 
-// ====================================================
-// GraphQL query operation: MarketDepth
-// ====================================================
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+const defaultOptions = {} as const;
+export type DepthFieldsFragment = { __typename?: 'MarketDepth', sequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null };
 
-export interface MarketDepth_market_depth_sell {
-  __typename: "PriceLevel";
-  /**
-   * The price of all the orders at this level (uint64)
-   */
-  price: string;
-  /**
-   * The total remaining size of all orders at this level (uint64)
-   */
-  volume: string;
-  /**
-   * The number of orders at this price level (uint64)
-   */
-  numberOfOrders: string;
+export type MarketDepthQueryVariables = Types.Exact<{
+  marketId: Types.Scalars['ID'];
+}>;
+
+
+export type MarketDepthQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, depth: { __typename?: 'MarketDepth', sequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null } } | null };
+
+export type DepthEventFieldsFragment = { __typename?: 'ObservableMarketDepthUpdate', marketId: string, sequenceNumber: string, previousSequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null };
+
+export type MarketDepthEventSubscriptionVariables = Types.Exact<{
+  marketId: Types.Scalars['ID'];
+}>;
+
+
+export type MarketDepthEventSubscription = { __typename?: 'Subscription', marketsDepthUpdate: Array<{ __typename?: 'ObservableMarketDepthUpdate', marketId: string, sequenceNumber: string, previousSequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null }> };
+
+export const DepthFieldsFragmentDoc = gql`
+    fragment DepthFields on MarketDepth {
+  sell {
+    price
+    volume
+    numberOfOrders
+  }
+  buy {
+    price
+    volume
+    numberOfOrders
+  }
+  sequenceNumber
 }
-
-export interface MarketDepth_market_depth_buy {
-  __typename: "PriceLevel";
-  /**
-   * The price of all the orders at this level (uint64)
-   */
-  price: string;
-  /**
-   * The total remaining size of all orders at this level (uint64)
-   */
-  volume: string;
-  /**
-   * The number of orders at this price level (uint64)
-   */
-  numberOfOrders: string;
+    `;
+export const DepthEventFieldsFragmentDoc = gql`
+    fragment DepthEventFields on ObservableMarketDepthUpdate {
+  marketId
+  sell {
+    price
+    volume
+    numberOfOrders
+  }
+  buy {
+    price
+    volume
+    numberOfOrders
+  }
+  sequenceNumber
+  previousSequenceNumber
 }
-
-export interface MarketDepth_market_depth {
-  __typename: "MarketDepth";
-  /**
-   * Sell side price levels (if available)
-   */
-  sell: MarketDepth_market_depth_sell[] | null;
-  /**
-   * Buy side price levels (if available)
-   */
-  buy: MarketDepth_market_depth_buy[] | null;
-  /**
-   * Sequence number for the current snapshot of the market depth
-   */
-  sequenceNumber: string;
+    `;
+export const MarketDepthDocument = gql`
+    query MarketDepth($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    depth {
+      ...DepthFields
+    }
+  }
 }
+    ${DepthFieldsFragmentDoc}`;
 
-export interface MarketDepth_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-  /**
-   * Current depth on the order book for this market
-   */
-  depth: MarketDepth_market_depth;
+/**
+ * __useMarketDepthQuery__
+ *
+ * To run a query within a React component, call `useMarketDepthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketDepthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketDepthQuery({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *   },
+ * });
+ */
+export function useMarketDepthQuery(baseOptions: Apollo.QueryHookOptions<MarketDepthQuery, MarketDepthQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketDepthQuery, MarketDepthQueryVariables>(MarketDepthDocument, options);
+      }
+export function useMarketDepthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketDepthQuery, MarketDepthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketDepthQuery, MarketDepthQueryVariables>(MarketDepthDocument, options);
+        }
+export type MarketDepthQueryHookResult = ReturnType<typeof useMarketDepthQuery>;
+export type MarketDepthLazyQueryHookResult = ReturnType<typeof useMarketDepthLazyQuery>;
+export type MarketDepthQueryResult = Apollo.QueryResult<MarketDepthQuery, MarketDepthQueryVariables>;
+export const MarketDepthEventDocument = gql`
+    subscription MarketDepthEvent($marketId: ID!) {
+  marketsDepthUpdate(marketIds: [$marketId]) {
+    ...DepthEventFields
+  }
 }
+    ${DepthEventFieldsFragmentDoc}`;
 
-export interface MarketDepth {
-  /**
-   * An instrument that is trading on the Vega network
-   */
-  market: MarketDepth_market | null;
-}
-
-export interface MarketDepthVariables {
-  marketId: string;
-}
+/**
+ * __useMarketDepthEventSubscription__
+ *
+ * To run a query within a React component, call `useMarketDepthEventSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useMarketDepthEventSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketDepthEventSubscription({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *   },
+ * });
+ */
+export function useMarketDepthEventSubscription(baseOptions: Apollo.SubscriptionHookOptions<MarketDepthEventSubscription, MarketDepthEventSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<MarketDepthEventSubscription, MarketDepthEventSubscriptionVariables>(MarketDepthEventDocument, options);
+      }
+export type MarketDepthEventSubscriptionHookResult = ReturnType<typeof useMarketDepthEventSubscription>;
+export type MarketDepthEventSubscriptionResult = Apollo.SubscriptionResult<MarketDepthEventSubscription>;
