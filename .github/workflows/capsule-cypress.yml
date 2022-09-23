@@ -70,8 +70,10 @@ jobs:
       - name: Restore node_modules from cache
         uses: actions/cache@v3
         with:
-          path: frontend-monorepo/node_modules
-          key: node_modules-${{ hashFiles('frontend-monorepo/yarn.lock') }}
+          path: |
+            frontend-monorepo/node_modules
+            /home/runner/.cache/Cypress
+          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
       # Install frontend dependencies
       - name: Install root dependencies
