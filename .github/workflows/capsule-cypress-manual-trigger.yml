@@ -106,18 +106,18 @@ jobs:
         if: ${{ env.RUN_CAPSULE }}
         run: |
           wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vega-linux-amd64.zip'
-          unzip vega-linux-amd64.zip vega/vega
+          unzip vega-linux-amd64.zip -d vega
 
       - name: Install date-node binaries
         if: ${{ env.RUN_CAPSULE }}
         run: |
           wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/data-node-linux-amd64.zip'
-          unzip data-node-linux-amd64.zip vega/data-node
+          unzip data-node-linux-amd64.zip -d vega
 
       - name: Install Vega wallet binaries
         run: |
           wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip'
-          unzip vegawallet-linux-amd64.zip vega/vegawallet
+          unzip vegawallet-linux-amd64.zip -d vega
 
       ######
       ## Start capsule
