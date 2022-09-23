@@ -19,7 +19,7 @@ export const Portfolio = () => {
   }
 
   return (
-    <div className="h-full p-4 md:p-6">
+    <div className="h-full p-4 md:p-6 grid grid-rows-[min-content_1fr]">
       <HorizontalMenu active={module} items={constants.PORTFOLIO_ITEMS} />
       {outlet}
     </div>
