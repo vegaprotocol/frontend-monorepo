@@ -76,7 +76,6 @@ describe('BreakdownTable', () => {
     const result = getAccountData([singleRow]);
     const expected = [
       {
-        __typename: 'Account',
         asset: {
           __typename: 'Asset',
           decimals: 5,
@@ -84,7 +83,7 @@ describe('BreakdownTable', () => {
           symbol: 'tBTC',
         },
         available: '-125600000',
-        balance: '125600000',
+        balance: '-125600000',
         breakdown: [
           {
             __typename: 'Account',
@@ -124,7 +123,7 @@ describe('BreakdownTable', () => {
             },
           },
         },
-        type: 'ACCOUNT_TYPE_MARGIN',
+        type: 'ACCOUNT_TYPE_GENERAL',
         used: '125600000',
       },
     ];
