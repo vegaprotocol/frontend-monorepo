@@ -6,7 +6,7 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "../../dist/out-tsc",
     "allowJs": true,
-    "types": ["cypress", "node"]
+    "types": ["cypress", "node", "cypress-grep"]
   },
   "include": ["src/**/*.ts", "src/**/*.js"]
 }

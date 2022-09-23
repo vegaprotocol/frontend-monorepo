@@ -143,9 +143,6 @@ export enum MarketTradingMode {
   TRADING_MODE_OPENING_AUCTION = "TRADING_MODE_OPENING_AUCTION",
 }
 
-/**
- * Validating status of a node, i.e. validator or non-validator
- */
 export enum NodeStatus {
   NODE_STATUS_NON_VALIDATOR = "NODE_STATUS_NON_VALIDATOR",
   NODE_STATUS_VALIDATOR = "NODE_STATUS_VALIDATOR",
@@ -160,7 +157,7 @@ export enum OracleSpecStatus {
 }
 
 /**
- * Why the order was rejected by the core node
+ * Reason for the order being rejected by the core node
  */
 export enum OrderRejectionReason {
   ORDER_ERROR_AMEND_FAILURE = "ORDER_ERROR_AMEND_FAILURE",
@@ -255,7 +252,7 @@ export enum PropertyKeyType {
 }
 
 /**
- * Why the proposal was rejected by the core node
+ * Reason for the proposal being rejected by the core node
  */
 export enum ProposalRejectionReason {
   PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = "PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE",

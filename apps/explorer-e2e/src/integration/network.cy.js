@@ -1,6 +1,6 @@
 import '../support/common.functions';
 
-context('Network parameters page', function () {
+context('Network parameters page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
     cy.visit('/');
   });

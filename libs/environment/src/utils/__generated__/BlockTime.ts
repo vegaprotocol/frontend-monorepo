@@ -10,7 +10,7 @@
 export interface BlockTime_busEvents {
   __typename: "BusEvent";
   /**
-   * The ID for this event
+   * the ID for this event
    */
   id: string;
 }

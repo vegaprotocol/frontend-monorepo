@@ -7,7 +7,7 @@ import {
   generateMarketsCandles,
 } from '../support/mocks/generate-markets';
 
-describe('market list', () => {
+describe('market list', { tags: '@smoke' }, () => {
   describe('simple url', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
