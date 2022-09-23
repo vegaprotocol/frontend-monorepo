@@ -119,7 +119,6 @@ const accounts: AccountFieldsFragment[] = [
 
 const accountResult: AccountFields[] = [
   {
-    __typename: 'Account',
     asset: {
       __typename: 'Asset',
       decimals: 5,
@@ -135,7 +134,6 @@ const accountResult: AccountFields[] = [
     used: '0',
   },
   {
-    __typename: 'Account',
     asset: {
       __typename: 'Asset',
       decimals: 5,
@@ -151,7 +149,6 @@ const accountResult: AccountFields[] = [
     used: '0',
   },
   {
-    __typename: 'Account',
     asset: {
       __typename: 'Asset',
       decimals: 5,
@@ -159,7 +156,7 @@ const accountResult: AccountFields[] = [
       symbol: 'tDAI',
     },
     available: '5000186156',
-    balance: '406922',
+    balance: '5000186156',
     breakdown: [
       {
         __typename: 'Account',
@@ -199,11 +196,10 @@ const accountResult: AccountFields[] = [
         },
       },
     },
-    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '406922',
   },
   {
-    __typename: 'Account',
     asset: {
       __typename: 'Asset',
       decimals: 5,
@@ -211,7 +207,7 @@ const accountResult: AccountFields[] = [
       symbol: 'tEURO',
     },
     available: '2993437206',
-    balance: '2781397',
+    balance: '2993437206',
     breakdown: [
       {
         __typename: 'Account',
@@ -251,11 +247,10 @@ const accountResult: AccountFields[] = [
         },
       },
     },
-    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '2781397',
   },
   {
-    __typename: 'Account',
     asset: {
       __typename: 'Asset',
       decimals: 5,
