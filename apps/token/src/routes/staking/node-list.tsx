@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { useEffect, useMemo, useRef, forwardRef } from 'react';
+import { forwardRef, useEffect, useMemo, useRef } from 'react';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
+import { ValidatorStatus } from '@vegaprotocol/types';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 import type { ColDef } from 'ag-grid-community';
@@ -136,7 +137,16 @@ export const NodeList = ({ epoch }: NodeListProps) => {
             ? '-'
             : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
               '%';
-        const statusTranslated = t(`status-${status}`);
+        const statusTranslated = t(
+          `${
+            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
+              'Ersatz') ||
+            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
+              'Pending') ||
+            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
+              'Consensus')
+          }`
+        );
 
         return {
           id,

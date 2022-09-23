@@ -36,9 +36,9 @@ Default.args = {
   labelFor: 'labelFor',
 };
 
-export const Error = Template.bind({});
-Error.args = {
+export const WithLabelDescription = Template.bind({});
+WithLabelDescription.args = {
   label: 'Label',
   labelFor: 'labelFor',
-  hasError: true,
+  labelDescription: 'Description text',
 };

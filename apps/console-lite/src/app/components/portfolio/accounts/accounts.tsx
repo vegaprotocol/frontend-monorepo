@@ -28,11 +28,7 @@ interface Props {
 }
 
 const AccountsManager = ({ partyId }: Props) => {
-  const {
-    isAssetDetailsDialogOpen,
-    assetDetailsDialogSymbol,
-    setAssetDetailsDialogOpen,
-  } = useAssetDetailsDialogStore();
+  const { isOpen, symbol, setOpen } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useMemo(() => accountsManagerUpdate(gridRef), []);
@@ -58,9 +54,9 @@ const AccountsManager = ({ partyId }: Props) => {
         />
       </AsyncRenderer>
       <AssetDetailsDialog
-        assetSymbol={assetDetailsDialogSymbol}
-        open={isAssetDetailsDialogOpen}
-        onChange={(open) => setAssetDetailsDialogOpen(open)}
+        assetSymbol={symbol}
+        open={isOpen}
+        onChange={(open) => setOpen(open)}
       />
     </>
   );

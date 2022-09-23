@@ -14,21 +14,27 @@ import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
 export type AssetDetailsDialogStore = {
-  isAssetDetailsDialogOpen: boolean;
-  assetDetailsDialogSymbol: string | Asset;
-  setAssetDetailsDialogOpen: (isOpen: boolean) => void;
-  setAssetDetailsDialogSymbol: (symbol: string | Asset) => void;
+  isOpen: boolean;
+  symbol: string | Asset;
+  trigger: HTMLElement | null | undefined;
+  setOpen: (isOpen: boolean) => void;
+  open: (symbol: string | Asset, trigger?: HTMLElement | null) => void;
 };
 
 export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
   (set) => ({
-    isAssetDetailsDialogOpen: false,
-    assetDetailsDialogSymbol: '',
-    setAssetDetailsDialogOpen: (isOpen: boolean) => {
-      set({ isAssetDetailsDialogOpen: isOpen });
+    isOpen: false,
+    symbol: '',
+    trigger: null,
+    setOpen: (isOpen) => {
+      set({ isOpen: isOpen });
     },
-    setAssetDetailsDialogSymbol: (symbol: string | Asset) => {
-      set({ assetDetailsDialogSymbol: symbol });
+    open: (symbol, trigger?) => {
+      set({
+        isOpen: true,
+        symbol: symbol,
+        trigger: trigger,
+      });
     },
   })
 );
@@ -42,12 +48,14 @@ type AssetDetails = {
 
 export interface AssetDetailsDialogProps {
   assetSymbol: string | Asset;
+  trigger?: HTMLElement | null;
   open: boolean;
   onChange: (open: boolean) => void;
 }
 
 export const AssetDetailsDialog = ({
   assetSymbol,
+  trigger,
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
@@ -148,10 +156,25 @@ export const AssetDetailsDialog = ({
       icon={<Icon name="info-sign"></Icon>}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
+      onCloseAutoFocus={(e) => {
+        /**
+         * This mimics radix's default behaviour that focuses the dialog's
+         * trigger after closing itself
+         */
+        if (trigger) {
+          e.preventDefault();
+          trigger.focus();
+        }
+      }}
     >
       {content}
       <div className="w-1/4">
-        <Button fill={true} size="sm" onClick={() => onChange(false)}>
+        <Button
+          data-testid="close-asset-details-dialog"
+          fill={true}
+          size="sm"
+          onClick={() => onChange(false)}
+        >
           Close
         </Button>
       </div>

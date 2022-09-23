@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
-      GOPROXY: ${{ secrets.GO_PROXY }}
+      VEGA_VERSION: 'v0.55.0'
     steps:
       #######
       ## Setup langs
@@ -70,18 +70,18 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
 
-      # Checkout vega
-      - name: Checkout Vega
-        uses: actions/checkout@v2
+      # Restore node_modules from cache if possible
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
         with:
-          repository: vegaprotocol/vega
-          ref: develop
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vega'
+          path: |
+            frontend-monorepo/node_modules
+            /home/runner/.cache/Cypress
+          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
       # Install frontend dependencies
       - name: Install root dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
         working-directory: frontend-monorepo
 
       #######
@@ -97,17 +97,20 @@ jobs:
 
       - name: Install Vega binaries
         if: ${{ env.RUN_CAPSULE }}
-        run: go install -v ./cmd/vega
-        working-directory: vega
+        run: |
+          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vega-linux-amd64.zip'
+          unzip vega-linux-amd64.zip -d ${{ env.GOBIN }}
 
       - name: Install date-node binaries
         if: ${{ env.RUN_CAPSULE }}
-        run: go install ./cmd/data-node
-        working-directory: vega
+        run: |
+          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/data-node-linux-amd64.zip'
+          unzip data-node-linux-amd64.zip -d ${{ env.GOBIN }}
 
       - name: Install Vega wallet binaries
-        run: go install ./cmd/vegawallet
-        working-directory: vega
+        run: |
+          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip'
+          unzip vegawallet-linux-amd64.zip -d ${{ env.GOBIN }}
 
       ######
       ## Start capsule
@@ -149,16 +152,12 @@ jobs:
         run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
 
       - name: Start service using capsule network
-        if: ${{ env.RUN_CAPSULE==true }}
+        if: ${{ env.RUN_CAPSULE }}
         run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
       ## Run some tests
       ######
-
-      - name: Install root dependencies
-        run: yarn install
-        working-directory: frontend-monorepo
 
       - name: Run smoke Cypress tests
         if: ${{ github.event.inputs.runAlltests == 'true' }}
@@ -185,11 +184,11 @@ jobs:
       ######
 
       - name: Logs
-        if: ${{ env.RUN_CAPSULE==true }}
+        if: ${{ env.RUN_CAPSULE }}
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
-        if: ${{ env.RUN_CAPSULE==true }}
+        if: ${{ env.RUN_CAPSULE }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt

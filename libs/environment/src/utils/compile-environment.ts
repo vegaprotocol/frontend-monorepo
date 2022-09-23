@@ -72,6 +72,8 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_VEGA_WALLET_URL'];
     case 'VEGA_TOKEN_URL':
       return process.env['NX_VEGA_TOKEN_URL'];
+    case 'VEGA_DOCS_URL':
+      return process.env['NX_VEGA_DOCS_URL'];
   }
 };
 

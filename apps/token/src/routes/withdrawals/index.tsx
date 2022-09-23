@@ -10,8 +10,11 @@ import {
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
 import { useState } from 'react';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import type { RouteChildProps } from '../index';
 
-const Withdrawals = () => {
+const Withdrawals = ({ name }: RouteChildProps) => {
+  useDocumentTitle(name);
   const { t } = useTranslation();
 
   return (
