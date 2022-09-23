@@ -7,8 +7,9 @@ import type {
   OrderEvent_busEvents_event_Order,
 } from './';
 import type { Subscription } from 'zen-observable-ts';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 
-export const useOrderEvent = () => {
+export const useOrderEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -50,10 +51,14 @@ export const useOrderEvent = () => {
   );
 
   useEffect(() => {
+    if (!transaction.dialogOpen) {
+      subRef.current?.unsubscribe();
+    }
+
     return () => {
       subRef.current?.unsubscribe();
     };
-  }, []);
+  }, [transaction.dialogOpen]);
 
   return waitForOrderEvent;
 };
