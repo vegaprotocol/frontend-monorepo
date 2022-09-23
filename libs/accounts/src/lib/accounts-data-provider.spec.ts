@@ -1,4 +1,5 @@
 import { AccountType } from '@vegaprotocol/types';
+import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 import type { AccountFieldsFragment } from './__generated__';
 
@@ -116,7 +117,7 @@ const accounts: AccountFieldsFragment[] = [
   },
 ];
 
-const accountResult = [
+const accountResult: AccountFields[] = [
   {
     __typename: 'Account',
     asset: {
@@ -130,7 +131,7 @@ const accountResult = [
     breakdown: [],
     deposited: '10001000000',
     market: null,
-    type: 'ACCOUNT_TYPE_GENERAL',
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '0',
   },
   {
@@ -146,7 +147,7 @@ const accountResult = [
     breakdown: [],
     deposited: '4000000000000001006031',
     market: null,
-    type: 'ACCOUNT_TYPE_GENERAL',
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '0',
   },
   {
@@ -182,7 +183,7 @@ const accountResult = [
             },
           },
         },
-        type: 'ACCOUNT_TYPE_MARGIN',
+        type: AccountType.ACCOUNT_TYPE_MARGIN,
         used: '406922',
       },
     ],
@@ -198,7 +199,7 @@ const accountResult = [
         },
       },
     },
-    type: 'ACCOUNT_TYPE_MARGIN',
+    type: AccountType.ACCOUNT_TYPE_MARGIN,
     used: '406922',
   },
   {
@@ -234,7 +235,7 @@ const accountResult = [
             },
           },
         },
-        type: 'ACCOUNT_TYPE_MARGIN',
+        type: AccountType.ACCOUNT_TYPE_MARGIN,
         used: '2781397',
       },
     ],
@@ -250,7 +251,7 @@ const accountResult = [
         },
       },
     },
-    type: 'ACCOUNT_TYPE_MARGIN',
+    type: AccountType.ACCOUNT_TYPE_MARGIN,
     used: '2781397',
   },
   {
@@ -266,7 +267,7 @@ const accountResult = [
     breakdown: [],
     deposited: '1990351587',
     market: null,
-    type: 'ACCOUNT_TYPE_GENERAL',
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '0',
   },
 ];

@@ -106,38 +106,41 @@ export const accountsDataProvider = makeDerivedDataProvider<
 const getSymbols = (data: AccountFieldsFragment[]) =>
   Array.from(new Set(data.map((a) => a.asset.symbol))).sort();
 
+const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
+  accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+
 export const getAccountData = (
   data: AccountFieldsFragment[]
 ): AccountFields[] => {
   const collateralData = getSymbols(data).map((assetSymbol) => {
-    const assetData = data.filter((a) => a.asset.symbol === assetSymbol);
+    const accounts = data.filter((a) => a.asset.symbol === assetSymbol);
 
-    const deposited = assetData
-      .filter((a) => [AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
-      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+    const deposited = getTotalBalance(
+      accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+    );
 
-    const incoming = assetData
-      .filter((a) => IN_ACCOUNT_TYPES.includes(a.type))
-      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
-
-    const used = assetData
-      .filter((a) => OUT_ACCOUNT_TYPES.includes(a.type))
-      .reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+    const used = getTotalBalance(
+      accounts.filter((a) => OUT_ACCOUNT_TYPES.includes(a.type))
+    );
 
     const depositRow: AccountFields = {
-      ...assetData[0],
-      available: (incoming - used).toString(),
+      asset: accounts[0].asset,
+      market: accounts[0].market,
+      type: AccountType.ACCOUNT_TYPE_GENERAL,
+      available: (deposited - used).toString(),
+      balance: (deposited - used).toString(),
       deposited: deposited.toString(),
       used: used.toString(),
     };
 
-    const accountRows = assetData
-      .filter((a) => ![AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type))
+    const accountRows = accounts
+      .filter((a) => !IN_ACCOUNT_TYPES.includes(a.type))
       .map((a) => ({
         ...a,
-        available: (incoming - BigInt(a.balance)).toString(),
+        available: (deposited - BigInt(a.balance)).toString(),
+        balance: a.balance,
         deposited: deposited.toString(),
-        used: a.balance.toString(),
+        used: a.balance,
       }));
 
     return { ...depositRow, breakdown: accountRows };
