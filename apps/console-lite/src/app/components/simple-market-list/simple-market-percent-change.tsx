@@ -71,7 +71,11 @@ const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const { data } = useDataProvider({
     dataProvider: marketCandlesProvider,
-    variables: { marketId, interval: Interval.INTERVAL_I1D, since: new Date(yesterday * 1000).toISOString() },
+    variables: {
+      marketId,
+      interval: Interval.INTERVAL_I1D,
+      since: new Date(yesterday * 1000).toISOString(),
+    },
   });
 
   const close = data?.map((m) => m.close);
