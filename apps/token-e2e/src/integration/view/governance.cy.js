@@ -63,7 +63,7 @@ context(
           .and('have.text', 'There are no enacted or rejected proposals');
       });
 
-      it('should be able to see a connect wallet button - if vega wallet disconnected and new proposal button selected', function () {
+      it.skip('should be able to see a connect wallet button - if vega wallet disconnected and new proposal button selected', function () {
         cy.get(newProposalButton).should('be.visible').click();
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
