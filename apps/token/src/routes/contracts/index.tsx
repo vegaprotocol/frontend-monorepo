@@ -25,6 +25,7 @@ const Contracts = ({ name }: RouteChildProps) => {
   return (
     <section>
       <Heading title={'Contracts'} />
+      <p> some little test</p>
       <hr />
       {[
         'collateral_bridge_contract',
