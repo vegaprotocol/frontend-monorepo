@@ -1,8 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  MarketDepthQuery,
-} from '@vegaprotocol/market-depth';
+import type { MarketDepthQuery } from '@vegaprotocol/market-depth';
 
 export const generateOrderBook = (
   override?: PartialDeep<MarketDepthQuery>
