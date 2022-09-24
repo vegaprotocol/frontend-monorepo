@@ -54,6 +54,7 @@ export const AccountManager = ({
       ? dataRef.current.slice(startRow, endRow)
       : [];
     const lastRow = dataRef.current?.length ?? -1;
+    console.log('rowsThisBlock', rowsThisBlock, 'lastRow', lastRow);
     successCallback(rowsThisBlock, lastRow);
   };
   return (

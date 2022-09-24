@@ -48,6 +48,8 @@ export const ENV = {
   // Environment
   dsn: windowOrDefault('NX_SENTRY_DSN'),
   urlConnect: TRUTHY.includes(windowOrDefault('NX_ETH_URL_CONNECT')),
+  explorerUrl: windowOrDefault('NX_VEGA_EXPLORER'),
+  docsUrl: windowOrDefault('NX_VEGA_DOCS_URL'),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   flags: {

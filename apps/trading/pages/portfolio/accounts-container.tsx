@@ -49,18 +49,14 @@ export const AccountsContainer = () => {
 export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [depositDialog, setDepositDialog] = useState(false);
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const [assetId, setAssetId] = useState<string>();
   return (
     <>
       <AccountManager
         partyId={partyId}
         onClickAsset={(value) => {
-          if (value) {
-            setAssetDetailsDialogOpen(true);
-            setAssetDetailsDialogSymbol(value);
-          }
+          value && openAssetDetailsDialog(value);
         }}
         onClickWithdraw={(assetId) => {
           setWithdrawDialog(true);
