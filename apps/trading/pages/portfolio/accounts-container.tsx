@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
+import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { WithdrawalDialogs } from '@vegaprotocol/withdraws';
 import { Web3Container } from '@vegaprotocol/web3';
@@ -24,18 +24,6 @@ export const AccountsContainer = () => {
   return (
     <Web3Container>
       <div className="h-full">
-        <header className="flex justify-between items-center p-4">
-          <h1 className="text-lg text-black dark:text-white">
-            {t('Collateral')}
-          </h1>
-          <Button
-            size="sm"
-            onClick={() => setDepositDialog(true)}
-            data-testid="deposit-new-dialog-button"
-          >
-            {t('Deposit new asset')}
-          </Button>
-        </header>
         <AssetAccountTable partyId={keypair.pub} />
         <DepositDialog
           depositDialog={depositDialog}
