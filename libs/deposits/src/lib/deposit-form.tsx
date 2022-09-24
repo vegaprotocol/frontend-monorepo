@@ -165,6 +165,7 @@ export const DepositForm = ({
                 onSelectAsset(e.target.value);
               }}
               value={selectedAsset?.id || ''}
+              defaultValue={selectedAsset?.id || ''}
             >
               <option value="">{t('Please select')}</option>
               {assets.filter(isAssetTypeERC20).map((a) => (

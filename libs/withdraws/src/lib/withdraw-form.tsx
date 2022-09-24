@@ -111,6 +111,7 @@ export const WithdrawForm = ({
                   field.onChange(e.target.value);
                 }}
                 value={selectedAsset?.id || ''}
+                defaultValue={selectedAsset?.id || ''}
                 id="asset"
                 name="asset"
               >
