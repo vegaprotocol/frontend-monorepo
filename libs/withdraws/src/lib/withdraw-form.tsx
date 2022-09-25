@@ -100,7 +100,7 @@ export const WithdrawForm = ({
             name="asset"
             rules={{
               validate: {
-                required,
+                required: (value) => !!selectedAsset || required(value),
               },
             }}
             render={({ field }) => (
@@ -111,7 +111,6 @@ export const WithdrawForm = ({
                   field.onChange(e.target.value);
                 }}
                 value={selectedAsset?.id || ''}
-                defaultValue={selectedAsset?.id || ''}
                 id="asset"
                 name="asset"
               >

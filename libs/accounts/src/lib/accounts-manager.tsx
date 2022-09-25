@@ -63,9 +63,6 @@ export const AccountManager = ({
         <AccountTable
           data={data}
           ref={gridRef}
-          rowModelType={dataRef.current?.length ? 'infinite' : 'clientSide'}
-          rowData={dataRef.current?.length ? undefined : []}
-          datasource={{ getRows }}
           onClickAsset={onClickAsset}
           onClickDeposit={onClickDeposit}
           onClickWithdraw={onClickWithdraw}

@@ -13,6 +13,7 @@ import { getId } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import type { AccountType } from '@vegaprotocol/types';
 import {
+  assetDecimalsFormatter,
   progressBarHeaderComponentParams,
   progressBarValueFormatter,
 } from './accounts-table';
@@ -27,7 +28,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No collateral breakdown')}
+        overlayNoRowsTemplate={t('Collateral not used')}
         rowData={data}
         getRowId={({ data }) => getId(data)}
         ref={ref}
@@ -40,10 +41,18 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         }}
       >
         <AgGridColumn
+          headerName={t('Account type')}
+          field="type"
+          maxWidth={300}
+          valueFormatter={({ value }: ValueFormatterParams) =>
+            AccountTypeMapping[value as AccountType]
+          }
+        />
+        <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
           valueFormatter="value || '—'"
-          maxWidth={300}
+          minWidth={200}
         />
         <AgGridColumn
           headerName={t('Used')}
@@ -54,13 +63,18 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
         />
+
         <AgGridColumn
-          headerName={t('Type')}
-          field="type"
+          headerName={t('Deposited')}
+          field="deposited"
+          valueFormatter={assetDecimalsFormatter}
           maxWidth={300}
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            AccountTypeMapping[value as AccountType]
-          }
+        />
+        <AgGridColumn
+          headerName={t('Balance')}
+          field="balance"
+          valueFormatter={assetDecimalsFormatter}
+          maxWidth={300}
         />
       </AgGrid>
     );

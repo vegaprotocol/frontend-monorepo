@@ -30,13 +30,14 @@ export const progressBarValueFormatter = ({
     return undefined;
   }
   const min = BigInt(data.used);
+  const mid = BigInt(data.available);
   const max = BigInt(data.deposited);
   const range = max > min ? max : min;
   return {
     low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 2),
-    high: addDecimalsFormatNumber(max.toString(), data.asset.decimals, 2),
+    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 2),
     value: range ? Number((min * BigInt(100)) / range) : 0,
-    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+    intent: Intent.Warning,
   };
 };
 
@@ -106,10 +107,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName={t('Balance')}
-            headerTooltip={t(
-              'This is the general account balance for the given asset.'
-            )}
+            headerName={t('Deposited')}
             field="deposited"
             valueFormatter={assetDecimalsFormatter}
             maxWidth={300}
