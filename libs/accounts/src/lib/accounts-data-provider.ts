@@ -91,7 +91,9 @@ const getAssetIds = (data: AccountFieldsFragment[]) =>
 const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-const getAccountData = (data: AccountFieldsFragment[]): AccountFields[] => {
+export const getAccountData = (
+  data: AccountFieldsFragment[]
+): AccountFields[] => {
   return getAssetIds(data).map((assetId) => {
     const accounts = data.filter((a) => a.asset.id === assetId);
     return accounts && getAssetAccountAggregation(accounts);
