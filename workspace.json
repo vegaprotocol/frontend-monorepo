@@ -15,6 +15,7 @@
     "fills": "libs/fills",
     "governance": "libs/governance",
     "liquidity": "libs/liquidity",
+    "liquidity-provision": "libs/liquidity-provision",
     "liquidity-provision-dashboard": "apps/liquidity-provision-dashboard",
     "liquidity-provision-dashboard-e2e": "apps/liquidity-provision-dashboard-e2e",
     "market-depth": "libs/market-depth",
