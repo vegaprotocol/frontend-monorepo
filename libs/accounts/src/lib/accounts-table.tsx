@@ -34,8 +34,8 @@ export const progressBarValueFormatter = ({
   const max = BigInt(data.deposited);
   const range = max > min ? max : min;
   return {
-    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 2),
-    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 2),
+    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 4),
+    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 4),
     value: range ? Number((min * BigInt(100)) / range) : 0,
     intent: Intent.Warning,
   };
