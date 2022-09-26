@@ -28,7 +28,7 @@ context(
         let currencyId = 'fUSDC';
         cy.get(vegaWalletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle, txTimeout)
-            .contains(currencyId, txTimeout)
+            .contains(currencyId)
             .should('be.visible');
 
           cy.get(vegaWalletCurrencyTitle)
@@ -45,7 +45,7 @@ context(
         let currencyId = 'fBTC';
         cy.get(vegaWalletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle, txTimeout)
-            .contains(currencyId, txTimeout)
+            .contains(currencyId)
             .should('be.visible');
 
           cy.get(vegaWalletCurrencyTitle)
@@ -62,7 +62,7 @@ context(
         let currencyId = 'fEURO';
         cy.get(vegaWalletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle, txTimeout)
-            .contains(currencyId, txTimeout)
+            .contains(currencyId)
             .should('be.visible');
 
           cy.get(vegaWalletCurrencyTitle)
@@ -79,7 +79,7 @@ context(
         let currencyId = 'fDAI';
         cy.get(vegaWalletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle, txTimeout)
-            .contains(currencyId, txTimeout)
+            .contains(currencyId)
             .should('be.visible');
 
           cy.get(vegaWalletCurrencyTitle)
