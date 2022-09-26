@@ -63,6 +63,7 @@ export const Search = () => {
           {...register('search')}
           id="search"
           data-testid="search"
+          className="text-white"
           hasError={Boolean(error?.message)}
           type="text"
           placeholder={t('Enter block number or transaction hash')}

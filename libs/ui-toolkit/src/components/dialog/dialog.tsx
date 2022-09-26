@@ -11,6 +11,7 @@ interface DialogProps {
   children: ReactNode;
   open: boolean;
   onChange?: (isOpen: boolean) => void;
+  onCloseAutoFocus?: (e: Event) => void;
   title?: string;
   icon?: ReactNode;
   intent?: Intent;
@@ -21,6 +22,7 @@ export function Dialog({
   children,
   open,
   onChange,
+  onCloseAutoFocus,
   title,
   icon,
   intent,
@@ -65,7 +67,10 @@ export function Dialog({
           className="fixed inset-0 bg-black/50 z-10"
           data-testid="dialog-overlay"
         />
-        <DialogPrimitives.Content className={contentClasses}>
+        <DialogPrimitives.Content
+          className={contentClasses}
+          onCloseAutoFocus={onCloseAutoFocus}
+        >
           <div className={wrapperClasses}>
             {onChange && (
               <DialogPrimitives.Close

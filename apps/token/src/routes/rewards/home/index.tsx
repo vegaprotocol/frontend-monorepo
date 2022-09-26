@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading } from '../../../components/heading';
 import { SplashLoader } from '../../../components/splash-loader';
-import { NetworkParams } from '../../../config';
 import {
   AppStateActionType,
   useAppState,
@@ -18,7 +17,7 @@ import {
 import type { Rewards } from './__generated__/Rewards';
 import { RewardInfo } from './reward-info';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useNetworkParams } from '@vegaprotocol/react-helpers';
+import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 
 export const REWARDS_QUERY = gql`
   query Rewards($partyId: ID!) {
@@ -73,33 +72,30 @@ export const RewardsIndex = () => {
     variables: { partyId: keypair?.pub },
     skip: !keypair?.pub,
   });
-  const {
-    data: rewardAssetData,
-    loading: rewardAssetLoading,
-    error: rewardAssetError,
-  } = useNetworkParams([
-    NetworkParams.REWARD_ASSET,
-    NetworkParams.REWARD_PAYOUT_DURATION,
+  const { params } = useNetworkParams([
+    NetworkParams.reward_asset,
+    NetworkParams.reward_staking_delegation_payoutDelay,
   ]);
 
   const payoutDuration = React.useMemo(() => {
-    if (!rewardAssetData || !rewardAssetData[1]) {
+    if (!params) {
       return 0;
     }
-    return new Duration(rewardAssetData[1]).milliseconds();
-  }, [rewardAssetData]);
+    return new Duration(
+      params.reward_staking_delegation_payoutDelay
+    ).milliseconds();
+  }, [params]);
 
-  if (error || rewardAssetError) {
+  if (error) {
     return (
       <section>
         <p>{t('Something went wrong')}</p>
         {error && <pre>{error.message}</pre>}
-        {rewardAssetError && <pre>{rewardAssetError.message}</pre>}
       </section>
     );
   }
 
-  if (loading || rewardAssetLoading || !rewardAssetData?.length) {
+  if (loading || !params) {
     return (
       <Splash>
         <SplashLoader />
@@ -145,7 +141,7 @@ export const RewardsIndex = () => {
           <RewardInfo
             currVegaKey={keypair}
             data={data}
-            rewardAssetId={rewardAssetData[0]}
+            rewardAssetId={params.reward_asset}
           />
         ) : (
           <div>

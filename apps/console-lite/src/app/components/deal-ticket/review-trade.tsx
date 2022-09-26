@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import * as React from 'react';
 import classNames from 'classnames';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { SIDE_NAMES } from './side-selector';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
@@ -33,7 +33,7 @@ export const MARKET_TAGS_QUERY = gql`
 `;
 
 interface Props {
-  market: DealTicketQuery_market;
+  market: DealTicketMarketFragment;
   isDisabled: boolean;
   transactionStatus?: string;
   order: Order;

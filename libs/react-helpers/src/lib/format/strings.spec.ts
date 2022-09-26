@@ -1,4 +1,4 @@
-import { truncateByChars, ELLIPSIS, shorten } from './strings';
+import { truncateByChars, ELLIPSIS, shorten, titlefy } from './strings';
 
 describe('truncateByChars', () => {
   it.each([
@@ -25,5 +25,27 @@ describe('shorten', () => {
   ])('should shorten given string by specific limit', ({ i, l, o }) => {
     const output = shorten(i, l);
     expect(output).toStrictEqual(o);
+  });
+});
+
+describe('titlefy', () => {
+  it.each([
+    { words: [], o: 'Vega' },
+    { words: ['one'], o: 'one - Vega' },
+    { words: ['one'], o: 'one - Vega' },
+    {
+      words: ['one', 'two', 'three'],
+      o: 'one - two - three - Vega',
+    },
+    {
+      words: ['one', null, undefined, 'two'],
+      o: 'one - two - Vega',
+    },
+    {
+      words: ['VEGAUSD', '123.22'],
+      o: 'VEGAUSD - 123.22 - Vega',
+    },
+  ])('should convert to title-like string', ({ words, o }) => {
+    expect(titlefy(words)).toEqual(o);
   });
 });

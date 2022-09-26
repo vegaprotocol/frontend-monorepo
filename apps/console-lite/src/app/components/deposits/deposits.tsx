@@ -5,10 +5,10 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
-import type { Deposits } from './__generated__/Deposits';
+import type { DepositAssets } from './__generated__/DepositAssets';
 
 const DEPOSITS_QUERY = gql`
-  query Deposits {
+  query DepositAssets {
     assetsConnection {
       edges {
         node {
@@ -35,7 +35,7 @@ export const DepositContainer = () => {
   const { VEGA_ENV } = useEnvironment();
   const { keypair } = useVegaWallet();
 
-  const { data, loading, error } = useQuery<Deposits>(DEPOSITS_QUERY, {
+  const { data, loading, error } = useQuery<DepositAssets>(DEPOSITS_QUERY, {
     variables: { partyId: keypair?.pub },
     skip: !keypair?.pub,
   });
@@ -43,7 +43,7 @@ export const DepositContainer = () => {
   const assets = getEnabledAssets(data);
 
   return (
-    <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>
+    <AsyncRenderer<DepositAssets> data={data} loading={loading} error={error}>
       {assets.length ? (
         <Web3Container>
           <DepositManager

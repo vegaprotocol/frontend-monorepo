@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import type { Statistics } from '../../utils/__generated__/Statistics';
-import { STATS_QUERY } from '../../utils/request-node';
+import { useStatisticsQuery } from '../../utils/__generated__/Node';
 
 type NodeBlockHeightProps = {
   value?: number;
@@ -11,12 +9,9 @@ type NodeBlockHeightProps = {
 const POLL_INTERVAL = 3000;
 
 export const NodeBlockHeight = ({ value, setValue }: NodeBlockHeightProps) => {
-  const { data, startPolling, stopPolling } = useQuery<Statistics>(
-    STATS_QUERY,
-    {
-      pollInterval: POLL_INTERVAL,
-    }
-  );
+  const { data, startPolling, stopPolling } = useStatisticsQuery({
+    pollInterval: POLL_INTERVAL,
+  });
 
   useEffect(() => {
     const handleStartPoll = () => startPolling(POLL_INTERVAL);
