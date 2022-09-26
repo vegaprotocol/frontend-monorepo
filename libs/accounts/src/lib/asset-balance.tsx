@@ -22,7 +22,7 @@ export const AssetBalance = ({ partyId, assetSymbol }: AssetBalanceProps) => {
       if (c.asset.symbol === assetSymbol) {
         decimals = c.asset.decimals;
         return a + BigInt(c.balance);
-      }      
+      }
       return a;
     }, BigInt(0));
     return (
