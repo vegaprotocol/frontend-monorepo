@@ -5,9 +5,9 @@ import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MemoryRouter as Router } from 'react-router-dom';
-import { gql } from '@apollo/client';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import type { MockedResponse } from '@apollo/client/testing';
+import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
@@ -17,14 +17,7 @@ jest.mock('@vegaprotocol/environment', () => ({
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: gql`
-      query NetworkParams {
-        networkParameters {
-          key
-          value
-        }
-      }
-    `,
+    query: NETWORK_PARAMETERS_QUERY,
   },
   result: {
     data: {
