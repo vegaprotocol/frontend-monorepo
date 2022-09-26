@@ -77,7 +77,6 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           title={
             <Link href={`/markets/${marketId}`} passHref={true}>
               <UiToolkitLink>
-                {' '}
                 {`${name} ${t('liquidity provision')}`}
               </UiToolkitLink>
             </Link>
