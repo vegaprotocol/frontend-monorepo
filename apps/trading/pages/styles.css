@@ -23,10 +23,6 @@ html.dark body {
   @apply border-neutral-300 dark:border-neutral-600;
 }
 
-html.dark ::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
 div[data-testid='tab-positions'] .ag-theme-balham .ag-cell,
 div[data-testid='tab-positions'] .ag-theme-balham-dark .ag-cell {
   line-height: normal;

@@ -18,7 +18,7 @@ export const ThemeSwitcher = ({
   fixedBg?: 'light' | 'dark';
 }) => {
   const sharedClasses = classNames(
-    'hover:text-white group-focus-visible:text-white',
+    'hover:text-white group-focus-visible:text-white outline-none',
     {
       'text-neutral-800 dark:text-neutral-300': !fixedBg,
       'text-neutral-800': fixedBg === 'light',

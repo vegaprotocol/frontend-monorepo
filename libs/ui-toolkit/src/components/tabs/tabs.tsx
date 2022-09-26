@@ -30,7 +30,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
             const triggerClass = classNames(
               'relative px-4 py-2 border-r border-default',
               'uppercase',
-              'focus-visible:underline',
+              'focus-visible:underline outline-none',
               {
                 'cursor-default bg-white dark:bg-black': isActive,
                 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300':
@@ -55,7 +55,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
           })}
         </TabsPrimitive.List>
       </div>
-      <div className="h-full overflow-auto">
+      <div className="h-full overflow-auto" tabIndex={-1}>
         {Children.map(children, (child) => {
           if (!isValidElement(child) || child.props.hidden) return null;
           return (
