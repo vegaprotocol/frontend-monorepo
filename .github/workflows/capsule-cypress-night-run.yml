@@ -9,7 +9,7 @@ on:
 jobs:
   nightly:
     name: Run capsule tests -- nightly
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
       VEGA_VERSION: 'v0.55.0'
@@ -27,12 +27,6 @@ jobs:
         id: npm
         with:
           node-version: 16
-
-      #######
-      ## Install Yarn
-      #######
-      - name: Setup yarn
-        run: npm install -g yarn
 
       #######
       ## Checkout repos
