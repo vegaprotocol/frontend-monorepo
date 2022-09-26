@@ -1,5 +1,2 @@
-export * from './DepositEvent';
-export * from './DepositEventSub';
-export * from './DepositFields';
-export * from './Deposits';
-export * from './DepositsQuery';
+export * from './Deposit';
+export * from './DepositAsset';

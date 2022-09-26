@@ -1,5 +1,4 @@
 export * from './__generated__';
-export * from './__generated___';
 export * from './deposit-container';
 export * from './deposit-form';
 export * from './deposit-limits';

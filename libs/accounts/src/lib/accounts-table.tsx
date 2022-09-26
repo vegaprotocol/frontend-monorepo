@@ -75,7 +75,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         <AgGrid
           style={{ width: '100%', height: '100%' }}
           rowData={data}
-          getRowId={({ data }) => getId(data)}
+          getRowId={({ data }: { data: AccountFields }) => getId(data)}
           ref={ref}
           rowHeight={34}
           tooltipShowDelay={500}
