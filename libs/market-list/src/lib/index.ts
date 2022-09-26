@@ -1,4 +1,3 @@
-export * from './__generated__';
 export * from './components';
 export * from './utils';
 export * from './market-candles-provider';
