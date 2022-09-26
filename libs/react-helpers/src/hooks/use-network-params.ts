@@ -1,6 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
-import type { NetworkParams as NetworkParamsResponse } from './__generated__';
+import { useNetworkParamQuery, useNetworkParamsQuery } from './__generated__/NetworkParams';
 
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
@@ -77,9 +76,7 @@ type Result = {
 };
 
 export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
-  const { data, loading, error } = useQuery<NetworkParamsResponse, never>(
-    NETWORK_PARAMETERS_QUERY
-  );
+  const { data, loading, error } = useNetworkParamsQuery();
 
   const paramsObj = useMemo(() => {
     if (!data?.networkParameters) return null;
@@ -107,7 +104,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
 };
 
 export const useNetworkParam = (param: NetworkParamsKey) => {
-  const { data, loading, error } = useQuery(NETWORK_PARAMETER_QUERY, {
+  const { data, loading, error } = useNetworkParamQuery({
     variables: {
       key: param,
     },
