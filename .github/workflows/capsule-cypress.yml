@@ -35,6 +35,12 @@ jobs:
           node-version: 16
 
       #######
+      ## Install Yarn
+      #######
+      - name: Setup yarn
+        run: npm install -g yarn
+
+      #######
       ## Checkout repos
       #######
 
