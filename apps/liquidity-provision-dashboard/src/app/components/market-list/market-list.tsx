@@ -1,7 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
-// import type { AgGridReact } from 'ag-grid-react';
-//import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { useCallback } from 'react';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
 import type {
   GroupCellRendererParams,
@@ -80,7 +78,7 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           rowHeight={80}
         >
           <AgGridColumn
-            headerName={t('Market (futures) TEST')}
+            headerName={t('Market (futures)')}
             field="tradableInstrument.instrument.name"
             headerTooltip={t('This is the tooltip')}
             cellRenderer={marketNameCellRenderer}
@@ -88,13 +86,11 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           />
           <AgGridColumn
             headerName={t('Volume 24h')}
-            field="volume"
+            field="dayVolume"
             headerTooltip={t('This is the volume tooltip')}
-            cellRenderer={({ value }: GroupCellRendererParams) => {
-              //TODO: get from candles
-              // const dayVolume = calcCandleVolume(market);
-              return '0';
-            }}
+            valueFormatter={({ value }: ValueFormatterParams) =>
+              formatNumber(value)
+            }
           />
 
           <AgGridColumn
@@ -148,15 +144,6 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
     ),
   }}
   decimalPlaces={market.positionDecimalPlaces}
-/>; */
-}
-
-{
-  /* <AgGridColumn
-  headerName={t('Committed liquidity')}
-  cellRenderer={({ data }: GroupCellRendererParams) => {
-    return formatStake(data.marketData.suppliedStake, data);
-  }}
 />; */
 }
 
