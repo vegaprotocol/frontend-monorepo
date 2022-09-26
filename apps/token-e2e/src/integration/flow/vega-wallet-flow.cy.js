@@ -25,86 +25,82 @@ context(
 
     describe('Vega wallet - Check assets show', function () {
       it('Able to see fUSDC assets - within vega wallet', function () {
-        let currency = {id: 'fUSDC', name: 'USDC (fake)'}
+        let currency = { id: 'fUSDC', name: 'USDC (fake)' };
         cy.get(vegaWalletContainer).within(() => {
-            
-            cy.get(vegaWalletCurrencyTitle, txTimeout)
-                .contains(currency.id)
-                .should('be.visible');
+          cy.get(vegaWalletCurrencyTitle, txTimeout)
+            .contains(currency.id)
+            .should('be.visible');
 
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .siblings()
-                .within(() => cy.contains_exactly('10.00000').should('be.visible'));
-            
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .contains(currency.name)
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('10.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
         });
       });
 
       it('Able to see fBTC assets - within vega wallet', function () {
-        let currency = {id: 'fBTC', name: 'BTC (fake)'}
+        let currency = { id: 'fBTC', name: 'BTC (fake)' };
         cy.get(vegaWalletContainer).within(() => {
-            
-            cy.get(vegaWalletCurrencyTitle, txTimeout)
-                .contains(currency.id)
-                .should('be.visible');
+          cy.get(vegaWalletCurrencyTitle, txTimeout)
+            .contains(currency.id)
+            .should('be.visible');
 
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .siblings()
-                .within(() => cy.contains_exactly('6.00000').should('be.visible'));
-            
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .contains(currency.name)
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('6.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
         });
       });
 
       it('Able to see fEURO assets - within vega wallet', function () {
-        let currency = {id: 'fEURO', name: 'EURO (fake)'}
+        let currency = { id: 'fEURO', name: 'EURO (fake)' };
         cy.get(vegaWalletContainer).within(() => {
-            
-            cy.get(vegaWalletCurrencyTitle, txTimeout)
-                .contains(currency.id)
-                .should('be.visible');
+          cy.get(vegaWalletCurrencyTitle, txTimeout)
+            .contains(currency.id)
+            .should('be.visible');
 
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .siblings()
-                .within(() => cy.contains_exactly('8.00000').should('be.visible'));
-            
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .contains(currency.name)
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('8.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
         });
       });
 
       it('Able to see fDAI assets - within vega wallet', function () {
-        let currency = {id: 'fDAI', name: 'DAI (fake)'}
+        let currency = { id: 'fDAI', name: 'DAI (fake)' };
         cy.get(vegaWalletContainer).within(() => {
-            
-            cy.get(vegaWalletCurrencyTitle, txTimeout)
-                .contains(currency.id)
-                .should('be.visible');
+          cy.get(vegaWalletCurrencyTitle, txTimeout)
+            .contains(currency.id)
+            .should('be.visible');
 
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .siblings()
-                .within(() => cy.contains_exactly('2.00000').should('be.visible'));
-            
-            cy.get(vegaWalletCurrencyTitle)
-                .contains(currency.id)
-                .parent()
-                .contains(currency.name)
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('2.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
         });
       });
 

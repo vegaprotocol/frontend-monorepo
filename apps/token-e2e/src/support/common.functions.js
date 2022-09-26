@@ -17,7 +17,7 @@ const navigation = {
   pageSpinner: '[data-testid="splash-loader"]',
 };
 Cypress.Commands.add('contains_exactly', (expected_result) => {
-  return cy.contains(new RegExp("^" + expected_result + "$", "g"))
+  return cy.contains(new RegExp('^' + expected_result + '$', 'g'));
 });
 
 Cypress.Commands.add('navigate_to', (page) => {
