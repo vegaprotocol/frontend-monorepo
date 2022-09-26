@@ -5,8 +5,6 @@ const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
-const txTimeout = Cypress.env('txTimeout');
-const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
 
 Cypress.Commands.add('vega_wallet_import', () => {
   cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);

@@ -16,6 +16,9 @@ const navigation = {
   governance: '[href="/governance"]',
   pageSpinner: '[data-testid="splash-loader"]',
 };
+Cypress.Commands.add('contains_exactly', (expected_result) => {
+  return cy.contains(new RegExp("^" + expected_result + "$", "g"))
+});
 
 Cypress.Commands.add('navigate_to', (page) => {
   return cy.get(navigation.section, { timeout: 10000 }).within(() => {
