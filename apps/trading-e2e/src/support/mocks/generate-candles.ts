@@ -10,7 +10,8 @@ export const generateCandles = (
 ): CandlesQuery => {
   const candles: CandleFieldsFragment[] = [
     {
-      periodStart: '1661515200000000000',
+      periodStart: '2022-04-06T09:15:00Z',
+      lastUpdateInPeriod: '2022-04-06T09:16:00Z',
       high: '17481092',
       low: '17403651',
       open: '17458833',
@@ -19,7 +20,8 @@ export const generateCandles = (
       __typename: 'Candle',
     },
     {
-      periodStart: '1661516100000000000',
+      periodStart: '2022-04-06T09:30:00Z',
+      lastUpdateInPeriod: '2022-04-06T09:32:00Z',
       high: '17491202',
       low: '17361138',
       open: '17446470',
@@ -28,7 +30,8 @@ export const generateCandles = (
       __typename: 'Candle',
     },
     {
-      periodStart: '1661517000000000000',
+      periodStart: '2022-04-06T09:45:00Z',
+      lastUpdateInPeriod: '2022-04-06T09:48:00Z',
       high: '17424522',
       low: '17337719',
       open: '17367174',

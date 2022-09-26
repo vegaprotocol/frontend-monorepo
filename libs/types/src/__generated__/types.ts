@@ -357,6 +357,8 @@ export type Candle = {
   close: Scalars['String'];
   /** High price (uint64) */
   high: Scalars['String'];
+  /** Interval price (string) */
+  interval: Interval;
   /** RFC3339Nano formatted date and time for the candle end time, or last updated time if the candle is still open */
   lastUpdateInPeriod: Scalars['String'];
   /** Low price (uint64) */

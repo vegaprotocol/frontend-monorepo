@@ -1,5 +1,6 @@
 fragment CandleFields on Candle {
   periodStart
+  lastUpdateInPeriod
   high
   low
   open
