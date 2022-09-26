@@ -1,4 +1,3 @@
-import { gql } from '@apollo/client';
 import { render, screen, waitFor } from '@testing-library/react';
 import { ProposeNewMarket } from './propose-new-market';
 import { MockedProvider } from '@apollo/client/testing';
@@ -8,6 +7,7 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
@@ -17,14 +17,7 @@ jest.mock('@vegaprotocol/environment', () => ({
 
 const newMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: gql`
-      query NetworkParams {
-        networkParameters {
-          key
-          value
-        }
-      }
-    `,
+    query: NETWORK_PARAMETERS_QUERY,
   },
   result: {
     data: {
