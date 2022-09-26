@@ -40,7 +40,7 @@ export interface Rewards_party_rewardDetails_rewards_party {
 export interface Rewards_party_rewardDetails_rewards_epoch {
   __typename: "Epoch";
   /**
-   * Presumably this is an integer or something. If there's no such thing, disregard
+   * Numeric sequence number used to identify the epoch
    */
   id: string;
 }
@@ -124,7 +124,7 @@ export interface Rewards_party {
    */
   id: string;
   /**
-   * return reward information
+   * Return reward information
    */
   rewardDetails: (Rewards_party_rewardDetails | null)[] | null;
   delegations: Rewards_party_delegations[] | null;
@@ -149,7 +149,7 @@ export interface Rewards_epoch_timestamps {
 export interface Rewards_epoch {
   __typename: "Epoch";
   /**
-   * Presumably this is an integer or something. If there's no such thing, disregard
+   * Numeric sequence number used to identify the epoch
    */
   id: string;
   /**
@@ -164,7 +164,7 @@ export interface Rewards {
    */
   party: Rewards_party | null;
   /**
-   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Rewards_epoch;
 }

@@ -293,7 +293,7 @@ export interface Proposals_proposalsConnection_edges_node {
    */
   datetime: string;
   /**
-   * Reason for the proposal to be rejected by the core
+   * Why the proposal was rejected by the core
    */
   rejectionReason: ProposalRejectionReason | null;
   /**

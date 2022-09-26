@@ -81,7 +81,7 @@ export interface Staking_epoch_timestamps {
 export interface Staking_epoch {
   __typename: "Epoch";
   /**
-   * Presumably this is an integer or something. If there's no such thing, disregard
+   * Numeric sequence number used to identify the epoch
    */
   id: string;
   /**
@@ -181,7 +181,13 @@ export interface Staking_nodes {
    * The pending staked field formatted by the client
    */
   pendingStakeFormatted: string;
+  /**
+   * Summary of epoch data across all nodes
+   */
   epochData: Staking_nodes_epochData | null;
+  /**
+   * Validator status of the node
+   */
   status: NodeStatus;
   /**
    * Ranking scores and status for the validator for the current epoch
@@ -223,15 +229,15 @@ export interface Staking {
    */
   party: Staking_party | null;
   /**
-   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Staking_epoch;
   /**
-   * all known network nodes
+   * All known network nodes
    */
   nodes: Staking_nodes[] | null;
   /**
-   * returns information about nodes
+   * Returns information about nodes
    */
   nodeData: Staking_nodeData | null;
 }

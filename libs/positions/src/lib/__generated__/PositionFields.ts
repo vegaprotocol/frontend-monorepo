@@ -28,19 +28,19 @@ export interface PositionFields_marginsConnection_edges_node_asset {
 export interface PositionFields_marginsConnection_edges_node {
   __typename: "MarginLevels";
   /**
-   * market in which the margin is required for this party
+   * Market in which the margin is required for this party
    */
   market: PositionFields_marginsConnection_edges_node_market;
   /**
-   * minimal margin for the position to be maintained in the network (unsigned integer)
+   * Minimal margin for the position to be maintained in the network (unsigned integer)
    */
   maintenanceLevel: string;
   /**
-   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   * If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
    */
   searchLevel: string;
   /**
-   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   * This is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
   /**
@@ -49,7 +49,7 @@ export interface PositionFields_marginsConnection_edges_node {
    */
   collateralReleaseLevel: string;
   /**
-   * asset for the current margins
+   * Asset for the current margins
    */
   asset: PositionFields_marginsConnection_edges_node_asset;
 }
@@ -94,11 +94,11 @@ export interface PositionFields_market_data_market {
 export interface PositionFields_market_data {
   __typename: "MarketData";
   /**
-   * the mark price (an unsigned integer)
+   * The mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * market of the associated mark price
+   * Market of the associated mark price
    */
   market: PositionFields_market_data_market;
 }
@@ -110,7 +110,7 @@ export interface PositionFields_market {
    */
   id: string;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
@@ -127,7 +127,7 @@ export interface PositionFields_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.

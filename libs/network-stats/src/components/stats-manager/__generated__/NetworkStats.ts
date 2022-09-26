@@ -85,11 +85,11 @@ export interface NetworkStats_statistics {
 
 export interface NetworkStats {
   /**
-   * returns information about nodes
+   * Returns information about nodes
    */
   nodeData: NetworkStats_nodeData | null;
   /**
-   * get statistics about the Vega node
+   * Get statistics about the Vega node
    */
   statistics: NetworkStats_statistics;
 }

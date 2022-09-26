@@ -6,66 +6,38 @@
 import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL fragment: MarketFields
+// GraphQL query operation: DealTicketQuery
 // ====================================================
 
-export interface MarketFields_fees_factors {
-  __typename: "FeeFactors";
-  /**
-   * The factor applied to calculate MakerFees, a non-negative float
-   */
-  makerFee: string;
-  /**
-   * The factor applied to calculate InfrastructureFees, a non-negative float
-   */
-  infrastructureFee: string;
-  /**
-   * The factor applied to calculate LiquidityFees, a non-negative float
-   */
-  liquidityFee: string;
-}
-
-export interface MarketFields_fees {
-  __typename: "Fees";
-  /**
-   * The factors used to calculate the different fees
-   */
-  factors: MarketFields_fees_factors;
-}
-
-export interface MarketFields_tradableInstrument_instrument_metadata {
-  __typename: "InstrumentMetadata";
-  /**
-   * An arbitrary list of tags to associated to associate to the Instrument (string list)
-   */
-  tags: string[] | null;
-}
-
-export interface MarketFields_tradableInstrument_instrument_product_settlementAsset {
+export interface DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
   /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
   /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   * The full name of the asset (e.g: Great British Pound)
    */
-  decimals: number;
+  name: string;
 }
 
-export interface MarketFields_tradableInstrument_instrument_product {
+export interface DealTicketQuery_market_tradableInstrument_instrument_product {
   __typename: "Future";
-  /**
-   * The name of the asset (string)
-   */
-  settlementAsset: MarketFields_tradableInstrument_instrument_product_settlementAsset;
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
-export interface MarketFields_tradableInstrument_instrument {
+export interface DealTicketQuery_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
@@ -76,40 +48,36 @@ export interface MarketFields_tradableInstrument_instrument {
    */
   name: string;
   /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
-   */
-  code: string;
-  /**
-   * Metadata for this instrument
-   */
-  metadata: MarketFields_tradableInstrument_instrument_metadata;
-  /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: MarketFields_tradableInstrument_instrument_product;
+  product: DealTicketQuery_market_tradableInstrument_instrument_product;
 }
 
-export interface MarketFields_tradableInstrument {
+export interface DealTicketQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of, or reference to, a fully specified instrument.
    */
-  instrument: MarketFields_tradableInstrument_instrument;
+  instrument: DealTicketQuery_market_tradableInstrument_instrument;
 }
 
-export interface MarketFields_marketTimestamps {
-  __typename: "MarketTimestamps";
+export interface DealTicketQuery_market_depth_lastTrade {
+  __typename: "Trade";
   /**
-   * Time when the market is open and ready to accept trades
+   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
    */
-  open: string | null;
-  /**
-   * Time when the market is closed
-   */
-  close: string | null;
+  price: string;
 }
 
-export interface MarketFields {
+export interface DealTicketQuery_market_depth {
+  __typename: "MarketDepth";
+  /**
+   * Last trade for the given market (if available)
+   */
+  lastTrade: DealTicketQuery_market_depth_lastTrade | null;
+}
+
+export interface DealTicketQuery_market {
   __typename: "Market";
   /**
    * Market ID
@@ -148,15 +116,22 @@ export interface MarketFields {
    */
   tradingMode: MarketTradingMode;
   /**
-   * Fees related data
-   */
-  fees: MarketFields_fees;
-  /**
    * An instance of, or reference to, a tradable instrument.
    */
-  tradableInstrument: MarketFields_tradableInstrument;
+  tradableInstrument: DealTicketQuery_market_tradableInstrument;
   /**
-   * Timestamps for state changes in the market
+   * Current depth on the order book for this market
    */
-  marketTimestamps: MarketFields_marketTimestamps;
+  depth: DealTicketQuery_market_depth;
+}
+
+export interface DealTicketQuery {
+  /**
+   * An instrument that is trading on the Vega network
+   */
+  market: DealTicketQuery_market | null;
+}
+
+export interface DealTicketQueryVariables {
+  marketId: string;
 }

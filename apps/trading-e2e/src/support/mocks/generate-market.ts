@@ -84,7 +84,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
               open: '2095312844',
               close: '2090090607',
               volume: '4847',
-              __typename: 'CandleNode',
+              __typename: 'Candle',
             },
           },
           {
@@ -93,7 +93,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
               open: '2090090000',
               close: '2090090607',
               volume: '4847',
-              __typename: 'CandleNode',
+              __typename: 'Candle',
             },
           },
         ],
