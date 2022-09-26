@@ -12,10 +12,10 @@ context(
       'visit token front - send-faucet assets to connected vega wallet',
       function () {
         cy.vega_wallet_import();
-        cy.vega_wallet_top_up_with_asset('USDC (fake)', '10');
-        cy.vega_wallet_top_up_with_asset('BTC (fake)', '6');
-        cy.vega_wallet_top_up_with_asset('EURO (fake)', '8');
-        cy.vega_wallet_top_up_with_asset('DAI (fake)', '2');
+        cy.vega_wallet_receive_asset('USDC (fake)', '10');
+        cy.vega_wallet_receive_asset('BTC (fake)', '6');
+        cy.vega_wallet_receive_asset('EURO (fake)', '8');
+        cy.vega_wallet_receive_asset('DAI (fake)', '2');
         cy.visit('/');
         cy.verify_page_header('The $VEGA token');
         cy.vega_wallet_connect();

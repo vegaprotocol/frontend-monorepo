@@ -37,7 +37,7 @@ Cypress.Commands.add('vega_wallet_connect', () => {
 });
 
 Cypress.Commands.add(
-  'vega_wallet_top_up_with_asset',
+  'vega_wallet_receive_asset',
   function (assetName, amount) {
     cy.highlight(`Topping up vega wallet with ${assetName}, amount: ${amount}`);
     cy.get_asset_information().then((assets) => {
@@ -65,39 +65,12 @@ Cypress.Commands.add('get_asset_information', () => {
     .then(function (response) {
       let object = response.reduce(function (assets, entry) {
         assets[entry.name] = {
-          rewardPoolBalance: entry.globalRewardPoolAccount.balance,
           id: entry.id,
           decimals: entry.decimals,
         };
         return assets;
       }, {});
 
-      return object;
-    });
-});
-
-Cypress.Commands.add('get_vega_wallet_asset_info', () => {
-  let mutation =
-    '{ partiesConnection {edges {node {accountsConnection {edges {node {type asset {name id decimals}}}}}}}}';
-  cy.request({
-    method: 'POST',
-    url: `http://localhost:3028/query`,
-    body: {
-      query: mutation,
-    },
-    headers: { 'content-type': 'application/json' },
-  })
-    .its(`body.data.partiesConnection.edges.1.node.accountsConnection.edges`)
-    .then(function (response) {
-      let object = [];
-      response.forEach((vegaAsset) => {
-        let asset = {
-          name: vegaAsset.node.asset.name,
-          id: vegaAsset.node.asset.id,
-          decimals: vegaAsset.node.asset.decimals,
-        };
-        object[asset.id] = asset;
-      });
       return object;
     });
 });
