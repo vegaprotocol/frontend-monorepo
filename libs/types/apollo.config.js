@@ -25,6 +25,8 @@ module.exports = {
       '../../libs/liquidity/**',
       '../../libs/market-depth/**',
       '../../libs/market-info/**',
+      '../../libs/react-helpers/**',
+      '../../libs/web3/**',
     ],
   },
 };

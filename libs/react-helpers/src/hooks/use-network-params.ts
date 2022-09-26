@@ -1,36 +1,120 @@
 import { gql, useQuery } from '@apollo/client';
-import type { NetworkParams } from './__generated__/NetworkParams';
+import { useMemo } from 'react';
+import type { NetworkParams as NetworkParamsResponse } from './__generated__';
 
-export const NETWORK_PARAMETERS_QUERY = gql`
-  query NetworkParams {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
 
-export const useNetworkParam = (param: string) => {
-  const { data, loading, error } = useQuery<NetworkParams, never>(
+export const NetworkParams = {
+  blockchains_ethereumConfig: 'blockchains_ethereumConfig',
+  reward_asset: 'reward_asset',
+  reward_staking_delegation_payoutDelay:
+    'reward_staking_delegation_payoutDelay',
+  governance_proposal_updateMarket_requiredMajority:
+    'governance_proposal_updateMarket_requiredMajority',
+  governance_proposal_market_minClose: 'governance_proposal_market_minClose',
+  governance_proposal_market_maxClose: 'governance_proposal_market_maxClose',
+  governance_proposal_market_minEnact: 'governance_proposal_market_minEnact',
+  governance_proposal_market_maxEnact: 'governance_proposal_market_maxEnact',
+  governance_proposal_updateMarket_minClose:
+    'governance_proposal_updateMarket_minClose',
+  governance_proposal_updateMarket_maxClose:
+    'governance_proposal_updateMarket_maxClose',
+  governance_proposal_updateMarket_minEnact:
+    'governance_proposal_updateMarket_minEnact',
+  governance_proposal_updateMarket_maxEnact:
+    'governance_proposal_updateMarket_maxEnact',
+  governance_proposal_asset_minClose: 'governance_proposal_asset_minClose',
+  governance_proposal_asset_maxClose: 'governance_proposal_asset_maxClose',
+  governance_proposal_asset_minEnact: 'governance_proposal_asset_minEnact',
+  governance_proposal_asset_maxEnact: 'governance_proposal_asset_maxEnact',
+  governance_proposal_updateNetParam_minClose:
+    'governance_proposal_updateNetParam_minClose',
+  governance_proposal_updateNetParam_maxClose:
+    'governance_proposal_updateNetParam_maxClose',
+  governance_proposal_updateNetParam_minEnact:
+    'governance_proposal_updateNetParam_minEnact',
+  governance_proposal_updateNetParam_maxEnact:
+    'governance_proposal_updateNetParam_maxEnact',
+  governance_proposal_freeform_minClose:
+    'governance_proposal_freeform_minClose',
+  governance_proposal_freeform_maxClose:
+    'governance_proposal_freeform_maxClose',
+  governance_proposal_updateMarket_requiredParticipation:
+    'governance_proposal_updateMarket_requiredParticipation',
+  governance_proposal_updateMarket_minProposerBalance:
+    'governance_proposal_updateMarket_minProposerBalance',
+  governance_proposal_market_requiredMajority:
+    'governance_proposal_market_requiredMajority',
+  governance_proposal_market_requiredParticipation:
+    'governance_proposal_market_requiredParticipation',
+  governance_proposal_market_minProposerBalance:
+    'governance_proposal_market_minProposerBalance',
+  governance_proposal_asset_requiredMajority:
+    'governance_proposal_asset_requiredMajority',
+  governance_proposal_asset_requiredParticipation:
+    'governance_proposal_asset_requiredParticipation',
+  governance_proposal_asset_minProposerBalance:
+    'governance_proposal_asset_minProposerBalance',
+  governance_proposal_updateNetParam_requiredMajority:
+    'governance_proposal_updateNetParam_requiredMajority',
+  governance_proposal_updateNetParam_requiredParticipation:
+    'governance_proposal_updateNetParam_requiredParticipation',
+  governance_proposal_updateNetParam_minProposerBalance:
+    'governance_proposal_updateNetParam_minProposerBalance',
+  governance_proposal_freeform_requiredParticipation:
+    'governance_proposal_freeform_requiredParticipation',
+  governance_proposal_freeform_requiredMajority:
+    'governance_proposal_freeform_requiredMajority',
+  governance_proposal_freeform_minProposerBalance:
+    'governance_proposal_freeform_minProposerBalance',
+  validators_delegation_minAmount: 'validators_delegation_minAmount',
+  spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
+  market_liquidity_stakeToCcySiskas: 'market_liquidity_stakeToCcySiskas',
+} as const;
+
+type Params = typeof NetworkParams;
+export type NetworkParamsKey = Params[keyof Params];
+type Result = {
+  [key in keyof Params]: string;
+};
+
+export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
+  const { data, loading, error } = useQuery<NetworkParamsResponse, never>(
     NETWORK_PARAMETERS_QUERY
   );
-  const foundParams = data?.networkParameters?.filter((p) => param === p.key);
+
+  const paramsObj = useMemo(() => {
+    if (!data?.networkParameters) return null;
+    return data.networkParameters
+      .map((p) => ({
+        ...p,
+        key: p.key.split('.').join('_'),
+      }))
+      .filter((p) => {
+        if (params === undefined || params.length === 0) return true;
+        if (params.includes(p.key as NetworkParamsKey)) return true;
+        return false;
+      })
+      .reduce((obj, p) => {
+        obj[p.key] = p.value;
+        return obj;
+      }, {} as { [key: string]: string });
+  }, [data, params]);
+
   return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
+    params: paramsObj as Pick<Result, T[number]>,
     loading,
     error,
   };
 };
 
-export const useNetworkParams = (params: string[]) => {
-  const { data, loading, error } = useQuery<NetworkParams, never>(
-    NETWORK_PARAMETERS_QUERY
-  );
-  const foundParams = data?.networkParameters
-    ?.filter((p) => params.includes(p.key))
-    .sort((a, b) => params.indexOf(a.key) - params.indexOf(b.key));
+export const useNetworkParam = (param: NetworkParamsKey) => {
+  const { data, loading, error } = useQuery(NETWORK_PARAMETER_QUERY, {
+    variables: {
+      key: param,
+    },
+  });
   return {
-    data: foundParams ? foundParams.map((f) => f.value) : null,
+    param: data?.networkParameter ? data.networkParameter.value : null,
     loading,
     error,
   };

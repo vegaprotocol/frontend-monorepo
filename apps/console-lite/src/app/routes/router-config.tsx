@@ -1,7 +1,15 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { DealTicketContainer } from '../components/deal-ticket';
 import { SimpleMarketList } from '../components/simple-market-list';
-import { Portfolio } from '../components/portfolio';
+import {
+  Portfolio,
+  AccountManager,
+  PositionsManager,
+  OrdersManager,
+  FillsManager,
+  constants,
+} from '../components/portfolio';
+import { DepositContainer } from '../components/deposits';
 
 export const ROUTES = {
   MARKETS: 'markets',
@@ -51,13 +59,33 @@ export const routerConfig = [
     name: 'Portfolio',
     text: t('Portfolio'),
     element: <Portfolio />,
-    children: [
-      {
-        path: ':module',
-        element: <Portfolio />,
-      },
-    ],
     icon: 'portfolio',
     isNavItem: true,
+    children: [
+      {
+        path: '',
+        element: <AccountManager />,
+      },
+      {
+        path: constants.PORTFOLIO_ASSETS,
+        element: <AccountManager />,
+      },
+      {
+        path: constants.PORTFOLIO_POSITIONS,
+        element: <PositionsManager />,
+      },
+      {
+        path: constants.PORTFOLIO_ORDERS,
+        element: <OrdersManager />,
+      },
+      {
+        path: constants.PORTFOLIO_FILLS,
+        element: <FillsManager />,
+      },
+      {
+        path: constants.PORTFOLIO_DEPOSITS,
+        element: <DepositContainer />,
+      },
+    ],
   },
 ];

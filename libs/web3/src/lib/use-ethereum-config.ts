@@ -1,6 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
-import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
+import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
 
 export interface EthereumConfig {
   network_id: string;
@@ -23,18 +22,8 @@ export interface EthereumConfig {
   };
 }
 
-export const NETWORK_PARAMS_QUERY = gql`
-  query NetworkParamsQuery {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
-
 export const useEthereumConfig = () => {
-  const { data, loading, error } =
-    useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
+  const { data, loading, error } = useNetworkParamsQuery();
 
   const config = useMemo(() => {
     if (!data) {

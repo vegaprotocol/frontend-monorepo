@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t, titlefy } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
@@ -6,12 +6,20 @@ import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
+import { useGlobalStore } from '../../stores';
 
 const Portfolio = () => {
+  const { update } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
+  useEffect(() => {
+    update({ pageTitle: titlefy([t('Portfolio')]) });
+  }, [update]);
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (

@@ -3,7 +3,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import type { WithTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 
 import { SplashLoader } from '../components/splash-loader';
 import routerConfig from './router-config';
@@ -45,6 +45,8 @@ class RouteErrorBoundary extends React.Component<
 const BoundaryWithTranslation = withTranslation()(RouteErrorBoundary);
 
 export const AppRouter = () => {
+  const routes = useRoutes(routerConfig);
+
   const splashLoading = (
     <Splash>
       <SplashLoader />
@@ -52,26 +54,8 @@ export const AppRouter = () => {
   );
 
   return (
-    // @ts-ignore withTranslation HOC types not working
     <BoundaryWithTranslation>
-      <React.Suspense fallback={splashLoading}>
-        <Routes>
-          {routerConfig.map(
-            ({ path, component: Component, name, children }) => (
-              <Route key={name} path={path} element={<Component name={name} />}>
-                {children && children.length
-                  ? children.map((child) => (
-                      <Route
-                        key={`${name}-${child.path ? child.path : 'index'}`}
-                        {...child}
-                      />
-                    ))
-                  : null}
-              </Route>
-            )
-          )}
-        </Routes>
-      </React.Suspense>
+      <React.Suspense fallback={splashLoading}>{routes}</React.Suspense>
     </BoundaryWithTranslation>
   );
 };

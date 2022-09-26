@@ -4,7 +4,7 @@ type Event = {
   __typename?: string;
 };
 
-type BusEvent<T> = {
+type BusEvent<T extends Event> = {
   event?: T | Event;
 };
 

@@ -1,4 +1,6 @@
 import { connectVegaWallet } from '../support/vega-wallet';
+import { aliasQuery } from '@vegaprotocol/cypress';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 describe('vega wallet', { tags: '@smoke' }, () => {
   const connectVegaBtn = 'connect-vega-wallet';
@@ -54,7 +56,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     cy.getByTestId('manage-vega-wallet').click();
     cy.getByTestId('keypair-list').should('exist');
     cy.getByTestId(`key-${key2}`).click();
-    cy.getByTestId('manage-vega-wallet').contains(truncatedKey2);
+    cy.getByTestId('keypair-list').contains(truncatedKey2);
     cy.getByTestId('disconnect').click();
     cy.getByTestId('connect-vega-wallet').should('exist');
     cy.getByTestId('manage-vega-wallet').should('not.exist');
@@ -66,11 +68,16 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
     cy.visit('/portfolio');
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+    });
+    cy.mockGQLSubscription();
     cy.get('main[data-testid="portfolio"]').should('exist');
     cy.getByTestId('Withdrawals').click();
   });
 
   it('can connect', () => {
+    cy.wait('@NetworkParamsQuery');
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();

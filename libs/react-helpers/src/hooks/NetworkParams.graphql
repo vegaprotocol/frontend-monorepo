@@ -1,0 +1,13 @@
+query NetworkParams {
+  networkParameters {
+    key
+    value
+  }
+}
+
+query NetworkParam($key: String!) {
+  networkParameter(key: $key) {
+    key
+    value
+  }
+}

@@ -6,8 +6,11 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { ENV } from '../../config/env';
+import type { RouteChildProps } from '../index';
+import { useDocumentTitle } from '../../hooks/use-document-title';
 
-const Contracts = () => {
+const Contracts = ({ name }: RouteChildProps) => {
+  useDocumentTitle(name);
   const { config } = useEthereumConfig();
   const { ETHERSCAN_URL } = useEnvironment();
 
