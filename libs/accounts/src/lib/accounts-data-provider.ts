@@ -49,19 +49,25 @@ const update = (
       const index = draft.findIndex(
         (account) => account.asset.id === delta.assetId
       );
-      if (index === -1) return;
-      const accountBreakdown = draft[index].breakdown?.map((account) => {
-        const delta = deltas.find(
-          (delta) =>
+      if (index !== -1) {
+        const accountBreakdown = draft[index].breakdown?.map((account) => {
+          // match delta to the right account entry in the breakdown
+          if (
             (delta.marketId === account.market?.id &&
               delta.type === account.type) ||
             delta.type === account.type
-        );
-        if (!delta) return account;
-        return { ...account, balance: delta.balance };
-      });
-      if (accountBreakdown && accountBreakdown.length > 0) {
-        draft[index] = getAssetAccountAggregation(accountBreakdown);
+          ) {
+            // update balance in the breakdown
+            return { ...account, balance: delta.balance };
+          }
+          return account;
+        });
+        if (accountBreakdown && accountBreakdown.length > 0) {
+          Object.assign(
+            draft[index],
+            getAssetAccountAggregation(accountBreakdown)
+          );
+        }
       }
     });
   });
@@ -95,7 +101,6 @@ export const getAccountData = (
   });
 };
 
-/** getAssetAccountAggregation should receive all the accounts filtered by asset id */
 const getAssetAccountAggregation = (
   accounts: AccountFieldsFragment[]
 ): AccountFields => {
