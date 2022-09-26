@@ -87,6 +87,8 @@ export const MarketList = () => {
 
   const localData = data?.markets;
 
+  const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
+
   return (
     <div
       className="px-6 py-6 grow"
