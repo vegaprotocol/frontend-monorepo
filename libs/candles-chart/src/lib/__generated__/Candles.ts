@@ -12,7 +12,7 @@ export type CandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candles?: Array<{ __typename?: 'Candle', periodStart: string, lastUpdateInPeriod: string, high: string, low: string, open: string, close: string, volume: string } | null> | null } | null };
+export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', periodStart: string, lastUpdateInPeriod: string, high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } | null };
 
 export type CandlesEventsSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
