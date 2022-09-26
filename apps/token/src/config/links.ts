@@ -11,4 +11,5 @@ export const Links = {
   STAKING_GUIDE:
     'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega',
   GOVERNANCE_PAGE: 'https://vega.xyz/governance',
+  PROPOSALS_GUIDE: 'https://docs.vega.xyz/docs/mainnet/tutorials/proposals',
 };

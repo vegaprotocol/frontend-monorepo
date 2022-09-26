@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../../components/token-input';
-import { NetworkParams } from '../../config';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useSearchParams } from '../../hooks/use-search-params';
 import { BigNumber } from '../../lib/bignumber';
@@ -30,7 +29,7 @@ import type {
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useNetworkParam } from '@vegaprotocol/react-helpers';
+import { useNetworkParam, NetworkParams } from '@vegaprotocol/react-helpers';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -103,14 +102,14 @@ export const StakingForm = ({
     setAmount('');
   }, [action, setAmount]);
 
-  const { data } = useNetworkParam(
-    NetworkParams.VALIDATOR_DELEGATION_MIN_AMOUNT
+  const { param: minAmount } = useNetworkParam(
+    NetworkParams.validators_delegation_minAmount
   );
 
   const minTokensWithDecimals = React.useMemo(() => {
-    const minTokens = new BigNumber(data && data.length === 1 ? data[0] : '');
+    const minTokens = new BigNumber(minAmount !== null ? minAmount : '');
     return addDecimal(minTokens, appState.decimals);
-  }, [appState.decimals, data]);
+  }, [appState.decimals, minAmount]);
 
   const maxDelegation = React.useMemo(() => {
     if (action === Actions.Add) {

@@ -1,7 +1,6 @@
-import { useNetworkParams } from '@vegaprotocol/react-helpers';
+import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
-import { NetworkParams } from '../../../config';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { addDecimal } from '../../../lib/decimals';
@@ -16,63 +15,63 @@ const useProposalNetworkParams = ({
 }: {
   proposal: ProposalFields;
 }) => {
-  const { data, loading } = useNetworkParams([
-    NetworkParams.GOV_UPDATE_MARKET_REQUIRED_MAJORITY,
-    NetworkParams.GOV_UPDATE_MARKET_REQUIRED_PARTICIPATION,
-    NetworkParams.GOV_NEW_MARKET_REQUIRED_MAJORITY,
-    NetworkParams.GOV_NEW_MARKET_REQUIRED_PARTICIPATION,
-    NetworkParams.GOV_ASSET_REQUIRED_MAJORITY,
-    NetworkParams.GOV_ASSET_REQUIRED_PARTICIPATION,
-    NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_MAJORITY,
-    NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_PARTICIPATION,
-    NetworkParams.GOV_FREEFORM_REQUIRED_MAJORITY,
-    NetworkParams.GOV_FREEFORM_REQUIRED_PARTICIPATION,
+  const { params } = useNetworkParams([
+    NetworkParams.governance_proposal_updateMarket_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredParticipation,
+    NetworkParams.governance_proposal_market_requiredMajority,
+    NetworkParams.governance_proposal_market_requiredParticipation,
+    NetworkParams.governance_proposal_asset_requiredMajority,
+    NetworkParams.governance_proposal_asset_requiredParticipation,
+    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
+    NetworkParams.governance_proposal_updateNetParam_requiredParticipation,
+    NetworkParams.governance_proposal_freeform_requiredMajority,
+    NetworkParams.governance_proposal_freeform_requiredParticipation,
   ]);
-  if (loading || !data) {
+
+  if (!params) {
     return {
       requiredMajority: new BigNumber(1),
       requiredParticipation: new BigNumber(1),
     };
   }
 
-  const [
-    updateMarketMajority,
-    updateMarketParticipation,
-    newMarketMajority,
-    newMarketParticipation,
-    assetMajority,
-    assetParticipation,
-    paramMajority,
-    paramParticipation,
-    freeformMajority,
-    freeformParticipation,
-  ] = data;
-
   switch (proposal.terms.change.__typename) {
     case 'UpdateMarket':
       return {
-        requiredMajority: updateMarketMajority,
-        requiredParticipation: new BigNumber(updateMarketParticipation),
+        requiredMajority:
+          params.governance_proposal_updateMarket_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_updateMarket_requiredParticipation
+        ),
       };
     case 'UpdateNetworkParameter':
       return {
-        requiredMajority: paramMajority,
-        requiredParticipation: new BigNumber(paramParticipation),
+        requiredMajority:
+          params.governance_proposal_updateNetParam_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_updateNetParam_requiredParticipation
+        ),
       };
     case 'NewAsset':
       return {
-        requiredMajority: assetMajority,
-        requiredParticipation: new BigNumber(assetParticipation),
+        requiredMajority: params.governance_proposal_asset_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_asset_requiredParticipation
+        ),
       };
     case 'NewMarket':
       return {
-        requiredMajority: newMarketMajority,
-        requiredParticipation: new BigNumber(newMarketParticipation),
+        requiredMajority: params.governance_proposal_market_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_market_requiredParticipation
+        ),
       };
     case 'NewFreeform':
       return {
-        requiredMajority: freeformMajority,
-        requiredParticipation: freeformParticipation,
+        requiredMajority: params.governance_proposal_freeform_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_freeform_requiredParticipation
+        ),
       };
     default:
       throw new Error('Unknown proposal type');

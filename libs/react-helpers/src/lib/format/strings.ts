@@ -17,3 +17,12 @@ export function shorten(input: string, limit?: number) {
   const suffix = output.length < limit ? ELLIPSIS : '';
   return input.substring(0, limit - 1) + suffix;
 }
+
+const TITLE_SEPARATOR = ' - ';
+const TITLE_SUFFIX = 'Vega';
+export function titlefy(words: (string | null | undefined)[]) {
+  const title = [...words, TITLE_SUFFIX]
+    .filter((w) => w && w.length > 0)
+    .join(TITLE_SEPARATOR);
+  return title;
+}
