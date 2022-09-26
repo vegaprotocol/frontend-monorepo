@@ -18,12 +18,6 @@ Cypress.Commands.add('vega_wallet_import', () => {
   cy.exec(
     `vega wallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
-
-  cy.exec(`vega wallet version`)
-    .its('stdout')
-    .then((output) => {
-      cy.log(output);
-    });
 });
 
 Cypress.Commands.add('vega_wallet_connect', () => {
@@ -54,12 +48,6 @@ Cypress.Commands.add(
       cy.exec(
         `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' -u "hedgehogandvega:hiccup" http://localhost:1790/api/v1/mint`
       );
-      cy.get(vegaWalletContainer).within(() => {
-        cy.get(vegaWalletCurrencyTitle, txTimeout).contains(
-          asset.id,
-          txTimeout
-        );
-      });
     });
   }
 );
