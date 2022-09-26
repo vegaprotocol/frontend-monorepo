@@ -24,6 +24,7 @@ module.exports = {
       '../../libs/governance/**',
       '../../libs/liquidity/**',
       '../../libs/market-depth/**',
+      '../../libs/market-info/**',
     ],
   },
 };

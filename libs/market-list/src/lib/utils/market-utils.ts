@@ -1,10 +1,10 @@
 import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type { Market, Candle } from '../';
 
-export const totalFees = (fees: Market['fees']['factors']) => {
+export const totalFees = (fees: Schema.FeeFactors) => {
   if (!fees) {
     return undefined;
   }
@@ -18,17 +18,17 @@ export const totalFees = (fees: Market['fees']['factors']) => {
 
 export const mapDataToMarketList = (markets: Market[]) => {
   const tradingModesOrdering = [
-    MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-    MarketTradingMode.TRADING_MODE_NO_TRADING,
+    Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_NO_TRADING,
   ];
   const orderedMarkets = orderBy(
     markets?.filter(
       (m) =>
-        m.state !== MarketState.STATE_REJECTED &&
-        m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
+        m.state !== Schema.MarketState.STATE_REJECTED &&
+        m.tradingMode !== Schema.MarketTradingMode.TRADING_MODE_NO_TRADING
     ) || [],
     ['marketTimestamps.open', 'id'],
     ['asc', 'asc']
