@@ -3,11 +3,11 @@ import {
   getProposalDialogIntent,
   getProposalDialogTitle,
 } from '@vegaprotocol/governance';
-import type { ProposalEvent_busEvents_event_Proposal } from '@vegaprotocol/governance';
+import type { ProposalEventFieldsFragment } from '@vegaprotocol/governance';
 import type { DialogProps } from '@vegaprotocol/wallet';
 
 interface ProposalFormTransactionDialogProps {
-  finalizedProposal: ProposalEvent_busEvents_event_Proposal | null;
+  finalizedProposal: ProposalEventFieldsFragment | null;
   TransactionDialog: (props: DialogProps) => JSX.Element;
 }
 

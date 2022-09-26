@@ -86,7 +86,7 @@ export const ProposeUpdateMarket = () => {
       return [];
     }
 
-    return marketsData.marketsConnection.edges
+    return marketsData.marketsConnection?.edges
       .map((edge) => edge.node)
       .sort((a, b) => {
         const aName = a.tradableInstrument.instrument.name;
@@ -212,7 +212,7 @@ export const ProposeUpdateMarket = () => {
                     onChange={(e) => setSelectedMarket(e.target.value)}
                   >
                     <option value="">{t('SelectMarket')}</option>
-                    {sortedMarkets.map((market) => (
+                    {sortedMarkets?.map((market) => (
                       <option value={market.id} key={market.id}>
                         {market.tradableInstrument.instrument.name}
                       </option>

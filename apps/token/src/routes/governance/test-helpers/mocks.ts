@@ -1,7 +1,7 @@
-import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 
 export const mockPubkey = '0x123';
 const mockKeypair = {
@@ -29,7 +29,7 @@ const mockEthereumConfig = {
 
 export const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {

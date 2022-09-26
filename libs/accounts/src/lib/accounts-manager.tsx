@@ -6,7 +6,7 @@ import { useDataProvider, addSummaryRows } from '@vegaprotocol/react-helpers';
 import type {
   AccountFieldsFragment,
   AccountEventsSubscription,
-} from './__generated___/Accounts';
+} from './__generated__/Accounts';
 
 import type { AgGridReact } from 'ag-grid-react';
 import {

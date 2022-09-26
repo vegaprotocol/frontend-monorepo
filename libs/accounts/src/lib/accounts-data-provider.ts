@@ -3,12 +3,12 @@ import type { IterableElement } from 'type-fest';
 import {
   AccountsDocument,
   AccountEventsDocument,
-} from './__generated___/Accounts';
+} from './__generated__/Accounts';
 import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
-} from './__generated___/Accounts';
+} from './__generated__/Accounts';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
 function isAccount(

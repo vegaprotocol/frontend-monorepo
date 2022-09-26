@@ -1,6 +1,6 @@
 import AccountsTable from './accounts-table';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import type { AccountFieldsFragment } from './__generated___/Accounts';
+import type { AccountFieldsFragment } from './__generated__/Accounts';
 import { Schema as Types } from '@vegaprotocol/types';
 
 const singleRow: AccountFieldsFragment = {
