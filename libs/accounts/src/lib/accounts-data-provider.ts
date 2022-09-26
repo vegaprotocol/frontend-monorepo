@@ -19,11 +19,6 @@ export interface AccountFields extends AccountFieldsFragment {
   breakdown?: AccountFields[];
 }
 
-export const getId = (account: AccountFields) =>
-  `${account.asset.id}-${account.type}${
-    account.market ? `-${account.market.id}` : ''
-  }`;
-
 const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_MARGIN,
   AccountType.ACCOUNT_TYPE_BOND,

@@ -17,7 +17,6 @@ import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import { getId } from './accounts-data-provider';
 import type { AccountFields } from './accounts-data-provider';
 import type { AccountFieldsFragment } from './__generated___/Accounts';
 import BreakdownTable from './breakdown-table';
@@ -75,7 +74,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         <AgGrid
           style={{ width: '100%', height: '100%' }}
           rowData={data}
-          getRowId={({ data }: { data: AccountFields }) => getId(data)}
+          getRowId={({ data }: { data: AccountFields }) => data.asset.id}
           ref={ref}
           rowHeight={34}
           tooltipShowDelay={500}

@@ -9,7 +9,6 @@ import {
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
-import { getId } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 import type { AccountType } from '@vegaprotocol/types';
 import {
@@ -30,7 +29,9 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('Collateral not used')}
         rowData={data}
-        getRowId={({ data }) => getId(data)}
+        getRowId={({ data }: { data: AccountFields }) =>
+          `${data.asset.id}-${data.type}-${data.market?.id}`
+        }
         ref={ref}
         rowHeight={34}
         components={{ PriceCell }}
