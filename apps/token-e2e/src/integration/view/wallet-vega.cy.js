@@ -82,7 +82,7 @@ context(
         cy.get(connectorsList).within(() => {
           cy.get('button')
             .should('be.visible')
-            .and('have.text', 'rest provider');
+            .and('have.text', 'Rest provider');
         });
       });
 
