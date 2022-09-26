@@ -2,7 +2,6 @@ import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
 import type { NetworkParams as NetworkParamsResponse } from './__generated__';
 
-
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
   reward_asset: 'reward_asset',
