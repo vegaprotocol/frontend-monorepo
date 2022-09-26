@@ -24,7 +24,7 @@ on:
 jobs:
   manual:
     name: Run capsule tests -- manual trigger
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       GO111MODULE: 'on'
       VEGA_VERSION: 'v0.55.0'
@@ -42,6 +42,12 @@ jobs:
         id: npm
         with:
           node-version: 16
+
+      #######
+      ## Install Yarn
+      #######
+      - name: Setup yarn
+        run: npm install -g yarn
 
       #######
       ## Checkout repos
@@ -158,6 +164,11 @@ jobs:
       ######
       ## Run some tests
       ######
+
+      # To make sure that all Cypress binaries are installed properly
+      - name: Install cypress bins
+        run: yarn cypress install
+        working-directory: frontend-monorepo
 
       - name: Run smoke Cypress tests
         if: ${{ github.event.inputs.runAlltests == 'true' }}
