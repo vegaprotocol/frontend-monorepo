@@ -1,4 +1,4 @@
-query Deposits {
+query DepositAssets {
   assetsConnection {
     edges {
       node {

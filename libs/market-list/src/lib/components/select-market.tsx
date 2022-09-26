@@ -10,7 +10,7 @@ import {
 
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import type { Column } from './select-market-columns';
+import type { Column, OnCellClickHandler } from './select-market-columns';
 import {
   columnHeadersPositionMarkets,
   columnsPositionMarkets,
@@ -36,11 +36,13 @@ export const SelectMarketLandingTable = ({
   marketsData,
   marketsCandles,
   onSelect,
+  onCellClick,
 }: {
   markets: Market[] | undefined;
   marketsData: MarketData[] | undefined;
   marketsCandles: MarketCandles[] | undefined;
   onSelect: (id: string) => void;
+  onCellClick: OnCellClickHandler;
 }) => {
   return (
     <>
@@ -65,7 +67,8 @@ export const SelectMarketLandingTable = ({
                   marketsCandles?.find(
                     (marketCandles) => marketCandles.marketId === market.id
                   )?.candles,
-                  onSelect
+                  onSelect,
+                  onCellClick
                 )}
               />
             ))}
@@ -85,9 +88,10 @@ export const SelectAllMarketsTableBody = ({
   marketsCandles,
   positions,
   onSelect,
+  onCellClick,
   headers = columnHeaders,
   tableColumns = (market, marketData, candles) =>
-    columns(market, marketData, candles, onSelect),
+    columns(market, marketData, candles, onSelect, onCellClick),
 }: {
   markets: Market[] | undefined;
   marketsData: MarketData[] | undefined;
@@ -95,6 +99,7 @@ export const SelectAllMarketsTableBody = ({
   positions?: Positions_party_positionsConnection_edges_node[];
   title?: string;
   onSelect: (id: string) => void;
+  onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
     market: Market,
@@ -136,9 +141,11 @@ export const SelectAllMarketsTableBody = ({
 export const SelectMarketPopover = ({
   marketName,
   onSelect,
+  onCellClick,
 }: {
   marketName: string;
   onSelect: (id: string) => void;
+  onCellClick: OnCellClickHandler;
 }) => {
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
@@ -205,6 +212,7 @@ export const SelectMarketPopover = ({
                     ?.filter((edge) => edge.node)
                     .map((edge) => edge.node)}
                   onSelect={onSelectMarket}
+                  onCellClick={onCellClick}
                   headers={columnHeadersPositionMarkets}
                   tableColumns={(market, marketData, candles, openVolume) =>
                     columnsPositionMarkets(
@@ -212,7 +220,8 @@ export const SelectMarketPopover = ({
                       marketData,
                       candles,
                       onSelectMarket,
-                      openVolume
+                      openVolume,
+                      onCellClick
                     )
                   }
                 />
@@ -225,6 +234,7 @@ export const SelectMarketPopover = ({
                 marketsData={data?.marketsData}
                 marketsCandles={data?.marketsCandles}
                 onSelect={onSelectMarket}
+                onCellClick={onCellClick}
               />
             </table>
           </>
@@ -250,11 +260,13 @@ export const SelectMarketDialog = ({
   dialogOpen,
   setDialogOpen,
   onSelect,
+  onCellClick,
 }: {
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   title?: string;
   onSelect: (id: string) => void;
+  onCellClick: OnCellClickHandler;
 }) => {
   const onSelectMarket = (id: string) => {
     onSelect(id);
@@ -269,16 +281,23 @@ export const SelectMarketDialog = ({
       onChange={() => setDialogOpen(false)}
       size="small"
     >
-      <LandingDialogContainer onSelect={onSelectMarket} />
+      <LandingDialogContainer
+        onSelect={onSelectMarket}
+        onCellClick={onCellClick}
+      />
     </Dialog>
   );
 };
 
 interface LandingDialogContainerProps {
   onSelect: (id: string) => void;
+  onCellClick: OnCellClickHandler;
 }
 
-const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
+const LandingDialogContainer = ({
+  onSelect,
+  onCellClick,
+}: LandingDialogContainerProps) => {
   const { data, loading, error } = useMarketList();
   if (error) {
     return (
@@ -302,6 +321,7 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
       marketsData={data?.marketsData}
       marketsCandles={data?.marketsCandles}
       onSelect={onSelect}
+      onCellClick={onCellClick}
     />
   );
 };

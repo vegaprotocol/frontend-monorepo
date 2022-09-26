@@ -42,8 +42,7 @@ const comparator = (
 };
 
 const useAccountColumnDefinitions = () => {
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
+  const { open } = useAssetDetailsDialogStore();
   const columnDefs: ColDef[] = useMemo(() => {
     return [
       {
@@ -60,8 +59,7 @@ const useAccountColumnDefinitions = () => {
                 <button
                   className="hover:underline"
                   onClick={() => {
-                    setAssetDetailsDialogOpen(true);
-                    setAssetDetailsDialogSymbol(value);
+                    open(value);
                   }}
                 >
                   {value}
@@ -97,7 +95,7 @@ const useAccountColumnDefinitions = () => {
           addDecimalsFormatNumber(value, data.asset.decimals),
       },
     ];
-  }, [setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol]);
+  }, [open]);
 
   const defaultColDef = useMemo(() => {
     return {

@@ -55,6 +55,7 @@
     "i18next": "^20.3.5",
     "i18next-browser-languagedetector": "^6.1.2",
     "immer": "^9.0.12",
+    "iso8601-duration": "^2.1.1",
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.21",
     "next": "12.2.3",

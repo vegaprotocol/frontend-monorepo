@@ -45,65 +45,96 @@ const FeesInfo = () => {
   );
 };
 
+export enum ColumnKind {
+  Market,
+  LastPrice,
+  Change24,
+  Asset,
+  Sparkline,
+  High24,
+  Low24,
+  TradingMode,
+  Volume,
+  Fee,
+  Position,
+  FullName,
+}
+
 export interface Column {
+  kind: ColumnKind;
   value: string | React.ReactNode;
   className: string;
   onlyOnDetailed: boolean;
   dataTestId?: string;
 }
 
-export const columnHeadersPositionMarkets: Column[] = [
+const headers: Column[] = [
   {
+    kind: ColumnKind.Market,
     value: t('Market'),
     className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
+    kind: ColumnKind.LastPrice,
     value: t('Last price'),
     className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
+    kind: ColumnKind.Change24,
     value: t('Change (24h)'),
     className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
+    kind: ColumnKind.Asset,
     value: t('Settlement asset'),
     className: `${cellClassNames} hidden sm:table-cell`,
     onlyOnDetailed: false,
   },
   {
+    kind: ColumnKind.Sparkline,
     value: t(''),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: false,
   },
   {
+    kind: ColumnKind.High24,
     value: t('24h high'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
+    kind: ColumnKind.Low24,
     value: t('24h low'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
+    kind: ColumnKind.TradingMode,
     value: t('Trading mode'),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
+    kind: ColumnKind.Volume,
     value: t('Volume'),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
+    kind: ColumnKind.Fee,
     value: <FeesInfo />,
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
+];
+
+export const columnHeadersPositionMarkets: Column[] = [
+  ...headers,
   {
+    kind: ColumnKind.Position,
     value: t('Position'),
     className: `${cellClassNames} hidden xxl:table-cell`,
     onlyOnDetailed: true,
@@ -111,68 +142,27 @@ export const columnHeadersPositionMarkets: Column[] = [
 ];
 
 export const columnHeaders: Column[] = [
+  ...headers,
   {
-    value: t('Market'),
-    className: cellClassNames,
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('Last price'),
-    className: cellClassNames,
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('Change (24h)'),
-    className: cellClassNames,
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('Settlement asset'),
-    className: `${cellClassNames} hidden sm:table-cell`,
-    onlyOnDetailed: false,
-  },
-  {
-    value: t(''),
-    className: `${cellClassNames} hidden lg:table-cell`,
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('24h high'),
-    className: `${cellClassNames} hidden xl:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
-    value: t('24h low'),
-    className: `${cellClassNames} hidden xl:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
-    value: t('Trading mode'),
-    className: `${cellClassNames} hidden lg:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
-    value: t('Volume'),
-    className: `${cellClassNames} hidden lg:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
-    value: <FeesInfo />,
-    className: `${cellClassNames} hidden xl:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
+    kind: ColumnKind.FullName,
     value: t('Full name'),
     className: `${cellClassNames} hidden xxl:block`,
     onlyOnDetailed: true,
   },
 ];
 
+export type OnCellClickHandler = (
+  e: React.MouseEvent,
+  kind: ColumnKind,
+  value: string
+) => void;
+
 export const columns = (
   market: Market,
   marketData: MarketData | undefined,
   candles: Candle[] | undefined,
-  onSelect: (id: string) => void
+  onSelect: (id: string) => void,
+  onCellClick: OnCellClickHandler
 ) => {
   const candlesClose = candles
     ?.map((candle) => candle?.close)
@@ -189,6 +179,7 @@ export const columns = (
   const candleHigh = candles && calcCandleHigh(candles);
   const selectMarketColumns: Column[] = [
     {
+      kind: ColumnKind.Market,
       value: (
         <Link href={`/markets/${market.id}`} passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
@@ -207,6 +198,7 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.LastPrice,
       value: marketData?.markPrice ? (
         <PriceCell
           value={Number(marketData?.markPrice)}
@@ -223,6 +215,7 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Change24,
       value: candlesClose && (
         <PriceCellChange
           candles={candlesClose}
@@ -233,13 +226,29 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
-      value:
-        market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      kind: ColumnKind.Asset,
+      value: (
+        <button
+          data-dialog-trigger
+          className="inline hover:underline"
+          onClick={(e) =>
+            onCellClick(
+              e,
+              ColumnKind.Asset,
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            )
+          }
+        >
+          {market.tradableInstrument.instrument.product.settlementAsset.symbol}
+        </button>
+      ),
       dataTestId: 'settlement-asset',
       className: `${cellClassNames} hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Sparkline,
       value: candles && (
         <Sparkline
           width={100}
@@ -252,6 +261,7 @@ export const columns = (
       onlyOnDetailed: false && candlesClose,
     },
     {
+      kind: ColumnKind.High24,
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
@@ -268,6 +278,7 @@ export const columns = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Low24,
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
@@ -284,6 +295,7 @@ export const columns = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
@@ -297,6 +309,7 @@ export const columns = (
       dataTestId: 'trading-mode',
     },
     {
+      kind: ColumnKind.Volume,
       value:
         marketData?.indicativeVolume && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
@@ -309,12 +322,14 @@ export const columns = (
       dataTestId: 'market-volume',
     },
     {
+      kind: ColumnKind.Fee,
       value: <FeesCell feeFactors={market.fees.factors} />,
       className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
       dataTestId: 'taker-fee',
     },
     {
+      kind: ColumnKind.FullName,
       value: market.tradableInstrument.instrument.name,
       className: `${cellClassNames} hidden xxl:block`,
       onlyOnDetailed: true,
@@ -329,7 +344,8 @@ export const columnsPositionMarkets = (
   marketData: MarketData | undefined,
   candles: Candle[] | undefined,
   onSelect: (id: string) => void,
-  openVolume?: string
+  openVolume?: string,
+  onCellClick?: OnCellClickHandler
 ) => {
   const candlesClose = candles
     ?.map((candle) => candle?.close)
@@ -346,6 +362,7 @@ export const columnsPositionMarkets = (
   };
   const selectMarketColumns: Column[] = [
     {
+      kind: ColumnKind.Market,
       value: (
         <Link href={`/markets/${market.id}`} passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
@@ -364,6 +381,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.LastPrice,
       value: marketData?.markPrice ? (
         <PriceCell
           value={Number(marketData.markPrice)}
@@ -380,6 +398,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Change24,
       value: candlesClose && (
         <PriceCellChange
           candles={candlesClose}
@@ -390,12 +409,29 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value:
-        market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      kind: ColumnKind.Asset,
+      value: (
+        <button
+          data-dialog-trigger
+          className="inline hover:underline"
+          onClick={(e) => {
+            if (!onCellClick) return;
+            onCellClick(
+              e,
+              ColumnKind.Asset,
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            );
+          }}
+        >
+          {market.tradableInstrument.instrument.product.settlementAsset.symbol}
+        </button>
+      ),
       className: `${cellClassNames} hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Sparkline,
       value: candlesClose && (
         <Sparkline
           width={100}
@@ -408,6 +444,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.High24,
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
@@ -424,6 +461,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Low24,
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
@@ -440,6 +478,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
@@ -453,6 +492,7 @@ export const columnsPositionMarkets = (
       dataTestId: 'trading-mode',
     },
     {
+      kind: ColumnKind.Volume,
       value:
         marketData && marketData.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
@@ -464,11 +504,13 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Fee,
       value: <FeesCell feeFactors={market.fees.factors} />,
       className: `${cellClassNames} hidden xl:table-cell font-mono`,
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Position,
       value: (
         <p className={signedNumberCssClass(openVolume || '')}>{openVolume}</p>
       ),

@@ -5,7 +5,6 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type MarketLiquidityQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
-  partyId: Types.Scalars['ID'];
 }>;
 
 
@@ -13,12 +12,12 @@ export type MarketLiquidityQuery = { __typename?: 'Query', market?: { __typename
 
 
 export const MarketLiquidityDocument = gql`
-    query MarketLiquidity($marketId: ID!, $partyId: ID!) {
+    query MarketLiquidity($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
-    liquidityProvisionsConnection(partyId: $partyId) {
+    liquidityProvisionsConnection {
       edges {
         node {
           id
@@ -89,7 +88,6 @@ export const MarketLiquidityDocument = gql`
  * const { data, loading, error } = useMarketLiquidityQuery({
  *   variables: {
  *      marketId: // value for 'marketId'
- *      partyId: // value for 'partyId'
  *   },
  * });
  */

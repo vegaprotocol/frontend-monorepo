@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { Nodes_nodes } from './__generated__/Nodes';
 import type { PartialDeep } from 'type-fest';
+import { ValidatorStatus } from '@vegaprotocol/types';
 
 jest.mock('../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
@@ -55,7 +56,7 @@ const MOCK_NODES = {
         stakeScore: '0.2300971220240714',
         performanceScore: '1',
         votingPower: '2408',
-        status: 'tendermint',
+        status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
         __typename: 'RankingScore',
       },
     }),
@@ -72,7 +73,7 @@ const MOCK_NODES = {
         stakeScore: '0.0966762995515676',
         performanceScore: '0.999629748500531',
         votingPower: '1163',
-        status: 'tendermint',
+        status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
         __typename: 'RankingScore',
       },
     }),
@@ -161,7 +162,7 @@ describe('Nodes list', () => {
             stakeScore: '0.2300971220240714',
             performanceScore: '1',
             votingPower: '2408',
-            status: 'tendermint',
+            status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
             __typename: 'RankingScore',
           },
         }),

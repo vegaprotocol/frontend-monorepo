@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Home from './home';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
@@ -129,6 +130,48 @@ const LazyGovernancePropose = React.lazy(
     )
 );
 
+const LazyGovernanceProposeNetworkParameter = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-network-parameter", webpackPrefetch: true */ './governance/propose/network-parameter'
+    )
+);
+
+const LazyGovernanceProposeNewMarket = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-new-market", webpackPrefetch: true */ './governance/propose/new-market'
+    )
+);
+
+const LazyGovernanceProposeUpdateMarket = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-update-market", webpackPrefetch: true */ './governance/propose/update-market'
+    )
+);
+
+const LazyGovernanceProposeNewAsset = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-new-asset", webpackPrefetch: true */ './governance/propose/new-asset'
+    )
+);
+
+const LazyGovernanceProposeFreeform = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-freeform", webpackPrefetch: true */ './governance/propose/freeform'
+    )
+);
+
+const LazyGovernanceProposeRaw = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-raw", webpackPrefetch: true */ './governance/propose/raw'
+    )
+);
+
 const LazyRewards = React.lazy(
   () =>
     import(
@@ -153,14 +196,12 @@ const LazyWithdrawals = React.lazy(
 const routerConfig = [
   {
     path: Routes.HOME,
-    name: 'Home',
     // Not lazy as loaded when a user first hits the site
-    component: Home,
+    element: <Home name="Home" />,
   },
   {
     path: Routes.TRANCHES,
-    name: 'Tranches',
-    component: LazyTranches,
+    element: <LazyTranches name="Tranches" />,
     children: [
       { index: true, element: <LazyTranchesTranches /> },
       { path: ':trancheId', element: <LazyTranchesTranche /> },
@@ -168,13 +209,11 @@ const routerConfig = [
   },
   {
     path: Routes.CLAIM,
-    name: 'Claim',
-    component: LazyClaim,
+    element: <LazyClaim name="Claim" />,
   },
   {
     path: Routes.STAKING,
-    name: 'Staking',
-    component: LazyStaking,
+    element: <LazyStaking name="Staking" />,
     children: [
       { path: 'associate', element: <LazyStakingAssociate /> },
       { path: 'disassociate', element: <LazyStakingDisassociate /> },
@@ -191,18 +230,15 @@ const routerConfig = [
   },
   {
     path: Routes.REWARDS,
-    name: 'Rewards',
-    component: LazyRewards,
+    element: <LazyRewards name="Rewards" />,
   },
   {
     path: Routes.WITHDRAWALS,
-    name: 'Withdrawals',
-    component: LazyWithdrawals,
+    element: <LazyWithdrawals name="Withdrawals" />,
   },
   {
     path: Routes.VESTING,
-    name: 'Vesting',
-    component: LazyRedemption,
+    element: <LazyRedemption name="Vesting" />,
     children: [
       {
         index: true,
@@ -216,31 +252,48 @@ const routerConfig = [
   },
   {
     path: Routes.GOVERNANCE,
-    name: 'Governance',
-    component: LazyGovernance,
+    element: <LazyGovernance name="Governance" />,
     children: [
-      { path: ':proposalId', element: <LazyGovernanceProposal /> },
-      { path: 'propose', element: <LazyGovernancePropose /> },
-      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
       { index: true, element: <LazyGovernanceProposals /> },
+      {
+        path: 'propose',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <LazyGovernancePropose /> },
+          {
+            path: 'network-parameter',
+            element: <LazyGovernanceProposeNetworkParameter />,
+          },
+          {
+            path: 'new-market',
+            element: <LazyGovernanceProposeNewMarket />,
+          },
+          {
+            path: 'update-market',
+            element: <LazyGovernanceProposeUpdateMarket />,
+          },
+          { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
+          { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
+          { path: 'raw', element: <LazyGovernanceProposeRaw /> },
+        ],
+      },
+      { path: ':proposalId', element: <LazyGovernanceProposal /> },
+      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
     ],
   },
   {
     path: Routes.NOT_PERMITTED,
-    name: 'Not permitted',
     // Not lazy as loaded when a user first hits the site
-    component: NotPermitted,
+    element: <NotPermitted name="Not permitted" />,
   },
   {
     path: Routes.CONTRACTS,
-    name: 'Contracts',
-    component: LazyContracts,
+    element: <LazyContracts name="Contracts" />,
   },
   {
     path: '*',
-    name: 'NotFound',
     // Not lazy as loaded when a user first hits the site
-    component: NotFound,
+    element: <NotFound name="NotFound" />,
   },
 ];
 

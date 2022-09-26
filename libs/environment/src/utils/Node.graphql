@@ -1,0 +1,12 @@
+query Statistics {
+  statistics {
+    chainId
+    blockHeight
+  }
+}
+
+subscription BlockTime {
+  busEvents(types: TimeUpdate, batchSize: 1) {
+    id
+  }
+}

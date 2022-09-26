@@ -1,6 +1,8 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
+import { ColumnKind, SelectMarketPopover } from '@vegaprotocol/market-list';
+import type { OnCellClickHandler } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -28,7 +30,6 @@ import {
   getDateFormat,
   t,
 } from '@vegaprotocol/react-helpers';
-import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -116,8 +117,7 @@ export const TradeMarketHeader = ({
   onSelect,
 }: TradeMarketHeaderProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const candlesClose: string[] = (market?.candlesConnection?.edges || [])
     .map((candle) => candle?.node.close)
@@ -125,12 +125,19 @@ export const TradeMarketHeader = ({
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
+  const onCellClick: OnCellClickHandler = (e, kind, value) => {
+    if (value && kind === ColumnKind.Asset) {
+      openAssetDetailsDialog(value, e.target as HTMLElement);
+    }
+  };
+
   return (
     <Header
       title={
         <SelectMarketPopover
           marketName={market.tradableInstrument.instrument.name}
           onSelect={onSelect}
+          onCellClick={onCellClick}
         />
       }
     >
@@ -197,9 +204,8 @@ export const TradeMarketHeader = ({
           <div data-testid="trading-mode">
             <ButtonLink
               className="inline underline hover:text-black dark:hover:text-white focus-visible:text-black dark:focus-visible:text-white outline-none"
-              onClick={() => {
-                setAssetDetailsDialogOpen(true);
-                setAssetDetailsDialogSymbol(symbol);
+              onClick={(e) => {
+                openAssetDetailsDialog(symbol, e.target as HTMLElement);
               }}
             >
               {symbol}

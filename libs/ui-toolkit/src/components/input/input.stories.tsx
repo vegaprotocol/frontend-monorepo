@@ -7,7 +7,7 @@ export default {
 } as Meta;
 
 const Template: Story = (args) => (
-  <FormGroup labelClassName="sr-only" label="Hello" labelFor={args.id}>
+  <FormGroup label="Hello" labelFor={args.id}>
     <Input value="I type words" {...args} />
   </FormGroup>
 );
@@ -51,6 +51,8 @@ export const TypeDateTime = Template.bind({});
 TypeDateTime.args = {
   type: 'datetime-local',
   id: 'input-datetime-local',
+  min: '2022-09-05T11:29:17',
+  max: '2023-09-05T10:29:49',
 };
 
 export const IconPrepend = Template.bind({});

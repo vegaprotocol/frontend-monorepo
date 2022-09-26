@@ -63,9 +63,13 @@ describe('home', { tags: '@regression' }, () => {
           },
         };
         aliasQuery(req, 'Markets', data);
+        aliasQuery(req, 'MarketsDataQuery', data);
+        aliasQuery(req, 'MarketsCandlesQuery', data);
       });
       cy.visit('/');
       cy.wait('@Markets');
+      cy.wait('@MarketsDataQuery');
+      cy.wait('@MarketsCandlesQuery');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

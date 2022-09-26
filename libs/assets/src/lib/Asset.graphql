@@ -1,0 +1,16 @@
+query Asset($assetId: ID!) {
+  asset(assetId: $assetId) {
+    id
+    name
+    symbol
+    decimals
+    quantum
+    source {
+      ... on ERC20 {
+        contractAddress
+        lifetimeLimit
+        withdrawThreshold
+      }
+    }
+  }
+}

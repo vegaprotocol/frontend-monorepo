@@ -66,8 +66,7 @@ export const DepositForm = ({
   allowance,
   isFaucetable,
 }: DepositFormProps) => {
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
   const {
@@ -180,9 +179,8 @@ export const DepositForm = ({
         {!errors.asset?.message && selectedAsset && (
           <UseButton
             data-testid="view-asset-details"
-            onClick={() => {
-              setAssetDetailsDialogOpen(true);
-              setAssetDetailsDialogSymbol(selectedAsset);
+            onClick={(e) => {
+              openAssetDetailsDialog(selectedAsset, e.target as HTMLElement);
             }}
           >
             {t('View asset details')}
