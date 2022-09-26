@@ -2,27 +2,23 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import {
-  MarketState,
-  MarketTradingMode,
-  OrderTimeInForce,
-  OrderType,
-} from '@vegaprotocol/types';
+import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import { Schema } from '@vegaprotocol/types';
 import type { Order } from '@vegaprotocol/orders';
 
-const market: DealTicketQuery_market = {
+const market: DealTicketMarketFragment = {
   __typename: 'Market',
   id: 'market-id',
-  name: 'market-name',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: Schema.MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
       __typename: 'Instrument',
+      id: '1',
+      name: 'Instrument name',
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
@@ -66,7 +62,7 @@ describe('DealTicket', () => {
 
     // Assert defaults are used
     expect(
-      screen.getByTestId(`order-type-${OrderType.TYPE_MARKET}-selected`)
+      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}-selected`)
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId('order-side-SIDE_BUY-selected')
@@ -78,7 +74,7 @@ describe('DealTicket', () => {
       String(1 / Math.pow(10, market.positionDecimalPlaces))
     );
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_IOC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
     // Assert last price is shown
@@ -105,10 +101,10 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
 
     fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: OrderTimeInForce.TIME_IN_FORCE_IOC },
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
     });
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_IOC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
     // Switch to limit order
@@ -116,7 +112,7 @@ describe('DealTicket', () => {
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(
-      Object.keys(OrderTimeInForce).length
+      Object.keys(Schema.OrderTimeInForce).length
     );
   });
 
@@ -133,35 +129,35 @@ describe('DealTicket', () => {
     // Switch to limit order and check all TIF options shown
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
-      Object.keys(OrderTimeInForce).length
+      Object.keys(Schema.OrderTimeInForce).length
     );
 
     // Change to GTC
     fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: OrderTimeInForce.TIME_IN_FORCE_GTC },
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC },
     });
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_GTC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
 
     // Switch back to market order and TIF should now be IOC
     fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_IOC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
     // Switch tif to FOK
     fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: OrderTimeInForce.TIME_IN_FORCE_FOK },
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK },
     });
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_FOK
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
 
     // Change back to limit and check we are still on FOK
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      OrderTimeInForce.TIME_IN_FORCE_GTC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
   });
 });

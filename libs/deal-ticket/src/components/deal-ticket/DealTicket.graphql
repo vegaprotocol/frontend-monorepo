@@ -1,0 +1,34 @@
+fragment DealTicketMarket on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  state
+  tradingMode
+  tradableInstrument {
+    instrument {
+      id
+      name
+      product {
+        ... on Future {
+          quoteName
+          settlementAsset {
+            id
+            symbol
+            name
+          }
+        }
+      }
+    }
+  }
+  depth {
+    lastTrade {
+      price
+    }
+  }
+}
+
+query DealTicket($marketId: ID!) {
+  market(id: $marketId) {
+    ...DealTicketMarket
+  }
+}

@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
-import type { DealTicketQuery_market } from './';
+import type { DealTicketMarketFragment } from './';
 import {
   ButtonLink,
   Icon,
@@ -28,7 +28,7 @@ import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: DealTicketQuery_market;
+  market: DealTicketMarketFragment;
   setMarket: (marketId: string) => void;
   ItemRenderer?: React.FC<{
     market: Market;
