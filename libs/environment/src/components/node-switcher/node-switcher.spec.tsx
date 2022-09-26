@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useEnvironment } from '../../hooks/use-environment';
 import { useNodes } from '../../hooks/use-nodes';
 import createMockClient from '../../hooks/mocks/apollo-client';
-import { STATS_QUERY } from '../../utils/request-node';
+import { StatisticsDocument } from '../../utils/__generated__/Node';
 import { NodeSwitcher } from './node-switcher';
 import { getErrorByType } from '../../utils/validate-node';
 import type { Configuration, NodeData } from '../../types';
@@ -66,7 +66,7 @@ const mockNodesImplementation =
 
 const statsQueryMock = {
   request: {
-    query: STATS_QUERY,
+    query: StatisticsDocument,
   },
   result: {
     data: {

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
+import { useOutletContext } from 'react-router-dom';
 import type { OrderWithMarket } from '@vegaprotocol/orders';
 import {
   useOrderCancel,
@@ -14,13 +15,11 @@ import {
 } from '@vegaprotocol/orders';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
+import { NO_DATA_MESSAGE } from '../../../constants';
 import useColumnDefinitions from './use-column-definitions';
 
-interface Props {
-  partyId: string;
-}
-
-const OrdersManager = ({ partyId }: Props) => {
+const OrdersManager = () => {
+  const { partyId } = useOutletContext<{ partyId: string }>();
   const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
   const orderCancel = useOrderCancel();
   const orderEdit = useOrderEdit(editOrder);
@@ -49,7 +48,12 @@ const OrdersManager = ({ partyId }: Props) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data?.length ? data : null}
+      noDataMessage={NO_DATA_MESSAGE}
+    >
       <ConsoleLiteGrid<OrderWithMarket>
         ref={gridRef}
         rowModelType="infinite"

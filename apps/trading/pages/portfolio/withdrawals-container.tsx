@@ -13,7 +13,6 @@ export const WithdrawalsContainer = () => {
   const { withdrawals, loading, error } = useWithdrawals();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
-  console.log('render');
   return (
     <Web3Container>
       <VegaWalletContainer>

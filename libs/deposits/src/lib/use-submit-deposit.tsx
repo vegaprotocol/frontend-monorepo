@@ -1,10 +1,11 @@
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import type {
-  DepositEvent,
-  DepositEventVariables,
-} from './__generated__/DepositEvent';
-import { DepositStatus } from '@vegaprotocol/types';
+  DepositEventSubscription,
+  DepositEventSubscriptionVariables,
+} from './__generated__/Deposit';
+import { DepositEventDocument } from './__generated__/Deposit';
+import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
 import {
   isAssetTypeERC20,
@@ -21,20 +22,6 @@ import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { useDepositStore } from './deposit-store';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-
-const DEPOSIT_EVENT_SUB = gql`
-  subscription DepositEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
-      event {
-        ... on Deposit {
-          id
-          txHash
-          status
-        }
-      }
-    }
-  }
-`;
 
 export const useSubmitDeposit = () => {
   const { asset, update } = useDepositStore();
@@ -58,37 +45,40 @@ export const useSubmitDeposit = () => {
     true
   );
 
-  useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
-    variables: { partyId: partyId ? remove0x(partyId) : '' },
-    skip: !partyId,
-    onSubscriptionData: ({ subscriptionData }) => {
-      if (!subscriptionData.data?.busEvents?.length) {
-        return;
-      }
+  useSubscription<DepositEventSubscription, DepositEventSubscriptionVariables>(
+    DepositEventDocument,
+    {
+      variables: { partyId: partyId ? remove0x(partyId) : '' },
+      skip: !partyId,
+      onSubscriptionData: ({ subscriptionData }) => {
+        if (!subscriptionData.data?.busEvents?.length) {
+          return;
+        }
 
-      const matchingDeposit = subscriptionData.data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Deposit') {
+        const matchingDeposit = subscriptionData.data.busEvents.find((e) => {
+          if (e.event.__typename !== 'Deposit') {
+            return false;
+          }
+
+          if (
+            e.event.txHash === transaction.transaction.txHash &&
+            // Note there is a bug in data node where the subscription is not emitted when the status
+            // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
+            // https://github.com/vegaprotocol/data-node/issues/460
+            e.event.status === Schema.DepositStatus.STATUS_FINALIZED
+          ) {
+            return true;
+          }
+
           return false;
+        });
+
+        if (matchingDeposit && matchingDeposit.event.__typename === 'Deposit') {
+          transaction.setConfirmed();
         }
-
-        if (
-          e.event.txHash === transaction.transaction.txHash &&
-          // Note there is a bug in data node where the subscription is not emitted when the status
-          // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
-          // https://github.com/vegaprotocol/data-node/issues/460
-          e.event.status === DepositStatus.STATUS_FINALIZED
-        ) {
-          return true;
-        }
-
-        return false;
-      });
-
-      if (matchingDeposit && matchingDeposit.event.__typename === 'Deposit') {
-        transaction.setConfirmed();
-      }
-    },
-  });
+      },
+    }
+  );
 
   return {
     ...transaction,

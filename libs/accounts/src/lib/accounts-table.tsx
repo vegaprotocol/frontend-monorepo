@@ -92,8 +92,7 @@ const comparator = (
 
 export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
-    const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-      useAssetDetailsDialogStore();
+    const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -130,9 +129,8 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
             value && value.length > 0 ? (
               <button
                 className="hover:underline"
-                onClick={() => {
-                  setAssetDetailsDialogOpen(true);
-                  setAssetDetailsDialogSymbol(value);
+                onClick={(e) => {
+                  openAssetDetailsDialog(value, e.target as HTMLElement);
                 }}
               >
                 {value}

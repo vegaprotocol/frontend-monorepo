@@ -24,3 +24,5 @@ export const MARKET_STATES_MAP: Record<MarketState | '', string> = {
   [MarketState.STATE_TRADING_TERMINATED]: t('TradingTerminated'),
   '': t('Unknown'),
 };
+
+export const NO_DATA_MESSAGE = t('No data to display');

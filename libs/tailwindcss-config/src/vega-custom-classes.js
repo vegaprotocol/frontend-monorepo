@@ -34,6 +34,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.clip-path-rounded': {
       clipPath: 'circle(50%)',
     },
+    '.color-scheme-dark': {
+      colorScheme: 'dark',
+    },
   });
 });
 

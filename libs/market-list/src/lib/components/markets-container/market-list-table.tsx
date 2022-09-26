@@ -37,8 +37,7 @@ type MarketListTableValueFormatterParams = Omit<
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
-  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-    useAssetDetailsDialogStore();
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
@@ -67,9 +66,8 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value && value.length > 0 ? (
             <button
               className="hover:underline"
-              onClick={() => {
-                setAssetDetailsDialogOpen(true);
-                setAssetDetailsDialogSymbol(value);
+              onClick={(e) => {
+                openAssetDetailsDialog(value, e.target as HTMLElement);
               }}
             >
               {value}

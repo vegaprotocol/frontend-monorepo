@@ -252,5 +252,4 @@ export interface MarketLiquidity {
 
 export interface MarketLiquidityVariables {
   marketId: string;
-  partyId: string;
 }

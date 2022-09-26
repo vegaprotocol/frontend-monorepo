@@ -1,17 +1,16 @@
 import { useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
 import type { TradeWithMarket } from '@vegaprotocol/fills';
 import { useFillsList } from '@vegaprotocol/fills';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
+import { NO_DATA_MESSAGE } from '../../../constants';
 import useColumnDefinitions from './use-column-definitions';
 
-interface Props {
-  partyId: string;
-}
-
-const FillsManager = ({ partyId }: Props) => {
+const FillsManager = () => {
+  const { partyId } = useOutletContext<{ partyId: string }>();
   const { columnDefs, defaultColDef } = useColumnDefinitions({ partyId });
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
@@ -32,7 +31,12 @@ const FillsManager = ({ partyId }: Props) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data?.length ? data : null}
+      noDataMessage={NO_DATA_MESSAGE}
+    >
       <ConsoleLiteGrid<TradeWithMarket>
         ref={gridRef}
         rowModelType="infinite"
