@@ -1,80 +1,37 @@
 import produce from 'immer';
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
-  MarketDataSub,
-  MarketDataSub_marketsData,
   MarketDataQuery,
-  MarketDataQuery_marketsConnection_edges_node_data,
-} from './__generated__';
+  MarketDataEventSubscription,
+  MarketDataFieldsFragment,
+  MarketDataEventFieldsFragment,
+} from './__generated__/MarketData';
+import {
+  MarketDataDocument,
+  MarketDataEventDocument,
+} from './__generated__/MarketData'
 
-export const MARKET_DATA_QUERY = gql`
-  query MarketDataQuery($marketId: ID!) {
-    marketsConnection(id: $marketId) {
-      edges {
-        node {
-          data {
-            market {
-              id
-            }
-            bestBidPrice
-            bestOfferPrice
-            markPrice
-            trigger
-            staticMidPrice
-            marketTradingMode
-            indicativeVolume
-            indicativePrice
-            bestStaticBidPrice
-            bestStaticOfferPrice
-          }
-        }
-      }
-    }
-  }
-`;
-
-const MARKET_DATA_SUB = gql`
-  subscription MarketDataSub($marketId: ID!) {
-    marketsData(marketIds: [$marketId]) {
-      marketId
-      bestBidPrice
-      bestOfferPrice
-      markPrice
-      trigger
-      staticMidPrice
-      marketTradingMode
-      indicativeVolume
-      indicativePrice
-      bestStaticBidPrice
-      bestStaticOfferPrice
-    }
-  }
-`;
-
-export type MarketData = MarketDataQuery_marketsConnection_edges_node_data;
-
-const update = (data: MarketData, delta: MarketDataSub_marketsData) => {
+const update = (data: MarketDataFieldsFragment, delta: MarketDataEventFieldsFragment) => {
   return produce(data, (draft) => {
     const { marketId, __typename, ...marketData } = delta;
     Object.assign(draft, marketData);
   });
 };
 
-const getData = (responseData: MarketDataQuery): MarketData | null =>
+const getData = (responseData: MarketDataQuery): MarketDataFieldsFragment | null =>
   responseData?.marketsConnection?.edges[0].node.data || null;
 
-const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketsData =>
+const getDelta = (subscriptionData: MarketDataEventSubscription): MarketDataEventFieldsFragment =>
   subscriptionData.marketsData[0];
 
 export const marketDataProvider = makeDataProvider<
   MarketDataQuery,
-  MarketData,
-  MarketDataSub,
-  MarketDataSub_marketsData
+  MarketDataFieldsFragment,
+  MarketDataEventSubscription,
+  MarketDataEventFieldsFragment
 >({
-  query: MARKET_DATA_QUERY,
-  subscriptionQuery: MARKET_DATA_SUB,
+  query: MarketDataDocument,
+  subscriptionQuery: MarketDataEventDocument,
   update,
   getData,
   getDelta,

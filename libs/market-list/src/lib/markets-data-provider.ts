@@ -1,45 +1,18 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketsDataQuery } from './__generated__/MarketsDataQuery';
-import type { MarketData } from './market-data-provider';
+import { MarketsDataDocument } from './__generated__/MarketData';
+import type { MarketsDataQuery, MarketDataFieldsFragment } from './__generated__/MarketData';
 
-export const MARKETS_DATA_QUERY = gql`
-  query MarketsDataQuery {
-    marketsConnection {
-      edges {
-        node {
-          data {
-            market {
-              id
-            }
-            bestBidPrice
-            bestOfferPrice
-            markPrice
-            trigger
-            staticMidPrice
-            marketTradingMode
-            indicativeVolume
-            indicativePrice
-            bestStaticBidPrice
-            bestStaticOfferPrice
-          }
-        }
-      }
-    }
-  }
-`;
-
-const getData = (responseData: MarketsDataQuery): MarketData[] | null =>
+const getData = (responseData: MarketsDataQuery): MarketDataFieldsFragment[] | null =>
   responseData.marketsConnection?.edges
     .filter((edge) => edge.node.data)
-    .map((edge) => edge.node.data as MarketData) || null;
+    .map((edge) => edge.node.data as MarketDataFieldsFragment) || null;
 
 export const marketsDataProvider = makeDataProvider<
   MarketsDataQuery,
-  MarketData[],
+  MarketDataFieldsFragment[],
   never,
   never
 >({
-  query: MARKETS_DATA_QUERY,
+  query: MarketsDataDocument,
   getData,
 });

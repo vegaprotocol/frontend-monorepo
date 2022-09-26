@@ -1,98 +1,46 @@
-import { gql } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
+  getNodes,
 } from '@vegaprotocol/react-helpers';
+import {
+  MarketListDocument
+} from './__generated__/Markets';
 import type {
-  Markets,
-  Markets_marketsConnection_edges_node,
-} from './__generated__';
+  MarketListQuery,
+  MarketItemFieldsFragment,
+} from './__generated__/Markets';
+import type {
+  MarketDataFieldsFragment,
+} from './__generated__/MarketData';
 import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
-import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
 import { useMemo } from 'react';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export type Market = Markets_marketsConnection_edges_node;
-
-const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketFields on Market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    tradingMode
-    fees {
-      factors {
-        makerFee
-        infrastructureFee
-        liquidityFee
-      }
-    }
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-              decimals
-            }
-            quoteName
-          }
-        }
-      }
-    }
-    marketTimestamps {
-      open
-      close
-    }
-  }
-`;
-
-export const MARKET_LIST_QUERY = gql`
-  ${MARKET_DATA_FRAGMENT}
-  query Markets {
-    marketsConnection {
-      edges {
-        node {
-          ...MarketFields
-        }
-      }
-    }
-  }
-`;
-
-const getData = (responseData: Markets): Market[] | null =>
-  responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
+const getData = (responseData: MarketListQuery) => getNodes<MarketItemFieldsFragment>(responseData.marketsConnection)
 
 export const marketsProvider = makeDataProvider<
-  Markets,
-  Market[],
+  MarketListQuery,
+  MarketItemFieldsFragment[],
   never,
   never
 >({
-  query: MARKET_LIST_QUERY,
+  query: MarketListDocument,
   getData,
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
+export const activeMarketsProvider = makeDerivedDataProvider<MarketItemFieldsFragment[], never>(
   [marketsProvider],
   ([markets]) => mapDataToMarketList(markets)
 );
 
 export interface MarketsListData {
-  markets: Market[];
-  marketsData: MarketData[];
+  markets: MarketItemFieldsFragment[];
+  marketsData: MarketDataFieldsFragment[];
   marketsCandles: MarketCandles[];
 }
 
@@ -107,22 +55,22 @@ export const marketListProvider = makeDerivedDataProvider<
   ],
   (parts) => {
     return {
-      markets: parts[0] as Market[],
-      marketsData: parts[1] as MarketData[],
+      markets: parts[0] as MarketItemFieldsFragment[],
+      marketsData: parts[1] as MarketDataFieldsFragment[],
       marketsCandles: parts[2] as MarketCandles[],
     };
   }
 );
 
-export type MarketWithData = Market & { data?: MarketData };
+export type MarketWithData = MarketItemFieldsFragment & { data?: MarketDataFieldsFragment };
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
   MarketWithData[],
   never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
-  (parts[0] as Market[]).map((market) => ({
+  (parts[0] as MarketItemFieldsFragment[]).map((market) => ({
     ...market,
-    data: (parts[1] as MarketData[]).find(
+    data: (parts[1] as MarketDataFieldsFragment[]).find(
       (data) => data.market.id === market.id
     ),
   }))
@@ -133,7 +81,7 @@ export const useMarketList = () => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return {
       since: new Date(yesterday * 1000).toISOString(),
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
     };
   }, []);
   const { data, loading, error } = useDataProvider<MarketsListData, never>({

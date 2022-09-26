@@ -1,82 +1,45 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandlesQuery,
-  MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node,
-  MarketCandlesSub,
-  MarketCandlesSub_candles,
-} from './__generated__';
+  MarketCandleFieldsFragment,
+  MarketCandlesEventSubscription,
+  MarketCandleEventFieldsFragment,
+} from './__generated__/MarketCandles';
 
-export const MARKET_CANDLES_QUERY = gql`
-  query MarketCandlesQuery(
-    $interval: Interval!
-    $since: String!
-    $marketId: ID!
-  ) {
-    marketsConnection(id: $marketId) {
-      edges {
-        node {
-          candlesConnection(interval: $interval, since: $since) {
-            edges {
-              node {
-                high
-                low
-                open
-                close
-                volume
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import {
+  MarketCandlesDocument,
+  MarketCandlesEventDocument,
+} from './__generated__/MarketCandles';
 
-const MARKET_CANDLES_SUB = gql`
-  subscription MarketCandlesSub($marketId: ID!, $interval: Interval!) {
-    candles(interval: $interval, marketId: $marketId) {
-      high
-      low
-      open
-      close
-      volume
-    }
-  }
-`;
-
-export type Candle =
-  MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node;
-
-const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
+const update = (data: MarketCandleFieldsFragment[], delta: MarketCandleEventFieldsFragment) => {
   return data && delta
     ? [
         ...data,
         {
           ...delta,
           __typename: 'CandleNode',
-        } as Candle,
+        } as MarketCandleFieldsFragment,
       ]
     : data;
 };
 
-const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
+const getData = (responseData: MarketCandlesQuery): MarketCandleFieldsFragment[] | null =>
   responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
     ?.filter((edge) => edge?.node)
-    .map((edge) => edge?.node as Candle) || null;
+    .map((edge) => edge?.node as MarketCandleFieldsFragment) || null;
 
 const getDelta = (
-  subscriptionData: MarketCandlesSub
-): MarketCandlesSub_candles => subscriptionData.candles;
+  subscriptionData: MarketCandlesEventSubscription
+): MarketCandleEventFieldsFragment => subscriptionData.candles;
 
 export const marketCandlesProvider = makeDataProvider<
   MarketCandlesQuery,
-  Candle[],
-  MarketCandlesSub,
-  MarketCandlesSub_candles
+  MarketCandleFieldsFragment[],
+  MarketCandlesEventSubscription,
+  MarketCandleEventFieldsFragment
 >({
-  query: MARKET_CANDLES_QUERY,
-  subscriptionQuery: MARKET_CANDLES_SUB,
+  query: MarketCandlesDocument,
+  subscriptionQuery: MarketCandlesEventDocument,
   update,
   getData,
   getDelta,
