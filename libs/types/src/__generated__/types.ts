@@ -25,6 +25,21 @@ export type Account = {
   balanceFormatted: Scalars['String'];
   /** Market (only relevant to margin accounts) */
   market?: Maybe<Market>;
+  /** Owner of the account */
+  party?: Maybe<Party>;
+  /** Account type (General, Margin, etc) */
+  type: AccountType;
+};
+
+/** An account record */
+export type AccountDetails = {
+  __typename?: 'AccountDetails';
+  /** Asset, the 'currency' */
+  assetId: Scalars['ID'];
+  /** Market (only relevant to margin accounts) */
+  marketId?: Maybe<Scalars['ID']>;
+  /** Owner of the account */
+  partyId?: Maybe<Scalars['ID']>;
   /** Account type (General, Margin, etc) */
   type: AccountType;
 };
@@ -949,13 +964,11 @@ export type LedgerEntry = {
   /** The amount transferred */
   amount: Scalars['String'];
   /** Account from which the asset was taken */
-  fromAccount: Scalars['String'];
-  /** The transfer reference */
-  reference: Scalars['String'];
+  fromAccount: AccountDetails;
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['String'];
   /** Account to which the balance was transferred */
-  toAccount: Scalars['String'];
+  toAccount: AccountDetails;
   /** Type of ledger entry */
   type: Scalars['String'];
 };
@@ -1789,7 +1802,7 @@ export enum NodeSignatureKind {
 export type NodeSignaturesConnection = {
   __typename?: 'NodeSignaturesConnection';
   /** List of node signatures available for the connection */
-  edges?: Maybe<Array<Maybe<NodeSignatureEdge>>>;
+  edges: Array<NodeSignatureEdge>;
   /** Page information for the connection */
   pageInfo: PageInfo;
 };
@@ -2760,6 +2773,30 @@ export type PositionResolution = {
   markPrice: Scalars['String'];
   /** The market ID where position resolution happened */
   marketId: Scalars['ID'];
+};
+
+/**
+ * An individual party at any point in time is considered net long or net short. This refers to their Open Volume,
+ * calculated using FIFO. This volume is signed as either negative for LONG positions and positive for SHORT positions. A
+ * single trade may end up "splitting" with some of its volume matched into closed volume and some of its volume
+ * remaining as open volume. This is why we don't refer to positions being comprised of trades, rather of volume.
+ */
+export type PositionUpdate = {
+  __typename?: 'PositionUpdate';
+  /** Average entry price for this position */
+  averageEntryPrice: Scalars['String'];
+  /** Market relating to this position */
+  marketId: Scalars['ID'];
+  /** Open volume (uint64) */
+  openVolume: Scalars['String'];
+  /** The party holding this position */
+  partyId: Scalars['ID'];
+  /** Realised Profit and Loss (int64) */
+  realisedPNL: Scalars['String'];
+  /** Unrealised Profit and Loss (int64) */
+  unrealisedPNL: Scalars['String'];
+  /** RFC3339Nano time the position was updated */
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 /** Represents a price on either the buy or sell side and all the orders at that price */
@@ -4013,7 +4050,7 @@ export type Subscription = {
   /** Subscribe to orders updates */
   orders?: Maybe<Array<OrderUpdate>>;
   /** Subscribe to the positions updates */
-  positions: Array<Position>;
+  positions: Array<PositionUpdate>;
   /** Subscribe to proposals. Leave out all arguments to receive all proposals */
   proposals: Proposal;
   /** Subscribe to reward details data */
@@ -4307,7 +4344,7 @@ export type Transfer = {
 export type TransferBalance = {
   __typename?: 'TransferBalance';
   /** Account involved in transfer */
-  account: Account;
+  account: AccountDetails;
   /** The new balance of the account */
   balance: Scalars['String'];
 };

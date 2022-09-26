@@ -107,10 +107,14 @@ export const POSITIONS_QUERY = gql`
 `;
 
 export const POSITIONS_SUBSCRIPTION = gql`
-  ${POSITION_FIELDS}
   subscription PositionsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
-      ...PositionFields
+      realisedPNL
+      openVolume
+      unrealisedPNL
+      averageEntryPrice
+      updatedAt
+      marketId
     }
   }
 `;

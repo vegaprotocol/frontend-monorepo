@@ -1,5 +1,5 @@
 query Asset($assetId: ID!) {
-  asset(assetId: $assetId) {
+  asset(id: $assetId) {
     id
     name
     symbol

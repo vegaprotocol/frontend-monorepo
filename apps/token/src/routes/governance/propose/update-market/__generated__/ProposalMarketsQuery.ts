@@ -41,6 +41,9 @@ export interface ProposalMarketsQuery_marketsConnection_edges_node {
 
 export interface ProposalMarketsQuery_marketsConnection_edges {
   __typename: "MarketEdge";
+  /**
+   * The market
+   */
   node: ProposalMarketsQuery_marketsConnection_edges_node;
 }
 
@@ -53,5 +56,8 @@ export interface ProposalMarketsQuery_marketsConnection {
 }
 
 export interface ProposalMarketsQuery {
-  marketsConnection: ProposalMarketsQuery_marketsConnection;
+  /**
+   * One or more instruments that are trading on the Vega network
+   */
+  marketsConnection: ProposalMarketsQuery_marketsConnection | null;
 }
