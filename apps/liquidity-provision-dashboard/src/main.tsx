@@ -25,6 +25,11 @@ const cache = new InMemoryCache({
     },
   },
 });
+// https://api.n01.stagnet3.vega.xyz/graphql
+// //api.n01.stagnet3.vega.xyz/graphql/
+// //api.n07.testnet.vega.xyz/graphql/
+
+// https://api.n08.testnet.vega.xyz/graphql
 
 const client = new ApolloClient({
   uri: 'https://api.n01.stagnet3.vega.xyz/graphql',
