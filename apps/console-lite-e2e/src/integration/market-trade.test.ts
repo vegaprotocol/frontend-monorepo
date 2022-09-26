@@ -23,7 +23,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
       aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-      aliasQuery(req, 'DealTicketQuery', generateDealTicket());
+      aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());

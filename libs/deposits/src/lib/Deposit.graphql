@@ -1,10 +1,35 @@
+fragment DepositFields on Deposit {
+  id
+  status
+  amount
+  asset {
+    id
+    symbol
+    decimals
+  }
+  createdTimestamp
+  creditedTimestamp
+  txHash
+}
+
+query Deposits($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    depositsConnection {
+      edges {
+        node {
+          ...DepositFields
+        }
+      }
+    }
+  }
+}
+
 subscription DepositEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
     event {
       ... on Deposit {
-        id
-        txHash
-        status
+        ...DepositFields
       }
     }
   }

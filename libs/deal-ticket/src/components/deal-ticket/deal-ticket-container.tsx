@@ -1,56 +1,19 @@
-import { gql, useQuery } from '@apollo/client';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
 import { t } from '@vegaprotocol/react-helpers';
-import type { DealTicketQuery_market, DealTicketQuery } from './';
-
-const DEAL_TICKET_QUERY = gql`
-  query DealTicketQuery($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      tradableInstrument {
-        instrument {
-          id
-          name
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-            }
-          }
-        }
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
-    }
-  }
-`;
-
-type childrenProps = {
-  market: DealTicketQuery_market;
-};
+import { useDealTicketQuery } from './__generated__/DealTicket';
+import type { DealTicketQuery } from './__generated__/DealTicket';
 
 export interface DealTicketContainerProps {
   marketId: string;
-  children?(props: childrenProps): JSX.Element;
+  children?(props: DealTicketQuery): JSX.Element;
 }
 
 export const DealTicketContainer = ({
   marketId,
   children,
 }: DealTicketContainerProps) => {
-  const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
+  const { data, loading, error } = useDealTicketQuery({
     variables: { marketId },
   });
 

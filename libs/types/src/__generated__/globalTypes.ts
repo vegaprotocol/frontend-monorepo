@@ -85,15 +85,6 @@ export enum ConditionOperator {
 }
 
 /**
- * The status of a deposit
- */
-export enum DepositStatus {
-  STATUS_CANCELLED = "STATUS_CANCELLED",
-  STATUS_FINALIZED = "STATUS_FINALIZED",
-  STATUS_OPEN = "STATUS_OPEN",
-}
-
-/**
  * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
  */
 export enum Interval {
@@ -327,15 +318,6 @@ export enum StakeLinkingStatus {
   STATUS_ACCEPTED = "STATUS_ACCEPTED",
   STATUS_PENDING = "STATUS_PENDING",
   STATUS_REJECTED = "STATUS_REJECTED",
-}
-
-/**
- * Valid trade types
- */
-export enum TradeType {
-  TYPE_DEFAULT = "TYPE_DEFAULT",
-  TYPE_NETWORK_CLOSE_OUT_BAD = "TYPE_NETWORK_CLOSE_OUT_BAD",
-  TYPE_NETWORK_CLOSE_OUT_GOOD = "TYPE_NETWORK_CLOSE_OUT_GOOD",
 }
 
 export enum ValidatorStatus {
