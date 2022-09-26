@@ -43,7 +43,7 @@ function AppBody({ Component, pageProps }: AppProps) {
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
-        <title>{title}</title>
+        <title>{'test page'}</title>
       </Head>
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
