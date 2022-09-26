@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
-import { useNetworkParamQuery, useNetworkParamsQuery } from './__generated__/NetworkParams';
+import {
+  useNetworkParamQuery,
+  useNetworkParamsQuery,
+} from './__generated__/NetworkParams';
 
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
