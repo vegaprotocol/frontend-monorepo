@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import type { Order } from '@vegaprotocol/orders';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -47,7 +47,7 @@ const CLOSEOUT_PRICE_QUERY = gql`
 
 interface Props {
   order: Order;
-  market: DealTicketQuery_market;
+  market: DealTicketMarketFragment;
   partyData?: PartyBalanceQuery;
 }
 
@@ -74,7 +74,7 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
 
   const marginMaintenanceLevel = new BigNumber(
     addDecimal(
-      data?.party?.marginsConnection.edges?.find(
+      data?.party?.marginsConnection?.edges?.find(
         (nodes) => nodes.node.market.id === market.id
       )?.node.maintenanceLevel || 0,
       market.decimalPlaces

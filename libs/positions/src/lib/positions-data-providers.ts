@@ -119,14 +119,14 @@ export const getMetrics = (
   data: Positions_party | null,
   accounts: AccountFieldsFragment[] | null
 ): Position[] => {
-  if (!data || !data?.positionsConnection.edges) {
+  if (!data || !data?.positionsConnection?.edges) {
     return [];
   }
   const metrics: Position[] = [];
   data?.positionsConnection.edges.forEach((position) => {
     const market = position.node.market;
     const marketData = market.data;
-    const marginLevel = position.node.marginsConnection.edges?.find(
+    const marginLevel = position.node.marginsConnection?.edges?.find(
       (margin) => margin.node.market.id === market.id
     )?.node;
     const marginAccount = accounts?.find((account) => {
@@ -232,23 +232,25 @@ export const getMetrics = (
 
 export const update = (
   data: Positions_party,
-  delta: PositionsSubscription_positions | null
+  deltas: PositionsSubscription_positions[]
 ) => {
   return produce(data, (draft) => {
-    if (!draft.positionsConnection.edges || !delta) {
-      return;
-    }
-    const index = draft.positionsConnection.edges.findIndex(
-      (edge) => edge.node.market.id === delta.market.id
-    );
-    if (index !== -1) {
-      draft.positionsConnection.edges[index].node = delta;
-    } else {
-      draft.positionsConnection.edges.push({
-        __typename: 'PositionEdge',
-        node: delta,
-      });
-    }
+    deltas.forEach((delta) => {
+      if (!draft.positionsConnection?.edges || !delta) {
+        return;
+      }
+      const index = draft.positionsConnection.edges.findIndex(
+        (edge) => edge.node.market.id === delta.market.id
+      );
+      if (index !== -1) {
+        draft.positionsConnection.edges[index].node = delta;
+      } else {
+        draft.positionsConnection.edges.push({
+          __typename: 'PositionEdge',
+          node: delta,
+        });
+      }
+    });
   });
 };
 
@@ -256,7 +258,7 @@ export const positionsDataProvider = makeDataProvider<
   Positions,
   Positions_party,
   PositionsSubscription,
-  PositionsSubscription_positions
+  PositionsSubscription_positions[]
 >({
   query: POSITIONS_QUERY,
   subscriptionQuery: POSITIONS_SUBSCRIPTION,
@@ -266,15 +268,15 @@ export const positionsDataProvider = makeDataProvider<
     subscriptionData.positions,
 });
 
-export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
-  [positionsDataProvider, accountsDataProvider],
-  ([positions, accounts]) => {
-    return sortBy(
-      getMetrics(
-        positions as Positions_party | null,
-        accounts as AccountFieldsFragment[] | null
-      ),
-      'updatedAt'
-    ).reverse();
-  }
-);
+export const positionsMetricsDataProvider = makeDerivedDataProvider<
+  Position[],
+  never
+>([positionsDataProvider, accountsDataProvider], ([positions, accounts]) => {
+  return sortBy(
+    getMetrics(
+      positions as Positions_party | null,
+      accounts as AccountFieldsFragment[] | null
+    ),
+    'updatedAt'
+  ).reverse();
+});

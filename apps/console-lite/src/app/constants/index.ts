@@ -1,6 +1,6 @@
-import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 import { MarketState } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
+import type { Market } from '@vegaprotocol/market-list';
 
 export const DATE_FORMAT = 'dd MMMM yyyy HH:mm';
 export const EXPIRE_DATE_FORMAT = 'MMM dd';
@@ -9,7 +9,7 @@ export const TRADABLE_STATES = {
   [MarketState.STATE_ACTIVE]: true,
 };
 
-export const IS_MARKET_TRADABLE = (market: SimpleMarkets_markets) =>
+export const IS_MARKET_TRADABLE = (market: Market) =>
   Boolean((market.state ?? '') in TRADABLE_STATES && market?.id);
 
 export const MARKET_STATES_MAP: Record<MarketState | '', string> = {
@@ -24,3 +24,5 @@ export const MARKET_STATES_MAP: Record<MarketState | '', string> = {
   [MarketState.STATE_TRADING_TERMINATED]: t('TradingTerminated'),
   '': t('Unknown'),
 };
+
+export const NO_DATA_MESSAGE = t('No data to display');

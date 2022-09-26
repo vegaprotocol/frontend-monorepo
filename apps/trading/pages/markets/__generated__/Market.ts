@@ -20,7 +20,7 @@ export interface Market_market_data_market {
 export interface Market_market_data {
   __typename: "MarketData";
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: Market_market_data_market;
   /**
@@ -169,8 +169,8 @@ export interface Market_market_marketTimestamps {
   close: string | null;
 }
 
-export interface Market_market_candles {
-  __typename: "Candle";
+export interface Market_market_candlesConnection_edges_node {
+  __typename: "CandleNode";
   /**
    * Open price (uint64)
    */
@@ -183,6 +183,19 @@ export interface Market_market_candles {
    * Volume price (uint64)
    */
   volume: string;
+}
+
+export interface Market_market_candlesConnection_edges {
+  __typename: "CandleEdge";
+  node: Market_market_candlesConnection_edges_node;
+}
+
+export interface Market_market_candlesConnection {
+  __typename: "CandleDataConnection";
+  /**
+   * The candles
+   */
+  edges: (Market_market_candlesConnection_edges | null)[] | null;
 }
 
 export interface Market_market {
@@ -202,14 +215,14 @@ export interface Market_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -236,9 +249,9 @@ export interface Market_market {
    */
   marketTimestamps: Market_market_marketTimestamps;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */
-  candles: (Market_market_candles | null)[] | null;
+  candlesConnection: Market_market_candlesConnection | null;
 }
 
 export interface Market {

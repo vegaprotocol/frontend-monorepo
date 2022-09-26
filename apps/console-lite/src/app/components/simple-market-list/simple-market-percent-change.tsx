@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { InView } from 'react-intersection-observer';
-import { useSubscription } from '@apollo/client';
-import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
-import type {
-  CandleLive,
-  CandleLiveVariables,
-} from './__generated__/CandleLive';
-import { CANDLE_SUB } from './data-provider';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
+import type { Candle } from '@vegaprotocol/market-list';
+import { marketCandlesProvider } from '@vegaprotocol/market-list';
+import { Interval } from '@vegaprotocol/types';
 
 interface Props {
-  candles: (SimpleMarkets_markets_candles | null)[] | null;
+  candles: (Candle | null)[] | null;
   marketId: string;
   setValue: (arg: unknown) => void;
 }
 
 const EMPTY_VALUE = ' - ';
 
-const getChange = (
-  candles: (SimpleMarkets_markets_candles | null)[] | null,
-  lastClose?: string
-) => {
+const getChange = (candles: (Candle | null)[] | null, lastClose?: string) => {
   if (candles) {
     const first = parseInt(candles.find((item) => item?.open)?.open || '-1');
     const last =
@@ -74,11 +68,19 @@ const SimpleMarketPercentChangeWrapper = (props: Props) => {
 };
 
 const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
-  const { data: { candles: { close = undefined } = {} } = {} } =
-    useSubscription<CandleLive, CandleLiveVariables>(CANDLE_SUB, {
-      variables: { marketId },
-    });
-  const change = getChange(candles, close);
+  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const { data } = useDataProvider({
+    dataProvider: marketCandlesProvider,
+    variables: {
+      marketId,
+      interval: Interval.INTERVAL_I1D,
+      since: new Date(yesterday * 1000).toISOString(),
+    },
+  });
+
+  const close = data?.map((m) => m.close);
+
+  const change = getChange(candles, close?.[0]);
   const colorClasses = getClassColor(change);
   useEffect(() => {
     const value = parseFloat(change);

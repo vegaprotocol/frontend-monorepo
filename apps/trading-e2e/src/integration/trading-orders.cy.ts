@@ -1,11 +1,26 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
+import type { onMessage } from '@vegaprotocol/cypress';
+import type {
+  OrderSub as OrderSubData,
+  OrderSubVariables,
+} from '@vegaprotocol/orders';
 import { connectVegaWallet } from '../support/vega-wallet';
 
+const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = function (send) {
+  send({
+    orders: [],
+  });
+};
+
+const subscriptionMocks = { OrderSub: onOrderSub };
+
 before(() => {
+  cy.spy(subscriptionMocks, 'OrderSub');
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockGQLSubscription(subscriptionMocks);
   cy.visit('/markets/market-0');
   cy.getByTestId('Orders').click();
   cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
@@ -13,7 +28,7 @@ before(() => {
   connectVegaWallet();
 });
 
-describe('orders', () => {
+describe('orders', { tags: '@smoke' }, () => {
   const orderSymbol = 'market.tradableInstrument.instrument.code';
   const orderSize = 'size';
   const orderType = 'type';
@@ -27,6 +42,7 @@ describe('orders', () => {
 
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
+    expect(subscriptionMocks.OrderSub).to.be.calledOnce;
 
     cy.getByTestId('tab-orders').within(() => {
       cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {
@@ -72,8 +88,11 @@ describe('orders', () => {
   });
 
   it('partially filled orders should not show close/edit buttons', () => {
+    const partiallyFilledId =
+      '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78';
+
     cy.getByTestId('tab-orders').should('be.visible');
-    cy.get('[row-index="4"]').within(() => {
+    cy.get(`[row-id="${partiallyFilledId}"]`).within(() => {
       cy.get(`[col-id='${orderStatus}']`).should(
         'have.text',
         'PartiallyFilled'
@@ -86,20 +105,29 @@ describe('orders', () => {
 
   it('orders are sorted by most recent order', () => {
     const expectedOrderList = [
-      'AAVEDAI.MF21',
-      'TSLA.QM21',
       'BTCUSD.MF21',
-      'UNIDAI.MF21',
-      'UNIDAI.MF21',
+      'SOLUSD',
+      'AAPL.MF21',
+      'ETHBTC.QM21',
+      'ETHBTC.QM21',
     ];
 
     cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderSymbol}']`)
-      .should('have.length.at.least', 4)
-      .each(($symbol, index) => {
-        if (index != 0) {
-          cy.wrap($symbol).should('have.text', expectedOrderList[index - 1]);
-        }
+      .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
+      .should('have.length.at.least', 5)
+      .then(($symbols) => {
+        const symbolNames: string[] = [];
+        cy.wrap($symbols)
+          .each(($symbol) => {
+            cy.wrap($symbol)
+              .invoke('text')
+              .then((text) => {
+                symbolNames.push(text);
+              });
+          })
+          .then(() => {
+            expect(symbolNames).to.include.ordered.members(expectedOrderList);
+          });
       });
   });
 });

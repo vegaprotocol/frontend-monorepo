@@ -13,8 +13,8 @@ export const DealTicketLimitAmount = ({
   market,
   quoteName,
 }: DealTicketLimitAmountProps) => {
-  const priceStep = toDecimal(market.decimalPlaces);
-  const sizeStep = toDecimal(market.positionDecimalPlaces);
+  const priceStep = toDecimal(market?.decimalPlaces);
+  const sizeStep = toDecimal(market?.positionDecimalPlaces);
 
   return (
     <div className="flex items-center gap-4">

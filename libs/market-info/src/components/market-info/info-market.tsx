@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Splash,
-  Accordion,
-  Link,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
@@ -20,12 +15,14 @@ import { MARKET_INFO_QUERY } from './info-market-query';
 import type {
   MarketInfoQuery,
   MarketInfoQuery_market,
-  MarketInfoQuery_market_candles,
+  MarketInfoQuery_market_candlesConnection_edges,
 } from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
+import Link from 'next/link';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -39,10 +36,16 @@ export interface InfoProps {
 export const calcCandleVolume = (
   m: MarketInfoQuery_market
 ): string | undefined => {
-  return m.candles
-    ?.reduce((acc: BigNumber, c: MarketInfoQuery_market_candles | null) => {
-      return acc.plus(new BigNumber(c?.volume ?? 0));
-    }, new BigNumber(m.candles?.[0]?.volume ?? 0))
+  return m.candlesConnection?.edges
+    ?.reduce(
+      (
+        acc: BigNumber,
+        c: MarketInfoQuery_market_candlesConnection_edges | null
+      ) => {
+        return acc.plus(new BigNumber(c?.node?.volume ?? 0));
+      },
+      new BigNumber(m.candlesConnection?.edges[0]?.node.volume ?? 0)
+    )
     ?.toString();
 };
 
@@ -66,6 +69,7 @@ export const MarketInfoContainer = ({
     MARKET_INFO_QUERY,
     {
       variables,
+      errorPolicy: 'ignore',
     }
   );
 
@@ -227,6 +231,16 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     {
+      title: t('Risk factors'),
+      content: (
+        <MarketInfoTable
+          data={market.riskFactors}
+          unformatted={true}
+          omits={['market', '__typename']}
+        />
+      ),
+    },
+    {
       title: t('Risk model'),
       content: (
         <MarketInfoTable
@@ -242,12 +256,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
-    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound ${i + 1}`),
-      content: (
-        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
-      ),
-    })),
     ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
       title: t(`Price monitoring bound ${i + 1}`),
       content: (
@@ -281,8 +289,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
         >
-          <Link onClick={() => onSelect(market.id)}>
-            {t('View liquidity provision table')}
+          <Link passHref={true} href={`/liquidity/${market.id}`}>
+            <UiToolkitLink onClick={() => onSelect(market.id)}>
+              {t('View liquidity provision table')}
+            </UiToolkitLink>
           </Link>
         </MarketInfoTable>
       ),

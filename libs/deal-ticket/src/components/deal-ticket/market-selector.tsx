@@ -7,9 +7,8 @@ import React, {
   useMemo,
 } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import { gql, useQuery } from '@apollo/client';
 import classNames from 'classnames';
-import type { DealTicketQuery_market } from './';
+import type { DealTicketMarketFragment } from './';
 import {
   ButtonLink,
   Icon,
@@ -21,41 +20,20 @@ import {
   t,
   useScreenDimensions,
   useOutsideClick,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type {
-  MarketNames,
-  MarketNames_markets,
-} from './__generated__/MarketNames';
 import { IconNames } from '@blueprintjs/icons';
 import { MarketState } from '@vegaprotocol/types';
-
-export const MARKET_NAMES_QUERY = gql`
-  query MarketNames {
-    markets {
-      id
-      state
-      tradableInstrument {
-        instrument {
-          code
-          name
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              quoteName
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: DealTicketQuery_market;
+  market: DealTicketMarketFragment;
   setMarket: (marketId: string) => void;
-  ItemRenderer?: React.FC<{ market: MarketNames_markets; isMobile?: boolean }>;
+  ItemRenderer?: React.FC<{
+    market: Market;
+    isMobile?: boolean;
+  }>;
 }
 
 function escapeRegExp(str: string) {
@@ -67,8 +45,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const contRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const arrowButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [skip, setSkip] = useState(true);
-  const [results, setResults] = useState<MarketNames_markets[]>([]);
+  const [results, setResults] = useState<Market[]>([]);
   const [showPane, setShowPane] = useState(false);
   const [lookup, setLookup] = useState(
     market.tradableInstrument.instrument.name || ''
@@ -77,8 +54,9 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     null
   );
 
-  const { data, loading, error } = useQuery<MarketNames>(MARKET_NAMES_QUERY, {
-    skip,
+  const { data, loading, error } = useDataProvider({
+    dataProvider: marketsProvider,
+    noUpdate: true,
   });
 
   const outsideClickCb = useCallback(() => {
@@ -96,11 +74,8 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       } = event;
       setLookup(value);
       setShowPane(true);
-      if (value) {
-        setSkip(false);
-      }
     },
-    [setLookup, setShowPane, setSkip]
+    [setLookup, setShowPane]
   );
 
   const handleMarketSelect = useCallback(
@@ -117,11 +92,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleItemKeyDown = useCallback(
-    (
-      event: React.KeyboardEvent,
-      market: MarketNames_markets,
-      index: number
-    ) => {
+    (event: React.KeyboardEvent, market: Market, index: number) => {
       switch (event.key) {
         case 'ArrowDown':
           if (index < results.length - 1) {
@@ -170,9 +141,8 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   const openPane = useCallback(() => {
     setShowPane(!showPane);
-    setSkip(false);
     inputRef.current?.focus();
-  }, [showPane, setShowPane, setSkip, inputRef]);
+  }, [showPane, setShowPane, inputRef]);
 
   const handleDialogOnchange = useCallback(
     (isOpen: boolean) => {
@@ -274,8 +244,8 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   useEffect(() => {
     setResults(
-      data?.markets?.filter(
-        (item: MarketNames_markets) =>
+      data?.filter(
+        (item) =>
           item.state === MarketState.STATE_ACTIVE &&
           item.tradableInstrument.instrument.name.match(
             new RegExp(escapeRegExp(lookup), 'i')

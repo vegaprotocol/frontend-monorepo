@@ -98,7 +98,7 @@ export interface PositionFields_market_data {
    */
   markPrice: string;
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: PositionFields_market_data_market;
 }
@@ -172,7 +172,7 @@ export interface PositionFields {
   /**
    * Margins of the party for the given position
    */
-  marginsConnection: PositionFields_marginsConnection;
+  marginsConnection: PositionFields_marginsConnection | null;
   /**
    * Market relating to this position
    */

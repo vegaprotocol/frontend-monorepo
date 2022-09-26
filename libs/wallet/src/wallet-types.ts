@@ -79,7 +79,7 @@ export interface WithdrawSubmissionBody extends BaseTransaction {
   };
 }
 
-interface ProposalNewMarketTerms {
+export interface ProposalNewMarketTerms {
   newMarket: {
     changes: {
       decimalPlaces: string;
@@ -90,7 +90,7 @@ interface ProposalNewMarketTerms {
         future: {
           settlementAsset: string;
           quoteName: string;
-          settlementPriceDecimals: number;
+          settlementDataDecimals: number;
           oracleSpecForSettlementPrice: OracleSpecFor;
           oracleSpecForTradingTermination: OracleSpecFor;
           oracleSpecBinding: OracleSpecBinding;
@@ -119,7 +119,7 @@ interface ProposalNewMarketTerms {
   enactmentTimestamp: number;
 }
 
-interface ProposalUpdateMarketTerms {
+export interface ProposalUpdateMarketTerms {
   updateMarket: {
     marketId: string;
     changes: {
@@ -127,7 +127,7 @@ interface ProposalUpdateMarketTerms {
         code: string;
         future: {
           quoteName: string;
-          settlementPriceDecimals: number;
+          settlementDataDecimals: number;
           oracleSpecForSettlementPrice: OracleSpecFor;
           oracleSpecForTradingTermination: OracleSpecFor;
           oracleSpecBinding: OracleSpecBinding;
@@ -141,7 +141,7 @@ interface ProposalUpdateMarketTerms {
   enactmentTimestamp: number;
 }
 
-interface ProposalNetworkParameterTerms {
+export interface ProposalNetworkParameterTerms {
   updateNetworkParameter: {
     changes: {
       key: string;
@@ -152,12 +152,12 @@ interface ProposalNetworkParameterTerms {
   enactmentTimestamp: number;
 }
 
-interface ProposalFreeformTerms {
+export interface ProposalFreeformTerms {
   newFreeform: Record<string, never>;
   closingTimestamp: number;
 }
 
-interface ProposalNewAssetTerms {
+export interface ProposalNewAssetTerms {
   newAsset: {
     changes: {
       name: string;

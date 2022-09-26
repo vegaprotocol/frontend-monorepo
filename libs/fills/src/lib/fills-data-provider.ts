@@ -1,137 +1,78 @@
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
-import { gql } from '@apollo/client';
 import {
   makeDataProvider,
+  makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import type { FillFields } from './__generated__/FillFields';
+import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
-  Fills,
-  Fills_party_tradesConnection_edges,
-  Fills_party_tradesConnection_edges_node,
+  FillsQuery,
+  FillFieldsFragment,
+  FillEdgeFragment,
+  FillsEventSubscription,
 } from './__generated__/Fills';
-import type { FillsSub } from './__generated__/FillsSub';
-
-const FILL_FRAGMENT = gql`
-  fragment FillFields on Trade {
-    id
-    createdAt
-    price
-    size
-    buyOrder
-    sellOrder
-    aggressor
-    buyer {
-      id
-    }
-    seller {
-      id
-    }
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    market {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-          name
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const FILLS_QUERY = gql`
-  ${FILL_FRAGMENT}
-  query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
-    party(id: $partyId) {
-      id
-      tradesConnection(marketId: $marketId, pagination: $pagination) {
-        edges {
-          node {
-            ...FillFields
-          }
-          cursor
-        }
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-          hasPreviousPage
-        }
-      }
-    }
-  }
-`;
-
-export const FILLS_SUB = gql`
-  ${FILL_FRAGMENT}
-  subscription FillsSub($partyId: ID!) {
-    trades(partyId: $partyId) {
-      ...FillFields
-    }
-  }
-`;
 
 const update = (
-  data: (Fills_party_tradesConnection_edges | null)[],
-  delta: FillFields[]
+  data: FillEdgeFragment[] | null,
+  delta: FillsEventSubscription['trades']
 ) => {
   return produce(data, (draft) => {
     orderBy(delta, 'createdAt').forEach((node) => {
+      if (draft === null) {
+        return;
+      }
       const index = draft.findIndex((edge) => edge?.node.id === node.id);
       if (index !== -1) {
         if (draft[index]?.node) {
-          Object.assign(
-            draft[index]?.node as Fills_party_tradesConnection_edges_node,
-            node
-          );
+          Object.assign(draft[index]?.node as FillFieldsFragment, node);
         }
       } else {
         const firstNode = draft[0]?.node;
         if (firstNode && node.createdAt >= firstNode.createdAt) {
-          draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
+          const { buyerId, sellerId, marketId, ...trade } = node;
+          draft.unshift({
+            node: {
+              ...trade,
+              __typename: 'Trade',
+              market: {
+                __typename: 'Market',
+                id: marketId,
+              },
+              buyer: { id: buyerId, __typename: 'Party' },
+              seller: { id: buyerId, __typename: 'Party' },
+            },
+            cursor: '',
+            __typename: 'TradeEdge',
+          });
         }
       }
     });
   });
 };
 
-const getData = (
-  responseData: Fills
-): Fills_party_tradesConnection_edges[] | null =>
-  responseData.party?.tradesConnection.edges || null;
+export type Trade = FillFieldsFragment;
+export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
+export type TradeWithMarketEdge = {
+  cursor: FillEdgeFragment['cursor'];
+  node: TradeWithMarket;
+};
 
-const getPageInfo = (responseData: Fills): PageInfo | null =>
-  responseData.party?.tradesConnection.pageInfo || null;
+const getData = (responseData: FillsQuery): FillEdgeFragment[] =>
+  responseData.party?.tradesConnection?.edges || [];
 
-const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
+const getPageInfo = (responseData: FillsQuery): PageInfo | null =>
+  responseData.party?.tradesConnection?.pageInfo || null;
 
-export const fillsDataProvider = makeDataProvider({
-  query: FILLS_QUERY,
-  subscriptionQuery: FILLS_SUB,
+const getDelta = (subscriptionData: FillsEventSubscription) =>
+  subscriptionData.trades || [];
+
+export const fillsProvider = makeDataProvider({
+  query: FillsDocument,
+  subscriptionQuery: FillsEventDocument,
   update,
   getData,
   getDelta,
@@ -141,3 +82,39 @@ export const fillsDataProvider = makeDataProvider({
     first: 100,
   },
 });
+
+export const fillsWithMarketProvider = makeDerivedDataProvider<
+  (TradeWithMarketEdge | null)[],
+  TradeWithMarket[]
+>(
+  [fillsProvider, marketsProvider],
+  (partsData): (TradeWithMarketEdge | null)[] =>
+    (partsData[0] as ReturnType<typeof getData>)?.map(
+      (edge) =>
+        edge && {
+          cursor: edge.cursor,
+          node: {
+            ...edge.node,
+            market: (partsData[1] as Market[]).find(
+              (market) => market.id === edge.node.market.id
+            ),
+          },
+        }
+    ) || null,
+  (parts): TradeWithMarket[] | undefined => {
+    if (!parts[0].isUpdate) {
+      return;
+    }
+    // map FillsSub_trades[] from subscription to updated TradeWithMarket[]
+    return (parts[0].delta as ReturnType<typeof getDelta>).map(
+      (deltaTrade) => ({
+        ...((parts[0].data as ReturnType<typeof getData>)?.find(
+          (trade) => trade.node.id === deltaTrade.id
+        )?.node as FillFieldsFragment),
+        market: (parts[1].data as Market[]).find(
+          (market) => market.id === deltaTrade.marketId
+        ),
+      })
+    );
+  }
+);

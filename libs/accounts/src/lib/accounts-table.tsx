@@ -14,7 +14,7 @@ import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { AccountFieldsFragment } from './__generated__/Accounts';
+import type { AccountFieldsFragment } from './__generated___/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountType } from '@vegaprotocol/types';
@@ -92,8 +92,7 @@ const comparator = (
 
 export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
-    const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
-      useAssetDetailsDialogStore();
+    const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -130,9 +129,8 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
             value && value.length > 0 ? (
               <button
                 className="hover:underline"
-                onClick={() => {
-                  setAssetDetailsDialogOpen(true);
-                  setAssetDetailsDialogSymbol(value);
+                onClick={(e) => {
+                  openAssetDetailsDialog(value, e.target as HTMLElement);
                 }}
               >
                 {value}

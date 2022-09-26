@@ -2,12 +2,13 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
-describe('home', () => {
+describe('home', { tags: '@regression' }, () => {
   const selectMarketOverlay = 'select-market-list';
   beforeEach(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
+    cy.mockGQLSubscription();
     cy.visit('/');
   });
 
@@ -62,9 +63,13 @@ describe('home', () => {
           },
         };
         aliasQuery(req, 'Markets', data);
+        aliasQuery(req, 'MarketsDataQuery', data);
+        aliasQuery(req, 'MarketsCandlesQuery', data);
       });
       cy.visit('/');
       cy.wait('@Markets');
+      cy.wait('@MarketsDataQuery');
+      cy.wait('@MarketsCandlesQuery');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

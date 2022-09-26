@@ -1,4 +1,4 @@
-describe('simple trading app', () => {
+describe('simple trading app', { tags: '@smoke' }, () => {
   beforeEach(() => cy.visit('/'));
 
   it('render', () => {

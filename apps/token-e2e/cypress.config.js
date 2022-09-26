@@ -1,22 +1,23 @@
 const { defineConfig } = require('cypress');
+
 module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
+    setupNodeEvents(on, config) {
+      require('cypress-grep/src/plugin')(config);
+      return config;
+    },
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: './src/fixtures',
-    specPattern:
-      process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
-      process.env.CYPRESS_INCLUDE_FLOWS === true
-        ? [
-            './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
-            './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
-          ]
-        : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
+    specPattern: [
+      './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
+      './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
+    ],
     modifyObstructiveCode: false,
-    supportFile: './src/support/index.ts',
-    video: true,
+    supportFile: './src/support/index.js',
+    video: false,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/token-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/token-e2e/screenshots',
@@ -42,7 +43,11 @@ module.exports = defineConfig({
     vegaTokenContractAddress: '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7',
     vegaTokenAddress: '0x67175Da1D5e966e40D11c4B2519392B2058373de',
     txTimeout: { timeout: 70000 },
-    epochTimeout: { timeout: 11000 },
+    epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
+    CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
+    grepTags: '@regression @smoke @slow',
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
   },
 });

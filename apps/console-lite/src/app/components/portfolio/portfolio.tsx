@@ -1,16 +1,15 @@
-import * as React from 'react';
-import { AccountsContainer } from '@vegaprotocol/accounts';
-import { t } from '@vegaprotocol/react-helpers';
+import React from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Tabs, Tab } from '@vegaprotocol/ui-toolkit';
-import { OrderListContainer } from '@vegaprotocol/orders';
-import { PositionsContainer } from '@vegaprotocol/positions';
-import { FillsContainer } from '@vegaprotocol/fills';
 import ConnectWallet from '../wallet-connector';
-import { DepositContainer } from '../deposits';
+import { useOutlet, useLocation } from 'react-router-dom';
+import { HorizontalMenu } from '../horizontal-menu';
+import * as constants from './constants';
 
 export const Portfolio = () => {
   const { keypair } = useVegaWallet();
+  const { pathname } = useLocation();
+  const module = pathname.split('/portfolio/')?.[1] ?? '';
+  const outlet = useOutlet({ partyId: keypair?.pub || '' });
   if (!keypair) {
     return (
       <section className="xl:w-1/2">
@@ -18,23 +17,11 @@ export const Portfolio = () => {
       </section>
     );
   }
+
   return (
-    <Tabs>
-      <Tab id="assets" name={t('Assets')}>
-        <AccountsContainer />
-      </Tab>
-      <Tab id="positions" name={t('Positions')}>
-        <PositionsContainer />
-      </Tab>
-      <Tab id="orders" name={t('Orders')}>
-        <OrderListContainer />
-      </Tab>
-      <Tab id="fills" name={t('Fills')}>
-        <FillsContainer />
-      </Tab>
-      <Tab id="deposits" name={t('Deposits')}>
-        <DepositContainer />
-      </Tab>
-    </Tabs>
+    <div className="h-full p-4 md:p-6 grid grid-rows-[min-content_1fr]">
+      <HorizontalMenu active={module} items={constants.PORTFOLIO_ITEMS} />
+      {outlet}
+    </div>
   );
 };

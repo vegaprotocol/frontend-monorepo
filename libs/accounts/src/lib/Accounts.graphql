@@ -27,6 +27,9 @@ query Accounts($partyId: ID!) {
 
 subscription AccountEvents($partyId: ID!) {
   accounts(partyId: $partyId) {
-    ...AccountFields
+    type
+    balance
+    assetId
+    marketId
   }
 }
