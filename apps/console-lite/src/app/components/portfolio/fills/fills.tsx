@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
 import type { TradeWithMarket } from '@vegaprotocol/fills';
 import { useFillsList } from '@vegaprotocol/fills';
@@ -8,11 +9,8 @@ import { ConsoleLiteGrid } from '../../console-lite-grid';
 import { NO_DATA_MESSAGE } from '../../../constants';
 import useColumnDefinitions from './use-column-definitions';
 
-interface Props {
-  partyId: string;
-}
-
-const FillsManager = ({ partyId }: Props) => {
+const FillsManager = () => {
+  const { partyId } = useOutletContext<{ partyId: string }>();
   const { columnDefs, defaultColDef } = useColumnDefinitions({ partyId });
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
