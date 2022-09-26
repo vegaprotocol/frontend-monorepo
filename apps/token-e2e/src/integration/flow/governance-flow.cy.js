@@ -125,7 +125,7 @@ context(
       });
 
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET)
         cy.contains(
           `You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`
         ).should('be.visible');
@@ -136,7 +136,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -176,7 +176,7 @@ context(
 
         cy.navigate_to('governance');
         cy.wait_for_spinner();
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -195,7 +195,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -224,7 +224,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -253,7 +253,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
@@ -298,7 +298,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -340,7 +340,7 @@ context(
         ];
         for (var index = 0; index < proposalDays.length; index++) {
           cy.navigate_to_page_if_not_allready_loaded('governance');
-          cy.get(newProposalButton).should('be.visible').click();
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
           cy.create_ten_digit_unix_timestamp_for_specified_days(
             proposalDays[index]
           ).then((closingDateTimestamp) => {
@@ -380,7 +380,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -432,7 +432,7 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
@@ -475,7 +475,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
@@ -518,7 +518,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -558,7 +558,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('9').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -604,7 +604,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -644,7 +644,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -715,7 +715,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -780,7 +780,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -838,7 +838,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -894,7 +894,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -974,7 +974,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days(
           this.minCloseDays - 1
         ).then((closingDateTimestamp) => {
@@ -1001,7 +1001,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days(
           this.maxCloseDays + 1
         ).then((closingDateTimestamp) => {
@@ -1028,7 +1028,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days(
           this.maxCloseDays + 1
         ).then((closingDateTimestamp) => {
@@ -1066,7 +1066,7 @@ context(
           '0.000000000000000000',
           txTimeout
         );
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -1087,7 +1087,7 @@ context(
           this.minProposerBalance - 0.000001
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -1109,7 +1109,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
@@ -1138,7 +1138,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
@@ -1167,7 +1167,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -1202,7 +1202,7 @@ context(
           this.minProposerBalance
         );
         cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM)
         cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
           (closingDateTimestamp) => {
             cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
@@ -1423,6 +1423,21 @@ context(
           else return 'unsorted';
         }
       );
+
+      Cypress.Commands.add(
+        'go_to_make_new_proposal', (proposalType) => {
+          cy.get(newProposalButton).should('be.visible').click();
+          cy.getByTestId('link').contains(proposalType).click()
+        }
+      )
+
+      const governanceProposalType = {
+        NETWORK_PARAMETER: 'Network parameter',
+        NEW_MARKET: 'New market',
+        UPDATE_MARKET: 'Update market',
+        NEW_ASSET: 'New asset',
+        FREEFORM: 'Freeform'
+      }
     });
   }
 );
