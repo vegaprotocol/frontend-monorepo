@@ -6,3 +6,4 @@ export * from './market-provider';
 export * from './markets-candles-provider';
 export * from './markets-data-provider';
 export * from './markets-provider';
+export * from './__generated__/Markets';

@@ -4,9 +4,11 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketDataSub,
   MarketDataSub_marketsData,
+} from './__generated__/MarketDataSub';
+import type {
   MarketDataQuery,
   MarketDataQuery_marketsConnection_edges_node_data,
-} from './__generated__';
+} from './__generated__/MarketDataQuery';
 
 export const MARKET_DATA_QUERY = gql`
   query MarketDataQuery($marketId: ID!) {
