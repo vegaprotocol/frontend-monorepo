@@ -55,8 +55,8 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     connectVegaWallet();
     cy.getByTestId('manage-vega-wallet').click();
     cy.getByTestId('keypair-list').should('exist');
+    cy.getByTestId(`key-${key2}`).should('contain.text', truncatedKey2);
     cy.getByTestId(`key-${key2}`).click();
-    cy.getByTestId('keypair-list').contains(truncatedKey2);
     cy.getByTestId('disconnect').click();
     cy.getByTestId('connect-vega-wallet').should('exist');
     cy.getByTestId('manage-vega-wallet').should('not.exist');
