@@ -44,7 +44,6 @@ Cypress.Commands.add('vega_wallet_connect', () => {
   cy.get(vegaWalletNameElement).should('be.visible');
 });
 
-
 Cypress.Commands.add(
   'vega_wallet_top_up_with_asset',
   function (assetName, amount) {
