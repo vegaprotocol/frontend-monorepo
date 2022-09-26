@@ -168,6 +168,7 @@ jobs:
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
         run: yarn cypress install
+        working-directory: frontend-monorepo
 
       - name: Run smoke Cypress tests
         if: ${{ github.event.inputs.runAlltests == 'true' }}
