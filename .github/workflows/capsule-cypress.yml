@@ -16,7 +16,6 @@ jobs:
   pr:
     name: Run capsule tests - PR
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft == false }}
     env:
       GO111MODULE: 'on'
       VEGA_VERSION: 'v0.55.0'
