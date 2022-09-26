@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
-import { Schema } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { totalFees } from '@vegaprotocol/market-list';
@@ -12,9 +12,7 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { useMarketInfoQuery } from './__generated__/MarketInfo';
-import type {
-  MarketInfoQuery,
-} from './__generated__/MarketInfo';
+import type { MarketInfoQuery } from './__generated__/MarketInfo';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { generatePath } from 'react-router-dom';
@@ -95,7 +93,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           <MarketInfoTable
             data={{
               ...market?.fees.factors,
-              totalFees: market?.fees.factors ? totalFees(market?.fees.factors) : undefined,
+              totalFees: market?.fees.factors
+                ? totalFees(market?.fees.factors)
+                : undefined,
             }}
             asPercentage={true}
           />
