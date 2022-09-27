@@ -1,4 +1,4 @@
-import * as Types from '@vegaprotocol/types/types';
+import { Schema as Types } from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
@@ -13,7 +13,7 @@ export type AssetQuery = { __typename?: 'Query', asset?: { __typename?: 'Asset',
 
 export const AssetDocument = gql`
     query Asset($assetId: ID!) {
-  asset(assetId: $assetId) {
+  asset(id: $assetId) {
     id
     name
     symbol

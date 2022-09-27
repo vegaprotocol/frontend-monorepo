@@ -17,7 +17,7 @@ export type PositionsSubscriptionSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'Position', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: string | null, marginsConnection?: { __typename?: 'MarginConnection', edges?: Array<{ __typename?: 'MarginEdge', node: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, market: { __typename?: 'Market', id: string }, asset: { __typename?: 'Asset', symbol: string } } }> | null } | null, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradingMode: Types.MarketTradingMode, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } }, data?: { __typename?: 'MarketData', markPrice: string, market: { __typename?: 'Market', id: string } } | null } }> };
+export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', realisedPNL: string, openVolume: string, unrealisedPNL: string, averageEntryPrice: string, updatedAt?: string | null, marketId: string }> };
 
 export const PositionFieldsFragmentDoc = gql`
     fragment PositionFields on Position {
@@ -106,10 +106,15 @@ export type PositionsQueryResult = Apollo.QueryResult<PositionsQuery, PositionsQ
 export const PositionsSubscriptionDocument = gql`
     subscription PositionsSubscription($partyId: ID!) {
   positions(partyId: $partyId) {
-    ...PositionFields
+    realisedPNL
+    openVolume
+    unrealisedPNL
+    averageEntryPrice
+    updatedAt
+    marketId
   }
 }
-    ${PositionFieldsFragmentDoc}`;
+    `;
 
 /**
  * __usePositionsSubscriptionSubscription__

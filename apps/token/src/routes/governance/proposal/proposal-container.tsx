@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Proposal } from '../components/proposal';
+import { ProposalNotFound } from '../components/proposal-not-found';
 import { PROPOSAL_FRAGMENT } from '../proposal-fragment';
 import type {
   Proposal as ProposalQueryResult,
@@ -26,6 +27,7 @@ export const ProposalContainer = () => {
     ProposalVariables
   >(PROPOSAL_QUERY, {
     fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
     variables: { proposalId: params.proposalId || '' },
     skip: !params.proposalId,
   });
@@ -37,7 +39,11 @@ export const ProposalContainer = () => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && data.proposal && <Proposal proposal={data.proposal} />}
+      {data?.proposal ? (
+        <Proposal proposal={data.proposal} />
+      ) : (
+        <ProposalNotFound />
+      )}
     </AsyncRenderer>
   );
 };

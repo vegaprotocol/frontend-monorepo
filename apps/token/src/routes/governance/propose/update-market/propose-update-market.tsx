@@ -82,7 +82,7 @@ export const ProposeUpdateMarket = () => {
     error: marketsError,
   } = useQuery<ProposalMarketsQuery>(MARKETS_QUERY);
   const sortedMarkets = useMemo(() => {
-    if (!marketsData) {
+    if (!marketsData?.marketsConnection?.edges.length) {
       return [];
     }
 

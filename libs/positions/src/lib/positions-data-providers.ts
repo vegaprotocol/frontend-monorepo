@@ -107,10 +107,14 @@ export const POSITIONS_QUERY = gql`
 `;
 
 export const POSITIONS_SUBSCRIPTION = gql`
-  ${POSITION_FIELDS}
   subscription PositionsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
-      ...PositionFields
+      realisedPNL
+      openVolume
+      unrealisedPNL
+      averageEntryPrice
+      updatedAt
+      marketId
     }
   }
 `;
@@ -240,15 +244,20 @@ export const update = (
         return;
       }
       const index = draft.positionsConnection.edges.findIndex(
-        (edge) => edge.node.market.id === delta.market.id
+        (edge) => edge.node.market.id === delta.marketId
       );
       if (index !== -1) {
-        draft.positionsConnection.edges[index].node = delta;
+        const currNode = draft.positionsConnection.edges[index].node;
+        draft.positionsConnection.edges[index].node = {
+          ...currNode,
+          realisedPNL: delta.realisedPNL,
+          unrealisedPNL: delta.unrealisedPNL,
+          openVolume: delta.openVolume,
+          averageEntryPrice: delta.averageEntryPrice,
+          updatedAt: delta.updatedAt,
+        };
       } else {
-        draft.positionsConnection.edges.push({
-          __typename: 'PositionEdge',
-          node: delta,
-        });
+        // TODO: Handle new position insertion, we don't have full market details on PositionUpdate
       }
     });
   });
