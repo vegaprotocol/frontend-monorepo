@@ -64,7 +64,8 @@ jobs:
       # See if we capsule is needed for this project
       - name: See if capsule is necessary
         if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+        env:
+          RUN_CAPSULE: true
 
       # Checkout capsule to build local network
       - name: Checkout capsule
@@ -103,20 +104,26 @@ jobs:
 
       - name: Install Vega binaries
         if: ${{ env.RUN_CAPSULE }}
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vega-linux-amd64.zip'
-          unzip vega-linux-amd64.zip -d ${{ env.GOBIN }}
+        uses: frontend-monorepo/frontend-monorepo/.github/workflows/actions/install-binary.yml
+        with:
+          name: 'vega'
+          version: ${{ env.VEGA_VERSION }}
+          gobin: ${{ env.GOBIN }}
 
       - name: Install date-node binaries
         if: ${{ env.RUN_CAPSULE }}
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/data-node-linux-amd64.zip'
-          unzip data-node-linux-amd64.zip -d ${{ env.GOBIN }}
+        uses: frontend-monorepo/frontend-monorepo/.github/workflows/actions/install-binary.yml
+        with:
+          name: 'vega'
+          version: ${{ env.VEGA_VERSION }}
+          gobin: ${{ env.GOBIN }}
 
       - name: Install Vega wallet binaries
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip'
-          unzip vegawallet-linux-amd64.zip -d ${{ env.GOBIN }}
+        uses: frontend-monorepo/frontend-monorepo/.github/workflows/actions/install-binary.yml
+        with:
+          name: 'vega'
+          version: ${{ env.VEGA_VERSION }}
+          gobin: ${{ env.GOBIN }}
 
       ######
       ## Start capsule
