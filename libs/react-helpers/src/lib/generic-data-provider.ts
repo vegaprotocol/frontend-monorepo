@@ -144,6 +144,7 @@ interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
     first: number;
   };
   fetchPolicy?: FetchPolicy;
+  resetDelay?: number;
 }
 
 /**
@@ -162,6 +163,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   getDelta,
   pagination,
   fetchPolicy,
+  resetDelay,
 }: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
   Data,
   Delta
@@ -171,7 +173,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
-  let unsubscribeTimer: ReturnType<typeof setTimeout>;
+  let resetTimer: ReturnType<typeof setTimeout>;
   let variables: OperationVariables | undefined;
   let data: Data | null = null;
   let error: Error | undefined;
@@ -333,8 +335,8 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
 
   const initialize = async () => {
     if (subscription) {
-      if (unsubscribeTimer) {
-        clearTimeout(unsubscribeTimer);
+      if (resetTimer) {
+        clearTimeout(resetTimer);
       }
       return;
     }
@@ -382,15 +384,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   };
 
   const reset = () => {
-    if (subscription) {
-      unsubscribeTimer = setTimeout(() => {
-        if (!subscription) {
-          return;
-        }
-        subscription.unsubscribe();
-        subscription = undefined;
-      }, 5000);
+    if (!subscription) {
+      return;
     }
+    subscription.unsubscribe();
+    subscription = undefined;
     data = null;
     error = undefined;
     loading = false;
@@ -402,7 +400,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
-      reset();
+      if (resetDelay) {
+        resetTimer = setTimeout(reset, resetDelay);
+      } else {
+        reset();
+      }
     }
   };
 

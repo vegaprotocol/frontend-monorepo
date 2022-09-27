@@ -39,7 +39,10 @@ export const makeInfiniteScrollGetRows =
     try {
       if (data.current) {
         const firstMissingRowIndex = data.current.indexOf(null);
-        if (firstMissingRowIndex !== -1 && firstMissingRowIndex < endRow) {
+        if (
+          endRow > data.current.length ||
+          (firstMissingRowIndex !== -1 && firstMissingRowIndex < endRow)
+        ) {
           await load();
         }
       }
@@ -48,7 +51,8 @@ export const makeInfiniteScrollGetRows =
         : [];
       successCallback(
         rowsThisBlock,
-        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current)
+        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
+          newRows.current
       );
     } catch (e) {
       failCallback();
