@@ -2,12 +2,11 @@ import type { Asset } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { IGetRowsParams } from 'ag-grid-community';
 import { useRef, useMemo, useCallback } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
-import { AccountTable } from './accounts-table';
 import type { GetRowsParams } from './accounts-table';
+import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
   partyId: string;
