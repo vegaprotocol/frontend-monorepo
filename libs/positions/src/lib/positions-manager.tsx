@@ -17,10 +17,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     [submit]
   );
 
-  const { data, error, loading, assetSymbols } = usePositionsAssets({
-    partyId,
-  });
-
+  const { data, error, loading, assetSymbols } = usePositionsAssets(partyId);
   return (
     <>
       <AsyncRenderer loading={loading} error={error} data={data}>

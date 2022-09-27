@@ -16,11 +16,11 @@ interface PositionsProps {
 export const Positions = memo(
   ({ partyId, assetSymbol, onClose }: PositionsProps) => {
     const gridRef = useRef<AgGridReact | null>(null);
-    const { data, error, loading, getRows } = usePositionsData({
+    const { data, error, loading, getRows } = usePositionsData(
       partyId,
-      assetSymbol,
       gridRef,
-    });
+      assetSymbol
+    );
 
     return (
       <AsyncRenderer loading={loading} error={error} data={data}>
