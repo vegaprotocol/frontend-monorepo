@@ -8,12 +8,6 @@ import { positionsMetricsDataProvider as dataProvider } from './positions-data-p
 import filter from 'lodash/filter';
 import { t, toBigNum, useDataProvider } from '@vegaprotocol/react-helpers';
 
-interface Props {
-  partyId: string;
-  assetSymbol?: string;
-  gridRef: RefObject<AgGridReact>;
-}
-
 const getSummaryRow = (positions: Position[]) => {
   const summaryRow = {
     notional: new BigNumber(0),
@@ -41,7 +35,11 @@ const getSummaryRow = (positions: Position[]) => {
   };
 };
 
-export const usePositionsData = ({ partyId, assetSymbol, gridRef }: Props) => {
+export const usePositionsData = (
+  partyId: string,
+  gridRef: RefObject<AgGridReact>,
+  assetSymbol?: string
+) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
@@ -61,22 +59,21 @@ export const usePositionsData = ({ partyId, assetSymbol, gridRef }: Props) => {
     variables,
   });
   dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: GetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current?.length ?? -1;
-    successCallback(rowsThisBlock, lastRow);
-    if (gridRef.current?.api) {
-      gridRef.current.api.setPinnedBottomRowData([
-        getSummaryRow(rowsThisBlock),
-      ]);
-    }
-  };
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: GetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current?.length ?? -1;
+      successCallback(rowsThisBlock, lastRow);
+      if (gridRef.current?.api) {
+        gridRef.current.api.setPinnedBottomRowData([
+          getSummaryRow(rowsThisBlock),
+        ]);
+      }
+    },
+    [gridRef]
+  );
   return {
     data,
     error,
