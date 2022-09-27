@@ -16,6 +16,7 @@ const navigation = {
   governance: '[href="/governance"]',
   pageSpinner: '[data-testid="splash-loader"]',
 };
+
 Cypress.Commands.add('contains_exactly', (expected_result) => {
   return cy.contains(new RegExp('^' + expected_result + '$', 'g'));
 });

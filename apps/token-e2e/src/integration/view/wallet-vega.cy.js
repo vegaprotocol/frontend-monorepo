@@ -23,6 +23,9 @@ const manageLink = '[data-testid="manage-vega-wallet"]';
 const dialogVegaKey = '[data-testid="vega-public-key-full"]';
 const dialogDisconnectBtn = '[data-testid="disconnect"]';
 const copyPublicKeyBtn = '[data-testid="copy-vega-public-key"]';
+const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
+const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
+const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Vega Wallet - verify elements on widget',
@@ -282,5 +285,122 @@ context(
         });
       });
     });
+
+    describe('when assets exist in vegawallet', function () {
+      before('send-faucet assets to connected vega wallet', function () {
+        cy.vega_wallet_receive_fauceted_asset('USDC (fake)', '10', vegaWalletPublicKey);
+        cy.vega_wallet_receive_fauceted_asset('BTC (fake)', '6', vegaWalletPublicKey);
+        cy.vega_wallet_receive_fauceted_asset('EURO (fake)', '8', vegaWalletPublicKey);
+        cy.vega_wallet_receive_fauceted_asset('DAI (fake)', '2', vegaWalletPublicKey);
+        //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
+        // then code below can be removed
+        cy.get(walletContainer).within(() => {
+          cy.get('button')
+            .contains('Connect Vega wallet to use associated $VEGA')
+            .should('be.enabled')
+            .and('be.visible')
+            .click({ force: true });
+        });
+        cy.get(restConnectorForm).within(() => {
+          cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
+          cy.get('#passphrase')
+            .click()
+            .type(Cypress.env('vegaWalletPassphrase'));
+          cy.get('button').contains('Connect').click();
+        });
+        cy.ethereum_wallet_connect();
+      });
+
+      it('should see fUSDC assets - within vega wallet', function () {
+        let currency = { id: 'fUSDC', name: 'USDC (fake)' };
+        cy.get(walletContainer).within(() => {
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id, txTimeout)
+            .should('be.visible');
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('10.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
+        });
+      });
+
+      it('should see fBTC assets - within vega wallet', function () {
+        let currency = { id: 'fBTC', name: 'BTC (fake)' };
+        cy.get(walletContainer).within(() => {
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id, txTimeout)
+            .should('be.visible');
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('6.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
+        });
+      });
+
+      it('should see fEURO assets - within vega wallet', function () {
+        let currency = { id: 'fEURO', name: 'EURO (fake)' };
+        cy.get(walletContainer).within(() => {
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id, txTimeout)
+            .should('be.visible');
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('8.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
+        });
+      });
+
+      it('should see fDAI assets - within vega wallet', function () {
+        let currency = { id: 'fDAI', name: 'DAI (fake)' };
+        cy.get(walletContainer).within(() => {
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id, txTimeout)
+            .should('be.visible');
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .siblings()
+            .within(() => cy.contains_exactly('2.00000').should('be.visible'));
+
+          cy.get(vegaWalletCurrencyTitle)
+            .contains(currency.id)
+            .parent()
+            .contains(currency.name);
+        });
+      });
+
+      after(
+        'teardown environment to prevent test data bleeding into other tests',
+        function () {
+          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+            cy.restartVegacapsuleNetwork();
+          }
+        }
+      );
+      
+    });
+
   }
 );
