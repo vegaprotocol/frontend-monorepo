@@ -1,8 +1,8 @@
 import { captureException, captureMessage } from '@sentry/minimal';
-import * as React from 'react';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
+import { useEffect, useMemo, useState } from 'react';
 
 export type Vote = {
   value: VoteValue;
@@ -43,15 +43,17 @@ export function useUserVote(
   noVotes: Votes | null
 ) {
   const { keypair, sendTx } = useVegaWallet();
-  const yes = React.useMemo(() => yesVotes || [], [yesVotes]);
-  const no = React.useMemo(() => noVotes || [], [noVotes]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [timeout, setTimeoutValue] = useState<any>(null);
+  const yes = useMemo(() => yesVotes || [], [yesVotes]);
+  const no = useMemo(() => noVotes || [], [noVotes]);
 
-  const [voteState, setVoteState] = React.useState<VoteState | null>(
+  const [voteState, setVoteState] = useState<VoteState | null>(
     VoteState.NotCast
   );
 
   // Find the users vote everytime yes or no votes change
-  const userVote = React.useMemo(() => {
+  const userVote = useMemo(() => {
     if (keypair) {
       return getUserVote(keypair.pub, yes, no);
     }
@@ -59,7 +61,7 @@ export function useUserVote(
   }, [keypair, yes, no]);
 
   // If user vote changes update the vote state
-  React.useEffect(() => {
+  useEffect(() => {
     if (!userVote) {
       setVoteState(VoteState.NotCast);
     } else {
@@ -71,21 +73,19 @@ export function useUserVote(
 
   // Starts a timeout of 30s to set a failed message if
   // the vote is not seen by the time the callback is invoked
-  React.useEffect(() => {
-    // eslint-disable-next-line
-    let timeout: any;
-
-    if (voteState === VoteState.Pending) {
-      setTimeout(() => {
+  useEffect(() => {
+    if (voteState === VoteState.Pending && !timeout) {
+      const timeout = setTimeout(() => {
         setVoteState(VoteState.Failed);
         captureMessage('Vote not seen after 30s');
       }, 1000 * 30);
-    } else {
+      setTimeoutValue(timeout);
+    } else if (voteState !== VoteState.Pending) {
       clearTimeout(timeout);
     }
 
     return () => clearTimeout(timeout);
-  }, [voteState]);
+  }, [timeout, voteState]);
 
   /**
    * Casts a vote using the users connected wallet
