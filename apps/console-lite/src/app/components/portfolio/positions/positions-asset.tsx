@@ -47,7 +47,7 @@ const PositionsAsset = ({ partyId, assetSymbol }: Props) => {
         defaultColDef={defaultColDef}
         getRowId={getRowId}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        data={data?.length ? undefined : []}
+        rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
         components={{ PriceFlashCell }}
       />

@@ -47,17 +47,21 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       if (!gridRef.current?.api) {
         return false;
       }
-      if (!scrolledToTop.current) {
-        const createdAt = dataRef.current?.[0]?.node.createdAt;
-        if (createdAt) {
-          newRows.current += delta.filter(
-            (trade) => trade.createdAt > createdAt
-          ).length;
+      if (dataRef.current?.length) {
+        if (!scrolledToTop.current) {
+          const createdAt = dataRef.current?.[0]?.node.createdAt;
+          if (createdAt) {
+            newRows.current += delta.filter(
+              (trade) => trade.createdAt > createdAt
+            ).length;
+          }
         }
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
       }
       dataRef.current = data;
-      gridRef.current.api.refreshInfiniteCache();
-      return true;
+      return false;
     },
     [gridRef, scrolledToTop]
   );

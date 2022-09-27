@@ -76,7 +76,7 @@ export interface Append<Data> {
 }
 
 interface GetData<QueryData, Data> {
-  (queryData: QueryData): Data | null;
+  (queryData: QueryData, variables?: OperationVariables): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
@@ -88,7 +88,7 @@ interface GetTotalCount<QueryData> {
 }
 
 interface GetDelta<SubscriptionData, Delta> {
-  (subscriptionData: SubscriptionData): Delta;
+  (subscriptionData: SubscriptionData, variables?: OperationVariables): Delta;
 }
 
 export function defaultAppend<Data>(
@@ -144,6 +144,7 @@ interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
     first: number;
   };
   fetchPolicy?: FetchPolicy;
+  resetDelay?: number;
 }
 
 /**
@@ -162,6 +163,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   getDelta,
   pagination,
   fetchPolicy,
+  resetDelay,
 }: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
   Data,
   Delta
@@ -171,6 +173,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
+  let resetTimer: ReturnType<typeof setTimeout>;
   let variables: OperationVariables | undefined;
   let data: Data | null = null;
   let error: Error | undefined;
@@ -242,7 +245,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
       },
       fetchPolicy: fetchPolicy || 'no-cache',
     });
-    const insertionData = getData(res.data);
+    const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
     ({ data, totalCount } = pagination.append(
       data,
@@ -269,10 +272,10 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
         variables: pagination
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
-        fetchPolicy,
+        fetchPolicy: fetchPolicy || 'no-cache',
         errorPolicy: 'ignore',
       });
-      data = getData(res.data);
+      data = getData(res.data, variables);
       if (data && pagination) {
         if (!(data instanceof Array)) {
           throw new Error(
@@ -332,6 +335,9 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
 
   const initialize = async () => {
     if (subscription) {
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+      }
       return;
     }
     loading = true;
@@ -352,7 +358,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
             if (!subscriptionData) {
               return;
             }
-            const delta = getDelta(subscriptionData);
+            const delta = getDelta(subscriptionData, variables);
             if (loading || !data) {
               updateQueue.push(delta);
             } else {
@@ -364,17 +370,25 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
               notifyAll({ delta, isUpdate: true });
             }
           },
-          () => reload()
+          (e) => {
+            error = e as Error;
+            if (subscription) {
+              subscription.unsubscribe();
+              subscription = undefined;
+            }
+            notifyAll();
+          }
         );
     }
     await initialFetch();
   };
 
   const reset = () => {
-    if (subscription) {
-      subscription.unsubscribe();
-      subscription = undefined;
+    if (!subscription) {
+      return;
     }
+    subscription.unsubscribe();
+    subscription = undefined;
     data = null;
     error = undefined;
     loading = false;
@@ -386,7 +400,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
-      reset();
+      if (resetDelay) {
+        resetTimer = setTimeout(reset, resetDelay);
+      } else {
+        reset();
+      }
     }
   };
 
