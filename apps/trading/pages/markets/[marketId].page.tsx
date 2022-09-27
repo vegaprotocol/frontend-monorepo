@@ -138,9 +138,9 @@ const MarketPage = ({ id }: { id?: string }) => {
     const marketPrice =
       data?.market && data?.market?.data
         ? addDecimalsFormatNumber(
-          data.market.data.markPrice,
-          data.market.decimalPlaces
-        )
+            data.market.data.markPrice,
+            data.market.decimalPlaces
+          )
         : null;
     if (marketName) {
       const pageTitle = titlefy([marketName, marketPrice]);

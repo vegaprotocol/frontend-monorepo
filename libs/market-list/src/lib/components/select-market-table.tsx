@@ -47,19 +47,17 @@ export const SelectMarketTableRow = ({
       }}
       data-testid={`market-link-${marketId}`}
     >
-      {columns.map(
-        ({ kind, value, className, dataTestId, onlyOnDetailed }) => {
-          if (!onlyOnDetailed || detailed === onlyOnDetailed) {
-            const tdClass = classNames(className);
-            return (
-              <td key={kind} data-testid={dataTestId} className={tdClass}>
-                {value}
-              </td>
-            );
-          }
-          return null;
+      {columns.map(({ kind, value, className, dataTestId, onlyOnDetailed }) => {
+        if (!onlyOnDetailed || detailed === onlyOnDetailed) {
+          const tdClass = classNames(className);
+          return (
+            <td key={kind} data-testid={dataTestId} className={tdClass}>
+              {value}
+            </td>
+          );
         }
-      )}
+        return null;
+      })}
     </tr>
   );
 };

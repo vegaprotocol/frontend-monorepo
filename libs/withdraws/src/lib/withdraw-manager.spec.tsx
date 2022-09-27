@@ -23,81 +23,77 @@ jest.mock('./use-get-withdraw-delay', () => ({
   },
 }));
 
-describe('WithdrawManager', () => {
-  let props: WithdrawManagerProps;
+let props: WithdrawManagerProps;
 
-  beforeEach(() => {
-    props = {
-      assets: [generateAsset()],
-      accounts: [generateAccount()],
-      submit: jest.fn(),
-    };
-  });
-
-  const generateJsx = (props: WithdrawManagerProps) => (
-    <WithdrawManager {...props} />
-  );
-
-  it('calls submit if valid form submission', async () => {
-    render(generateJsx(props));
-    await act(async () => {
-      await submitValid();
-    });
-    expect(props.submit).toHaveBeenCalledWith({
-      amount: '1000',
-      asset: props.assets[0].id,
-      receiverAddress: ethereumAddress,
-      availableTimestamp: null,
-    });
-  });
-
-  it('validates correctly', async () => {
-    render(generateJsx(props));
-
-    // Set other fields to be valid
-    fireEvent.change(screen.getByLabelText('Asset'), {
-      target: { value: props.assets[0].id },
-    });
-    fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
-      target: { value: ethereumAddress },
-    });
-
-    // Min amount
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.00000001' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
-    expect(
-      await screen.findByText('Value is below minimum')
-    ).toBeInTheDocument();
-    expect(props.submit).not.toBeCalled();
-
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.00001' },
-    });
-
-    // Max amount (balance is 1)
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '2' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
-    expect(
-      await screen.findByText('Insufficient amount in account')
-    ).toBeInTheDocument();
-    expect(props.submit).not.toBeCalled();
-  });
-
-  const submitValid = async () => {
-    await userEvent.selectOptions(
-      screen.getByLabelText('Asset'),
-      props.assets[0].id
-    );
-    fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
-      target: { value: ethereumAddress },
-    });
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.01' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
+beforeEach(() => {
+  props = {
+    assets: [generateAsset()],
+    accounts: [generateAccount()],
+    submit: jest.fn(),
   };
 });
+
+const generateJsx = (props: WithdrawManagerProps) => (
+  <WithdrawManager {...props} />
+);
+
+it('calls submit if valid form submission', async () => {
+  render(generateJsx(props));
+  await act(async () => {
+    await submitValid();
+  });
+  expect(props.submit).toHaveBeenCalledWith({
+    amount: '1000',
+    asset: props.assets[0].id,
+    receiverAddress: ethereumAddress,
+    availableTimestamp: null,
+  });
+});
+
+it('validates correctly', async () => {
+  render(generateJsx(props));
+
+  // Set other fields to be valid
+  fireEvent.change(screen.getByLabelText('Asset'), {
+    target: { value: props.assets[0].id },
+  });
+  fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
+    target: { value: ethereumAddress },
+  });
+
+  // Min amount
+  fireEvent.change(screen.getByLabelText('Amount'), {
+    target: { value: '0.00000001' },
+  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
+  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
+  expect(props.submit).not.toBeCalled();
+
+  fireEvent.change(screen.getByLabelText('Amount'), {
+    target: { value: '0.00001' },
+  });
+
+  // Max amount (balance is 1)
+  fireEvent.change(screen.getByLabelText('Amount'), {
+    target: { value: '2' },
+  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
+  expect(
+    await screen.findByText('Insufficient amount in account')
+  ).toBeInTheDocument();
+  expect(props.submit).not.toBeCalled();
+});
+
+const submitValid = async () => {
+  await userEvent.selectOptions(
+    screen.getByLabelText('Asset'),
+    props.assets[0].id
+  );
+  fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
+    target: { value: ethereumAddress },
+  });
+  fireEvent.change(screen.getByLabelText('Amount'), {
+    target: { value: '0.01' },
+  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
+};
