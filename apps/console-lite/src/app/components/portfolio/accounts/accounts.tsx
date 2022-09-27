@@ -44,7 +44,7 @@ const AccountsManager = () => {
         noDataMessage={NO_DATA_MESSAGE}
       >
         <ConsoleLiteGrid<AccountObj>
-          data={data as AccountObj[]}
+          rowData={data as AccountObj[]}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           components={{ PriceCell }}

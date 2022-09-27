@@ -37,8 +37,11 @@ export const makeInfiniteScrollGetRows =
     startRow += newRows.current;
     endRow += newRows.current;
     try {
-      if (data.current && data.current.indexOf(null) < endRow) {
-        await load();
+      if (data.current) {
+        const firstMissingRowIndex = data.current.indexOf(null);
+        if (firstMissingRowIndex !== -1 && firstMissingRowIndex < endRow) {
+          await load();
+        }
       }
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
