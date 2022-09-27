@@ -99,8 +99,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.getByTestId(marketTitle).contains('Risk parameters').click();
 
     validateMarketDataRow(0, 'Typename', 'LogNormalModelParams');
-    validateMarketDataRow(0, 'R', '0.016');
-    validateMarketDataRow(1, 'Sigma', '0.3');
+    validateMarketDataRow(1, 'R', '0.016');
+    validateMarketDataRow(2, 'Sigma', '0.3');
   });
 
   it('risk factors displayed', () => {
