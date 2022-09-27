@@ -12,6 +12,7 @@ import { createClient } from './lib/apollo-client';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
 import { useContracts } from './config/contracts/contracts-context';
+import { AddSignerForm, RemoveSignerForm } from './components';
 
 function App() {
   const { VEGA_ENV } = useEnvironment();
@@ -29,27 +30,30 @@ function App() {
   }, [VEGA_ENV]);
 
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       try {
         const res = await multisig.get_valid_signer_count();
         setValidSignerCount(res);
       } catch (err) {
         Sentry.captureException(err);
       }
-    };
-
-    run();
+    })();
   }, [multisig]);
 
   return (
-    <div className="grid min-h-full">
+    <div className="grid min-h-full items-center">
       <AsyncRenderer loading={loading} data={config} error={error}>
-        <h1>Multisig signer</h1>
-        <p>
-          Multisig contract address:{' '}
-          {config?.multisig_control_contract?.address}
-        </p>
-        <p>Test multisig method. Valid signer count: {validSignerCount}</p>
+        <div className="max-w-6xl">
+          <h1>Multisig signer</h1>
+          <p>
+            Multisig contract address:{' '}
+            {config?.multisig_control_contract?.address}
+          </p>
+          <p>Valid signer count: {validSignerCount}</p>
+
+          <AddSignerForm />
+          <RemoveSignerForm />
+        </div>
       </AsyncRenderer>
     </div>
   );
