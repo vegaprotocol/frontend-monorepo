@@ -63,7 +63,7 @@ export const CurrentProposalStatus = ({
         <>
           <span>{t('voteFailedReason')}</span>
           <StatusFail>{t('participationNotMet')}</StatusFail>
-          <span>&nbsp;{daysClosedAgo}.</span>
+          <span>&nbsp;{daysClosedAgo}</span>
         </>
       );
     }
@@ -73,7 +73,7 @@ export const CurrentProposalStatus = ({
         <>
           <span>{t('voteFailedReason')}</span>
           <StatusFail>{t('majorityNotMet')}</StatusFail>
-          <span>&nbsp;{daysClosedAgo}.</span>
+          <span>&nbsp;{daysClosedAgo}</span>
         </>
       );
     }
@@ -82,7 +82,7 @@ export const CurrentProposalStatus = ({
       <>
         <span>{t('voteFailedReason')}</span>
         <StatusFail>{proposal.state}</StatusFail>
-        <span>&nbsp;{daysClosedAgo}.</span>
+        <span>&nbsp;{daysClosedAgo}</span>
       </>
     );
   }
@@ -99,7 +99,6 @@ export const CurrentProposalStatus = ({
           {proposal.state === ProposalState.STATE_ENACTED
             ? daysEnactedAgo
             : daysClosedAgo}
-          .
         </span>
       </>
     );

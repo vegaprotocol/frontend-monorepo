@@ -167,33 +167,12 @@ export const columns = (
   const candlesClose = candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLAnchorElement>,
-    id: string
-  ) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
   const candleLow = candles && calcCandleLow(candles);
   const candleHigh = candles && calcCandleHigh(candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
-      value: (
-        <Link href={`/markets/${market.id}`} passHref={true}>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
-          <a
-            onKeyPress={(event) => handleKeyPress(event, market.id)}
-            onClick={() => {
-              onSelect(market.id);
-            }}
-            data-testid={`market-link-${market.id}`}
-          >
-            {market.tradableInstrument.instrument.code}
-          </a>
-        </Link>
-      ),
+      value: market.tradableInstrument.instrument.code,
       className: cellClassNames,
       onlyOnDetailed: false,
     },
