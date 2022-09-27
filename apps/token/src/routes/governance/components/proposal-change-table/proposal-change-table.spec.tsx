@@ -79,6 +79,28 @@ it('Changes data based on if data is in future or past', () => {
   ).toBeInTheDocument();
 });
 
+it('Does not render enactment time for freeform proposal', () => {
+  const proposal = generateProposal({
+    state: ProposalState.STATE_ENACTED,
+    terms: {
+      __typename: 'ProposalTerms',
+      change: {
+        __typename: 'NewFreeform',
+      },
+    },
+  });
+  render(<ProposalChangeTable proposal={proposal} />);
+  expect(screen.queryByText('Enacted on')).not.toBeInTheDocument();
+  expect(
+    screen.queryByText(
+      format(
+        new Date(proposal.terms.enactmentDatetime || 0),
+        DATE_FORMAT_DETAILED
+      )
+    )
+  ).not.toBeInTheDocument();
+});
+
 it('Renders error details and rejection reason if present', () => {
   const errorDetails = 'Error message';
   const proposal = generateProposal({
