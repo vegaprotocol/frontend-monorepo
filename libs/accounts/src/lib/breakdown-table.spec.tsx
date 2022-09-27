@@ -33,48 +33,40 @@ const singleRowData = [singleRow];
 
 describe('BreakdownTable', () => {
   it('should render successfully', async () => {
-    await act(async () => {
-      const { baseElement } = render(<BreakdownTable data={[]} />);
-      expect(baseElement).toBeTruthy();
-    });
+    const { baseElement } = render(<BreakdownTable data={[]} />);
+    expect(baseElement).toBeTruthy();
   });
 
   it('should render correct columns', async () => {
-    act(async () => {
+    await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
-      await waitFor(async () => {
-        const headers = await screen.getAllByRole('columnheader');
-        expect(headers).toHaveLength(6);
-        expect(
-          headers.map((h) =>
-            h.querySelector('[ref="eText"]')?.textContent?.trim()
-          )
-        ).toEqual([
-          'Account type',
-          'Market',
-          'Used',
-          'Deposited',
-          'Balance',
-          'Type',
-        ]);
-      });
+    });
+    await waitFor(async () => {
+      const headers = await screen.getAllByRole('columnheader');
+      expect(headers).toHaveLength(5);
+      expect(
+        headers.map((h) =>
+          h.querySelector('[ref="eText"]')?.textContent?.trim()
+        )
+      ).toEqual(['Account type', 'Market', 'Used', 'Deposited', 'Balance']);
     });
   });
 
   it('should apply correct formatting', async () => {
-    act(async () => {
+    await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
-      await waitFor(async () => {
-        const cells = await screen.getAllByRole('gridcell');
-        const expectedValues = [
-          'tBTC',
-          singleRow.type,
-          'BTCUSD Monthly (30 Jun 2022)',
-          '1,256.00000',
-        ];
-        cells.forEach((cell, i) => {
-          expect(cell).toHaveTextContent(expectedValues[i]);
-        });
+    });
+    await waitFor(async () => {
+      const cells = await screen.getAllByRole('gridcell');
+      const expectedValues = [
+        'Margin',
+        'BTCUSD Monthly (30 Jun 2022)',
+        '1,256.00001,256.0000',
+        '1,256.00000',
+        '1,256.00000',
+      ];
+      cells.forEach((cell, i) => {
+        expect(cell).toHaveTextContent(expectedValues[i]);
       });
     });
   });
