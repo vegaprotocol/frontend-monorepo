@@ -104,25 +104,9 @@ jobs:
         run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
       - name: Install Vega binaries
-        if: ${{ env.RUN_CAPSULE }}
-        uses: frontend-monorepo/.github/actions/install-binary
+        uses: .github/actions/install-vega-binaries
         with:
-          name: 'vega'
-          version: ${{ env.VEGA_VERSION }}
-          gobin: ${{ env.GOBIN }}
-
-      - name: Install date-node binaries
-        if: ${{ env.RUN_CAPSULE }}
-        uses: frontend-monorepo/.github/actions/install-binary
-        with:
-          name: 'data-node'
-          version: ${{ env.VEGA_VERSION }}
-          gobin: ${{ env.GOBIN }}
-
-      - name: Install Vega wallet binaries
-        uses: frontend-monorepo/.github/actions/install-binary
-        with:
-          name: 'vega-wallet'
+          all: false
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
