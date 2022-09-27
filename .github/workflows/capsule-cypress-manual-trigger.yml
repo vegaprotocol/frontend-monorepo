@@ -105,7 +105,7 @@ jobs:
 
       - name: Install Vega binaries
         if: ${{ env.RUN_CAPSULE }}
-        uses: '$ACTIONS_PATH/install-binary.yml'
+        uses: '$ACTIONS_PATH/install-binary'
         with:
           name: 'vega'
           version: ${{ env.VEGA_VERSION }}
@@ -113,16 +113,16 @@ jobs:
 
       - name: Install date-node binaries
         if: ${{ env.RUN_CAPSULE }}
-        uses: '$ACTIONS_PATH/install-binary.yml'
+        uses: '$ACTIONS_PATH/install-binary'
         with:
-          name: 'vega'
+          name: 'data-node'
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
       - name: Install Vega wallet binaries
-        uses: '$ACTIONS_PATH/install-binary.yml'
+        uses: '$ACTIONS_PATH/install-binary'
         with:
-          name: 'vega'
+          name: 'vega-wallet'
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
