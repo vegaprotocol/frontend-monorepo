@@ -104,7 +104,7 @@ jobs:
         run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
       - name: Install Vega binaries
-        uses: .github/actions/install-vega-binaries
+        uses: ./.github/actions/install-vega-binaries
         with:
           all: false
           version: ${{ env.VEGA_VERSION }}
