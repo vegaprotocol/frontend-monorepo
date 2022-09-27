@@ -127,55 +127,51 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     expect(screen.getByTestId('validation-2-mins-extra')).toBeTruthy();
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should show the correct datetimes', () => {
+  it('should show the correct datetimes', () => {
     renderComponent();
     // Should be adding 2 mins to the vote deadline as the minimum is set by
     // default, and we add 2 mins for wallet confirmation
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/2022, 1:02:00 AM'
+      '01/01/2022, 01:02:00'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/2022, 12:02:00 AM'
+      '01/01/2022, 00:02:00'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/2022, 2:00:00 AM'
+      '01/01/2022, 02:00:00'
     );
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should be updating every second, so show the correct datetimes when 30 seconds have passed', () => {
+  it('should be updating every second, so show the correct datetimes when 30 seconds have passed', () => {
     renderComponent();
     act(() => {
       jest.advanceTimersByTime(30000);
     });
 
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/2022, 1:02:30 AM'
+      '01/01/2022, 01:02:30'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/2022, 12:02:30 AM'
+      '01/01/2022, 00:02:30'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/2022, 2:00:30 AM'
+      '01/01/2022, 02:00:30'
     );
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('update the vote deadline date and the enactment deadline date when the vote deadline is changed', () => {
+  it('update the vote deadline date and the enactment deadline date when the vote deadline is changed', () => {
     renderComponent();
     const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
     fireEvent.change(voteDeadlineInput, { target: { value: 2 } });
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '1/1/2022, 2:00:00 AM'
+      '01/01/2022, 02:00:00'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '1/1/2022, 3:00:00 AM'
+      '01/01/2022, 03:00:00'
     );
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('updates the validation deadline max and date when the vote deadline max is changed', () => {
+  it('updates the validation deadline max and date when the vote deadline max is changed', () => {
     renderComponent();
     const voteDeadlineMinButton = screen.getByTestId('min-vote');
     const voteDeadlineMaxButton = screen.getByTestId('max-vote');
@@ -186,12 +182,12 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     fireEvent.click(voteDeadlineMaxButton);
     fireEvent.click(validationDeadlineMaxButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/2022, 5:00:00 AM'
+      '01/01/2022, 05:00:00'
     );
     expect(validationDeadlineInput).toHaveValue(5);
     fireEvent.click(voteDeadlineMinButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '1/1/2022, 1:00:00 AM'
+      '01/01/2022, 01:00:00'
     );
     expect(validationDeadlineInput).toHaveValue(1);
   });
