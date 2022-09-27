@@ -1,6 +1,6 @@
 import Routes from '../../routes';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { Link } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
 
@@ -17,7 +17,8 @@ export const Propose = () => {
             <p>
               <span className="mr-1">{t('ProposalTermsText')}</span>
               <Link
-                href={`${VEGA_DOCS_URL}/tutorials/proposals`}
+                className="underline"
+                to={`${VEGA_DOCS_URL}/tutorials/proposals`}
                 target="_blank"
               >{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
             </p>
@@ -26,7 +27,8 @@ export const Propose = () => {
             <p>
               {t('MoreProposalsInfo')}{' '}
               <Link
-                href={`${VEGA_EXPLORER_URL}/governance`}
+                className="underline"
+                to={`${VEGA_EXPLORER_URL}/governance`}
                 target="_blank"
               >{`${VEGA_EXPLORER_URL}/governance`}</Link>
             </p>
@@ -39,42 +41,60 @@ export const Propose = () => {
         <ul>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/network-parameter`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/network-parameter`}
+              >
                 {t('NetworkParameter')}
               </Link>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/new-market`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/new-market`}
+              >
                 {t('NewMarket')}
               </Link>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/update-market`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/update-market`}
+              >
                 {t('UpdateMarket')}
               </Link>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/new-asset`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/new-asset`}
+              >
                 {t('NewAsset')}
               </Link>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/freeform`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/freeform`}
+              >
                 {t('Freeform')}
               </Link>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/raw`}>
+              <Link
+                className="underline"
+                to={`${Routes.GOVERNANCE}/propose/raw`}
+              >
                 {t('RawProposal')}
               </Link>
             </p>
