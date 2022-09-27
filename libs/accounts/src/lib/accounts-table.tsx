@@ -115,6 +115,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               value,
               data,
             }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+              data &&
+              data.asset &&
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}

@@ -100,13 +100,15 @@ export const getAccountData = (
 ): AccountFields[] => {
   return getAssetIds(data).map((assetId) => {
     const accounts = data.filter((a) => a.asset.id === assetId);
-    return accounts && getAssetAccountAggregation(accounts);
+    return accounts && getAssetAccountAggregation(accounts, assetId);
   });
 };
 
 const getAssetAccountAggregation = (
-  accounts: AccountFieldsFragment[]
+  accountList: AccountFieldsFragment[],
+  assetId: string
 ): AccountFields => {
+  const accounts = accountList.filter((a) => a.asset.id === assetId);
   const available = getTotalBalance(
     accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
   );
@@ -128,6 +130,7 @@ const getAssetAccountAggregation = (
     .filter((a) => AccountType.ACCOUNT_TYPE_GENERAL !== a.type)
     .map((a) => ({
       ...a,
+      asset: accounts[0].asset,
       deposited: balanceAccount.deposited,
       available:
         AccountType.ACCOUNT_TYPE_GENERAL === a.type

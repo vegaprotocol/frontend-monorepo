@@ -74,6 +74,8 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+            data &&
+            data.asset &&
             addDecimalsFormatNumber(value, data.asset.decimals)
           }
           maxWidth={300}
@@ -85,6 +87,8 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<AccountFields, 'balance'>) =>
+            data &&
+            data.asset &&
             addDecimalsFormatNumber(value, data.asset.decimals)
           }
           maxWidth={300}
