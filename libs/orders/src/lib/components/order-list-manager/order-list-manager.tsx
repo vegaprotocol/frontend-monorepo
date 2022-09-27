@@ -34,7 +34,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <OrderList
         ref={gridRef}
-        rowModelType="infinite"
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}

@@ -67,7 +67,7 @@ const SimpleMarketList = () => {
         <ConsoleLiteGrid<MarketWithPercentChange>
           classNamesParam="mb-32 min-h-[300px]"
           columnDefs={columnDefs}
-          data={localData}
+          rowData={localData}
           defaultColDef={defaultColDef}
           handleRowClicked={handleRowClicked}
         />

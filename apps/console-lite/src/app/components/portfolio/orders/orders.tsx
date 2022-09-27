@@ -56,7 +56,8 @@ const OrdersManager = () => {
     >
       <ConsoleLiteGrid<OrderWithMarket>
         ref={gridRef}
-        rowModelType="infinite"
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
