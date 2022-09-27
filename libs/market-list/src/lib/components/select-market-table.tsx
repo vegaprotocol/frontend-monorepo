@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import type { Column } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
-import Link from 'next/link';
 
 export const SelectMarketTableHeader = ({
   detailed = false,
@@ -40,36 +39,27 @@ export const SelectMarketTableRow = ({
   onSelect: (id: string) => void;
   marketId: string;
 }) => {
-  const handleKeyPress = (event: React.KeyboardEvent, id: string) => {
-    if (event.key === 'Enter' && onSelect) {
-      return onSelect(id);
-    }
-  };
-
   return (
-    <Link href={`/markets/${marketId}`} passHref={true}>
-      <tr
-        className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer relative h-[34px]`}
-        onKeyPress={(event) => handleKeyPress(event, marketId)}
-        onClick={() => {
-          onSelect(marketId);
-        }}
-        data-testid={`market-link-${marketId}`}
-      >
-        {columns.map(
-          ({ kind, value, className, dataTestId, onlyOnDetailed }) => {
-            if (!onlyOnDetailed || detailed === onlyOnDetailed) {
-              const tdClass = classNames(className);
-              return (
-                <td key={kind} data-testid={dataTestId} className={tdClass}>
-                  {value}
-                </td>
-              );
-            }
-            return null;
+    <tr
+      className={`hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer relative h-[34px]`}
+      onClick={() => {
+        onSelect(marketId);
+      }}
+      data-testid={`market-link-${marketId}`}
+    >
+      {columns.map(
+        ({ kind, value, className, dataTestId, onlyOnDetailed }) => {
+          if (!onlyOnDetailed || detailed === onlyOnDetailed) {
+            const tdClass = classNames(className);
+            return (
+              <td key={kind} data-testid={dataTestId} className={tdClass}>
+                {value}
+              </td>
+            );
           }
-        )}
-      </tr>
-    </Link>
+          return null;
+        }
+      )}
+    </tr>
   );
 };
