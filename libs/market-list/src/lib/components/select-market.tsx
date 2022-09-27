@@ -160,7 +160,7 @@ export const SelectMarketPopover = ({
     PositionsSubscription_positions[]
   >({
     dataProvider: positionsDataProvider,
-    update: () => false,
+    noUpdate: true,
     variables,
     skip: !keypair,
   });

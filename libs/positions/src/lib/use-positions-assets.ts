@@ -3,14 +3,10 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { Position } from './positions-data-providers';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 
-interface Props {
-  partyId: string;
-}
-
 const getSymbols = (positions: Position[]) =>
   Array.from(new Set(positions.map((position) => position.assetSymbol))).sort();
 
-export const usePositionsAssets = ({ partyId }: Props) => {
+export const usePositionsAssets = (partyId: string) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const assetSymbols = useRef<string[] | undefined>();
   const update = useCallback(({ data }: { data: Position[] | null }) => {
