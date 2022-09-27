@@ -26,8 +26,10 @@ interface Props<T> extends GridOptions {
   classNamesParam?: string | string[];
 }
 
-const ConsoleLiteGrid = <T extends { id?: string }>(
-  { data, handleRowClicked, getRowId, classNamesParam, ...props }: Props<T>,
+const ConsoleLiteGrid = <T,>(
+  { data, handleRowClicked, classNamesParam, ...props }: Props<T> = {
+    getRowId: ({ data }: GetRowIdParams) => data.id,
+  },
   ref?: React.Ref<AgGridReact>
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
@@ -49,7 +51,6 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
     }
     return { ...params.previousCellPosition, rowIndex: rowIndex + 1 };
   }, []);
-  const getRowIdLocal = useCallback(({ data }: GetRowIdParams) => data.id, []);
   const onCellKeyDown = useCallback(
     (
       params: (CellKeyDownEvent | FullWidthCellKeyDownEvent) & {
@@ -84,7 +85,6 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
       ref={ref || gridRef}
       overlayNoRowsTemplate={NO_DATA_MESSAGE}
       suppressContextMenu
-      getRowId={getRowId || getRowIdLocal}
       suppressMovableColumns
       suppressRowTransform
       onCellKeyDown={onCellKeyDown}
@@ -95,9 +95,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
   );
 };
 
-const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <
-  T extends { id?: string }
->(
+const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <T>(
   p: Props<T> & { ref?: React.Ref<AgGridReact> }
 ) => React.ReactElement;
 

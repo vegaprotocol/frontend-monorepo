@@ -34,7 +34,7 @@ const singleRowData = [singleRow];
 describe('AccountsTable', () => {
   it('should render successfully', async () => {
     const { baseElement } = render(
-      <AccountTable data={[]} onClickAsset={() => null} />
+      <AccountTable rowData={[]} onClickAsset={() => null} />
     );
     expect(baseElement).toBeTruthy();
   });
@@ -42,7 +42,9 @@ describe('AccountsTable', () => {
   it('should render correct columns', async () => {
     let headers: HTMLElement[];
     await act(async () => {
-      render(<AccountTable data={singleRowData} onClickAsset={() => null} />);
+      render(
+        <AccountTable rowData={singleRowData} onClickAsset={() => null} />
+      );
     });
     await waitFor(async () => {
       headers = screen.getAllByRole('columnheader');
@@ -57,7 +59,9 @@ describe('AccountsTable', () => {
 
   it('should apply correct formatting', async () => {
     await act(async () => {
-      render(<AccountTable data={singleRowData} onClickAsset={() => null} />);
+      render(
+        <AccountTable rowData={singleRowData} onClickAsset={() => null} />
+      );
     });
     await waitFor(async () => {
       const cells = await screen.getAllByRole('gridcell');
