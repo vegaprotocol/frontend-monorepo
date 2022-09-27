@@ -61,7 +61,7 @@ const AccountsManager = () => {
         noDataMessage={NO_DATA_MESSAGE}
       >
         <ConsoleLiteGrid<AccountFields>
-          data={data?.length ? undefined : []}
+          rowData={data?.length ? undefined : []}
           rowModelType={data?.length ? 'infinite' : 'clientSide'}
           ref={gridRef}
           datasource={{ getRows }}

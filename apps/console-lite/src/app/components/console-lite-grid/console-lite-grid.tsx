@@ -11,25 +11,33 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { ThemeContext, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import type {
   GridOptions,
-  GetRowIdParams,
   TabToNextCellParams,
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
+  IGetRowsParams,
+  IDatasource,
 } from 'ag-grid-community';
 import { NO_DATA_MESSAGE } from '../../constants';
 import * as constants from '../simple-market-list/constants';
 
+export interface GetRowsParams<T>
+  extends Omit<IGetRowsParams, 'successCallback'> {
+  successCallback(rowsThisBlock: T[], lastRow?: number): void;
+}
+
+export interface Datasource<T> extends IDatasource {
+  getRows(params: GetRowsParams<T>): void;
+}
 interface Props<T> extends GridOptions {
-  data?: T[];
+  rowData?: T[];
+  datasource?: Datasource<T>;
   handleRowClicked?: (event: { data: T }) => void;
   components?: Record<string, unknown>;
   classNamesParam?: string | string[];
 }
 
-const ConsoleLiteGrid = <T,>(
-  { data, handleRowClicked, classNamesParam, ...props }: Props<T> = {
-    getRowId: ({ data }: GetRowIdParams) => data.id,
-  },
+const ConsoleLiteGrid = <T extends { id?: string }>(
+  { handleRowClicked, getRowId, classNamesParam, ...props }: Props<T>,
   ref?: React.Ref<AgGridReact>
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
@@ -71,7 +79,6 @@ const ConsoleLiteGrid = <T,>(
   return (
     <AgGrid
       className={classNames(classNamesParam)}
-      rowData={data}
       rowHeight={60}
       customThemeParams={
         theme === 'dark'

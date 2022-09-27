@@ -24,11 +24,7 @@ import type {
   ICellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
-import type {
-  AgGridReact,
-  AgGridReactProps,
-  AgReactUiProps,
-} from 'ag-grid-react';
+import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
 import type { Orders_party_ordersConnection_edges_node } from '../';
@@ -40,7 +36,7 @@ import { OrderEditDialog } from './order-edit-dialog';
 import type { OrderWithMarket } from '../';
 import { OrderFeedback } from '../order-feedback';
 
-type OrderListProps = AgGridReactProps | AgReactUiProps;
+type OrderListProps = AgGridReactProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
@@ -104,7 +100,7 @@ type OrderListTableValueFormatterParams = Omit<
   data: OrderWithMarket | null;
 };
 
-type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
+type OrderListTableProps = AgGridReactProps & {
   cancel: (order: OrderWithMarket) => void;
   setEditOrder: (order: OrderWithMarket) => void;
 };
