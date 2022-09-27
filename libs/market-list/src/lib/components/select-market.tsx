@@ -198,9 +198,9 @@ export const SelectMarketPopover = ({
             Loading market data
           </div>
         ) : (
-          <>
+          <table className="relative text-sm w-full whitespace-nowrap">
             {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
-              <table className="relative text-sm w-full whitespace-nowrap">
+              <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
                   markets={markets}
@@ -223,19 +223,17 @@ export const SelectMarketPopover = ({
                     )
                   }
                 />
-              </table>
+              </>
             ) : null}
-            <table className="relative text-sm w-full whitespace-nowrap">
-              <TableTitle>{t('All markets')}</TableTitle>
-              <SelectAllMarketsTableBody
-                markets={data?.markets}
-                marketsData={data?.marketsData}
-                marketsCandles={data?.marketsCandles}
-                onSelect={onSelectMarket}
-                onCellClick={onCellClick}
-              />
-            </table>
-          </>
+            <TableTitle>{t('All markets')}</TableTitle>
+            <SelectAllMarketsTableBody
+              markets={data?.markets}
+              marketsData={data?.marketsData}
+              marketsCandles={data?.marketsCandles}
+              onSelect={onSelectMarket}
+              onCellClick={onCellClick}
+            />
+          </table>
         )}
       </div>
     </Popover>
