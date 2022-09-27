@@ -16,6 +16,7 @@ import {
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
+import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
@@ -48,22 +49,31 @@ export const progressBarHeaderComponentParams = {
     '</div>',
 };
 
+export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
+  successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
+}
+
+export interface Datasource extends IDatasource {
+  getRows(params: GetRowsParams): void;
+}
+
 export interface AccountTableProps extends AgGridReactProps {
-  data: AccountFields[] | null;
+  rowData?: AccountFields[] | null;
+  datasource?: Datasource;
   onClickAsset: (asset: string | Asset) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
-  ({ data, onClickAsset, onClickWithdraw, onClickDeposit }, ref) => {
+  ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
     return (
       <>
         <AgGrid
           style={{ width: '100%', height: '100%' }}
-          rowData={data}
+          overlayNoRowsTemplate={t('No accounts')}
           getRowId={({ data }: { data: AccountFields }) => data.asset.id}
           ref={ref}
           rowHeight={34}
@@ -74,6 +84,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             tooltipComponent: TooltipCellComponent,
             sortable: true,
           }}
+          {...props}
         >
           <AgGridColumn
             headerName={t('Asset')}

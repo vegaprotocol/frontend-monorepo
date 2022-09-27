@@ -1,7 +1,7 @@
 import { AccountType } from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
-import type { AccountFieldsFragment } from './__generated__';
+import type { AccountFieldsFragment } from './__generated___/Accounts';
 
 describe('getAccountData', () => {
   it('should return the correct aggregated data', () => {

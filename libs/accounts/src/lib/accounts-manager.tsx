@@ -2,11 +2,12 @@ import type { Asset } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
+import type { IGetRowsParams } from 'ag-grid-community';
 import { useRef, useMemo, useCallback } from 'react';
 import type { AccountFields } from './accounts-data-provider';
-import { accountsDataProvider } from './accounts-data-provider';
+import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import { AccountTable } from './accounts-table';
-import type { AccountEventsSubscription } from './__generated__';
+import type { GetRowsParams } from './accounts-table';
 
 interface AccountManagerProps {
   partyId: string;
@@ -29,23 +30,40 @@ export const AccountManager = ({
       if (!gridRef.current?.api) {
         return false;
       }
-      dataRef.current = data;
-      gridRef.current.api.refreshInfiniteCache();
-      return true;
+      if (dataRef.current?.length) {
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      }
+      return false;
     },
     [gridRef]
   );
-  const { data, error, loading } = useDataProvider<
-    AccountFields[],
-    AccountEventsSubscription['accounts']
-  >({ dataProvider: accountsDataProvider, update, variables });
+  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+    dataProvider: aggregatedAccountsDataProvider,
+    update,
+    variables,
+  });
   dataRef.current = data;
+  const getRows = async ({
+    successCallback,
+    startRow,
+    endRow,
+  }: GetRowsParams) => {
+    const rowsThisBlock = dataRef.current
+      ? dataRef.current.slice(startRow, endRow)
+      : [];
+    const lastRow = dataRef.current?.length ?? -1;
+    successCallback(rowsThisBlock, lastRow);
+  };
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {data && (
         <AccountTable
-          data={data}
+          rowModelType={data?.length ? 'infinite' : 'clientSide'}
+          rowData={data?.length ? undefined : []}
           ref={gridRef}
+          datasource={{ getRows }}
           onClickAsset={onClickAsset}
           onClickDeposit={onClickDeposit}
           onClickWithdraw={onClickWithdraw}

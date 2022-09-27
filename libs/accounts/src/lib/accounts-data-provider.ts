@@ -1,4 +1,5 @@
 import produce from 'immer';
+import type { IterableElement } from 'type-fest';
 import {
   AccountsDocument,
   AccountEventsDocument,
@@ -8,8 +9,68 @@ import type {
   AccountsQuery,
   AccountEventsSubscription,
 } from './__generated___/Accounts';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
+
+function isAccount(
+  account:
+    | AccountFieldsFragment
+    | IterableElement<AccountEventsSubscription['accounts']>
+): account is AccountFieldsFragment {
+  return (account as AccountFieldsFragment).__typename === 'Account';
+}
+
+export const getId = (
+  account:
+    | AccountFieldsFragment
+    | IterableElement<AccountEventsSubscription['accounts']>
+) =>
+  isAccount(account)
+    ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
+    : `${account.type}-${account.assetId}-${account.marketId}`;
+
+const update = (
+  data: AccountFieldsFragment[],
+  deltas: AccountEventsSubscription['accounts']
+) => {
+  return produce(data, (draft) => {
+    deltas.forEach((delta) => {
+      const id = getId(delta);
+      const index = draft.findIndex((a) => getId(a) === id);
+      if (index !== -1) {
+        draft[index].balance = delta.balance;
+      } else {
+        // #TODO handle new account
+      }
+    });
+  });
+};
+
+const getData = (
+  responseData: AccountsQuery
+): AccountFieldsFragment[] | null => {
+  return responseData.party?.accounts ?? null;
+};
+
+const getDelta = (
+  subscriptionData: AccountEventsSubscription
+): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
+
+export const accountsDataProvider = makeDataProvider<
+  AccountsQuery,
+  AccountFieldsFragment[],
+  AccountEventsSubscription,
+  AccountEventsSubscription['accounts']
+>({
+  query: AccountsDocument,
+  subscriptionQuery: AccountEventsDocument,
+  update,
+  getData,
+  getDelta,
+});
 
 export interface AccountFields extends AccountFieldsFragment {
   available: string;
@@ -27,66 +88,6 @@ const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_FEES_MAKER,
   AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
 ];
-
-const getData = (responseData: AccountsQuery): AccountFields[] | null => {
-  return (
-    (responseData.party?.accounts &&
-      getAccountData(responseData.party.accounts)) ??
-    null
-  );
-};
-
-const getDelta = (
-  subscriptionData: AccountEventsSubscription
-): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
-
-const update = (
-  data: AccountFields[],
-  deltas: AccountEventsSubscription['accounts']
-): AccountFields[] => {
-  return produce(data, (draft) => {
-    deltas.forEach((delta) => {
-      const index = draft.findIndex(
-        (account) => account.asset.id === delta.assetId
-      );
-      if (index !== -1) {
-        const accountBreakdown = draft[index].breakdown?.map((account) => {
-          // match delta to the right account entry in the breakdown
-          if (
-            (delta.marketId === account.market?.id &&
-              delta.type === account.type) ||
-            delta.type === account.type
-          ) {
-            // update balance in the breakdown
-            return { ...account, balance: delta.balance };
-          }
-          return account;
-        });
-        if (accountBreakdown && accountBreakdown.length > 0) {
-          Object.assign(
-            draft[index],
-            getAssetAccountAggregation(accountBreakdown)
-          );
-        }
-      } else {
-        // #TODO handle new account
-      }
-    });
-  });
-};
-
-export const accountsDataProvider = makeDataProvider<
-  AccountsQuery,
-  AccountFields[],
-  AccountEventsSubscription,
-  AccountEventsSubscription['accounts']
->({
-  query: AccountsDocument,
-  subscriptionQuery: AccountEventsDocument,
-  update,
-  getData,
-  getDelta,
-});
 
 const getAssetIds = (data: AccountFieldsFragment[]) =>
   Array.from(new Set(data.map((a) => a.asset.id))).sort();
@@ -138,3 +139,11 @@ const getAssetAccountAggregation = (
     }));
   return { ...balanceAccount, breakdown };
 };
+
+export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
+  AccountFields[],
+  never
+>(
+  [accountsDataProvider],
+  (parts) => parts[0] && getAccountData(parts[0] as AccountFieldsFragment[])
+);
