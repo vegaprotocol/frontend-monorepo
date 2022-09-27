@@ -12,7 +12,7 @@ const Header = () => {
   } = useContext(LocalContext);
   return (
     <div
-      className="flex items-stretch pr-6 py-6 bg-black text-neutral-400"
+      className="dark flex items-stretch pr-6 py-6 bg-black text-neutral-400"
       data-testid="header"
     >
       <Logo />
@@ -21,12 +21,7 @@ const Header = () => {
           setConnectDialog={setConnect}
           setManageDialog={setManage}
         />
-        <ThemeSwitcher
-          theme={theme}
-          onToggle={toggleTheme}
-          className="-my-4"
-          fixedBg="dark"
-        />
+        <ThemeSwitcher theme={theme} onToggle={toggleTheme} className="-my-4" />
       </div>
     </div>
   );

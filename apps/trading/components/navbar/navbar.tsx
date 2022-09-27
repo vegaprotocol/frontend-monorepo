@@ -20,7 +20,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
   return (
-    <div className="px-4 flex items-stretch border-b border-default bg-black text-white">
+    <div className="dark px-4 flex items-stretch border-b border-default bg-black text-white">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -28,7 +28,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
             <Vega className="w-13" />
           </a>
         </Link>
-        <NetworkSwitcher theme="dark" />
+        <NetworkSwitcher />
       </div>
       <nav className="flex items-center">
         {[
@@ -43,12 +43,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
         ))}
       </nav>
       <div className="flex items-center gap-2 ml-auto">
-        <ThemeSwitcher
-          theme={theme}
-          onToggle={toggleTheme}
-          sunClassName="text-white"
-          fixedBg="dark"
-        />
+        <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
         <VegaWalletConnectButton
           setConnectDialog={(open) => update({ connectDialog: open })}
         />
