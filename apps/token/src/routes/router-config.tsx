@@ -257,6 +257,7 @@ const routerConfig = [
       { index: true, element: <LazyGovernanceProposals /> },
       {
         path: 'propose',
+        element: <Outlet />,
         children: [
           { index: true, element: <LazyGovernancePropose /> },
           {
