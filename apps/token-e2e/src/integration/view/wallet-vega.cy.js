@@ -288,10 +288,26 @@ context(
 
     describe('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
-        cy.vega_wallet_receive_fauceted_asset('USDC (fake)', '10', vegaWalletPublicKey);
-        cy.vega_wallet_receive_fauceted_asset('BTC (fake)', '6', vegaWalletPublicKey);
-        cy.vega_wallet_receive_fauceted_asset('EURO (fake)', '8', vegaWalletPublicKey);
-        cy.vega_wallet_receive_fauceted_asset('DAI (fake)', '2', vegaWalletPublicKey);
+        cy.vega_wallet_receive_fauceted_asset(
+          'USDC (fake)',
+          '10',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_receive_fauceted_asset(
+          'BTC (fake)',
+          '6',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_receive_fauceted_asset(
+          'EURO (fake)',
+          '8',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_receive_fauceted_asset(
+          'DAI (fake)',
+          '2',
+          vegaWalletPublicKey
+        );
         //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
         // then code below can be removed
         cy.get(walletContainer).within(() => {
@@ -399,8 +415,6 @@ context(
           }
         }
       );
-      
     });
-
   }
 );
