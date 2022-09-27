@@ -6,6 +6,8 @@ export * from './validate';
 export * from './assets';
 export * from './determine-id';
 export * from './generic-data-provider';
+export * from './get-nodes';
+export * from './get-events';
 export * from './i18n';
 export * from './pagination';
 export * from './remove-0x';

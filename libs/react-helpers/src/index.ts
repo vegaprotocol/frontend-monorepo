@@ -4,6 +4,8 @@ export * from './lib/context';
 export * from './lib/determine-id';
 export * from './lib/format';
 export * from './lib/generic-data-provider';
+export * from './lib/get-nodes';
+export * from './lib/get-events';
 export * from './lib/grid';
 export * from './lib/i18n';
 export * from './lib/pagination';

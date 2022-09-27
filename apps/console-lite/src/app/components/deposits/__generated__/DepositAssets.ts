@@ -6,14 +6,14 @@
 import { AssetStatus } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: Deposits
+// GraphQL query operation: DepositAssets
 // ====================================================
 
-export interface Deposits_assetsConnection_edges_node_source_BuiltinAsset {
+export interface DepositAssets_assetsConnection_edges_node_source_BuiltinAsset {
   __typename: "BuiltinAsset";
 }
 
-export interface Deposits_assetsConnection_edges_node_source_ERC20 {
+export interface DepositAssets_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -21,9 +21,9 @@ export interface Deposits_assetsConnection_edges_node_source_ERC20 {
   contractAddress: string;
 }
 
-export type Deposits_assetsConnection_edges_node_source = Deposits_assetsConnection_edges_node_source_BuiltinAsset | Deposits_assetsConnection_edges_node_source_ERC20;
+export type DepositAssets_assetsConnection_edges_node_source = DepositAssets_assetsConnection_edges_node_source_BuiltinAsset | DepositAssets_assetsConnection_edges_node_source_ERC20;
 
-export interface Deposits_assetsConnection_edges_node {
+export interface DepositAssets_assetsConnection_edges_node {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -48,25 +48,28 @@ export interface Deposits_assetsConnection_edges_node {
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
-  source: Deposits_assetsConnection_edges_node_source;
+  source: DepositAssets_assetsConnection_edges_node_source;
 }
 
-export interface Deposits_assetsConnection_edges {
+export interface DepositAssets_assetsConnection_edges {
   __typename: "AssetEdge";
-  node: Deposits_assetsConnection_edges_node;
+  /**
+   * The asset information
+   */
+  node: DepositAssets_assetsConnection_edges_node;
 }
 
-export interface Deposits_assetsConnection {
+export interface DepositAssets_assetsConnection {
   __typename: "AssetsConnection";
   /**
    * The assets
    */
-  edges: (Deposits_assetsConnection_edges | null)[] | null;
+  edges: (DepositAssets_assetsConnection_edges | null)[] | null;
 }
 
-export interface Deposits {
+export interface DepositAssets {
   /**
    * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
-  assetsConnection: Deposits_assetsConnection | null;
+  assetsConnection: DepositAssets_assetsConnection | null;
 }

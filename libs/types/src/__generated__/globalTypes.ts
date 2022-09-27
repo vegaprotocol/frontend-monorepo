@@ -85,15 +85,6 @@ export enum ConditionOperator {
 }
 
 /**
- * The status of a deposit
- */
-export enum DepositStatus {
-  STATUS_CANCELLED = "STATUS_CANCELLED",
-  STATUS_FINALIZED = "STATUS_FINALIZED",
-  STATUS_OPEN = "STATUS_OPEN",
-}
-
-/**
  * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
  */
 export enum Interval {
@@ -143,6 +134,9 @@ export enum MarketTradingMode {
   TRADING_MODE_OPENING_AUCTION = "TRADING_MODE_OPENING_AUCTION",
 }
 
+/**
+ * Validating status of a node, i.e. validator or non-validator
+ */
 export enum NodeStatus {
   NODE_STATUS_NON_VALIDATOR = "NODE_STATUS_NON_VALIDATOR",
   NODE_STATUS_VALIDATOR = "NODE_STATUS_VALIDATOR",
@@ -157,7 +151,7 @@ export enum OracleSpecStatus {
 }
 
 /**
- * Reason for the order being rejected by the core node
+ * Why the order was rejected by the core node
  */
 export enum OrderRejectionReason {
   ORDER_ERROR_AMEND_FAILURE = "ORDER_ERROR_AMEND_FAILURE",
@@ -252,7 +246,7 @@ export enum PropertyKeyType {
 }
 
 /**
- * Reason for the proposal being rejected by the core node
+ * Why the proposal was rejected by the core node
  */
 export enum ProposalRejectionReason {
   PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = "PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE",
@@ -327,15 +321,6 @@ export enum StakeLinkingStatus {
   STATUS_ACCEPTED = "STATUS_ACCEPTED",
   STATUS_PENDING = "STATUS_PENDING",
   STATUS_REJECTED = "STATUS_REJECTED",
-}
-
-/**
- * Valid trade types
- */
-export enum TradeType {
-  TYPE_DEFAULT = "TYPE_DEFAULT",
-  TYPE_NETWORK_CLOSE_OUT_BAD = "TYPE_NETWORK_CLOSE_OUT_BAD",
-  TYPE_NETWORK_CLOSE_OUT_GOOD = "TYPE_NETWORK_CLOSE_OUT_GOOD",
 }
 
 export enum ValidatorStatus {

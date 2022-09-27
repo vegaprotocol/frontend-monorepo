@@ -1,4 +1,5 @@
 import { useMemo, useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
 import { PriceCell, useDataProvider } from '@vegaprotocol/react-helpers';
 import type {
@@ -23,11 +24,8 @@ interface AccountObj extends AccountFieldsFragment {
   id: string;
 }
 
-interface Props {
-  partyId: string;
-}
-
-const AccountsManager = ({ partyId }: Props) => {
+const AccountsManager = () => {
+  const { partyId = '' } = useOutletContext<{ partyId: string }>();
   const { isOpen, symbol, setOpen } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
