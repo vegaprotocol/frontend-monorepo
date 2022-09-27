@@ -31,12 +31,14 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
           : t('closedOn')}
         {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
-      <KeyValueTableRow>
-        {isFuture(new Date(terms.enactmentDatetime || 0))
-          ? t('proposedEnactment')
-          : t('enactedOn')}
-        {format(new Date(terms.enactmentDatetime || 0), DATE_FORMAT_DETAILED)}
-      </KeyValueTableRow>
+      {terms.change.__typename !== 'NewFreeform' ? (
+        <KeyValueTableRow>
+          {isFuture(new Date(terms.enactmentDatetime || 0))
+            ? t('proposedEnactment')
+            : t('enactedOn')}
+          {format(new Date(terms.enactmentDatetime || 0), DATE_FORMAT_DETAILED)}
+        </KeyValueTableRow>
+      ) : null}
       <KeyValueTableRow>
         {t('proposedBy')}
         <span style={{ wordBreak: 'break-word' }}>{proposal.party.id}</span>
