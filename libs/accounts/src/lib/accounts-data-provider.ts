@@ -68,6 +68,8 @@ const update = (
             getAssetAccountAggregation(accountBreakdown)
           );
         }
+      } else {
+        // #TODO handle new account
       }
     });
   });
