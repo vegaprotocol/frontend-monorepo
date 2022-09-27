@@ -1,7 +1,11 @@
 import type { CSSProperties } from 'react';
 import { forwardRef } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
-import { PriceCell, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  PriceCell,
+  t,
+} from '@vegaprotocol/react-helpers';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   progressBarCellRendererSelector,
@@ -10,9 +14,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
-import type { AccountType } from '@vegaprotocol/types';
 import {
-  assetDecimalsFormatter,
   progressBarHeaderComponentParams,
   progressBarValueFormatter,
 } from './accounts-table';
@@ -45,8 +47,10 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           headerName={t('Account type')}
           field="type"
           maxWidth={300}
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            AccountTypeMapping[value as AccountType]
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<AccountFields, 'type'>) =>
+            AccountTypeMapping[value]
           }
         />
         <AgGridColumn
@@ -68,13 +72,23 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         <AgGridColumn
           headerName={t('Deposited')}
           field="deposited"
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+            addDecimalsFormatNumber(value, data.asset.decimals)
+          }
           maxWidth={300}
         />
         <AgGridColumn
           headerName={t('Balance')}
           field="balance"
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<AccountFields, 'balance'>) =>
+            addDecimalsFormatNumber(value, data.asset.decimals)
+          }
           maxWidth={300}
         />
       </AgGrid>

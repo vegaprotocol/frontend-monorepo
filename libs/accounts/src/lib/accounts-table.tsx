@@ -1,11 +1,11 @@
 import { forwardRef, useState } from 'react';
-import type {
-  GroupCellRendererParams,
-  ValueFormatterParams,
-} from 'ag-grid-community';
+import type { ValueFormatterParams } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import type { ValueProps } from '@vegaprotocol/ui-toolkit';
+import type {
+  ValueProps,
+  VegaICellRendererParams,
+} from '@vegaprotocol/ui-toolkit';
 import {
   Button,
   ButtonLink,
@@ -17,9 +17,9 @@ import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { AccountFields } from './accounts-data-provider';
-import type { AccountFieldsFragment } from './__generated___/Accounts';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
+import type { AccountFields } from './accounts-data-provider';
 
 export const progressBarValueFormatter = ({
   data,
@@ -47,16 +47,6 @@ export const progressBarHeaderComponentParams = {
     '  <span ref="eText" class="ag-header-cell-text"></span>' +
     '</div>',
 };
-
-interface AccountsTableValueFormatterParams extends ValueFormatterParams {
-  data: AccountFieldsFragment;
-}
-
-export const assetDecimalsFormatter = ({
-  value,
-  data,
-}: AccountsTableValueFormatterParams) =>
-  addDecimalsFormatNumber(value, data.asset.decimals);
 
 export interface AccountTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
@@ -91,7 +81,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerTooltip={t(
               'Asset is the collateral that is deposited into the Vega protocol.'
             )}
-            cellRenderer={({ value }: ValueFormatterParams) => {
+            cellRenderer={({
+              value,
+            }: VegaValueFormatterParams<AccountFields, 'asset.symbol'>) => {
               return (
                 <ButtonLink
                   data-testid="deposit"
@@ -108,7 +100,12 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName={t('Deposited')}
             field="deposited"
-            valueFormatter={assetDecimalsFormatter}
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
             maxWidth={300}
           />
           <AgGridColumn
@@ -124,13 +121,15 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName=""
             field="breakdown"
             maxWidth={150}
-            cellRenderer={({ value }: GroupCellRendererParams) => {
+            cellRenderer={({
+              value,
+            }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
               return (
                 <ButtonLink
                   data-testid="breakdown"
                   onClick={() => {
                     setOpenBreakdown(!openBreakdown);
-                    setBreakdown(value);
+                    setBreakdown(value || null);
                   }}
                 >
                   {t('Collateral breakdown')}
@@ -142,7 +141,10 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName=""
             field="deposit"
             maxWidth={200}
-            cellRenderer={({ data }: GroupCellRendererParams) => {
+            cellRenderer={({
+              value,
+              data,
+            }: VegaICellRendererParams<AccountFields, 'asset'>) => {
               return (
                 <Button
                   size="xs"
@@ -160,7 +162,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName=""
             field="withdraw"
             maxWidth={200}
-            cellRenderer={({ data }: GroupCellRendererParams) => {
+            cellRenderer={({
+              data,
+            }: VegaICellRendererParams<AccountFields, 'asset'>) => {
               return (
                 <Button
                   size="xs"
