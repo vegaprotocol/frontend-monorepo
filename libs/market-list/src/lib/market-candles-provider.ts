@@ -11,7 +11,10 @@ import {
   MarketCandlesEventDocument,
 } from './__generated__/MarketCandles';
 
-const update = (data: MarketCandleFieldsFragment[], delta: MarketCandleEventFieldsFragment) => {
+const update = (
+  data: MarketCandleFieldsFragment[],
+  delta: MarketCandleEventFieldsFragment
+) => {
   return data && delta
     ? [
         ...data,
@@ -23,7 +26,9 @@ const update = (data: MarketCandleFieldsFragment[], delta: MarketCandleEventFiel
     : data;
 };
 
-const getData = (responseData: MarketCandlesQuery): MarketCandleFieldsFragment[] | null =>
+const getData = (
+  responseData: MarketCandlesQuery
+): MarketCandleFieldsFragment[] | null =>
   responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
     ?.filter((edge) => edge?.node)
     .map((edge) => edge?.node as MarketCandleFieldsFragment) || null;

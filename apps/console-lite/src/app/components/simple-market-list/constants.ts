@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MarketState } from '@vegaprotocol/types';
 import colors from 'tailwindcss/colors';
-import type { Market } from '@vegaprotocol/market-list';
+import type { MarketItemFieldsFragment } from '@vegaprotocol/market-list';
 import { IS_MARKET_TRADABLE } from '../../constants';
 
 export const STATES_FILTER = [
@@ -192,7 +192,7 @@ export const agGridDarkVariables = `
 `;
 
 export const ROW_CLASS_RULES = {
-  'cursor-pointer': ({ data }: { data: Market }) =>
+  'cursor-pointer': ({ data }: { data: MarketItemFieldsFragment }) =>
     IS_MARKET_TRADABLE(data || {}),
 };
 

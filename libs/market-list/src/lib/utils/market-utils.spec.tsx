@@ -1,8 +1,8 @@
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { Market } from '../markets-provider';
+import type { MarketItemFieldsFragment } from '../';
 import { mapDataToMarketList, totalFees } from './market-utils';
 
-const MARKET_A: Partial<Market> = {
+const MARKET_A: Partial<MarketItemFieldsFragment> = {
   id: '1',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -13,7 +13,7 @@ const MARKET_A: Partial<Market> = {
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
 };
 
-const MARKET_B: Partial<Market> = {
+const MARKET_B: Partial<MarketItemFieldsFragment> = {
   id: '2',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -24,7 +24,7 @@ const MARKET_B: Partial<Market> = {
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
 };
 
-const MARKET_C: Partial<Market> = {
+const MARKET_C: Partial<MarketItemFieldsFragment> = {
   id: '3',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -35,7 +35,7 @@ const MARKET_C: Partial<Market> = {
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
 };
 
-const MARKET_D: Partial<Market> = {
+const MARKET_D: Partial<MarketItemFieldsFragment> = {
   id: '4',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -53,13 +53,15 @@ describe('mapDataToMarketList', () => {
       MARKET_B,
       MARKET_C,
       MARKET_D,
-    ] as unknown as Market[]);
+    ] as unknown as MarketItemFieldsFragment[]);
     expect(result).toEqual([MARKET_B, MARKET_A]);
   });
 });
 
 describe('totalFees', () => {
-  const createFee = (...f: number[]): Market['fees']['factors'] => ({
+  const createFee = (
+    ...f: number[]
+  ): MarketItemFieldsFragment['fees']['factors'] => ({
     __typename: 'FeeFactors',
     infrastructureFee: f[0].toString(),
     liquidityFee: f[1].toString(),

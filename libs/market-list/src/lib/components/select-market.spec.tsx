@@ -2,9 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 
 import type { ReactNode } from 'react';
-import type { MarketData } from '../market-data-provider';
+import type { MarketItemFieldsFragment, MarketDataFieldsFragment } from '../';
 import type { MarketCandles } from '../markets-candles-provider';
-import type { Market } from '../markets-provider';
 
 import {
   SelectAllMarketsTableBody,
@@ -18,7 +17,7 @@ jest.mock(
       children
 );
 
-const MARKET_A: Partial<Market> = {
+const MARKET_A: Partial<MarketItemFieldsFragment> = {
   __typename: 'Market',
   id: '1',
   decimalPlaces: 2,
@@ -32,9 +31,11 @@ const MARKET_A: Partial<Market> = {
       name: 'ABCDEF 1-Day',
       product: {
         __typename: 'Future',
+        quoteName: 'Quote name',
         settlementAsset: {
           __typename: 'Asset',
           symbol: 'ABC',
+          decimals: 0,
         },
       },
       metadata: {
@@ -54,7 +55,7 @@ const MARKET_A: Partial<Market> = {
   },
 };
 
-const MARKET_B: Partial<Market> = {
+const MARKET_B: Partial<MarketItemFieldsFragment> = {
   __typename: 'Market',
   id: '2',
   decimalPlaces: 2,
@@ -68,9 +69,11 @@ const MARKET_B: Partial<Market> = {
       name: 'XYZ 1-Day',
       product: {
         __typename: 'Future',
+        quoteName: 'Quote name',
         settlementAsset: {
           __typename: 'Asset',
           symbol: 'XYZ',
+          decimals: 0,
         },
       },
       metadata: {
@@ -90,7 +93,7 @@ const MARKET_B: Partial<Market> = {
   },
 };
 
-const MARKET_DATA_A: Partial<MarketData> = {
+const MARKET_DATA_A: Partial<MarketDataFieldsFragment> = {
   __typename: 'MarketData',
   market: {
     __typename: 'Market',
@@ -101,7 +104,7 @@ const MARKET_DATA_A: Partial<MarketData> = {
   indicativeVolume: '1000',
 };
 
-const MARKET_DATA_B: Partial<MarketData> = {
+const MARKET_DATA_B: Partial<MarketDataFieldsFragment> = {
   __typename: 'MarketData',
   market: {
     __typename: 'Market',
@@ -151,15 +154,23 @@ const MARKET_CANDLES_B: Partial<MarketCandles> = {
 describe('SelectMarket', () => {
   it('should render the SelectAllMarketsTableBody', () => {
     const onSelect = jest.fn();
+    const onCellClick = jest.fn();
     const { container } = render(
       <SelectAllMarketsTableBody
-        markets={[MARKET_A as Market, MARKET_B as Market]}
-        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
+        markets={[
+          MARKET_A as MarketItemFieldsFragment,
+          MARKET_B as MarketItemFieldsFragment,
+        ]}
+        marketsData={[
+          MARKET_DATA_A as MarketDataFieldsFragment,
+          MARKET_DATA_B as MarketDataFieldsFragment,
+        ]}
         marketsCandles={[
           MARKET_CANDLES_A as MarketCandles,
           MARKET_CANDLES_B as MarketCandles,
         ]}
         onSelect={onSelect}
+        onCellClick={onCellClick}
       />
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
@@ -171,15 +182,23 @@ describe('SelectMarket', () => {
 
   it('should call onSelect callback on SelectMarketLandingTable', () => {
     const onSelect = jest.fn();
+    const onCellClick = jest.fn();
     render(
       <SelectMarketLandingTable
-        markets={[MARKET_A as Market, MARKET_B as Market]}
-        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
+        markets={[
+          MARKET_A as MarketItemFieldsFragment,
+          MARKET_B as MarketItemFieldsFragment,
+        ]}
+        marketsData={[
+          MARKET_DATA_A as MarketDataFieldsFragment,
+          MARKET_DATA_B as MarketDataFieldsFragment,
+        ]}
         marketsCandles={[
           MARKET_CANDLES_A as MarketCandles,
           MARKET_CANDLES_B as MarketCandles,
         ]}
         onSelect={onSelect}
+        onCellClick={onCellClick}
       />
     );
     fireEvent.click(screen.getByTestId(`market-link-1`));

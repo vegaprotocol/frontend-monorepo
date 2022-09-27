@@ -1,13 +1,16 @@
 import { makeDerivedDataProvider } from '@vegaprotocol/react-helpers';
 
-import type { Market } from './markets-provider';
+import type { MarketItemFieldsFragment } from './__generated__/Markets';
 import { marketsProvider } from './markets-provider';
 
-export const marketProvider = makeDerivedDataProvider<Market, never>(
+export const marketProvider = makeDerivedDataProvider<
+  MarketItemFieldsFragment,
+  never
+>(
   [(callback, client) => marketsProvider(callback, client)], // omit variables param
   ([markets], variables) => {
     if (markets) {
-      const market = (markets as Market[]).find(
+      const market = (markets as MarketItemFieldsFragment[]).find(
         (market) => market.id === variables?.['marketId']
       );
       if (market) {

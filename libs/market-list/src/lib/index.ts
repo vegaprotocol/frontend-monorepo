@@ -1,4 +1,6 @@
-export * from './__generated__';
+export * from './__generated__/Markets';
+export * from './__generated__/MarketData';
+export * from './__generated__/MarketCandles';
 export * from './components';
 export * from './utils';
 export * from './market-candles-provider';

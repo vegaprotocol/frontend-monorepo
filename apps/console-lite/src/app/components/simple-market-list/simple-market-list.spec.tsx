@@ -9,8 +9,8 @@ import {
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
-import { MarketState } from '@vegaprotocol/types';
-import type { Market } from '@vegaprotocol/market-list';
+import { Schema } from '@vegaprotocol/types';
+import type { MarketItemFieldsFragment } from '@vegaprotocol/market-list';
 import SimpleMarketList from './simple-market-list';
 
 const mockedNavigate = jest.fn();
@@ -26,7 +26,7 @@ jest.mock('./simple-market-percent-change', () => jest.fn());
 let marketsMock = [
   {
     id: 'MARKET_A',
-    state: MarketState.STATE_ACTIVE,
+    state: Schema.MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
         product: {
@@ -42,7 +42,7 @@ let marketsMock = [
   },
   {
     id: 'MARKET_B',
-    state: MarketState.STATE_ACTIVE,
+    state: Schema.MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
         product: {
@@ -56,7 +56,7 @@ let marketsMock = [
       },
     },
   },
-] as unknown as Market[];
+] as unknown as MarketItemFieldsFragment[];
 
 const LIB = '@vegaprotocol/market-list';
 const useMarketList = () => {
@@ -125,7 +125,7 @@ describe('SimpleMarketList', () => {
       expect(mockIsTradable).toHaveBeenCalledWith(
         expect.objectContaining({
           id: marketsMock[0].id,
-          state: MarketState.STATE_ACTIVE,
+          state: Schema.MarketState.STATE_ACTIVE,
         })
       );
       expect(mockedNavigate).toHaveBeenCalledWith(

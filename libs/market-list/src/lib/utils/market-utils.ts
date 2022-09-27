@@ -2,7 +2,7 @@ import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type { Market, Candle } from '../';
+import type { MarketItemFieldsFragment, MarketCandleFieldsFragment } from '../';
 
 export const totalFees = (fees: Schema.FeeFactors) => {
   if (!fees) {
@@ -16,7 +16,7 @@ export const totalFees = (fees: Schema.FeeFactors) => {
   );
 };
 
-export const mapDataToMarketList = (markets: Market[]) => {
+export const mapDataToMarketList = (markets: MarketItemFieldsFragment[]) => {
   const tradingModesOrdering = [
     Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -40,7 +40,9 @@ export const mapDataToMarketList = (markets: Market[]) => {
   );
 };
 
-export const calcCandleLow = (candles: Candle[]): string | undefined => {
+export const calcCandleLow = (
+  candles: MarketCandleFieldsFragment[]
+): string | undefined => {
   return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.low) {
@@ -54,7 +56,9 @@ export const calcCandleLow = (candles: Candle[]): string | undefined => {
     .toString();
 };
 
-export const calcCandleHigh = (candles: Candle[]): string | undefined => {
+export const calcCandleHigh = (
+  candles: MarketCandleFieldsFragment[]
+): string | undefined => {
   return candles
     ?.reduce((acc: BigNumber, c) => {
       if (c?.high) {

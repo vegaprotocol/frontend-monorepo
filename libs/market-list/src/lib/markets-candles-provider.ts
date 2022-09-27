@@ -1,7 +1,5 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import {
-  MarketsCandlesDocument,
-} from './__generated__/MarketCandles';
+import { MarketsCandlesDocument } from './__generated__/MarketCandles';
 import type {
   MarketsCandlesQuery,
   MarketCandleFieldsFragment,

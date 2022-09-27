@@ -7,9 +7,8 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import {
-  AuctionTrigger,
+  Schema,
   AuctionTriggerMapping,
-  MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -19,7 +18,11 @@ import Link from 'next/link';
 import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type { Market, MarketData, Candle } from '../';
+import type {
+  MarketItemFieldsFragment,
+  MarketDataFieldsFragment,
+  MarketCandleFieldsFragment,
+} from '../';
 import isNil from 'lodash/isNil';
 
 export const cellClassNames = 'py-1 first:text-left text-right';
@@ -158,9 +161,9 @@ export type OnCellClickHandler = (
 ) => void;
 
 export const columns = (
-  market: Market,
-  marketData: MarketData | undefined,
-  candles: Candle[] | undefined,
+  market: MarketItemFieldsFragment,
+  marketData: MarketDataFieldsFragment | undefined,
+  candles: MarketCandleFieldsFragment[] | undefined,
   onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler
 ) => {
@@ -298,9 +301,9 @@ export const columns = (
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         marketData?.trigger &&
-        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
@@ -340,9 +343,9 @@ export const columns = (
 };
 
 export const columnsPositionMarkets = (
-  market: Market,
-  marketData: MarketData | undefined,
-  candles: Candle[] | undefined,
+  market: MarketItemFieldsFragment,
+  marketData: MarketDataFieldsFragment | undefined,
+  candles: MarketCandleFieldsFragment[] | undefined,
   onSelect: (id: string) => void,
   openVolume?: string,
   onCellClick?: OnCellClickHandler
@@ -481,9 +484,9 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         marketData?.trigger &&
-        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        marketData.trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[marketData.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
@@ -524,7 +527,7 @@ export const columnsPositionMarkets = (
 const FeesCell = ({
   feeFactors,
 }: {
-  feeFactors: Market['fees']['factors'];
+  feeFactors: MarketItemFieldsFragment['fees']['factors'];
 }) => (
   <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
     <span>{totalFees(feeFactors) ?? '-'}</span>
@@ -534,7 +537,7 @@ const FeesCell = ({
 export const FeesBreakdown = ({
   feeFactors,
 }: {
-  feeFactors?: Market['fees']['factors'];
+  feeFactors?: MarketItemFieldsFragment['fees']['factors'];
 }) => {
   if (!feeFactors) return null;
   return (

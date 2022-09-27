@@ -4,16 +4,12 @@ import {
   useDataProvider,
   getNodes,
 } from '@vegaprotocol/react-helpers';
-import {
-  MarketListDocument
-} from './__generated__/Markets';
+import { MarketListDocument } from './__generated__/Markets';
 import type {
   MarketListQuery,
   MarketItemFieldsFragment,
 } from './__generated__/Markets';
-import type {
-  MarketDataFieldsFragment,
-} from './__generated__/MarketData';
+import type { MarketDataFieldsFragment } from './__generated__/MarketData';
 import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketCandles } from './markets-candles-provider';
@@ -21,7 +17,8 @@ import { useMemo } from 'react';
 import { Schema } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
-const getData = (responseData: MarketListQuery) => getNodes<MarketItemFieldsFragment>(responseData.marketsConnection)
+const getData = (responseData: MarketListQuery) =>
+  getNodes<MarketItemFieldsFragment>(responseData.marketsConnection);
 
 export const marketsProvider = makeDataProvider<
   MarketListQuery,
@@ -33,10 +30,10 @@ export const marketsProvider = makeDataProvider<
   getData,
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<MarketItemFieldsFragment[], never>(
-  [marketsProvider],
-  ([markets]) => mapDataToMarketList(markets)
-);
+export const activeMarketsProvider = makeDerivedDataProvider<
+  MarketItemFieldsFragment[],
+  never
+>([marketsProvider], ([markets]) => mapDataToMarketList(markets));
 
 export interface MarketsListData {
   markets: MarketItemFieldsFragment[];
@@ -62,7 +59,9 @@ export const marketListProvider = makeDerivedDataProvider<
   }
 );
 
-export type MarketWithData = MarketItemFieldsFragment & { data?: MarketDataFieldsFragment };
+export type MarketWithData = MarketItemFieldsFragment & {
+  data?: MarketDataFieldsFragment;
+};
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
   MarketWithData[],

@@ -17,7 +17,12 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { Market, MarketData, MarketCandles, Candle } from '../';
+import type {
+  MarketItemFieldsFragment,
+  MarketDataFieldsFragment,
+  MarketCandleFieldsFragment,
+  MarketCandles,
+} from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   Positions_party,
@@ -38,8 +43,8 @@ export const SelectMarketLandingTable = ({
   onSelect,
   onCellClick,
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
+  markets: MarketItemFieldsFragment[] | undefined;
+  marketsData: MarketDataFieldsFragment[] | undefined;
   marketsCandles: MarketCandles[] | undefined;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
@@ -91,8 +96,8 @@ export const SelectAllMarketsTableBody = ({
   tableColumns = (market, marketData, candles) =>
     columns(market, marketData, candles, onSelect, onCellClick),
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
+  markets: MarketItemFieldsFragment[] | undefined;
+  marketsData: MarketDataFieldsFragment[] | undefined;
   marketsCandles: MarketCandles[] | undefined;
   positions?: Positions_party_positionsConnection_edges_node[];
   title?: string;
@@ -100,9 +105,9 @@ export const SelectAllMarketsTableBody = ({
   onCellClick: OnCellClickHandler;
   headers?: Column[];
   tableColumns?: (
-    market: Market,
-    marketData: MarketData | undefined,
-    candles: Candle[] | undefined,
+    market: MarketItemFieldsFragment,
+    marketData: MarketDataFieldsFragment | undefined,
+    candles: MarketCandleFieldsFragment[] | undefined,
     openVolume?: string
   ) => Column[];
 }) => {

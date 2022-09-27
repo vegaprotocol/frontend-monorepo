@@ -1,7 +1,7 @@
-import type { Market } from '@vegaprotocol/market-list';
+import type { MarketItemFieldsFragment } from '@vegaprotocol/market-list';
 import { useEffect, useState } from 'react';
 
-const useMarketFilters = (data: Market[]) => {
+const useMarketFilters = (data: MarketItemFieldsFragment[]) => {
   const [products, setProducts] = useState<string[]>([]);
   const [assetsPerProduct, setAssetsPerProduct] = useState<
     Record<string, string[]>
@@ -14,11 +14,13 @@ const useMarketFilters = (data: Market[]) => {
       const product = item.tradableInstrument.instrument.product.__typename;
       const asset =
         item.tradableInstrument.instrument.product.settlementAsset.symbol;
-      if (!(product in localAssetPerProduct)) {
-        localAssetPerProduct[product] = new Set<string>();
+      if (product) {
+        if (!(product in localAssetPerProduct)) {
+          localAssetPerProduct[product] = new Set<string>();
+        }
+        localAssetPerProduct[product].add(asset);
+        localProducts.add(product);
       }
-      localAssetPerProduct[product].add(asset);
-      localProducts.add(product);
     });
     setProducts([...localProducts]);
     setAssetsPerProduct(
