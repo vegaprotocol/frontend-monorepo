@@ -9,18 +9,11 @@ import { ProposeUpdateMarket } from './propose-update-market';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import { MARKETS_QUERY } from './propose-update-market';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
-import { gql } from '@apollo/client';
+import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: gql`
-      query NetworkParams {
-        networkParameters {
-          key
-          value
-        }
-      }
-    `,
+    query: NETWORK_PARAMETERS_QUERY,
   },
   result: {
     data: {

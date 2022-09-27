@@ -57,8 +57,10 @@ export const SelectMarketLandingTable = ({
           <tbody>
             {markets?.map((market, i) => (
               <SelectMarketTableRow
+                marketId={market.id}
                 key={i}
                 detailed={false}
+                onSelect={onSelect}
                 columns={columns(
                   market,
                   marketsData?.find(
@@ -116,8 +118,10 @@ export const SelectAllMarketsTableBody = ({
       <tbody className="border-b-[10px] border-transparent">
         {markets?.map((market, i) => (
           <SelectMarketTableRow
+            marketId={market.id}
             key={i}
             detailed={true}
+            onSelect={onSelect}
             columns={tableColumns(
               market,
               marketsData?.find(

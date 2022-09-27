@@ -7,7 +7,7 @@ import {
 import type {
   Markets,
   Markets_marketsConnection_edges_node,
-} from './__generated__';
+} from './__generated__/Markets';
 import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';

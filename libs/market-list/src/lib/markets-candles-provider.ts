@@ -4,7 +4,7 @@ import type {
   MarketsCandlesQuery,
   MarketsCandlesQuery_marketsConnection_edges_node as Market,
   MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
-} from './__generated__';
+} from './__generated__/MarketsCandlesQuery';
 
 export const MARKETS_CANDLES_QUERY = gql`
   query MarketsCandlesQuery($interval: Interval!, $since: String!) {
