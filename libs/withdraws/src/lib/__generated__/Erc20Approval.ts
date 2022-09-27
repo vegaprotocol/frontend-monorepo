@@ -42,7 +42,7 @@ export interface Erc20Approval_erc20WithdrawalApproval {
 
 export interface Erc20Approval {
   /**
-   * find an erc20 withdrawal approval using its withdrawal ID
+   * Find an erc20 withdrawal approval using its withdrawal ID
    */
   erc20WithdrawalApproval: Erc20Approval_erc20WithdrawalApproval | null;
 }

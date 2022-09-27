@@ -47,7 +47,7 @@ export interface PartyDelegations_party {
 export interface PartyDelegations_epoch {
   __typename: "Epoch";
   /**
-   * Presumably this is an integer or something. If there's no such thing, disregard
+   * Numeric sequence number used to identify the epoch
    */
   id: string;
 }
@@ -58,7 +58,7 @@ export interface PartyDelegations {
    */
   party: PartyDelegations_party | null;
   /**
-   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: PartyDelegations_epoch;
 }

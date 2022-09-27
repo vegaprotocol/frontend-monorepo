@@ -319,7 +319,7 @@ export const generateMarketsCandles = (
           {
             __typename: 'CandleEdge',
             node: {
-              __typename: 'CandleNode',
+              __typename: 'Candle',
               open: '100',
               close: '100',
               high: '110',
@@ -339,7 +339,7 @@ export const generateMarketsCandles = (
           {
             __typename: 'CandleEdge',
             node: {
-              __typename: 'CandleNode',
+              __typename: 'Candle',
               open: '100',
               close: '100',
               high: '110',
@@ -359,7 +359,7 @@ export const generateMarketsCandles = (
           {
             __typename: 'CandleEdge',
             node: {
-              __typename: 'CandleNode',
+              __typename: 'Candle',
               open: '100',
               close: '100',
               high: '110',
@@ -379,7 +379,7 @@ export const generateMarketsCandles = (
           {
             __typename: 'CandleEdge',
             node: {
-              __typename: 'CandleNode',
+              __typename: 'Candle',
               open: '100',
               close: '100',
               high: '110',

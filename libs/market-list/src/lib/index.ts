@@ -1,4 +1,3 @@
-export * from './__generated__';
 export * from './components';
 export * from './utils';
 export * from './market-candles-provider';
@@ -7,3 +6,11 @@ export * from './market-provider';
 export * from './markets-candles-provider';
 export * from './markets-data-provider';
 export * from './markets-provider';
+export * from './__generated__/MarketCandlesQuery';
+export * from './__generated__/MarketCandlesSub';
+export * from './__generated__/MarketDataQuery';
+export * from './__generated__/MarketDataSub';
+export * from './__generated__/MarketFields';
+export * from './__generated__/Markets';
+export * from './__generated__/MarketsCandlesQuery';
+export * from './__generated__/MarketsDataQuery';

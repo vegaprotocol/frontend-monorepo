@@ -53,6 +53,9 @@ export interface DepositPage_assetsConnection_edges_node {
 
 export interface DepositPage_assetsConnection_edges {
   __typename: "AssetEdge";
+  /**
+   * The asset information
+   */
   node: DepositPage_assetsConnection_edges_node;
 }
 
