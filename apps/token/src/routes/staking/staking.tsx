@@ -2,7 +2,7 @@ import {
   Button,
   Callout,
   Intent,
-  Link as UTLink,
+  ExternalLink as UTLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

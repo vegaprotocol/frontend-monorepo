@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Link, Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -42,13 +42,13 @@ const Contracts = ({ name }: RouteChildProps) => {
             style={{ display: 'flex', justifyContent: 'space-between' }}
           >
             <div>{key}:</div>
-            <Link
+            <ExternalLink
               title={t('View address on Etherscan')}
               href={`${ETHERSCAN_URL}/address/${contract.address}`}
               target="_blank"
             >
               {contract.address}
-            </Link>
+            </ExternalLink>
           </div>
         );
       })}
@@ -58,13 +58,13 @@ const Contracts = ({ name }: RouteChildProps) => {
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
           <div>{key}:</div>
-          <Link
+          <ExternalLink
             title={t('View address on Etherscan')}
             href={`${ETHERSCAN_URL}/address/${value}`}
             target="_blank"
           >
             {value}
-          </Link>
+          </ExternalLink>
         </div>
       ))}
     </section>

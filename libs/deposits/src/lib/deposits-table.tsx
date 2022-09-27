@@ -9,7 +9,10 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+import {
+  AgGridDynamic as AgGrid,
+  ExternalLink,
+} from '@vegaprotocol/ui-toolkit';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
@@ -68,14 +71,14 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
           if (!value) return '-';
           return (
-            <Link
+            <ExternalLink
               title={t('View transaction on Etherscan')}
               href={`${ETHERSCAN_URL}/tx/${value}`}
               data-testid="etherscan-link"
               target="_blank"
             >
               {truncateByChars(value)}
-            </Link>
+            </ExternalLink>
           );
         }}
       />

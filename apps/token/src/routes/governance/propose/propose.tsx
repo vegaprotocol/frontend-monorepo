@@ -1,6 +1,6 @@
 import Routes from '../../routes';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
 
@@ -16,19 +16,19 @@ export const Propose = () => {
           {VEGA_DOCS_URL && (
             <p>
               <span className="mr-1">{t('ProposalTermsText')}</span>
-              <Link
+              <ExternalLink
                 href={`${VEGA_DOCS_URL}/tutorials/proposals`}
                 target="_blank"
-              >{`${VEGA_DOCS_URL}/tutorials/proposals`}</Link>
+              >{`${VEGA_DOCS_URL}/tutorials/proposals`}</ExternalLink>
             </p>
           )}
           {VEGA_EXPLORER_URL && (
             <p>
               {t('MoreProposalsInfo')}{' '}
-              <Link
+              <ExternalLink
                 href={`${VEGA_EXPLORER_URL}/governance`}
                 target="_blank"
-              >{`${VEGA_EXPLORER_URL}/governance`}</Link>
+              >{`${VEGA_EXPLORER_URL}/governance`}</ExternalLink>
             </p>
           )}
         </div>
@@ -39,44 +39,46 @@ export const Propose = () => {
         <ul>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/network-parameter`}>
+              <ExternalLink
+                href={`${Routes.GOVERNANCE}/propose/network-parameter`}
+              >
                 {t('NetworkParameter')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/new-market`}>
+              <ExternalLink href={`${Routes.GOVERNANCE}/propose/new-market`}>
                 {t('NewMarket')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/update-market`}>
+              <ExternalLink href={`${Routes.GOVERNANCE}/propose/update-market`}>
                 {t('UpdateMarket')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/new-asset`}>
+              <ExternalLink href={`${Routes.GOVERNANCE}/propose/new-asset`}>
                 {t('NewAsset')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/freeform`}>
+              <ExternalLink href={`${Routes.GOVERNANCE}/propose/freeform`}>
                 {t('Freeform')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
           <li>
             <p>
-              <Link href={`${Routes.GOVERNANCE}/propose/raw`}>
+              <ExternalLink href={`${Routes.GOVERNANCE}/propose/raw`}>
                 {t('RawProposal')}
-              </Link>
+              </ExternalLink>
             </p>
           </li>
         </ul>

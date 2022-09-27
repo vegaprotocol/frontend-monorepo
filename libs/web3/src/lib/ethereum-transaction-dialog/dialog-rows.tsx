@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
@@ -42,14 +42,14 @@ export const TxRow = ({
             `Awaiting Ethereum transaction ${confirmations}/${requiredConfirmations} confirmations...`
           )}
         </span>
-        <Link
+        <ExternalLink
           href={`${ETHERSCAN_URL}/tx/${txHash}`}
           title={t('View transaction on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
           target="_blank"
         >
           {t('View on Etherscan')}
-        </Link>
+        </ExternalLink>
       </p>
     );
   }
@@ -62,14 +62,14 @@ export const TxRow = ({
         }`}
       >
         <span>{t('Ethereum transaction complete')}</span>
-        <Link
+        <ExternalLink
           href={`${ETHERSCAN_URL}/tx/${txHash}`}
           title={t('View on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
           target="_blank"
         >
           {t('View transaction on Etherscan')}
-        </Link>
+        </ExternalLink>
       </p>
     );
   }

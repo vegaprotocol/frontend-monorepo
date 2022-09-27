@@ -10,7 +10,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 /**
  * Form an HTML link tag
  */
-export const Link = ({ className, children, ...props }: LinkProps) => {
+export const ExternalLink = ({ className, children, ...props }: LinkProps) => {
   const anchorClassName = classNames(className, {
     underline: typeof children === 'string',
     'cursor-pointer': props['aria-disabled'] !== true,
@@ -29,10 +29,10 @@ export const Link = ({ className, children, ...props }: LinkProps) => {
     </a>
   );
 };
-Link.displayName = 'Link';
+ExternalLink.displayName = 'Link';
 
 export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
-  <Link
+  <ExternalLink
     className={classNames(className, 'inline-flex items-baseline')}
     {...props}
     target="_blank"
@@ -50,6 +50,6 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
     ) : (
       children
     )}
-  </Link>
+  </ExternalLink>
 );
 ExternalLink.displayName = 'ExternalLink';

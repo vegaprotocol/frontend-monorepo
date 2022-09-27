@@ -16,7 +16,7 @@ import {
   ProposalFormSubheader,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
-import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
@@ -94,20 +94,20 @@ export const ProposeNewMarket = () => {
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
-                <Link
+                <ExternalLink
                   href={`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}</ExternalLink>
               </p>
             )}
 
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreMarketsInfo')}{' '}
-                <Link
+                <ExternalLink
                   href={`${VEGA_EXPLORER_URL}/markets`}
                   target="_blank"
-                >{`${VEGA_EXPLORER_URL}/markets`}</Link>
+                >{`${VEGA_EXPLORER_URL}/markets`}</ExternalLink>
               </p>
             )}
 

@@ -1,5 +1,5 @@
 import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,13 +75,13 @@ export const Tranche = () => {
             const locked = user.remaining_tokens.times(lockedData?.locked || 0);
             return (
               <li className="pb-4" key={i}>
-                <Link
+                <ExternalLink
                   title={t('View on Etherscan (opens in a new tab)')}
                   href={`${ETHERSCAN_URL}/tx/${user.address}`}
                   target="_blank"
                 >
                   {user.address}
-                </Link>
+                </ExternalLink>
                 <TrancheProgressContents>
                   <span>{t('Locked')}</span>
                   <span>{t('Unlocked')}</span>

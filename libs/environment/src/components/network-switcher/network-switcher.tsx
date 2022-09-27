@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
-  Link,
+  ExternalLink,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -120,7 +120,9 @@ export const NetworkSwitcher = () => {
             {advancedNetworkKeys.map((key) => (
               <DropdownMenuItem key={key} data-testid="network-item-advanced">
                 <div className="mr-4">
-                  <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
+                  <ExternalLink href={VEGA_NETWORKS[key]}>
+                    {envNameMapping[key]}
+                  </ExternalLink>
                   <NetworkLabel
                     isCurrent={VEGA_ENV === key}
                     isAvailable={!!VEGA_NETWORKS[key]}

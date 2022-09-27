@@ -1,4 +1,4 @@
-import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
+import { Dialog, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -82,13 +82,13 @@ export const TransactionModal = () => {
               return (
                 <tr key={transaction.tx.hash}>
                   <TransactionModalTd>
-                    <Link
+                    <ExternalLink
                       title={t('View transaction on Etherscan')}
                       target="_blank"
                       href={`${ETHERSCAN_URL}/tx/${transaction.tx.hash}`}
                     >
                       {truncateMiddle(transaction.tx.hash)}
-                    </Link>
+                    </ExternalLink>
                   </TransactionModalTd>
                   <TransactionModalTd>
                     {renderStatus(transaction)}

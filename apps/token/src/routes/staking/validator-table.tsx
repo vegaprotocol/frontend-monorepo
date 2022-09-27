@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
@@ -70,13 +70,13 @@ export const ValidatorTable = ({
       <KeyValueTableRow>
         <span>{t('ETHEREUM ADDRESS')}</span>
         <span>
-          <Link
+          <ExternalLink
             title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
             target="_blank"
           >
             {node.ethereumAddress}
-          </Link>
+          </ExternalLink>
         </span>
       </KeyValueTableRow>
       <KeyValueTableRow>

@@ -11,7 +11,7 @@ import type {
 } from '@vegaprotocol/ui-toolkit';
 import {
   Dialog,
-  Link,
+  ExternalLink,
   AgGridDynamic as AgGrid,
   Intent,
   Loader,
@@ -96,14 +96,14 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
             if (!value) return '-';
             return (
-              <Link
+              <ExternalLink
                 title={t('View transaction on Etherscan')}
                 href={`${ETHERSCAN_URL}/tx/${value}`}
                 data-testid="etherscan-link"
                 target="_blank"
               >
                 {truncateByChars(value)}
-              </Link>
+              </ExternalLink>
             );
           }}
         />
@@ -156,14 +156,14 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
       <div className="flex justify-between gap-8">
         {t('Pending')}
         {data.txHash && (
-          <Link
+          <ExternalLink
             title={t('View transaction on Etherscan')}
             href={`${ethUrl}/tx/${data.txHash}`}
             data-testid="etherscan-link"
             target="_blank"
           >
             {t('View on Etherscan')}
-          </Link>
+          </ExternalLink>
         )}
       </div>
     );
@@ -194,14 +194,14 @@ const RecipientCell = ({
   valueFormatted,
 }: RecipientCellProps) => {
   return (
-    <Link
+    <ExternalLink
       title={t('View on Etherscan (opens in a new tab)')}
       href={`${ethUrl}/address/${value}`}
       data-testid="etherscan-link"
       target="_blank"
     >
       {valueFormatted}
-    </Link>
+    </ExternalLink>
   );
 };
 

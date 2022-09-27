@@ -1,4 +1,9 @@
-import { Callout, Intent, Link, Button } from '@vegaprotocol/ui-toolkit';
+import {
+  Callout,
+  Intent,
+  ExternalLink,
+  Button,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';
@@ -35,25 +40,25 @@ export const Complete = ({
       {commitTxHash && (
         <p style={{ margin: 0 }}>
           {t('Link transaction')}:{' '}
-          <Link
+          <ExternalLink
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${commitTxHash}`}
             target="_blank"
           >
             {commitTxHash}
-          </Link>
+          </ExternalLink>
         </p>
       )}
       {claimTxHash && (
         <p>
           {t('Claim transaction')}:{' '}
-          <Link
+          <ExternalLink
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${claimTxHash}`}
             target="_blank"
           >
             {claimTxHash}
-          </Link>
+          </ExternalLink>
         </p>
       )}
       <RouteLink to={Routes.VESTING}>

@@ -1,6 +1,11 @@
 import { useTranslation } from 'react-i18next';
 
-import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Callout,
+  ExternalLink,
+  Intent,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
@@ -46,7 +51,7 @@ export const TokenDetails = ({
       <KeyValueTable>
         <KeyValueTableRow>
           {t('Token address').toUpperCase()}
-          <Link
+          <ExternalLink
             data-testid="token-address"
             title={t('View on Etherscan (opens in a new tab)')}
             className="font-mono text-white text-right"
@@ -54,11 +59,11 @@ export const TokenDetails = ({
             target="_blank"
           >
             {token.address}
-          </Link>
+          </ExternalLink>
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('Vesting contract').toUpperCase()}
-          <Link
+          <ExternalLink
             data-testid="token-contract"
             title={t('View on Etherscan (opens in a new tab)')}
             className="font-mono text-white text-right"
@@ -66,7 +71,7 @@ export const TokenDetails = ({
             target="_blank"
           >
             {config.token_vesting_contract.address}
-          </Link>
+          </ExternalLink>
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('Total supply').toUpperCase()}

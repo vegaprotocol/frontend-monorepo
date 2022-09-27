@@ -25,7 +25,7 @@ import {
   FormGroup,
   Input,
   InputError,
-  Link,
+  ExternalLink,
   Select,
   SyntaxHighlighter,
   TextArea,
@@ -140,20 +140,20 @@ export const ProposeNetworkParameter = () => {
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
-                <Link
+                <ExternalLink
                   href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</ExternalLink>
               </p>
             )}
 
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreNetParamsInfo')}{' '}
-                <Link
+                <ExternalLink
                   href={`${VEGA_EXPLORER_URL}/network-parameters`}
                   target="_blank"
-                >{`${VEGA_EXPLORER_URL}/network-parameters`}</Link>
+                >{`${VEGA_EXPLORER_URL}/network-parameters`}</ExternalLink>
               </p>
             )}
 

@@ -1,6 +1,6 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactElement } from 'react';
 
@@ -25,13 +25,13 @@ export const TransactionComplete = ({
     >
       {body && <p data-testid="transaction-complete-body">{body}</p>}
       <p>
-        <Link
+        <ExternalLink
           title={t('View transaction on Etherscan')}
           target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
           {t('View transaction on Etherscan')}
-        </Link>
+        </ExternalLink>
       </p>
       {footer && <p data-testid="transaction-complete-footer">{footer}</p>}
     </Callout>

@@ -21,7 +21,7 @@ import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
 
 const Links = {

@@ -1,14 +1,16 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { Link } from '.';
+import { ExternalLink } from '.';
 import { VegaLogo } from '../vega-logo';
 
 export default {
   title: 'Link',
-  component: Link,
-} as ComponentMeta<typeof Link>;
+  component: ExternalLink,
+} as ComponentMeta<typeof ExternalLink>;
 
-const Template: ComponentStory<typeof Link> = (args) => <Link {...args} />;
+const Template: ComponentStory<typeof ExternalLink> = (args) => (
+  <ExternalLink {...args} />
+);
 
 export const Text = Template.bind({});
 Text.args = {

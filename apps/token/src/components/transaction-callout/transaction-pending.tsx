@@ -1,7 +1,7 @@
 import React from 'react';
 import { Callout, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 export const TransactionPending = ({
@@ -40,13 +40,13 @@ export const TransactionPending = ({
     <Callout icon={<Loader size="small" />} title={title}>
       {body && <p data-testid="transaction-pending-body">{body}</p>}
       <p>
-        <Link
+        <ExternalLink
           title={t('View transaction on Etherscan')}
           target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
           {hash}
-        </Link>
+        </ExternalLink>
       </p>
       {footer && <p data-testid="transaction-pending-footer">{footer}</p>}
     </Callout>

@@ -1,4 +1,9 @@
-import { Button, Callout, Link, Loader } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  ExternalLink,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,13 +74,13 @@ export const AssociateTransaction = ({
           })}
         </p>
         <p>
-          <Link
+          <ExternalLink
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
             target="_blank"
           >
             {t('View on Etherscan (opens in a new tab)')}
-          </Link>
+          </ExternalLink>
         </p>
         <p data-testid="transaction-pending-footer">
           {t('pendingAssociationText', {

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Lozenge } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 const getFeedbackLinks = (gitOriginUrl?: string) =>
@@ -29,7 +29,10 @@ export const NetworkInfo = () => {
         <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
           {VEGA_URL}
         </Lozenge>
-        . <Link onClick={() => setNodeSwitcherOpen()}>{t('Edit')}</Link>
+        .{' '}
+        <ExternalLink onClick={() => setNodeSwitcherOpen()}>
+          {t('Edit')}
+        </ExternalLink>
       </p>
       <p data-testid="git-eth-data" className="mb-2 break-all">
         {t('Reading Ethereum data from')}{' '}
@@ -41,7 +44,7 @@ export const NetworkInfo = () => {
       {GIT_COMMIT_HASH && (
         <p data-testid="git-commit-hash" className="mb-2">
           {t('Version/commit hash')}:{' '}
-          <Link
+          <ExternalLink
             href={
               GIT_ORIGIN_URL
                 ? `${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`
@@ -50,7 +53,7 @@ export const NetworkInfo = () => {
             target={GIT_ORIGIN_URL ? '_blank' : undefined}
           >
             {GIT_COMMIT_HASH}
-          </Link>
+          </ExternalLink>
         </p>
       )}
       {feedbackLinks.length > 0 && (
@@ -58,9 +61,9 @@ export const NetworkInfo = () => {
           {t('Known issues and feedback on')}{' '}
           {feedbackLinks.map(({ name, url }, index) => (
             <Fragment key={index}>
-              <Link key={index} href={url}>
+              <ExternalLink key={index} href={url}>
                 {name}
-              </Link>
+              </ExternalLink>
               {feedbackLinks.length > 1 &&
                 index < feedbackLinks.length - 2 &&
                 ','}

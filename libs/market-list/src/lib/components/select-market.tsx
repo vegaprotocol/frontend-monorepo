@@ -4,7 +4,7 @@ import {
   Icon,
   Intent,
   Loader,
-  Link,
+  ExternalLink,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
 
@@ -75,7 +75,7 @@ export const SelectMarketLandingTable = ({
           </tbody>
         </table>
       </div>
-      <Link href="/markets">{'Or view full market list'}</Link>
+      <ExternalLink href="/markets">{'Or view full market list'}</ExternalLink>
     </>
   );
 };

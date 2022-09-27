@@ -4,7 +4,7 @@ import {
   RadioGroup,
   Button,
   Input,
-  Link,
+  ExternalLink,
   Radio,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
@@ -159,7 +159,7 @@ export const NodeSwitcher = ({
                         }
                         onChange={(e) => setCustomNodeText(e.target.value)}
                       />
-                      <Link
+                      <ExternalLink
                         aria-disabled={
                           !customNodeText ||
                           getIsNodeLoading(state[CUSTOM_NODE_KEY])
@@ -173,7 +173,7 @@ export const NodeSwitcher = ({
                         getIsNodeLoading(state[CUSTOM_NODE_KEY])
                           ? t('Checking')
                           : t('Check')}
-                      </Link>
+                      </ExternalLink>
                     </div>
                   )}
                 </div>
