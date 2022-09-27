@@ -8,7 +8,7 @@ import {
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
-import { HOSTED_WALLET_URL, VegaConnectDialog } from './connect-dialog';
+import { VegaConnectDialog } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
@@ -38,6 +38,7 @@ beforeEach(() => {
 });
 
 const mockVegaWalletUrl = 'http://mock.wallet.com';
+const mockHostedWalletUrl = 'http://mock.hosted.com';
 const mockEnvironment = {
   VEGA_ENV: 'TESTNET',
   VEGA_URL: 'https://vega-node.url',
@@ -46,6 +47,7 @@ const mockEnvironment = {
   GIT_BRANCH: 'test',
   GIT_COMMIT_HASH: 'abcdef',
   GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  HOSTED_WALLET_URL: mockHostedWalletUrl,
 };
 
 const mockChainId = 'chain-id';
@@ -119,7 +121,7 @@ describe('VegaConnectDialog', () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
 
-      expect(spy).toHaveBeenCalledWith(HOSTED_WALLET_URL, fields);
+      expect(spy).toHaveBeenCalledWith(mockHostedWalletUrl, fields);
 
       expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
     });
@@ -145,7 +147,7 @@ describe('VegaConnectDialog', () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
 
-      expect(spy).toHaveBeenCalledWith(HOSTED_WALLET_URL, fields);
+      expect(spy).toHaveBeenCalledWith(mockHostedWalletUrl, fields);
 
       expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
       expect(defaultProps.setDialogOpen).not.toHaveBeenCalled();
@@ -163,7 +165,7 @@ describe('VegaConnectDialog', () => {
       });
 
       expect(screen.getByTestId('form-error')).toHaveTextContent(
-        `Wallet not running at ${HOSTED_WALLET_URL}`
+        `Wallet not running at ${mockHostedWalletUrl}`
       );
 
       // Reject eg non 200 results

@@ -13,7 +13,7 @@ import type { VegaConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
   ConnectDialogFooter,
@@ -56,7 +56,7 @@ const ConnectDialogContainer = ({
   closeDialog: () => void;
   appChainId?: string;
 }) => {
-  const { VEGA_WALLET_URL } = useEnvironment();
+  const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
   const [walletType, setWalletType] = useState<WalletType>();
@@ -79,6 +79,7 @@ const ConnectDialogContainer = ({
       onConnect={closeDialog}
       walletUrl={walletUrl}
       appChainId={appChainId}
+      hostedWalletUrl={HOSTED_WALLET_URL}
     />
   ) : (
     <ConnectorList
@@ -89,6 +90,7 @@ const ConnectDialogContainer = ({
         setSelectedConnector(connector);
         setWalletType(type);
       }}
+      isMainnet={VEGA_ENV === Networks.MAINNET}
     />
   );
 };
@@ -97,10 +99,12 @@ const ConnectorList = ({
   onSelect,
   walletUrl,
   setWalletUrl,
+  isMainnet,
 }: {
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
+  isMainnet: boolean;
 }) => {
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return (
@@ -115,20 +119,22 @@ const ConnectorList = ({
               onClick={() => onSelect('gui')}
             />
           </li>
-          <li className="mb-4">
+          <li className="mb-4 last:mb-0">
             <ConnectionOption
               type="cli"
               text={t('Command line wallet app')}
               onClick={() => onSelect('cli')}
             />
           </li>
-          <li className="mb-0">
-            <ConnectionOption
-              type="hosted"
-              text={t('Hosted Fairground wallet')}
-              onClick={() => onSelect('hosted')}
-            />
-          </li>
+          {!isMainnet && (
+            <li className="mb-0">
+              <ConnectionOption
+                type="hosted"
+                text={t('Hosted Fairground wallet')}
+                onClick={() => onSelect('hosted')}
+              />
+            </li>
+          )}
         </ul>
         {urlInputExpanded ? (
           <FormGroup label={t('Wallet location')} labelFor="wallet-url">
@@ -164,20 +170,20 @@ const ConnectorList = ({
   );
 };
 
-export const HOSTED_WALLET_URL = 'https://wallet.testnet.vega.xyz';
-
 const SelectedForm = ({
   type,
   connector,
   onConnect,
   walletUrl,
   appChainId,
+  hostedWalletUrl,
 }: {
   type: WalletType;
   connector: VegaConnector;
   onConnect: () => void;
   walletUrl: string;
   appChainId: string;
+  hostedWalletUrl?: string;
 }) => {
   if (connector instanceof RestConnector) {
     return (
@@ -189,7 +195,11 @@ const SelectedForm = ({
               connector={connector}
               onConnect={onConnect}
               // Rest connector form is only used for hosted wallet
-              walletUrl={type === 'hosted' ? HOSTED_WALLET_URL : walletUrl}
+              walletUrl={
+                type === 'hosted' && hostedWalletUrl
+                  ? hostedWalletUrl
+                  : walletUrl
+              }
             />
           </div>
           {type === 'hosted' && (
