@@ -50,9 +50,9 @@ export const progressBarHeaderComponentParams = {
 
 export interface AccountTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
-  onClickAsset: (asset?: string | Asset) => void;
-  onClickWithdraw?: (assetId?: string) => void;
-  onClickDeposit?: (assetId?: string) => void;
+  onClickAsset: (asset: string | Asset) => void;
+  onClickWithdraw?: (assetId: string) => void;
+  onClickDeposit?: (assetId: string) => void;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(

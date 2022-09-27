@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import { forwardRef } from 'react';
 import {
   addDecimalsFormatNumber,
@@ -21,7 +20,6 @@ import {
 
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
-  style?: CSSProperties;
 }
 
 const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
