@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { z } from 'zod';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import { encodeTransaction } from '../utils';
@@ -256,7 +257,9 @@ export class JsonRpcConnector implements VegaConnector {
       const result = await fetch(`${this.url}/api/${this.version}/methods`);
       if (!result.ok) {
         const err = ClientErrors.INVALID_WALLET;
-        err.data = `The wallet running at ${this.url} is not supported. Required version is ${this.version}`;
+        err.data = t(
+          `The wallet running at ${this.url} is not supported. Required version is ${this.version}`
+        );
         throw err;
       }
       return true;

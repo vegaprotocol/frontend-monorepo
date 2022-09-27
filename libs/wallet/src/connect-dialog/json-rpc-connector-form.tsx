@@ -49,7 +49,7 @@ export const JsonRpcConnectorForm = ({
   const [status, setStatus] = useState(Status.idle);
   const [error, setError] = useState<WalletError | null>(null);
 
-  const attempConnect = useCallback(async () => {
+  const attemptConnect = useCallback(async () => {
     try {
       // Set the connector url in case a custo mone was selected
       connector.url = walletUrl;
@@ -108,9 +108,9 @@ export const JsonRpcConnectorForm = ({
 
   useEffect(() => {
     if (status === Status.idle) {
-      attempConnect();
+      attemptConnect();
     }
-  }, [status, attempConnect]);
+  }, [status, attemptConnect]);
 
   if (status === Status.idle) {
     return null;
@@ -134,7 +134,7 @@ const Connecting = ({
 
     if (error) {
       if (error.code === ClientErrors.NO_SERVICE.code) {
-        title = 'No wallet detected';
+        title = t('No wallet detected');
         text = t(`No wallet application running at ${connector.url}`);
       } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
         title = t('Connection declined');
@@ -151,11 +151,11 @@ const Connecting = ({
           </>
         );
       } else if (error.code === 0) {
-        title = 'Wrong network';
+        title = t('Wrong network');
         text = (
           <>
-            To complete your wallet connection, set your wallet network in your
-            app to {'TODO: App chain id'} then{' '}
+            {t(`To complete your wallet connection, set your wallet network in your
+            app to ${'TODO: App chain id'} then `)}
             <ButtonLink onClick={() => alert('TODO: restart')}>
               Try again
             </ButtonLink>
@@ -179,9 +179,9 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{t('Checking wallet version')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
+        <Center>
           <Loader />
-        </div>
+        </Center>
         <p className="text-center">
           {t('Checking your wallet is compatible with this app')}
         </p>
@@ -193,9 +193,9 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{t('Verifying chain')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
+        <Center>
           <Loader />
-        </div>
+        </Center>
       </>
     );
   }
@@ -204,9 +204,9 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{t('Successfully connected')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
+        <Center>
           <Tick />
-        </div>
+        </Center>
       </>
     );
   }
@@ -215,9 +215,9 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{t('Connecting...')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
+        <Center>
           <Diamond />
-        </div>
+        </Center>
         <p className="text-center">
           {t(
             "Approve the connection from your Vega wallet app. If you have multiple wallets you'll need to choose which to connect with."
@@ -231,9 +231,9 @@ const Connecting = ({
     return (
       <>
         <ConnectDialogTitle>{t('Update permissions')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
+        <Center>
           <Cross />
-        </div>
+        </Center>
         <p className="text-center">
           {t(`${window.location.host} now has access to your Wallet, however you don't
         have sufficient permissions to retrieve your public keys. Approve the permissions update in your wallet.`)}
@@ -243,4 +243,10 @@ const Connecting = ({
   }
 
   return null;
+};
+
+const Center = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="flex justify-center items-center my-6">{children}</div>
+  );
 };

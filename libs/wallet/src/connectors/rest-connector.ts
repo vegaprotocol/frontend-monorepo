@@ -141,7 +141,7 @@ export class RestConnector implements VegaConnector {
         const nameMeta = k.meta.find((m) => m.key === 'name');
         return {
           publicKey: k.pub,
-          name: nameMeta ? nameMeta.value : 'No name',
+          name: nameMeta ? nameMeta.value : t('No name'),
         };
       });
     } catch (err) {
