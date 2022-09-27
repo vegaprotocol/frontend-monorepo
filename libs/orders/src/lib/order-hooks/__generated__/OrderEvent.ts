@@ -40,7 +40,7 @@ export interface OrderEvent_busEvents_event_Order_market {
    */
   tradableInstrument: OrderEvent_busEvents_event_Order_market_tradableInstrument;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
@@ -57,7 +57,7 @@ export interface OrderEvent_busEvents_event_Order_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -118,11 +118,11 @@ export type OrderEvent_busEvents_event = OrderEvent_busEvents_event_TimeUpdate |
 export interface OrderEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * the type of event
+   * The type of event
    */
   type: BusEventType;
   /**
-   * the payload - the wrapped event
+   * The payload - the wrapped event
    */
   event: OrderEvent_busEvents_event;
 }
