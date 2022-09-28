@@ -116,17 +116,29 @@ export const JsonRpcConnectorForm = ({
     return null;
   }
 
-  return <Connecting status={status} error={error} connector={connector} />;
+  return (
+    <Connecting
+      status={status}
+      error={error}
+      connector={connector}
+      appChainId={appChainId}
+      reset={() => setStatus(Status.idle)}
+    />
+  );
 };
 
 const Connecting = ({
   status,
   error,
   connector,
+  appChainId,
+  reset,
 }: {
   status: Status;
   error: WalletError | null;
   connector: JsonRpcConnector;
+  appChainId: string;
+  reset: () => void;
 }) => {
   if (status === Status.error) {
     let title = t('Something went wrong');
@@ -155,10 +167,8 @@ const Connecting = ({
         text = (
           <>
             {t(`To complete your wallet connection, set your wallet network in your
-            app to ${'TODO: App chain id'} then `)}
-            <ButtonLink onClick={() => alert('TODO: restart')}>
-              Try again
-            </ButtonLink>
+            app to ${appChainId} then `)}
+            <ButtonLink onClick={reset}>{t('Try again')}</ButtonLink>
           </>
         );
       } else {

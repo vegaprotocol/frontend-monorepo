@@ -8,3 +8,4 @@ export * from './use-screen-dimensions';
 export * from './use-theme-switcher';
 export * from './use-mutation-observer';
 export * from './use-resize-observer';
+export * from './__generated__/NetworkParam';
