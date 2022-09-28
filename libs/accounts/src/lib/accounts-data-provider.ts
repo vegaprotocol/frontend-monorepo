@@ -132,13 +132,8 @@ const getAssetAccountAggregation = (
       ...a,
       asset: accounts[0].asset,
       deposited: balanceAccount.deposited,
-      available:
-        AccountType.ACCOUNT_TYPE_GENERAL === a.type
-          ? a.balance
-          : balanceAccount.available,
-      used: USE_ACCOUNT_TYPES.includes(a.type)
-        ? a.balance
-        : balanceAccount.used,
+      available: balanceAccount.available,
+      used: a.balance,
     }));
   return { ...balanceAccount, breakdown };
 };
