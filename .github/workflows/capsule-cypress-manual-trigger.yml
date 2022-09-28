@@ -27,6 +27,7 @@ jobs:
     runs-on: self-hosted
     env:
       GO111MODULE: 'on'
+      GOBIN: /home/runner/go/bin
       VEGA_VERSION: 'v0.57.0'
     steps:
       #######
@@ -37,9 +38,6 @@ jobs:
         id: go
         with:
           go-version: 1.19
-
-      - name: Set GOBIN
-        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
       - name: Set up Node 16
         uses: actions/setup-node@v2
@@ -90,13 +88,13 @@ jobs:
       ## Build and run Vegacapsule network
       #######
       - name: Build and run Vegacapsule network
-        if: ${{ env.RUN_CAPSULE }}
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        if: ${{ env.RUN_CAPSULE }}
 
       - name: Install Vega binaries
         uses: ./frontend-monorepo/.github/actions/install-vega-binaries
         with:
-          all: false
+          all: true
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
