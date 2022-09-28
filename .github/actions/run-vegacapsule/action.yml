@@ -1,4 +1,8 @@
+defaults:
+  run:
+    shell: pwsh
 runs:
+  using: 'composite'
   steps:
     - name: Checkout capsule
       uses: actions/checkout@v2
