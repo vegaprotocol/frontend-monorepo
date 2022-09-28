@@ -46,6 +46,7 @@ export function VegaConnectDialog({
 
   return (
     <Dialog
+      data-testid="test-change"
       open={dialogOpen}
       onChange={setDialogOpen}
       title="Connect to your Vega Wallet"
