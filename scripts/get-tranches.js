@@ -15,19 +15,19 @@ const CONFIG = [
   {
     env: 'testnet',
     contract: '0xe2deBB240b43EDfEBc9c38B67c0894B9A92Bf07c',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    provider: 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     startBlock: 11340808,
   },
   {
     env: 'stagnet3',
     contract: '0x9F10cBeEf03A564Fb914c2010c0Cd55E9BB11406',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    provider: 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     startBlock: 11790009,
   },
   {
     env: 'devnet',
     contract: '0xd1216AAb948f5FC706Df73df6d71c64CcaA8550a',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    provider: 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     startBlock: 11790003,
   },
 ];
