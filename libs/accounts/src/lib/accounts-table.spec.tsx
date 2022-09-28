@@ -33,10 +33,14 @@ const singleRowData = [singleRow];
 
 describe('AccountsTable', () => {
   it('should render successfully', async () => {
-    const { baseElement } = render(
-      <AccountTable rowData={[]} onClickAsset={() => null} />
-    );
-    expect(baseElement).toBeTruthy();
+    await act(async () => {
+      render(<AccountTable rowData={[]} onClickAsset={() => null} />);
+    });
+    const headers = await screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(6);
+    expect(
+      headers?.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+    ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
   });
 
   it('should render correct columns', async () => {
