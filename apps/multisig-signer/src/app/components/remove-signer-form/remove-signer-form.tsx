@@ -3,12 +3,12 @@ import { gql, useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
 import { FormGroup, Input, Button } from '@vegaprotocol/ui-toolkit';
-import { useContracts } from '../config/contracts/contracts-context';
+import { useContracts } from '../../config/contracts/contracts-context';
 import type { FormEvent } from 'react';
 import type {
   RemoveSignerBundle,
   RemoveSignerBundleVariables,
-} from './__generated__/RemoveSignerBundle';
+} from '../__generated__/RemoveSignerBundle';
 
 const REMOVE_SIGNER_QUERY = gql`
   query RemoveSignerBundle($nodeId: ID!) {

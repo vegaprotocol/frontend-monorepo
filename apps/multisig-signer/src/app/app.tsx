@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
+import classnames from 'classnames';
+import { useEffect } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import {
   EnvironmentProvider,
@@ -8,17 +9,28 @@ import {
 } from '@vegaprotocol/environment';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
+import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { createClient } from './lib/apollo-client';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
-import { useContracts } from './config/contracts/contracts-context';
-import { AddSignerForm, RemoveSignerForm } from './components';
+import {
+  AddSignerForm,
+  RemoveSignerForm,
+  Header,
+  ContractDetails,
+} from './components';
+
+const pageWrapperClasses = classnames(
+  'min-h-screen w-screen',
+  'grid grid-rows-[auto,1fr]',
+  'bg-white dark:bg-black',
+  'text-neutral-900 dark:text-neutral-100'
+);
 
 function App() {
   const { VEGA_ENV } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
-  const { multisig } = useContracts();
-  const [validSignerCount, setValidSignerCount] = React.useState(undefined);
+  const [theme, toggleTheme] = useThemeSwitcher();
 
   useEffect(() => {
     Sentry.init({
@@ -29,33 +41,21 @@ function App() {
     });
   }, [VEGA_ENV]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await multisig.get_valid_signer_count();
-        setValidSignerCount(res);
-      } catch (err) {
-        Sentry.captureException(err);
-      }
-    })();
-  }, [multisig]);
-
   return (
-    <div className="grid min-h-full items-center">
-      <AsyncRenderer loading={loading} data={config} error={error}>
-        <div className="max-w-6xl">
-          <h1>Multisig signer</h1>
-          <p>
-            Multisig contract address:{' '}
-            {config?.multisig_control_contract?.address}
-          </p>
-          <p>Valid signer count: {validSignerCount}</p>
-
-          <AddSignerForm />
-          <RemoveSignerForm />
-        </div>
-      </AsyncRenderer>
-    </div>
+    <ThemeContext.Provider value={theme}>
+      <div className={pageWrapperClasses}>
+        <AsyncRenderer loading={loading} data={config} error={error}>
+          <Header theme={theme} toggleTheme={toggleTheme} />
+          <main className="w-full max-w-3xl px-5 justify-self-center">
+            <h1>Multisig signer</h1>
+            <ContractDetails config={config} />
+            <h2>Add or remove signer</h2>
+            <AddSignerForm />
+            <RemoveSignerForm />
+          </main>
+        </AsyncRenderer>
+      </div>
+    </ThemeContext.Provider>
   );
 }
 
