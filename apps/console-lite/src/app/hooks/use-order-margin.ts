@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { gql, useQuery } from '@apollo/client';
 import type {
   EstimateOrder,
@@ -46,7 +46,7 @@ export const ESTIMATE_ORDER_QUERY = gql`
 `;
 
 interface Props {
-  order: Order;
+  order: OrderSubmissionBody['orderSubmission'];
   market: DealTicketMarketFragment;
   partyId: string;
 }

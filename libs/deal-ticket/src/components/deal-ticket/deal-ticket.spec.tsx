@@ -4,7 +4,7 @@ import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { Schema } from '@vegaprotocol/types';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 const market: DealTicketMarketFragment = {
   __typename: 'Market',
@@ -42,7 +42,7 @@ const market: DealTicketMarketFragment = {
 const submit = jest.fn();
 const transactionStatus = 'default';
 
-function generateJsx(order?: Order) {
+function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <VegaWalletContext.Provider value={{} as any}>

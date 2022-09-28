@@ -51,7 +51,7 @@ export const useOrderEdit = (order: OrderWithMarket | null) => {
             timeInForce: order.timeInForce,
             sizeDelta: 0,
             expiresAt: order.expiresAt
-              ? toNanoSeconds(new Date(order.expiresAt)) // Wallet expects timestamp in nanoseconds
+              ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
               : undefined,
           },
         });

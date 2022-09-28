@@ -10,7 +10,7 @@ import {
   OrderType,
 } from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { Order } from './use-order-submit';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 export type ValidationProps = {
   step?: number;
@@ -21,7 +21,7 @@ export type ValidationProps = {
   };
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
-  fieldErrors?: FieldErrors<Order>;
+  fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
 };
 
 export const marketTranslations = (marketState: MarketState) => {

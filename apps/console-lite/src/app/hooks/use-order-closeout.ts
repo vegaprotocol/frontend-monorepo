@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
@@ -46,7 +46,7 @@ const CLOSEOUT_PRICE_QUERY = gql`
 `;
 
 interface Props {
-  order: Order;
+  order: OrderSubmissionBody['orderSubmission'];
   market: DealTicketMarketFragment;
   partyData?: PartyBalanceQuery;
 }
