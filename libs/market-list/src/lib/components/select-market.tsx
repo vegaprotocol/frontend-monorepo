@@ -19,11 +19,13 @@ import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
 import type { Market, MarketData, MarketCandles, Candle } from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import type {
   Positions_party,
   PositionsSubscription_positions,
   Positions_party_positionsConnection_edges_node,
 } from '@vegaprotocol/positions';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
