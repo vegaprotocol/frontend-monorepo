@@ -89,6 +89,8 @@ jobs:
       #######
       - name: Build and run Vegacapsule network
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        with:
+          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Install Vega binaries
         uses: ./frontend-monorepo/.github/actions/install-vega-binaries
