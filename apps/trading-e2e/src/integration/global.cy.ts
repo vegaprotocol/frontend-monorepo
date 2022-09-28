@@ -1,6 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectVegaWallet } from '../support/vega-wallet';
-import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 describe('vega wallet', { tags: '@smoke' }, () => {
