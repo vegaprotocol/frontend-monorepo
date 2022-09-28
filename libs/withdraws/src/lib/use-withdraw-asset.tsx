@@ -43,10 +43,10 @@ export const useWithdrawAsset = (
         const result = await Promise.all([getThreshold(asset), getDelay()]);
         threshold = result[0];
         delay = result[1];
+        update({ asset, balance, min, threshold, delay });
       } catch (err) {
         captureException(err);
       }
-      update({ asset, balance, min, threshold, delay });
     },
     [accounts, assets, update, getThreshold, getDelay]
   );
