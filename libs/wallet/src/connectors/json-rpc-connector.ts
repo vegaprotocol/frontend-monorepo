@@ -8,13 +8,13 @@ import { WalletError } from './vega-connector';
 const VERSION = 'v2';
 
 enum Methods {
-  ConnectWallet = 'session.connect_wallet',
-  DisconnectWallet = 'session.disconnect_wallet',
-  GetPermissions = 'session.get_permissions',
-  RequestPermisssions = 'session.request_permissions',
-  ListKeys = 'session.list_keys',
-  SendTransaction = 'session.send_transaction',
-  GetChainId = 'session.get_chain_id',
+  ConnectWallet = 'client.connect_wallet',
+  DisconnectWallet = 'client.disconnect_wallet',
+  GetPermissions = 'client.get_permissions',
+  RequestPermisssions = 'client.request_permissions',
+  ListKeys = 'client.list_keys',
+  SendTransaction = 'client.send_transaction',
+  GetChainId = 'client.get_chain_id',
 }
 
 const BaseSchema = z.object({
