@@ -172,7 +172,7 @@ jobs:
 
       - name: Run smoke Cypress tests
         if: ${{ github.event.inputs.runAlltests == 'true' }}
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome --headless
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
