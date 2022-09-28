@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { SunIcon, MoonIcon } from './icons';
 
 export const ThemeSwitcher = ({
@@ -10,7 +10,22 @@ export const ThemeSwitcher = ({
   onToggle: () => void;
   className?: string;
 }) => {
-  const classes = 'text-neutral-800 dark:text-neutral-300';
+  const sun = useRef<HTMLSpanElement>(null);
+  const moon = useRef<HTMLSpanElement>(null);
+  const classes = 'text-neutral-800 dark:text-neutral-300 hidden';
+  useEffect(() => {
+    if (!theme || !sun.current || !moon.current) return;
+    switch (theme) {
+      case 'dark':
+        moon.current.classList.add('hidden');
+        sun.current.classList.remove('hidden');
+        break;
+      case 'light':
+        moon.current.classList.remove('hidden');
+        sun.current.classList.add('hidden');
+        break;
+    }
+  }, [sun, moon, theme]);
   return (
     <button
       type="button"
@@ -18,16 +33,12 @@ export const ThemeSwitcher = ({
       className={className}
       data-testid="theme-switcher"
     >
-      {theme === 'dark' && (
-        <span className={classes}>
-          <SunIcon />
-        </span>
-      )}
-      {theme === 'light' && (
-        <span className={classes}>
-          <MoonIcon />
-        </span>
-      )}
+      <span ref={sun} className={classes}>
+        <SunIcon />
+      </span>
+      <span ref={moon} className={classes}>
+        <MoonIcon />
+      </span>
     </button>
   );
 };
