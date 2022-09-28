@@ -244,36 +244,22 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           }: VegaICellRendererParams<OrderWithMarket>) => {
             if (isOrderAmendable(data)) {
               return (
-                <Button
-                  data-testid="edit"
-                  onClick={() => {
-                    setEditOrder(data);
-                  }}
-                  size="xs"
-                >
-                  {t('Edit')}
-                </Button>
-              );
-            }
-
-            return null;
-          }}
-        />
-        <AgGridColumn
-          headerName=""
-          field="status"
-          cellRenderer={({
-            data,
-          }: VegaICellRendererParams<OrderWithMarket>) => {
-            if (isOrderAmendable(data)) {
-              return (
-                <Button
-                  size="xs"
-                  data-testid="cancel"
-                  onClick={() => cancel(data)}
-                >
-                  {t('Cancel')}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    data-testid="edit"
+                    onClick={() => setEditOrder(data)}
+                    size="xs"
+                  >
+                    {t('Edit')}
+                  </Button>
+                  <Button
+                    size="xs"
+                    data-testid="cancel"
+                    onClick={() => cancel(data)}
+                  >
+                    {t('Cancel')}
+                  </Button>
+                </div>
               );
             }
 
