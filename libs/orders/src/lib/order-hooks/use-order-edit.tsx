@@ -25,7 +25,7 @@ export const useOrderEdit = (order: OrderWithMarket | null) => {
     Dialog,
   } = useVegaTransaction();
 
-  const waitForOrderEvent = useOrderEvent();
+  const waitForOrderEvent = useOrderEvent(transaction);
 
   const reset = useCallback(() => {
     resetTransaction();

@@ -11,7 +11,6 @@ export interface CancelOrderArgs {
 
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
-  const waitForOrderEvent = useOrderEvent();
 
   const [cancelledOrder, setCancelledOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
@@ -23,6 +22,8 @@ export const useOrderCancel = () => {
     setComplete,
     Dialog,
   } = useVegaTransaction();
+
+  const waitForOrderEvent = useOrderEvent(transaction);
 
   const reset = useCallback(() => {
     resetTransaction();
