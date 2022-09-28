@@ -1,5 +1,3 @@
-import { clear } from 'console';
-
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -10,7 +8,6 @@ const voteButtons = '[data-testid="vote-buttons"]';
 const txTimeout = Cypress.env('txTimeout');
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const useMinimum = '[data-testid="min-vote"]';
-const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 
 Cypress.Commands.add(
   'convert_unix_timestamp_to_governance_data_table_date_format',
