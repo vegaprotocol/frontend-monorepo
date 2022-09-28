@@ -4,6 +4,7 @@ import { useVegaWallet } from './use-vega-wallet';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
+import { ClientErrors } from './connectors';
 import { WalletError } from './connectors';
 
 export interface DialogProps {
@@ -28,10 +29,6 @@ export interface VegaTxState {
   signature: string | null;
   dialogOpen: boolean;
 }
-
-const Errors = {
-  UNKNOWN: new WalletError('Something went wrong', 1, 'Unknown error occurred'),
-};
 
 export const initialState = {
   status: VegaTxStatus.Default,
@@ -92,7 +89,7 @@ export const useVegaTransaction = () => {
         return null;
       } catch (err) {
         setTransaction({
-          error: err instanceof WalletError ? err : Errors.UNKNOWN,
+          error: err instanceof WalletError ? err : ClientErrors.UNKNOWN,
           status: VegaTxStatus.Error,
         });
         return null;

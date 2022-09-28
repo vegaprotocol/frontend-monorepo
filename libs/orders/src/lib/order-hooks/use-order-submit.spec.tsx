@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   BusEventType,
@@ -163,7 +163,7 @@ describe('useOrderSubmit', () => {
     const pubKey = '0x123';
     const { result } = setup({
       sendTx: mockSendTx,
-      pubKeys: [pubKey],
+      pubKeys: [{ publicKey: pubKey, name: 'test key 1' }],
       pubKey,
     });
 
@@ -194,13 +194,14 @@ describe('useOrderSubmit', () => {
 
   it('should submit a correctly formatted order on GTC', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const publicKeyObj: PubKey = {
+      publicKey: '0x123',
+      name: 'test key 1',
+    };
     const { result } = setup({
       sendTx: mockSendTx,
-      keypairs: [keypair],
-      keypair,
+      pubKeys: [publicKeyObj],
+      pubKey: publicKeyObj.publicKey,
     });
 
     const order = {
@@ -215,9 +216,7 @@ describe('useOrderSubmit', () => {
       result.current.submit({ ...order, marketId: defaultMarket.id });
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith({
-      pubKey: keypair.pub,
-      propagate: true,
+    expect(mockSendTx).toHaveBeenCalledWith(publicKeyObj.publicKey, {
       orderSubmission: {
         type: OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id,
@@ -254,11 +253,14 @@ describe('useOrderSubmit', () => {
 
   it('should not sendTx side is not specified', async () => {
     const mockSendTx = jest.fn();
-    const pubKey = '0x123';
+    const publicKeyObj: PubKey = {
+      publicKey: '0x123',
+      name: 'test key 1',
+    };
     const { result } = setup({
       sendTx: mockSendTx,
-      pubKeys: [pubKey],
-      pubKey,
+      pubKeys: [publicKeyObj],
+      pubKey: publicKeyObj.publicKey,
     });
     await act(async () => {
       result.current.submit({} as OrderSubmissionBody['orderSubmission']);

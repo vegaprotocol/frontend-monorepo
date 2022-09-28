@@ -90,10 +90,20 @@ type Response =
   | { error: JsonRpcError };
 
 export const ClientErrors = {
-  NO_SERVICE: new WalletError('No service', 100),
-  NO_TOKEN: new WalletError('No token', 101),
-  INVALID_RESPONSE: new WalletError('Something went wrong', 102),
-  INVALID_WALLET: new WalletError('Wallet version invalid', 103),
+  NO_SERVICE: new WalletError(t('No service'), 100),
+  NO_TOKEN: new WalletError(t('No token'), 101),
+  INVALID_RESPONSE: new WalletError(t('Something went wrong'), 102),
+  INVALID_WALLET: new WalletError(t('Wallet version invalid'), 103),
+  WRONG_NETWORK: new WalletError(
+    t('Wrong network'),
+    104,
+    t('App is configured to work with a different chain')
+  ),
+  UNKNOWN: new WalletError(
+    t('Something went wrong'),
+    105,
+    t('Unknown error occurred')
+  ),
 } as const;
 
 export class JsonRpcConnector implements VegaConnector {

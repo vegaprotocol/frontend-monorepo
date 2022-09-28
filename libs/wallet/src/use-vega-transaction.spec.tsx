@@ -84,7 +84,7 @@ describe('useVegaTransaction', () => {
       'message',
       'Something went wrong'
     );
-    expect(result.current.transaction.error).toHaveProperty('code', 1);
+    expect(result.current.transaction.error).toHaveProperty('code', 105);
     expect(result.current.transaction.error).toHaveProperty(
       'data',
       'Unknown error occurred'

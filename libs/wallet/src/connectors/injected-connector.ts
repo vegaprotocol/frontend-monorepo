@@ -7,7 +7,7 @@ export class InjectedConnector implements VegaConnector {
   description = 'Connects using the Vega wallet browser extension';
 
   async connect() {
-    return ['0x123'];
+    return [{ publicKey: '0x123', name: 'text key' }];
   }
 
   async disconnect() {

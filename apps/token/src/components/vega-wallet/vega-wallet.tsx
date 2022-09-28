@@ -32,7 +32,7 @@ export const VegaWallet = () => {
   const child = !pubKeys ? (
     <VegaWalletNotConnected />
   ) : (
-    <VegaWalletConnected vegaKeys={pubKeys} />
+    <VegaWalletConnected vegaKeys={pubKeys.map((pk) => pk.publicKey)} />
   );
 
   return (

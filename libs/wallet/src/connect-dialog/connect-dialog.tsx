@@ -86,7 +86,8 @@ const ConnectDialogContainer = ({
       walletUrl={walletUrl}
       setWalletUrl={setWalletUrl}
       onSelect={(type) => {
-        const connector = type === 'cli' ? connectors.jsonRpc : connectors.rest;
+        const connector =
+          type === 'cli' ? connectors['jsonRpc'] : connectors['rest'];
         setSelectedConnector(connector);
         setWalletType(type);
       }}
