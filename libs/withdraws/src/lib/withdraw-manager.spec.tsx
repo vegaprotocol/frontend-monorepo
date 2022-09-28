@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
@@ -68,13 +62,11 @@ describe('WithdrawManager', () => {
     await act(async () => {
       await submitValid();
     });
-    await waitFor(async () => {
-      expect(await props.submit).toHaveBeenCalledWith({
-        amount: '1000',
-        asset: props.assets[0].id,
-        receiverAddress: ethereumAddress,
-        availableTimestamp: null,
-      });
+    expect(await props.submit).toHaveBeenCalledWith({
+      amount: '1000',
+      asset: props.assets[0].id,
+      receiverAddress: ethereumAddress,
+      availableTimestamp: null,
     });
   });
 

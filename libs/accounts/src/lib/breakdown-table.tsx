@@ -54,7 +54,15 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.name"
-          valueFormatter="value || '—'"
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<
+            AccountFields,
+            'market.tradableInstrument.instrument.name'
+          >) => {
+            if (!value) return '-';
+            return value;
+          }}
           minWidth={200}
         />
         <AgGridColumn
@@ -73,11 +81,12 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
-            data &&
-            data.asset &&
-            addDecimalsFormatNumber(value, data.asset.decimals)
-          }
+          }: VegaValueFormatterParams<AccountFields, 'deposited'>) => {
+            if (data && data.asset) {
+              return addDecimalsFormatNumber(value, data.asset.decimals);
+            }
+            return '-';
+          }}
           maxWidth={300}
         />
         <AgGridColumn
@@ -86,11 +95,12 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<AccountFields, 'balance'>) =>
-            data &&
-            data.asset &&
-            addDecimalsFormatNumber(value, data.asset.decimals)
-          }
+          }: VegaValueFormatterParams<AccountFields, 'balance'>) => {
+            if (data && data.asset) {
+              return addDecimalsFormatNumber(value, data.asset.decimals);
+            }
+            return '-';
+          }}
           maxWidth={300}
         />
       </AgGrid>

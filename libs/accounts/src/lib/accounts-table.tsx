@@ -94,7 +94,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             )}
             cellRenderer={({
               value,
-            }: VegaValueFormatterParams<AccountFields, 'asset.symbol'>) => {
+            }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
               return (
                 <ButtonLink
                   data-testid="deposit"

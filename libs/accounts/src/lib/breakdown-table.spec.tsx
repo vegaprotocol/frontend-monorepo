@@ -1,5 +1,5 @@
 import BreakdownTable from './breakdown-table';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { Schema as Types } from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
@@ -41,33 +41,27 @@ describe('BreakdownTable', () => {
     await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
     });
-    await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(5);
-      expect(
-        headers.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
-        )
-      ).toEqual(['Account type', 'Market', 'Used', 'Deposited', 'Balance']);
-    });
+    const headers = await screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(5);
+    expect(
+      headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+    ).toEqual(['Account type', 'Market', 'Used', 'Deposited', 'Balance']);
   });
 
   it('should apply correct formatting', async () => {
     await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
     });
-    await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
-      const expectedValues = [
-        'Margin',
-        'BTCUSD Monthly (30 Jun 2022)',
-        '1,256.00001,256.0000',
-        '1,256.00000',
-        '1,256.00000',
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
-      });
+    const cells = await screen.getAllByRole('gridcell');
+    const expectedValues = [
+      'Margin',
+      'BTCUSD Monthly (30 Jun 2022)',
+      '1,256.00001,256.0000',
+      '1,256.00000',
+      '1,256.00000',
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
     });
   });
 

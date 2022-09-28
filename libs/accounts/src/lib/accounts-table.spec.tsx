@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { Schema as Types } from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
@@ -40,21 +40,16 @@ describe('AccountsTable', () => {
   });
 
   it('should render correct columns', async () => {
-    let headers: HTMLElement[];
     await act(async () => {
       render(
         <AccountTable rowData={singleRowData} onClickAsset={() => null} />
       );
     });
-    await waitFor(async () => {
-      headers = screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(6);
-      expect(
-        headers?.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
-        )
-      ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
-    });
+    const headers = await screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(6);
+    expect(
+      headers?.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+    ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
   });
 
   it('should apply correct formatting', async () => {
@@ -63,19 +58,17 @@ describe('AccountsTable', () => {
         <AccountTable rowData={singleRowData} onClickAsset={() => null} />
       );
     });
-    await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
-      const expectedValues = [
-        'tBTC',
-        '1,256.00000',
-        '1,256.00001,256.0000',
-        'Collateral breakdown',
-        'Deposit',
-        'Withdraw',
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
-      });
+    const cells = await screen.getAllByRole('gridcell');
+    const expectedValues = [
+      'tBTC',
+      '1,256.00000',
+      '1,256.00001,256.0000',
+      'Collateral breakdown',
+      'Deposit',
+      'Withdraw',
+    ];
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveTextContent(expectedValues[i]);
     });
   });
 });
