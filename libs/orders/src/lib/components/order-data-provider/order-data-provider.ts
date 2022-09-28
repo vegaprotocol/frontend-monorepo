@@ -116,11 +116,11 @@ export const update = (
   });
 };
 
-// #TODO Order name is in conflict with interface defines in use-order-submit
-type Order = Orders_party_ordersConnection_edges_node;
-export type OrderWithMarket = Omit<Order, 'market'> & { market?: Market };
-export type OrderWithMarketEdge = {
-  node: OrderWithMarket;
+export type Order = Omit<Orders_party_ordersConnection_edges_node, 'market'> & {
+  market?: Market;
+};
+export type OrderEdge = {
+  node: Order;
   cursor: Orders_party_ordersConnection_edges['cursor'];
 };
 
@@ -148,11 +148,11 @@ export const ordersProvider = makeDataProvider({
 });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
-  OrderWithMarketEdge[],
-  OrderWithMarket[]
+  OrderEdge[],
+  Order[]
 >(
   [ordersProvider, marketsProvider],
-  (partsData): OrderWithMarketEdge[] =>
+  (partsData): OrderEdge[] =>
     ((partsData[0] as Parameters<typeof update>['0']) || []).map((edge) => ({
       cursor: edge.cursor,
       node: {
@@ -162,11 +162,11 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
         ),
       },
     })),
-  (parts): OrderWithMarket[] | undefined => {
+  (parts): Order[] | undefined => {
     if (!parts[0].isUpdate) {
       return;
     }
-    // map OrderSub_orders[] from subscription to updated OrderWithMarket[]
+    // map OrderSub_orders[] from subscription to updated Order[]
     return (parts[0].delta as ReturnType<typeof getDelta>).map(
       (deltaOrder) => ({
         ...((parts[0].data as ReturnType<typeof getData>)?.find(

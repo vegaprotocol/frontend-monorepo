@@ -33,14 +33,14 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderWithMarket } from '../';
+import type { Order } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
+    const [editOrder, setEditOrder] = useState<Order | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
@@ -97,12 +97,12 @@ type OrderListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: OrderWithMarket | null;
+  data: Order | null;
 };
 
 type OrderListTableProps = AgGridReactProps & {
-  cancel: (order: OrderWithMarket) => void;
-  setEditOrder: (order: OrderWithMarket) => void;
+  cancel: (order: Order) => void;
+  setEditOrder: (order: Order) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -127,16 +127,16 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            [positiveClassNames]: ({ data }: { data: OrderWithMarket }) =>
+            [positiveClassNames]: ({ data }: { data: Order }) =>
               data?.side === Side.SIDE_BUY,
-            [negativeClassNames]: ({ data }: { data: OrderWithMarket }) =>
+            [negativeClassNames]: ({ data }: { data: Order }) =>
               data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
             data,
           }: OrderListTableValueFormatterParams & {
-            value?: OrderWithMarket['size'];
+            value?: Order['size'];
           }) => {
             if (value === undefined || !data || !data.market) {
               return undefined;

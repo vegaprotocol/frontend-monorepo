@@ -17,11 +17,11 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { OrderListTable } from '../';
-import type { OrderWithMarket } from '../';
+import type { Order } from '../';
 import { limitOrder, marketOrder } from '../mocks/generate-orders';
 
 const generateJsx = (
-  orders: OrderWithMarket[] | null,
+  orders: Order[] | null,
   context: PartialDeep<VegaWalletContextShape> = { keypair: { pub: '0x123' } }
 ) => {
   return (
