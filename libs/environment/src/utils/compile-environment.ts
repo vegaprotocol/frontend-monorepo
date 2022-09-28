@@ -12,13 +12,13 @@ const isBrowser = typeof window !== 'undefined';
 const getDefaultEtherumProviderUrl = (env: Networks) => {
   return env === Networks.MAINNET
     ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
-    : 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+    : 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
 };
 
 const getDefaultEtherscanUrl = (env: Networks) => {
   return env === Networks.MAINNET
     ? 'https://etherscan.io'
-    : 'https://ropsten.etherscan.io';
+    : 'https://sepolia.etherscan.io';
 };
 
 const transformValue = (key: EnvKey, value?: string) => {

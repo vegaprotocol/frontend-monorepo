@@ -43,7 +43,7 @@ export interface AppState {
   /** Array of tranche objects */
   tranches: Tranche[] | null;
 
-  /** Number of decimal places of the VEGA token (18 on Mainnet, 5 on Ropsten) */
+  /** Number of decimal places of the VEGA token (18 on Mainnet, 5 on Testnet) */
   decimals: number;
 
   /** Total supply of VEGA tokens */

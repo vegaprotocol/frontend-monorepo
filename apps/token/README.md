@@ -40,7 +40,6 @@ There are a few different configuration options offered for this app:
 | **Flag**                            | **Purpose**                                                                                                                                          |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NX_APP_SENTRY_DSN`                 | The sentry endpoint to report to. Should be off in dev but set in live.                                                                              |
-| `NX_APP_CHAIN`                      | The ETH chain for the app to work on. Should be mainnet for live, but ropsten for preview deploys.                                                   |
 | `NX_APP_VEGA_URL`                   | The GraphQL query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node)                                                 |
 | `NX_APP_DEX_STAKING_DISABLED`       | Disable the dex liquidity page an show a coming soon message                                                                                         |
 | `NX_APP_FAIRGROUND`                 | Change styling to be themed as the fairground version of the website                                                                                 |
