@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { ThemeContext, useThemeSwitcher, t } from '@vegaprotocol/react-helpers';
 import { createClient } from './lib/apollo-client';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
@@ -47,9 +47,9 @@ function App() {
         <AsyncRenderer loading={loading} data={config} error={error}>
           <Header theme={theme} toggleTheme={toggleTheme} />
           <main className="w-full max-w-3xl px-5 justify-self-center">
-            <h1>Multisig signer</h1>
+            <h1>{t('Multisig signer')}</h1>
             <ContractDetails config={config} />
-            <h2>Add or remove signer</h2>
+            <h2>{t('Add or remove signer')}</h2>
             <AddSignerForm />
             <RemoveSignerForm />
           </main>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/react';
+import { t } from '@vegaprotocol/react-helpers';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
 import { FormGroup, Input, Button } from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../config/contracts/contracts-context';
@@ -58,9 +59,9 @@ export const AddSignerForm = () => {
   return (
     <form onSubmit={(e) => handleSubmit(e)}>
       <FormGroup
-        label="Add signer"
+        label={t('Add signer')}
         labelFor="add-signer-input"
-        labelDescription="Public key of the signer to add"
+        labelDescription={t('Public key of the signer to add')}
         className="max-w-xl"
       >
         <div className="grid grid-cols-[1fr,auto] gap-2">
@@ -70,7 +71,7 @@ export const AddSignerForm = () => {
             data-testid="add-signer-input-input"
           />
           <Button type="submit" data-testid="add-signer-submit">
-            Add
+            {t('Add')}
           </Button>
         </div>
       </FormGroup>
