@@ -7,7 +7,6 @@ const proposalResponseProposalIdPath =
 const voteButtons = '[data-testid="vote-buttons"]';
 const txTimeout = Cypress.env('txTimeout');
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
-const useMinimum = '[data-testid="min-vote"]';
 
 Cypress.Commands.add(
   'convert_unix_timestamp_to_governance_data_table_date_format',
