@@ -81,6 +81,13 @@ export const SparklineView = ({
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);
   const mainPath = lineSeries(marketData);
+  const pathProps = {
+    dataTestId: 'sparkline-path',
+    className: `[vector-effect:non-scaling-stroke] ${strokeClassName}`,
+    stroke: 'strokeCurrent',
+    strokeWidth: 1,
+    fill: 'transparent',
+  };
 
   return (
     <svg
@@ -92,25 +99,9 @@ export const SparklineView = ({
       preserveAspectRatio="none"
     >
       {preMarketCreationPath && (
-        <path
-          data-testid="sparkline-path"
-          className={`[vector-effect:non-scaling-stroke] ${strokeClassName}`}
-          d={preMarketCreationPath}
-          stroke="strokeCurrent"
-          strokeWidth={1}
-          fill="transparent"
-        />
+        <path {...pathProps} d={preMarketCreationPath} />
       )}
-      {mainPath && (
-        <path
-          data-testid="sparkline-path"
-          d={mainPath}
-          className={`[vector-effect:non-scaling-stroke] ${strokeClassName}`}
-          stroke="strokeCurrent"
-          strokeWidth={2}
-          fill="transparent"
-        />
-      )}
+      {mainPath && <path {...pathProps} d={mainPath} />}
     </svg>
   );
 };
