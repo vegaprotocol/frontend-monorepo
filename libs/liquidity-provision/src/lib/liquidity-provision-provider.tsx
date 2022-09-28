@@ -1,23 +1,24 @@
+import { useMemo } from 'react';
 import { gql } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-
-import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
-import type {
-  Markets,
-  Markets_marketsConnection_edges_node,
-} from '@vegaprotocol/market-list';
-import { mapDataToMarketList } from '@vegaprotocol/market-list';
+import type { MarketCandles } from '@vegaprotocol/market-list';
+import { marketsCandlesProvider } from '@vegaprotocol/market-list';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export type Market = Markets_marketsConnection_edges_node;
+import type {
+  LiquidityProvisionMarkets as Markets,
+  LiquidityProvisionMarkets_marketsConnection_edges_node as Market,
+} from './__generated__';
+
+import type { MarketsListData } from './utils';
+import { mapDataToMarketList } from './utils';
 
 export const MARKET_LIST_QUERY = gql`
-  query MarketsLiquidityCandles($interval: Interval!, $since: String!) {
+  query LiquidityProvisionMarkets($interval: Interval!, $since: String!) {
     marketsConnection {
       edges {
         node {
@@ -82,10 +83,6 @@ const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   ([markets]) => mapDataToMarketList(markets)
 );
 
-export interface MarketsListData {
-  markets: Market[];
-}
-
 export const liquidityProvisionProvider = makeDerivedDataProvider<
   MarketsListData,
   never
@@ -93,10 +90,16 @@ export const liquidityProvisionProvider = makeDerivedDataProvider<
   [
     (callback, client, variables) =>
       activeMarketsProvider(callback, client, variables),
+    (callback, client, variables) =>
+      marketsCandlesProvider(callback, client, {
+        ...variables,
+        interval: Interval.INTERVAL_I1D,
+      }),
   ],
   (parts) => {
     return {
       markets: parts[0] as Market[],
+      marketsCandles24hAgo: parts[1] as MarketCandles[],
     };
   }
 );
