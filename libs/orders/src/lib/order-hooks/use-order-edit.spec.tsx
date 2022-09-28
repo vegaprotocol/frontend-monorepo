@@ -3,11 +3,11 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
-import type { OrderEvent, OrderEvent_busEvents } from './';
+import type { OrderEvent } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderFields } from '../components';
+import type { OrderWithMarket } from '../components';
 import { generateOrder } from '../components';
 import {
   OrderStatus,
@@ -27,7 +27,10 @@ const defaultWalletContext = {
   connector: null,
 };
 
-function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
+function setup(
+  order: OrderWithMarket,
+  context?: Partial<VegaWalletContextShape>
+) {
   const mocks: MockedResponse<OrderEvent> = {
     request: {
       query: ORDER_EVENT_SUB,
@@ -132,22 +135,22 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const pubKey = '0x123';
+    const pubKeyObj = { publicKey: '0x123', name: 'test key 1' };
     const order = generateOrder({
       price: '123456789',
       market: { decimalPlaces: 2 },
     });
     const { result } = setup(order, {
       sendTx: mockSendTx,
-      pubKeys: [pubKey],
-      pubKey,
+      pubKeys: [pubKeyObj],
+      pubKey: pubKeyObj.publicKey,
     });
 
     act(() => {
       result.current.edit({ price: '1234567.89' });
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
+    expect(mockSendTx).toHaveBeenCalledWith(pubKeyObj.publicKey, {
       orderAmendment: {
         orderId: order.id,
         // eslint-disable-next-line

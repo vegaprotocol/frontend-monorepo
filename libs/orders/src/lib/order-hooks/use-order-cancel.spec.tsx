@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { useOrderCancel } from './use-order-cancel';
-import type { OrderEvent, OrderEvent_busEvents } from './';
+import type { OrderEvent } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import {
   BusEventType,
@@ -153,11 +153,11 @@ describe('useOrderCancel', () => {
 
   it('should cancel a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const pubKey = '0x123';
+    const pubKeyObj = { publicKey: '0x123', name: 'test key 1' };
     const { result } = setup({
       sendTx: mockSendTx,
-      pubKeys: [pubKey],
-      pubKey,
+      pubKeys: [pubKeyObj],
+      pubKey: pubKeyObj.publicKey,
     });
 
     const args = {
@@ -168,7 +168,7 @@ describe('useOrderCancel', () => {
       result.current.cancel(args);
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
+    expect(mockSendTx).toHaveBeenCalledWith(pubKeyObj.publicKey, {
       orderCancellation: args,
     });
   });
