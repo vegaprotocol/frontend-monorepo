@@ -1,27 +1,90 @@
-/* tslint:disable */
-/* eslint-disable */
-
-import type { Market } from '@vegaprotocol/market-list';
-// import type { CandleClose } from '@vegaprotocol/types';
-// import isNil from 'lodash/isNil';
-
 import BigNumber from 'bignumber.js';
+import orderBy from 'lodash/orderBy';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import type {
+  LiquidityProvisionMarkets_marketsConnection_edges_node as MarketNode,
+  LiquidityProvisionMarkets_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
+  LiquidityProvisionMarkets_marketsConnection_edges_node as Market,
+  LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges as LiquidityEdges,
+} from './../__generated__';
+import type { MarketCandles } from '@vegaprotocol/market-list';
 
-// @ts-ignore
-const calcCandleVolume = (market) => {
-  const edges = market?.candlesConnection?.edges || [];
-  return (
-    edges
-      // @ts-ignore
-      .reduce((acc, c) => {
-        return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-      }, new BigNumber(edges?.[0]?.node?.volume ?? 0))
-      .toString()
+export interface MarketsListData {
+  markets: Market[];
+  marketsCandles24hAgo: MarketCandles[];
+}
+
+const tradingModesOrdering = [
+  MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+  MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+  MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+  MarketTradingMode.TRADING_MODE_NO_TRADING,
+];
+
+const filterMarkets = (markets: Market[]) =>
+  markets?.filter(
+    (m) =>
+      m.state !== MarketState.STATE_REJECTED &&
+      m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
   );
+
+const orderMarkets = (markets: Market[]) =>
+  orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
+
+const sortMarkets = (markets: Market[]) =>
+  markets.sort(
+    (a, b) =>
+      tradingModesOrdering.indexOf(a.tradingMode) -
+      tradingModesOrdering.indexOf(b.tradingMode)
+  );
+
+export const mapDataToMarketList = (markets: Market[]) => {
+  const filteredMarkets = filterMarkets(markets) || [];
+  const orderedMarkets = orderMarkets(filteredMarkets);
+  const sortedMarkets = sortMarkets(orderedMarkets);
+  return sortedMarkets;
 };
 
-export const formatWithAsset = (value: string, market: Market) => {
+const EMPTY_VALUE = ' - ';
+
+export const getChange = (
+  candles: (Candle | null)[] | null,
+  lastClose?: string
+) => {
+  if (candles) {
+    const firstCandle = candles.find((item) => item?.open);
+    const first = parseInt(firstCandle?.open || '-1');
+
+    const last =
+      typeof lastClose === 'undefined'
+        ? candles.reduceRight((aggr, item) => {
+            if (aggr === -1 && item?.close) {
+              aggr = parseInt(item.close);
+            }
+            return aggr;
+          }, -1)
+        : parseInt(lastClose);
+
+    if (first !== -1 && last !== -1) {
+      return Number(((last - first) / first) * 100).toFixed(3) + '%';
+    }
+  }
+  return EMPTY_VALUE;
+};
+
+const calcDayVolume = (market: Market) => {
+  const edges = market?.candlesConnection?.edges || [];
+  return edges
+    .reduce((acc, c) => {
+      return acc.plus(new BigNumber(c?.node?.volume ?? 0));
+      // TODO: is this right? Should it not start on 0?
+    }, new BigNumber(edges?.[0]?.node?.volume ?? 0))
+    .toString();
+};
+
+export const formatWithAsset = (value: string, market: MarketNode) => {
   const formattedValue = addDecimalsFormatNumber(
     value,
     market.tradableInstrument.instrument.product.settlementAsset.decimals
@@ -31,7 +94,7 @@ export const formatWithAsset = (value: string, market: Market) => {
   return `${formattedValue} ${asset}`;
 };
 
-export const sumLiquidityCommitted = (edges = []) => {
+export const sumLiquidityCommitted = (edges: LiquidityEdges[]) => {
   return edges
     ? edges.reduce(
         (
@@ -45,43 +108,29 @@ export const sumLiquidityCommitted = (edges = []) => {
     : 0;
 };
 
-// const getPriceChange = () => {
+const getCandle24hAgo = (marketId: string, candles24hAgo: MarketCandles[]) => {
+  return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
+};
 
-// }
-// // @ts-ignore
-// const getMarketChange = (market) => {
-//   const decimalPlaces = market.decimalPlaces;
-//   const edges = market?.candlesConnection?.edges || [];
-//   // @ts-ignore
-//   const candles = edges
-//     // @ts-ignore
-//     .map((e) => {
-//       return e.node;
-//     })
-//     // @ts-ignore
-//     .filter((e) => e);
+export const formatMarketLists = ({
+  markets,
+  marketsCandles24hAgo,
+}: MarketsListData) => {
+  return markets.map((market) => {
+    const dayVolume = calcDayVolume(market);
+    const candle24hAgo = getCandle24hAgo(market.id, marketsCandles24hAgo);
 
-//   // @ts-ignore
-//   const candlesClose = candles
-//     // @ts-ignore
-//     ?.map((candle) => candle?.close)
-//     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-// };
+    const candles =
+      market.candlesConnection?.edges?.map((c) => (c ? c.node : null)) || null;
+    const volumeChange = getChange(candles, candle24hAgo?.close);
 
-// <PriceCellChange candles={candlesClose} decimalPlaces={market.decimalPlaces} />;
-
-// @ts-ignore
-export const mapMarketLists = (markets) => {
-  return markets.map((market = {}) => {
-    const dayVolume = calcCandleVolume(market);
+    const liquidity = market.liquidityProvisionsConnection?.edges || [];
 
     return {
       ...market,
       dayVolume,
-      liquidityCommitted: sumLiquidityCommitted(
-        // @ts-ignore
-        market?.liquidityProvisionsConnection?.edges
-      ),
+      volumeChange,
+      liquidityCommitted: sumLiquidityCommitted(liquidity as LiquidityEdges[]),
     };
   });
 };

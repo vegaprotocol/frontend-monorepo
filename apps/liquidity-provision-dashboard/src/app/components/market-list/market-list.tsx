@@ -1,23 +1,23 @@
-import { useCallback } from 'react';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { useCallback, useRef, useEffect } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
+import type { AgGridReact as AgGridReactType } from 'ag-grid-react';
 import type {
   GroupCellRendererParams,
   ValueFormatterParams,
+  GetRowIdParams,
 } from 'ag-grid-community';
-import type { GetRowIdParams } from 'ag-grid-community/dist/lib/entities/iCallbackParams';
-
-import type { MarketsListData } from '@vegaprotocol/liquidity-provision';
-import {
-  formatWithAsset,
-  mapMarketLists,
-} from '@vegaprotocol/liquidity-provision';
-
-import type { MarketTradingMode } from '@vegaprotocol/types';
-import { MarketTradingModeMapping } from '@vegaprotocol/types';
-
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
+
+import {
+  formatWithAsset,
+  formatMarketLists,
+} from '@vegaprotocol/liquidity-provision';
+
+import type { MarketsListData } from '@vegaprotocol/liquidity-provision';
+import type { MarketTradingMode } from '@vegaprotocol/types';
+import { MarketTradingModeMapping } from '@vegaprotocol/types';
 
 const agGridVariables = `
   .ag-theme-alpine {
@@ -29,34 +29,45 @@ const agGridVariables = `
   }
 `;
 
+const displayValue = (value: string) => {
+  return parseFloat(value) > 0 ? `+${value}` : value;
+};
+
+const marketNameCellRenderer = (props: GroupCellRendererParams) => {
+  const { value, data } = props;
+
+  return (
+    <>
+      <span style={{ lineHeight: '25px' }}>{value}</span>
+      <span style={{ lineHeight: '25px' }}>
+        {data?.tradableInstrument?.instrument?.product?.settlementAsset?.symbol}
+      </span>
+    </>
+  );
+};
+
+const healthCellRenderer = ({ value }: GroupCellRendererParams) => {
+  return (
+    <div>
+      <div>{value}</div>
+    </div>
+  );
+};
+
 const MarketList = ({ data }: { data: MarketsListData }) => {
-  const localData = mapMarketLists(data.markets);
-
-  const marketNameCellRenderer = (props: GroupCellRendererParams) => {
-    const { value, data } = props;
-
-    return (
-      <>
-        <span style={{ lineHeight: '25px' }}>{value}</span>
-        <span style={{ lineHeight: '25px' }}>
-          {
-            data?.tradableInstrument?.instrument?.product?.settlementAsset
-              ?.symbol
-          }
-        </span>
-      </>
-    );
-  };
-
-  const healthCellRenderer = ({ value }: GroupCellRendererParams) => {
-    return (
-      <div>
-        <div>{value}</div>
-      </div>
-    );
-  };
+  const gridRef = useRef<AgGridReactType | null>(null);
+  const localData = formatMarketLists(data);
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
+
+  const handleOnGridReady = useCallback(() => {
+    gridRef.current?.api?.sizeColumnsToFit();
+  }, [gridRef]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleOnGridReady);
+    return () => window.removeEventListener('resize', handleOnGridReady);
+  }, [handleOnGridReady]);
 
   return (
     <>
@@ -76,6 +87,7 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           }}
           getRowId={getRowId}
           rowHeight={80}
+          ref={gridRef}
         >
           <AgGridColumn
             headerName={t('Market (futures)')}
@@ -84,13 +96,18 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             cellRenderer={marketNameCellRenderer}
             flex={1}
           />
+
           <AgGridColumn
             headerName={t('Volume 24h')}
             field="dayVolume"
             headerTooltip={t('This is the volume tooltip')}
-            valueFormatter={({ value }: ValueFormatterParams) =>
-              formatNumber(value)
-            }
+            cellRenderer={({ value, data }: GroupCellRendererParams) => {
+              return (
+                <div>
+                  {formatNumber(value)} ({displayValue(data.volumeChange)})
+                </div>
+              );
+            }}
           />
 
           <AgGridColumn
@@ -127,24 +144,5 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
     </>
   );
 };
-
-{
-  /* <MarketInfoTable
-  data={{
-    '24hourVolume':
-      dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
-    ...pick(
-      market.data,
-      'openInterest',
-      'name',
-      'bestBidVolume',
-      'bestOfferVolume',
-      'bestStaticBidVolume',
-      'bestStaticOfferVolume'
-    ),
-  }}
-  decimalPlaces={market.positionDecimalPlaces}
-/>; */
-}
 
 export default MarketList;
