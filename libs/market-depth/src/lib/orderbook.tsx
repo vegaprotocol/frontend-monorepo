@@ -257,7 +257,7 @@ export const Orderbook = ({
     }
   }, [scrollToMidPrice, scrollToPrice, resolution]);
 
-  // handles viewport resize
+  // handles window resize
   useEffect(() => {
     function handleResize() {
       if (scrollElement.current) {
@@ -270,6 +270,50 @@ export const Orderbook = ({
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  // sets the correct width of header and footer
+  useLayoutEffect(() => {
+    if (
+      !gridElement.current ||
+      !headerElement.current ||
+      !footerElement.current
+    ) {
+      return;
+    }
+    const gridWidth = gridElement.current.clientWidth;
+    headerElement.current.style.width = `${gridWidth}px`;
+    footerElement.current.style.width = `${gridWidth}px`;
+  }, [headerElement, footerElement, gridElement]);
+  // handles resizing of the Allotment.Pane (x-axis)
+  // adjusts the header and footer width
+  const gridResizeHandler: ResizeObserverCallback = useCallback(
+    (entries) => {
+      if (
+        !headerElement.current ||
+        !footerElement.current ||
+        entries.length === 0
+      ) {
+        return;
+      }
+      const {
+        contentRect: { width, height },
+      } = entries[0];
+      headerElement.current.style.width = `${width}px`;
+      footerElement.current.style.width = `${width}px`;
+      setViewportHeight(height);
+    },
+    [headerElement, footerElement]
+  );
+  // handles resizing of the Allotment.Pane (y-axis)
+  // adjusts the scroll height
+  const scrollElementResizeHandler: ResizeObserverCallback = useCallback(
+    (entries) => {
+      if (!scrollElement.current || entries.length === 0) return;
+      setViewportHeight(entries[0].contentRect.height);
+    },
+    [setViewportHeight, scrollElement]
+  );
+  useResizeObserver(gridElement.current, gridResizeHandler);
+  useResizeObserver(scrollElement.current, scrollElementResizeHandler);
 
   let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
   const prependingBufferSize = Math.min(bufferSize, offset);
@@ -320,38 +364,6 @@ export const Orderbook = ({
 
   const c = theme === 'dark' ? colors.neutral[600] : colors.neutral[300];
   const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
-
-  useLayoutEffect(() => {
-    if (
-      !gridElement.current ||
-      !headerElement.current ||
-      !footerElement.current
-    ) {
-      return;
-    }
-    const gridWidth = gridElement.current.clientWidth;
-    headerElement.current.style.width = `${gridWidth}px`;
-    footerElement.current.style.width = `${gridWidth}px`;
-  }, [headerElement, footerElement, gridElement]);
-
-  const gridResizeHandler: ResizeObserverCallback = useCallback(
-    (entries) => {
-      if (
-        !headerElement.current ||
-        !footerElement.current ||
-        entries.length === 0
-      ) {
-        return;
-      }
-      const {
-        contentRect: { width },
-      } = entries[0];
-      headerElement.current.style.width = `${width}px`;
-      footerElement.current.style.width = `${width}px`;
-    },
-    [headerElement, footerElement]
-  );
-  useResizeObserver(gridElement.current, gridResizeHandler);
 
   const resolutions = new Array(decimalPlaces + 1)
     .fill(null)
