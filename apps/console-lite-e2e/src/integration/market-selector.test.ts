@@ -37,8 +37,8 @@ describe('market selector', { tags: '@smoke' }, () => {
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
       const data: MarketsQuery | undefined = response?.response?.body?.data;
-      if (data.marketsConnection.edges.length) {
-        markets = data.marketsConnection.edges.map((edge) => edge.node);
+      if (data?.marketsConnection?.edges.length) {
+        markets = data?.marketsConnection?.edges.map((edge) => edge.node);
       }
     });
   });
