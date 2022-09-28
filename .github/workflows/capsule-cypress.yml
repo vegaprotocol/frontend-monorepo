@@ -18,7 +18,7 @@ jobs:
     runs-on: self-hosted
     env:
       GO111MODULE: 'on'
-      VEGA_VERSION: 'v0.56.0'
+      VEGA_VERSION: 'v0.57.0'
     steps:
       #######
       ## Setup langs
@@ -172,7 +172,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
