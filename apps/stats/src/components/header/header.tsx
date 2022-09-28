@@ -8,11 +8,11 @@ interface ThemeToggleProps {
 
 export const Header = ({ theme, toggleTheme }: ThemeToggleProps) => {
   return (
-    <header className="relative overflow-hidden py-8 mb-40 md:mb-64">
+    <header className="relative overflow-hidden py-2 mb-10 md:mb-16">
       <VegaBackgroundVideo />
 
-      <div className="relative flex justify-center px-8 dark:bg-black bg-white">
-        <div className="w-full max-w-3xl p-20 flex items-center justify-between">
+      <div className="relative flex justify-center px-2 dark:bg-black bg-white">
+        <div className="w-full max-w-3xl p-5 flex items-center justify-between">
           <VegaLogo />
           <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
         </div>
