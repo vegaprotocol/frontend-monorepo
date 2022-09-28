@@ -10,7 +10,7 @@ import type {
   AddSignerBundleVariables,
 } from '../__generated__/AddSignerBundle';
 
-const ADD_SIGNER_QUERY = gql`
+export const ADD_SIGNER_QUERY = gql`
   query AddSignerBundle($nodeId: ID!) {
     erc20MultiSigSignerAddedBundles(nodeId: $nodeId) {
       edges {

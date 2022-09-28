@@ -32,10 +32,10 @@ yarn nx run multisig-signer:serve --env={env} # e.g. stagnet3
 
 There are a few different configuration options offered for this app:
 
-| **Flag**                         | **Purpose**                                                                                          |
+| **Flag** | **Purpose** |
 | -------------------------------- | ---------------------------------------------------------------------------------------------------- | --- | |
-| `NX_VEGA_URL`                    | The GraphQl query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node) |
-| `NX_VEGA_ENV`                    | The name of the currently connected vega environment                                                       |
+| `NX_VEGA_URL` | The GraphQl query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node) |
+| `NX_VEGA_ENV` | The name of the currently connected vega environment |
 
 ## Testing
 

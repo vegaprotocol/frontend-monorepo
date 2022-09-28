@@ -5,6 +5,6 @@ describe('multisig-signer', () => {
 
   it('should display welcome message', () => {
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Add or remove yourself as a signer');
+    getGreeting().contains('Multisig signer');
   });
 });

@@ -19,9 +19,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/multisig-signer-e2e/**/*.{js,ts}"
-        ]
+        "lintFilePatterns": ["apps/multisig-signer-e2e/**/*.{js,ts}"]
       }
     }
   },
