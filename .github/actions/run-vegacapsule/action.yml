@@ -9,7 +9,7 @@ runs:
       with:
         repository: vegaprotocol/vegacapsule
         ref: main
-        token: ${{ env.github-token }}
+        token: ${{ inputs.github-token }}
         path: './capsule'
 
     - name: Build capsule
@@ -19,7 +19,7 @@ runs:
 
     - name: Login to docker
       shell: bash
-      run: echo -n ${{ env.github-token }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
+      run: echo -n ${{ inputs.github-token }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
 
     - name: Start nomad
       shell: bash
