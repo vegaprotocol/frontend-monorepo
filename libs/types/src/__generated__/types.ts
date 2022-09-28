@@ -3161,6 +3161,8 @@ export type Query = {
   assetsConnection?: Maybe<AssetsConnection>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
+  /** Fetch all deposits */
+  deposits?: Maybe<DepositsConnection>;
   /** Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch */
   epoch: Epoch;
   /** Get the signatures bundle to allowlist an ERC20 token in the collateral bridge */
@@ -3321,6 +3323,8 @@ export type Query = {
   updateMarketProposals?: Maybe<Array<Proposal>>;
   /** Find a withdrawal using its ID */
   withdrawal?: Maybe<Withdrawal>;
+  /** Fetch all withdrawals */
+  withdrawals?: Maybe<WithdrawalsConnection>;
 };
 
 
@@ -3340,6 +3344,13 @@ export type QueryassetsConnectionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerydepositArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerydepositsArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  pagination?: InputMaybe<Pagination>;
 };
 
 
@@ -3665,6 +3676,13 @@ export type QueryupdateMarketProposalsArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerywithdrawalArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerywithdrawalsArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  pagination?: InputMaybe<Pagination>;
 };
 
 export type RankingScore = {
@@ -4406,6 +4424,8 @@ export enum TransferStatus {
 /** A proposal to update an asset's details */
 export type UpdateAsset = {
   __typename?: 'UpdateAsset';
+  /** The asset to update */
+  assetId: Scalars['ID'];
   /** The minimum economically meaningful amount of this specific asset */
   quantum: Scalars['String'];
   /** The source of the updated asset */
