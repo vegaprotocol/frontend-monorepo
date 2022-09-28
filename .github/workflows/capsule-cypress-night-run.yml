@@ -12,7 +12,7 @@ jobs:
     runs-on: self-hosted
     env:
       GO111MODULE: 'on'
-      VEGA_VERSION: 'v0.56.0'
+      VEGA_VERSION: 'v0.57.0'
     steps:
       #######
       ## Setup langs
