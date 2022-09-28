@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
-import type { Proposal_proposal } from '@vegaprotocol/governance';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
-const renderComponent = (proposal: Proposal_proposal) => (
+const renderComponent = (proposal: ProposalFields) => (
   <ProposalHeader proposal={proposal} />
 );
 
@@ -231,6 +231,23 @@ describe('Proposal header', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByTestId('proposal-details')).toHaveTextContent(
       'freeform id'
+    );
+  });
+
+  it('Renders asset change proposal header', () => {
+    render(
+      renderComponent(
+        generateProposal({
+          terms: {
+            change: {
+              __typename: 'UpdateAsset',
+            },
+          },
+        })
+      )
+    );
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
+      'Update asset'
     );
   });
 
