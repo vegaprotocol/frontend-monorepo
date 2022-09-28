@@ -43,11 +43,7 @@ export const mockTradingPage = (
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
-  aliasQuery(
-    req,
-    'DealTicketQuery',
-    generateDealTicketQuery({ market: { state } })
-  );
+  aliasQuery(req, 'DealTicket', generateDealTicketQuery({ market: { state } }));
   aliasQuery(
     req,
     'MarketInfoQuery',
