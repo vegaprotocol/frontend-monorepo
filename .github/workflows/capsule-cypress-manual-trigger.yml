@@ -39,9 +39,6 @@ jobs:
       ## Setup flags
       #######
 
-      - name: WHAT THE FUCK
-        run: echo 'skip-nx-cache input set to ${{ github.event.inputs.skip-nx-cache }} END'
-
       - name: Set smoke tag
         if: ${{ github.event.inputs.runAlltests==false }}
         run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
