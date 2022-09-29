@@ -77,7 +77,12 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
       break;
     }
     case 'UpdateAsset': {
-      details = `${t('Update asset')}`;
+      details = (
+        <>
+          `${t('Update asset')}`;
+          <Lozenge>{change.assetId}</Lozenge>
+        </>
+      );
       break;
     }
   }
