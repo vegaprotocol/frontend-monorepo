@@ -281,7 +281,7 @@ context(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
           if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restartVegacapsuleNetwork();
+            cy.restart_vegacapsule_network();
           }
         }
       );
