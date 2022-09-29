@@ -2,7 +2,7 @@ import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation/validate-size';
-import { isMarketInAuction } from './deal-ticket';
+import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
