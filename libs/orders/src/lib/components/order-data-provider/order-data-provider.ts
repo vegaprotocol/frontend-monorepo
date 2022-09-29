@@ -14,6 +14,7 @@ import type {
   Orders,
   Orders_party_ordersConnection_edges,
   Orders_party_ordersConnection_edges_node,
+  Orders_party_ordersConnection_edges_node_liquidityProvision,
   OrderSub,
   OrderSub_orders,
 } from '../';
@@ -40,6 +41,12 @@ export const ORDERS_QUERY = gql`
             expiresAt
             createdAt
             updatedAt
+            liquidityProvision {
+              __typename
+            }
+            peggedOrder {
+              __typename
+            }
           }
           cursor
         }
@@ -70,6 +77,10 @@ export const ORDERS_SUB = gql`
       expiresAt
       createdAt
       updatedAt
+      liquidityProvisionId
+      peggedOrder {
+        __typename
+      }
     }
   }
 `;
@@ -98,10 +109,20 @@ export const update = (
           draft.unshift(...draft.splice(index, 1));
         }
       } else if (newer) {
-        const { marketId, ...order } = node;
+        const { marketId, liquidityProvisionId, ...order } = node;
+
+        // If there is a liquidity provision id add the object to the resulting order
+        const liquidityProvision: Orders_party_ordersConnection_edges_node_liquidityProvision | null =
+          liquidityProvisionId
+            ? {
+                __typename: 'LiquidityProvision',
+              }
+            : null;
+
         draft.unshift({
           node: {
             ...order,
+            liquidityProvision: liquidityProvision,
             market: {
               __typename: 'Market',
               id: marketId,

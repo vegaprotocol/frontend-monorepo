@@ -1,4 +1,4 @@
-name: Capsule tests
+name: Cypress tests
 
 on:
   push:
@@ -14,11 +14,13 @@ on:
 
 jobs:
   pr:
-    name: Run capsule tests - PR
+    name: Run Cypress tests - PR
     runs-on: self-hosted
+    timeout-minutes: 30
     env:
       GO111MODULE: 'on'
-      VEGA_VERSION: 'v0.56.0'
+      GOBIN: /home/runner/go/bin
+      VEGA_VERSION: 'v0.57.0'
     steps:
       #######
       ## Setup langs
@@ -28,6 +30,7 @@ jobs:
         id: go
         with:
           go-version: 1.19
+
       - name: Set up Node 16
         uses: actions/setup-node@v2
         id: npm
@@ -48,9 +51,25 @@ jobs:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           path: './frontend-monorepo'
+
+      # Check SHAs
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          working-directory: frontend-monorepo
+          main-branch-name: ${{ github.base_ref || github.ref_name }}
+          set-environment-variables-for-job: true
+
+      # See if we capsule is needed for this project
+      - name: See affected apps
+        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
+        working-directory: frontend-monorepo
+
+      - name: See if capsule is necessary
+        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
@@ -66,105 +85,37 @@ jobs:
         run: yarn install --frozen-lockfile
         working-directory: frontend-monorepo
 
-      # See affected apps to see if building all binaries is necessary
-      - name: See affected apps
-        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{github.base_ref}} --head=${{github.head_ref}} --select=projects) >> $GITHUB_ENV
-        working-directory: frontend-monorepo
-
-      - name: See if capsule is necessary
-        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
-
-      # Checkout capsule to build local network
-      - name: Checkout capsule
-        if: ${{ env.RUN_CAPSULE }}
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegacapsule
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './capsule'
-
       #######
-      ## Build binaries
+      ## Build and run Vegacapsule network
       #######
-      - name: Build capsule
-        if: ${{ env.RUN_CAPSULE }}
-        run: go install
-        working-directory: capsule
-
-      - name: Set GOBIN
-        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
       - name: Install Vega binaries
-        if: ${{ env.RUN_CAPSULE }}
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vega-linux-amd64.zip'
-          unzip vega-linux-amd64.zip -d ${{ env.GOBIN }}
+        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
+        with:
+          all: ${{ env.RUN_CAPSULE }}
+          version: ${{ env.VEGA_VERSION }}
+          gobin: ${{ env.GOBIN }}
 
-      - name: Install date-node binaries
+      - name: Build and run Vegacapsule network
         if: ${{ env.RUN_CAPSULE }}
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/data-node-linux-amd64.zip'
-          unzip data-node-linux-amd64.zip -d ${{ env.GOBIN }}
-
-      - name: Install Vega wallet binaries
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip'
-          unzip vegawallet-linux-amd64.zip -d ${{ env.GOBIN }}
-
-      ######
-      ## Start capsule
-      ######
-      - name: Login to docker
-        if: ${{ env.RUN_CAPSULE }}
-        run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
-
-      - name: Start nomad
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegacapsule nomad &
-
-      - name: Bootstrap network
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
-        working-directory: capsule
+        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        with:
+          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       ######
       ## Setup a Vega wallet for our user
       ######
-      - name: Create passphrase
-        run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
-      - name: Create recovery
-        run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
-      - name: Initialize wallet
-        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
-      - name: Import wallet
-        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Create public key 2
-        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-
-      - name: Import fairground network
-        if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
-
-      - name: Start service using fairground network
-        if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
-
-      - name: Start service using capsule network
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+      - name: Set up Vegawallet
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+        with:
+          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
+          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          capsule: ${{ env.RUN_CAPSULE }}
 
       ######
       ## Run some tests
       ######
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
-        with:
-          working-directory: frontend-monorepo
-          main-branch-name: ${{github.base_ref}}
 
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
@@ -172,12 +123,12 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke'
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######

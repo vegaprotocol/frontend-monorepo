@@ -86,7 +86,6 @@ export const getOrderDialogIcon = (
 
 export const useOrderSubmit = () => {
   const { keypair } = useVegaWallet();
-  const waitForOrderEvent = useOrderEvent();
 
   const {
     send,
@@ -95,6 +94,8 @@ export const useOrderSubmit = () => {
     setComplete,
     Dialog,
   } = useVegaTransaction();
+
+  const waitForOrderEvent = useOrderEvent(transaction);
 
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);

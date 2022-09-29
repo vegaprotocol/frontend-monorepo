@@ -15,7 +15,6 @@ export interface WithdrawalArgs {
 
 export const useCreateWithdraw = () => {
   const waitForWithdrawalApproval = useWithdrawalApproval();
-  const waitForWithdrawal = useWithdrawalEvent();
   const [approval, setApproval] =
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
   const [withdrawal, setWithdrawal] = useState<WithdrawalFields | null>(null);
@@ -26,6 +25,8 @@ export const useCreateWithdraw = () => {
   const { keypair } = useVegaWallet();
   const { transaction, send, setComplete, reset, Dialog } =
     useVegaTransaction();
+
+  const waitForWithdrawal = useWithdrawalEvent(transaction);
 
   const submit = useCallback(
     async (withdrawal: WithdrawalArgs) => {

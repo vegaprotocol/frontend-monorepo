@@ -51,20 +51,18 @@ describe('FillsTable', () => {
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
-    await waitFor(async () => {
-      await screen.findByText('Market');
-      const headers = screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(7);
-      expect(headers.map((h) => h.textContent?.trim())).toEqual([
-        'Market',
-        'Size',
-        'Value',
-        'Filled value',
-        'Role',
-        'Fee',
-        'Date',
-      ]);
-    });
+    await screen.findByText('Market');
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(7);
+    expect(headers.map((h) => h.textContent?.trim())).toEqual([
+      'Market',
+      'Size',
+      'Value',
+      'Filled value',
+      'Role',
+      'Fee',
+      'Date',
+    ]);
   });
 
   it('formats cells correctly for buyer fill', async () => {
@@ -83,6 +81,7 @@ describe('FillsTable', () => {
     });
 
     render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
+
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 

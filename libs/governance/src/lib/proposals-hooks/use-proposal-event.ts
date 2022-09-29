@@ -6,6 +6,7 @@ import type {
   ProposalEvent_busEvents_event_Proposal,
 } from './__generated__/ProposalEvent';
 import type { Subscription } from 'zen-observable-ts';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 
 export const PROPOSAL_EVENT_SUB = gql`
   subscription ProposalEvent($partyId: ID!) {
@@ -24,7 +25,7 @@ export const PROPOSAL_EVENT_SUB = gql`
   }
 `;
 
-export const useProposalEvent = () => {
+export const useProposalEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -66,10 +67,13 @@ export const useProposalEvent = () => {
   );
 
   useEffect(() => {
+    if (!transaction.dialogOpen) {
+      subRef.current?.unsubscribe();
+    }
     return () => {
       subRef.current?.unsubscribe();
     };
-  }, []);
+  }, [transaction.dialogOpen]);
 
   return waitForProposalEvent;
 };
