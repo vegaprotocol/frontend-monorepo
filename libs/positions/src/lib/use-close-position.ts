@@ -8,7 +8,6 @@ import type { Position } from '../';
 
 export const useClosePosition = () => {
   const { keypair } = useVegaWallet();
-  const waitForPositionEvent = usePositionEvent();
 
   const {
     send,
@@ -17,6 +16,7 @@ export const useClosePosition = () => {
     setComplete,
     Dialog,
   } = useVegaTransaction();
+  const waitForPositionEvent = usePositionEvent(transaction);
 
   const reset = useCallback(() => {
     resetTransaction();

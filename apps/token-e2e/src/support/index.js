@@ -2,6 +2,7 @@ import '@vegaprotocol/cypress';
 
 import './common.functions.js';
 import './staking.functions.js';
+import './governance.functions.js';
 import './wallet-eth.functions.js';
 import './wallet-teardown.functions.js';
 import './wallet-vega.functions.js';

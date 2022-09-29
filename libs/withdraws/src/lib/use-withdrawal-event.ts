@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/client';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
 import { WITHDRAWAL_BUS_EVENT_SUB } from './use-withdrawals';
@@ -12,7 +13,8 @@ type WaitForWithdrawalEvent = (
   id: string,
   partyId: string
 ) => Promise<WithdrawalEvent_busEvents_event_Withdrawal>;
-export const useWithdrawalEvent = () => {
+
+export const useWithdrawalEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -52,10 +54,13 @@ export const useWithdrawalEvent = () => {
   );
 
   useEffect(() => {
+    if (!transaction.dialogOpen) {
+      subRef.current?.unsubscribe();
+    }
     return () => {
       subRef.current?.unsubscribe();
     };
-  }, []);
+  }, [transaction.dialogOpen]);
 
   return waitForWithdrawalEvent;
 };
