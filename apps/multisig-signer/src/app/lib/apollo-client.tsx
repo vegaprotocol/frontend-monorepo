@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
@@ -42,6 +43,7 @@ export function createClient(base?: string) {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     console.log(graphQLErrors);
     console.log(networkError);
+    Sentry.captureException(graphQLErrors);
   });
 
   return new ApolloClient({
