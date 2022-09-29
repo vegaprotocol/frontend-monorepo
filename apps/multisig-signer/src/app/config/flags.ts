@@ -1,5 +1,3 @@
 import { ENV } from './env';
 
-export default {
-  ...ENV.flags,
-};
+export default ENV.flags;
