@@ -92,7 +92,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   }
 );
 
-type OrderListTableProps = AgGridReactProps & {
+export type OrderListTableProps = AgGridReactProps & {
   cancel: (order: OrderWithMarket) => void;
   setEditOrder: (order: OrderWithMarket) => void;
 };
@@ -237,6 +237,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           }}
         />
         <AgGridColumn
+          colId="amend"
           headerName=""
           field="status"
           cellRenderer={({
