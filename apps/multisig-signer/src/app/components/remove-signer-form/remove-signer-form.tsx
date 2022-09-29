@@ -32,7 +32,7 @@ const REMOVE_SIGNER_QUERY = gql`
   }
 `;
 
-export const AddSignerForm = () => {
+export const RemoveSignerForm = () => {
   const { multisig } = useContracts();
   const [address, setAddress] = useState('');
   const [bundleNotFound, setBundleNotFound] = useState(false);
