@@ -25,7 +25,6 @@ jobs:
   manual:
     name: Run Cypress tests -- manual trigger
     runs-on: self-hosted
-    timeout-minutes: 1
     env:
       GO111MODULE: 'on'
       GOBIN: /home/runner/go/bin
@@ -60,7 +59,6 @@ jobs:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           path: './frontend-monorepo'
 
