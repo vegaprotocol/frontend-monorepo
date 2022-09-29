@@ -25,6 +25,7 @@ jobs:
   manual:
     name: Run Cypress tests -- manual trigger
     runs-on: self-hosted
+    timeout-minutes: 1
     env:
       GO111MODULE: 'on'
       GOBIN: /home/runner/go/bin
