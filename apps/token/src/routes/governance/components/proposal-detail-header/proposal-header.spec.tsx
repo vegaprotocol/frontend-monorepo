@@ -241,6 +241,7 @@ describe('Proposal header', () => {
           terms: {
             change: {
               __typename: 'UpdateAsset',
+              assetId: 'foo',
             },
           },
         })
@@ -249,6 +250,7 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Update asset'
     );
+    expect(screen.getByText('foo')).toBeInTheDocument();
   });
 
   it("Renders unknown proposal if it's a different proposal type", () => {
