@@ -22,9 +22,7 @@ import type {
 
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import type { MarketWithData } from '@vegaprotocol/market-list';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import { marginsDataProvider } from './margin-data-provider';
 import type { Margins_party } from './__generated__/Margins';
@@ -301,7 +299,7 @@ const upgradeMarginsConection = (
   return null;
 };
 
-const rejoinPositionData = (
+export const rejoinPositionData = (
   positions: Positions_party | null,
   marketsData: MarketWithData[] | null,
   margins: Margins_party | null

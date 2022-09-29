@@ -1,8 +1,6 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import { ColumnKind, SelectMarketPopover } from '@vegaprotocol/market-list';
-import type { OnCellClickHandler } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -41,6 +39,11 @@ import {
 } from '@vegaprotocol/types';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 import { Header, HeaderStat } from '../../components/header';
+import {
+  ColumnKind,
+  SelectMarketPopover,
+} from '../../components/select-market';
+import type { OnCellClickHandler } from '../../components/select-market';
 
 const TradingViews = {
   Candles: CandlesChartContainer,

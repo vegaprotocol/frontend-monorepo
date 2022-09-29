@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
@@ -7,31 +9,31 @@ import {
   Link,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
-
-import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
-import type { Column, OnCellClickHandler } from './select-market-columns';
-import {
-  columnHeadersPositionMarkets,
-  columnsPositionMarkets,
-} from './select-market-columns';
-import { columnHeaders } from './select-market-columns';
-import { columns } from './select-market-columns';
-import type { Market, MarketData, MarketCandles, Candle } from '../';
+import { useMarketList } from '@vegaprotocol/market-list';
+import type {
+  Market,
+  MarketData,
+  MarketCandles,
+  Candle,
+} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import type {
   Positions_party,
   PositionsSubscription_positions,
   Positions_party_positionsConnection_edges_node,
 } from '@vegaprotocol/positions';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
-import { useMarketList } from '../markets-provider';
+import type { Column, OnCellClickHandler } from './select-market-columns';
+import {
+  columnHeadersPositionMarkets,
+  columnsPositionMarkets,
+  columnHeaders,
+  columns,
+} from './select-market-columns';
 
 export const SelectMarketLandingTable = ({
   markets,
