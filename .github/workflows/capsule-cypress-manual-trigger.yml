@@ -29,7 +29,6 @@ jobs:
       GO111MODULE: 'on'
       GOBIN: /home/runner/go/bin
       VEGA_VERSION: 'v0.57.0'
-      ACTIONS: ./frontend-monorepo/.github/actions
     steps:
       #######
       ## Setup langs
@@ -88,7 +87,7 @@ jobs:
       #######
 
       - name: Install Vega binaries
-        uses: ${{ env.ACTIONS/install-vega-binaries }}
+        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
         with:
           all: ${{ env.RUN_CAPSULE }}
           version: ${{ env.VEGA_VERSION }}
@@ -96,7 +95,7 @@ jobs:
 
       - name: Build and run Vegacapsule network
         if: ${{ env.RUN_CAPSULE }}
-        uses: ${{ env.ACTIONS /run-vegacapsule }}
+        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
         with:
           github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
@@ -105,7 +104,7 @@ jobs:
       ######
 
       - name: Set up Vegawallet
-        uses: ${{ env.ACTIONS/setup-vegawallet }}
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
