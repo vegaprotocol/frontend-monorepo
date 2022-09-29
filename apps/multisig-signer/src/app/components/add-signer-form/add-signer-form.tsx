@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { gql, useApolloClient } from '@apollo/client';
+import { gql, useApolloClient, useLazyQuery } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
@@ -27,13 +27,17 @@ export const ADD_SIGNER_QUERY = gql`
 `;
 
 export const AddSignerForm = () => {
-  const { query } = useApolloClient();
   const { multisig } = useContracts();
+  const [address, setAddress] = useState('');
+  // TODO consider doing something with loading
+  const [runQuery, { data, error, loading }] = useLazyQuery<
+    AddSignerBundle,
+    AddSignerBundleVariables
+  >(ADD_SIGNER_QUERY);
   const { perform, Dialog } = useEthereumTransaction<
     MultisigControl,
     'add_signer'
   >(multisig, 'add_signer');
-  const [address, setAddress] = useState('');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -41,20 +45,20 @@ export const AddSignerForm = () => {
       if (address === '') {
         return;
       }
-      const res = await query<AddSignerBundle, AddSignerBundleVariables>({
-        query: ADD_SIGNER_QUERY,
+      await runQuery({
         variables: { nodeId: address },
       });
+      const bundle = data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
 
-      const bundle =
-        res.data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
-
+      // TODO handle not found case
       if (!bundle) {
-        throw new Error('Could not retrieve multisig signer bundle');
+        // setNotFound(true);
+        return;
       }
 
       await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
-    } catch (err) {
+    } catch (err: unknown) {
+      // TODO do some checking to make sure we aren't reporting errors that we expect
       captureException(err);
     }
   };
@@ -73,9 +77,15 @@ export const AddSignerForm = () => {
             onChange={(e) => setAddress(e.target.value)}
             data-testid="add-signer-input-input"
           />
-          <Button type="submit" data-testid="add-signer-submit">
+          <Button
+            type="submit"
+            data-testid="add-signer-submit"
+            disabled={loading}
+          >
             {t('Add')}
           </Button>
+          {/* TODO add some better checking to ensure a better message is displayed */}
+          <div>{error?.message}</div>
         </div>
       </FormGroup>
       <Dialog />
