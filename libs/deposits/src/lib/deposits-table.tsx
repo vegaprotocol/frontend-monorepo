@@ -9,10 +9,10 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { DepositStatusMapping } from '@vegaprotocol/types';
 
 export interface DepositsTableProps {
   deposits: DepositFieldsFragment[];
@@ -28,9 +28,9 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
       style={{ width: '100%', height: '100%' }}
       suppressCellFocus={true}
     >
-      <AgGridColumn headerName="Asset" field="asset.symbol" />
+      <AgGridColumn headerName={t('Asset')} field="asset.symbol" />
       <AgGridColumn
-        headerName="Amount"
+        headerName={t('Amount')}
         field="amount"
         valueFormatter={({
           value,
@@ -39,8 +39,10 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
           return addDecimalsFormatNumber(value, data.asset.decimals);
         }}
       />
+      {/* TODO: "from address" is not available in the API */}
+      <AgGridColumn headerName={t('From')} cellRenderer={() => '-'} />
       <AgGridColumn
-        headerName="Created at"
+        headerName={t('Completed')}
         field="createdTimestamp"
         valueFormatter={({
           value,
@@ -52,30 +54,20 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         }}
       />
       <AgGridColumn
-        headerName="Status"
-        field="status"
-        valueFormatter={({
-          value,
-        }: VegaValueFormatterParams<DepositFieldsFragment, 'status'>) => {
-          return DepositStatusMapping[value];
-        }}
-      />
-      <AgGridColumn
-        headerName="Tx hash"
+        headerName={t('Transaction')}
         field="txHash"
         cellRenderer={({
           value,
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
           if (!value) return '-';
           return (
-            <Link
-              title={t('View transaction on Etherscan')}
+            <ExternalLink
               href={`${ETHERSCAN_URL}/tx/${value}`}
+              title={t('View transaction on Etherscan')}
               data-testid="etherscan-link"
-              target="_blank"
             >
               {truncateByChars(value)}
-            </Link>
+            </ExternalLink>
           );
         }}
       />
