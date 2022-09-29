@@ -44,9 +44,3 @@ To run the minimal set of unit tests, run the following:
 ```bash
 yarn nx test multisig-signer
 ```
-
-To run the UI automation tests with a mocked API, run:
-
-```bash
-yarn nx run multisig-signer-e2e:e2e
-```
