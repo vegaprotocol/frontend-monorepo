@@ -1,0 +1,45 @@
+inputs:
+  recovery:
+    description: 'Recovery phrase'
+  passphrase:
+    description: 'Wallet password'
+  capsule:
+    description: 'Is Capsule network used'
+    default: false
+runs:
+  using: 'composite'
+  steps:
+    - name: Create passphrase
+      shell: bash
+      run: echo "${{ inputs.passphrase }}" > ./passphrase
+
+    - name: Create recovery
+      shell: bash
+      run: echo "${{ inputs.recovery }}" > ./recovery
+
+    - name: Initialize wallet
+      shell: bash
+      run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
+
+    - name: Import wallet
+      shell: bash
+      run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+
+    - name: Create public key 2
+      shell: bash
+      run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+
+    - name: Import fairground network
+      shell: bash
+      if: ${{ inputs.capsule==false }}
+      run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+
+    - name: Start service using fairground network
+      shell: bash
+      if: ${{ inputs.capsule==false }}
+      run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
+
+    - name: Start service using capsule network
+      shell: bash
+      if: ${{ inputs.capsule }}
+      run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
