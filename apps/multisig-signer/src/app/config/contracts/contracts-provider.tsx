@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react';
 import { MultisigControl } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 import { ethers } from 'ethers';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
@@ -13,13 +13,14 @@ import { useEnvironment } from '@vegaprotocol/environment';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
-  const [contracts, setContracts] =
-    React.useState<ContractsContextShape | null>(null);
+  const [contracts, setContracts] = useState<ContractsContextShape | null>(
+    null
+  );
 
   // Create instances of contract classes. If we have an account use a signer for the
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
-  React.useEffect(() => {
+  useEffect(() => {
     let cancelled = false;
     const run = async () => {
       if (config) {
