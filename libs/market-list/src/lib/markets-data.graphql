@@ -1,0 +1,27 @@
+fragment MarketDataFields on MarketData {
+  market {
+    id
+  }
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+}
+
+query MarketsData {
+  marketsConnection {
+    edges {
+      node {
+        data {
+          ...MarketDataFields
+        }
+      }
+    }
+  }
+}

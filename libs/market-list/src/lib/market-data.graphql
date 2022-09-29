@@ -1,0 +1,47 @@
+fragment MarketDataUpdateFields on ObservableMarketData {
+  marketId
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+}
+
+subscription MarketDataUpdate($marketId: ID!) {
+  marketsData(marketIds: [$marketId]) {
+    ...MarketDataUpdateFields
+  }
+}
+
+fragment MarketDataFields on MarketData {
+  market {
+    id
+  }
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+}
+
+query MarketData($marketId: ID!) {
+  marketsConnection(id: $marketId) {
+    edges {
+      node {
+        data {
+          ...MarketDataFields
+        }
+      }
+    }
+  }
+}

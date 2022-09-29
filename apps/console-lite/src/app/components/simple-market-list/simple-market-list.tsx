@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  useScreenDimensions,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { MarketState } from '@vegaprotocol/types';
 import useMarketsFilterData from './use-markets-filter-data';
@@ -10,7 +13,7 @@ import SimpleMarketToolbar from './simple-market-toolbar';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import { ConsoleLiteGrid } from '../console-lite-grid';
 import type { Market } from '@vegaprotocol/market-list';
-import { useMarketList } from '@vegaprotocol/market-list';
+import { marketsWithCandlesProvider } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {
   percentChange?: number | '-';
@@ -29,7 +32,10 @@ const SimpleMarketList = () => {
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const gridRef = useRef<AgGridReact | null>(null);
 
-  const { data, error, loading } = useMarketList();
+  const { data, error, loading } = useDataProvider({
+    dataProvider: marketsWithCandlesProvider,
+    noUpdate: true,
+  });
   const localData = useMarketsFilterData(data, params);
 
   const handleOnGridReady = useCallback(() => {

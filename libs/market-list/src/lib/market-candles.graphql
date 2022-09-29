@@ -1,0 +1,29 @@
+fragment MarketCandlesFields on Candle {
+  high
+  low
+  open
+  close
+  volume
+}
+
+query MarketCandles($interval: Interval!, $since: String!, $marketId: ID!) {
+  marketsConnection(id: $marketId) {
+    edges {
+      node {
+        candlesConnection(interval: $interval, since: $since) {
+          edges {
+            node {
+              ...MarketCandlesFields
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+subscription MarketCandlesUpdate($marketId: ID!, $interval: Interval!) {
+  candles(interval: $interval, marketId: $marketId) {
+    ...MarketCandlesFields
+  }
+}

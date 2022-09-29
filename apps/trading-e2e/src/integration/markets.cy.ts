@@ -12,7 +12,7 @@ describe('markets table', { tags: '@regression' }, () => {
   it('renders markets correctly', () => {
     cy.visit('/');
     cy.wait('@Market');
-    cy.wait('@Markets');
+    cy.wait('@MarketsQuery');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
     cy.get('[data-testid^="market-link-"]')
@@ -27,7 +27,7 @@ describe('markets table', { tags: '@regression' }, () => {
 
   it('renders market list drop down', () => {
     cy.visit('/');
-    cy.wait('@Markets');
+    cy.wait('@MarketsQuery');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
     openMarketDropDown();
@@ -40,7 +40,7 @@ describe('markets table', { tags: '@regression' }, () => {
 
   it('Able to select market from dropdown', () => {
     cy.visit('/');
-    cy.wait('@Markets');
+    cy.wait('@MarketsQuery');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
     openMarketDropDown();
@@ -60,7 +60,7 @@ describe('markets table', { tags: '@regression' }, () => {
       'SOLUSD',
     ];
     cy.visit('/');
-    cy.wait('@Markets');
+    cy.wait('@MarketsQuery');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
     cy.getByTestId('link').should('have.attr', 'href', '/markets').click();
