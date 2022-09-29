@@ -33,7 +33,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
               assert.include(
                 response,
                 `"success":true`,
-                'Ensuring curl command was succesfully undertaken '
+                'Ensuring curl command was succesfully undertaken'
               );
             });
         } else {
