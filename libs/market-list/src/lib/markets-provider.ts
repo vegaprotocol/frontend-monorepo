@@ -52,6 +52,11 @@ const MARKET_DATA_FRAGMENT = gql`
         }
       }
     }
+    depth {
+      lastTrade {
+        price
+      }
+    }
     marketTimestamps {
       open
       close
