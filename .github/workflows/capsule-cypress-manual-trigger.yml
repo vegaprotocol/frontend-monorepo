@@ -121,11 +121,11 @@ jobs:
 
       - name: smoke
         if: ${{ inputs.runAlltests }}
-        run: echo TAGS=@smoke >> $GITHUB_ENV
+        run: echo TAGS="--env.grepTags ${{ env.TAGS }} >> $GITHUB_ENV
 
-      - name: Run smoke Cypress tests
+      - name: Run Cypress tests
         # if: ${{ github.event.inputs.runAlltests == 'true' }}
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags ${{ env.TAGS }} --browser chrome
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} ${{ env.TAGS }} --browser chrome
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
