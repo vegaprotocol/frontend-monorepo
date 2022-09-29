@@ -38,7 +38,11 @@ export const DealTicketMarketAmount = ({
       <div>@</div>
       <div className="flex-1" data-testid="last-price">
         {isMarketInAuction(market) && (
-          <Tooltip description={'text'}>
+          <Tooltip
+            description={t(
+              'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
+            )}
+          >
             <span className={'block mb-2 text-sm text-left'}>
               {t(`Estimated uncrossing price`)}
             </span>

@@ -9,6 +9,12 @@ fragment DealTicketMarket on Market {
       id
     }
     indicativePrice
+    indicativeVolume
+    targetStake
+    suppliedStake
+    auctionStart
+    auctionEnd
+    trigger
   }
   tradableInstrument {
     instrument {
@@ -20,6 +26,7 @@ fragment DealTicketMarket on Market {
           settlementAsset {
             id
             symbol
+            decimals
             name
           }
         }

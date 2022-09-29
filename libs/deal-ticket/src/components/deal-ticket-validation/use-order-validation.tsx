@@ -12,14 +12,13 @@ import {
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { Order } from './get-default-order';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
+import { MarketDataGrid } from '../trading-mode-tooltip';
+import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 
 export type ValidationProps = {
   step?: number;
-  market: {
-    state: MarketState;
-    tradingMode: MarketTradingMode;
-    positionDecimalPlaces: number;
-  };
+  market: DealTicketMarketFragment;
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
   fieldErrors?: FieldErrors<Order>;
@@ -105,7 +104,9 @@ export const useOrderValidation = ({
           message: (
             <span>
               {t('This market is in auction until it reaches')}{' '}
-              <Tooltip description={'text'}>
+              <Tooltip
+                description={<MarketDataGrid grid={compileGridData(market)} />}
+              >
                 <span>{t('sufficient liquidity')}.</span>
               </Tooltip>{' '}
               {t('Only limit orders are permitted when market is in auction')}

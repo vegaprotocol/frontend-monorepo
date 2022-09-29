@@ -1,7 +1,7 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
-import { validateSize } from '@vegaprotocol/orders';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
+import { validateSize } from '../deal-ticket-validation';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
