@@ -14,3 +14,13 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: false,
+  value: jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    connect: jest.fn(),
+    disconnect: jest.fn(),
+  })),
+});
