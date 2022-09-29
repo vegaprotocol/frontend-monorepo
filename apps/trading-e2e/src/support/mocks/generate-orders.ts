@@ -31,6 +31,8 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
+      liquidityProvision: null,
+      peggedOrder: null,
     },
     {
       __typename: 'Order',
@@ -50,6 +52,8 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
+      liquidityProvision: null,
+      peggedOrder: null,
     },
     {
       __typename: 'Order',
@@ -69,6 +73,8 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
+      liquidityProvision: null,
+      peggedOrder: null,
     },
     {
       __typename: 'Order',
@@ -88,6 +94,8 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
+      liquidityProvision: null,
+      peggedOrder: null,
     },
     {
       __typename: 'Order',
@@ -107,6 +115,8 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
+      liquidityProvision: null,
+      peggedOrder: null,
     },
   ];
 

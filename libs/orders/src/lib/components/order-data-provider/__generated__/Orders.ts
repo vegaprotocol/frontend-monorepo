@@ -17,6 +17,14 @@ export interface Orders_party_ordersConnection_edges_node_market {
   id: string;
 }
 
+export interface Orders_party_ordersConnection_edges_node_liquidityProvision {
+  __typename: "LiquidityProvision";
+}
+
+export interface Orders_party_ordersConnection_edges_node_peggedOrder {
+  __typename: "PeggedOrder";
+}
+
 export interface Orders_party_ordersConnection_edges_node {
   __typename: "Order";
   /**
@@ -71,6 +79,14 @@ export interface Orders_party_ordersConnection_edges_node {
    * RFC3339Nano time the order was altered
    */
   updatedAt: string | null;
+  /**
+   * The liquidity provision this order was created from
+   */
+  liquidityProvision: Orders_party_ordersConnection_edges_node_liquidityProvision | null;
+  /**
+   * PeggedOrder contains the details about a pegged order
+   */
+  peggedOrder: Orders_party_ordersConnection_edges_node_peggedOrder | null;
 }
 
 export interface Orders_party_ordersConnection_edges {
