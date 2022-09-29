@@ -12,24 +12,15 @@ import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { ExpirySelector } from './expiry-selector';
-import {
-  MarketTradingMode,
-  OrderTimeInForce,
-  OrderType,
-} from '@vegaprotocol/types';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { Order } from '../deal-ticket-validation';
 import { getDefaultOrder } from '../deal-ticket-validation';
-import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
+import {
+  isMarketInAuction,
+  useOrderValidation,
+} from '../deal-ticket-validation/use-order-validation';
 
 export type TransactionStatus = 'default' | 'pending';
-
-export const isMarketInAuction = (market: DealTicketMarketFragment) => {
-  return [
-    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-  ].includes(market.tradingMode);
-};
 
 export interface DealTicketProps {
   market: DealTicketMarketFragment;

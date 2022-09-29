@@ -17,6 +17,14 @@ import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 
+export const isMarketInAuction = (market: DealTicketMarketFragment) => {
+  return [
+    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+  ].includes(market.tradingMode);
+};
+
 export type ValidationProps = {
   step?: number;
   market: DealTicketMarketFragment;
@@ -92,15 +100,13 @@ export const useOrderValidation = ({
       };
     }
 
-    if (
-      [
-        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.tradingMode)
-    ) {
+    if (isMarketInAuction(market)) {
       if (orderType === OrderType.TYPE_MARKET) {
-        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY) {
+        if (
+          market.tradingMode ===
+            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        ) {
           return {
             isDisabled: true,
             message: (
@@ -111,14 +117,19 @@ export const useOrderValidation = ({
                     <MarketDataGrid grid={compileGridData(market)} />
                   }
                 >
-                  <span>{t('sufficient liquidity')}.</span>
-                </Tooltip>{' '}
+                  <span>{t('sufficient liquidity')}</span>
+                </Tooltip>
+                {'. '}
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
           };
         }
-        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE) {
+        if (
+          market.tradingMode ===
+            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE
+        ) {
           return {
             isDisabled: true,
             message: (
@@ -129,8 +140,9 @@ export const useOrderValidation = ({
                     <MarketDataGrid grid={compileGridData(market)} />
                   }
                 >
-                  <span>{t('high price volatility')}.</span>
-                </Tooltip>{' '}
+                  <span>{t('high price volatility')}</span>
+                </Tooltip>
+                {'. '}
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
@@ -151,7 +163,11 @@ export const useOrderValidation = ({
           OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
-        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY) {
+        if (
+          market.tradingMode ===
+            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        ) {
           return {
             isDisabled: true,
             message: (
@@ -172,7 +188,11 @@ export const useOrderValidation = ({
             ),
           };
         }
-        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE) {
+        if (
+          market.tradingMode ===
+            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE
+        ) {
           return {
             isDisabled: true,
             message: (
