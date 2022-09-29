@@ -77,8 +77,9 @@ export const SelectMarketLandingTable = ({
           </tbody>
         </table>
       </div>
-      <div>      <Link href="/markets">{'Or view full market list'}</Link></div>
-
+      <div className="mt-4 text-md">
+        <Link href="/markets">{'Or view full market list'}</Link>
+      </div>
     </>
   );
 };
@@ -132,7 +133,7 @@ export const SelectAllMarketsTableBody = ({
                 (marketCandles) => marketCandles.marketId === market.id
               )?.candles,
               positions &&
-              positions.find((p) => p.market.id === market.id)?.openVolume
+                positions.find((p) => p.market.id === market.id)?.openVolume
             )}
           />
         ))}
