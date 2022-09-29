@@ -95,6 +95,9 @@ jobs:
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
+      - name: test RUN CAPSULE
+        run: echo "RUN_CAPSULE ${{ env.RUN_CAPSULE }} END"
+
       - name: Build and run Vegacapsule network
         if: ${{ env.RUN_CAPSULE }}
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
