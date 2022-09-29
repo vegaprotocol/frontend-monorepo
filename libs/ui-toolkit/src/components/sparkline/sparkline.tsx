@@ -82,7 +82,7 @@ export const SparklineView = ({
   const preMarketCreationPath = lineSeries(preMarketData);
   const mainPath = lineSeries(marketData);
   const pathProps = {
-    dataTestId: 'sparkline-path',
+    'data-testid': 'sparkline-path',
     className: `[vector-effect:non-scaling-stroke] ${strokeClassName}`,
     stroke: 'strokeCurrent',
     strokeWidth: 1,
