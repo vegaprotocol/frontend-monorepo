@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { gql, useApolloClient, useLazyQuery } from '@apollo/client';
+import { gql, useLazyQuery } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
