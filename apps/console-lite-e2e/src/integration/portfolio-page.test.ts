@@ -6,11 +6,16 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generatePositions,
   emptyPositions,
+  generateMargins,
 } from '../support/mocks/generate-positions';
 import { generateAccounts } from '../support/mocks/generate-accounts';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
-import { generateFillsMarkets } from '../support/mocks/generate-markets';
+import {
+  generateFillsMarkets,
+  generateMarketsData,
+  generatePositionsMarkets,
+} from '../support/mocks/generate-markets';
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
@@ -74,7 +79,10 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Positions', generatePositions());
+        aliasQuery(req, 'Margins', generateMargins());
         aliasQuery(req, 'Accounts', generateAccounts());
+        aliasQuery(req, 'Markets', generatePositionsMarkets());
+        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
       });
       cy.visit('/portfolio/positions');
       connectVegaWallet();

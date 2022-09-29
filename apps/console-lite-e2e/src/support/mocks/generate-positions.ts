@@ -75,3 +75,70 @@ export const emptyPositions = () => {
     },
   };
 };
+
+export const generateMargins = () => {
+  return {
+    party: {
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
+      marginsConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tDAI-id',
+              },
+            },
+          },
+          {
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tDAI-id',
+              },
+            },
+            __typename: 'MarginEdge',
+          },
+          {
+            node: {
+              m_typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tEURO-id',
+              },
+            },
+            __typename: 'MarginEdge',
+          },
+        ],
+        __typename: 'MarginConnection',
+      },
+      __typename: 'Party',
+    },
+  };
+};
