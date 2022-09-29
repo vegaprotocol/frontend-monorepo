@@ -91,11 +91,12 @@ jobs:
       - name: Install Vega binaries
         uses: ./frontend-monorepo/.github/actions/install-vega-binaries
         with:
-          all: true
+          all: ${{ env.RUN_CAPSULE }}
           version: ${{ env.VEGA_VERSION }}
           gobin: ${{ env.GOBIN }}
 
       - name: Build and run Vegacapsule network
+        if: ${{ env.RUN_CAPSULE }}
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
         with:
           github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
