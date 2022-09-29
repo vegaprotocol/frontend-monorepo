@@ -121,7 +121,7 @@ jobs:
 
       - name: smoke
         if: ${{ inputs.runAlltests }}
-        run: echo TAGS="--env.grepTags ${{ env.TAGS }} >> $GITHUB_ENV
+        run: echo TAGS="--env.grepTags ${{ env.TAGS }}" >> $GITHUB_ENV
 
       - name: Run Cypress tests
         # if: ${{ github.event.inputs.runAlltests == 'true' }}
