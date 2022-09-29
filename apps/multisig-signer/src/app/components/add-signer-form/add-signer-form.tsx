@@ -10,6 +10,7 @@ import {
   InputError,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
+import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { useContracts } from '../../config/contracts/contracts-context';
 import type { FormEvent } from 'react';
 import type {
@@ -63,7 +64,13 @@ export const AddSignerForm = () => {
         return;
       }
 
-      await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
+      await perform(
+        bundle.newSigner,
+        bundle.nonce.startsWith('0x') ? bundle.nonce : prepend0x(bundle.nonce),
+        bundle.signatures.startsWith('0x')
+          ? bundle.signatures
+          : prepend0x(bundle.signatures)
+      );
     } catch (err: unknown) {
       captureException(err);
     }
