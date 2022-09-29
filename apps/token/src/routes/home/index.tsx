@@ -14,7 +14,7 @@ import type { NodeData } from './__generated__/NodeData';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';
 
-export const TOTAL_STAKED_QUERY = gql`
+export const TOTAL_ASSOCIATED_QUERY = gql`
   query NodeData {
     nodeData {
       stakedTotal
@@ -27,8 +27,8 @@ const Home = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
   const { appState } = useAppState();
-  const { data } = useQuery<NodeData>(TOTAL_STAKED_QUERY);
-  const totalStaked = React.useMemo(() => {
+  const { data } = useQuery<NodeData>(TOTAL_ASSOCIATED_QUERY);
+  const totalAssociated = React.useMemo(() => {
     return new BigNumber(data?.nodeData?.stakedTotalFormatted || '0');
   }, [data]);
 
@@ -38,7 +38,7 @@ const Home = ({ name }: RouteChildProps) => {
       <HomeSection>
         <TokenDetails
           totalSupply={appState.totalSupply}
-          totalStaked={totalStaked}
+          totalAssociated={totalAssociated}
         />
       </HomeSection>
       <HomeSection>
