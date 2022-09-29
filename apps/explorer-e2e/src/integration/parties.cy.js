@@ -5,9 +5,8 @@ const partiesSearchAction = '[data-testid="go-submit"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Parties page', { tags: '@regression' }, function () {
-
   before('send-faucet assets to connected vega wallet', function () {
-    cy.vega_wallet_import()
+    cy.vega_wallet_import();
     cy.vega_wallet_receive_fauceted_asset(
       'USDC (fake)',
       '10',
@@ -32,7 +31,6 @@ context('Parties page', { tags: '@regression' }, function () {
   });
 
   describe('Verify parties page content', function () {
-
     before('navigate to parties page and search for party', function () {
       cy.get(partiesMenuHeader).click();
       // Deliberate slow entry of party id/key - enabling transactions to sync
@@ -44,13 +42,12 @@ context('Parties page', { tags: '@regression' }, function () {
       cy.contains('Address')
         .siblings()
         .contains(vegaWalletPublicKey)
-        .should('be.visible')
+        .should('be.visible');
     });
 
     it('should see fUSDC asset - within asset data section', function () {
       let currency = { id: 'fUSDC', name: 'USDC (fake)' };
-      cy.contains(currency.name, txTimeout)
-        .should('be.visible');
+      cy.contains(currency.name, txTimeout).should('be.visible');
       cy.contains(currency.name)
         .siblings()
         .contains(currency.id)
@@ -63,8 +60,7 @@ context('Parties page', { tags: '@regression' }, function () {
 
     it('should see fBTC assets - within asset data section', function () {
       let currency = { id: 'fBTC', name: 'BTC (fake)' };
-      cy.contains(currency.name, txTimeout)
-        .should('be.visible');
+      cy.contains(currency.name, txTimeout).should('be.visible');
       cy.contains(currency.name)
         .siblings()
         .contains(currency.id)
@@ -77,8 +73,7 @@ context('Parties page', { tags: '@regression' }, function () {
 
     it('should see fEURO assets - within asset data section', function () {
       let currency = { id: 'fEURO', name: 'EURO (fake)' };
-      cy.contains(currency.name, txTimeout)
-        .should('be.visible');
+      cy.contains(currency.name, txTimeout).should('be.visible');
       cy.contains(currency.name)
         .siblings()
         .contains(currency.id)
@@ -91,8 +86,7 @@ context('Parties page', { tags: '@regression' }, function () {
 
     it('should see fDAI assets - within asset data section', function () {
       let currency = { id: 'fDAI', name: 'DAI (fake)' };
-      cy.contains(currency.name, txTimeout)
-        .should('be.visible');
+      cy.contains(currency.name, txTimeout).should('be.visible');
       cy.contains(currency.name)
         .siblings()
         .contains(currency.id)
@@ -111,5 +105,5 @@ context('Parties page', { tags: '@regression' }, function () {
         }
       }
     );
-  })
+  });
 });
