@@ -29,6 +29,7 @@ jobs:
       GO111MODULE: 'on'
       GOBIN: /home/runner/go/bin
       VEGA_VERSION: 'v0.57.0'
+      ACTIONS: ./frontend-monorepo/.github/actions
     steps:
       #######
       ## Setup langs
@@ -87,7 +88,7 @@ jobs:
       #######
 
       - name: Install Vega binaries
-        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
+        uses: $ACTIONS/install-vega-binaries
         with:
           all: ${{ env.RUN_CAPSULE }}
           version: ${{ env.VEGA_VERSION }}
@@ -95,7 +96,7 @@ jobs:
 
       - name: Build and run Vegacapsule network
         if: ${{ env.RUN_CAPSULE }}
-        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        uses: $ACTIONS/run-vegacapsule
         with:
           github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
@@ -104,7 +105,7 @@ jobs:
       ######
 
       - name: Set up Vegawallet
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+        uses: $ACTIONS/setup-vegawallet
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
@@ -114,17 +115,16 @@ jobs:
       ## Run some tests
       ######
 
+      - name: Set smoke tag if necessary
+        if: ${{ inputs.runAlltests==false }}
+        run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
+
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
         run: yarn cypress install
         working-directory: frontend-monorepo
 
-      - name: smoke
-        if: ${{ inputs.runAlltests==false }}
-        run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
-
       - name: Run Cypress tests
-        # if: ${{ github.event.inputs.runAlltests == 'true' }}
         run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
         working-directory: frontend-monorepo
         env:
@@ -132,16 +132,6 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
-
-      # - name: Run Cypress tests
-      #   if: ${{ github.event.inputs.runAlltests == 'false' }}
-      #   run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
-      #   working-directory: frontend-monorepo
-      #   env:
-      #     CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-      #     CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-      #     CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-      #     CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
       ## Upload logs
