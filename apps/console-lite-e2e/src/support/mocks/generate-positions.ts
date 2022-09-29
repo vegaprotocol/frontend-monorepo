@@ -4,7 +4,6 @@ import type {
   Positions,
   Positions_party_positionsConnection_edges_node,
 } from '@vegaprotocol/positions';
-import { MarketTradingMode } from '@vegaprotocol/types';
 
 export const generatePositions = (
   override?: PartialDeep<Positions>
