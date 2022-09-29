@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/react';
 import debounce from 'lodash/debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type MutationObserverConfiguration = {
   debounceTime: number;
@@ -21,17 +21,13 @@ export function useMutationObserver(
   callback: MutationCallback,
   options: MutationObserverConfiguration = DEFAULT_OPTIONS
 ) {
-  const [observer, setObserver] = useState<MutationObserver | null>(null);
-
-  useEffect(() => {
-    setObserver(
-      new MutationObserver(
-        options.debounceTime > 0
-          ? debounce(callback, options.debounceTime)
-          : callback
-      )
+  const observer = useMemo(() => {
+    return new MutationObserver(
+      options.debounceTime > 0
+        ? debounce(callback, options.debounceTime)
+        : callback
     );
-  }, [callback, options.debounceTime, setObserver]);
+  }, [callback, options.debounceTime]);
 
   useEffect(() => {
     if (!observer || !target) return;

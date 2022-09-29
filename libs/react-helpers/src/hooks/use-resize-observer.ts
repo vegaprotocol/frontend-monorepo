@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/react';
 import debounce from 'lodash/debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type ResizeObserverConfiguration = {
   debounceTime: number;
@@ -19,17 +19,13 @@ export function useResizeObserver(
   callback: ResizeObserverCallback,
   options: ResizeObserverConfiguration = DEFAULT_OPTIONS
 ) {
-  const [observer, setObserver] = useState<ResizeObserver | null>(null);
-
-  useEffect(() => {
-    setObserver(
-      new ResizeObserver(
-        options.debounceTime > 0
-          ? debounce(callback, options.debounceTime)
-          : callback
-      )
+  const observer = useMemo(() => {
+    return new ResizeObserver(
+      options.debounceTime > 0
+        ? debounce(callback, options.debounceTime)
+        : callback
     );
-  }, [callback, options.debounceTime, setObserver]);
+  }, [callback, options.debounceTime]);
 
   useEffect(() => {
     if (!observer || !target) return;

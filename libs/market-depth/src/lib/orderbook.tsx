@@ -390,8 +390,8 @@ export const Orderbook = ({
         <div
           className="relative text-right min-h-full"
           style={{
-            paddingTop: `${paddingTop}px`,
-            paddingBottom: `${paddingBottom}px`,
+            paddingTop: paddingTop,
+            paddingBottom: paddingBottom,
             background: tableBody ? gradientStyles : 'none',
           }}
           ref={gridElement}
@@ -461,7 +461,7 @@ export const Orderbook = ({
             })}
             data-testid="scroll-to-midprice"
           >
-            Go to mid
+            {t('Go to mid')}
             <span className="ml-4">
               <Icon name="th-derived" />
             </span>
