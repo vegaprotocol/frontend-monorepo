@@ -1,5 +1,9 @@
-import { useMarketList } from '@vegaprotocol/market-list';
-import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/react-helpers';
+import { marketsWithDataProvider } from '@vegaprotocol/market-list';
+import {
+  addDecimalsFormatNumber,
+  titlefy,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -8,8 +12,10 @@ import { useGlobalStore } from '../stores';
 export function Index() {
   const { replace } = useRouter();
   // The default market selected in the platform behind the overlay
-  // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
-  const { data, error, loading } = useMarketList();
+  // should be the oldest market that is currently trading in     us mode(i.e. not in auction).
+  const { data, error, loading } = useDataProvider({
+    dataProvider: marketsWithDataProvider,
+  });
   const { riskNoticeDialog, update } = useGlobalStore((store) => ({
     riskNoticeDialog: store.riskNoticeDialog,
     update: store.update,
@@ -19,12 +25,12 @@ export function Index() {
     update({ landingDialog: true });
 
     if (data) {
-      const marketId = data.markets[0]?.id;
-      const marketName = data.markets[0]?.tradableInstrument.instrument.name;
-      const marketPrice = data.marketsData[0]?.markPrice
+      const marketId = data[0]?.id;
+      const marketName = data[0]?.tradableInstrument.instrument.name;
+      const marketPrice = data[0]?.data?.markPrice
         ? addDecimalsFormatNumber(
-            data.marketsData[0]?.markPrice,
-            data.markets[0].decimalPlaces
+            data[0]?.data?.markPrice,
+            data[0]?.decimalPlaces
           )
         : null;
       const pageTitle = titlefy([marketName, marketPrice]);

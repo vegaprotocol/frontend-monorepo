@@ -17,13 +17,9 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { Market, MarketData, MarketCandles, Candle } from '../';
+import type { MarketWithCandles, MarketWithData } from '../';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  Positions_party,
-  PositionsSubscription_positions,
-  Positions_party_positionsConnection_edges_node,
-} from '@vegaprotocol/positions';
+import type { Positions_party_positionsConnection_edges_node } from '@vegaprotocol/positions';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
@@ -31,16 +27,14 @@ import {
 } from './select-market-table';
 import { useMarketList } from '../markets-provider';
 
+type Market = MarketWithCandles & MarketWithData;
+
 export const SelectMarketLandingTable = ({
   markets,
-  marketsData,
-  marketsCandles,
   onSelect,
   onCellClick,
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
-  marketsCandles: MarketCandles[] | undefined;
+  markets: Market[] | null;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
@@ -61,17 +55,7 @@ export const SelectMarketLandingTable = ({
                 key={i}
                 detailed={false}
                 onSelect={onSelect}
-                columns={columns(
-                  market,
-                  marketsData?.find(
-                    (marketData) => marketData.market.id === market.id
-                  ),
-                  marketsCandles?.find(
-                    (marketCandles) => marketCandles.marketId === market.id
-                  )?.candles,
-                  onSelect,
-                  onCellClick
-                )}
+                columns={columns(market, onSelect, onCellClick)}
               />
             ))}
           </tbody>
@@ -84,29 +68,19 @@ export const SelectMarketLandingTable = ({
 
 export const SelectAllMarketsTableBody = ({
   markets,
-  marketsData,
-  marketsCandles,
   positions,
   onSelect,
   onCellClick,
   headers = columnHeaders,
-  tableColumns = (market, marketData, candles) =>
-    columns(market, marketData, candles, onSelect, onCellClick),
+  tableColumns = (market) => columns(market, onSelect, onCellClick),
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
-  marketsCandles: MarketCandles[] | undefined;
+  markets?: Market[] | null;
   positions?: Positions_party_positionsConnection_edges_node[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
-  tableColumns?: (
-    market: Market,
-    marketData: MarketData | undefined,
-    candles: Candle[] | undefined,
-    openVolume?: string
-  ) => Column[];
+  tableColumns?: (market: Market, openVolume?: string) => Column[];
 }) => {
   if (!markets) return null;
   return (
@@ -124,12 +98,6 @@ export const SelectAllMarketsTableBody = ({
             onSelect={onSelect}
             columns={tableColumns(
               market,
-              marketsData?.find(
-                (marketData) => marketData.market.id === market.id
-              ),
-              marketsCandles?.find(
-                (marketCandles) => marketCandles.marketId === market.id
-              )?.candles,
               positions &&
                 positions.find((p) => p.market.id === market.id)?.openVolume
             )}
@@ -155,10 +123,7 @@ export const SelectMarketPopover = ({
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data: party, loading: positionsLoading } = useDataProvider<
-    Positions_party,
-    PositionsSubscription_positions[]
-  >({
+  const { data: party, loading: positionsLoading } = useDataProvider({
     dataProvider: positionsDataProvider,
     noUpdate: true,
     variables,
@@ -173,7 +138,7 @@ export const SelectMarketPopover = ({
   const iconClass = open ? 'rotate-180' : '';
   const markets = useMemo(
     () =>
-      data?.markets?.filter((market) =>
+      data?.filter((market) =>
         party?.positionsConnection?.edges?.find(
           (edge) => edge.node.market.id === market.id
         )
@@ -208,19 +173,15 @@ export const SelectMarketPopover = ({
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
                   markets={markets}
-                  marketsData={data?.marketsData}
-                  marketsCandles={data?.marketsCandles}
                   positions={party?.positionsConnection?.edges
                     ?.filter((edge) => edge.node)
                     .map((edge) => edge.node)}
                   onSelect={onSelectMarket}
                   onCellClick={onCellClick}
                   headers={columnHeadersPositionMarkets}
-                  tableColumns={(market, marketData, candles, openVolume) =>
+                  tableColumns={(market, openVolume) =>
                     columnsPositionMarkets(
                       market,
-                      marketData,
-                      candles,
                       onSelectMarket,
                       openVolume,
                       onCellClick
@@ -231,9 +192,7 @@ export const SelectMarketPopover = ({
             ) : null}
             <TableTitle>{t('All markets')}</TableTitle>
             <SelectAllMarketsTableBody
-              markets={data?.markets}
-              marketsData={data?.marketsData}
-              marketsCandles={data?.marketsCandles}
+              markets={data}
               onSelect={onSelectMarket}
               onCellClick={onCellClick}
             />
@@ -317,9 +276,7 @@ const LandingDialogContainer = ({
 
   return (
     <SelectMarketLandingTable
-      markets={data?.markets}
-      marketsData={data?.marketsData}
-      marketsCandles={data?.marketsCandles}
+      markets={data}
       onSelect={onSelect}
       onCellClick={onCellClick}
     />

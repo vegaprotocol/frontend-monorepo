@@ -16,6 +16,8 @@ import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { mapDataToMarketList } from './utils';
 
+import type { MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node as Candle } from './__generated__/MarketsCandlesQuery';
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type Market = Markets_marketsConnection_edges_node;
 
@@ -91,42 +93,54 @@ export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   ([markets]) => mapDataToMarketList(markets)
 );
 
-export interface MarketsListData {
-  markets: Market[];
-  marketsData: MarketData[];
-  marketsCandles: MarketCandles[];
-}
+export type MarketWithCandles = Market & { candles?: Candle[] };
 
-export const marketListProvider = makeDerivedDataProvider<
-  MarketsListData,
+const addCandles = <T extends Market>(
+  markets: T[],
+  marketsCandles: MarketCandles[]
+) =>
+  markets.map((market) => ({
+    ...market,
+    candles: marketsCandles.find((data) => data.marketId === market.id)
+      ?.candles,
+  }));
+
+export const marketsWithCandlesProvider = makeDerivedDataProvider<
+  MarketWithCandles[],
   never
 >(
   [
     (callback, client) => activeMarketsProvider(callback, client),
-    (callback, client) => marketsDataProvider(callback, client),
     marketsCandlesProvider,
   ],
-  (parts) => {
-    return {
-      markets: parts[0] as Market[],
-      marketsData: parts[1] as MarketData[],
-      marketsCandles: parts[2] as MarketCandles[],
-    };
-  }
+  (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
 );
 
 export type MarketWithData = Market & { data?: MarketData };
+
+const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
+  markets.map((market) => ({
+    ...market,
+    data: marketsData.find((data) => data.market.id === market.id),
+  }));
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
   MarketWithData[],
   never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
-  (parts[0] as Market[]).map((market) => ({
-    ...market,
-    data: (parts[1] as MarketData[]).find(
-      (data) => data.market.id === market.id
-    ),
-  }))
+  addData(parts[0] as Market[], parts[1] as MarketData[])
+);
+
+export const marketListProvider = makeDerivedDataProvider<
+  (MarketWithData & MarketWithCandles)[],
+  never
+>(
+  [
+    (callback, client) => marketsWithDataProvider(callback, client),
+    marketsCandlesProvider,
+  ],
+  (parts) =>
+    addCandles(parts[0] as MarketWithCandles[], parts[1] as MarketCandles[])
 );
 
 export const useMarketList = () => {
@@ -137,7 +151,7 @@ export const useMarketList = () => {
       interval: Interval.INTERVAL_I1H,
     };
   }, []);
-  const { data, loading, error } = useDataProvider<MarketsListData, never>({
+  const { data, loading, error } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
     noUpdate: true,

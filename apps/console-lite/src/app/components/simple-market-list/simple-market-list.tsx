@@ -9,7 +9,7 @@ import useColumnDefinitions from './use-column-definitions';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import { ConsoleLiteGrid } from '../console-lite-grid';
-import type { Market, MarketsListData } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import { useMarketList } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {
@@ -30,7 +30,7 @@ const SimpleMarketList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
 
   const { data, error, loading } = useMarketList();
-  const localData = useMarketsFilterData(data as MarketsListData, params);
+  const localData = useMarketsFilterData(data, params);
 
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
@@ -38,7 +38,7 @@ const SimpleMarketList = () => {
 
   useEffect(() => {
     const statuses: Record<string, MarketState | ''> = {};
-    data?.markets?.forEach((market) => {
+    data?.forEach((market) => {
       statuses[market.id] = market.state || '';
     });
     statusesRef.current = statuses;
@@ -62,7 +62,7 @@ const SimpleMarketList = () => {
 
   return (
     <div className="h-full p-4 md:p-6 grid grid-rows-[min-content,1fr]">
-      <SimpleMarketToolbar data={data?.markets || []} />
+      <SimpleMarketToolbar data={data || []} />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <ConsoleLiteGrid<MarketWithPercentChange>
           classNamesParam="mb-32 min-h-[300px]"

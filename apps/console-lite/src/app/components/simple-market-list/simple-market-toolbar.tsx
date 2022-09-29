@@ -15,13 +15,13 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { MarketState } from '@vegaprotocol/types';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
-import type { Markets_marketsConnection_edges_node } from '@vegaprotocol/market-list';
+import type { Market } from '@vegaprotocol/market-list';
 import { HorizontalMenu } from '../horizontal-menu';
 import type { HorizontalMenuItem } from '../horizontal-menu';
 import * as constants from './constants';
 
 interface Props {
-  data: Markets_marketsConnection_edges_node[];
+  data: Market[];
 }
 
 const SimpleMarketToolbar = ({ data }: Props) => {
