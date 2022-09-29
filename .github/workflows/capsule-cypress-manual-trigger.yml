@@ -105,7 +105,7 @@ jobs:
       ######
 
       - name: Set up Vegawallet
-      - uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
