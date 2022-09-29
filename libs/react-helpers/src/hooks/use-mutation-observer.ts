@@ -8,7 +8,7 @@ type MutationObserverConfiguration = {
 };
 
 const DEFAULT_OPTIONS: MutationObserverConfiguration = {
-  debounceTime: 1000 / 16,
+  debounceTime: 0,
   config: {
     attributes: true,
     childList: false,
