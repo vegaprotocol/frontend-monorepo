@@ -69,6 +69,8 @@ export const generateOrder = (partialOrder?: PartialDeep<OrderWithMarket>) => {
     updatedAt: null,
     expiresAt: null,
     rejectionReason: null,
+    liquidityProvision: null,
+    peggedOrder: null,
   };
   return merge(order, partialOrder);
 };

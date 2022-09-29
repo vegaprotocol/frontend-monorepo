@@ -9,6 +9,10 @@ import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } 
 // GraphQL subscription operation: OrderSub
 // ====================================================
 
+export interface OrderSub_orders_peggedOrder {
+  __typename: "PeggedOrder";
+}
+
 export interface OrderSub_orders {
   __typename: "OrderUpdate";
   /**
@@ -63,6 +67,14 @@ export interface OrderSub_orders {
    * RFC3339Nano time the order was altered
    */
   updatedAt: string | null;
+  /**
+   * The liquidity provision this order was created from
+   */
+  liquidityProvisionId: string | null;
+  /**
+   * PeggedOrder contains the details about a pegged order
+   */
+  peggedOrder: OrderSub_orders_peggedOrder | null;
 }
 
 export interface OrderSub {
