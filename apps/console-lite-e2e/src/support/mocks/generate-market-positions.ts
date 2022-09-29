@@ -21,7 +21,7 @@ export const generateMarketPositions = () => {
           },
           balance: '265329',
           market: {
-            id: 'first-btcusd-id',
+            id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
             __typename: 'Market',
           },
         },
@@ -43,7 +43,7 @@ export const generateMarketPositions = () => {
             node: {
               openVolume: '12',
               market: {
-                id: 'first-btcusd-id',
+                id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
                 __typename: 'Market',
               },
               __typename: 'Position',

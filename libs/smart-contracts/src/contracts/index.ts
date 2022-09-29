@@ -6,3 +6,4 @@ export * from './staking-bridge';
 export * from './token-vesting';
 export * from './token';
 export * from './token-faucetable';
+export * from './multisig-control';
