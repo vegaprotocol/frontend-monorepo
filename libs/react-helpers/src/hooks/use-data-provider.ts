@@ -5,7 +5,14 @@ import type {
   Subscribe,
   Load,
   UpdateCallback,
+  UpdateDelta,
 } from '../lib/generic-data-provider';
+
+function hasDelta<T>(
+  updateData: UpdateDelta<T>
+): updateData is Required<UpdateDelta<T>> {
+  return !!updateData.isUpdate;
+}
 
 /**
  *
@@ -63,16 +70,16 @@ export function useDataProvider<Data, Delta>({
     return Promise.reject();
   }, []);
   const callback = useCallback<UpdateCallback<Data, Delta>>(
-    ({
-      data,
-      error,
-      loading,
-      delta,
-      insertionData,
-      totalCount,
-      isInsert,
-      isUpdate,
-    }) => {
+    (arg) => {
+      const {
+        data,
+        error,
+        loading,
+        insertionData,
+        totalCount,
+        isInsert,
+        isUpdate,
+      } = arg;
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
@@ -83,7 +90,8 @@ export function useDataProvider<Data, Delta>({
             isUpdate &&
             !noUpdate &&
             update &&
-            (!delta || update({ delta, data }))
+            hasDelta<Delta>(arg) &&
+            update({ delta: arg.delta, data })
           ) {
             return;
           }
