@@ -12,7 +12,12 @@ import {
 } from 'react';
 import classNames from 'classnames';
 
-import { formatNumber, t, ThemeContext } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  t,
+  ThemeContext,
+  useResizeObserver,
+} from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
@@ -109,6 +114,9 @@ export const Orderbook = ({
 }: OrderbookProps) => {
   const theme = useContext(ThemeContext);
   const scrollElement = useRef<HTMLDivElement>(null);
+  const gridElement = useRef<HTMLDivElement>(null);
+  const headerElement = useRef<HTMLDivElement>(null);
+  const footerElement = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
   // actual scrollTop of scrollElement current element
@@ -249,7 +257,7 @@ export const Orderbook = ({
     }
   }, [scrollToMidPrice, scrollToPrice, resolution]);
 
-  // handles viewport resize
+  // handles window resize
   useEffect(() => {
     function handleResize() {
       if (scrollElement.current) {
@@ -262,6 +270,50 @@ export const Orderbook = ({
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  // sets the correct width of header and footer
+  useLayoutEffect(() => {
+    if (
+      !gridElement.current ||
+      !headerElement.current ||
+      !footerElement.current
+    ) {
+      return;
+    }
+    const gridWidth = gridElement.current.clientWidth;
+    headerElement.current.style.width = `${gridWidth}px`;
+    footerElement.current.style.width = `${gridWidth}px`;
+  }, [headerElement, footerElement, gridElement]);
+  // handles resizing of the Allotment.Pane (x-axis)
+  // adjusts the header and footer width
+  const gridResizeHandler: ResizeObserverCallback = useCallback(
+    (entries) => {
+      if (
+        !headerElement.current ||
+        !footerElement.current ||
+        entries.length === 0
+      ) {
+        return;
+      }
+      const {
+        contentRect: { width, height },
+      } = entries[0];
+      headerElement.current.style.width = `${width}px`;
+      footerElement.current.style.width = `${width}px`;
+      setViewportHeight(height);
+    },
+    [headerElement, footerElement]
+  );
+  // handles resizing of the Allotment.Pane (y-axis)
+  // adjusts the scroll height
+  const scrollElementResizeHandler: ResizeObserverCallback = useCallback(
+    (entries) => {
+      if (!scrollElement.current || entries.length === 0) return;
+      setViewportHeight(entries[0].contentRect.height);
+    },
+    [setViewportHeight, scrollElement]
+  );
+  useResizeObserver(gridElement.current, gridResizeHandler);
+  useResizeObserver(scrollElement.current, scrollElementResizeHandler);
 
   let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
   const prependingBufferSize = Math.min(bufferSize, offset);
@@ -313,16 +365,16 @@ export const Orderbook = ({
   const c = theme === 'dark' ? colors.neutral[600] : colors.neutral[300];
   const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
 
+  const resolutions = new Array(decimalPlaces + 1)
+    .fill(null)
+    .map((v, i) => Math.pow(10, i));
+
   return (
-    <div
-      className={`h-full overflow-auto relative ${styles['scroll']} pl-2 text-xs`}
-      onScroll={onScroll}
-      ref={scrollElement}
-      data-testid="scroll"
-    >
+    <div className="h-full relative pl-2 text-xs">
       <div
-        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default"
+        className="absolute top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-default w-full"
         style={{ gridAutoRows: '17px' }}
+        ref={headerElement}
       >
         <div>{t('Bid vol')}</div>
         <div>{t('Price')}</div>
@@ -330,23 +382,61 @@ export const Orderbook = ({
         <div className="pr-[2px]">{t('Cumulative vol')}</div>
       </div>
       <div
-        className="relative text-right"
-        style={{
-          paddingTop: `${paddingTop}px`,
-          paddingBottom: `${paddingBottom}px`,
-          minHeight: `calc(100% - ${2 * (rowHeight + 2)}px)`,
-          background: tableBody ? gradientStyles : 'none',
-        }}
+        className={`h-full overflow-auto relative ${styles['scroll']} pt-[26px] pb-[17px]`}
+        onScroll={onScroll}
+        ref={scrollElement}
+        data-testid="scroll"
       >
-        {tableBody || (
-          <div className="inset-0 absolute">
-            <Splash>{t('No data')}</Splash>
-          </div>
-        )}
+        <div
+          className="relative text-right min-h-full"
+          style={{
+            paddingTop: paddingTop,
+            paddingBottom: paddingBottom,
+            background: tableBody ? gradientStyles : 'none',
+          }}
+          ref={gridElement}
+        >
+          {tableBody || (
+            <div className="inset-0 absolute">
+              <Splash>{t('No data')}</Splash>
+            </div>
+          )}
+        </div>
+        {maxPriceLevel &&
+          bestStaticBidPrice &&
+          BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
+          BigInt(bestStaticBidPrice) > minPriceLevel && (
+            <HorizontalLine
+              top={`${(
+                ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
+                  BigInt(resolution) +
+                  BigInt(1)) *
+                  BigInt(rowHeight) +
+                BigInt(1)
+              ).toString()}px`}
+              testId="best-static-bid-price"
+            />
+          )}
+        {maxPriceLevel &&
+          bestStaticOfferPrice &&
+          BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
+          BigInt(bestStaticOfferPrice) > minPriceLevel && (
+            <HorizontalLine
+              top={`${(
+                ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
+                  BigInt(resolution) +
+                  BigInt(2)) *
+                  BigInt(rowHeight) +
+                BigInt(1)
+              ).toString()}px`}
+              testId={'best-static-offer-price'}
+            />
+          )}
       </div>
       <div
-        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-default mt-2 z-10 bg-white dark:bg-black"
+        className="absolute bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-default mt-2 z-10 bg-white dark:bg-black w-full"
         style={{ gridAutoRows: '17px' }}
+        ref={footerElement}
       >
         <div className="col-start-2">
           <select
@@ -355,14 +445,11 @@ export const Orderbook = ({
             className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right w-full h-full"
             data-testid="resolution"
           >
-            {new Array(3)
-              .fill(null)
-              .map((v, i) => Math.pow(10, i))
-              .map((r) => (
-                <option key={r} value={r}>
-                  {formatNumber(0, decimalPlaces - Math.log10(r))}
-                </option>
-              ))}
+            {resolutions.map((r) => (
+              <option key={r} value={r}>
+                {formatNumber(0, decimalPlaces - Math.log10(r))}
+              </option>
+            ))}
           </select>
         </div>
         <div className="col-start-4">
@@ -374,43 +461,13 @@ export const Orderbook = ({
             })}
             data-testid="scroll-to-midprice"
           >
-            Go to mid
+            {t('Go to mid')}
             <span className="ml-4">
               <Icon name="th-derived" />
             </span>
           </button>
         </div>
       </div>
-      {maxPriceLevel &&
-        bestStaticBidPrice &&
-        BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
-        BigInt(bestStaticBidPrice) > minPriceLevel && (
-          <HorizontalLine
-            top={`${(
-              ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-                BigInt(resolution) +
-                BigInt(1)) *
-                BigInt(rowHeight) +
-              BigInt(1)
-            ).toString()}px`}
-            testId="best-static-bid-price"
-          />
-        )}
-      {maxPriceLevel &&
-        bestStaticOfferPrice &&
-        BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
-        BigInt(bestStaticOfferPrice) > minPriceLevel && (
-          <HorizontalLine
-            top={`${(
-              ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
-                BigInt(resolution) +
-                BigInt(2)) *
-                BigInt(rowHeight) +
-              BigInt(1)
-            ).toString()}px`}
-            testId={'best-static-offer-price'}
-          />
-        )}
     </div>
   );
 };
