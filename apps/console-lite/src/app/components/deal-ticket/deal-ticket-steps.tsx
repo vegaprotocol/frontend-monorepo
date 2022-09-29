@@ -104,7 +104,7 @@ export const DealTicketSteps = ({
   );
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
-      transaction.status === VegaTxStatus.Pending
+    transaction.status === VegaTxStatus.Pending
       ? 'pending'
       : 'default';
 
