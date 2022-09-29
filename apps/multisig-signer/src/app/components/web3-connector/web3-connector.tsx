@@ -4,15 +4,20 @@ import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { createConnectors } from '../../lib/web3-connectors';
 
 interface Web3ConnectorProps {
   children: ReactElement;
+  dialogOpen: boolean;
+  setDialogOpen: (open: boolean) => void;
 }
 
-export function Web3Connector({ children }: Web3ConnectorProps) {
-  const [dialogOpen, setDialogOpen] = useState(true);
+export function Web3Connector({
+  children,
+  dialogOpen,
+  setDialogOpen,
+}: Web3ConnectorProps) {
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
   const Connectors = useMemo(() => {
@@ -45,7 +50,11 @@ interface Web3ContentProps {
   setDialogOpen: (isOpen: boolean) => void;
 }
 
-export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
+export const Web3Content = ({
+  children,
+  appChainId,
+  setDialogOpen,
+}: Web3ContentProps) => {
   const { error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
