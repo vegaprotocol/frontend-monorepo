@@ -60,6 +60,7 @@ jobs:
         with:
           working-directory: frontend-monorepo
           main-branch-name: ${{ github.base_ref || github.ref_name }}
+          set-environment-variables-for-job: true
 
       # See if we capsule is needed for this project
       - name: See affected apps
