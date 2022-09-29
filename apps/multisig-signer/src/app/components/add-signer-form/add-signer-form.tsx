@@ -3,7 +3,13 @@ import { gql, useApolloClient, useLazyQuery } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
-import { FormGroup, Input, Button } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  Input,
+  Button,
+  InputError,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../config/contracts/contracts-context';
 import type { FormEvent } from 'react';
 import type {
@@ -29,7 +35,7 @@ export const ADD_SIGNER_QUERY = gql`
 export const AddSignerForm = () => {
   const { multisig } = useContracts();
   const [address, setAddress] = useState('');
-  // TODO consider doing something with loading
+  const [bundleNotFound, setBundleNotFound] = useState(false);
   const [runQuery, { data, error, loading }] = useLazyQuery<
     AddSignerBundle,
     AddSignerBundleVariables
@@ -40,7 +46,7 @@ export const AddSignerForm = () => {
   >(multisig, 'add_signer');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setBundleNotFound(false);
     try {
       if (address === '') {
         return;
@@ -50,9 +56,10 @@ export const AddSignerForm = () => {
       });
       const bundle = data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
 
-      // TODO handle not found case
       if (!bundle) {
-        // setNotFound(true);
+        if (!error) {
+          setBundleNotFound(true);
+        }
         return;
       }
 
@@ -82,10 +89,24 @@ export const AddSignerForm = () => {
             data-testid="add-signer-submit"
             disabled={loading}
           >
-            {t('Add')}
+            {loading ? <Loader size="small" /> : t('Add')}
           </Button>
-          {/* TODO add some better checking to ensure a better message is displayed */}
-          <div>{error?.message}</div>
+        </div>
+        <div>
+          {error && (
+            <InputError intent="danger">
+              {error?.message.includes('InvalidArgument')
+                ? t('Invalid node id')
+                : error?.message}
+            </InputError>
+          )}
+          {bundleNotFound && !error && (
+            <InputError intent="danger">
+              {t(
+                'Bundle was not found, are you sure this validator needs to be added?'
+              )}
+            </InputError>
+          )}
         </div>
       </FormGroup>
       <Dialog />
