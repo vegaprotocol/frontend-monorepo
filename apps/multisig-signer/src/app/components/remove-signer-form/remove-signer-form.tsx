@@ -1,9 +1,15 @@
 import { useState } from 'react';
-import { gql, useApolloClient } from '@apollo/client';
+import { gql, useApolloClient, useLazyQuery } from '@apollo/client';
 import { captureException } from '@sentry/react';
-import { useEthereumTransaction } from '@vegaprotocol/web3';
-import { FormGroup, Input, Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
+import { useEthereumTransaction } from '@vegaprotocol/web3';
+import {
+  FormGroup,
+  Input,
+  Button,
+  InputError,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../config/contracts/contracts-context';
 import type { FormEvent } from 'react';
 import type {
@@ -26,35 +32,39 @@ const REMOVE_SIGNER_QUERY = gql`
   }
 `;
 
-export const RemoveSignerForm = () => {
-  const { query } = useApolloClient();
+export const AddSignerForm = () => {
   const { multisig } = useContracts();
+  const [address, setAddress] = useState('');
+  const [bundleNotFound, setBundleNotFound] = useState(false);
+  const [runQuery, { data, error, loading }] = useLazyQuery<
+    RemoveSignerBundle,
+    RemoveSignerBundleVariables
+  >(REMOVE_SIGNER_QUERY);
   const { perform, Dialog } = useEthereumTransaction<
     MultisigControl,
-    'add_signer'
+    'remove_signer'
   >(multisig, 'remove_signer');
-  const [address, setAddress] = useState('');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setBundleNotFound(false);
     try {
       if (address === '') {
         return;
       }
-      const res = await query<RemoveSignerBundle, RemoveSignerBundleVariables>({
-        query: REMOVE_SIGNER_QUERY,
+      await runQuery({
         variables: { nodeId: address },
       });
-
-      const bundle =
-        res.data?.erc20MultiSigSignerRemovedBundles?.edges?.[0]?.node;
+      const bundle = data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
 
       if (!bundle) {
-        throw new Error('Could not retrieve multisig signer bundle');
+        if (!error) {
+          setBundleNotFound(true);
+        }
+        return;
       }
 
-      await perform(bundle.oldSigner, bundle.nonce, bundle.signatures);
-    } catch (err) {
+      await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
+    } catch (err: unknown) {
       captureException(err);
     }
   };
@@ -73,9 +83,29 @@ export const RemoveSignerForm = () => {
             onChange={(e) => setAddress(e.target.value)}
             data-testid="remove-signer-input-input"
           />
-          <Button type="submit" data-testid="remove-signer-submit">
-            {t('Remove')}
+          <Button
+            type="submit"
+            data-testid="remove-signer-submit"
+            disabled={loading}
+          >
+            {loading ? <Loader size="small" /> : t('Remove')}
           </Button>
+        </div>
+        <div>
+          {error && (
+            <InputError intent="danger">
+              {error?.message.includes('InvalidArgument')
+                ? t('Invalid node id')
+                : error?.message}
+            </InputError>
+          )}
+          {bundleNotFound && !error && (
+            <InputError intent="danger">
+              {t(
+                'Bundle was not found, are you sure this validator needs to be removed?'
+              )}
+            </InputError>
+          )}
         </div>
       </FormGroup>
       <Dialog />

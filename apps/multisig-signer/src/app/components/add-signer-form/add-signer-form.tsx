@@ -65,7 +65,6 @@ export const AddSignerForm = () => {
 
       await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
     } catch (err: unknown) {
-      // TODO do some checking to make sure we aren't reporting errors that we expect
       captureException(err);
     }
   };
