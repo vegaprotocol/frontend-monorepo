@@ -1,7 +1,8 @@
-import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
-import { validateSize } from '@vegaprotocol/orders';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
+import { validateSize } from '../deal-ticket-validation/validate-size';
+import { isMarketInAuction } from './deal-ticket';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -36,13 +37,22 @@ export const DealTicketMarketAmount = ({
       </div>
       <div>@</div>
       <div className="flex-1" data-testid="last-price">
-        {price && quoteName ? (
-          <>
-            ~{price} {quoteName}
-          </>
-        ) : (
-          '-'
+        {isMarketInAuction(market) && (
+          <Tooltip description={'text'}>
+            <span className={'block mb-2 text-sm text-left'}>
+              {t(`Estimated uncrossing price`)}
+            </span>
+          </Tooltip>
         )}
+        <span className="text-sm">
+          {price && quoteName ? (
+            <>
+              ~{price} {quoteName}
+            </>
+          ) : (
+            '-'
+          )}
+        </span>
       </div>
     </div>
   );

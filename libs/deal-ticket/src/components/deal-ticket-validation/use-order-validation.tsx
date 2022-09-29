@@ -9,8 +9,9 @@ import {
   OrderTimeInForce,
   OrderType,
 } from '@vegaprotocol/types';
-import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { Order } from './use-order-submit';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import type { Order } from './get-default-order';
+import { ERROR_SIZE_DECIMAL } from './validate-size';
 
 export type ValidationProps = {
   step?: number;
@@ -38,7 +39,10 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-}: ValidationProps) => {
+}: ValidationProps): {
+  message: React.ReactNode | string;
+  isDisabled: boolean;
+} => {
   const { keypair } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
@@ -98,8 +102,14 @@ export const useOrderValidation = ({
       if (orderType !== OrderType.TYPE_LIMIT) {
         return {
           isDisabled: true,
-          message: t(
-            'Only limit orders are permitted when market is in auction'
+          message: (
+            <span>
+              {t('This market is in auction until it reaches')}{' '}
+              <Tooltip description={'text'}>
+                <span>{t('sufficient liquidity')}.</span>
+              </Tooltip>{' '}
+              {t('Only limit orders are permitted when market is in auction')}
+            </span>
           ),
         };
       }

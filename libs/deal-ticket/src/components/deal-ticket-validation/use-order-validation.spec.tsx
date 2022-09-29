@@ -14,7 +14,7 @@ import {
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
-import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
+import { ERROR_SIZE_DECIMAL } from './validate-size';
 
 jest.mock('@vegaprotocol/wallet');
 

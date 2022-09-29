@@ -4,6 +4,12 @@ fragment DealTicketMarket on Market {
   positionDecimalPlaces
   state
   tradingMode
+  data {
+    market {
+      id
+    }
+    indicativePrice
+  }
   tradableInstrument {
     instrument {
       id
