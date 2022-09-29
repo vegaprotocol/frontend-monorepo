@@ -162,7 +162,7 @@ const LazyGovernanceProposeUpdateAsset = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-governance-propose-update-asset", webpackPrefetch: true */ './governance/propose/update-asset'
-      )
+    )
 );
 
 const LazyGovernanceProposeFreeform = React.lazy(
@@ -280,7 +280,10 @@ const routerConfig = [
             element: <LazyGovernanceProposeUpdateMarket />,
           },
           { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
-          { path: 'update-asset', element: <LazyGovernanceProposeUpdateAsset /> },
+          {
+            path: 'update-asset',
+            element: <LazyGovernanceProposeUpdateAsset />,
+          },
           { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
           { path: 'raw', element: <LazyGovernanceProposeRaw /> },
         ],

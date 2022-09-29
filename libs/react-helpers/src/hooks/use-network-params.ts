@@ -43,10 +43,14 @@ export const NetworkParams = {
   governance_proposal_asset_maxClose: 'governance_proposal_asset_maxClose',
   governance_proposal_asset_minEnact: 'governance_proposal_asset_minEnact',
   governance_proposal_asset_maxEnact: 'governance_proposal_asset_maxEnact',
-  governance_proposal_updateAsset_minClose: 'governance_proposal_updateAsset_minClose',
-  governance_proposal_updateAsset_maxClose: 'governance_proposal_updateAsset_maxClose',
-  governance_proposal_updateAsset_minEnact: 'governance_proposal_updateAsset_minEnact',
-  governance_proposal_updateAsset_maxEnact: 'governance_proposal_updateAsset_maxEnact',
+  governance_proposal_updateAsset_minClose:
+    'governance_proposal_updateAsset_minClose',
+  governance_proposal_updateAsset_maxClose:
+    'governance_proposal_updateAsset_maxClose',
+  governance_proposal_updateAsset_minEnact:
+    'governance_proposal_updateAsset_minEnact',
+  governance_proposal_updateAsset_maxEnact:
+    'governance_proposal_updateAsset_maxEnact',
   governance_proposal_updateNetParam_minClose:
     'governance_proposal_updateNetParam_minClose',
   governance_proposal_updateNetParam_maxClose:

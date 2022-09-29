@@ -131,7 +131,9 @@ export const ProposeUpdateAsset = () => {
                   errorMessage={errors?.proposalDescription?.message}
                 />
 
-                <ProposalFormSubheader>{t('UpdateAsset')}</ProposalFormSubheader>
+                <ProposalFormSubheader>
+                  {t('UpdateAsset')}
+                </ProposalFormSubheader>
 
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
@@ -165,8 +167,12 @@ export const ProposeUpdateAsset = () => {
                   enactmentErrorMessage={
                     errors?.proposalEnactmentDeadline?.message
                   }
-                  enactmentMinClose={params.governance_proposal_updateAsset_minEnact}
-                  enactmentMaxClose={params.governance_proposal_updateAsset_maxEnact}
+                  enactmentMinClose={
+                    params.governance_proposal_updateAsset_minEnact
+                  }
+                  enactmentMaxClose={
+                    params.governance_proposal_updateAsset_maxEnact
+                  }
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />
