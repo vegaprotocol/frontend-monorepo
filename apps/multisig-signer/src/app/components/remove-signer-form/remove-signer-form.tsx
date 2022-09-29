@@ -54,7 +54,7 @@ export const RemoveSignerForm = () => {
       await runQuery({
         variables: { nodeId: address },
       });
-      const bundle = data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
+      const bundle = data?.erc20MultiSigSignerRemovedBundles?.edges?.[0]?.node;
 
       if (!bundle) {
         if (!error) {
@@ -63,7 +63,7 @@ export const RemoveSignerForm = () => {
         return;
       }
 
-      await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
+      await perform(bundle.oldSigner, bundle.nonce, bundle.signatures);
     } catch (err: unknown) {
       captureException(err);
     }
