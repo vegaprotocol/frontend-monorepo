@@ -97,13 +97,33 @@ context('Parties page', { tags: '@regression' }, function () {
         .within(() => cy.contains_exactly('2.00000').should('be.visible'));
     });
 
+    it.only('should be able to copy the asset name', function () {
+      let currency = { id: 'fDAI', name: 'DAI (fake)' };
+      cy.contains(currency.name, txTimeout).should('be.visible');
+      cy.contains(currency.name)
+        .siblings()
+        .within(() => {
+          cy.get('[data-state="closed"]').last().click();
+        });
+      cy.get_clipboard_contents(); //.should('have.text', 'fDAI')
+    });
+
     after(
       'teardown environment to prevent test data bleeding into other tests',
       function () {
         if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
-          cy.restart_vegacapsule_network();
+          // cy.restart_vegacapsule_network();
         }
       }
     );
+
+    Cypress.Commands.add('get_clipboard_contents', () => {
+      cy.window().then((win) => {
+        win.navigator.clipboard.readText().then((text) => {
+          cy.log(text);
+          return text;
+        });
+      });
+    });
   });
 });
