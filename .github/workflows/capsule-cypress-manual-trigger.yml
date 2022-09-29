@@ -64,11 +64,9 @@ jobs:
           path: './frontend-monorepo'
 
       # See if we capsule is needed for this project
-      - name: See if capsule is necessary
+      - name: Set capsule flag if necessary
         if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
-        run: echo "RUN_CAPSULE set $RUN_CAPSULE"
-        env:
-          RUN_CAPSULE: true
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
