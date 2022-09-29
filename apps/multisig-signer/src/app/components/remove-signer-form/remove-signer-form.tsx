@@ -10,6 +10,7 @@ import type {
   RemoveSignerBundle,
   RemoveSignerBundleVariables,
 } from '../__generated__/RemoveSignerBundle';
+import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 
 const REMOVE_SIGNER_QUERY = gql`
   query RemoveSignerBundle($nodeId: ID!) {
@@ -28,7 +29,10 @@ const REMOVE_SIGNER_QUERY = gql`
 export const RemoveSignerForm = () => {
   const { query } = useApolloClient();
   const { multisig } = useContracts();
-  const { perform, Dialog } = useEthereumTransaction(multisig, 'remove_signer');
+  const { perform, Dialog } = useEthereumTransaction<
+    MultisigControl,
+    'add_signer'
+  >(multisig, 'remove_signer');
   const [address, setAddress] = useState('');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +53,6 @@ export const RemoveSignerForm = () => {
         throw new Error('Could not retrieve multisig signer bundle');
       }
 
-      // @ts-ignore need to check this one
       await perform(bundle.oldSigner, bundle.nonce, bundle.signatures);
     } catch (err) {
       captureException(err);

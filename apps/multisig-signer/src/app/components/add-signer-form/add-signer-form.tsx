@@ -10,6 +10,7 @@ import type {
   AddSignerBundle,
   AddSignerBundleVariables,
 } from '../__generated__/AddSignerBundle';
+import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 
 export const ADD_SIGNER_QUERY = gql`
   query AddSignerBundle($nodeId: ID!) {
@@ -28,7 +29,10 @@ export const ADD_SIGNER_QUERY = gql`
 export const AddSignerForm = () => {
   const { query } = useApolloClient();
   const { multisig } = useContracts();
-  const { perform, Dialog } = useEthereumTransaction(multisig, 'add_signer');
+  const { perform, Dialog } = useEthereumTransaction<
+    MultisigControl,
+    'add_signer'
+  >(multisig, 'add_signer');
   const [address, setAddress] = useState('');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +53,6 @@ export const AddSignerForm = () => {
         throw new Error('Could not retrieve multisig signer bundle');
       }
 
-      // @ts-ignore need to check this one
       await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
     } catch (err) {
       captureException(err);
