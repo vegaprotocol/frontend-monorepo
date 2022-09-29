@@ -27,13 +27,6 @@ export const generateOrder = (partialOrder?: PartialDeep<OrderWithMarket>) => {
           makerFee: '0.1',
         },
       },
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: {
-          __typename: 'Trade',
-          price: '100',
-        },
-      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',

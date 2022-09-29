@@ -97,22 +97,6 @@ export interface MarketFields_tradableInstrument {
   instrument: MarketFields_tradableInstrument_instrument;
 }
 
-export interface MarketFields_depth_lastTrade {
-  __typename: "Trade";
-  /**
-   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
-   */
-  price: string;
-}
-
-export interface MarketFields_depth {
-  __typename: "MarketDepth";
-  /**
-   * Last trade for the given market (if available)
-   */
-  lastTrade: MarketFields_depth_lastTrade | null;
-}
-
 export interface MarketFields_marketTimestamps {
   __typename: "MarketTimestamps";
   /**
@@ -171,10 +155,6 @@ export interface MarketFields {
    * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketFields_tradableInstrument;
-  /**
-   * Current depth on the order book for this market
-   */
-  depth: MarketFields_depth;
   /**
    * Timestamps for state changes in the market
    */

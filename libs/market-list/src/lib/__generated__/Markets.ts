@@ -97,22 +97,6 @@ export interface Markets_marketsConnection_edges_node_tradableInstrument {
   instrument: Markets_marketsConnection_edges_node_tradableInstrument_instrument;
 }
 
-export interface Markets_marketsConnection_edges_node_depth_lastTrade {
-  __typename: "Trade";
-  /**
-   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
-   */
-  price: string;
-}
-
-export interface Markets_marketsConnection_edges_node_depth {
-  __typename: "MarketDepth";
-  /**
-   * Last trade for the given market (if available)
-   */
-  lastTrade: Markets_marketsConnection_edges_node_depth_lastTrade | null;
-}
-
 export interface Markets_marketsConnection_edges_node_marketTimestamps {
   __typename: "MarketTimestamps";
   /**
@@ -171,10 +155,6 @@ export interface Markets_marketsConnection_edges_node {
    * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: Markets_marketsConnection_edges_node_tradableInstrument;
-  /**
-   * Current depth on the order book for this market
-   */
-  depth: Markets_marketsConnection_edges_node_depth;
   /**
    * Timestamps for state changes in the market
    */
