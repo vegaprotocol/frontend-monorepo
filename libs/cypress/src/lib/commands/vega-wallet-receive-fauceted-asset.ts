@@ -26,8 +26,12 @@ export function addVegaWalletReceiveFaucetedAsset() {
         if (assets[assetName] !== undefined) {
           for (let i = 0; i < asset.decimals; i++) amount += '0';
           cy.exec(
-            `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' -u "hedgehogandvega:hiccup" http://localhost:1790/api/v1/mint`
-          );
+            `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' http://localhost:1790/api/v1/mint`
+          ).its('stdout')
+          .then((response) => {
+            assert.include(response,`"success":true`, 'Ensuring curl command was succesfully undertaken ')
+          });
+          
         } else {
           const validAssets = Object.keys(assets)
             .filter((key) => key.includes('fake'))
