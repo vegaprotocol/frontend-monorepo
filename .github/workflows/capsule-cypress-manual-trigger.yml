@@ -103,29 +103,13 @@ jobs:
       ######
       ## Setup a Vega wallet for our user
       ######
-      - name: Create passphrase
-        run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
-      - name: Create recovery
-        run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
-      - name: Initialize wallet
-        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
-      - name: Import wallet
-        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Create public key 2
-        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-
-      - name: Import fairground network
-        if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
-
-      - name: Start service using fairground network
-        if: ${{ env.RUN_CAPSULE==false }}
-        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
-
-      - name: Start service using capsule network
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+      - name: Set up Vegawallet
+      - uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+        with:
+          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
+          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          capsule: ${{ env.RUN_CAPSULE }}
 
       ######
       ## Run some tests
