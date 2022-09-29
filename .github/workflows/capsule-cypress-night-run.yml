@@ -1,4 +1,4 @@
-name: Capsule tests -- night run
+name: Cypress tests -- night run
 
 # This workflow runs the frontend tests against latest develop of the core to preempt breaking changes
 
@@ -8,11 +8,14 @@ on:
 
 jobs:
   nightly:
-    name: Run capsule tests -- nightly
+    name: Run Cypress tests -- nightly
     runs-on: self-hosted
+    timeout-minutes: 60
     env:
       GO111MODULE: 'on'
-      VEGA_VERSION: 'v0.56.0'
+      GOBIN: /home/runner/go/bin
+      VEGA_VERSION: 'v0.57.0'
+      RUN_CAPSULE: true
     steps:
       #######
       ## Setup langs
@@ -42,18 +45,8 @@ jobs:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           path: './frontend-monorepo'
-
-      # Checkout capsule to build local network
-      - name: Checkout capsule
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegacapsule
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './capsule'
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
@@ -70,59 +63,32 @@ jobs:
         working-directory: frontend-monorepo
 
       #######
-      ## Build binaries
+      ## Build and run Vegacapsule network
       #######
-      - name: Build capsule
-        run: go install
-        working-directory: capsule
-
-      - name: Set GOBIN
-        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
       - name: Install Vega binaries
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vega-linux-amd64.zip'
-          unzip vega-linux-amd64.zip -d ${{ env.GOBIN }}
+        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
+        with:
+          all: ${{ env.RUN_CAPSULE }}
+          version: ${{ env.VEGA_VERSION }}
+          gobin: ${{ env.GOBIN }}
 
-      - name: Install date-node binaries
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/data-node-linux-amd64.zip'
-          unzip data-node-linux-amd64.zip -d ${{ env.GOBIN }}
-
-      - name: Install Vega wallet binaries
-        run: |
-          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip'
-          unzip vegawallet-linux-amd64.zip -d ${{ env.GOBIN }}
-
-      ######
-      ## Start capsule
-      ######
-      - name: Login to docker
-        run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
-
-      - name: Start nomad
-        run: vegacapsule nomad &
-
-      - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
-        working-directory: capsule
+      - name: Build and run Vegacapsule network
+        if: ${{ env.RUN_CAPSULE }}
+        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        with:
+          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       ######
       ## Setup a Vega wallet for our user
       ######
-      - name: Create passphrase
-        run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
-      - name: Create recovery
-        run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
-      - name: Initialize wallet
-        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
-      - name: Import wallet
-        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Create public key 2
-        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Start service
-        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+      - name: Set up Vegawallet
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+        with:
+          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
+          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          capsule: ${{ env.RUN_CAPSULE }}
 
       ######
       ## Run some tests
@@ -134,7 +100,7 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: yarn nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: yarn nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}

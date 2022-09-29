@@ -76,6 +76,10 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
       details = `${t('FreeformProposal')}: ${proposal.id}`;
       break;
     }
+    case 'UpdateAsset': {
+      details = `${t('Update asset')}`;
+      break;
+    }
   }
 
   return (

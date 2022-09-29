@@ -33,8 +33,8 @@ export interface Proposals_proposalsConnection_edges_node_party {
   id: string;
 }
 
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset {
-  __typename: "UpdateAsset" | "NewFreeform";
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
@@ -133,7 +133,33 @@ export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateNet
   networkParameter: Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type Proposals_proposalsConnection_edges_node_terms_change = Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset | Proposals_proposalsConnection_edges_node_terms_change_NewMarket | Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket | Proposals_proposalsConnection_edges_node_terms_change_NewAsset | Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter;
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset_source {
+  __typename: "UpdateERC20";
+  /**
+   * The lifetime limits deposit per address
+   * Note: this is a temporary measure for alpha mainnet
+   */
+  lifetimeLimit: string;
+  /**
+   * The maximum allowed per withdrawal
+   * Note: this is a temporary measure for alpha mainnet
+   */
+  withdrawThreshold: string;
+}
+
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset {
+  __typename: "UpdateAsset";
+  /**
+   * The minimum economically meaningful amount of this specific asset
+   */
+  quantum: string;
+  /**
+   * The source of the updated asset
+   */
+  source: Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset_source;
+}
+
+export type Proposals_proposalsConnection_edges_node_terms_change = Proposals_proposalsConnection_edges_node_terms_change_NewFreeform | Proposals_proposalsConnection_edges_node_terms_change_NewMarket | Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket | Proposals_proposalsConnection_edges_node_terms_change_NewAsset | Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter | Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset;
 
 export interface Proposals_proposalsConnection_edges_node_terms {
   __typename: "ProposalTerms";

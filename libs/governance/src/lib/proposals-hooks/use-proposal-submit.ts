@@ -8,9 +8,9 @@ import type { ProposalEvent_busEvents_event_Proposal } from './__generated__/Pro
 
 export const useProposalSubmit = () => {
   const { keypair } = useVegaWallet();
-  const waitForProposalEvent = useProposalEvent();
 
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
+  const waitForProposalEvent = useProposalEvent(transaction);
 
   const [finalizedProposal, setFinalizedProposal] =
     useState<ProposalEvent_busEvents_event_Proposal | null>(null);
