@@ -88,7 +88,7 @@ jobs:
       #######
 
       - name: Install Vega binaries
-        uses: ${{ env.ACTIONS }}/install-vega-binaries
+        uses: ${{ env.ACTIONS/install-vega-binaries }}
         with:
           all: ${{ env.RUN_CAPSULE }}
           version: ${{ env.VEGA_VERSION }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: Build and run Vegacapsule network
         if: ${{ env.RUN_CAPSULE }}
-        uses: ${{ env.ACTIONS }}/run-vegacapsule
+        uses: ${{ env.ACTIONS /run-vegacapsule }}
         with:
           github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
@@ -105,7 +105,7 @@ jobs:
       ######
 
       - name: Set up Vegawallet
-        uses: ${{ env.ACTIONS }}/setup-vegawallet
+        uses: ${{ env.ACTIONS/setup-vegawallet }}
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
