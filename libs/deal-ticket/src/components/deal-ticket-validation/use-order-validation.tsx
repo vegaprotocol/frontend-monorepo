@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
+  AuctionTrigger,
   MarketState,
   MarketStateMapping,
   MarketTradingMode,
@@ -98,34 +99,104 @@ export const useOrderValidation = ({
         MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(market.tradingMode)
     ) {
-      if (orderType !== OrderType.TYPE_LIMIT) {
+      if (orderType === OrderType.TYPE_MARKET) {
+        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY) {
+          return {
+            isDisabled: true,
+            message: (
+              <span>
+                {t('This market is in auction until it reaches')}{' '}
+                <Tooltip
+                  description={
+                    <MarketDataGrid grid={compileGridData(market)} />
+                  }
+                >
+                  <span>{t('sufficient liquidity')}.</span>
+                </Tooltip>{' '}
+                {t('Only limit orders are permitted when market is in auction')}
+              </span>
+            ),
+          };
+        }
+        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE) {
+          return {
+            isDisabled: true,
+            message: (
+              <span>
+                {t('This market is in auction due to')}{' '}
+                <Tooltip
+                  description={
+                    <MarketDataGrid grid={compileGridData(market)} />
+                  }
+                >
+                  <span>{t('high price volatility')}.</span>
+                </Tooltip>{' '}
+                {t('Only limit orders are permitted when market is in auction')}
+              </span>
+            ),
+          };
+        }
         return {
           isDisabled: true,
-          message: (
-            <span>
-              {t('This market is in auction until it reaches')}{' '}
-              <Tooltip
-                description={<MarketDataGrid grid={compileGridData(market)} />}
-              >
-                <span>{t('sufficient liquidity')}.</span>
-              </Tooltip>{' '}
-              {t('Only limit orders are permitted when market is in auction')}
-            </span>
+          message: t(
+            'Only limit orders are permitted when market is in auction'
           ),
         };
       }
-
       if (
+        orderType === OrderType.TYPE_LIMIT &&
         [
           OrderTimeInForce.TIME_IN_FORCE_FOK,
           OrderTimeInForce.TIME_IN_FORCE_IOC,
           OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
+        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY) {
+          return {
+            isDisabled: true,
+            message: (
+              <span>
+                {t('This market is in auction until it reaches')}{' '}
+                <Tooltip
+                  description={
+                    <MarketDataGrid grid={compileGridData(market)} />
+                  }
+                >
+                  <span>{t('sufficient liquidity')}</span>
+                </Tooltip>
+                {'. '}
+                {t(
+                  `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+                )}
+              </span>
+            ),
+          };
+        }
+        if (market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE) {
+          return {
+            isDisabled: true,
+            message: (
+              <span>
+                {t('This market is in auction due to')}{' '}
+                <Tooltip
+                  description={
+                    <MarketDataGrid grid={compileGridData(market)} />
+                  }
+                >
+                  <span>{t('high price volatility')}</span>
+                </Tooltip>
+                {'. '}
+                {t(
+                  `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+                )}
+              </span>
+            ),
+          };
+        }
         return {
           isDisabled: true,
           message: t(
-            'Only GTT, GTC and GFA are permitted when market is in auction'
+            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
           ),
         };
       }
