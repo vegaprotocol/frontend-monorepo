@@ -19,7 +19,7 @@ import {
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
-    disconnectVegaWallet();
+    // disconnectVegaWallet();
   });
 
   it('button for wallet connect should work', () => {
@@ -141,22 +141,26 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
 
     it('"No data to display" should be always displayed', () => {
       cy.getByTestId('assets').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('positions').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('orders').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('fills').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
     });
