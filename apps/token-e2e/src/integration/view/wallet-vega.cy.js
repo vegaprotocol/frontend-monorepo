@@ -6,6 +6,7 @@ const connectButton = '[data-testid="connect-vega"]';
 const getVegaLink = '[data-testid="link"]';
 const dialog = '[role="dialog"]';
 const dialogHeader = '[data-testid="dialog-title"]';
+const walletDialogHeader = '[data-testid="wallet-dialog-title"]';
 const connectorsList = '[data-testid="connectors-list"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
@@ -75,9 +76,9 @@ context(
 
       it('should have Connect Vega header visible', function () {
         cy.get(dialog).within(() => {
-          cy.get(dialogHeader)
+          cy.get(walletDialogHeader)
             .should('be.visible')
-            .and('have.text', 'Connect to your Vega Wallet');
+            .and('have.text', 'Connect');
         });
       });
 
@@ -128,14 +129,6 @@ context(
           cy.get(restConnectBtn)
             .should('be.visible')
             .and('have.text', 'Connect');
-        });
-      });
-
-      it('should have Connect Vega header visible', function () {
-        cy.get(dialog).within(() => {
-          cy.get(dialogHeader)
-            .should('be.visible')
-            .and('have.text', 'Connect to your Vega Wallet');
         });
       });
 
