@@ -9,7 +9,11 @@ import type {
   AccountsQuery,
   AccountEventsSubscription,
 } from './__generated___/Accounts';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
 
 function isAccount(
   account:
@@ -67,3 +71,77 @@ export const accountsDataProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export interface AccountFields extends AccountFieldsFragment {
+  available: string;
+  used: string;
+  deposited: string;
+  balance: string;
+  breakdown?: AccountFields[];
+}
+
+const USE_ACCOUNT_TYPES = [
+  AccountType.ACCOUNT_TYPE_MARGIN,
+  AccountType.ACCOUNT_TYPE_BOND,
+  AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+  AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+  AccountType.ACCOUNT_TYPE_FEES_MAKER,
+  AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
+];
+
+const getAssetIds = (data: AccountFieldsFragment[]) =>
+  Array.from(new Set(data.map((a) => a.asset.id))).sort();
+
+const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
+  accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+
+export const getAccountData = (
+  data: AccountFieldsFragment[]
+): AccountFields[] => {
+  return getAssetIds(data).map((assetId) => {
+    const accounts = data.filter((a) => a.asset.id === assetId);
+    return accounts && getAssetAccountAggregation(accounts, assetId);
+  });
+};
+
+const getAssetAccountAggregation = (
+  accountList: AccountFieldsFragment[],
+  assetId: string
+): AccountFields => {
+  const accounts = accountList.filter((a) => a.asset.id === assetId);
+  const available = getTotalBalance(
+    accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+  );
+
+  const used = getTotalBalance(
+    accounts.filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+  );
+
+  const balanceAccount: AccountFields = {
+    asset: accounts[0].asset,
+    balance: available.toString(),
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    available: available.toString(),
+    used: used.toString(),
+    deposited: (available + used).toString(),
+  };
+
+  const breakdown = accounts
+    .filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+    .map((a) => ({
+      ...a,
+      asset: accounts[0].asset,
+      deposited: balanceAccount.deposited,
+      available: balanceAccount.available,
+      used: a.balance,
+    }));
+  return { ...balanceAccount, breakdown };
+};
+
+export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
+  AccountFields[],
+  never
+>(
+  [accountsDataProvider],
+  (parts) => parts[0] && getAccountData(parts[0] as AccountFieldsFragment[])
+);

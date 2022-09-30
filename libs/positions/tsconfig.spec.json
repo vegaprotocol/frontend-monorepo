@@ -2,19 +2,22 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
-    "types": ["jest", "node", "@testing-library/jest-dom"]
+    "types": ["node"]
   },
-  "include": [
-    "**/*.test.ts",
+  "files": [
+    "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
+    "../../node_modules/@nrwl/next/typings/image.d.ts"
+  ],
+  "exclude": [
     "**/*.spec.ts",
-    "**/*.test.tsx",
+    "**/*.test.ts",
     "**/*.spec.tsx",
-    "**/*.test.js",
+    "**/*.test.tsx",
     "**/*.spec.js",
-    "**/*.test.jsx",
+    "**/*.test.js",
     "**/*.spec.jsx",
-    "**/*.d.ts",
+    "**/*.test.jsx",
     "jest.config.ts"
-  ]
+  ],
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }

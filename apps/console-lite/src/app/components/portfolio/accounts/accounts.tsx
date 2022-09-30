@@ -1,16 +1,10 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
 import { PriceCell, useDataProvider } from '@vegaprotocol/react-helpers';
-import type {
-  AccountFieldsFragment,
-  AccountEventsSubscription,
-} from '@vegaprotocol/accounts';
-import {
-  accountsDataProvider,
-  accountsManagerUpdate,
-  getId,
-} from '@vegaprotocol/accounts';
+import type { AccountFields } from '@vegaprotocol/accounts';
+import { aggregatedAccountsDataProvider, getId } from '@vegaprotocol/accounts';
+import type { IGetRowsParams } from 'ag-grid-community';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
   AssetDetailsDialog,
@@ -20,20 +14,43 @@ import { NO_DATA_MESSAGE } from '../../../constants';
 import { ConsoleLiteGrid } from '../../console-lite-grid';
 import { useAccountColumnDefinitions } from '.';
 
-interface AccountObj extends AccountFieldsFragment {
-  id: string;
-}
-
 const AccountsManager = () => {
   const { partyId = '' } = useOutletContext<{ partyId: string }>();
   const { isOpen, symbol, setOpen } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
+  const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = useMemo(() => accountsManagerUpdate(gridRef), []);
-  const { data, error, loading } = useDataProvider<
-    AccountFieldsFragment[],
-    AccountEventsSubscription['accounts']
-  >({ dataProvider: accountsDataProvider, update, variables });
+  const update = useCallback(
+    ({ data }: { data: AccountFields[] | null }) => {
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      if (dataRef.current?.length) {
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      }
+      return false;
+    },
+    [gridRef]
+  );
+  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+    dataProvider: aggregatedAccountsDataProvider,
+    update,
+    variables,
+  });
+  dataRef.current = data;
+  const getRows = async ({
+    successCallback,
+    startRow,
+    endRow,
+  }: IGetRowsParams) => {
+    const rowsThisBlock = dataRef.current
+      ? dataRef.current.slice(startRow, endRow)
+      : [];
+    const lastRow = dataRef.current?.length ?? -1;
+    successCallback(rowsThisBlock, lastRow);
+  };
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
   return (
     <>
@@ -43,8 +60,11 @@ const AccountsManager = () => {
         data={data}
         noDataMessage={NO_DATA_MESSAGE}
       >
-        <ConsoleLiteGrid<AccountObj>
-          rowData={data as AccountObj[]}
+        <ConsoleLiteGrid<AccountFields>
+          rowData={data?.length ? undefined : []}
+          rowModelType={data?.length ? 'infinite' : 'clientSide'}
+          ref={gridRef}
+          datasource={{ getRows }}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           components={{ PriceCell }}

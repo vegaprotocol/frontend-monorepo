@@ -76,6 +76,7 @@ const SimpleMarketList = () => {
           rowData={localData}
           defaultColDef={defaultColDef}
           handleRowClicked={handleRowClicked}
+          getRowId={({ data }) => data.id}
         />
       </AsyncRenderer>
     </div>

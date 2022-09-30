@@ -28,19 +28,13 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .should('be.visible')
       .get(tradingAccountRowId)
-      .find('[col-id="type"]')
-      .should('have.text', 'General');
+      .find('[col-id="breakdown"]')
+      .should('have.text', 'Collateral breakdown');
 
     cy.getByTestId('tab-accounts')
       .should('be.visible')
       .get(tradingAccountRowId)
-      .find('[col-id="market.tradableInstrument.instrument.name"]')
-      .should('have.text', '—');
-
-    cy.getByTestId('tab-accounts')
-      .should('be.visible')
-      .get(tradingAccountRowId)
-      .find('[col-id="balance"]')
+      .find('[col-id="deposited"]')
       .should('have.text', '1,000.00000');
   });
 });
