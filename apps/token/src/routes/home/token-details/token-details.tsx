@@ -13,10 +13,10 @@ import { useContracts } from '../../../contexts/contracts/contracts-context';
 
 export const TokenDetails = ({
   totalSupply,
-  totalStaked,
+  totalAssociated,
 }: {
   totalSupply: BigNumber;
-  totalStaked: BigNumber;
+  totalAssociated: BigNumber;
 }) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
@@ -81,7 +81,7 @@ export const TokenDetails = ({
         <KeyValueTableRow>
           {t('Staked on Vega validator').toUpperCase()}
           <span data-testid="staked" className="font-mono">
-            {formatNumber(totalStaked, 2)}
+            {formatNumber(totalAssociated, 2)}
           </span>
         </KeyValueTableRow>
       </KeyValueTable>
