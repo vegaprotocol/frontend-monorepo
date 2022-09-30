@@ -147,23 +147,29 @@ context(
         ).should('be.visible');
       });
 
-      it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.contains('Confirm transaction in wallet', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-      });
+      it(
+        'Able to submit a valid freeform proposal - with minimum required tokens associated',
+        { tags: '@smoke' },
+        function () {
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
+          );
+          cy.navigate_to_page_if_not_already_loaded('governance');
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50');
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.contains('Confirm transaction in wallet', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Awaiting network confirmation', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Proposal submitted', proposalTimeout).should(
+            'be.visible'
+          );
+          cy.get(dialogCloseButton).click();
+        }
+      );
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(

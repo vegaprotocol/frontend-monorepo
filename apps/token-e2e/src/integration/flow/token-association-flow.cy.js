@@ -46,32 +46,39 @@ context(
         }
       );
 
-      it('Able to associate tokens - from wallet', function () {
-        //1000-ASSO-0008
-        //1000-ASSO-0009
-        //1000-ASSO-0030
-        //1000-ASSO-0012
-        //1000-ASSO-0013
-        //1000-ASSO-0014
-        //1000-ASSO-0015
-        //1000-ASSO-0030
-        cy.staking_page_associate_tokens('2');
+      it(
+        'Able to associate tokens - from wallet',
+        { tags: '@smoke' },
+        function () {
+          //1000-ASSO-0008
+          //1000-ASSO-0009
+          //1000-ASSO-0030
+          //1000-ASSO-0012
+          //1000-ASSO-0013
+          //1000-ASSO-0014
+          //1000-ASSO-0015
+          //1000-ASSO-0030
+          cy.staking_page_associate_tokens('2');
 
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort)
-          .parent(txTimeout)
-          .should('contain', 2.0);
+          cy.get(ethWalletAssociatedBalances, txTimeout)
+            .contains(vegaWalletPublicKeyShort)
+            .parent(txTimeout)
+            .should('contain', 2.0);
 
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('2.0', txTimeout)
-          .should('be.visible');
+          cy.get(ethWalletTotalAssociatedBalance, txTimeout)
+            .contains('2.0', txTimeout)
+            .should('be.visible');
 
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
-        });
+          cy.get(vegaWallet).within(() => {
+            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+              'contain',
+              2.0
+            );
+          });
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
-      });
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
+        }
+      );
 
       it('Able to disassociate all associated tokens - manually', function () {
         // 1000-ASSO-0025

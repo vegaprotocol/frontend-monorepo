@@ -29,7 +29,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Vega Wallet - verify elements on widget',
-  { tags: '@smoke' },
+  { tags: '@regression' },
   function () {
     before('visit token home page', function () {
       cy.visit('/');
@@ -145,7 +145,13 @@ context(
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
-
+        cy.visit('/');
+        cy.get(walletContainer).within(() => {
+          cy.get(connectButton).click();
+        });
+        cy.get(connectorsList).within(() => {
+          cy.get('button').click();
+        });
         //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
         // then code below can be removed
         cy.get(restConnectorForm).within(() => {
@@ -165,13 +171,17 @@ context(
         });
       });
 
-      it('should have truncated account number visible', function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(accountNo)
-            .should('be.visible')
-            .and('have.text', Cypress.env('vegaWalletPublicKeyShort'));
-        });
-      });
+      it(
+        'should have truncated account number visible',
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(accountNo)
+              .should('be.visible')
+              .and('have.text', Cypress.env('vegaWalletPublicKeyShort'));
+          });
+        }
+      );
 
       it.skip('should have wallet name visible', function () {
         cy.get(walletContainer).within(() => {
@@ -189,15 +199,19 @@ context(
         });
       });
 
-      it('should have Vega Associated currency value visible', function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(currencyValue)
-            .should('be.visible')
-            .and('have.text', `0.000000000000000000`);
-        });
-      });
+      it(
+        'should have Vega Associated currency value visible',
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(currencyValue)
+              .should('be.visible')
+              .and('have.text', `0.000000000000000000`);
+          });
+        }
+      );
 
-      it('should have Unstaked value visible', function () {
+      it('should have Unstaked value visible', { tags: '@smoke' }, function () {
         cy.get(walletContainer).within(() => {
           cy.get(vegaUnstaked)
             .should('be.visible')

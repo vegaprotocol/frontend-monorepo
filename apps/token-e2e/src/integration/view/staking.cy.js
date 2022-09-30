@@ -14,38 +14,38 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 const ownStake = '[data-testid="own-stake"]';
 const nominatedStake = '[data-testid="nominated-stake"]';
 
-context(
-  'Staking Page - verify elements on page',
-  { tags: '@smoke' },
-  function () {
-    before('navigate to staking page', function () {
-      cy.visit('/').navigate_to('staking');
-    });
+context('Staking Page - verify elements on page', function () {
+  before('navigate to staking page', function () {
+    cy.visit('/').navigate_to('staking');
+  });
 
-    describe('with wallets disconnected', function () {
-      describe('description section', function () {
-        it('should have staking tab highlighted', function () {
-          cy.verify_tab_highlighted('staking');
-        });
-
-        it('should have STAKING ON VEGA header visible', function () {
-          cy.verify_page_header('Staking');
-        });
-
-        it('should have Staking Guide link visible', function () {
-          // 1002-STKE-003
-          cy.get(guideLink)
-            .should('be.visible')
-            .and('have.text', 'Read more about staking on Vega')
-            .and(
-              'have.attr',
-              'href',
-              'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega'
-            );
-        });
+  describe('with wallets disconnected', { tags: '@smoke' }, function () {
+    describe('description section', function () {
+      it('should have staking tab highlighted', function () {
+        cy.verify_tab_highlighted('staking');
       });
 
-      describe('Should be able to see validator list from the staking page', function () {
+      it('should have STAKING ON VEGA header visible', function () {
+        cy.verify_page_header('Staking');
+      });
+
+      it('should have Staking Guide link visible', function () {
+        // 1002-STKE-003
+        cy.get(guideLink)
+          .should('be.visible')
+          .and('have.text', 'Read more about staking on Vega')
+          .and(
+            'have.attr',
+            'href',
+            'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega'
+          );
+      });
+    });
+
+    describe(
+      'Should be able to see validator list from the staking page',
+      { tags: '@regression' },
+      function () {
         // 1002-STKE-050
         it('Should be able to see validator names', function () {
           cy.get('[col-id="validator"]')
@@ -123,11 +123,15 @@ context(
               cy.wrap($votingPower).should('not.be.empty');
             });
         });
-      });
-    });
+      }
+    );
+  });
 
-    // 1002-STKE-050
-    describe('Should be able to see static information about a validator', function () {
+  // 1002-STKE-050
+  describe(
+    'Should be able to see static information about a validator',
+    { tags: '@smoke' },
+    function () {
       before('connect wallets and click on validator', function () {
         cy.vega_wallet_import();
         cy.vega_wallet_connect();
@@ -210,6 +214,6 @@ context(
           cy.get(nextEpochInfo).should('contain.text', 'Next epoch');
         });
       });
-    });
-  }
-);
+    }
+  );
+});
