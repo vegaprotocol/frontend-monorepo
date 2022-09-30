@@ -23,6 +23,9 @@ export const MARKET_LIST_QUERY = gql`
       edges {
         node {
           id
+          data {
+            targetStake
+          }
           decimalPlaces
           positionDecimalPlaces
           state
@@ -45,6 +48,7 @@ export const MARKET_LIST_QUERY = gql`
             edges {
               node {
                 commitmentAmount
+                fee
               }
             }
           }

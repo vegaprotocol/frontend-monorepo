@@ -19,6 +19,9 @@ import type { MarketsListData } from '@vegaprotocol/liquidity-provision';
 import type { MarketTradingMode } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 
+import HealthBar from './health-bar';
+
+// #BFCCD6
 const agGridVariables = `
   .ag-theme-alpine {
     --ag-line-height: 24px;
@@ -27,6 +30,22 @@ const agGridVariables = `
   .ag-theme-alpine .ag-cell {
     display: flex;
   }
+
+  .ag-theme-alpine .ag-header {
+    background-color: #F5F5F5;
+    border: 1px solid #BFCCD6;
+  }
+
+  .ag-theme-alpine .ag-root-wrapper {
+    border: none;
+  }
+
+  .ag-theme-alpine .ag-body-viewport,
+  .ag-theme-alpine .ag-center-cols-clipper,
+  .ag-theme-alpine .ag-center-cols-viewport {
+    overflow: visible;
+  }
+
 `;
 
 const displayValue = (value: string) => {
@@ -46,10 +65,20 @@ const marketNameCellRenderer = (props: GroupCellRendererParams) => {
   );
 };
 
-const healthCellRenderer = ({ value }: GroupCellRendererParams) => {
+const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
+  console.log('data: ', data);
+  // TODO: get from liquidityProvisionsConnection + fee
+  const committed = data.liquidityCommitted;
+
   return (
     <div>
-      <div>{value}</div>
+      <HealthBar
+        status={value}
+        target={data.data.targetStake}
+        committed={committed}
+        size={undefined}
+        isExpanded={false}
+      />
     </div>
   );
 };
@@ -129,10 +158,11 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
 
           <AgGridColumn
             headerName={t('Health')}
-            field="health"
+            field="tradingMode"
             headerTooltip={t('This is the health tooltip')}
             cellRenderer={healthCellRenderer}
             sortable={false}
+            cellStyle={{ overflow: 'unset' }}
           />
           <AgGridColumn
             headerName={t('Est. return / APY')}
