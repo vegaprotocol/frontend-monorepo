@@ -8,6 +8,14 @@ import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
 // GraphQL query operation: LiquidityProvisionMarkets
 // ====================================================
 
+export interface LiquidityProvisionMarkets_marketsConnection_edges_node_data {
+  __typename: "MarketData";
+  /**
+   * The amount of stake targeted for this market
+   */
+  targetStake: string | null;
+}
+
 export interface LiquidityProvisionMarkets_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
@@ -58,6 +66,10 @@ export interface LiquidityProvisionMarkets_marketsConnection_edges_node_liquidit
    * Specified as a unit-less number that represents the amount of settlement asset of the market.
    */
   commitmentAmount: string;
+  /**
+   * Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers.
+   */
+  fee: string;
 }
 
 export interface LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges {
@@ -116,6 +128,10 @@ export interface LiquidityProvisionMarkets_marketsConnection_edges_node {
    * Market ID
    */
   id: string;
+  /**
+   * marketData for the given market
+   */
+  data: LiquidityProvisionMarkets_marketsConnection_edges_node_data | null;
   /**
    * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
