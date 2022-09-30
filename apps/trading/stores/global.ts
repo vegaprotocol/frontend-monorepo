@@ -1,3 +1,4 @@
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import create from 'zustand';
 
 interface GlobalStore {
@@ -19,5 +20,8 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   pageTitle: null,
   update: (state) => {
     set(state);
+    if (state.marketId) {
+      LocalStorage.setItem('marketId', state.marketId);
+    }
   },
 }));
