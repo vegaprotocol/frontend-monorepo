@@ -11,7 +11,7 @@ import type {
   PositionsTableValueFormatterParams,
   Position,
 } from '@vegaprotocol/positions';
-import { AmountCell, ProgressBarCell } from '@vegaprotocol/positions';
+import { AmountCell } from '@vegaprotocol/positions';
 import type {
   CellRendererSelectorResult,
   ICellRendererParams,
@@ -20,7 +20,7 @@ import type {
   ColDef,
 } from 'ag-grid-community';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent } from '@vegaprotocol/ui-toolkit';
+import { Intent, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 
 const EmptyCell = () => '';
 

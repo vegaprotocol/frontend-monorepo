@@ -61,7 +61,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     });
 
     it('data should be properly rendered', () => {
-      cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 3);
       cy.get(
         '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]'
       )

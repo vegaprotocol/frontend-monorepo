@@ -7,6 +7,8 @@ import type {
   ICellRendererParams,
   CellRendererSelectorResult,
 } from 'ag-grid-community';
+import type { ValueProps as PriceCellProps } from '@vegaprotocol/ui-toolkit';
+import { EmptyCell, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -17,7 +19,7 @@ import {
   signedNumberCssClass,
   signedNumberCssClassRules,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -63,33 +65,6 @@ export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
   }
   return (valueFormatted && valueFormatted[0]) || undefined;
 };
-
-export interface PriceCellProps {
-  valueFormatted?: {
-    low: string;
-    high: string;
-    value: number;
-    intent?: Intent;
-  };
-}
-
-export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
-  return valueFormatted ? (
-    <>
-      <div className="flex justify-between leading-tight font-mono">
-        <div>{valueFormatted.low}</div>
-        <div>{valueFormatted.high}</div>
-      </div>
-      <ProgressBar
-        value={valueFormatted.value}
-        intent={valueFormatted.intent}
-        className="mt-2 w-full"
-      />
-    </>
-  ) : null;
-};
-
-ProgressBarCell.displayName = 'PriceFlashCell';
 
 export interface AmountCellProps {
   valueFormatted?: Pick<
@@ -140,14 +115,33 @@ const ButtonCell = ({
   );
 };
 
-const EmptyCell = () => '';
+const progressBarValueFormatter = ({
+  data,
+  node,
+}: PositionsTableValueFormatterParams):
+  | PriceCellProps['valueFormatted']
+  | undefined => {
+  if (!data || node?.rowPinned) {
+    return undefined;
+  }
+  const min = BigInt(data.averageEntryPrice);
+  const max = BigInt(data.liquidationPrice);
+  const mid = BigInt(data.markPrice);
+  const range = max - min;
+  return {
+    low: addDecimalsFormatNumber(min.toString(), data.marketDecimalPlaces),
+    high: addDecimalsFormatNumber(max.toString(), data.marketDecimalPlaces),
+    value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
+    intent: data.lowMarginLevel ? Intent.Warning : undefined,
+  };
+};
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   ({ onClose, ...props }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate="No positions"
+        overlayNoRowsTemplate={t('No positions')}
         getRowId={getRowId}
         rowHeight={34}
         ref={ref}
@@ -254,6 +248,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               '</div>',
           }}
           flex={2}
+          headerTooltip={t(
+            'Liquidation prices are based on the amount of collateral you have available, the risk of your position and the liquidity on the order book. They can change rapidly based on the profit and loss of your positions and any changes to collateral from opening/closing other positions and making deposits/withdrawals.'
+          )}
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
@@ -261,32 +258,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
             };
           }}
-          valueFormatter={({
-            data,
-            node,
-          }: PositionsTableValueFormatterParams):
-            | PriceCellProps['valueFormatted']
-            | undefined => {
-            if (!data || node?.rowPinned) {
-              return undefined;
-            }
-            const min = BigInt(data.averageEntryPrice);
-            const max = BigInt(data.liquidationPrice);
-            const mid = BigInt(data.markPrice);
-            const range = max - min;
-            return {
-              low: addDecimalsFormatNumber(
-                min.toString(),
-                data.marketDecimalPlaces
-              ),
-              high: addDecimalsFormatNumber(
-                max.toString(),
-                data.marketDecimalPlaces
-              ),
-              value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-              intent: data.lowMarginLevel ? Intent.Warning : undefined,
-            };
-          }}
+          valueFormatter={progressBarValueFormatter}
         />
         <AgGridColumn
           headerName={t('Leverage')}
@@ -354,7 +326,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
-          headerTooltip={t('P&L excludes any fees paid.')}
+          headerTooltip={t(
+            'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
+          )}
         />
         <AgGridColumn
           headerName={t('Unrealised PNL')}
@@ -372,6 +346,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
+          headerTooltip={t(
+            'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
+          )}
         />
         <AgGridColumn
           headerName={t('Updated')}
