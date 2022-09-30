@@ -18,4 +18,12 @@ import 'cypress-real-events/support';
 // Import commands.js using ES2015 syntax:
 import './commands';
 import registerCypressGrep from 'cypress-grep';
+import { aliasQuery } from '@vegaprotocol/cypress';
 registerCypressGrep();
+
+before(() => {
+  // Mock chainId fetch which happens on every page
+  cy.mockGQL((req) => {
+    aliasQuery(req, 'ChainId'); // No response to prevent chain check for wallet connection
+  });
+});

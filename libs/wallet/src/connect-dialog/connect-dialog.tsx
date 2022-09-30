@@ -5,7 +5,6 @@ import {
   Icon,
   Input,
   Link,
-  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
@@ -39,16 +38,12 @@ export const VegaConnectDialog = ({
 }: VegaConnectDialogProps) => {
   const { data } = useChainIdQuery();
 
-  if (!data?.statistics.chainId) {
-    return null;
-  }
-
   return (
     <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
       <ConnectDialogContainer
         connectors={connectors}
         closeDialog={() => setDialogOpen(false)}
-        appChainId={data.statistics.chainId}
+        appChainId={data?.statistics.chainId}
       />
     </Dialog>
   );
@@ -61,7 +56,7 @@ const ConnectDialogContainer = ({
 }: {
   connectors: Connectors;
   closeDialog: () => void;
-  appChainId: string;
+  appChainId?: string;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
@@ -100,17 +95,6 @@ const ConnectDialogContainer = ({
       connect(connector, appChainId);
     }
   };
-
-  if (!appChainId) {
-    return (
-      <ConnectDialogContent>
-        <ConnectDialogTitle>{t('Fetching chain ID')}</ConnectDialogTitle>
-        <div className="flex justify-center items-center my-6">
-          <Loader />
-        </div>
-      </ConnectDialogContent>
-    );
-  }
 
   return selectedConnector !== undefined && walletType !== undefined ? (
     <SelectedForm
@@ -208,7 +192,7 @@ const SelectedForm = ({
 }: {
   type: WalletType;
   connector: VegaConnector;
-  appChainId: string;
+  appChainId?: string;
   jsonRpcState: {
     status: Status;
     error: WalletError | null;
