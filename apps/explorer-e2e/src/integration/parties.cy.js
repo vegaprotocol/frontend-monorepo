@@ -97,7 +97,7 @@ context('Parties page', { tags: '@regression' }, function () {
         .within(() => cy.contains_exactly('2.00000').should('be.visible'));
     });
 
-    it.only('should be able to copy the asset name', function () {
+    it.skip('should be able to copy the asset name', function () {
       let currency = { id: 'fDAI', name: 'DAI (fake)' };
       cy.contains(currency.name, txTimeout).should('be.visible');
       cy.contains(currency.name)
