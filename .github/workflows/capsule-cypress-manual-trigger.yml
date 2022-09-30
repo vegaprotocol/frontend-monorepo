@@ -15,7 +15,7 @@ on:
           - stats-e2e
           - token-e2e
           - trading-e2e
-      runAlltests:
+      smokeOnly:
         description: 'Run only smoke tests?'
         required: true
         type: boolean
@@ -40,11 +40,11 @@ jobs:
       #######
 
       - name: Set smoke tag
-        if: ${{ github.event.inputs.runAlltests==false }}
+        if: ${{ github.event.inputs.smokeOnly == 'true' }}
         run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
 
       - name: Set --skip-nx-cache flag
-        if: ${{ github.event.inputs.skip-nx-cache==true }}
+        if: ${{ github.event.inputs.skip-nx-cache == 'true' }}
         run: echo SKIP_NX_CACHE="--skip-nx-cache" >> $GITHUB_ENV
 
       # See if we capsule is needed for this project

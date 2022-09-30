@@ -77,7 +77,7 @@ export const protoCandles = [
 ];
 
 export const protoMarket: Market = {
-  id: 'first-btcusd-id',
+  id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
   state: MarketState.STATE_ACTIVE,
   decimalPlaces: 5,
