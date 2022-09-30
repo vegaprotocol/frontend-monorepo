@@ -1,7 +1,6 @@
 import { t, titlefy } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
-import { AccountsContainer } from '@vegaprotocol/accounts';
 import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -12,6 +11,7 @@ import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { useGlobalStore } from '../../stores';
+import { AccountsContainer } from './accounts-container';
 
 const Portfolio = () => {
   const { update } = useGlobalStore((store) => ({

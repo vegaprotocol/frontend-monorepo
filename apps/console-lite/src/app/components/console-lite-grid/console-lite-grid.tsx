@@ -105,9 +105,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
   );
 };
 
-const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <
-  T extends { id?: string }
->(
+const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <T>(
   p: Props<T> & { ref?: React.Ref<AgGridReact> }
 ) => React.ReactElement;
 

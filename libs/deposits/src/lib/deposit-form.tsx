@@ -77,9 +77,9 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id,
       from: account,
       to: keypair?.pub,
+      asset: selectedAsset?.id || '',
     },
   });
 
@@ -151,7 +151,11 @@ export const DepositForm = ({
         <Controller
           control={control}
           name="asset"
-          rules={{ validate: { required } }}
+          rules={{
+            validate: {
+              required: (value) => !!selectedAsset || required(value),
+            },
+          }}
           render={({ field }) => (
             <Select
               id="asset"
@@ -160,6 +164,7 @@ export const DepositForm = ({
                 field.onChange(e);
                 onSelectAsset(e.target.value);
               }}
+              value={selectedAsset?.id || ''}
             >
               <option value="">{t('Please select')}</option>
               {assets.filter(isAssetTypeERC20).map((a) => (
