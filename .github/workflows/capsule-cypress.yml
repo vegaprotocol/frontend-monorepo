@@ -54,6 +54,20 @@ jobs:
           fetch-depth: 0
           path: './frontend-monorepo'
 
+      # Restore node_modules from cache if possible
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            frontend-monorepo/node_modules
+            /home/runner/.cache/Cypress
+          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
+
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: frontend-monorepo
+
       # Check SHAs
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
@@ -70,20 +84,6 @@ jobs:
       - name: See if capsule is necessary
         if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
         run: echo RUN_CAPSULE=true >> $GITHUB_ENV
-
-      # Restore node_modules from cache if possible
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            frontend-monorepo/node_modules
-            /home/runner/.cache/Cypress
-          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
-
-      # Install frontend dependencies
-      - name: Install root dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: frontend-monorepo
 
       #######
       ## Build and run Vegacapsule network
