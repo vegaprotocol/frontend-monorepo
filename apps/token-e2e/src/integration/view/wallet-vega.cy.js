@@ -90,7 +90,7 @@ context(
           cy.getByTestId('connector-cli')
             .should('be.visible')
             .and('have.text', 'Command line wallet app');
-          cy.getByTestId('connector-cli')
+          cy.getByTestId('connector-hosted')
             .should('be.visible')
             .and('have.text', 'Hosted fairground wallet');
         });
@@ -332,6 +332,7 @@ context(
             .and('be.visible')
             .click({ force: true });
         });
+        cy.get(connectButton).click();
         cy.get(restConnectorForm).within(() => {
           cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
           cy.get('#passphrase')

@@ -46,7 +46,7 @@ export const VegaWallet = () => {
           {pubKeyObj && (
             <>
               <div
-                dta-testid="wallet-name"
+                data-testid="wallet-name"
                 className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
               >
                 {pubKeyObj.name}
