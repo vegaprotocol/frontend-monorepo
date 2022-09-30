@@ -54,6 +54,11 @@ query Positions($partyId: ID!) {
 
 subscription PositionsSubscription($partyId: ID!) {
   positions(partyId: $partyId) {
-    ...PositionFields
+    realisedPNL
+    openVolume
+    unrealisedPNL
+    averageEntryPrice
+    updatedAt
+    marketId
   }
 }

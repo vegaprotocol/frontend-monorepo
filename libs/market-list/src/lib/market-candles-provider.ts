@@ -3,9 +3,11 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketCandlesQuery,
   MarketCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node,
+} from './__generated__/MarketCandlesQuery';
+import type {
   MarketCandlesSub,
   MarketCandlesSub_candles,
-} from './__generated__';
+} from './__generated__/MarketCandlesSub';
 
 export const MARKET_CANDLES_QUERY = gql`
   query MarketCandlesQuery(
@@ -54,7 +56,7 @@ const update = (data: Candle[], delta: MarketCandlesSub_candles) => {
         ...data,
         {
           ...delta,
-          __typename: 'CandleNode',
+          __typename: 'Candle',
         } as Candle,
       ]
     : data;

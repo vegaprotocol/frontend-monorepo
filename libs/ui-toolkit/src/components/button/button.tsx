@@ -21,7 +21,7 @@ const defaultClasses = [
   'text-black dark:text-white',
   'border-black dark:border-white',
   'bg-white dark:bg-black',
-  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700 enabled:focus-visible:underline outline-none',
+  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700',
   'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700',
   'enabled:active:border-neutral-400',
 ];
@@ -29,7 +29,7 @@ const primary = [
   'text-black',
   'border-vega-yellow',
   'bg-vega-yellow',
-  'enabled:focus:bg-vega-yellow-dark enabled:focus:border-vega-yellow-dark enabled:focus-visible:underline outline-none',
+  'enabled:focus:bg-vega-yellow-dark enabled:focus:border-vega-yellow-dark',
   'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
   'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark enabled:active:font-medium',
 ];
@@ -37,7 +37,7 @@ const secondary = [
   'text-white dark:text-black',
   'border-none',
   'bg-neutral-700 dark:bg-neutral-200',
-  'enabled:focus:bg-black dark:enabled:focus:bg-white enabled:focus-visible:underline outline-none',
+  'enabled:focus:bg-black dark:enabled:focus:bg-white',
   'enabled:hover:bg-black dark:enabled:hover:bg-white enabled:active:font-medium',
 ];
 
@@ -140,7 +140,7 @@ type ButtonLinkProps = Omit<
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
   ({ type = 'button', ...props }, ref) => {
     const className = classnames(
-      'inline underline hover:text-neutral-500 dark:hover:text-neutral-300 focus-visible:text-neutral-500 dark:focus-visible:text-neutral-300 outline-none'
+      'inline underline hover:text-neutral-500 dark:hover:text-neutral-300'
     );
     return <button ref={ref} className={className} type={type} {...props} />;
   }

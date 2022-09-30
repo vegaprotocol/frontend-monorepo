@@ -30,7 +30,6 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
             const triggerClass = classNames(
               'relative px-4 py-2 border-r border-default',
               'uppercase',
-              'focus-visible:underline outline-none',
               {
                 'cursor-default bg-white dark:bg-black': isActive,
                 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300':

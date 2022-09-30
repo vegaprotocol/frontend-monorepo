@@ -10,7 +10,6 @@ export const defaultFormElement = (hasError?: boolean) =>
     'bg-transparent',
     'border border-neutral-500 focus:border-black dark:focus:border-white',
     'disabled:opacity-60',
-    'outline-none',
     {
       'border-vega-pink': hasError,
     }

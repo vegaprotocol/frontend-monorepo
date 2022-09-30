@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Link,
@@ -9,7 +10,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
-import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
@@ -69,7 +69,7 @@ const NetworkLabel = ({
   </span>
 );
 
-export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
+export const NetworkSwitcher = () => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
@@ -84,19 +84,9 @@ export const NetworkSwitcher = ({ theme }: { theme?: 'dark' | 'light' }) => {
     [setOpen, setAdvancedView]
   );
 
-  const dropdownTriggerClasses = classNames(
-    'hover:border-white hover:!bg-neutral-700 focus:!border-white focus-visible:!bg-neutral-700',
-    {
-      'text-black hover:!bg-neutral-300': theme === 'light',
-      'text-white hover:!bg-neutral-700': theme === 'dark',
-    }
-  );
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuTrigger className={dropdownTriggerClasses}>
-        {envTriggerMapping[VEGA_ENV]}
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger className="hover:border-white hover:!bg-neutral-700 focus:!border-white">{envTriggerMapping[VEGA_ENV]}</DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>

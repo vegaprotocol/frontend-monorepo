@@ -68,6 +68,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
               onClick={(e) => {
                 openAssetDetailsDialog(value, e.target as HTMLElement);
               }}
+              tabIndex={0}
             >
               {value}
             </button>

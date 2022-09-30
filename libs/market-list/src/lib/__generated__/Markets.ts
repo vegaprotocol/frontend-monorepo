@@ -116,7 +116,7 @@ export interface Markets_marketsConnection_edges_node {
    */
   id: string;
   /**
-   * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
+   * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
@@ -133,7 +133,7 @@ export interface Markets_marketsConnection_edges_node {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    * This sets how big the smallest order / position on the market can be.
@@ -156,13 +156,16 @@ export interface Markets_marketsConnection_edges_node {
    */
   tradableInstrument: Markets_marketsConnection_edges_node_tradableInstrument;
   /**
-   * timestamps for state changes in the market
+   * Timestamps for state changes in the market
    */
   marketTimestamps: Markets_marketsConnection_edges_node_marketTimestamps;
 }
 
 export interface Markets_marketsConnection_edges {
   __typename: "MarketEdge";
+  /**
+   * The market
+   */
   node: Markets_marketsConnection_edges_node;
 }
 
@@ -175,5 +178,8 @@ export interface Markets_marketsConnection {
 }
 
 export interface Markets {
+  /**
+   * One or more instruments that are trading on the Vega network
+   */
   marketsConnection: Markets_marketsConnection | null;
 }

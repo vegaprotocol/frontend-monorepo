@@ -16,7 +16,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
   const [values, setValues] = useState<string[]>([]);
   const triggerClassNames = classNames(
     'w-full py-2',
-    'flex items-center justify-between border-b border-neutral-200 dark:border-neutral-500 focus-visible:underline'
+    'flex items-center justify-between border-b border-neutral-200 dark:border-neutral-500'
   );
 
   return (

@@ -20,7 +20,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className={classNames(
           defaultSelectElement(hasError),
           className,
-          'appearance-none outline-none rounded-md z-20'
+          'appearance-none rounded-md z-20'
         )}
       />
       <Icon name="chevron-down" className="absolute right-4 z-10" />

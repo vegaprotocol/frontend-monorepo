@@ -18,7 +18,6 @@ export const Popover = ({
     <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <PopoverPrimitive.Trigger
         data-testid="popover-trigger"
-        className="focus-visible:underline outline-none"
       >
         {trigger}
       </PopoverPrimitive.Trigger>

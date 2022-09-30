@@ -9,8 +9,7 @@ const itemClass = classNames(
   'hover:bg-white dark:hover:bg-neutral-200',
   'focus:bg-white dark:focus:bg-neutral-200',
   'select-none',
-  'whitespace-nowrap',
-  'outline-none'
+  'whitespace-nowrap'
 );
 
 /**
@@ -30,8 +29,7 @@ export const DropdownMenuTrigger = forwardRef<
     className,
     'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500',
     'focus:border-black dark:focus:border-white whitespace-nowrap',
-    'hover:bg-neutral-200 dark:hover:bg-neutral-700',
-    'focus-visible:bg-neutral-200 dark:focus-visible:bg-neutral-700 outline-none'
+    'hover:bg-neutral-200 dark:hover:bg-neutral-700'
   );
   return (
     <DropdownMenuPrimitive.Trigger

@@ -34,12 +34,10 @@ export const Toggle = ({
     'relative inline-block w-full text-center',
     'peer-checked:rounded-full',
     'px-10 py-2',
-    'peer-checked:bg-neutral-500 dark:peer-checked:bg-neutral-200',
+    'peer-checked:bg-neutral-600 dark:peer-checked:bg-white',
     'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
-    'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full',
-    'peer-focus-visible:bg-neutral-800 dark:peer-focus-visible:bg-white',
-    'peer-focus-visible:underline dark:peer-focus-visible:underline'
+    'hover:bg-neutral-200 hover:dark:bg-neutral-600 hover:rounded-full'
   );
 
   return (

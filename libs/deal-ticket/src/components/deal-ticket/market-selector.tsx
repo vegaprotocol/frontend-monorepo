@@ -166,7 +166,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       <div className="relative flex flex-col">
         <div className="relative w-full min-h-[30px]">
           <Input
-            className="h-[30px] w-[calc(100%-20px)] border-none outline-none"
+            className="h-[30px] w-[calc(100%-20px)] border-none"
             ref={inputRef}
             tabIndex={0}
             value={lookup}

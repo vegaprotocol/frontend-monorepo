@@ -1,36 +1,19 @@
-import classNames from 'classnames';
 import React from 'react';
+import classNames from 'classnames';
 import { SunIcon, MoonIcon } from './icons';
 
 export const ThemeSwitcher = ({
   theme,
   onToggle,
   className,
-  sunClassName,
-  moonClassName,
-  fixedBg,
 }: {
   theme: 'light' | 'dark';
   onToggle: () => void;
   className?: string;
-  sunClassName?: string;
-  moonClassName?: string;
-  fixedBg?: 'light' | 'dark';
 }) => {
-  const sharedClasses = classNames(
-    'hover:text-white group-focus-visible:text-white outline-none',
-    {
-      'text-neutral-800 dark:text-neutral-300': !fixedBg,
-      'text-neutral-800': fixedBg === 'light',
-      'text-neutral-300': fixedBg === 'dark',
-    }
-  );
-  const sunClasses = classNames(sharedClasses, sunClassName, {
-    hidden: theme === 'light',
-  });
-  const moonClasses = classNames(sharedClasses, moonClassName, {
-    hidden: theme === 'dark',
-  });
+
+  const classes = 'text-neutral-800 dark:text-neutral-300 hover:text-white';
+
   return (
     <button
       type="button"
@@ -38,12 +21,16 @@ export const ThemeSwitcher = ({
       className={classNames('group', className)}
       data-testid="theme-switcher"
     >
-      <span className={sunClasses}>
-        <SunIcon />
-      </span>
-      <span className={moonClasses}>
-        <MoonIcon />
-      </span>
+      {theme === 'dark' && (
+        <span className={classes}>
+          <SunIcon />
+        </span>
+      )}
+      {theme === 'light' && (
+        <span className={classes}>
+          <MoonIcon />
+        </span>
+      )}
     </button>
   );
 };
