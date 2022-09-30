@@ -35,7 +35,7 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-happens-in-an-opening-auction">
+            <ExternalLink href="https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-opening">
               {t('Find out more')}
             </ExternalLink>
           </p>
@@ -54,7 +54,7 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>{' '}
-                <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-liquidity-monitoring-auction">
+                <ExternalLink href="https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring">
                   {t('Find out more')}
                 </ExternalLink>
               </p>
@@ -69,7 +69,7 @@ export const TradingModeTooltip = ({
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                <ExternalLink href="https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-price-monitoring-auction">
+                <ExternalLink href="https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring">
                   {t('Find out more')}
                 </ExternalLink>
               </p>
