@@ -1,5 +1,6 @@
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import {
+  PendingWithdrawalsTable,
   useWithdrawals,
   WithdrawalDialogs,
   WithdrawalsTable,
@@ -8,6 +9,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useState } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { Web3Container } from '@vegaprotocol/web3';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
 export const WithdrawalsContainer = () => {
   const { withdrawals, loading, error } = useWithdrawals();
@@ -25,17 +27,27 @@ export const WithdrawalsContainer = () => {
               onClick={() => setWithdrawDialog(true)}
               data-testid="withdraw-dialog-button"
             >
-              {t('Withdraw')}
+              {t('Make withdrawal')}
             </Button>
           </header>
-          <div>
+          <div className="h-full px-4">
             <AsyncRenderer
               data={withdrawals}
               loading={loading}
               error={error}
-              render={(data) => {
-                return <WithdrawalsTable withdrawals={data} />;
-              }}
+              render={(data) => (
+                <>
+                  <h4 className="pt-3 pb-1">{t('Pending withdrawals')}</h4>
+                  <PendingWithdrawalsTable withdrawals={data} />
+
+                  <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
+                  <WithdrawalsTable
+                    withdrawals={data.filter(
+                      (w) => w.status !== WithdrawalStatus.STATUS_OPEN
+                    )}
+                  />
+                </>
+              )}
             />
           </div>
         </div>
