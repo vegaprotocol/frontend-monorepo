@@ -14,7 +14,7 @@ import {
   generateMarketsCandles,
 } from './mocks/generate-markets';
 import { generateOrders } from './mocks/generate-orders';
-import { generatePositions } from './mocks/generate-positions';
+import { generateMargins, generatePositions } from './mocks/generate-positions';
 import { generateTrades } from './mocks/generate-trades';
 
 export const mockTradingPage = (
@@ -43,6 +43,7 @@ export const mockTradingPage = (
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
+  aliasQuery(req, 'Margins', generateMargins());
   aliasQuery(req, 'DealTicket', generateDealTicketQuery({ market: { state } }));
   aliasQuery(
     req,

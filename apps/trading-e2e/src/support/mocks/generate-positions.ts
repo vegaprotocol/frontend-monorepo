@@ -3,6 +3,7 @@ import type { PartialDeep } from 'type-fest';
 import type {
   Positions,
   Positions_party_positionsConnection_edges_node,
+  Margins,
 } from '@vegaprotocol/positions';
 
 export const generatePositions = (
@@ -17,7 +18,7 @@ export const generatePositions = (
       averageEntryPrice: '1129935',
       updatedAt: '2022-07-28T15:09:34.441143Z',
       market: {
-        id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        id: 'market-0',
         __typename: 'Market',
       },
     },
@@ -29,7 +30,7 @@ export const generatePositions = (
       averageEntryPrice: '8509338',
       updatedAt: '2022-07-28T15:09:34.441143Z',
       market: {
-        id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+        id: 'market-1',
         __typename: 'Market',
       },
     },
@@ -40,7 +41,7 @@ export const generatePositions = (
       averageEntryPrice: '84400088',
       updatedAt: '2022-07-28T14:53:54.725477Z',
       market: {
-        id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        id: 'market-2',
         __typename: 'Market',
       },
       __typename: 'Position',
@@ -64,4 +65,72 @@ export const generatePositions = (
   };
 
   return merge(defaultResult, override);
+};
+
+export const generateMargins = (): Margins => {
+  return {
+    party: {
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
+      marginsConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: 'market-0',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tDAI-id',
+              },
+            },
+            __typename: 'MarginEdge',
+          },
+          {
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: 'market-1',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tDAI-id',
+              },
+            },
+            __typename: 'MarginEdge',
+          },
+          {
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: 'market-2',
+              },
+              asset: {
+                __typename: 'Asset',
+                id: 'tEURO-id',
+              },
+            },
+            __typename: 'MarginEdge',
+          },
+        ],
+        __typename: 'MarginConnection',
+      },
+      __typename: 'Party',
+    },
+  };
 };

@@ -28,7 +28,7 @@ export const generateAccounts = (
           type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: {
-            id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+            id: 'market-1',
             tradableInstrument: {
               __typename: 'TradableInstrument',
               instrument: {
@@ -58,7 +58,7 @@ export const generateAccounts = (
                 name: '',
               },
             },
-            id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+            id: 'market-2',
           },
           asset: {
             __typename: 'Asset',
@@ -80,7 +80,7 @@ export const generateAccounts = (
                 name: '',
               },
             },
-            id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+            id: 'market-0',
           },
           asset: {
             __typename: 'Asset',
