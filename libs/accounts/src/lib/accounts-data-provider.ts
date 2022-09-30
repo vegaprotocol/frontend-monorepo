@@ -20,7 +20,10 @@ function isAccount(
     | AccountFieldsFragment
     | IterableElement<AccountEventsSubscription['accounts']>
 ): account is AccountFieldsFragment {
-  return (account as AccountFieldsFragment).__typename === 'Account';
+  return (
+    (account as AccountFieldsFragment).__typename === 'Account' ||
+    Boolean((account as AccountFieldsFragment).asset?.id)
+  );
 }
 
 export const getId = (
