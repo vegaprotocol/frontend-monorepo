@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 interface WithdrawLimitsProps {
   amount: string;
   threshold: BigNumber;
-  balance: BigNumber;
+  balance: string;
   delay: number | undefined;
 }
 
@@ -35,7 +35,7 @@ export const WithdrawLimits = ({
       <tbody>
         <tr data-testid="balance-available">
           <th className="text-left font-normal">{t('Balance available')}</th>
-          <td className="text-right">{balance.toString()}</td>
+          <td className="text-right">{balance}</td>
         </tr>
         <tr data-testid="withdrawal-threshold">
           <th className="text-left font-normal">

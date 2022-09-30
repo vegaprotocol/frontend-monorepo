@@ -1,3 +1,4 @@
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import create from 'zustand';
 
 interface GlobalStore {
@@ -15,9 +16,12 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   landingDialog: false,
   riskNoticeDialog: false,
-  marketId: null,
+  marketId: LocalStorage.getItem('marketId') || null,
   pageTitle: null,
   update: (state) => {
     set(state);
+    if (state.marketId) {
+      LocalStorage.setItem('marketId', state.marketId);
+    }
   },
 }));
