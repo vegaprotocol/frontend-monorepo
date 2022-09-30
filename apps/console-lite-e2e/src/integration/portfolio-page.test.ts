@@ -19,7 +19,7 @@ import {
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
-    // disconnectVegaWallet();
+    disconnectVegaWallet();
   });
 
   it('button for wallet connect should work', () => {
