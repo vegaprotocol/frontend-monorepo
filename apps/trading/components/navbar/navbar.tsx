@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
@@ -15,7 +15,7 @@ interface NavbarProps {
 
 export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   const { marketId, update } = useGlobalStore((store) => ({
-    marketId: store.marketId || LocalStorage.getItem('marketId') || null,
+    marketId: store.marketId,
     update: store.update,
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/';
