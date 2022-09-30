@@ -20,7 +20,7 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
   app.document.head.appendChild(style);
 }
 
-before(() => {
+beforeEach(() => {
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasQuery(req, 'ChainId'); // No response to prevent chain check for wallet connection

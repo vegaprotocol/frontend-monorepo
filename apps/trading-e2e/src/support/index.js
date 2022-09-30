@@ -4,7 +4,7 @@ import registerCypressGrep from 'cypress-grep';
 import { aliasQuery } from '@vegaprotocol/cypress';
 registerCypressGrep();
 
-before(() => {
+beforeEach(() => {
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasQuery(req, 'ChainId'); // No response to prevent chain check for wallet connection
