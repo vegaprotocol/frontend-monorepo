@@ -41,8 +41,12 @@ const useAccountColumnDefinitions = () => {
         valueFormatter: ({
           value,
           data,
-        }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
-          addDecimalsFormatNumber(value, data.asset.decimals),
+        }: VegaValueFormatterParams<AccountFields, 'deposited'>) => {
+          if (value && data) {
+            return addDecimalsFormatNumber(value, data.asset.decimals);
+          }
+          return '-';
+        },
       },
       {
         colId: 'used',
@@ -52,8 +56,12 @@ const useAccountColumnDefinitions = () => {
         valueFormatter: ({
           value,
           data,
-        }: VegaValueFormatterParams<AccountFields, 'used'>) =>
-          addDecimalsFormatNumber(value, data.asset.decimals),
+        }: VegaValueFormatterParams<AccountFields, 'used'>) => {
+          if (value && data) {
+            return addDecimalsFormatNumber(value, data.asset.decimals);
+          }
+          return '-';
+        },
       },
     ];
   }, [open]);
