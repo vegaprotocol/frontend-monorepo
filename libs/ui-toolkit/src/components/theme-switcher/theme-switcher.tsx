@@ -11,7 +11,6 @@ export const ThemeSwitcher = ({
   onToggle: () => void;
   className?: string;
 }) => {
-
   const classes = 'text-neutral-800 dark:text-neutral-300 hover:text-white';
 
   return (
