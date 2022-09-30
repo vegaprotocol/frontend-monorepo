@@ -8,7 +8,7 @@ import {
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
-import { VegaConnectDialog } from './connect-dialog';
+import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
@@ -19,7 +19,6 @@ import {
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
-import { CLOSE_DELAY } from './json-rpc-connector-form';
 
 let defaultProps: VegaConnectDialogProps;
 
@@ -121,7 +120,7 @@ describe('VegaConnectDialog', () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
 
-      expect(spy).toHaveBeenCalledWith(mockHostedWalletUrl, fields);
+      expect(spy).toHaveBeenCalledWith(fields);
 
       expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
     });
@@ -147,7 +146,7 @@ describe('VegaConnectDialog', () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
 
-      expect(spy).toHaveBeenCalledWith(mockHostedWalletUrl, fields);
+      expect(spy).toHaveBeenCalledWith(fields);
 
       expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
       expect(defaultProps.setDialogOpen).not.toHaveBeenCalled();

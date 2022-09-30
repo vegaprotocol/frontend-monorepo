@@ -83,16 +83,8 @@ export class RestConnector implements VegaConnector {
     return Boolean(this.token);
   }
 
-  async authenticate(
-    url: string,
-    params: {
-      wallet: string;
-      passphrase: string;
-    }
-  ) {
+  async authenticate(params: { wallet: string; passphrase: string }) {
     try {
-      this.url = url;
-
       const res = await this.request(Endpoints.Auth, {
         method: 'post',
         body: JSON.stringify(params),

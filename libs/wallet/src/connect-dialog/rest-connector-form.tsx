@@ -13,13 +13,11 @@ interface FormFields {
 interface RestConnectorFormProps {
   connector: RestConnector;
   onConnect: (connector: RestConnector) => void;
-  walletUrl: string;
 }
 
 export function RestConnectorForm({
   connector,
   onConnect,
-  walletUrl,
 }: RestConnectorFormProps) {
   const { connect } = useVegaWallet();
   const [error, setError] = useState('');
@@ -33,7 +31,7 @@ export function RestConnectorForm({
     const authFailedMessage = t('Authentication failed');
     try {
       setError('');
-      const res = await connector.authenticate(walletUrl, {
+      const res = await connector.authenticate({
         wallet: fields.wallet,
         passphrase: fields.passphrase,
       });
@@ -46,7 +44,7 @@ export function RestConnectorForm({
       }
     } catch (err) {
       if (err instanceof TypeError) {
-        setError(t(`Wallet not running at ${walletUrl}`));
+        setError(t(`Wallet not running at ${connector.url}`));
       } else if (err instanceof Error) {
         setError(authFailedMessage);
       } else {
