@@ -22,22 +22,19 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
   const [error, setError] = useState<WalletError | null>(null);
 
   const attemptConnect = useCallback(
-    async (connector: JsonRpcConnector, appChainId?: string) => {
+    async (connector: JsonRpcConnector, appChainId: string) => {
       try {
         // Check that the running wallet is compatible with this connector
         setStatus(Status.CheckingVersion);
         await connector.checkCompat();
 
-        // Only make comparison check if chainId is provided
-        if (appChainId) {
-          // Check if wallet is configured for the same chain as the app
-          setStatus(Status.GettingChainId);
-          const chainIdResult = await connector.getChainId();
+        // Check if wallet is configured for the same chain as the app
+        setStatus(Status.GettingChainId);
+        const chainIdResult = await connector.getChainId();
 
-          if (chainIdResult.chainID !== appChainId) {
-            // Throw wallet error for consitent error handling
-            throw ClientErrors.WRONG_NETWORK;
-          }
+        if (chainIdResult.chainID !== appChainId) {
+          // Throw wallet error for consitent error handling
+          throw ClientErrors.WRONG_NETWORK;
         }
 
         // Start connection flow. User will be prompted to select a wallet and enter

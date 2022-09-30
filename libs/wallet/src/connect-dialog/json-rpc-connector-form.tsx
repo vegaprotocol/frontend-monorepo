@@ -29,7 +29,7 @@ export const JsonRpcConnectorForm = ({
   reset,
 }: {
   connector: JsonRpcConnector;
-  appChainId?: string;
+  appChainId: string;
   status: Status;
   error: WalletError | null;
   onConnect: () => void;
@@ -60,7 +60,7 @@ const Connecting = ({
   status: Status;
   error: WalletError | null;
   connector: JsonRpcConnector;
-  appChainId?: string;
+  appChainId: string;
   reset: () => void;
 }) => {
   if (status === Status.Error) {
@@ -158,7 +158,7 @@ const Error = ({
 }: {
   error: WalletError | null;
   connectorUrl: string | null;
-  appChainId?: string;
+  appChainId: string;
   onTryAgain: () => void;
 }) => {
   let title = t('Something went wrong');
@@ -175,9 +175,7 @@ const Error = ({
       text = t(`No wallet application running at ${connectorUrl}`);
     } else if (error.code === ClientErrors.WRONG_NETWORK.code) {
       title = t('Wrong network');
-      text = appChainId
-        ? `To complete your wallet connection, set your wallet network in your app to "${appChainId}".`
-        : undefined;
+      text = `To complete your wallet connection, set your wallet network in your app to "${appChainId}".`;
     } else if (error.code === ServiceErrors.CONNECTION_DECLINED) {
       title = t('Connection declined');
       text = t('Your wallet connection was rejected');

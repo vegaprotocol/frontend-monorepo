@@ -5,6 +5,7 @@ import {
   Icon,
   Input,
   Link,
+  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
@@ -36,15 +37,44 @@ export const VegaConnectDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaConnectDialogProps) => {
-  const { data } = useChainIdQuery();
+  const { data, error, loading } = useChainIdQuery();
 
-  return (
-    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+  const renderContent = () => {
+    if (error) {
+      return (
+        <ConnectDialogContent>
+          <ConnectDialogTitle>
+            {t('Could not retrieve chain id')}
+          </ConnectDialogTitle>
+          <ConnectDialogFooter />
+        </ConnectDialogContent>
+      );
+    }
+
+    if (loading || !data) {
+      return (
+        <ConnectDialogContent>
+          <ConnectDialogTitle>{t('Fetchign chain ID')}</ConnectDialogTitle>
+          <div className="flex justify-center items-center my-6">
+            <Loader />
+          </div>
+          <ConnectDialogFooter />
+        </ConnectDialogContent>
+      );
+    }
+
+    return (
       <ConnectDialogContainer
         connectors={connectors}
         closeDialog={() => setDialogOpen(false)}
-        appChainId={data?.statistics.chainId}
+        appChainId={data.statistics.chainId}
       />
+    );
+  };
+
+  return (
+    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+      {renderContent()}
     </Dialog>
   );
 };
@@ -56,7 +86,7 @@ const ConnectDialogContainer = ({
 }: {
   connectors: Connectors;
   closeDialog: () => void;
-  appChainId?: string;
+  appChainId: string;
 }) => {
   const { VEGA_WALLET_URL, VEGA_ENV, HOSTED_WALLET_URL } = useEnvironment();
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
@@ -192,7 +222,7 @@ const SelectedForm = ({
 }: {
   type: WalletType;
   connector: VegaConnector;
-  appChainId?: string;
+  appChainId: string;
   jsonRpcState: {
     status: Status;
     error: WalletError | null;
