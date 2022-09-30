@@ -1,4 +1,5 @@
-import { Asset, formatNumber } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/react-helpers';
+import { formatNumber } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
   minSafe,
@@ -113,6 +114,7 @@ export const WithdrawForm = ({
                 value={selectedAsset?.id || ''}
                 id="asset"
                 name="asset"
+                required
               >
                 <option value="">{t('Please select')}</option>
                 {assets.filter(isAssetTypeERC20).map((a) => (
