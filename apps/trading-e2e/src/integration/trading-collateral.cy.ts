@@ -19,9 +19,7 @@ describe('collateral', { tags: '@smoke' }, () => {
   it('renders collateral', () => {
     connectVegaWallet();
     cy.getByTestId(collateralTab).click();
-    cy.get(assetSymbolColumn).each(($symbol) => {
-      cy.wrap($symbol).invoke('text').should('not.be.empty');
-    });
+    cy.getByTestId(assetSymbolColumn).first().click();
     cy.get(assetTypeColumn).should('contain.text', 'General');
     cy.get(assetMarketName).should(
       'contain.text',

@@ -1,4 +1,4 @@
-export const VegaBackgroundVideo = () => {
+export const BackgroundVideo = () => {
   return (
     <video
       autoPlay
