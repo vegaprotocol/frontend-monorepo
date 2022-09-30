@@ -1,45 +1,9 @@
 import React, { useMemo } from 'react';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import type { SummaryRow } from '@vegaprotocol/react-helpers';
-import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
+import type { AccountFields } from '@vegaprotocol/accounts';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type {
-  ColDef,
-  GroupCellRendererParams,
-  ValueFormatterParams,
-} from 'ag-grid-community';
-import type { AccountType } from '@vegaprotocol/types';
-import { AccountTypeMapping } from '@vegaprotocol/types';
-
-interface AccountsTableValueFormatterParams extends ValueFormatterParams {
-  data: AccountFieldsFragment;
-}
-
-const comparator = (
-  valueA: string,
-  valueB: string,
-  nodeA: { data: AccountFieldsFragment & SummaryRow },
-  nodeB: { data: AccountFieldsFragment & SummaryRow },
-  isInverted: boolean
-) => {
-  if (valueA < valueB) {
-    return -1;
-  }
-
-  if (valueA > valueB) {
-    return 1;
-  }
-
-  if (nodeA.data.__summaryRow) {
-    return isInverted ? -1 : 1;
-  }
-
-  if (nodeB.data.__summaryRow) {
-    return isInverted ? 1 : -1;
-  }
-
-  return 0;
-};
+import type { ColDef, GroupCellRendererParams } from 'ag-grid-community';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 
 const useAccountColumnDefinitions = () => {
   const { open } = useAssetDetailsDialogStore();
@@ -49,7 +13,6 @@ const useAccountColumnDefinitions = () => {
         colId: 'account-asset',
         headerName: t('Asset'),
         field: 'asset.symbol',
-        comparator,
         headerClass: 'uppercase justify-start',
         cellClass: 'uppercase flex h-full items-center md:pl-4',
         cellRenderer: ({ value }: GroupCellRendererParams) =>
@@ -71,27 +34,25 @@ const useAccountColumnDefinitions = () => {
           ),
       },
       {
-        colId: 'type',
-        headerName: t('Type'),
-        field: 'type',
-        cellClass: 'uppercase !flex h-full items-center',
-        valueFormatter: ({ value }: ValueFormatterParams) =>
-          value ? AccountTypeMapping[value as AccountType] : '-',
-      },
-      {
-        colId: 'market',
-        headerName: t('Market'),
-        cellClass: 'uppercase !flex h-full items-center',
-        field: 'market.tradableInstrument.instrument.name',
-        valueFormatter: "value || '—'",
-      },
-      {
-        colId: 'balance',
-        headerName: t('Balance'),
-        field: 'balance',
-        cellClass: 'uppercase !flex h-full items-center',
+        colId: 'deposited',
+        headerName: t('Deposited'),
+        field: 'deposited',
         cellRenderer: 'PriceCell',
-        valueFormatter: ({ value, data }: AccountsTableValueFormatterParams) =>
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+          addDecimalsFormatNumber(value, data.asset.decimals),
+      },
+      {
+        colId: 'used',
+        headerName: t('Used'),
+        field: 'used',
+        cellRenderer: 'PriceCell',
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<AccountFields, 'used'>) =>
           addDecimalsFormatNumber(value, data.asset.decimals),
       },
     ];

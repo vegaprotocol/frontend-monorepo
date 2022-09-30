@@ -17,7 +17,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
-import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
@@ -44,6 +43,7 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { Header, HeaderStat } from '../../components/header';
+import { AccountsContainer } from '../portfolio/accounts-container';
 
 const TradingViews = {
   Candles: CandlesChartContainer,

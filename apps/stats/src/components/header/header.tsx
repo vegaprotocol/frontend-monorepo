@@ -1,5 +1,8 @@
-import { VegaLogo, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
-import { VegaBackgroundVideo } from '../videos';
+import {
+  BackgroundVideo,
+  VegaLogo,
+  ThemeSwitcher,
+} from '@vegaprotocol/ui-toolkit';
 
 interface ThemeToggleProps {
   theme: 'light' | 'dark';
@@ -8,11 +11,11 @@ interface ThemeToggleProps {
 
 export const Header = ({ theme, toggleTheme }: ThemeToggleProps) => {
   return (
-    <header className="relative overflow-hidden py-8 mb-40 md:mb-64">
-      <VegaBackgroundVideo />
+    <header className="relative overflow-hidden py-2 mb-10 md:mb-16">
+      <BackgroundVideo />
 
-      <div className="relative flex justify-center px-8 dark:bg-black bg-white">
-        <div className="w-full max-w-3xl p-20 flex items-center justify-between">
+      <div className="relative flex justify-center px-2 dark:bg-black bg-white">
+        <div className="w-full max-w-3xl p-5 flex items-center justify-between">
           <VegaLogo />
           <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
         </div>
