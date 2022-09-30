@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -28,6 +28,9 @@ import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 export const VegaWallet = () => {
   const { t } = useTranslation();
   const { pubKey, pubKeys } = useVegaWallet();
+  const pubKeyObj = useMemo(() => {
+    return pubKeys?.find((pk) => pk.publicKey === pubKey);
+  }, [pubKey, pubKeys]);
 
   const child = !pubKeys ? (
     <VegaWalletNotConnected />
@@ -40,13 +43,21 @@ export const VegaWallet = () => {
       <WalletCard>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
-          {pubKey && (
-            <div
-              data-testid="vega-account-truncated"
-              className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
-            >
-              {truncateMiddle(pubKey)}
-            </div>
+          {pubKeyObj && (
+            <>
+              <div
+                dta-testid="wallet-name"
+                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
+              >
+                {pubKeyObj.name}
+              </div>
+              <span
+                data-testid="vega-account-truncated"
+                className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
+              >
+                {truncateMiddle(pubKeyObj.publicKey)}
+              </span>
+            </>
           )}
         </WalletCardHeader>
         <WalletCardContent>{child}</WalletCardContent>
