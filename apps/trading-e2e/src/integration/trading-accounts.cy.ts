@@ -1,11 +1,13 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 
 beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockWeb3Provider();
   cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
 });
@@ -17,6 +19,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
     connectVegaWallet();
+    connectEthereumWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')

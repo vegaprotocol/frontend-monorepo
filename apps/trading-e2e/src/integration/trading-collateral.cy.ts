@@ -1,11 +1,13 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 
 beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockWeb3Provider();
   cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
 });
@@ -18,8 +20,12 @@ describe('collateral', { tags: '@smoke' }, () => {
     "[col-id='market.tradableInstrument.instrument.name']";
   it('renders collateral', () => {
     connectVegaWallet();
+
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId(assetSymbolColumn).first().click();
+
+    connectEthereumWallet();
+    
+    cy.get(assetSymbolColumn).first().click();
     cy.get(assetTypeColumn).should('contain.text', 'General');
     cy.get(assetMarketName).should(
       'contain.text',
