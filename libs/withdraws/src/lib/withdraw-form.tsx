@@ -1,4 +1,4 @@
-import type { Asset } from '@vegaprotocol/react-helpers';
+import { Asset, formatNumber } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
   minSafe,
@@ -145,7 +145,7 @@ export const WithdrawForm = ({
               amount={amount}
               threshold={threshold}
               delay={delay}
-              balance={balance}
+              balance={formatNumber(balance, selectedAsset.decimals)}
             />
           </div>
         )}
