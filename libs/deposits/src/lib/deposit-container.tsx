@@ -33,11 +33,11 @@ const DEPOSITS_QUERY = gql`
  */
 export const DepositContainer = ({ assetId }: { assetId?: string }) => {
   const { VEGA_ENV } = useEnvironment();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const { data, loading, error } = useQuery<DepositAsset>(DEPOSITS_QUERY, {
-    variables: { partyId: keypair?.pub },
-    skip: !keypair?.pub,
+    variables: { partyId: pubKey },
+    skip: !pubKey,
   });
 
   const assets = getEnabledAssets(data);

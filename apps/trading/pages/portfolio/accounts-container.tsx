@@ -10,10 +10,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountManager } from '@vegaprotocol/accounts';
 
 export const AccountsContainer = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const [depositDialog, setDepositDialog] = useState(false);
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <Splash>
         <p>{t('Please connect Vega wallet')}</p>
@@ -24,7 +24,7 @@ export const AccountsContainer = () => {
   return (
     <Web3Container>
       <div className="h-full">
-        <AssetAccountTable partyId={keypair.pub} />
+        <AssetAccountTable partyId={pubKey} />
         <DepositDialog
           depositDialog={depositDialog}
           setDepositDialog={setDepositDialog}
