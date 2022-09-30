@@ -78,7 +78,7 @@ jobs:
 
       # See if we capsule is needed for this project
       - name: See affected apps
-        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
+        run: echo AFFECTED=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
         working-directory: frontend-monorepo
 
       - name: See if capsule is necessary
