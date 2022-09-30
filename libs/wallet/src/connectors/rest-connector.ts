@@ -89,6 +89,7 @@ export class RestConnector implements VegaConnector {
         method: 'post',
         body: JSON.stringify(params),
       });
+      console.log(res);
 
       if (res.status === 403) {
         return { success: false, error: t('Invalid credentials') };

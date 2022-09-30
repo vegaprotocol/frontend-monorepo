@@ -7,6 +7,8 @@ registerCypressGrep();
 beforeEach(() => {
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
-    aliasQuery(req, 'ChainId'); // No response to prevent chain check for wallet connection
+    aliasQuery(req, 'ChainId', {
+      statistics: { __typename: 'Statistics', chainId: 'test-chain-id' },
+    });
   });
 });

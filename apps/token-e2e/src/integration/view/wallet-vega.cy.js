@@ -81,11 +81,17 @@ context(
         });
       });
 
-      it('should have REST connector visible on list', function () {
+      it('should have gui, cli and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
-          cy.get('button')
+          cy.getByTestId('connector-gui')
             .should('be.visible')
-            .and('have.text', 'rest provider');
+            .and('have.text', 'Desktop wallet app');
+          cy.getByTestId('connector-cli')
+            .should('be.visible')
+            .and('have.text', 'Command line wallet app');
+          cy.getByTestId('connector-cli')
+            .should('be.visible')
+            .and('have.text', 'Hosted fairground wallet');
         });
       });
 
@@ -97,9 +103,11 @@ context(
     });
 
     describe('when rest connector form opened', function () {
-      before('click rest provider link', function () {
+      // Note using desktop wallet app link temporarily whilst its still on v1,
+      // tests will need to be updated to handle v2
+      before('click desktop wallet app link', function () {
         cy.get(connectorsList).within(() => {
-          cy.get('button').click();
+          cy.getByTestId('connector-gui').click();
         });
       });
 
