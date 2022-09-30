@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
-    const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]';
+    const tradingAccountRowId = '[row-id="asset-id"]';
     cy.getByTestId('Collateral').click();
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
@@ -35,6 +35,6 @@ describe('accounts', { tags: '@smoke' }, () => {
       .should('be.visible')
       .get(tradingAccountRowId)
       .find('[col-id="deposited"]')
-      .should('have.text', '1,000.00000');
+      .should('have.text', '1,000.01000');
   });
 });
