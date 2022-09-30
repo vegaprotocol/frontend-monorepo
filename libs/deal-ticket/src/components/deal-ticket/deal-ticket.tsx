@@ -15,10 +15,8 @@ import { ExpirySelector } from './expiry-selector';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { Order } from '../deal-ticket-validation';
 import { getDefaultOrder } from '../deal-ticket-validation';
-import {
-  isMarketInAuction,
-  useOrderValidation,
-} from '../deal-ticket-validation/use-order-validation';
+import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -73,9 +71,22 @@ export const DealTicket = ({
     },
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
-  const price = isMarketInAuction(market)
-    ? market.data?.indicativePrice
-    : market.depth.lastTrade?.price;
+
+  const getPrice = () => {
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_OPENING_AUCTION ||
+      market.tradingMode === MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+    ) {
+      return market.data?.indicativePrice;
+    }
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    ) {
+      return null;
+    }
+    return market.depth.lastTrade?.price;
+  };
+  const price = getPrice();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>

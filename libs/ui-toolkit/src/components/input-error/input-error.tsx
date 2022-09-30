@@ -14,11 +14,15 @@ export const InputError = ({
   ...props
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
-    'text-sm flex items-center text-warning',
+    'text-sm flex items-center',
     'mt-2',
     {
       'border-danger': intent === 'danger',
       'border-warning': intent === 'warning',
+    },
+    {
+      'text-warning': intent === 'warning',
+      'text-danger': intent === 'danger',
     }
   );
   return (
