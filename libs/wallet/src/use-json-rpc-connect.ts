@@ -24,10 +24,6 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
   const attemptConnect = useCallback(
     async (connector: JsonRpcConnector, appChainId: string) => {
       try {
-        // Set the connector url in case a custom one was selected
-        // TODO ensure this is set
-        // connector.url = walletUrl;
-
         // Check that the running wallet is compatible with this connector
         setStatus(Status.CheckingVersion);
         await connector.checkCompat();
