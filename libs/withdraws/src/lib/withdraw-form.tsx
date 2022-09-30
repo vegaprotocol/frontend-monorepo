@@ -58,7 +58,7 @@ export const WithdrawForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id,
+      asset: selectedAsset?.id || '',
       to: address,
     },
   });
@@ -98,7 +98,11 @@ export const WithdrawForm = ({
           <Controller
             control={control}
             name="asset"
-            rules={{ validate: { required } }}
+            rules={{
+              validate: {
+                required: (value) => !!selectedAsset || required(value),
+              },
+            }}
             render={({ field }) => (
               <Select
                 {...field}

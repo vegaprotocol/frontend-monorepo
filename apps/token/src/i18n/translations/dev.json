@@ -470,7 +470,7 @@
   "notAssociated": "Not Associated",
   "title": "VEGA TOKEN",
   "Use the Ethereum wallet you want to send your tokens to. You'll also need enough Ethereum to pay gas.": "Connect to the Ethereum wallet that holds your $VEGA tokens to see what can be redeemed from vesting tranches. To redeem tokens you will need some ETH to pay gas fees.\n",
-  "Staked on Vega validator": "Staked $VEGA",
+  "Staked on Vega validator": "Associated to Vega key",
   "You can associate tokens while they are held in the vesting contract, when they unlock you will need to disassociate them before they can be redeemed.": "You can associate tokens while they are held in the vesting contract, when they unlock you will need to disassociate them before they can be redeemed.",
   "Nominate Stake to Validator Node": "Select a validator to nominate",
   "successfullAssociationMessage": "Vega key {{vegaKey}} can now participate in governance and nominate a validator with your associated $VEGA.",
