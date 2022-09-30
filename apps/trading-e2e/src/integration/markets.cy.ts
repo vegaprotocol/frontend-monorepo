@@ -15,8 +15,7 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.wait('@Markets');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
-    cy.get('[data-testid^="market-link-"]')
-      .should('not.be.empty')
+    cy.get('[data-testid^="market-link-"]').should('not.be.empty');
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('settlement-asset').should('not.be.empty');
     cy.getByTestId('price-change-percentage').should('not.be.empty');
