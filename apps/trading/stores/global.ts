@@ -16,7 +16,7 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   landingDialog: false,
   riskNoticeDialog: false,
-  marketId: null,
+  marketId: LocalStorage.getItem('marketId') || null,
   pageTitle: null,
   update: (state) => {
     set(state);

@@ -2,11 +2,12 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
+import { useEffect, useState } from 'react';
 
 interface NavbarProps {
   theme: 'light' | 'dark';
@@ -15,10 +16,15 @@ interface NavbarProps {
 
 export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   const { marketId, update } = useGlobalStore((store) => ({
-    marketId: store.marketId || LocalStorage.getItem('marketId'),
+    marketId: store.marketId,
     update: store.update,
   }));
-  const tradingPath = marketId ? `/markets/${marketId}` : '/';
+  const [tradingPath, setTradingPath] = useState('/markets');
+  useEffect(() => {
+    if (marketId) {
+      setTradingPath(`/markets/${marketId}`);
+    }
+  }, [marketId]);
   return (
     <div className="dark px-4 flex items-stretch border-b border-default bg-black text-white">
       <div className="flex gap-4 mr-4 items-center h-full">
@@ -52,7 +58,11 @@ interface NavLinkProps {
 
 const NavLink = ({ name, path, testId = name }: NavLinkProps) => {
   const router = useRouter();
-  const isActive = router.asPath.includes(path);
+  const [isActive, setIsActive] = useState(false);
+  useEffect(
+    () => setIsActive(router.asPath.includes(path)),
+    [path, router.asPath]
+  );
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
     'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,
