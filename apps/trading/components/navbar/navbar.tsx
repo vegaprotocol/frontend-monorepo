@@ -52,7 +52,7 @@ interface NavLinkProps {
 
 const NavLink = ({ name, path, testId = name }: NavLinkProps) => {
   const router = useRouter();
-  const isActive = router.asPath === path;
+  const isActive = router.asPath.includes(path);
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
     'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,
