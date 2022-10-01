@@ -37,6 +37,7 @@ function App() {
           <VegaWalletProvider>
             <LocalContext.Provider value={localValues}>
               <AppLoader>
+                <p> TEST4 </p>
                 <div className="max-h-full min-h-full dark:bg-lite-black dark:text-neutral-200 bg-white text-neutral-800 grid grid-rows-[min-content,1fr]">
                   <Header />
                   <Main />

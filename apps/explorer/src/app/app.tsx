@@ -40,6 +40,7 @@ function App() {
     <ThemeContext.Provider value={theme}>
       <TendermintWebsocketProvider>
         <NetworkLoader createClient={createClient}>
+          <p> TEST4 </p>
           <div
             className={`${
               menuOpen && 'h-[100vh] overflow-hidden'
