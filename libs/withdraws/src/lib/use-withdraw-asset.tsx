@@ -50,8 +50,11 @@ export const useWithdrawAsset = (
     },
     [accounts, assets, update, getThreshold, getDelay]
   );
+
   useEffect(() => {
-    handleSelectAsset(assetId || '');
+    if (assetId) {
+      handleSelectAsset(assetId);
+    }
   }, [assetId, handleSelectAsset]);
 
   return { asset, balance, min, threshold, delay, handleSelectAsset };
