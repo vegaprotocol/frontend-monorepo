@@ -1,4 +1,4 @@
-name: Capsule Cypress tests
+name: Cypress tests
 
 on:
   push:
@@ -77,19 +77,14 @@ jobs:
           set-environment-variables-for-job: true
 
       #######
-      ## Build and run Vegacapsule network
+      ## Install Vega wallet
       #######
 
-      - name: Install Vega binaries
-        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
-        with:
-          version: ${{ env.VEGA_VERSION }}
-          gobin: ${{ env.GOBIN }}
-
-      - name: Build and run Vegacapsule network
-        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
-        with:
-          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      - name: Install Vega wallet binaries
+        shell: bash
+        run: |
+          wget 'https://github.com/vegaprotocol/vega/releases/download/${{ env.VEGA_VERSION }}/vegawallet-linux-amd64.zip' -q
+          unzip vegawallet-linux-amd64.zip -d ${{ env.GOBIN }}
 
       ######
       ## Setup a Vega wallet for our user
@@ -100,12 +95,15 @@ jobs:
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: true
+          capsule: false
 
-      - name: Start service using capsule network
+      - name: Import fairground network
         shell: bash
-        if: ${{ inputs.capsule }}
-        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+        run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+
+      - name: Start service using fairground network
+        shell: bash
+        run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
 
       ######
       ## Run some tests
@@ -117,22 +115,10 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome --exclude=trading,trading-e2e,console-lite,console-lite-e2e
+        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome --exclude=explorer,explorer-e2e,token,token-e2e
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
-
-      ######
-      ## Upload logs
-      ######
-
-      - name: Logs
-        run: vegacapsule network logs > vega-capsule-logs.txt
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: logs
-          path: ./vega-capsule-logs.txt

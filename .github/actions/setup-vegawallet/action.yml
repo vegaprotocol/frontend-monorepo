@@ -28,18 +28,3 @@ runs:
     - name: Create public key 2
       shell: bash
       run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-
-    - name: Import fairground network
-      shell: bash
-      if: ${{ inputs.capsule==false }}
-      run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
-
-    - name: Start service using fairground network
-      shell: bash
-      if: ${{ inputs.capsule==false }}
-      run: vegawallet service run --network fairground --automatic-consent --home ~/.vegacapsule/testnet/wallet &
-
-    - name: Start service using capsule network
-      shell: bash
-      if: ${{ inputs.capsule }}
-      run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
