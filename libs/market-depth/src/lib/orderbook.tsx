@@ -28,6 +28,7 @@ interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
   positionDecimalPlaces: number;
   resolution: number;
+  fillGaps: boolean;
   onResolutionChange: (resolution: number) => void;
 }
 
@@ -102,6 +103,7 @@ const marginSize = bufferSize * 0.9 * rowHeight;
 
 export const Orderbook = ({
   rows,
+  fillGaps,
   bestStaticBidPrice,
   bestStaticOfferPrice,
   marketTradingMode,
@@ -130,8 +132,8 @@ export const Orderbook = ({
   const [maxPriceLevel, setMaxPriceLevel] = useState('');
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const numberOfRows = useMemo(
-    () => getNumberOfRows(rows, resolution),
-    [rows, resolution]
+    () => (fillGaps ? getNumberOfRows(rows, resolution) : rows?.length ?? 0),
+    [rows, resolution, fillGaps]
   );
 
   const updateScrollOffset = useCallback(
@@ -150,14 +152,17 @@ export const Orderbook = ({
       if (scrollTop === scrollTopRef.current) {
         return;
       }
-      priceInCenter.current = (
-        BigInt(resolution) + // extra row on very top - sticky header
-        BigInt(maxPriceLevel) -
-        BigInt(
-          Math.floor((scrollTop + Math.floor(viewportHeight / 2)) / rowHeight)
-        ) *
-          BigInt(resolution)
-      ).toString();
+      const offsetTop = Math.floor(
+        (scrollTop + Math.floor(viewportHeight / 2)) / rowHeight
+      );
+      priceInCenter.current = fillGaps
+        ? (
+            BigInt(resolution) + // extra row on very top - sticky header
+            BigInt(maxPriceLevel) -
+            BigInt(offsetTop) * BigInt(resolution)
+          ).toString()
+        : rows?.[Math.min(offsetTop, rows.length - 1)].price.toString();
+      console.log('priceInCenter', priceInCenter.current);
       if (lockOnMidPrice) {
         setLockOnMidPrice(false);
       }
@@ -169,19 +174,38 @@ export const Orderbook = ({
       maxPriceLevel,
       viewportHeight,
       updateScrollOffset,
+      fillGaps,
+      rows,
     ]
   );
 
   const scrollToPrice = useCallback(
     (price: string) => {
       if (scrollElement.current && maxPriceLevel) {
-        let scrollTop =
-          // distance in rows between midPrice and price from first row * row Height
-          (Number(
-            (BigInt(maxPriceLevel) - BigInt(price)) / BigInt(resolution)
-          ) +
-            1) * // add one row for sticky header
-          rowHeight;
+        let scrollTop = 0;
+        if (fillGaps) {
+          scrollTop =
+            // distance in rows between given price and first row price * row Height
+            (Number(
+              (BigInt(maxPriceLevel) - BigInt(price)) / BigInt(resolution)
+            ) +
+              1) * // add one row for sticky header
+            rowHeight;
+        } else if (rows) {
+          const index = rows.findIndex((row) => row.price <= price);
+          if (index !== -1) {
+            if (
+              price === rows[index].price ||
+              index === 0 ||
+              BigInt(rows[index].price) - BigInt(price) <
+                BigInt(price) - BigInt(rows[index - 1].price)
+            ) {
+              scrollTop = index * rowHeight;
+            } else {
+              scrollTop = (index - 1) * rowHeight;
+            }
+          }
+        }
         // minus half height of viewport plus half of row
         scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
         // adjust to current rows position
@@ -204,6 +228,8 @@ export const Orderbook = ({
       viewportHeight,
       numberOfRows,
       updateScrollOffset,
+      fillGaps,
+      rows,
     ]
   );
 
@@ -306,7 +332,9 @@ export const Orderbook = ({
   // adjusts the scroll height
   const scrollElementResizeHandler: ResizeObserverCallback = useCallback(
     (entries) => {
-      if (!scrollElement.current || entries.length === 0) return;
+      if (!scrollElement.current || entries.length === 0) {
+        return;
+      }
       setViewportHeight(entries[0].contentRect.height);
     },
     [setViewportHeight, scrollElement]
@@ -322,12 +350,15 @@ export const Orderbook = ({
     prependingBufferSize + viewportSize + bufferSize,
     numberOfRows - offset
   );
-  const data = getRowsToRender(rows, resolution, offset, limit);
+  const data = fillGaps
+    ? getRowsToRender(rows, resolution, offset, limit)
+    : rows?.slice(offset, offset + limit) ?? [];
 
   const paddingTop = offset * rowHeight;
   const paddingBottom = (numberOfRows - offset - limit) * rowHeight;
-  const minPriceLevel =
-    BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution));
+  const minPriceLevel = fillGaps
+    ? BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution))
+    : BigInt(rows?.[rows.length - 1]?.price ?? 0);
   const tableBody =
     data && data.length !== 0 ? (
       <div
@@ -406,13 +437,17 @@ export const Orderbook = ({
           BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
           BigInt(bestStaticBidPrice) > minPriceLevel && (
             <HorizontalLine
-              top={`${(
-                ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-                  BigInt(resolution) +
-                  BigInt(1)) *
-                  BigInt(rowHeight) +
-                BigInt(1)
-              ).toString()}px`}
+              top={`${
+                fillGaps
+                  ? (
+                      ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
+                        BigInt(resolution) +
+                        BigInt(1)) *
+                        BigInt(rowHeight) +
+                      BigInt(1)
+                    ).toString()
+                  : '0'
+              }px`}
               testId="best-static-bid-price"
             />
           )}
@@ -421,13 +456,17 @@ export const Orderbook = ({
           BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
           BigInt(bestStaticOfferPrice) > minPriceLevel && (
             <HorizontalLine
-              top={`${(
-                ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
-                  BigInt(resolution) +
-                  BigInt(2)) *
-                  BigInt(rowHeight) +
-                BigInt(1)
-              ).toString()}px`}
+              top={`${
+                fillGaps
+                  ? (
+                      ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
+                        BigInt(resolution) +
+                        BigInt(2)) *
+                        BigInt(rowHeight) +
+                      BigInt(1)
+                    ).toString()
+                  : '0'
+              }px`}
               testId={'best-static-offer-price'}
             />
           )}

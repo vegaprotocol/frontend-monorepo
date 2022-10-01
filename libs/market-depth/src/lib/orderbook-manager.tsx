@@ -154,6 +154,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     >
       <Orderbook
         {...orderbookData}
+        fillGaps={false}
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         resolution={resolution}
