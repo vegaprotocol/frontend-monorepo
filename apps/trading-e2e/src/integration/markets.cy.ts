@@ -15,9 +15,7 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.wait('@MarketsQuery');
     cy.wait('@MarketsDataQuery');
     cy.wait('@MarketsCandlesQuery');
-    cy.get('[data-testid^="market-link-"]')
-      .should('not.be.empty')
-      .and('have.attr', 'href');
+    cy.get('[data-testid^="market-link-"]').should('not.be.empty');
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('settlement-asset').should('not.be.empty');
     cy.getByTestId('price-change-percentage').should('not.be.empty');
@@ -113,7 +111,7 @@ describe('markets table', { tags: '@regression' }, () => {
           'contain.text',
           'This market is in auction until it reaches sufficient liquidity.'
         );
-      cy.getByTestId('link')
+      cy.getByTestId('external-link')
         .should('have.attr', 'href')
         .and(
           'include',
