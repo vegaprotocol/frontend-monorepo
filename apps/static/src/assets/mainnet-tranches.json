@@ -232,7 +232,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "129999.45",
     "total_removed": "0",
-    "locked_amount": "102065.03182339821867909",
+    "locked_amount": "102004.454263049342385255",
     "deposits": [
       {
         "amount": "129999.45",
@@ -298,7 +298,7 @@
     "tranche_end": "2023-09-03T00:00:00.000Z",
     "total_added": "52600",
     "total_removed": "0",
-    "locked_amount": "48600.26504312531808",
+    "locked_amount": "48563.4653919330298",
     "deposits": [
       {
         "amount": "2600",
@@ -471,7 +471,7 @@
     "tranche_end": "2023-09-17T00:00:00.000Z",
     "total_added": "5000",
     "total_removed": "0",
-    "locked_amount": "4811.577879249112",
+    "locked_amount": "4808.079813546423",
     "deposits": [
       {
         "amount": "5000",
@@ -682,7 +682,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "97499.58",
     "total_removed": "0",
-    "locked_amount": "43338.490053884912912814",
+    "locked_amount": "43279.0691102376725602872",
     "deposits": [
       {
         "amount": "97499.58",
@@ -715,7 +715,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "135173.4239508",
     "total_removed": "0",
-    "locked_amount": "59236.23382548774686920547976",
+    "locked_amount": "59155.015654119917471539754112",
     "deposits": [
       {
         "amount": "135173.4239508",
@@ -748,7 +748,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "32499.86",
     "total_removed": "0",
-    "locked_amount": "18231.75434997768959058",
+    "locked_amount": "18206.75698513010346553",
     "deposits": [
       {
         "amount": "32499.86",
@@ -781,7 +781,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "10833.29",
     "total_removed": "0",
-    "locked_amount": "5934.259124161220579337",
+    "locked_amount": "5926.122724472017435732",
     "deposits": [
       {
         "amount": "10833.29",
@@ -814,7 +814,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "22749.93",
     "total_removed": "0",
-    "locked_amount": "22183.585998952879702026",
+    "locked_amount": "22153.170319682591934045",
     "deposits": [
       {
         "amount": "6500",
@@ -889,7 +889,7 @@
     "tranche_end": "2022-11-01T00:00:00.000Z",
     "total_added": "30000",
     "total_removed": "0",
-    "locked_amount": "5094.3236714975859",
+    "locked_amount": "5052.6890851449279",
     "deposits": [
       {
         "amount": "7500",
@@ -1006,7 +1006,7 @@
     "tranche_end": "2023-06-02T00:00:00.000Z",
     "total_added": "1939928.38",
     "total_removed": "626880.6921411330574",
-    "locked_amount": "1298131.962792044888229566",
+    "locked_amount": "1296774.763405694487553964",
     "deposits": [
       {
         "amount": "1852091.69",
@@ -1303,7 +1303,7 @@
     "tranche_end": "2023-02-01T00:00:00.000Z",
     "total_added": "42500",
     "total_removed": "0",
-    "locked_amount": "28466.9585346215745",
+    "locked_amount": "28407.97620395531325",
     "deposits": [
       {
         "amount": "12500",
@@ -24167,7 +24167,7 @@
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "3732368.4671",
     "total_removed": "212048.9552173080602",
-    "locked_amount": "2019278.18999449721573177601",
+    "locked_amount": "2017192.55253759985299780677",
     "deposits": [
       {
         "amount": "1998.95815",
@@ -25079,7 +25079,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "15870102.715470999700000001",
     "total_removed": "218318.4839491272376144",
-    "locked_amount": "12459918.3973097276192668587349620910678562",
+    "locked_amount": "12452522.8607982951673250431878440767423629",
     "deposits": [
       {
         "amount": "16249.93",
@@ -28504,7 +28504,7 @@
     "tranche_end": "2023-05-05T00:00:00.000Z",
     "total_added": "14597706.0446472999",
     "total_removed": "2920379.374866336526152312",
-    "locked_amount": "5781471.88077592056612204161560806",
+    "locked_amount": "5774644.368689511517778902836713523",
     "deposits": [
       {
         "amount": "129284.449",
@@ -33939,7 +33939,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "5778205.3912159303",
     "total_removed": "1830319.503958489912189854",
-    "locked_amount": "1967391.102605203866441094478575561",
+    "locked_amount": "1964693.51128741383197619876813275",
     "deposits": [
       {
         "amount": "552496.6455",
@@ -35436,7 +35436,7 @@
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "472355.6199999996",
     "total_removed": "3994.36100542526",
-    "locked_amount": "319966.17189085713505239839979708",
+    "locked_amount": "319635.69071379984268434233992896",
     "deposits": [
       {
         "amount": "3000",
