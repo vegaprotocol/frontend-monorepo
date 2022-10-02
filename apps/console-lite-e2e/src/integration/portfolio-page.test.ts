@@ -8,7 +8,10 @@ import {
   emptyPositions,
   generateMargins,
 } from '../support/mocks/generate-positions';
-import { generateAccounts } from '../support/mocks/generate-accounts';
+import {
+  generateAccounts,
+  generateAssets,
+} from '../support/mocks/generate-accounts';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
 import {
@@ -19,7 +22,7 @@ import {
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
-    disconnectVegaWallet();
+    //disconnectVegaWallet();
   });
 
   it('button for wallet connect should work', () => {
@@ -58,6 +61,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Markets', generatePositionsMarkets());
         aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
         aliasQuery(req, 'Accounts', generateAccounts());
+        aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/assets');
       connectVegaWallet();
@@ -86,6 +90,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Margins', generateMargins());
         aliasQuery(req, 'Markets', generatePositionsMarkets());
         aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+        aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/positions');
       connectVegaWallet();
@@ -136,6 +141,9 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Fills', { party: null });
         aliasQuery(req, 'Markets', {
           marketsConnection: { edges: [], __typename: 'MarketConnection' },
+        });
+        aliasQuery(req, 'Assets', {
+          assetsConnection: { edges: null, __typename: 'AssetsConnection' },
         });
       });
       cy.visit('/portfolio');

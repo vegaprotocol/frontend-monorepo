@@ -156,31 +156,33 @@ const getAssetAccountAggregation = (
 
 export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
   [accountsBasedDataProvider, marketsProvider, assetProvider],
-  ([accounts, markets, assets]): Account[] => {
+  ([accounts, markets, assets]): Account[] | null => {
     return accounts
-      .map((account: AccountFieldsFragment) => {
-        const market = markets.find(
-          (market: Market) => market.id === account.market?.id
-        );
-        const asset = assets.find(
-          (asset: AssetsFieldsFragment) => asset.id === account.asset?.id
-        );
-        if (asset) {
-          return {
-            ...account,
-            asset: {
-              ...asset,
-            },
-            market: market
-              ? {
-                  ...market,
-                }
-              : null,
-          };
-        }
-        return null;
-      })
-      .filter((account: Account | null) => Boolean(account));
+      ? accounts
+          .map((account: AccountFieldsFragment) => {
+            const market = markets.find(
+              (market: Market) => market.id === account.market?.id
+            );
+            const asset = assets.find(
+              (asset: AssetsFieldsFragment) => asset.id === account.asset?.id
+            );
+            if (asset) {
+              return {
+                ...account,
+                asset: {
+                  ...asset,
+                },
+                market: market
+                  ? {
+                      ...market,
+                    }
+                  : null,
+              };
+            }
+            return null;
+          })
+          .filter((account: Account | null) => Boolean(account))
+      : null;
   }
 );
 
