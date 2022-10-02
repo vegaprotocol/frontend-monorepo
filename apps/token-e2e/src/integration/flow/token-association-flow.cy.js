@@ -280,7 +280,7 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restartVegacapsuleNetwork();
           }
         }
