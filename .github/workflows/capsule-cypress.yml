@@ -54,23 +54,6 @@ jobs:
           fetch-depth: 0
           path: './frontend-monorepo'
 
-      # Check SHAs
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
-        with:
-          working-directory: frontend-monorepo
-          main-branch-name: ${{ github.base_ref || github.ref_name }}
-          set-environment-variables-for-job: true
-
-      # See if we capsule is needed for this project
-      - name: See affected apps
-        run: echo AFFECTED=$(yarn nx print-affected --base=origin/${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
-        working-directory: frontend-monorepo
-
-      - name: See if capsule is necessary
-        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
-
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
         uses: actions/cache@v3
@@ -84,6 +67,23 @@ jobs:
       - name: Install root dependencies
         run: yarn install --frozen-lockfile
         working-directory: frontend-monorepo
+
+      # Check SHAs
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          working-directory: frontend-monorepo
+          main-branch-name: ${{ github.base_ref || github.ref_name }}
+          set-environment-variables-for-job: true
+
+      # See if we capsule is needed for this project
+      - name: See affected apps
+        run: echo AFFECTED=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
+        working-directory: frontend-monorepo
+
+      - name: See if capsule is necessary
+        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       #######
       ## Build and run Vegacapsule network
@@ -128,8 +128,8 @@ jobs:
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
 
       ######
       ## Upload logs

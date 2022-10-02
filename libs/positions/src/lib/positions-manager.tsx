@@ -30,8 +30,9 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           />
         ))}
       </AsyncRenderer>
+
       <Dialog>
-        <p>Your position was not closed! This is still not implemented. </p>
+        <p>Your position was not closed! This is still not implemented.</p>
       </Dialog>
     </>
   );

@@ -9,7 +9,7 @@ import { useGetDepositedAmount } from './use-get-deposited-amount';
 import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
 
 /**
- * Hook which fetches all the balances required for despoiting
+ * Hook which fetches all the balances required for depositing
  * whenever the asset changes in the form
  */
 export const useDepositBalances = (isFaucetable: boolean) => {
