@@ -1,7 +1,7 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import type { MarketState } from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import { generateAccounts } from './mocks/generate-accounts';
+import { generateAccounts, generateAssets } from './mocks/generate-accounts';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
 import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
@@ -45,6 +45,8 @@ export const mockTradingPage = (
   aliasQuery(req, 'Positions', generatePositions());
   aliasQuery(req, 'Margins', generateMargins());
   aliasQuery(req, 'DealTicket', generateDealTicketQuery({ market: { state } }));
+  aliasQuery(req, 'Assets', generateAssets());
+
   aliasQuery(
     req,
     'MarketInfoQuery',

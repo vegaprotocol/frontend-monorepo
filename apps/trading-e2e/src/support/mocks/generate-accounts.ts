@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
-import type { AccountsQuery } from '@vegaprotocol/accounts';
-import { AccountType } from '@vegaprotocol/types';
+import type { AccountsQuery, AssetsQuery } from '@vegaprotocol/accounts';
+import { AccountType, Schema as Types } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 export const generateAccounts = (
@@ -19,8 +19,6 @@ export const generateAccounts = (
           asset: {
             __typename: 'Asset',
             id: 'asset-id',
-            symbol: 'tEURO',
-            decimals: 5,
           },
         },
         {
@@ -29,20 +27,11 @@ export const generateAccounts = (
           balance: '100000000',
           market: {
             id: 'market-1',
-            tradableInstrument: {
-              __typename: 'TradableInstrument',
-              instrument: {
-                __typename: 'Instrument',
-                name: 'AAVEDAI Monthly (30 Jun 2022)',
-              },
-            },
             __typename: 'Market',
           },
           asset: {
             __typename: 'Asset',
             id: 'asset-id-2',
-            symbol: 'tDAI',
-            decimals: 5,
           },
         },
         {
@@ -51,20 +40,11 @@ export const generateAccounts = (
           balance: '1000',
           market: {
             __typename: 'Market',
-            tradableInstrument: {
-              __typename: 'TradableInstrument',
-              instrument: {
-                __typename: 'Instrument',
-                name: '',
-              },
-            },
             id: 'market-2',
           },
           asset: {
             __typename: 'Asset',
             id: 'asset-id',
-            symbol: 'tEURO',
-            decimals: 5,
           },
         },
         {
@@ -73,20 +53,11 @@ export const generateAccounts = (
           balance: '1000',
           market: {
             __typename: 'Market',
-            tradableInstrument: {
-              __typename: 'TradableInstrument',
-              instrument: {
-                __typename: 'Instrument',
-                name: '',
-              },
-            },
             id: 'market-0',
           },
           asset: {
             __typename: 'Asset',
             id: 'asset-id-2',
-            symbol: 'tDAI',
-            decimals: 5,
           },
         },
         {
@@ -97,12 +68,50 @@ export const generateAccounts = (
           asset: {
             __typename: 'Asset',
             id: 'asset-0',
-            symbol: 'AST0',
-            decimals: 5,
           },
         },
       ],
     },
   };
   return merge(defaultAccounts, override);
+};
+
+export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
+  const defaultAssets: AssetsQuery = {
+    assetsConnection: {
+      edges: [
+        {
+          node: {
+            id: 'asset-id',
+            symbol: 'tEURO',
+            decimals: 5,
+            name: 'Euro',
+            quantum: '',
+            status: Types.AssetStatus.STATUS_ENABLED,
+          },
+        },
+        {
+          node: {
+            id: 'asset-id-2',
+            symbol: 'tDAI',
+            decimals: 5,
+            name: 'DAI',
+            quantum: '',
+            status: Types.AssetStatus.STATUS_ENABLED,
+          },
+        },
+        {
+          node: {
+            id: 'asset-0',
+            symbol: 'AST0',
+            decimals: 5,
+            name: 'Asto',
+            quantum: '',
+            status: Types.AssetStatus.STATUS_ENABLED,
+          },
+        },
+      ],
+    },
+  };
+  return merge(defaultAssets, override);
 };

@@ -14,7 +14,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AccountType, Schema as Types } from '@vegaprotocol/types';
+import { AccountType } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import { assetProvider } from './asset-data-provider';
