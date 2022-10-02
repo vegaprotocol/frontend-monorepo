@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
+import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import type {
@@ -115,7 +115,7 @@ export const POSITIONS_SUBSCRIPTION = gql`
 
 export const getMetrics = (
   data: PositionRejoined[] | null,
-  accounts: AccountFieldsFragment[] | null
+  accounts: Account[] | null
 ): Position[] => {
   if (!data || !data?.length) {
     return [];
@@ -337,7 +337,7 @@ export const positionsMetricsDataProvider = makeDerivedDataProvider<
   ([positions, accounts, marketsData, margins]) => {
     const positionsData = rejoinPositionData(positions, marketsData, margins);
     return sortBy(
-      getMetrics(positionsData, accounts as AccountFieldsFragment[] | null),
+      getMetrics(positionsData, accounts as Account[] | null),
       'updatedAt'
     ).reverse();
   }

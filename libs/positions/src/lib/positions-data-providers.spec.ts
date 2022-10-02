@@ -1,74 +1,68 @@
 import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
-import type { AccountsQuery } from '@vegaprotocol/accounts';
+import type { Account } from '@vegaprotocol/accounts';
 import type { Positions } from './__generated__/Positions';
 import { getMetrics, rejoinPositionData } from './positions-data-providers';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import type { Margins } from './__generated__/Margins';
 
-const accounts: AccountsQuery = {
-  party: {
-    __typename: 'Party',
-    id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
-    accounts: [
-      {
-        __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_GENERAL,
-        asset: {
-          __typename: 'Asset',
-          symbol: 'tDAI',
-          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-          decimals: 5,
-        },
-        balance: '892824769',
-        market: null,
-      },
-      {
-        __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_MARGIN,
-        asset: {
-          __typename: 'Asset',
-          symbol: 'tDAI',
-          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-          decimals: 5,
-        },
-        balance: '33353727',
-        market: {
-          __typename: 'Market',
-          id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
-          tradableInstrument: {
-            __typename: 'TradableInstrument',
-            instrument: {
-              __typename: 'Instrument',
-              name: 'AAVEDAI Monthly (30 Jun 2022)',
-            },
-          },
-        },
-      },
-      {
-        __typename: 'Account',
-        type: AccountType.ACCOUNT_TYPE_MARGIN,
-        asset: {
-          __typename: 'Asset',
-          symbol: 'tDAI',
-          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-          decimals: 5,
-        },
-        balance: '3274050',
-        market: {
-          __typename: 'Market',
-          id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-          tradableInstrument: {
-            __typename: 'TradableInstrument',
-            instrument: {
-              __typename: 'Instrument',
-              name: 'UNIDAI Monthly (30 Jun 2022)',
-            },
-          },
-        },
-      },
-    ],
+const accounts = [
+  {
+    __typename: 'Account',
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    asset: {
+      __typename: 'Asset',
+      symbol: 'tDAI',
+      id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+      decimals: 5,
+    },
+    balance: '892824769',
+    market: null,
   },
-};
+  {
+    __typename: 'Account',
+    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    asset: {
+      __typename: 'Asset',
+      symbol: 'tDAI',
+      id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+      decimals: 5,
+    },
+    balance: '33353727',
+    market: {
+      __typename: 'Market',
+      id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
+      tradableInstrument: {
+        __typename: 'TradableInstrument',
+        instrument: {
+          __typename: 'Instrument',
+          name: 'AAVEDAI Monthly (30 Jun 2022)',
+        },
+      },
+    },
+  },
+  {
+    __typename: 'Account',
+    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    asset: {
+      __typename: 'Asset',
+      symbol: 'tDAI',
+      id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+      decimals: 5,
+    },
+    balance: '3274050',
+    market: {
+      __typename: 'Market',
+      id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+      tradableInstrument: {
+        __typename: 'TradableInstrument',
+        instrument: {
+          __typename: 'Instrument',
+          name: 'UNIDAI Monthly (30 Jun 2022)',
+        },
+      },
+    },
+  },
+] as Account[];
 
 const positions: Positions = {
   party: {
@@ -224,10 +218,7 @@ describe('getMetrics && rejoinPositionData', () => {
       marketsData,
       margins.party
     );
-    const metrics = getMetrics(
-      positionsRejoined,
-      accounts.party?.accounts ?? null
-    );
+    const metrics = getMetrics(positionsRejoined, accounts || null);
     expect(metrics.length).toEqual(2);
   });
 
@@ -237,10 +228,7 @@ describe('getMetrics && rejoinPositionData', () => {
       marketsData,
       margins.party
     );
-    const metrics = getMetrics(
-      positionsRejoined,
-      accounts.party?.accounts ?? null
-    );
+    const metrics = getMetrics(positionsRejoined, accounts || null);
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');
