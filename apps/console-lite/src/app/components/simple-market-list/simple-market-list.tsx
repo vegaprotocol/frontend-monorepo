@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
 import {
@@ -13,6 +13,7 @@ import SimpleMarketToolbar from './simple-market-toolbar';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import { ConsoleLiteGrid } from '../console-lite-grid';
 import type { Market } from '@vegaprotocol/market-list';
+import { Interval } from '@vegaprotocol/types';
 import { marketsWithCandlesProvider } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {
@@ -32,8 +33,16 @@ const SimpleMarketList = () => {
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const gridRef = useRef<AgGridReact | null>(null);
 
+  const variables = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return {
+      since: new Date(yesterday * 1000).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    };
+  }, []);
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithCandlesProvider,
+    variables,
     noUpdate: true,
   });
   const localData = useMarketsFilterData(data, params);
