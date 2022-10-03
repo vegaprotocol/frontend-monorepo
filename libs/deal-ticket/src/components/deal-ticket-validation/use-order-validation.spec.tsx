@@ -12,10 +12,11 @@ import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 
 jest.mock('@vegaprotocol/wallet');
 
-const market = {
+const market: DealTicketMarketFragment = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
@@ -25,9 +26,18 @@ const market = {
     __typename: 'TradableInstrument',
     instrument: {
       __typename: 'Instrument',
+      id: 'instrument-id',
+      name: 'instrument-name',
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
+        settlementAsset: {
+          __typename: 'Asset',
+          id: 'asset-id',
+          symbol: 'asset-symbol',
+          name: 'asset-name',
+          decimals: 2,
+        },
       },
     },
   },
@@ -67,12 +77,12 @@ const ERROR = {
     'Only limit orders are permitted when market is in auction',
   MARKET_CONTINUOUS_TIF:
     'Until the auction ends, you can only place GFA, GTT, or GTC limit orders',
-  FIELD_SIZE_REQ: 'You need to provide an amount',
-  FIELD_SIZE_MIN: `The amount cannot be lower than "${defaultOrder.step}"`,
+  FIELD_SIZE_REQ: 'You need to provide a size',
+  FIELD_SIZE_MIN: `Size cannot be lower than "${defaultOrder.step}"`,
   FIELD_PRICE_REQ: 'You need to provide a price',
   FIELD_PRICE_MIN: 'The price cannot be negative',
   FIELD_PRICE_STEP_NULL: 'Order sizes must be in whole numbers for this market',
-  FIELD_PRICE_STEP_DECIMAL: `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`,
+  FIELD_PRICE_STEP_DECIMAL: `The size field accepts up to ${market.positionDecimalPlaces} decimal places`,
 };
 
 function setup(
