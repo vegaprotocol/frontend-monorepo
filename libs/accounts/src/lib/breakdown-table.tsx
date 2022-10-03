@@ -83,7 +83,10 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             data,
           }: VegaValueFormatterParams<AccountFieldsFragment, 'deposited'>) => {
             if (data && data.asset) {
-              return addDecimalsFormatNumber(value as string, data.asset.decimals);
+              return addDecimalsFormatNumber(
+                value as string,
+                data.asset.decimals
+              );
             }
             return '-';
           }}
