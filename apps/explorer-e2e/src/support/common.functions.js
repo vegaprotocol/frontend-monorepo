@@ -51,3 +51,16 @@ Cypress.Commands.add('common_verify_json_int_values', function (expectedNum) {
       cy.wrap($paramValue).should('not.be.empty');
     });
 });
+
+Cypress.Commands.add('monitor_clipboard', () => {
+  cy.window().then(win => {
+    return cy.stub(win, 'prompt').returns(win.prompt)
+  })
+});
+
+Cypress.Commands.add('get_copied_text_from_clipboard',
+{ prevSubject: true }, (clipboard) => {
+  // Must first setup with cy.monitor_clipboard().as('clipboard')
+  // This function then chained off a cy.get('@clipboard') 
+  return clipboard.args[0][1]
+});

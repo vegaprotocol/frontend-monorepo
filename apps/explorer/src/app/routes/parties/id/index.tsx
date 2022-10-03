@@ -150,7 +150,8 @@ const Party = () => {
           <SubHeading>{t('Staking')}</SubHeading>
           {staking}
           <SubHeading>{t('JSON')}</SubHeading>
-          <SyntaxHighlighter data={data} />
+          <section data-testid="parties-json"><SyntaxHighlighter data={data}/>
+          </section>
         </>
       ) : null}
 
