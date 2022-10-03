@@ -1,5 +1,9 @@
 import { useMarketList } from '@vegaprotocol/market-list';
-import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  LocalStorage,
+  titlefy,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -19,7 +23,7 @@ export function Index() {
     update({ landingDialog: true });
 
     if (data) {
-      const marketId = data.markets[0]?.id;
+      const marketId = LocalStorage.getItem('marketId') || data.markets[0]?.id;
       const marketName = data.markets[0]?.tradableInstrument.instrument.name;
       const marketPrice = data.marketsData[0]?.markPrice
         ? addDecimalsFormatNumber(

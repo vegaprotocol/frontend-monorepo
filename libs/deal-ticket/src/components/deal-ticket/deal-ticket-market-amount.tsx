@@ -25,6 +25,7 @@ export const DealTicketMarketAmount = ({
             type="number"
             step={sizeStep}
             min={sizeStep}
+            onWheel={(e) => e.currentTarget.blur()}
             data-testid="order-size"
             {...register('size', {
               required: true,

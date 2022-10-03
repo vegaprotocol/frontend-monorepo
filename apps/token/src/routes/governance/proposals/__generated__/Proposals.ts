@@ -154,6 +154,10 @@ export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAss
    */
   quantum: string;
   /**
+   * The asset to update
+   */
+  assetId: string;
+  /**
    * The source of the updated asset
    */
   source: Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset_source;

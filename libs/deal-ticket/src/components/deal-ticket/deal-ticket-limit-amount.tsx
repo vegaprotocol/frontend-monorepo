@@ -27,6 +27,7 @@ export const DealTicketLimitAmount = ({
             step={sizeStep}
             min={sizeStep}
             data-testid="order-size"
+            onWheel={(e) => e.currentTarget.blur()}
             {...register('size', {
               required: true,
               min: sizeStep,
@@ -48,6 +49,7 @@ export const DealTicketLimitAmount = ({
             type="number"
             step={priceStep}
             data-testid="order-price"
+            onWheel={(e) => e.currentTarget.blur()}
             {...register('price', {
               required: true,
               min: 0,
