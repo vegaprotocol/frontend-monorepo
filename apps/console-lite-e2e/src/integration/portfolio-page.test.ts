@@ -90,7 +90,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Orders', generateOrders());
-        aliasQuery(req, 'MarketsQuery', generateFillsMarkets());
+        aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/orders');
       connectVegaWallet();
@@ -105,7 +105,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Fills', generateFills());
-        aliasQuery(req, 'MarketsQuery', generateFillsMarkets());
+        aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/fills');
       connectVegaWallet();
@@ -123,7 +123,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Accounts', { party: null });
         aliasQuery(req, 'Orders', { party: null });
         aliasQuery(req, 'Fills', { party: null });
-        aliasQuery(req, 'MarketsQuery', {
+        aliasQuery(req, 'Markets', {
           marketsConnection: { edges: [], __typename: 'MarketConnection' },
         });
       });

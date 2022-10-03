@@ -12,9 +12,9 @@ describe('markets table', { tags: '@regression' }, () => {
   it('renders markets correctly', () => {
     cy.visit('/');
     cy.wait('@Market');
-    cy.wait('@MarketsQuery');
-    cy.wait('@MarketsDataQuery');
-    cy.wait('@MarketsCandlesQuery');
+    cy.wait('@Markets');
+    cy.wait('@MarketsData');
+    cy.wait('@MarketsCandles');
     cy.get('[data-testid^="market-link-"]').should('not.be.empty');
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('settlement-asset').should('not.be.empty');
@@ -25,9 +25,9 @@ describe('markets table', { tags: '@regression' }, () => {
 
   it('renders market list drop down', () => {
     cy.visit('/');
-    cy.wait('@MarketsQuery');
-    cy.wait('@MarketsDataQuery');
-    cy.wait('@MarketsCandlesQuery');
+    cy.wait('@Markets');
+    cy.wait('@MarketsData');
+    cy.wait('@MarketsCandles');
     openMarketDropDown();
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('trading-mode').should('not.be.empty');
@@ -38,9 +38,9 @@ describe('markets table', { tags: '@regression' }, () => {
 
   it('Able to select market from dropdown', () => {
     cy.visit('/');
-    cy.wait('@MarketsQuery');
-    cy.wait('@MarketsDataQuery');
-    cy.wait('@MarketsCandlesQuery');
+    cy.wait('@Markets');
+    cy.wait('@MarketsData');
+    cy.wait('@MarketsCandles');
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();
 
@@ -58,9 +58,9 @@ describe('markets table', { tags: '@regression' }, () => {
       'SOLUSD',
     ];
     cy.visit('/');
-    cy.wait('@MarketsQuery');
-    cy.wait('@MarketsDataQuery');
-    cy.wait('@MarketsCandlesQuery');
+    cy.wait('@Markets');
+    cy.wait('@MarketsData');
+    cy.wait('@MarketsCandles');
     cy.getByTestId('link').should('have.attr', 'href', '/markets').click();
     cy.url().should('eq', Cypress.config('baseUrl') + '/markets');
     cy.contains('AAPL.MF21').should('be.visible');

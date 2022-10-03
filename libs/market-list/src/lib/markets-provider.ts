@@ -18,7 +18,6 @@ import { MarketsDocument } from './__generated___/markets';
 
 import type { Candle } from './market-candles-provider';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type Market = MarketFieldsFragment;
 
 const getData = (responseData: MarketsQuery): Market[] | null =>

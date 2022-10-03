@@ -62,14 +62,14 @@ describe('home', { tags: '@regression' }, () => {
             edges: [],
           },
         };
-        aliasQuery(req, 'MarketsQuery', data);
-        aliasQuery(req, 'MarketsDataQuery', data);
-        aliasQuery(req, 'MarketsCandlesQuery', data);
+        aliasQuery(req, 'Markets', data);
+        aliasQuery(req, 'MarketsData', data);
+        aliasQuery(req, 'MarketsCandles', data);
       });
       cy.visit('/');
-      cy.wait('@MarketsQuery');
-      cy.wait('@MarketsDataQuery');
-      cy.wait('@MarketsCandlesQuery');
+      cy.wait('@Markets');
+      cy.wait('@MarketsData');
+      cy.wait('@MarketsCandles');
       cy.url().should('eq', Cypress.config().baseUrl + '/markets');
     });
   });

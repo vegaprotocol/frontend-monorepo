@@ -19,9 +19,9 @@ describe('Market trade', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'MarketsQuery', generateSimpleMarkets());
-      aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
-      aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+      aliasQuery(req, 'Markets', generateSimpleMarkets());
+      aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
+      aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
@@ -33,7 +33,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
     });
     cy.visit('/markets');
-    cy.wait('@MarketsQuery').then((response) => {
+    cy.wait('@Markets').then((response) => {
       const data: MarketsQuery | undefined = response?.response?.body?.data;
       if (data.marketsConnection.edges.length) {
         markets = data.marketsConnection.edges.map((edge) => edge.node);

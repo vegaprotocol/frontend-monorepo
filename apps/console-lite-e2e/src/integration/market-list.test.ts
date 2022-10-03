@@ -3,7 +3,6 @@ import type { MarketsQuery } from '@vegaprotocol/market-list';
 import {
   generateLongListMarkets,
   generateSimpleMarkets,
-  generateMarketsData,
   generateMarketsCandles,
 } from '../support/mocks/generate-markets';
 
@@ -11,9 +10,8 @@ describe('market list', { tags: '@smoke' }, () => {
   describe('simple url', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketsQuery', generateSimpleMarkets());
-        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
-        aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
+        aliasQuery(req, 'Markets', generateSimpleMarkets());
+        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       });
       cy.visit('/markets');
     });
@@ -67,9 +65,8 @@ describe('market list', { tags: '@smoke' }, () => {
   describe('url params should select filters', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketsQuery', generateSimpleMarkets());
-        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
-        aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
+        aliasQuery(req, 'Markets', generateSimpleMarkets());
+        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       });
     });
 
@@ -80,7 +77,7 @@ describe('market list', { tags: '@smoke' }, () => {
 
     it('last asset (if exists)', () => {
       cy.visit('/markets');
-      cy.wait('@MarketsQuery').then((filters) => {
+      cy.wait('@Markets').then((filters) => {
         const data: MarketsQuery | undefined = filters?.response?.body?.data;
         if (data.marketsConnection.edges.length) {
           const asset =
@@ -106,9 +103,8 @@ describe('market list', { tags: '@smoke' }, () => {
     it('handles 1000 markets', () => {
       cy.viewport(1440, 900);
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketsQuery', generateLongListMarkets(1000));
-        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
-        aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
+        aliasQuery(req, 'Markets', generateLongListMarkets(1000));
+        aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       });
       performance.mark('start-1k');
       cy.visit('/markets');
