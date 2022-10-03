@@ -1,4 +1,8 @@
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import {
+  compileGridData,
+  DealTicketContainer,
+  TradingModeTooltip,
+} from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
@@ -36,7 +40,6 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 import { Header, HeaderStat } from '../../components/header';
 import { AccountsContainer } from '../portfolio/accounts-container';
 import {
@@ -176,9 +179,7 @@ export const TradeMarketHeader = ({
         description={
           <TradingModeTooltip
             market={market}
-            onSelect={(marketId: string) => {
-              onSelect(marketId);
-            }}
+            compiledGrid={compileGridData(market, onSelect)}
           />
         }
       >

@@ -23,10 +23,34 @@ export function addVegaWalletReceiveFaucetedAsset() {
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
       cy.get_asset_information().then((assets) => {
         const asset = assets[assetName];
-        for (let i = 0; i < asset.decimals; i++) amount += '0';
-        cy.exec(
-          `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' -u "hedgehogandvega:hiccup" http://localhost:1790/api/v1/mint`
-        );
+        if (assets[assetName] !== undefined) {
+          for (let i = 0; i < asset.decimals; i++) amount += '0';
+          cy.exec(
+            `curl -X POST -d '{"amount": "${amount}", "asset": "${asset.id}", "party": "${vegaWalletPublicKey}"}' http://localhost:1790/api/v1/mint`
+          )
+            .its('stdout')
+            .then((response) => {
+              assert.include(
+                response,
+                `"success":true`,
+                'Ensuring curl command was succesfully undertaken'
+              );
+            });
+        } else {
+          const validAssets = Object.keys(assets)
+            .filter((key) => key.includes('fake'))
+            .reduce((obj, key) => {
+              return Object.assign(obj, {
+                [key]: assets[key],
+              });
+            }, {});
+          assert.exists(
+            assets[assetName],
+            `${assetName} is not a faucetable asset, only the following assets can be faucted: ${Object.keys(
+              validAssets
+            )}`
+          );
+        }
       });
     }
   );
