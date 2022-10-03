@@ -2,20 +2,7 @@ const vegaWalletContainer = '[data-testid="vega-wallet"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
-const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
-
-Cypress.Commands.add('vega_wallet_import', () => {
-  cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);
-  cy.exec(`vega wallet init -f --home ${vegaWalletLocation}`);
-  cy.exec(
-    `vega wallet import -w ${vegaWalletName} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet`,
-    { failOnNonZeroExit: false }
-  );
-  cy.exec(
-    `vega wallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
-  );
-});
 
 Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');

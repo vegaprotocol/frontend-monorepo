@@ -85,7 +85,6 @@ export const StakingNodesContainer = ({
     STAKING_QUERY,
     {
       variables: { partyId: keypair?.pub || '' },
-      skip: !keypair?.pub,
     }
   );
 

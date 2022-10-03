@@ -50,6 +50,11 @@ query Market($marketId: ID!, $interval: Interval!, $since: String!) {
       open
       close
     }
+    depth {
+      lastTrade {
+        price
+      }
+    }
     candlesConnection(interval: $interval, since: $since) {
       edges {
         node {

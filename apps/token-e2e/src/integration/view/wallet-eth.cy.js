@@ -48,7 +48,7 @@ context(
     });
 
     describe('when Connect Ethereum clicked', function () {
-      // 1000-ASSO-0002
+      // 1004-ASSO-002
       before('', function () {
         cy.get(connectToEthButton).click();
       });
@@ -127,7 +127,7 @@ context(
       });
 
       describe('VEGA IN VESTING CONTRACT', function () {
-        // 1000-ASSO-0007
+        // 1004-ASSO-007
         it('should have currency title visible', function () {
           cy.get(vegaInVesting).within(() => {
             cy.get(currencyTitle)
@@ -196,7 +196,7 @@ context(
       });
 
       describe('VEGA IN WALLET', function () {
-        // 1000-ASSO-0007
+        // 1004-ASSO-007
         it('should have currency title visible', function () {
           cy.get(vegaInWallet).within(() => {
             cy.get(currencyTitle)

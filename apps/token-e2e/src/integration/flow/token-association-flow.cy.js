@@ -47,14 +47,14 @@ context(
       );
 
       it('Able to associate tokens - from wallet', function () {
-        //1000-ASSO-0008
-        //1000-ASSO-0009
-        //1000-ASSO-0030
-        //1000-ASSO-0012
-        //1000-ASSO-0013
-        //1000-ASSO-0014
-        //1000-ASSO-0015
-        //1000-ASSO-0030
+        //1004-ASSO-008
+        //1004-ASSO-009
+        //1004-ASSO-030
+        //1004-ASSO-012
+        //1004-ASSO-013
+        //1004-ASSO-014
+        //1004-ASSO-015
+        //1004-ASSO-030
         cy.staking_page_associate_tokens('2');
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
@@ -74,10 +74,10 @@ context(
       });
 
       it('Able to disassociate all associated tokens - manually', function () {
-        // 1000-ASSO-0025
-        // 1000-ASSO-0027
-        // 1000-ASSO-0028
-        // 1000-ASSO-0029
+        // 1004-ASSO-025
+        // 1004-ASSO-027
+        // 1004-ASSO-028
+        // 1004-ASSO-029
 
         cy.staking_page_associate_tokens('2');
 
@@ -102,7 +102,7 @@ context(
       });
 
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
-        //1000-ASSO-0011
+        //1004-ASSO-011
         cy.staking_page_associate_tokens('1001', { approve: true });
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
@@ -149,7 +149,7 @@ context(
       });
 
       it('Able to disassociate all tokens - using max', function () {
-        // 1000-ASSO-0026
+        // 1004-ASSO-026
         const warningText =
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
 
@@ -184,9 +184,9 @@ context(
       });
 
       it('Able to associate and disassociate vesting contract tokens', function () {
-        // 1000-ASSO-0006
-        // 1000-ASSO-0024
-        // 1000-ASSO-0023
+        // 1004-ASSO-006
+        // 1004-ASSO-024
+        // 1004-ASSO-023
 
         cy.staking_page_associate_tokens('2', { type: 'contract' });
 
@@ -217,10 +217,10 @@ context(
       });
 
       it('Able to associate & disassociate both wallet and vesting contract tokens', function () {
-        // 1000-ASSO-0019
-        // 1000-ASSO-0020
-        // 1000-ASSO-0021
-        // 1000-ASSO-0022
+        // 1004-ASSO-019
+        // 1004-ASSO-020
+        // 1004-ASSO-021
+        // 1004-ASSO-022
 
         cy.staking_page_associate_tokens('21', { type: 'wallet' });
         cy.get('button').contains('Select a validator to nominate').click();
@@ -268,7 +268,7 @@ context(
       });
 
       it('Not able to associate more tokens than owned', function () {
-        // 1000-ASSO-0010
+        // 1004-ASSO-010
         // No warning visible as described in AC, but the button is disabled
 
         cy.get(ethWalletAssociateButton).first().click();
@@ -280,8 +280,8 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restartVegacapsuleNetwork();
+          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+            cy.restart_vegacapsule_network();
           }
         }
       );

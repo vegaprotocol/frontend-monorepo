@@ -54,6 +54,7 @@ export const PROPOSAL_FRAGMENT = gql`
         }
         ... on UpdateAsset {
           quantum
+          assetId
           source {
             ... on UpdateERC20 {
               lifetimeLimit
