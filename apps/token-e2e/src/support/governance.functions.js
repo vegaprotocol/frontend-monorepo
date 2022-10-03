@@ -7,6 +7,9 @@ const proposalResponseProposalIdPath =
 const voteButtons = '[data-testid="vote-buttons"]';
 const txTimeout = Cypress.env('txTimeout');
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const dialogCloseButton = '[data-testid="dialog-close"]';
+const epochTimeout = Cypress.env('epochTimeout');
+const proposalTimeout = { timeout: 14000 };
 
 Cypress.Commands.add(
   'convert_unix_timestamp_to_governance_data_table_date_format',
@@ -165,6 +168,15 @@ Cypress.Commands.add('get_sort_order_of_supplied_array', (suppliedArray) => {
 });
 
 Cypress.Commands.add('go_to_make_new_proposal', (proposalType) => {
+  cy.navigate_to_page_if_not_already_loaded('governance');
   cy.get(newProposalButton).should('be.visible').click();
   cy.get('li').contains(proposalType).click();
 });
+
+Cypress.Commands.add('wait_for_proposal_submitted', () => {
+  cy.contains('Awaiting network confirmation', epochTimeout).should(
+    'be.visible'
+  );
+  cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
+  cy.get(dialogCloseButton).click();
+})
