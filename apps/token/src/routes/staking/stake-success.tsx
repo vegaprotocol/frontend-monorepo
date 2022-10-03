@@ -34,7 +34,9 @@ export const StakeSuccess = ({
       <div>
         <p>{message}</p>
         <p>
-          <Link to={Routes.STAKING}>{t('backToStaking')}</Link>
+          <Link className="underline" to={Routes.STAKING}>
+            {t('backToStaking')}
+          </Link>
         </p>
       </div>
     </Callout>

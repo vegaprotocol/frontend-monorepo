@@ -147,8 +147,12 @@ export const StakingForm = ({
     };
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
-      await sendTx(command);
-      setFormState(FormState.Pending);
+      const res = await sendTx(command);
+      if (res) {
+        setFormState(FormState.Pending);
+      } else {
+        setFormState(FormState.Default);
+      }
 
       // await success via poll
     } catch (err) {

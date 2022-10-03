@@ -39,7 +39,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0)}`;
+      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     return (
       <AgGrid
@@ -54,6 +54,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           resizable: true,
           minWidth: 100,
           tooltipComponent: TooltipCellComponent,
+          sortable: true,
         }}
         rowData={data}
       >

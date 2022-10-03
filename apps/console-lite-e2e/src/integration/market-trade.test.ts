@@ -299,7 +299,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       cy.getByTestId('place-order').click();
       cy.getByTestId('dialog-title').should(
         'have.text',
-        'Confirm transaction in wallet'
+        'Awaiting network confirmation'
       );
     }
   });
