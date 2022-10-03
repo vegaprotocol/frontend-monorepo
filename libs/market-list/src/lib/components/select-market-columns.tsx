@@ -19,8 +19,10 @@ import Link from 'next/link';
 import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type { Market, MarketData, Candle } from '../';
+import type { MarketWithData, MarketWithCandles } from '../';
 import isNil from 'lodash/isNil';
+
+type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
 
@@ -159,16 +161,14 @@ export type OnCellClickHandler = (
 
 export const columns = (
   market: Market,
-  marketData: MarketData | undefined,
-  candles: Candle[] | undefined,
   onSelect: (id: string) => void,
   onCellClick: OnCellClickHandler
 ) => {
-  const candlesClose = candles
+  const candlesClose = market.candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = candles && calcCandleLow(candles);
-  const candleHigh = candles && calcCandleHigh(candles);
+  const candleLow = market.candles && calcCandleLow(market.candles);
+  const candleHigh = market.candles && calcCandleHigh(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -178,11 +178,11 @@ export const columns = (
     },
     {
       kind: ColumnKind.LastPrice,
-      value: marketData?.markPrice ? (
+      value: market.data?.markPrice ? (
         <PriceCell
-          value={Number(marketData?.markPrice)}
+          value={Number(market.data?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            marketData?.markPrice.toString(),
+            market.data?.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -228,7 +228,7 @@ export const columns = (
     },
     {
       kind: ColumnKind.Sparkline,
-      value: candles && (
+      value: market.candles && (
         <Sparkline
           width={100}
           height={20}
@@ -278,10 +278,10 @@ export const columns = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        marketData?.trigger &&
-        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data?.trigger &&
+        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[marketData.trigger]}`
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -290,9 +290,9 @@ export const columns = (
     {
       kind: ColumnKind.Volume,
       value:
-        marketData?.indicativeVolume && marketData.indicativeVolume !== '0'
+        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              marketData.indicativeVolume,
+              market.data.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',
@@ -320,17 +320,15 @@ export const columns = (
 
 export const columnsPositionMarkets = (
   market: Market,
-  marketData: MarketData | undefined,
-  candles: Candle[] | undefined,
   onSelect: (id: string) => void,
   openVolume?: string,
   onCellClick?: OnCellClickHandler
 ) => {
-  const candlesClose = candles
+  const candlesClose = market.candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
-  const candleLow = candles && calcCandleLow(candles);
-  const candleHigh = candles && calcCandleHigh(candles);
+  const candleLow = market.candles && calcCandleLow(market.candles);
+  const candleHigh = market.candles && calcCandleHigh(market.candles);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -361,11 +359,11 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.LastPrice,
-      value: marketData?.markPrice ? (
+      value: market.data?.markPrice ? (
         <PriceCell
-          value={Number(marketData.markPrice)}
+          value={Number(market.data.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            marketData.markPrice.toString(),
+            market.data.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -461,10 +459,10 @@ export const columnsPositionMarkets = (
       value:
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        marketData?.trigger &&
-        marketData.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data?.trigger &&
+        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[marketData.trigger]}`
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
@@ -473,9 +471,9 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Volume,
       value:
-        marketData && marketData.indicativeVolume !== '0'
+        market.data && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-              marketData.indicativeVolume,
+              market.data.indicativeVolume,
               market.positionDecimalPlaces
             )
           : '-',

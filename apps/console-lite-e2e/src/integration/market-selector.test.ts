@@ -14,15 +14,15 @@ import { generatePartyMarketData } from '../support/mocks/generate-party-market-
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketNames } from '../support/mocks/generate-market-names';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
-import type { Market, Markets } from '@vegaprotocol/market-list';
+import type { Market, MarketsQuery } from '@vegaprotocol/market-list';
 
 describe('market selector', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
       aliasQuery(req, 'Markets', generateSimpleMarkets());
-      aliasQuery(req, 'MarketsCandlesQuery', generateMarketsCandles());
-      aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+      aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
+      aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
@@ -36,7 +36,7 @@ describe('market selector', { tags: '@smoke' }, () => {
 
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
-      const data: Markets | undefined = response?.response?.body?.data;
+      const data: MarketsQuery | undefined = response?.response?.body?.data;
       if (data.marketsConnection.edges.length) {
         markets = data.marketsConnection.edges.map((edge) => edge.node);
       }
