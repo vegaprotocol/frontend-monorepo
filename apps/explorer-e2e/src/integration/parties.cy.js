@@ -1,5 +1,3 @@
-import { forEach } from 'lodash';
-
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const partiesMenuHeader = 'a[href="/parties"]';
 const partiesSearchBox = '[data-testid="party-input"]';
