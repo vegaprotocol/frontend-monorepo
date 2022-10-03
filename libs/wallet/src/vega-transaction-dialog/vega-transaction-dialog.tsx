@@ -132,7 +132,7 @@ const getIntent = (transaction: VegaTxState) => {
     case VegaTxStatus.Requested:
       return Intent.Warning;
     case VegaTxStatus.Pending:
-      return Intent.Warning;
+      return Intent.None;
     case VegaTxStatus.Error:
       return Intent.Danger;
     case VegaTxStatus.Complete:
