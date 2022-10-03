@@ -13,8 +13,10 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { getDefaultOrder } from '../deal-ticket-validation';
+import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -70,6 +72,22 @@ export const DealTicket = ({
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
+  const getPrice = () => {
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_OPENING_AUCTION ||
+      market.tradingMode === MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+    ) {
+      return market.data?.indicativePrice;
+    }
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    ) {
+      return null;
+    }
+    return market.depth.lastTrade?.price;
+  };
+  const price = getPrice();
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
       <Controller
@@ -101,11 +119,8 @@ export const DealTicket = ({
         market={market}
         register={register}
         price={
-          market.depth.lastTrade
-            ? addDecimalsFormatNumber(
-                market.depth.lastTrade.price,
-                market.decimalPlaces
-              )
+          price
+            ? addDecimalsFormatNumber(price, market.decimalPlaces)
             : undefined
         }
         quoteName={market.tradableInstrument.instrument.product.quoteName}

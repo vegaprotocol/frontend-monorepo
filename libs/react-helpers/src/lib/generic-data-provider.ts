@@ -9,10 +9,13 @@ import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
 
-interface UpdateData<Data, Delta> {
+export interface UpdateDelta<Delta> {
   delta?: Delta;
-  insertionData?: Data | null;
   isUpdate?: boolean;
+}
+
+interface UpdateData<Data, Delta> extends UpdateDelta<Delta> {
+  insertionData?: Data | null;
   isInsert?: boolean;
 }
 export interface UpdateCallback<Data, Delta> {
@@ -557,13 +560,13 @@ function makeDerivedDataProviderInternal<Data, Delta>(
       : data;
     if (newLoaded) {
       const updatedPart = parts[updatedPartIndex];
-      if (updatedPart.isUpdate && updatedPart.delta && combineDelta) {
-        delta = combineDelta(parts, variables);
+      if (updatedPart.isUpdate) {
+        isUpdate = true;
+        if (updatedPart.delta && combineDelta) {
+          delta = combineDelta(parts, variables);
+        }
         delete updatedPart.isUpdate;
         delete updatedPart.delta;
-        if (delta) {
-          isUpdate = true;
-        }
       }
     }
     if (

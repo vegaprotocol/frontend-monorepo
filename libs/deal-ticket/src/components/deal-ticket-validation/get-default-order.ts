@@ -12,3 +12,13 @@ export const getDefaultOrder = (market: {
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
   size: String(toDecimal(market.positionDecimalPlaces)),
 });
+
+export interface Order {
+  marketId: string;
+  type: OrderType;
+  size: string;
+  side: Side;
+  timeInForce: OrderTimeInForce;
+  price?: string;
+  expiresAt?: Date;
+}

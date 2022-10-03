@@ -27,6 +27,7 @@ const market: DealTicketMarketFragment = {
           id: 'asset-id',
           name: 'asset-name',
           symbol: 'asset-symbol',
+          decimals: 2,
         },
       },
     },
