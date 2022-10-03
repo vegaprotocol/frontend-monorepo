@@ -69,6 +69,11 @@ const MARKET_QUERY = gql`
         open
         close
       }
+      depth {
+        lastTrade {
+          price
+        }
+      }
       candlesConnection(interval: $interval, since: $since) {
         edges {
           node {
