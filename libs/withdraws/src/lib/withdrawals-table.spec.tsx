@@ -1,5 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, render, screen } from '@testing-library/react';
+import { getTimeFormat } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
 import type { WithdrawalsTableProps } from './withdrawals-table';
@@ -65,7 +66,7 @@ describe('renders the correct columns', () => {
       'asset-symbol',
       '1.00',
       '123456…123456',
-      '21/04/2022, 00:00:00',
+      getTimeFormat().format(new Date(withdrawal.withdrawnTimestamp as string)),
       'Completed',
       '0x1234…121314',
     ];
