@@ -36,6 +36,8 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
+const noOpenProposals = '[data-testid="no-open-proposals"]';
+const noClosedProposals = '[data-testid="no-closed-proposals"]';
 
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
@@ -138,6 +140,16 @@ context(
             req.alias = 'proposalSubmissionCompletion';
           }
         });
+      });
+
+      it('should be able to see that no proposals exist', function () {
+        // 1004-VOTE-003
+        cy.get(noOpenProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no open or yet to enact proposals');
+        cy.get(noClosedProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no enacted or rejected proposals');
       });
 
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {

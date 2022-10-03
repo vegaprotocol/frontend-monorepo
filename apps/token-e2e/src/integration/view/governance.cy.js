@@ -1,5 +1,3 @@
-const noOpenProposals = '[data-testid="no-open-proposals"]';
-const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const proposalDocumentationLink = '[data-testid="external-link"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
@@ -51,16 +49,6 @@ context(
           .and('have.text', 'New proposal')
           .and('have.attr', 'href')
           .and('equal', '/governance/propose');
-      });
-
-      it('should be able to see that no proposals exist', function () {
-        // 1004-VOTE-003
-        cy.get(noOpenProposals)
-          .should('be.visible')
-          .and('have.text', 'There are no open or yet to enact proposals');
-        cy.get(noClosedProposals)
-          .should('be.visible')
-          .and('have.text', 'There are no enacted or rejected proposals');
       });
 
       // Skipping this test for now, the new proposal button no longer takes a user directly
