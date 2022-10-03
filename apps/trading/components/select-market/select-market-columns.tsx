@@ -210,6 +210,19 @@ export const columns = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Sparkline,
+      value: market.candles && (
+        <Sparkline
+          width={100}
+          height={20}
+          muted={false}
+          data={candlesClose?.map((c: string) => Number(c)) || []}
+        />
+      ),
+      className: `${cellClassNames} hidden lg:table-cell`,
+      onlyOnDetailed: false && candlesClose,
+    },
+    {
       kind: ColumnKind.Asset,
       value: (
         <button
@@ -230,19 +243,6 @@ export const columns = (
       dataTestId: 'settlement-asset',
       className: `${cellClassNames} hidden sm:table-cell`,
       onlyOnDetailed: false,
-    },
-    {
-      kind: ColumnKind.Sparkline,
-      value: market.candles && (
-        <Sparkline
-          width={100}
-          height={20}
-          muted={false}
-          data={candlesClose?.map((c: string) => Number(c)) || []}
-        />
-      ),
-      className: `${cellClassNames} hidden lg:table-cell`,
-      onlyOnDetailed: false && candlesClose,
     },
     {
       kind: ColumnKind.High24,
@@ -391,6 +391,19 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
+      kind: ColumnKind.Sparkline,
+      value: candlesClose && (
+        <Sparkline
+          width={100}
+          height={20}
+          muted={false}
+          data={candlesClose.map((c: string) => Number(c))}
+        />
+      ),
+      className: `${cellClassNames} hidden lg:table-cell`,
+      onlyOnDetailed: false,
+    },
+    {
       kind: ColumnKind.Asset,
       value: (
         <button
@@ -410,19 +423,6 @@ export const columnsPositionMarkets = (
         </button>
       ),
       className: `${cellClassNames} hidden sm:table-cell`,
-      onlyOnDetailed: false,
-    },
-    {
-      kind: ColumnKind.Sparkline,
-      value: candlesClose && (
-        <Sparkline
-          width={100}
-          height={20}
-          muted={false}
-          data={candlesClose.map((c: string) => Number(c))}
-        />
-      ),
-      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: false,
     },
     {
