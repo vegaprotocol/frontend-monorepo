@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact as AgGridReactType } from 'ag-grid-react';
 import type {
@@ -9,6 +9,7 @@ import type {
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 
 import {
   formatWithAsset,
@@ -20,6 +21,7 @@ import type { MarketTradingMode } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 
 import HealthBar from './health-bar';
+import HealthDialog from './health-dialog';
 
 // #BFCCD6
 const agGridVariables = `
@@ -76,14 +78,14 @@ const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
         status={value}
         target={data.data.targetStake}
         committed={committed}
-        size={undefined}
-        isExpanded={false}
+        committedEdges={data.liquidityProvisionsConnection?.edges}
       />
     </div>
   );
 };
 
 const MarketList = ({ data }: { data: MarketsListData }) => {
+  const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
   const gridRef = useRef<AgGridReactType | null>(null);
   const localData = formatMarketLists(data);
 
@@ -157,7 +159,19 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           />
 
           <AgGridColumn
-            headerName={t('Health')}
+            headerComponent={() => {
+              return (
+                <div>
+                  <span>{t('Health')}</span>{' '}
+                  <button
+                    onClick={() => setIsHealthDialogOpen(true)}
+                    aria-label={t('open tooltip')}
+                  >
+                    <Icon name="info-sign" />
+                  </button>
+                </div>
+              );
+            }}
             field="tradingMode"
             headerTooltip={t('This is the health tooltip')}
             cellRenderer={healthCellRenderer}
@@ -170,9 +184,24 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             headerTooltip={t('This is the APY tooltip')}
           />
         </AgGridReact>
+
+        <HealthDialog
+          isOpen={isHealthDialogOpen}
+          onChange={() => {
+            setIsHealthDialogOpen(!isHealthDialogOpen);
+          }}
+        />
       </div>
     </>
   );
 };
-
+{
+  /* <HealthBar
+                    status="TRADING_MODE_CONTINUOUS"
+                    target="171320"
+                    committed="220000"
+                    size="large"
+                    isExpanded={TransformStreamDefaultController}
+                  /> */
+}
 export default MarketList;

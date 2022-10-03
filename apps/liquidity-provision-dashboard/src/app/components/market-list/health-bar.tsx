@@ -2,36 +2,48 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useState } from 'react';
 
-import type { MarketTradingMode } from '@vegaprotocol/types';
-// import { MarketTradingModeMapping } from '@vegaprotocol/types';
+//import type { MarketTradingMode } from '@vegaprotocol/types';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 import './health-bar.scss';
 
-enum marketTradingModeClassname {
-  TRADING_MODE_CONTINUOUS = 'continuous',
-  TRADING_MODE_MONITORING_AUCTION = 'auction',
-  TRADING_MODE_OPENING_AUCTION = 'open',
-  TRADING_MODE_BATCH_AUCTION = 'batch',
-  TRADING_MODE_NO_TRADING = 'none',
-}
+// enum marketTradingModeClassname {
+//   TRADING_MODE_CONTINUOUS = 'continuous',
+//   TRADING_MODE_MONITORING_AUCTION = 'auction',
+//   TRADING_MODE_OPENING_AUCTION = 'open',
+//   TRADING_MODE_BATCH_AUCTION = 'batch',
+//   TRADING_MODE_NO_TRADING = 'none',
+// }
 
-enum sizes {
-  small = 'small',
-  large = 'large',
+const marketTradingModeClassname = {
+  [MarketTradingMode.TRADING_MODE_CONTINUOUS]: 'continuous',
+  [MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: 'auction',
+  [MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: 'open',
+  [MarketTradingMode.TRADING_MODE_BATCH_AUCTION]: 'batch',
+  [MarketTradingMode.TRADING_MODE_NO_TRADING]: 'none',
+};
+
+console.log('marketTradingModeClassname: ', marketTradingModeClassname);
+
+interface Node {
+  commitmentAmount: string;
+  fee: string;
 }
 
 export default function Health({
   status,
   target,
   committed,
-  size = sizes.small,
+  committedEdges = [],
+  size = 'small',
   isExpanded = false,
 }: {
   status: MarketTradingMode;
-  size: sizes | undefined;
   committed: string;
   target: string;
-  isExpanded: boolean | undefined;
+  committedEdges?: Node[];
+  isExpanded?: boolean;
+  size?: 'small' | 'large';
 }) {
   const [isTargetTooltipShowing, setIsTargetTooltipShowing] =
     useState(isExpanded);
@@ -56,7 +68,7 @@ export default function Health({
   console.log('targetPercent: ', targetPercent);
 
   return (
-    <div className={`health health-size--${sizes[size]}`}>
+    <div className={`health health-size--${size}`}>
       <div className="health-wrapper">
         <div className="health-copy-wrapper">
           <div
