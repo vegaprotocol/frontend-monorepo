@@ -1,6 +1,7 @@
 import {
   detectTypeByFetching,
   detectTypeFromQuery,
+  getSearchType,
   isBlock,
   isHexadecimal,
   isNetworkParty,
@@ -88,7 +89,7 @@ describe('Detect Search', () => {
     expect(actual).toStrictEqual(expected);
   });
 
-  it("should call fetch with hex query it's a transaction", async () => {
+  it("detectTypeByFetching should call fetch with hex query it's a transaction", async () => {
     const query = 'abc';
     const type = SearchTypes.Transaction;
     // @ts-ignore issue related to polyfill
@@ -112,7 +113,7 @@ describe('Detect Search', () => {
     expect(result).toBe(type);
   });
 
-  it("should call fetch with non-hex query it's a party", async () => {
+  it("detectTypeByFetching should call fetch with non-hex query it's a party", async () => {
     const query = 'abc';
     const type = SearchTypes.Party;
     // @ts-ignore issue related to polyfill
@@ -136,7 +137,7 @@ describe('Detect Search', () => {
     expect(result).toBe(type);
   });
 
-  it('should return undefined if no matches', async () => {
+  it('detectTypeByFetching should return undefined if no matches', async () => {
     const query = 'abc';
     const type = SearchTypes.Party;
     // @ts-ignore issue related to polyfill
@@ -152,5 +153,79 @@ describe('Detect Search', () => {
       `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${query}'"`
     );
     expect(result).toBe(undefined);
+  });
+
+  it('getSearchType should return party from fetch response', async () => {
+    const query =
+      '0x4624293CFE3D8B67A0AB448BAFF8FBCF1A1B770D9D5F263761D3D6CBEA94D97F';
+    const expected = SearchTypes.Party;
+    // @ts-ignore issue related to polyfill
+    fetch.mockImplementation(
+      jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              result: {
+                txs: [query],
+              },
+            }),
+        })
+      )
+    );
+    const result = await getSearchType(query);
+    expect(result).toBe(expected);
+  });
+
+  it('getSearchType should return party from transaction response', async () => {
+    const query =
+      '4624293CFE3D8B67A0AB448BAFF8FBCF1A1B770D9D5F263761D3D6CBEA94D97F';
+    const expected = SearchTypes.Transaction;
+    // @ts-ignore issue related to polyfill
+    fetch.mockImplementation(
+      jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              result: {
+                tx: query,
+              },
+            }),
+        })
+      )
+    );
+    const result = await getSearchType(query);
+    expect(result).toBe(expected);
+  });
+
+  it('getSearchType should return undefined from transaction response', async () => {
+    const query =
+      '0x4624293CFE3D8B67A0AB448BAFF8FBCF1A1B770D9D5F263761D3D6CBEA94D97F';
+    const expected = undefined;
+    // @ts-ignore issue related to polyfill
+    fetch.mockImplementation(
+      jest.fn(() =>
+        Promise.resolve({
+          ok: false,
+        })
+      )
+    );
+    const result = await getSearchType(query);
+    expect(result).toBe(expected);
+  });
+
+  it('getSearchType should return block if query is number', async () => {
+    const query = '123';
+    const expected = SearchTypes.Block;
+    const result = await getSearchType(query);
+    expect(result).toBe(expected);
+  });
+
+  it('getSearchType should return party if query is network', async () => {
+    const query = 'network';
+    const expected = SearchTypes.Party;
+    const result = await getSearchType(query);
+    expect(result).toBe(expected);
   });
 });
