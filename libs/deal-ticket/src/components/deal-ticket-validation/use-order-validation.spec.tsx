@@ -14,12 +14,11 @@ import {
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
-import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
+import { ERROR_SIZE_DECIMAL } from './validate-size';
 
 jest.mock('@vegaprotocol/wallet');
 
 const market = {
-  __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
@@ -74,7 +73,7 @@ const ERROR = {
   MARKET_CONTINUOUS_LIMIT:
     'Only limit orders are permitted when market is in auction',
   MARKET_CONTINUOUS_TIF:
-    'Only GTT, GTC and GFA are permitted when market is in auction',
+    'Until the auction ends, you can only place GFA, GTT, or GTC limit orders',
   FIELD_SIZE_REQ: 'You need to provide an amount',
   FIELD_SIZE_MIN: `The amount cannot be lower than "${defaultOrder.step}"`,
   FIELD_PRICE_REQ: 'You need to provide a price',
@@ -165,10 +164,8 @@ describe('useOrderValidation', () => {
         market: { ...defaultOrder.market, tradingMode },
         orderType: OrderType.TYPE_MARKET,
       });
-      expect(result.current).toStrictEqual({
-        isDisabled: true,
-        message: errorMessage,
-      });
+      expect(result.current.isDisabled).toBeTruthy();
+      expect(result.current.message).toBe(errorMessage);
     }
   );
 

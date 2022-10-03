@@ -169,6 +169,22 @@ export interface Market_market_marketTimestamps {
   close: string | null;
 }
 
+export interface Market_market_depth_lastTrade {
+  __typename: "Trade";
+  /**
+   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
+   */
+  price: string;
+}
+
+export interface Market_market_depth {
+  __typename: "MarketDepth";
+  /**
+   * Last trade for the given market (if available)
+   */
+  lastTrade: Market_market_depth_lastTrade | null;
+}
+
 export interface Market_market_candlesConnection_edges_node {
   __typename: "Candle";
   /**
@@ -251,6 +267,10 @@ export interface Market_market {
    * Timestamps for state changes in the market
    */
   marketTimestamps: Market_market_marketTimestamps;
+  /**
+   * Current depth on the order book for this market
+   */
+  depth: Market_market_depth;
   /**
    * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination
    */

@@ -28,6 +28,7 @@ export const generateDealTicketQuery = (
               id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
               symbol: 'tBTC',
               name: 'tBTC TEST',
+              decimals: 5,
             },
           },
         },

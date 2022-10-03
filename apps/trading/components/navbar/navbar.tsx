@@ -7,6 +7,7 @@ import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
+import { useEffect, useState } from 'react';
 
 interface NavbarProps {
   theme: 'light' | 'dark';
@@ -18,7 +19,12 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
     marketId: store.marketId,
     update: store.update,
   }));
-  const tradingPath = marketId ? `/markets/${marketId}` : '/';
+  const [tradingPath, setTradingPath] = useState('/markets');
+  useEffect(() => {
+    if (marketId) {
+      setTradingPath(`/markets/${marketId}`);
+    }
+  }, [marketId]);
   return (
     <div className="dark px-4 flex items-stretch border-b border-default bg-black text-white">
       <div className="flex gap-4 mr-4 items-center h-full">
@@ -31,15 +37,8 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
         <NetworkSwitcher />
       </div>
       <nav className="flex items-center">
-        {[
-          {
-            name: t('Trading'),
-            path: tradingPath,
-          },
-          { name: t('Portfolio'), path: '/portfolio' },
-        ].map((route) => (
-          <NavLink key={route.path} {...route} />
-        ))}
+        <NavLink key={'trading'} name={t('Trading')} path={tradingPath} />
+        <NavLink key={'portfolio'} name={t('Portfolio')} path={'/portfolio'} />
       </nav>
       <div className="flex items-center gap-2 ml-auto">
         <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
@@ -59,7 +58,11 @@ interface NavLinkProps {
 
 const NavLink = ({ name, path, testId = name }: NavLinkProps) => {
   const router = useRouter();
-  const isActive = router.asPath === path;
+  const [isActive, setIsActive] = useState(false);
+  useEffect(
+    () => setIsActive(router.asPath.includes(path)),
+    [path, router.asPath]
+  );
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
     'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,

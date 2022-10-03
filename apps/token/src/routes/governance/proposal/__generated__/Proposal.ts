@@ -154,6 +154,10 @@ export interface Proposal_proposal_terms_change_UpdateAsset {
    */
   quantum: string;
   /**
+   * The asset to update
+   */
+  assetId: string;
+  /**
    * The source of the updated asset
    */
   source: Proposal_proposal_terms_change_UpdateAsset_source;

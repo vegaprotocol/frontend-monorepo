@@ -9,6 +9,9 @@ import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
 import { addGetAssetInformation } from './lib/commands/get-asset-information';
 import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-receive-fauceted-asset';
+import { addVegaWalletImport } from './lib/commands/vega-wallet-import';
+import { addContainsExactly } from './lib/commands/contains-exactly';
+import { addRestartVegacapsuleNetwork } from './lib/commands/restart-vegacapsule-network';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -19,6 +22,9 @@ addMockWeb3ProviderCommand();
 addHighlightLog();
 addVegaWalletReceiveFaucetedAsset();
 addGetAssetInformation();
+addVegaWalletImport();
+addContainsExactly();
+addRestartVegacapsuleNetwork();
 
 export * from './lib/graphql-test-utils';
 export type { onMessage } from './lib/commands/mock-gql';

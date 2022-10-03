@@ -1,5 +1,4 @@
 import { toDecimal } from '@vegaprotocol/react-helpers';
-import type { Order } from '../order-hooks';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 
 export const getDefaultOrder = (market: {
@@ -12,3 +11,13 @@ export const getDefaultOrder = (market: {
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
   size: String(toDecimal(market.positionDecimalPlaces)),
 });
+
+export interface Order {
+  marketId: string;
+  type: OrderType;
+  size: string;
+  side: Side;
+  timeInForce: OrderTimeInForce;
+  price?: string;
+  expiresAt?: Date;
+}
