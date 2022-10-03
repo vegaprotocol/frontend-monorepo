@@ -2,12 +2,21 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Search } from './search';
 import { MemoryRouter } from 'react-router-dom';
 import { Routes } from '../../routes/route-names';
+import { SearchTypes, getSearchType } from './detect-search';
 
 const mockedNavigate = jest.fn();
+const mockGetSearchType = getSearchType as jest.MockedFunction<
+  typeof getSearchType
+>;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate,
+}));
+
+jest.mock('./detect-search', () => ({
+  ...jest.requireActual('./detect-search'),
+  getSearchType: jest.fn(),
 }));
 
 beforeEach(() => {
@@ -39,9 +48,10 @@ describe('Search', () => {
     fireEvent.click(button);
 
     expect(await screen.findByTestId('search-error')).toHaveTextContent(
-      "Something doesn't look right"
+      'Transaction type is not recognised'
     );
   });
+
   it('should render error if no input is given', async () => {
     render(renderComponent());
     const { button } = getInputs();
@@ -49,47 +59,14 @@ describe('Search', () => {
     fireEvent.click(button);
 
     expect(await screen.findByTestId('search-error')).toHaveTextContent(
-      'Search required'
-    );
-  });
-
-  it('should render error if transaction is not hex', async () => {
-    render(renderComponent());
-    const { button, input } = getInputs();
-    fireEvent.change(input, {
-      target: {
-        value:
-          '0x123456789012345678901234567890123456789012345678901234567890123Q',
-      },
-    });
-
-    fireEvent.click(button);
-
-    expect(await screen.findByTestId('search-error')).toHaveTextContent(
-      'Transaction is not hexadecimal'
-    );
-  });
-
-  it('should render error if transaction is not hex and does not have leading 0x', async () => {
-    render(renderComponent());
-    const { button, input } = getInputs();
-    fireEvent.change(input, {
-      target: {
-        value:
-          '123456789012345678901234567890123456789012345678901234567890123Q',
-      },
-    });
-
-    fireEvent.click(button);
-
-    expect(await screen.findByTestId('search-error')).toHaveTextContent(
-      'Transaction is not hexadecimal'
+      'Search query required'
     );
   });
 
   it('should redirect to transactions page', async () => {
     render(renderComponent());
     const { button, input } = getInputs();
+    mockGetSearchType.mockResolvedValue(SearchTypes.Transaction);
     fireEvent.change(input, {
       target: {
         value:
@@ -108,6 +85,7 @@ describe('Search', () => {
   it('should redirect to transactions page without proceeding 0x', async () => {
     render(renderComponent());
     const { button, input } = getInputs();
+    mockGetSearchType.mockResolvedValue(SearchTypes.Transaction);
     fireEvent.change(input, {
       target: {
         value:
@@ -123,9 +101,48 @@ describe('Search', () => {
     });
   });
 
+  it('should redirect to parties page', async () => {
+    render(renderComponent());
+    const { button, input } = getInputs();
+    mockGetSearchType.mockResolvedValue(SearchTypes.Party);
+    fireEvent.change(input, {
+      target: {
+        value:
+          '0x1234567890123456789012345678901234567890123456789012345678901234',
+      },
+    });
+
+    fireEvent.click(button);
+    await waitFor(() => {
+      expect(mockedNavigate).toBeCalledWith(
+        `${Routes.PARTIES}/0x1234567890123456789012345678901234567890123456789012345678901234`
+      );
+    });
+  });
+
+  it('should redirect to parties page without proceeding 0x', async () => {
+    render(renderComponent());
+    const { button, input } = getInputs();
+    mockGetSearchType.mockResolvedValue(SearchTypes.Party);
+    fireEvent.change(input, {
+      target: {
+        value:
+          '1234567890123456789012345678901234567890123456789012345678901234',
+      },
+    });
+
+    fireEvent.click(button);
+    await waitFor(() => {
+      expect(mockedNavigate).toBeCalledWith(
+        `${Routes.PARTIES}/0x1234567890123456789012345678901234567890123456789012345678901234`
+      );
+    });
+  });
+
   it('should redirect to blocks page if passed a number', async () => {
     render(renderComponent());
     const { button, input } = getInputs();
+    mockGetSearchType.mockResolvedValue(SearchTypes.Block);
     fireEvent.change(input, {
       target: {
         value: '123',
