@@ -151,7 +151,8 @@ context(
           cy.get(connectButton).click();
         });
         cy.get(connectorsList).within(() => {
-          cy.get('button').click();
+          // using gui option to connect using wallet service V1
+          cy.getByTestId('connector-gui').click();
         });
         //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
         // then code below can be removed
