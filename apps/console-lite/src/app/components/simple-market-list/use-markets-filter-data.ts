@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { MarketState } from '@vegaprotocol/types';
-import type { MarketsListData } from '@vegaprotocol/market-list';
+import type { MarketWithCandles } from '@vegaprotocol/market-list';
 import type { RouterParams } from './simple-market-list';
 
-const useMarketsFilterData = (data: MarketsListData, params: RouterParams) => {
+const useMarketsFilterData = (
+  data: MarketWithCandles[] | null,
+  params: RouterParams
+) => {
   return useMemo(() => {
-    const markets =
-      data?.markets?.filter((item) => {
+    return (
+      data?.filter((item) => {
         if (
           params.product &&
           params.product !==
@@ -32,21 +35,9 @@ const useMarketsFilterData = (data: MarketsListData, params: RouterParams) => {
           return false;
         }
         return true;
-      }) || [];
-
-    return markets.map((market) => ({
-      ...market,
-      candles: (data?.marketsCandles || [])
-        .filter((c) => c.marketId === market.id)
-        .map((c) => c.candles),
-    }));
-  }, [
-    data?.marketsCandles,
-    data?.markets,
-    params.product,
-    params.asset,
-    params.state,
-  ]);
+      }) || []
+    );
+  }, [data, params.product, params.asset, params.state]);
 };
 
 export default useMarketsFilterData;

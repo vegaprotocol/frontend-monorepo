@@ -14,6 +14,9 @@ const useMarketFilters = (data: Market[]) => {
       const product = item.tradableInstrument.instrument.product.__typename;
       const asset =
         item.tradableInstrument.instrument.product.settlementAsset.symbol;
+      if (!product) {
+        return;
+      }
       if (!(product in localAssetPerProduct)) {
         localAssetPerProduct[product] = new Set<string>();
       }
