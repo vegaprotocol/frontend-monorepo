@@ -17,6 +17,14 @@ export interface Orders_party_ordersConnection_edges_node_market {
   id: string;
 }
 
+export interface Orders_party_ordersConnection_edges_node_liquidityProvision {
+  __typename: "LiquidityProvision";
+}
+
+export interface Orders_party_ordersConnection_edges_node_peggedOrder {
+  __typename: "PeggedOrder";
+}
+
 export interface Orders_party_ordersConnection_edges_node {
   __typename: "Order";
   /**
@@ -71,19 +79,45 @@ export interface Orders_party_ordersConnection_edges_node {
    * RFC3339Nano time the order was altered
    */
   updatedAt: string | null;
+  /**
+   * The liquidity provision this order was created from
+   */
+  liquidityProvision: Orders_party_ordersConnection_edges_node_liquidityProvision | null;
+  /**
+   * PeggedOrder contains the details about a pegged order
+   */
+  peggedOrder: Orders_party_ordersConnection_edges_node_peggedOrder | null;
 }
 
 export interface Orders_party_ordersConnection_edges {
   __typename: "OrderEdge";
+  /**
+   * The order
+   */
   node: Orders_party_ordersConnection_edges_node;
+  /**
+   * The cursor for this order
+   */
   cursor: string | null;
 }
 
 export interface Orders_party_ordersConnection_pageInfo {
   __typename: "PageInfo";
+  /**
+   * The first cursor in the current page
+   */
   startCursor: string;
+  /**
+   * The last cursor in the current page
+   */
   endCursor: string;
+  /**
+   * The connection has more pages to fetch when traversing forward through the connection
+   */
   hasNextPage: boolean;
+  /**
+   * The connection has more pages to fetch when traversing backward through the connection
+   */
   hasPreviousPage: boolean;
 }
 

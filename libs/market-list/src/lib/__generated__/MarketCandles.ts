@@ -3,7 +3,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketCandleFieldsFragment = { __typename?: 'CandleNode', high: string, low: string, open: string, close: string, volume: string };
+export type MarketCandleFieldsFragment = { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string };
 
 export type MarketCandlesQueryVariables = Types.Exact<{
   interval: Types.Interval;
@@ -12,9 +12,9 @@ export type MarketCandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'CandleNode', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } }> } | null };
+export type MarketCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } }> } | null };
 
-export type MarketsCandlesNodeFieldsFragment = { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'CandleNode', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null };
+export type MarketsCandlesNodeFieldsFragment = { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null };
 
 export type MarketsCandlesQueryVariables = Types.Exact<{
   interval: Types.Interval;
@@ -22,7 +22,7 @@ export type MarketsCandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketsCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'CandleNode', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } }> } | null };
+export type MarketsCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } }> } | null };
 
 export type MarketCandleEventFieldsFragment = { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string };
 
@@ -35,7 +35,7 @@ export type MarketCandlesEventSubscriptionVariables = Types.Exact<{
 export type MarketCandlesEventSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } };
 
 export const MarketCandleFieldsFragmentDoc = gql`
-    fragment MarketCandleFields on CandleNode {
+    fragment MarketCandleFields on Candle {
   high
   low
   open

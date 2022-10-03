@@ -1,4 +1,4 @@
-fragment MarketCandleFields on CandleNode {
+fragment MarketCandleFields on Candle {
   high
   low
   open

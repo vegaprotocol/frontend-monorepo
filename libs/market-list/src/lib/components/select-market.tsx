@@ -62,8 +62,10 @@ export const SelectMarketLandingTable = ({
           <tbody>
             {markets?.map((market, i) => (
               <SelectMarketTableRow
+                marketId={market.id}
                 key={i}
                 detailed={false}
+                onSelect={onSelect}
                 columns={columns(
                   market,
                   marketsData?.find(
@@ -121,8 +123,10 @@ export const SelectAllMarketsTableBody = ({
       <tbody className="border-b-[10px] border-transparent">
         {markets?.map((market, i) => (
           <SelectMarketTableRow
+            marketId={market.id}
             key={i}
             detailed={true}
+            onSelect={onSelect}
             columns={tableColumns(
               market,
               marketsData?.find(
@@ -161,7 +165,7 @@ export const SelectMarketPopover = ({
     PositionsSubscription_positions[]
   >({
     dataProvider: positionsDataProvider,
-    update: () => false,
+    noUpdate: true,
     variables,
     skip: !keypair,
   });
@@ -203,9 +207,9 @@ export const SelectMarketPopover = ({
             Loading market data
           </div>
         ) : (
-          <>
+          <table className="relative text-sm w-full whitespace-nowrap">
             {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
-              <table className="relative text-sm w-full whitespace-nowrap">
+              <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
                   markets={markets}
@@ -228,19 +232,17 @@ export const SelectMarketPopover = ({
                     )
                   }
                 />
-              </table>
+              </>
             ) : null}
-            <table className="relative text-sm w-full whitespace-nowrap">
-              <TableTitle>{t('All markets')}</TableTitle>
-              <SelectAllMarketsTableBody
-                markets={data?.markets}
-                marketsData={data?.marketsData}
-                marketsCandles={data?.marketsCandles}
-                onSelect={onSelectMarket}
-                onCellClick={onCellClick}
-              />
-            </table>
-          </>
+            <TableTitle>{t('All markets')}</TableTitle>
+            <SelectAllMarketsTableBody
+              markets={data?.markets}
+              marketsData={data?.marketsData}
+              marketsCandles={data?.marketsCandles}
+              onSelect={onSelectMarket}
+              onCellClick={onCellClick}
+            />
+          </table>
         )}
       </div>
     </Popover>

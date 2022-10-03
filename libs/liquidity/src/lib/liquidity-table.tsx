@@ -44,7 +44,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate="No liquidity provisions"
+        overlayNoRowsTemplate={t('No liquidity provisions')}
         getRowId={({ data }) => data.party}
         rowHeight={34}
         ref={ref}

@@ -1,5 +1,5 @@
 import LiquidityTable from './liquidity-table';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { Schema } from '@vegaprotocol/types';
 import type { LiquidityProvision } from './liquidity-data-provider';
 
@@ -27,27 +27,28 @@ describe('LiquidityTable', () => {
   });
 
   it('should render correct columns', async () => {
-    act(async () => {
+    await act(async () => {
       render(<LiquidityTable data={singleRowData} />);
-      await waitFor(async () => {
-        const headers = await screen.getAllByRole('columnheader');
-        expect(headers).toHaveLength(9);
-        expect(
-          headers.map((h) =>
-            h.querySelector('[ref="eText"]')?.textContent?.trim()
-          )
-        ).toEqual([
-          'Party',
-          'Average entry valuation',
-          'Updated',
-          'Created',
-          'Supplied (siskas)',
-          'Obligation (siskas)',
-          'Share',
-          'Fee',
-          'Status',
-        ]);
-      });
     });
+
+    const headers = await screen.getAllByRole('columnheader');
+
+    const headerTexts = headers.map((h) =>
+      h.querySelector('[ref="eText"]')?.textContent?.trim()
+    );
+    const expectedHeaders = [
+      'Party',
+      'Commitment ()',
+      'Share',
+      'Proposed fee',
+      'Average entry valuation',
+      'Obligation',
+      'Supplied',
+      'Status',
+      'Created',
+      'Updated',
+    ];
+    expect(headers).toHaveLength(expectedHeaders.length);
+    expect(headerTexts).toEqual(expectedHeaders);
   });
 });

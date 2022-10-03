@@ -6,9 +6,7 @@ import PositionsAsset from './positions-asset';
 
 const Positions = () => {
   const { partyId } = useOutletContext<{ partyId: string }>();
-  const { data, error, loading, assetSymbols } = usePositionsAssets({
-    partyId,
-  });
+  const { data, error, loading, assetSymbols } = usePositionsAssets(partyId);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {assetSymbols && assetSymbols.length > 0 && (

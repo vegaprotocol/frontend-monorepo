@@ -1,79 +1,75 @@
-import React, { useRef, useMemo } from 'react';
-import { produce } from 'immer';
-import merge from 'lodash/merge';
+import type { Asset } from '@vegaprotocol/react-helpers';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useDataProvider, addSummaryRows } from '@vegaprotocol/react-helpers';
-import type {
-  AccountFieldsFragment,
-  AccountEventsSubscription,
-} from './__generated__/Accounts';
-
 import type { AgGridReact } from 'ag-grid-react';
-import {
-  AccountsTable,
-  getGroupId,
-  getGroupSummaryRow,
-} from './accounts-table';
-import { accountsDataProvider, getId } from './accounts-data-provider';
+import { useRef, useMemo, useCallback } from 'react';
+import type { AccountFields } from './accounts-data-provider';
+import { aggregatedAccountsDataProvider } from './accounts-data-provider';
+import type { GetRowsParams } from './accounts-table';
+import { AccountTable } from './accounts-table';
 
-interface AccountsManagerProps {
+interface AccountManagerProps {
   partyId: string;
+  onClickAsset: (asset?: string | Asset) => void;
+  onClickWithdraw?: (assetId?: string) => void;
+  onClickDeposit?: (assetId?: string) => void;
 }
 
-export const accountsManagerUpdate =
-  (gridRef: React.RefObject<AgGridReact>) =>
-  ({ delta: deltas }: { delta: AccountEventsSubscription['accounts'] }) => {
-    const update: AccountFieldsFragment[] = [];
-    const add: AccountFieldsFragment[] = [];
-    if (!gridRef.current?.api) {
-      return false;
-    }
-    const api = gridRef.current.api;
-    deltas.forEach((delta) => {
-      const rowNode = api.getRowNode(getId(delta));
-      if (rowNode) {
-        const updatedData = produce<AccountFieldsFragment>(
-          rowNode.data,
-          (draft: AccountFieldsFragment) => {
-            merge(draft, delta);
-          }
-        );
-        if (updatedData !== rowNode.data) {
-          update.push(updatedData);
-        }
-      } else {
-        // #TODO handle new account (or leave it to data provider to handle it)
-      }
-    });
-    if (update.length || add.length) {
-      gridRef.current.api.applyTransactionAsync({
-        update,
-        add,
-        addIndex: 0,
-      });
-    }
-    if (add.length) {
-      addSummaryRows(
-        gridRef.current.api,
-        gridRef.current.columnApi,
-        getGroupId,
-        getGroupSummaryRow
-      );
-    }
-    return true;
-  };
-
-export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
+export const AccountManager = ({
+  onClickAsset,
+  onClickWithdraw,
+  onClickDeposit,
+  partyId,
+}: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
+  const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = useMemo(() => accountsManagerUpdate(gridRef), []);
-  const { data, error, loading } = useDataProvider<
-    AccountFieldsFragment[],
-    AccountEventsSubscription['accounts']
-  >({ dataProvider: accountsDataProvider, update, variables });
+  const update = useCallback(
+    ({ data }: { data: AccountFields[] | null }) => {
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      if (dataRef.current?.length) {
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      }
+      return false;
+    },
+    [gridRef]
+  );
+  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+    dataProvider: aggregatedAccountsDataProvider,
+    update,
+    variables,
+  });
+  dataRef.current = data;
+  const getRows = async ({
+    successCallback,
+    startRow,
+    endRow,
+  }: GetRowsParams) => {
+    const rowsThisBlock = dataRef.current
+      ? dataRef.current.slice(startRow, endRow)
+      : [];
+    const lastRow = dataRef.current?.length ?? -1;
+    successCallback(rowsThisBlock, lastRow);
+  };
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <AccountsTable ref={gridRef} data={data} />
+      {data && (
+        <AccountTable
+          rowModelType={data?.length ? 'infinite' : 'clientSide'}
+          rowData={data?.length ? undefined : []}
+          ref={gridRef}
+          datasource={{ getRows }}
+          onClickAsset={onClickAsset}
+          onClickDeposit={onClickDeposit}
+          onClickWithdraw={onClickWithdraw}
+        />
+      )}
     </AsyncRenderer>
   );
 };
+
+export default AccountManager;

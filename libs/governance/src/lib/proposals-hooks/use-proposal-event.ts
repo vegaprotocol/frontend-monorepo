@@ -7,8 +7,9 @@ import type {
 } from './__generated__/Proposal';
 import { ProposalEventDocument } from './__generated__/Proposal';
 import type { Subscription } from 'zen-observable-ts';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 
-export const useProposalEvent = () => {
+export const useProposalEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -53,10 +54,13 @@ export const useProposalEvent = () => {
   );
 
   useEffect(() => {
+    if (!transaction.dialogOpen) {
+      subRef.current?.unsubscribe();
+    }
     return () => {
       subRef.current?.unsubscribe();
     };
-  }, []);
+  }, [transaction.dialogOpen]);
 
   return waitForProposalEvent;
 };

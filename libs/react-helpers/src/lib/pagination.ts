@@ -37,15 +37,22 @@ export const makeInfiniteScrollGetRows =
     startRow += newRows.current;
     endRow += newRows.current;
     try {
-      if (data.current && data.current.indexOf(null) < endRow) {
-        await load();
+      if (data.current) {
+        const firstMissingRowIndex = data.current.indexOf(null);
+        if (
+          endRow > data.current.length ||
+          (firstMissingRowIndex !== -1 && firstMissingRowIndex < endRow)
+        ) {
+          await load();
+        }
       }
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
       successCallback(
         rowsThisBlock,
-        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current)
+        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
+          newRows.current
       );
     } catch (e) {
       failCallback();

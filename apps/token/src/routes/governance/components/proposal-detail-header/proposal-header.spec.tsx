@@ -234,6 +234,23 @@ describe('Proposal header', () => {
     );
   });
 
+  it('Renders asset change proposal header', () => {
+    render(
+      renderComponent(
+        generateProposal({
+          terms: {
+            change: {
+              __typename: 'UpdateAsset',
+            },
+          },
+        })
+      )
+    );
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
+      'Update asset'
+    );
+  });
+
   it("Renders unknown proposal if it's a different proposal type", () => {
     render(
       renderComponent(

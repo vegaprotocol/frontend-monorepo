@@ -8,9 +8,9 @@ import type { ProposalEventFieldsFragment } from './__generated__/Proposal';
 
 export const useProposalSubmit = () => {
   const { keypair } = useVegaWallet();
-  const waitForProposalEvent = useProposalEvent();
 
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
+  const waitForProposalEvent = useProposalEvent(transaction);
 
   const [finalizedProposal, setFinalizedProposal] =
     useState<ProposalEventFieldsFragment | null>(null);

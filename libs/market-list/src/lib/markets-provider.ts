@@ -28,6 +28,7 @@ export const marketsProvider = makeDataProvider<
 >({
   query: MarketListDocument,
   getData,
+  fetchPolicy: 'cache-first',
 });
 
 export const activeMarketsProvider = makeDerivedDataProvider<

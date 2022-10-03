@@ -200,7 +200,7 @@ export const protoCandles: MarketCandleFieldsFragment[] = [
 ];
 
 export const protoMarket: MarketItemFieldsFragment = {
-  id: 'first-btcusd-id',
+  id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
   tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   state: Schema.MarketState.STATE_ACTIVE,
   decimalPlaces: 5,

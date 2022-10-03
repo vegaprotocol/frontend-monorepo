@@ -1,16 +1,22 @@
 import { LiquidityTable, useLiquidityProvision } from '@vegaprotocol/liquidity';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { AsyncRenderer, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Tab,
+  Tabs,
+  Link as UiToolkitLink,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
 import { useRouter } from 'next/router';
 import { useRef, useMemo } from 'react';
 import { tooltipMapping } from '@vegaprotocol/market-info';
+import Link from 'next/link';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
-  const { query, push } = useRouter();
+  const { query } = useRouter();
   const { keypair } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
@@ -71,9 +77,11 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <button onClick={() => push(`/markets/${marketId}`)}>{`${name} ${t(
-              'liquidity provision'
-            )}`}</button>
+            <Link href={`/markets/${marketId}`} passHref={true}>
+              <UiToolkitLink>
+                {`${name} ${t('liquidity provision')}`}
+              </UiToolkitLink>
+            </Link>
           }
         >
           <HeaderStat

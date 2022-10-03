@@ -15,19 +15,30 @@ import type {
   TabToNextCellParams,
   CellKeyDownEvent,
   FullWidthCellKeyDownEvent,
+  IGetRowsParams,
+  IDatasource,
 } from 'ag-grid-community';
 import { NO_DATA_MESSAGE } from '../../constants';
 import * as constants from '../simple-market-list/constants';
 
+export interface GetRowsParams<T>
+  extends Omit<IGetRowsParams, 'successCallback'> {
+  successCallback(rowsThisBlock: T[], lastRow?: number): void;
+}
+
+export interface Datasource<T> extends IDatasource {
+  getRows(params: GetRowsParams<T>): void;
+}
 interface Props<T> extends GridOptions {
-  data?: T[];
+  rowData?: T[];
+  datasource?: Datasource<T>;
   handleRowClicked?: (event: { data: T }) => void;
   components?: Record<string, unknown>;
   classNamesParam?: string | string[];
 }
 
 const ConsoleLiteGrid = <T extends { id?: string }>(
-  { data, handleRowClicked, getRowId, classNamesParam, ...props }: Props<T>,
+  { handleRowClicked, getRowId, classNamesParam, ...props }: Props<T>,
   ref?: React.Ref<AgGridReact>
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
@@ -70,7 +81,6 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
   return (
     <AgGrid
       className={classNames(classNamesParam)}
-      rowData={data}
       rowHeight={60}
       customThemeParams={
         theme === 'dark'
@@ -95,9 +105,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
   );
 };
 
-const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <
-  T extends { id?: string }
->(
+const ConsoleLiteGridForwarder = forwardRef(ConsoleLiteGrid) as <T>(
   p: Props<T> & { ref?: React.Ref<AgGridReact> }
 ) => React.ReactElement;
 

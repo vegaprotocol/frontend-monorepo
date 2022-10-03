@@ -18,9 +18,9 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
     marketId: store.marketId,
     update: store.update,
   }));
-  const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
+  const tradingPath = marketId ? `/markets/${marketId}` : '/';
   return (
-    <div className="px-4 flex items-stretch border-b border-default bg-black text-white">
+    <div className="dark px-4 flex items-stretch border-b border-default bg-black text-white">
       <div className="flex gap-4 mr-4 items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -28,14 +28,13 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
             <Vega className="w-13" />
           </a>
         </Link>
-        <NetworkSwitcher theme="dark" />
+        <NetworkSwitcher />
       </div>
       <nav className="flex items-center">
         {[
           {
             name: t('Trading'),
             path: tradingPath,
-            exact: false,
           },
           { name: t('Portfolio'), path: '/portfolio' },
         ].map((route) => (
@@ -43,12 +42,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
         ))}
       </nav>
       <div className="flex items-center gap-2 ml-auto">
-        <ThemeSwitcher
-          theme={theme}
-          onToggle={toggleTheme}
-          sunClassName="text-white"
-          fixedBg="dark"
-        />
+        <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
         <VegaWalletConnectButton
           setConnectDialog={(open) => update({ connectDialog: open })}
         />
@@ -60,14 +54,12 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
 interface NavLinkProps {
   name: string;
   path: string;
-  exact?: boolean;
   testId?: string;
 }
 
-const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
+const NavLink = ({ name, path, testId = name }: NavLinkProps) => {
   const router = useRouter();
-  const isActive =
-    router.asPath === path || (!exact && router.asPath.startsWith(path));
+  const isActive = router.asPath === path;
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
     'border-vega-yellow text-white cursor-default': isActive,
     'border-transparent text-neutral-400 hover:text-neutral-300': !isActive,
