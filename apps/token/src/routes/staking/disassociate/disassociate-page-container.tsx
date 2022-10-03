@@ -4,8 +4,8 @@ import { DisassociatePage } from './disassociate-page';
 export const DisassociateContainer = () => {
   return (
     <StakingWalletsContainer needsEthereum={true} needsVega={false}>
-      {({ address, currVegaKey = null }) => (
-        <DisassociatePage address={address} vegaKey={currVegaKey?.pub ?? ''} />
+      {({ address, pubKey }) => (
+        <DisassociatePage address={address} vegaKey={pubKey ?? ''} />
       )}
     </StakingWalletsContainer>
   );

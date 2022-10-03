@@ -17,10 +17,9 @@ import Link from 'next/link';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
-  const partyId = keypair?.pub;
   // Default to first marketId query item if found
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
@@ -39,8 +38,8 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   } = useLiquidityProvision({ marketId });
 
   const myLpEdges = useMemo(
-    () => liquidityProviders.filter((e) => e.party === partyId),
-    [liquidityProviders, partyId]
+    () => liquidityProviders.filter((e) => e.party === pubKey),
+    [liquidityProviders, pubKey]
   );
   const activeEdges = useMemo(
     () =>
@@ -116,7 +115,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           <Tab
             id={LiquidityTabs.MyLiquidityProvision}
             name={t('My liquidity provision')}
-            hidden={!partyId}
+            hidden={!pubKey}
           >
             <LiquidityTable
               ref={gridRef}

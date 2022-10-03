@@ -10,9 +10,9 @@ interface VegaWalletContainerProps {
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { update } = useGlobalStore((store) => ({ update: store.update }));
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <Splash>
         <div className="text-center">

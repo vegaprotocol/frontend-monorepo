@@ -70,7 +70,7 @@ export enum RemoveType {
 
 interface StakingFormProps {
   nodeId: string;
-  pubkey: string;
+  pubKey: string;
   nodeName: string;
   availableStakeToAdd: BigNumber;
   availableStakeToRemove: BigNumber;
@@ -78,7 +78,7 @@ interface StakingFormProps {
 
 export const StakingForm = ({
   nodeId,
-  pubkey,
+  pubKey,
   nodeName,
   availableStakeToAdd,
   availableStakeToRemove,
@@ -126,16 +126,12 @@ export const StakingForm = ({
   async function onSubmit() {
     setFormState(FormState.Requested);
     const delegateInput: DelegateSubmissionBody = {
-      pubKey: pubkey,
-      propagate: true,
       delegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
       },
     };
     const undelegateInput: UndelegateSubmissionBody = {
-      pubKey: pubkey,
-      propagate: true,
       undelegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
@@ -147,7 +143,7 @@ export const StakingForm = ({
     };
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
-      const res = await sendTx(command);
+      const res = await sendTx(pubKey, command);
       if (res) {
         setFormState(FormState.Pending);
       } else {
@@ -171,7 +167,7 @@ export const StakingForm = ({
         client
           .query<PartyDelegations, PartyDelegationsVariables>({
             query: PARTY_DELEGATIONS_QUERY,
-            variables: { partyId: pubkey },
+            variables: { partyId: pubKey },
             fetchPolicy: 'network-only',
           })
           .then((res) => {
@@ -194,7 +190,7 @@ export const StakingForm = ({
     }
 
     return () => clearInterval(interval);
-  }, [formState, client, pubkey, nodeId]);
+  }, [formState, client, pubKey, nodeId]);
 
   if (formState === FormState.Failure) {
     return <StakeFailure nodeName={nodeName} />;

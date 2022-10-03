@@ -67,7 +67,7 @@ export const DepositForm = ({
 }: DepositFormProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const { account } = useWeb3React();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const {
     register,
     handleSubmit,
@@ -78,7 +78,7 @@ export const DepositForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       from: account,
-      to: keypair?.pub,
+      to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id || '',
     },
   });
@@ -207,10 +207,10 @@ export const DepositForm = ({
             {errors.to.message}
           </InputError>
         )}
-        {keypair?.pub && (
+        {pubKey && (
           <UseButton
             onClick={() => {
-              setValue('to', keypair.pub);
+              setValue('to', pubKey);
               clearErrors('to');
             }}
           >

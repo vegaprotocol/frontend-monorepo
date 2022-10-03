@@ -1,33 +1,27 @@
 /* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { VegaWalletContext } from '../context';
-import type { VegaWalletContextShape, VegaKeyExtended } from '../context';
+import type { VegaWalletContextShape } from '../context';
 import type { VegaManageDialogProps } from '.';
 import { VegaManageDialog } from '.';
 import { truncateByChars } from '@vegaprotocol/react-helpers';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;
-let keypair1: VegaKeyExtended;
-let keypair2: VegaKeyExtended;
+let pubKey1;
+let pubKey2;
 
 beforeEach(() => {
-  keypair1 = {
-    pub: '111111__111111',
-    name: 'keypair1-name',
-  } as VegaKeyExtended;
-  keypair2 = {
-    pub: '222222__222222',
-    name: 'keypair2-name',
-  } as VegaKeyExtended;
+  pubKey1 = { publicKey: '111111__111111', name: 'test key 1' };
+  pubKey2 = { publicKey: '222222__222222', name: 'test key 2' };
   props = {
     dialogOpen: true,
     setDialogOpen: jest.fn(),
   };
   context = {
-    keypair: keypair1,
-    keypairs: [keypair1, keypair2],
-    selectPublicKey: jest.fn(),
+    pubKey: pubKey1.publicKey,
+    pubKeys: [pubKey1, pubKey2],
+    selectPubKey: jest.fn(),
     disconnect: jest.fn(),
   };
 });
@@ -49,19 +43,19 @@ it('Shows list of available keys and can disconnect', () => {
   const list = screen.getByTestId('keypair-list');
   expect(list).toBeInTheDocument();
   // eslint-disable-next-line
-  expect(list.children).toHaveLength(context.keypairs!.length);
+  expect(list.children).toHaveLength(context.pubKeys!.length);
 
   // eslint-disable-next-line
-  context.keypairs!.forEach((kp, i) => {
-    const keyListItem = within(screen.getByTestId(`key-${kp.pub}`));
+  context.pubKeys!.forEach((pk, i) => {
+    const keyListItem = within(screen.getByTestId(`key-${pk.publicKey}`));
     expect(
-      keyListItem.getByText(`${kp.name} ${truncateByChars(kp.pub)}`)
+      keyListItem.getByText(truncateByChars(pk.publicKey))
     ).toBeInTheDocument();
     expect(keyListItem.getByText('Copy')).toBeInTheDocument();
 
     // Active
     // eslint-disable-next-line
-    if (kp.pub === context.keypair!.pub) {
+    if (pk.publicKey === context.pubKey!) {
       expect(keyListItem.getByTestId('selected-key')).toBeInTheDocument();
       expect(
         keyListItem.queryByTestId('select-keypair-button')
@@ -73,7 +67,7 @@ it('Shows list of available keys and can disconnect', () => {
       expect(selectButton).toBeInTheDocument();
       expect(keyListItem.queryByTestId('selected-key')).not.toBeInTheDocument();
       fireEvent.click(selectButton);
-      expect(context.selectPublicKey).toHaveBeenCalledWith(kp.pub);
+      expect(context.selectPubKey).toHaveBeenCalledWith(pk.publicKey);
     }
   });
 

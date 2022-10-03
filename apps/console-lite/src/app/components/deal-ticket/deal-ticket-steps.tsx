@@ -80,15 +80,15 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const estMargin = useOrderMargin({
     order,
     market,
-    partyId: keypair?.pub || '',
+    partyId: pubKey || '',
   });
 
   const maxTrade = useMaximumPositionSize({
-    partyId: keypair?.pub || '',
+    partyId: pubKey || '',
     accounts: partyData?.party?.accounts || [],
     marketId: market.id,
     settlementAssetId:

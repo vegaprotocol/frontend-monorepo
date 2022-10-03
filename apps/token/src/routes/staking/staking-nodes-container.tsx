@@ -80,11 +80,12 @@ export const StakingNodesContainer = ({
   children: ({ data }: { data?: StakingQueryResult }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { data, loading, error, refetch } = useQuery<StakingQueryResult>(
     STAKING_QUERY,
     {
-      variables: { partyId: keypair?.pub || '' },
+      variables: { partyId: pubKey || '' },
+      skip: !pubKey,
     }
   );
 

@@ -1107,7 +1107,8 @@ export const generateLongListMarkets = (count: number) => {
   };
 };
 
-export const generateMarkets = (override?): MarketsQuery => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const generateMarkets = (override?: any): MarketsQuery => {
   const markets = [protoMarket];
 
   const defaultResult = {

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
@@ -16,9 +15,9 @@ import { YourStake } from './your-stake';
 export const StakingNodeContainer = () => {
   return (
     <StakingWalletsContainer>
-      {({ currVegaKey }) => (
+      {({ pubKey }) => (
         <StakingNodesContainer>
-          {({ data }) => <StakingNode vegaKey={currVegaKey} data={data} />}
+          {({ data }) => <StakingNode pubKey={pubKey} data={data} />}
         </StakingNodesContainer>
       )}
     </StakingWalletsContainer>
@@ -26,11 +25,11 @@ export const StakingNodeContainer = () => {
 };
 
 interface StakingNodeProps {
-  vegaKey: VegaKeyExtended | null;
+  pubKey: string;
   data?: StakingQueryResult;
 }
 
-export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
+export const StakingNode = ({ pubKey: vegaKey, data }: StakingNodeProps) => {
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
 
@@ -113,7 +112,6 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
           />
         </section>
       )}
-
       {vegaKey ? (
         <>
           <section className="mb-4">
@@ -125,7 +123,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
           <section>
             <StakingForm
-              pubkey={vegaKey.pub}
+              pubKey={vegaKey}
               nodeId={nodeInfo.id}
               nodeName={nodeInfo.name}
               availableStakeToAdd={unstaked}

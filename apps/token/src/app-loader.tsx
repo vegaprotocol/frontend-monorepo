@@ -22,7 +22,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
   const { VEGA_URL } = useEnvironment();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
@@ -68,10 +68,10 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   }, [token, appDispatch, staking, vesting]);
 
   React.useEffect(() => {
-    if (account && keypair) {
-      setAssociatedBalances(account, keypair.pub);
+    if (account && pubKey) {
+      setAssociatedBalances(account, pubKey);
     }
-  }, [setAssociatedBalances, account, keypair]);
+  }, [setAssociatedBalances, account, pubKey]);
 
   React.useEffect(() => {
     const networkLimitsEndpoint = new URL('/network/limits', VEGA_URL).href;

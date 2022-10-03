@@ -1,13 +1,12 @@
 import { useCallback } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
+import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { usePositionEvent } from '../';
 import type { Position } from '../';
 
 export const useClosePosition = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const {
     send,
@@ -24,14 +23,12 @@ export const useClosePosition = () => {
 
   const submit = useCallback(
     async (position: Position) => {
-      if (!keypair || position.openVolume === '0') {
+      if (!pubKey || position.openVolume === '0') {
         return;
       }
 
       try {
-        const res = await send({
-          pubKey: keypair.pub,
-          propagate: true,
+        const res = await send(pubKey, {
           orderCancellation: {
             marketId: position.marketId,
             orderId: '',
@@ -41,7 +38,7 @@ export const useClosePosition = () => {
         if (res?.signature) {
           const resId = determineId(res.signature);
           if (resId) {
-            waitForPositionEvent(resId, keypair.pub, () => {
+            waitForPositionEvent(resId, pubKey, () => {
               setComplete();
             });
           }
@@ -52,7 +49,7 @@ export const useClosePosition = () => {
         return;
       }
     },
-    [keypair, send, setComplete, waitForPositionEvent]
+    [pubKey, send, setComplete, waitForPositionEvent]
   );
 
   return {

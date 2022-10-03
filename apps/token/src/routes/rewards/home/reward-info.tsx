@@ -11,11 +11,10 @@ import type {
   Rewards_party_delegations,
   Rewards_party_rewardDetails_rewards,
 } from './__generated__/Rewards';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 interface RewardInfoProps {
   data: Rewards | undefined;
-  currVegaKey: VegaKeyExtended;
+  currVegaKey: string;
   rewardAssetId: string;
 }
 
@@ -61,7 +60,7 @@ export const RewardInfo = ({
   return (
     <div>
       <p>
-        {t('Connected Vega key')}: {currVegaKey.pub}
+        {t('Connected Vega key')}: {currVegaKey}
       </p>
       {vegaTokenRewards.length ? (
         vegaTokenRewards.map((reward, i) => {

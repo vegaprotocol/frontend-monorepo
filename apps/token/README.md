@@ -45,7 +45,6 @@ There are a few different configuration options offered for this app:
 | `NX_APP_DEX_STAKING_DISABLED`       | Disable the dex liquidity page an show a coming soon message                                                                                         |
 | `NX_APP_FAIRGROUND`                 | Change styling to be themed as the fairground version of the website                                                                                 |
 | `NX_APP_INFURA_ID`                  | Infura fallback for if the user does not have a web3 compatible browser                                                                              |
-| `NX_APP_HOSTED_WALLET_ENABLED`      | If the hosted wallet is enabled or not. If so then allow users to login using the hosted wallet                                                      |
 | `NX_APP_ENV`                        | Change network to connect to. When set to CUSTOM use CUSTOM\_\* vars for network parameters                                                          |
 | `NX_ETH_URL_CONNECT` (optional)     | If set to true the below two must also be set. This allows siging transactions in brower to allow to connect to a local ganache node through cypress |
 | `NX_ETH_WALLET_MNEMONIC` (optional) | The mnemonic to be used to sign transactions with in browser                                                                                         |

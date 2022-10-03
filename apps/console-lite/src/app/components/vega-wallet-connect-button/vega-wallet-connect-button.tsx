@@ -10,8 +10,8 @@ export const VegaWalletConnectButton = ({
   setConnectDialog,
   setManageDialog,
 }: VegaWalletConnectButtonProps) => {
-  const { keypair } = useVegaWallet();
-  const isConnected = keypair !== null;
+  const { pubKey } = useVegaWallet();
+  const isConnected = pubKey !== null;
 
   const handleClick = () => {
     if (isConnected) {
@@ -31,7 +31,7 @@ export const VegaWalletConnectButton = ({
         onClick={handleClick}
         className="ml-auto inline-block text-ui-small font-mono hover:underline"
       >
-        {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
+        {isConnected ? truncateByChars(pubKey) : 'Connect Vega wallet'}
       </button>
     </span>
   );
