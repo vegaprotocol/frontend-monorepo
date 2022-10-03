@@ -1,128 +1,133 @@
 .App {
-    font-family: sans-serif;
-    text-align: center;
+  font-family: sans-serif;
+  text-align: center;
 
-    width: 300px;
-    margin: auto;
+  width: 300px;
+  margin: auto;
 }
 
 .health {
-    width: 100%;
+  width: 100%;
 }
 
 .health-wrapper {
-    padding: 8px 0;
-    position: relative;
+  padding: 8px 0;
+  position: relative;
 }
 
 .health-inner {
-    overflow: hidden;
-    position: relative;
-    height: 16px;
-    width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 16px;
+  width: 100%;
 }
 
 .health-full {
-    background: #f5f5f5;
-    height: 100%;
+  background: #f5f5f5;
+  height: 100%;
 }
 
 .health-committed {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .health-committed--continuous {
-    background-color: #00a88a;
+  background-color: #00a88a;
 }
 
 .health-committed--auction {
-    background-color: #fb8e7f;
+  background-color: #fb8e7f;
 }
 
 .health-committed--open {
-    background-color: #68e2e4;
+  background-color: #68e2e4;
 }
 
 .health-target-container {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translateX(-50%);
-    padding: 0 5px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  padding: 0 5px;
 }
 
 .health-target {
-    width: 2px;
-    height: 32px;
-    background-color: black;
+  width: 2px;
+  height: 32px;
+  background-color: black;
 }
 
 .health-copy {
-    font-size: 8px;
-    line-height: 144%;
-    font-weight: 500;
+  font-size: 8px;
+  line-height: 144%;
+  font-weight: 500;
 }
 
 .health-size--large .health-inner {
-    height: 32px;
+  height: 32px;
 }
 
 .health-size--large .health-target {
-    height: 72px;
+  height: 72px;
 }
 
 .health-size--large .health-wrapper {
-    padding: 20px 0;
+  padding: 20px 0;
 }
 
 .health-size--large .health-copy {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .health-tooltip {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -120%);
-    border: 1px solid #bfccd6;
-    background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  border: 1px solid #bfccd6;
+  background-color: #fff;
+}
+
+.health-committed-tooltip {
+  min-width: 90px;
 }
 
 .health-committed-tooltip,
 .health-target-tooltip {
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
 }
 
 .health-tooltip::before,
 .health-tooltip::after {
-    content: " ";
-    position: absolute;
-    left: calc(50% - 8px);
-    bottom: 1px;
-    width: 0;
-    height: 0;
-    transform: translate(50%, 100%);
+  content: ' ';
+  position: absolute;
+  left: calc(50% - 8px);
+  bottom: 1px;
+  width: 0;
+  height: 0;
+  transform: translate(50%, 100%);
 }
 
 .health-tooltip::before {
-    bottom: -1px;
-    border: 4px solid;
-    border-color: #bfccd6 transparent transparent transparent;
+  bottom: -1px;
+  border: 4px solid;
+  border-color: #bfccd6 transparent transparent transparent;
 }
 
 .health-tooltip::after {
-    border: 4px solid;
-    border-color: white transparent transparent transparent;
+  border: 4px solid;
+  border-color: white transparent transparent transparent;
 }
 
 .health-tooltip-copy {
-    font-size: 8px;
-    line-height: 1.2em;
-    font-weight: 500;
+  font-size: 8px;
+  line-height: 1.2em;
+  font-weight: 500;
 }
