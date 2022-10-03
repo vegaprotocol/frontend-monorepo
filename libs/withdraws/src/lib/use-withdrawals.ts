@@ -122,7 +122,13 @@ export const useWithdrawals = () => {
    * withdrawals that are completed or being completed
    */
   const completed = useMemo(() => {
-    return withdrawals.filter((w) => w.txHash);
+    return withdrawals
+      .filter((w) => w.txHash)
+      .sort(
+        (a, b) =>
+          new Date(b.withdrawnTimestamp || b.createdTimestamp).getTime() -
+          new Date(a.withdrawnTimestamp || a.createdTimestamp).getTime()
+      );
   }, [withdrawals]);
 
   return {

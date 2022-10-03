@@ -20,21 +20,14 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const nonPendingWithdrawals = withdrawals
-    .filter((w) => w.txHash)
-    .sort(
-      (a, b) =>
-        new Date(b.withdrawnTimestamp || b.createdTimestamp).getTime() -
-        new Date(a.withdrawnTimestamp || a.createdTimestamp).getTime()
-    );
 
   return (
     <AgGrid
-      rowData={nonPendingWithdrawals}
+      rowData={withdrawals}
       overlayNoRowsTemplate={t('No withdrawals')}
       defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%' }}
-      components={{ RecipientCell }}
+      components={{ RecipientCell, StatusCell }}
       suppressCellFocus={true}
       domLayout="autoHeight"
       rowHeight={30}
@@ -79,17 +72,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
       <AgGridColumn
         headerName={t('Status')}
         field="status"
-        cellRenderer={({
-          data,
-        }: VegaICellRendererParams<WithdrawalFields, 'status'>) => {
-          if (data.pendingOnForeignChain || !data.txHash) {
-            return <span>{t('Pending')}</span>;
-          }
-          if (data.status === WithdrawalStatus.STATUS_FINALIZED) {
-            return <span>{t('Completed')}</span>;
-          }
-          return <span>{t('Failed')}</span>;
-        }}
+        cellRenderer="StatusCell"
       />
       <AgGridColumn
         headerName={t('Transaction')}
@@ -112,6 +95,19 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
       />
     </AgGrid>
   );
+};
+
+export const StatusCell = ({ data }: { data: WithdrawalFields }) => {
+  if (data.pendingOnForeignChain || !data.txHash) {
+    return <span>{t('Pending')}</span>;
+  }
+  if (data.status === WithdrawalStatus.STATUS_FINALIZED) {
+    return <span>{t('Completed')}</span>;
+  }
+  if (data.status === WithdrawalStatus.STATUS_REJECTED) {
+    return <span>{t('Rejected')}</span>;
+  }
+  return <span>{t('Failed')}</span>;
 };
 
 export interface RecipientCellProps

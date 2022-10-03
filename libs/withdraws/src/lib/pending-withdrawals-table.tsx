@@ -50,6 +50,7 @@ export const PendingWithdrawalsTable = ({
         overlayNoRowsTemplate={t('No withdrawals')}
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%' }}
+        components={{ CompleteCell }}
         suppressCellFocus={true}
         domLayout="autoHeight"
         rowHeight={30}
@@ -125,16 +126,7 @@ export const PendingWithdrawalsTable = ({
               submit(withdrawal.id);
             },
           }}
-          cellRenderer={({
-            data,
-            complete,
-          }: VegaICellRendererParams<WithdrawalFields, 'status'> & {
-            complete: (withdrawal: WithdrawalFields) => void;
-          }) => (
-            <Button size="xs" onClick={() => complete(data)}>
-              {t('Complete withdrawal')}
-            </Button>
-          )}
+          cellRenderer="CompleteCell"
         />
       </AgGrid>
       <Dialog
@@ -155,6 +147,16 @@ export const PendingWithdrawalsTable = ({
     </>
   );
 };
+
+export type CompleteCellProps = {
+  data: WithdrawalFields;
+  complete: (withdrawal: WithdrawalFields) => void;
+};
+export const CompleteCell = ({ data, complete }: CompleteCellProps) => (
+  <Button size="xs" onClick={() => complete(data)}>
+    {t('Complete withdrawal')}
+  </Button>
+);
 
 const getVerifyDialogProps = (status: ApprovalStatus) => {
   if (status === ApprovalStatus.Error) {

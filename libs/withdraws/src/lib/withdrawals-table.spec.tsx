@@ -1,18 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import {
-  addDecimalsFormatNumber,
-  getDateTimeFormat,
-} from '@vegaprotocol/react-helpers';
-import { WithdrawalStatus, WithdrawalStatusMapping } from '@vegaprotocol/types';
+import { act, render, screen } from '@testing-library/react';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
-import type {
-  StatusCellProps,
-  WithdrawalsTableProps,
-} from './withdrawals-table';
+import type { WithdrawalsTableProps } from './withdrawals-table';
 import { StatusCell } from './withdrawals-table';
 import { WithdrawalsTable } from './withdrawals-table';
-import type { Withdrawals_party_withdrawalsConnection_edges_node } from './__generated__/Withdrawals';
+import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
@@ -37,19 +30,19 @@ describe('renders the correct columns', () => {
       'Asset',
       'Amount',
       'Recipient',
-      'Created at',
-      'TX hash',
+      'Completed',
       'Status',
+      'Transaction',
     ]);
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       'asset-symbol',
-      addDecimalsFormatNumber(withdrawal.amount, withdrawal.asset.decimals),
-      '123456\u2026123456',
-      getDateTimeFormat().format(new Date(withdrawal.createdTimestamp)),
+      '1.00',
+      '123456…123456',
       '-',
-      WithdrawalStatusMapping[withdrawal.status],
+      'Pending',
+      '-',
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
@@ -59,6 +52,7 @@ describe('renders the correct columns', () => {
   it('completed withdrawal', async () => {
     const withdrawal = generateWithdrawal({
       txHash: '0x1234567891011121314',
+      withdrawnTimestamp: '2022-04-21T00:00:00',
       status: WithdrawalStatus.STATUS_FINALIZED,
     });
 
@@ -69,11 +63,11 @@ describe('renders the correct columns', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       'asset-symbol',
-      addDecimalsFormatNumber(withdrawal.amount, withdrawal.asset.decimals),
+      '1.00',
       '123456…123456',
-      getDateTimeFormat().format(new Date(withdrawal.createdTimestamp)),
+      '21/04/2022, 00:00:00',
+      'Completed',
       '0x1234…121314',
-      WithdrawalStatusMapping[withdrawal.status],
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
@@ -82,51 +76,47 @@ describe('renders the correct columns', () => {
 });
 
 describe('StatusCell', () => {
-  let props: StatusCellProps;
-  let withdrawal: Withdrawals_party_withdrawalsConnection_edges_node;
-  let mockComplete: jest.Mock;
+  let props: { data: WithdrawalFields };
+  let withdrawal: WithdrawalFields;
 
   beforeEach(() => {
     withdrawal = generateWithdrawal();
-    mockComplete = jest.fn();
-    // @ts-ignore dont need full ICellRendererParams
     props = {
-      value: withdrawal.status,
       data: withdrawal,
-      complete: mockComplete,
     };
   });
 
   it('Open', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = null;
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Open')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
-    expect(mockComplete).toHaveBeenCalled();
+    expect(screen.getByText('Pending')).toBeInTheDocument();
   });
 
   it('Pending', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = true;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Pending')).toBeInTheDocument();
-    expect(screen.getByText('View on Etherscan')).toHaveAttribute(
-      'href',
-      expect.stringContaining(props.data.txHash)
-    );
   });
 
-  it('Finalized', () => {
-    props.value = WithdrawalStatus.STATUS_FINALIZED;
+  it('Completed', () => {
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
+    props.data.status = WithdrawalStatus.STATUS_FINALIZED;
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Finalized')).toBeInTheDocument();
+    expect(screen.getByText('Completed')).toBeInTheDocument();
+  });
+
+  it('Rejected', () => {
+    props.data.pendingOnForeignChain = false;
+    props.data.txHash = '0x123';
+    props.data.status = WithdrawalStatus.STATUS_REJECTED;
+    render(<StatusCell {...props} />);
+
+    expect(screen.getByText('Rejected')).toBeInTheDocument();
   });
 });
