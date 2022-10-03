@@ -1,3 +1,30 @@
+fragment LiquidityProvisionFields on LiquidityProvision {
+  party {
+    id
+    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+      edges {
+        node {
+          type
+          balance
+        }
+      }
+    }
+  }
+  createdAt
+  updatedAt
+  commitmentAmount
+  fee
+  status
+}
+
+fragment LiquidityProviderFeeShareFields on LiquidityProviderFeeShare {
+  party {
+    id
+  }
+  equityLikeShare
+  averageEntryValuation
+}
+
 query MarketLiquidity($marketId: ID!) {
   market(id: $marketId) {
     id
@@ -6,23 +33,7 @@ query MarketLiquidity($marketId: ID!) {
     liquidityProvisionsConnection {
       edges {
         node {
-          id
-          party {
-            id
-            accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-              edges {
-                node {
-                  type
-                  balance
-                }
-              }
-            }
-          }
-          createdAt
-          updatedAt
-          commitmentAmount
-          fee
-          status
+          ...LiquidityProvisionFields
         }
       }
     }
@@ -50,6 +61,20 @@ query MarketLiquidity($marketId: ID!) {
       targetStake
       marketValueProxy
       liquidityProviderFeeShare {
+        ...LiquidityProviderFeeShareFields
+      }
+    }
+  }
+}
+
+query LiquidityProviderFeeShare($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    data {
+      market {
+        id
+      }
+      liquidityProviderFeeShare {
         party {
           id
         }
@@ -57,5 +82,18 @@ query MarketLiquidity($marketId: ID!) {
         averageEntryValuation
       }
     }
+  }
+}
+
+subscription LiquidityProvisions($partyId: ID, $marketId: ID) {
+  liquidityProvisions(partyId: $partyId, marketId: $marketId) {
+    id
+    partyID
+    createdAt
+    updatedAt
+    marketID
+    commitmentAmount
+    fee
+    status
   }
 }

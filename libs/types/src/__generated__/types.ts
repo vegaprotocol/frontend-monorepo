@@ -3625,7 +3625,7 @@ export type QuerypartiesConnectionArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerypartyArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id: Scalars['ID'];
 };
 
 
