@@ -10,8 +10,8 @@ import {
   OrderTimeInForce,
   OrderType,
 } from '@vegaprotocol/types';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import type { Order } from './get-default-order';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
@@ -30,7 +30,7 @@ export type ValidationProps = {
   market: DealTicketMarketFragment;
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
-  fieldErrors?: FieldErrors<Order>;
+  fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
 };
 
 export const marketTranslations = (marketState: MarketState) => {

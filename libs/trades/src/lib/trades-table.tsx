@@ -11,7 +11,7 @@ import {
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
-import type { TradeWithMarket } from './trades-data-provider';
+import type { Trade } from './trades-data-provider';
 import BigNumber from 'bignumber.js';
 
 export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
@@ -39,10 +39,7 @@ const changeCellClass =
   };
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
-  successCallback(
-    rowsThisBlock: (TradeWithMarket | null)[],
-    lastRow?: number
-  ): void;
+  successCallback(rowsThisBlock: (Trade | null)[], lastRow?: number): void;
 }
 
 export interface Datasource extends IDatasource {
@@ -50,7 +47,7 @@ export interface Datasource extends IDatasource {
 }
 
 interface Props extends AgGridReactProps {
-  rowData?: TradeWithMarket[] | null;
+  rowData?: Trade[] | null;
   datasource?: Datasource;
 }
 
@@ -58,7 +55,7 @@ type TradesTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: TradeWithMarket | null;
+  data: Trade | null;
 };
 
 export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
@@ -83,7 +80,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: TradesTableValueFormatterParams & {
-          value: TradeWithMarket['price'];
+          value: Trade['price'];
         }) => {
           if (!data?.market) {
             return null;
@@ -100,7 +97,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: TradesTableValueFormatterParams & {
-          value: TradeWithMarket['size'];
+          value: Trade['size'];
         }) => {
           if (!data?.market) {
             return null;
@@ -116,7 +113,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         valueFormatter={({
           value,
         }: TradesTableValueFormatterParams & {
-          value: TradeWithMarket['createdAt'];
+          value: Trade['createdAt'];
         }) => {
           return value && getDateTimeFormat().format(new Date(value));
         }}

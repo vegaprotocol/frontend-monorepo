@@ -94,11 +94,13 @@ const update = (
   });
 };
 
-export type Trade = Trades_market_tradesConnection_edges_node;
-export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
-export type TradeWithMarketEdge = {
+export type Trade = Omit<
+  Trades_market_tradesConnection_edges_node,
+  'market'
+> & { market?: Market };
+export type TradeEdge = {
   cursor: Trades_market_tradesConnection_edges['cursor'];
-  node: TradeWithMarket;
+  node: Trade;
 };
 
 const getData = (
@@ -126,11 +128,11 @@ export const tradesProvider = makeDataProvider({
 });
 
 export const tradesWithMarketProvider = makeDerivedDataProvider<
-  (TradeWithMarketEdge | null)[],
-  TradeWithMarket[]
+  (TradeEdge | null)[],
+  Trade[]
 >(
   [tradesProvider, marketsProvider],
-  (partsData): TradeWithMarketEdge[] | null =>
+  (partsData): TradeEdge[] | null =>
     (partsData[0] as ReturnType<typeof getData>)?.map((edge) => ({
       cursor: edge.cursor,
       node: {
@@ -140,11 +142,11 @@ export const tradesWithMarketProvider = makeDerivedDataProvider<
         ),
       },
     })) || null,
-  (parts): TradeWithMarket[] | undefined => {
+  (parts): Trade[] | undefined => {
     if (!parts[0].isUpdate) {
       return;
     }
-    // map FillsSub_trades[] from subscription to updated TradeWithMarket[]
+    // map FillsSub_trades[] from subscription to updated Trade[]
     return (parts[0].delta as ReturnType<typeof getDelta>).map(
       (deltaTrade) => ({
         ...((parts[0].data as ReturnType<typeof getData>)?.find(

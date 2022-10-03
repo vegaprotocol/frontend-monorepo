@@ -13,7 +13,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
-import type { Order } from './use-order-submit';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
 import type { OrderEvent, OrderEvent_busEvents } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -159,7 +159,7 @@ describe('useOrderSubmit', () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
       side: Side.SIDE_BUY,
       price: '123456789',
-      expiresAt: new Date('2022-01-01'),
+      expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
       result.current.submit({ ...order, marketId: defaultMarket.id });
@@ -197,7 +197,7 @@ describe('useOrderSubmit', () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       side: Side.SIDE_BUY,
       price: '123456789',
-      expiresAt: new Date('2022-01-01'),
+      expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
       result.current.submit({ ...order, marketId: defaultMarket.id });
@@ -235,7 +235,7 @@ describe('useOrderSubmit', () => {
       keypair: null,
     });
     await act(async () => {
-      result.current.submit({} as Order);
+      result.current.submit({} as OrderSubmissionBody['orderSubmission']);
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });
@@ -251,7 +251,7 @@ describe('useOrderSubmit', () => {
       keypair,
     });
     await act(async () => {
-      result.current.submit({} as Order);
+      result.current.submit({} as OrderSubmissionBody['orderSubmission']);
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });

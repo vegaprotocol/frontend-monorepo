@@ -1,5 +1,5 @@
 import useMarketPositions from './use-market-positions';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
 import { AccountType, Side } from '@vegaprotocol/types';
@@ -11,7 +11,7 @@ interface Props {
   marketId: string;
   price?: string;
   settlementAssetId: string;
-  order: Order;
+  order: OrderSubmissionBody['orderSubmission'];
 }
 
 const getSize = (balance: string, price: string) =>

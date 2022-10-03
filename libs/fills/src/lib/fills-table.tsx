@@ -15,7 +15,7 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { TradeWithMarket } from './fills-data-provider';
+import type { Trade } from './fills-data-provider';
 import type { Market } from '@vegaprotocol/market-list';
 import classNames from 'classnames';
 
@@ -27,7 +27,7 @@ type AccountsTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: TradeWithMarket | null;
+  data: Trade | null;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
@@ -49,7 +49,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Size')}
           type="rightAligned"
           field="size"
-          cellClass={({ data }: { data: TradeWithMarket }) => {
+          cellClass={({ data }: { data: Trade }) => {
             return classNames('text-right', {
               [positiveClassNames]: data?.buyer.id === partyId,
               [negativeClassNames]: data?.seller.id,
@@ -86,7 +86,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
           }: AccountsTableValueFormatterParams & {
-            value: TradeWithMarket['createdAt'];
+            value: Trade['createdAt'];
           }) => {
             if (value === undefined) {
               return value;
@@ -103,7 +103,7 @@ const formatPrice = ({
   value,
   data,
 }: AccountsTableValueFormatterParams & {
-  value?: TradeWithMarket['price'];
+  value?: Trade['price'];
 }) => {
   if (value === undefined || !data || !data?.market) {
     return undefined;
@@ -122,7 +122,7 @@ const formatSize = (partyId: string) => {
     value,
     data,
   }: AccountsTableValueFormatterParams & {
-    value?: TradeWithMarket['size'];
+    value?: Trade['size'];
   }) => {
     if (value === undefined || !data || !data?.market) {
       return undefined;
@@ -146,7 +146,7 @@ const formatTotal = ({
   value,
   data,
 }: AccountsTableValueFormatterParams & {
-  value?: TradeWithMarket['price'];
+  value?: Trade['price'];
 }) => {
   if (value === undefined || !data || !data?.market) {
     return undefined;
@@ -168,7 +168,7 @@ const formatRole = (partyId: string) => {
     value,
     data,
   }: AccountsTableValueFormatterParams & {
-    value?: TradeWithMarket['aggressor'];
+    value?: Trade['aggressor'];
   }) => {
     if (value === undefined) {
       return value;

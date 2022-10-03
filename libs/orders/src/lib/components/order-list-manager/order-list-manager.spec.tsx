@@ -2,10 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/react-helpers';
 import type { Orders_party_ordersConnection_edges_node } from '../';
-import * as orderListMock from '../';
+import * as orderListMock from '../order-list/order-list';
 import { forwardRef } from 'react';
-
-jest.mock('./order-list');
 
 it('Renders a loading state while awaiting orders', () => {
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({

@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-import type { TradeWithMarket } from './fills-data-provider';
+import type { Trade } from './fills-data-provider';
 
 import { FillsTable } from './fills-table';
 import { generateFill } from './test-helpers';
@@ -21,7 +21,7 @@ const waitForDataToHaveLoaded = () => {
 };
 
 describe('FillsTable', () => {
-  let defaultFill: PartialDeep<TradeWithMarket>;
+  let defaultFill: PartialDeep<Trade>;
 
   beforeEach(() => {
     defaultFill = {

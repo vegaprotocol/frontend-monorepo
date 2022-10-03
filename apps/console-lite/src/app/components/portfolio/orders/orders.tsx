@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import { useOutletContext } from 'react-router-dom';
-import type { OrderWithMarket } from '@vegaprotocol/orders';
+import type { Order } from '@vegaprotocol/orders';
 import {
   useOrderCancel,
   useOrderListData,
@@ -20,7 +20,7 @@ import useColumnDefinitions from './use-column-definitions';
 
 const OrdersManager = () => {
   const { partyId } = useOutletContext<{ partyId: string }>();
-  const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
+  const [editOrder, setEditOrder] = useState<Order | null>(null);
   const orderCancel = useOrderCancel();
   const orderEdit = useOrderEdit(editOrder);
   const { columnDefs, defaultColDef } = useColumnDefinitions({
@@ -54,7 +54,7 @@ const OrdersManager = () => {
       data={data?.length ? data : null}
       noDataMessage={NO_DATA_MESSAGE}
     >
-      <ConsoleLiteGrid<OrderWithMarket>
+      <ConsoleLiteGrid<Order>
         ref={gridRef}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}
         rowData={data?.length ? undefined : []}

@@ -6,7 +6,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../';
-import type { OrderWithMarketEdge, OrderWithMarket } from '../';
+import type { OrderEdge, Order } from '../';
 
 interface Props {
   partyId: string;
@@ -19,7 +19,7 @@ export const useOrderListData = ({
   gridRef,
   scrolledToTop,
 }: Props) => {
-  const dataRef = useRef<(OrderWithMarketEdge | null)[] | null>(null);
+  const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
@@ -40,13 +40,7 @@ export const useOrderListData = ({
   }, [gridRef]);
 
   const update = useCallback(
-    ({
-      data,
-      delta,
-    }: {
-      data: (OrderWithMarketEdge | null)[];
-      delta: OrderWithMarket[];
-    }) => {
+    ({ data, delta }: { data: (OrderEdge | null)[]; delta: Order[] }) => {
       if (!gridRef.current?.api) {
         return false;
       }
@@ -74,7 +68,7 @@ export const useOrderListData = ({
       data,
       totalCount,
     }: {
-      data: (OrderWithMarketEdge | null)[];
+      data: (OrderEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -93,7 +87,7 @@ export const useOrderListData = ({
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<OrderWithMarketEdge>(
+  const getRows = makeInfiniteScrollGetRows<OrderEdge>(
     newRows,
     dataRef,
     totalCountRef,

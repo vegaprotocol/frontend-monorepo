@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import type { TradeWithMarket } from '@vegaprotocol/fills';
+import type { Trade } from '@vegaprotocol/fills';
 import classNames from 'classnames';
 import {
   addDecimal,
@@ -34,7 +34,7 @@ const useColumnDefinitions = ({ partyId }: Props) => {
         headerClass: 'uppercase',
         field: 'size',
         width: 100,
-        cellClass: ({ data }: { data: TradeWithMarket }) => {
+        cellClass: ({ data }: { data: Trade }) => {
           return classNames('!flex h-full items-center justify-center', {
             [positiveClassNames]: data?.buyer.id === partyId,
             [negativeClassNames]: data?.seller.id,

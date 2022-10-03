@@ -6,21 +6,11 @@ import { determineId, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
-import type { Side } from '@vegaprotocol/types';
 import { OrderTimeInForce } from '@vegaprotocol/types';
 import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-
-export interface Order {
-  marketId: string;
-  type: OrderType;
-  size: string;
-  side: Side;
-  timeInForce: OrderTimeInForce;
-  price?: string;
-  expiresAt?: Date;
-}
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 export const getOrderDialogTitle = (
   status?: OrderStatus
@@ -116,7 +106,7 @@ export const useOrderSubmit = () => {
   }, [resetTransaction]);
 
   const submit = useCallback(
-    async (order: Order) => {
+    async (order: OrderSubmissionBody['orderSubmission']) => {
       if (!keypair || !order.side) {
         return;
       }
