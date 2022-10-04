@@ -1,12 +1,11 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  Trades,
-  Trades_market_tradesConnection_edges_node,
-} from '@vegaprotocol/trades';
+import type { TradesQuery, TradeFieldsFragment } from '@vegaprotocol/trades';
 
-export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
-  const trades: Trades_market_tradesConnection_edges_node[] = [
+export const generateTrades = (
+  override?: PartialDeep<TradesQuery>
+): TradesQuery => {
+  const trades: TradeFieldsFragment[] = [
     {
       id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',
       price: '17116898',
@@ -41,7 +40,7 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
       __typename: 'Trade',
     },
   ];
-  const defaultResult: Trades = {
+  const defaultResult: TradesQuery = {
     market: {
       id: 'market-0',
       tradesConnection: {

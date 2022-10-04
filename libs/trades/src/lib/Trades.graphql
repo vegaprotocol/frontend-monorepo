@@ -5,8 +5,6 @@ fragment TradeFields on Trade {
   createdAt
   market {
     id
-    decimalPlaces
-    positionDecimalPlaces
   }
 }
 
@@ -30,30 +28,12 @@ query Trades($marketId: ID!, $pagination: Pagination) {
   }
 }
 
-subscription TradesSub($marketId: ID!) {
+subscription TradesUpdate($marketId: ID!) {
   trades(marketId: $marketId) {
     id
-    marketId
-    buyOrder
-    sellOrder
-    buyerId
-    sellerId
-    aggressor
     price
     size
     createdAt
-    type
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    buyerAuctionBatch
-    sellerAuctionBatch
+    marketId
   }
 }
