@@ -1,9 +1,9 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import { AssetsDocument } from './__generated__/Accounts';
+import { AssetsDocument } from './__generated___/Accounts';
 import type {
   AssetsQuery,
   AssetsFieldsFragment,
-} from './__generated__/Accounts';
+} from './__generated___/Accounts';
 
 const getData = (responseData: AssetsQuery) =>
   responseData.assetsConnection?.edges
