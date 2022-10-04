@@ -6,12 +6,9 @@ import type {
 } from './__generated__/Accounts';
 
 const getData = (responseData: AssetsQuery) =>
-  responseData.assetsConnection?.edges?.reduce((aggr, edge) => {
-    if (edge?.node) {
-      aggr.push(edge.node);
-    }
-    return aggr;
-  }, [] as AssetsFieldsFragment[]) || null;
+  responseData.assetsConnection?.edges
+    ?.filter((e) => Boolean(e?.node))
+    .map((e) => e?.node as AssetsFieldsFragment) ?? null;
 
 export const assetProvider = makeDataProvider<
   AssetsQuery,

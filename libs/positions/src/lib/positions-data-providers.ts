@@ -25,13 +25,15 @@ import type { MarketTradingMode } from '@vegaprotocol/types';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import { marginsDataProvider } from './margin-data-provider';
-import type { Margins_party } from './__generated__/Margins';
+import type {
+  Margins_party,
+  Margins_party_marginsConnection_edges_node,
+} from './__generated__/Margins';
 
-interface PositionMarginLevel {
-  maintenanceLevel: string;
-  searchLevel: string;
-  initialLevel: string;
-}
+type PositionMarginLevel = Pick<
+  Margins_party_marginsConnection_edges_node,
+  'maintenanceLevel' | 'searchLevel' | 'initialLevel'
+>;
 
 interface PositionRejoined {
   realisedPNL: string;

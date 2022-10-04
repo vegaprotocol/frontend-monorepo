@@ -10,7 +10,7 @@ import type {
   MarketsCandlesQuery,
   Candle,
   MarketsDataQuery,
-  MarketsDataQuery_marketsConnection_edges_node,
+  MarketDataFieldsFragment,
 } from '@vegaprotocol/market-list';
 import { protoMarket, protoCandles } from './commons';
 import type { PartialDeep } from 'type-fest';
@@ -1145,7 +1145,7 @@ export const generateFillsMarkets = () => {
 export const generateMarketsData = (
   override?: PartialDeep<MarketsDataQuery>
 ): MarketsDataQuery => {
-  const markets: MarketsDataQuery_marketsConnection_edges_node[] = [
+  const markets = [
     {
       data: {
         market: {
@@ -1193,7 +1193,10 @@ export const generateMarketsData = (
       __typename: 'MarketConnection',
       edges: markets.map((node) => ({
         __typename: 'MarketEdge',
-        node,
+        node: node as {
+          __typename: 'Market';
+          data: MarketDataFieldsFragment;
+        },
       })),
     },
   };

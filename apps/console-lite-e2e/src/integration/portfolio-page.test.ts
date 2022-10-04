@@ -59,7 +59,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Positions', generatePositions());
         aliasQuery(req, 'Margins', generateMargins());
         aliasQuery(req, 'Markets', generatePositionsMarkets());
-        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+        aliasQuery(req, 'MarketsData', generateMarketsData());
         aliasQuery(req, 'Accounts', generateAccounts());
         aliasQuery(req, 'Assets', generateAssets());
       });
@@ -89,7 +89,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Accounts', generateAccounts());
         aliasQuery(req, 'Margins', generateMargins());
         aliasQuery(req, 'Markets', generatePositionsMarkets());
-        aliasQuery(req, 'MarketsDataQuery', generateMarketsData());
+        aliasQuery(req, 'MarketsData', generateMarketsData());
         aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/positions');
