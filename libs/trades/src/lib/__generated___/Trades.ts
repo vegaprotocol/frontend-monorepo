@@ -3,7 +3,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } };
+export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string } };
 
 export type TradesQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -11,14 +11,14 @@ export type TradesQueryVariables = Types.Exact<{
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
+export type TradesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, tradesConnection?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: string, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null } | null };
 
-export type TradesSubSubscriptionVariables = Types.Exact<{
+export type TradesUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type TradesSubSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: string, type: Types.TradeType, buyerAuctionBatch?: number | null, sellerAuctionBatch?: number | null, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
+export type TradesUpdateSubscription = { __typename?: 'Subscription', trades?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: string, marketId: string }> | null };
 
 export const TradeFieldsFragmentDoc = gql`
     fragment TradeFields on Trade {
@@ -28,8 +28,6 @@ export const TradeFieldsFragmentDoc = gql`
   createdAt
   market {
     id
-    decimalPlaces
-    positionDecimalPlaces
   }
 }
     `;
@@ -83,55 +81,37 @@ export function useTradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Tra
 export type TradesQueryHookResult = ReturnType<typeof useTradesQuery>;
 export type TradesLazyQueryHookResult = ReturnType<typeof useTradesLazyQuery>;
 export type TradesQueryResult = Apollo.QueryResult<TradesQuery, TradesQueryVariables>;
-export const TradesSubDocument = gql`
-    subscription TradesSub($marketId: ID!) {
+export const TradesUpdateDocument = gql`
+    subscription TradesUpdate($marketId: ID!) {
   trades(marketId: $marketId) {
     id
-    marketId
-    buyOrder
-    sellOrder
-    buyerId
-    sellerId
-    aggressor
     price
     size
     createdAt
-    type
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    buyerAuctionBatch
-    sellerAuctionBatch
+    marketId
   }
 }
     `;
 
 /**
- * __useTradesSubSubscription__
+ * __useTradesUpdateSubscription__
  *
- * To run a query within a React component, call `useTradesSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useTradesSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTradesUpdateSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTradesUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTradesSubSubscription({
+ * const { data, loading, error } = useTradesUpdateSubscription({
  *   variables: {
  *      marketId: // value for 'marketId'
  *   },
  * });
  */
-export function useTradesSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<TradesSubSubscription, TradesSubSubscriptionVariables>) {
+export function useTradesUpdateSubscription(baseOptions: Apollo.SubscriptionHookOptions<TradesUpdateSubscription, TradesUpdateSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<TradesSubSubscription, TradesSubSubscriptionVariables>(TradesSubDocument, options);
+        return Apollo.useSubscription<TradesUpdateSubscription, TradesUpdateSubscriptionVariables>(TradesUpdateDocument, options);
       }
-export type TradesSubSubscriptionHookResult = ReturnType<typeof useTradesSubSubscription>;
-export type TradesSubSubscriptionResult = Apollo.SubscriptionResult<TradesSubSubscription>;
+export type TradesUpdateSubscriptionHookResult = ReturnType<typeof useTradesUpdateSubscription>;
+export type TradesUpdateSubscriptionResult = Apollo.SubscriptionResult<TradesUpdateSubscription>;

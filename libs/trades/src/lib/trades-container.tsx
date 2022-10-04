@@ -9,7 +9,7 @@ import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { Trade, TradeEdge } from './trades-data-provider';
-import type { TradesVariables } from './__generated__/Trades';
+import type { TradesQueryVariables } from './__generated___/Trades';
 
 interface TradesContainerProps {
   marketId: string;
@@ -22,7 +22,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
 
-  const variables = useMemo<TradesVariables>(
+  const variables = useMemo<TradesQueryVariables>(
     () => ({ marketId, maxTrades: MAX_TRADES }),
     [marketId]
   );
@@ -42,7 +42,13 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   }, []);
 
   const update = useCallback(
-    ({ data, delta }: { data: (TradeEdge | null)[]; delta: Trade[] }) => {
+    ({
+      data,
+      delta,
+    }: {
+      data: (TradeEdge | null)[] | null;
+      delta: Trade[];
+    }) => {
       if (!gridRef.current?.api) {
         return false;
       }
@@ -70,7 +76,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       totalCount,
     }: {
-      data: (TradeEdge | null)[];
+      data: (TradeEdge | null)[] | null;
       totalCount?: number;
     }) => {
       dataRef.current = data;
