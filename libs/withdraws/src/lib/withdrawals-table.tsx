@@ -63,7 +63,10 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
         field="withdrawnTimestamp"
         valueFormatter={({
           data,
-        }: VegaValueFormatterParams<WithdrawalFields>) => {
+        }: VegaValueFormatterParams<
+          WithdrawalFields,
+          'withdrawnTimestamp'
+        >) => {
           const ts = data.withdrawnTimestamp;
           if (!ts) return '-';
           return getDateTimeFormat().format(new Date(ts));
