@@ -8,12 +8,16 @@ import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
+  AssetsFieldsFragment,
 } from './__generated___/Accounts';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
+import { assetProvider } from './asset-data-provider';
 
 function isAccount(
   account:
@@ -35,6 +39,11 @@ export const getId = (
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId}`;
 
+export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
+  market?: Market | null;
+  asset: AssetsFieldsFragment;
+};
+
 const update = (
   data: AccountFieldsFragment[],
   deltas: AccountEventsSubscription['accounts']
@@ -46,7 +55,13 @@ const update = (
       if (index !== -1) {
         draft[index].balance = delta.balance;
       } else {
-        // #TODO handle new account
+        draft.unshift({
+          __typename: 'Account',
+          type: delta.type,
+          balance: delta.balance,
+          market: delta.marketId ? { id: delta.marketId } : null,
+          asset: { id: delta.assetId },
+        });
       }
     });
   });
@@ -62,7 +77,7 @@ const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
 
-export const accountsDataProvider = makeDataProvider<
+export const accountsBasedDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
@@ -75,7 +90,7 @@ export const accountsDataProvider = makeDataProvider<
   getDelta,
 });
 
-export interface AccountFields extends AccountFieldsFragment {
+export interface AccountFields extends Account {
   available: string;
   used: string;
   deposited: string;
@@ -92,15 +107,13 @@ const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
 ];
 
-const getAssetIds = (data: AccountFieldsFragment[]) =>
+const getAssetIds = (data: Account[]) =>
   Array.from(new Set(data.map((a) => a.asset.id))).sort();
 
 const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-export const getAccountData = (
-  data: AccountFieldsFragment[]
-): AccountFields[] => {
+export const getAccountData = (data: Account[]): AccountFields[] => {
   return getAssetIds(data).map((assetId) => {
     const accounts = data.filter((a) => a.asset.id === assetId);
     return accounts && getAssetAccountAggregation(accounts, assetId);
@@ -108,7 +121,7 @@ export const getAccountData = (
 };
 
 const getAssetAccountAggregation = (
-  accountList: AccountFieldsFragment[],
+  accountList: Account[],
   assetId: string
 ): AccountFields => {
   const accounts = accountList.filter((a) => a.asset.id === assetId);
@@ -141,10 +154,42 @@ const getAssetAccountAggregation = (
   return { ...balanceAccount, breakdown };
 };
 
+export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
+  [accountsBasedDataProvider, marketsProvider, assetProvider],
+  ([accounts, markets, assets]): Account[] | null => {
+    return accounts
+      ? accounts
+          .map((account: AccountFieldsFragment) => {
+            const market = markets.find(
+              (market: Market) => market.id === account.market?.id
+            );
+            const asset = assets.find(
+              (asset: AssetsFieldsFragment) => asset.id === account.asset?.id
+            );
+            if (asset) {
+              return {
+                ...account,
+                asset: {
+                  ...asset,
+                },
+                market: market
+                  ? {
+                      ...market,
+                    }
+                  : null,
+              };
+            }
+            return null;
+          })
+          .filter((account: Account | null) => Boolean(account))
+      : null;
+  }
+);
+
 export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
   AccountFields[],
   never
 >(
   [accountsDataProvider],
-  (parts) => parts[0] && getAccountData(parts[0] as AccountFieldsFragment[])
+  (parts) => parts[0] && getAccountData(parts[0] as Account[])
 );

@@ -1,15 +1,20 @@
 import merge from 'lodash/merge';
-import { MarketState } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import type {
   MarketsQuery,
   Market,
   MarketsCandlesQuery,
   Candle,
   MarketsDataQuery,
+  MarketDataFieldsFragment,
 } from '@vegaprotocol/market-list';
 import { protoMarket, protoCandles } from './commons';
+import type { PartialDeep } from 'type-fest';
 
-MarketState.STATE_SUSPENDED;
 export const generateSimpleMarkets = (): MarketsQuery => {
   const markets: Market[] = [
     { ...protoMarket },
@@ -1072,7 +1077,7 @@ export const generateMarketsCandles = (): MarketsCandlesQuery => {
   };
 };
 
-export const generateMarketsData = (): MarketsDataQuery => {
+export const generateEmptyMarketsData = (): MarketsDataQuery => {
   return {
     marketsConnection: {
       __typename: 'MarketConnection',
@@ -1133,6 +1138,242 @@ export const generateFillsMarkets = () => {
         __typename: 'MarketEdge',
         node: { ...protoMarket, id },
       })),
+    },
+  };
+};
+
+export const generateMarketsData = (
+  override?: PartialDeep<MarketsDataQuery>
+): MarketsDataQuery => {
+  const markets = [
+    {
+      data: {
+        market: {
+          id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '17588787',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+    {
+      data: {
+        market: {
+          id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+          __typename: 'Market',
+        },
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        staticMidPrice: '0',
+        indicativePrice: '0',
+        bestStaticBidPrice: '0',
+        bestStaticOfferPrice: '0',
+        indicativeVolume: '0',
+        bestBidPrice: '0',
+        bestOfferPrice: '0',
+        markPrice: '84377569',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        __typename: 'MarketData',
+      },
+      __typename: 'Market',
+    },
+  ];
+
+  const defaultResult: MarketsDataQuery = {
+    marketsConnection: {
+      __typename: 'MarketConnection',
+      edges: markets.map((node) => ({
+        __typename: 'MarketEdge',
+        node: node as {
+          __typename: 'Market';
+          data: MarketDataFieldsFragment;
+        },
+      })),
+    },
+  };
+
+  return merge(defaultResult, override);
+};
+
+export const generatePositionsMarkets = () => {
+  return {
+    marketsConnection: {
+      edges: [
+        {
+          node: {
+            id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+            decimalPlaces: 5,
+            positionDecimalPlaces: 0,
+            state: 'STATE_ACTIVE',
+            tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+            fees: {
+              factors: {
+                makerFee: '0.0002',
+                infrastructureFee: '0.0005',
+                liquidityFee: '0.001',
+                __typename: 'FeeFactors',
+              },
+              __typename: 'Fees',
+            },
+            tradableInstrument: {
+              instrument: {
+                id: '',
+                name: 'UNIDAI Monthly (30 Jun 2022)',
+                code: 'UNIDAI.MF21',
+                metadata: {
+                  tags: [
+                    'formerly:5A86B190C384997F',
+                    'quote:EURO',
+                    'ticker:TSLA',
+                    'class:equities/single-stock-futures',
+                    'sector:tech',
+                    'listing_venue:NASDAQ',
+                    'country:US',
+                  ],
+                  __typename: 'InstrumentMetadata',
+                },
+                product: {
+                  settlementAsset: {
+                    symbol: 'tDAI',
+                    decimals: 5,
+                    __typename: 'Asset',
+                  },
+                  quoteName: 'DAI',
+                  __typename: 'Future',
+                },
+                __typename: 'Instrument',
+              },
+              __typename: 'TradableInstrument',
+            },
+            marketTimestamps: {
+              open: '2022-09-28T14:03:19.937087458Z',
+              close: null,
+              __typename: 'MarketTimestamps',
+            },
+            __typename: 'Market',
+          },
+          __typename: 'MarketEdge',
+        },
+        {
+          node: {
+            id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+            decimalPlaces: 5,
+            positionDecimalPlaces: 0,
+            state: 'STATE_ACTIVE',
+            tradingMode: 'TRADING_MODE_CONTINUOUS',
+            fees: {
+              factors: {
+                makerFee: '0.0002',
+                infrastructureFee: '0.0005',
+                liquidityFee: '0.001',
+                __typename: 'FeeFactors',
+              },
+              __typename: 'Fees',
+            },
+            tradableInstrument: {
+              instrument: {
+                id: '',
+                name: 'AAVEDAI Monthly (30 Jun 2022)',
+                code: 'AAVEDAI.MF21',
+                metadata: {
+                  tags: [
+                    'formerly:2839D9B2329C9E70',
+                    'base:AAVE',
+                    'quote:DAI',
+                    'class:fx/crypto',
+                    'monthly',
+                    'sector:defi',
+                  ],
+                  __typename: 'InstrumentMetadata',
+                },
+                product: {
+                  settlementAsset: {
+                    symbol: 'tDAI',
+                    decimals: 5,
+                    __typename: 'Asset',
+                  },
+                  quoteName: 'DAI',
+                  __typename: 'Future',
+                },
+                __typename: 'Instrument',
+              },
+              __typename: 'TradableInstrument',
+            },
+            marketTimestamps: {
+              open: '2022-09-28T14:03:19.937087458Z',
+              close: null,
+              __typename: 'MarketTimestamps',
+            },
+            __typename: 'Market',
+          },
+          __typename: 'MarketEdge',
+        },
+        {
+          node: {
+            id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+            decimalPlaces: 5,
+            positionDecimalPlaces: 0,
+            state: 'STATE_ACTIVE',
+            tradingMode: 'TRADING_MODE_CONTINUOUS',
+            fees: {
+              factors: {
+                makerFee: '0.0002',
+                infrastructureFee: '0.0005',
+                liquidityFee: '0.001',
+                __typename: 'FeeFactors',
+              },
+              __typename: 'Fees',
+            },
+            tradableInstrument: {
+              instrument: {
+                id: '',
+                name: 'Tesla Quarterly (30 Jun 2022)',
+                code: 'TSLA.QM21',
+                metadata: {
+                  tags: [
+                    'formerly:4899E01009F1A721',
+                    'quote:USD',
+                    'ticker:AAPL',
+                    'class:equities/single-stock-futures',
+                    'sector:tech',
+                    'listing_venue:NASDAQ',
+                    'country:US',
+                  ],
+                  __typename: 'InstrumentMetadata',
+                },
+                product: {
+                  settlementAsset: {
+                    symbol: 'tEURO',
+                    decimals: 5,
+                    __typename: 'Asset',
+                  },
+                  quoteName: 'EURO',
+                  __typename: 'Future',
+                },
+                __typename: 'Instrument',
+              },
+              __typename: 'TradableInstrument',
+            },
+            marketTimestamps: {
+              open: '2022-09-28T14:03:19.937087458Z',
+              close: null,
+              __typename: 'MarketTimestamps',
+            },
+            __typename: 'Market',
+          },
+          __typename: 'MarketEdge',
+        },
+      ],
+      __typename: 'MarketConnection',
     },
   };
 };

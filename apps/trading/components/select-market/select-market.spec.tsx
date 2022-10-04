@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
-
 import type { ReactNode } from 'react';
-import type { MarketWithCandles, MarketWithData } from '../markets-provider';
-import type { MarketData } from '../market-data-provider';
-
+import type {
+  MarketWithCandles,
+  MarketWithData,
+  MarketData,
+} from '@vegaprotocol/market-list';
 import {
   SelectAllMarketsTableBody,
   SelectMarketLandingTable,
