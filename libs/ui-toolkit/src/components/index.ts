@@ -33,4 +33,5 @@ export * from './text-area';
 export * from './theme-switcher';
 export * from './toggle';
 export * from './tooltip';
+export * from './vega-icons';
 export * from './vega-logo';

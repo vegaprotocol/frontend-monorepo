@@ -1,10 +1,11 @@
 import { toDecimal } from '@vegaprotocol/react-helpers';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 
 export const getDefaultOrder = (market: {
   id: string;
   positionDecimalPlaces: number;
-}): Order => ({
+}): OrderSubmissionBody['orderSubmission'] => ({
   marketId: market.id,
   type: OrderType.TYPE_MARKET,
   side: Side.SIDE_BUY,

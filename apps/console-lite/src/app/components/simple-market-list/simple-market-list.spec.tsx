@@ -58,21 +58,17 @@ let marketsMock = [
   },
 ] as unknown as Market[];
 
-const LIB = '@vegaprotocol/market-list';
-const useMarketList = () => {
+const LIB = '@vegaprotocol/react-helpers';
+const useDataProvider = () => {
   return {
-    data: {
-      markets: marketsMock,
-      marketsData: [],
-      marketsCandles: [],
-    },
+    data: marketsMock,
     loading: false,
     error: false,
   };
 };
 jest.mock(LIB, () => ({
   ...jest.requireActual(LIB),
-  useMarketList: jest.fn(() => useMarketList()),
+  useDataProvider: jest.fn(() => useDataProvider()),
 }));
 
 const mockIsTradable = jest.fn((_arg) => true);

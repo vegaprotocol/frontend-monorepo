@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
-import type { NetworkParams as NetworkParamsResponse } from './__generated__';
+import type { NetworkParams as NetworkParamsResponse } from './__generated__/NetworkParams';
 
 export const NETWORK_PARAMETERS_QUERY = gql`
   query NetworkParams {

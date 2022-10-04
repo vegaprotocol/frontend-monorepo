@@ -4,7 +4,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 
-const singleRow: AccountFields = {
+const singleRow = {
   __typename: 'Account',
   type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
   balance: '125600000',
@@ -28,7 +28,7 @@ const singleRow: AccountFields = {
   available: '125600000',
   used: '125600000',
   deposited: '125600000',
-};
+} as AccountFields;
 const singleRowData = [singleRow];
 
 describe('BreakdownTable', () => {

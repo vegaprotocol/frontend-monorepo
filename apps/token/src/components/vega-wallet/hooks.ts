@@ -63,7 +63,7 @@ const DELEGATIONS_QUERY = gql`
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
   const { t } = useTranslation();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const client = useApolloClient();
   const [delegations, setDelegations] = React.useState<
     Delegations_party_delegations[]
@@ -86,13 +86,13 @@ export const usePollForDelegations = () => {
     let interval: any;
     let mounted = true;
 
-    if (keypair?.pub) {
+    if (pubKey) {
       // start polling for delegation
       interval = setInterval(() => {
         client
           .query<Delegations, DelegationsVariables>({
             query: DELEGATIONS_QUERY,
-            variables: { partyId: keypair.pub },
+            variables: { partyId: pubKey },
             fetchPolicy: 'network-only',
           })
           .then((res) => {
@@ -229,7 +229,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, keypair?.pub, t, vegaToken.address]);
+  }, [client, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

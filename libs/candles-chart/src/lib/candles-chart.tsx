@@ -45,7 +45,7 @@ export const CandlesChartContainer = ({
   marketId,
 }: CandlesChartContainerProps) => {
   const client = useApolloClient();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const theme = useContext(ThemeContext);
 
   const [interval, setInterval] = useState<Interval>(Interval.I15M);
@@ -54,8 +54,8 @@ export const CandlesChartContainer = ({
   const [studies, setStudies] = useState<Study[]>([]);
 
   const dataSource = useMemo(() => {
-    return new VegaDataSource(client, marketId, keypair?.pub);
-  }, [client, marketId, keypair]);
+    return new VegaDataSource(client, marketId, pubKey);
+  }, [client, marketId, pubKey]);
 
   return (
     <div className="h-full flex flex-col">

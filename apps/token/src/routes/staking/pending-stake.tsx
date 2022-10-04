@@ -11,7 +11,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 interface PendingStakeProps {
   pendingAmount: BigNumber;
   nodeId: string;
-  pubkey: string;
+  pubKey: string;
 }
 
 enum FormState {
@@ -24,7 +24,7 @@ enum FormState {
 export const PendingStake = ({
   pendingAmount,
   nodeId,
-  pubkey,
+  pubKey,
 }: PendingStakeProps) => {
   const { t } = useTranslation();
   const { sendTx } = useVegaWallet();
@@ -35,8 +35,6 @@ export const PendingStake = ({
     setFormState(FormState.Pending);
     try {
       const command: UndelegateSubmissionBody = {
-        pubKey: pubkey,
-        propagate: true,
         undelegateSubmission: {
           nodeId,
           amount: removeDecimal(
@@ -46,7 +44,7 @@ export const PendingStake = ({
           method: 'METHOD_NOW',
         },
       };
-      await sendTx(command);
+      await sendTx(pubKey, command);
     } catch (err) {
       setFormState(FormState.Failure);
       Sentry.captureException(err);

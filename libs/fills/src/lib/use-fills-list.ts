@@ -5,10 +5,7 @@ import {
   makeInfiniteScrollGetRows,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type {
-  TradeWithMarket,
-  TradeWithMarketEdge,
-} from './fills-data-provider';
+import type { Trade, TradeEdge } from './fills-data-provider';
 import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface Props {
@@ -18,7 +15,7 @@ interface Props {
 }
 
 export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
-  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
+  const dataRef = useRef<(TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
@@ -41,8 +38,8 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       data,
       delta,
     }: {
-      data: (TradeWithMarketEdge | null)[] | null;
-      delta: TradeWithMarket[];
+      data: (TradeEdge | null)[] | null;
+      delta: Trade[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -71,7 +68,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       data,
       totalCount,
     }: {
-      data: (TradeWithMarketEdge | null)[] | null;
+      data: (TradeEdge | null)[] | null;
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -84,13 +81,13 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
-    (TradeWithMarketEdge | null)[],
-    TradeWithMarket[]
+    (TradeEdge | null)[],
+    Trade[]
   >({ dataProvider: fillsWithMarketProvider, update, insert, variables });
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<TradeWithMarketEdge>(
+  const getRows = makeInfiniteScrollGetRows<TradeEdge>(
     newRows,
     dataRef,
     totalCountRef,

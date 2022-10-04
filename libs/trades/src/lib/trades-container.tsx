@@ -8,11 +8,8 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import type {
-  TradeWithMarket,
-  TradeWithMarketEdge,
-} from './trades-data-provider';
-import type { TradesVariables } from './__generated__/Trades';
+import type { Trade, TradeEdge } from './trades-data-provider';
+import type { TradesQueryVariables } from './__generated___/Trades';
 
 interface TradesContainerProps {
   marketId: string;
@@ -20,12 +17,12 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
+  const dataRef = useRef<(TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
 
-  const variables = useMemo<TradesVariables>(
+  const variables = useMemo<TradesQueryVariables>(
     () => ({ marketId, maxTrades: MAX_TRADES }),
     [marketId]
   );
@@ -49,8 +46,8 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       delta,
     }: {
-      data: (TradeWithMarketEdge | null)[];
-      delta: TradeWithMarket[];
+      data: (TradeEdge | null)[] | null;
+      delta: Trade[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -79,7 +76,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       totalCount,
     }: {
-      data: (TradeWithMarketEdge | null)[];
+      data: (TradeEdge | null)[] | null;
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -98,7 +95,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<TradeWithMarketEdge>(
+  const getRows = makeInfiniteScrollGetRows<TradeEdge>(
     newRows,
     dataRef,
     totalCountRef,

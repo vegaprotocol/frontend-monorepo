@@ -2,10 +2,14 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
+import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import type { Positions, Positions_party } from './__generated__/Positions';
+import type {
+  Positions,
+  Positions_party,
+  Positions_party_positionsConnection_edges,
+} from './__generated__/Positions';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -18,6 +22,28 @@ import type {
 
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { MarketWithData } from '@vegaprotocol/market-list';
+import { marketsWithDataProvider } from '@vegaprotocol/market-list';
+import { marginsDataProvider } from './margin-data-provider';
+import type {
+  Margins_party,
+  Margins_party_marginsConnection_edges_node,
+} from './__generated__/Margins';
+
+type PositionMarginLevel = Pick<
+  Margins_party_marginsConnection_edges_node,
+  'maintenanceLevel' | 'searchLevel' | 'initialLevel'
+>;
+
+interface PositionRejoined {
+  realisedPNL: string;
+  openVolume: string;
+  unrealisedPNL: string;
+  averageEntryPrice: string;
+  updatedAt: string | null;
+  market: MarketWithData | null;
+  margins: PositionMarginLevel | null;
+}
 
 export interface Position {
   marketName: string;
@@ -54,38 +80,8 @@ const POSITION_FIELDS = gql`
     unrealisedPNL
     averageEntryPrice
     updatedAt
-    marginsConnection {
-      edges {
-        node {
-          market {
-            id
-          }
-          maintenanceLevel
-          searchLevel
-          initialLevel
-          collateralReleaseLevel
-          asset {
-            symbol
-          }
-        }
-      }
-    }
     market {
       id
-      decimalPlaces
-      positionDecimalPlaces
-      tradingMode
-      tradableInstrument {
-        instrument {
-          name
-        }
-      }
-      data {
-        markPrice
-        market {
-          id
-        }
-      }
     }
   }
 `;
@@ -120,27 +116,26 @@ export const POSITIONS_SUBSCRIPTION = gql`
 `;
 
 export const getMetrics = (
-  data: Positions_party | null,
-  accounts: AccountFieldsFragment[] | null
+  data: PositionRejoined[] | null,
+  accounts: Account[] | null
 ): Position[] => {
-  if (!data || !data?.positionsConnection?.edges) {
+  if (!data || !data?.length) {
     return [];
   }
   const metrics: Position[] = [];
-  data?.positionsConnection.edges.forEach((position) => {
-    const market = position.node.market;
-    const marketData = market.data;
-    const marginLevel = position.node.marginsConnection?.edges?.find(
-      (margin) => margin.node.market.id === market.id
-    )?.node;
+  data.forEach((position) => {
+    const market = position.market;
+    const marketData = market?.data;
+    const marginLevel = position.margins;
     const marginAccount = accounts?.find((account) => {
-      return account.market?.id === market.id;
+      return account.market?.id === market?.id;
     });
     if (
       !marginAccount ||
       !marginLevel ||
+      !market ||
       !marketData ||
-      position.node.openVolume === '0'
+      position.openVolume === '0'
     ) {
       return;
     }
@@ -152,10 +147,7 @@ export const getMetrics = (
     const decimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
-    const openVolume = toBigNum(
-      position.node.openVolume,
-      positionDecimalPlaces
-    );
+    const openVolume = toBigNum(position.openVolume, positionDecimalPlaces);
 
     const marginAccountBalance = toBigNum(marginAccount.balance ?? 0, decimals);
     const generalAccountBalance = toBigNum(
@@ -206,29 +198,30 @@ export const getMetrics = (
 
     metrics.push({
       marketName: market.tradableInstrument.instrument.name,
-      averageEntryPrice: position.node.averageEntryPrice,
+      averageEntryPrice: position.averageEntryPrice,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,
       positionDecimalPlaces,
       decimals,
-      assetSymbol: marginLevel.asset.symbol,
+      assetSymbol:
+        market.tradableInstrument.instrument.product.settlementAsset.symbol,
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       liquidationPrice: liquidationPrice
         .multipliedBy(10 ** marketDecimalPlaces)
         .toFixed(0),
-      marketId: position.node.market.id,
-      marketTradingMode: position.node.market.tradingMode,
+      marketId: market.id,
+      marketTradingMode: market.tradingMode,
       markPrice: marketData.markPrice,
       notional: notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0),
-      openVolume: position.node.openVolume,
-      realisedPNL: position.node.realisedPNL,
-      unrealisedPNL: position.node.unrealisedPNL,
+      openVolume: position.openVolume,
+      realisedPNL: position.realisedPNL,
+      unrealisedPNL: position.unrealisedPNL,
       searchPrice: searchPrice
         .multipliedBy(10 ** marketDecimalPlaces)
         .toFixed(0),
-      updatedAt: position.node.updatedAt,
+      updatedAt: position.updatedAt,
     });
   });
   return metrics;
@@ -257,7 +250,17 @@ export const update = (
           updatedAt: delta.updatedAt,
         };
       } else {
-        // TODO: Handle new position insertion, we don't have full market details on PositionUpdate
+        draft.positionsConnection.edges.unshift({
+          __typename: 'PositionEdge',
+          node: {
+            ...delta,
+            __typename: 'Position',
+            market: {
+              __typename: 'Market',
+              id: delta.marketId,
+            },
+          },
+        });
       }
     });
   });
@@ -277,15 +280,67 @@ export const positionsDataProvider = makeDataProvider<
     subscriptionData.positions,
 });
 
+const upgradeMarginsConection = (
+  marketId: string,
+  margins: Margins_party | null
+) => {
+  if (marketId && margins?.marginsConnection?.edges) {
+    const index =
+      margins.marginsConnection.edges.findIndex(
+        (edge) => edge.node.market.id === marketId
+      ) ?? -1;
+    if (index >= 0) {
+      const marginLevel = margins.marginsConnection.edges[index].node;
+      return {
+        maintenanceLevel: marginLevel.maintenanceLevel,
+        searchLevel: marginLevel.searchLevel,
+        initialLevel: marginLevel.initialLevel,
+      };
+    }
+  }
+  return null;
+};
+
+export const rejoinPositionData = (
+  positions: Positions_party | null,
+  marketsData: MarketWithData[] | null,
+  margins: Margins_party | null
+): PositionRejoined[] | null => {
+  if (positions?.positionsConnection?.edges && marketsData && margins) {
+    return positions.positionsConnection.edges.map(
+      (nodes: Positions_party_positionsConnection_edges) => {
+        return {
+          realisedPNL: nodes.node.realisedPNL,
+          openVolume: nodes.node.openVolume,
+          unrealisedPNL: nodes.node.unrealisedPNL,
+          averageEntryPrice: nodes.node.averageEntryPrice,
+          updatedAt: nodes.node.updatedAt,
+          market:
+            marketsData?.find((market) => market.id === nodes.node.market.id) ||
+            null,
+          margins: upgradeMarginsConection(nodes.node.market.id, margins),
+        };
+      }
+    );
+  }
+  return null;
+};
+
 export const positionsMetricsDataProvider = makeDerivedDataProvider<
   Position[],
   never
->([positionsDataProvider, accountsDataProvider], ([positions, accounts]) => {
-  return sortBy(
-    getMetrics(
-      positions as Positions_party | null,
-      accounts as AccountFieldsFragment[] | null
-    ),
-    'updatedAt'
-  ).reverse();
-});
+>(
+  [
+    positionsDataProvider,
+    accountsDataProvider,
+    marketsWithDataProvider,
+    marginsDataProvider,
+  ],
+  ([positions, accounts, marketsData, margins]) => {
+    const positionsData = rejoinPositionData(positions, marketsData, margins);
+    return sortBy(
+      getMetrics(positionsData, accounts as Account[] | null),
+      'updatedAt'
+    ).reverse();
+  }
+);

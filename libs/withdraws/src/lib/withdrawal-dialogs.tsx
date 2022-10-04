@@ -15,7 +15,7 @@ export const WithdrawalDialogs = ({
   setWithdrawDialog: (open: boolean) => void;
   assetId?: string;
 }) => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const createWithdraw = useCreateWithdraw();
   const completeWithdraw = useCompleteWithdraw();
   return (
@@ -28,7 +28,7 @@ export const WithdrawalDialogs = ({
       >
         <WithdrawFormContainer
           assetId={assetId}
-          partyId={keypair?.pub}
+          partyId={pubKey ? pubKey : undefined}
           submit={(args) => {
             setWithdrawDialog(false);
             createWithdraw.submit(args);

@@ -1,4 +1,4 @@
-import { determineId } from './determine-id';
+import { determineId } from './utils';
 
 it('produces a known result for an ID', () => {
   const res = determineId(

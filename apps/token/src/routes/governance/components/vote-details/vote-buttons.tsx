@@ -39,13 +39,13 @@ const VOTE_BUTTONS_QUERY = gql`
 `;
 
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { data, loading } = useQuery<
     VoteButtonsQueryResult,
     VoteButtonsVariables
   >(VOTE_BUTTONS_QUERY, {
-    variables: { partyId: keypair?.pub || '' },
-    skip: !keypair?.pub,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
   });
 
   if (loading) return null;
@@ -73,7 +73,7 @@ export const VoteButtons = ({
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const [changeVote, setChangeVote] = React.useState(false);
 
   const cantVoteUI = React.useMemo(() => {
@@ -81,7 +81,7 @@ export const VoteButtons = ({
       return t('youDidNotVote');
     }
 
-    if (!keypair) {
+    if (!pubKey) {
       return (
         <>
           <ButtonLink
@@ -104,7 +104,7 @@ export const VoteButtons = ({
     }
 
     return false;
-  }, [t, keypair, currentStakeAvailable, proposalState, appDispatch]);
+  }, [t, pubKey, currentStakeAvailable, proposalState, appDispatch]);
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);

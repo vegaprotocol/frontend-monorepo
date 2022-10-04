@@ -32,14 +32,14 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { OrderWithMarket } from '../';
+import type { Order } from '../';
 import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [editOrder, setEditOrder] = useState<OrderWithMarket | null>(null);
+    const [editOrder, setEditOrder] = useState<Order | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
 
@@ -93,8 +93,8 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 );
 
 export type OrderListTableProps = AgGridReactProps & {
-  cancel: (order: OrderWithMarket) => void;
-  setEditOrder: (order: OrderWithMarket) => void;
+  cancel: (order: Order) => void;
+  setEditOrder: (order: Order) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -119,15 +119,15 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
-            [positiveClassNames]: ({ data }: { data: OrderWithMarket }) =>
+            [positiveClassNames]: ({ data }: { data: Order }) =>
               data?.side === Side.SIDE_BUY,
-            [negativeClassNames]: ({ data }: { data: OrderWithMarket }) =>
+            [negativeClassNames]: ({ data }: { data: Order }) =>
               data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<OrderWithMarket, 'size'>) => {
+          }: VegaValueFormatterParams<Order, 'size'>) => {
             if (!data.market) {
               return '-';
             }
@@ -145,7 +145,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="type"
           valueFormatter={({
             value,
-          }: VegaValueFormatterParams<OrderWithMarket, 'type'>) => {
+          }: VegaValueFormatterParams<Order, 'type'>) => {
             if (!value) return '-';
             return OrderTypeMapping[value];
           }}
@@ -155,7 +155,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<OrderWithMarket, 'status'>) => {
+          }: VegaValueFormatterParams<Order, 'status'>) => {
             if (value === OrderStatus.STATUS_REJECTED) {
               return `${OrderStatusMapping[value]}: ${
                 data.rejectionReason &&
@@ -173,7 +173,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             data,
             value,
-          }: VegaValueFormatterParams<OrderWithMarket, 'remaining'>) => {
+          }: VegaValueFormatterParams<Order, 'remaining'>) => {
             if (!data.market) {
               return '-';
             }
@@ -194,7 +194,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<OrderWithMarket, 'price'>) => {
+          }: VegaValueFormatterParams<Order, 'price'>) => {
             if (!data.market || data.type === OrderType.TYPE_MARKET) {
               return '-';
             }
@@ -206,7 +206,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<OrderWithMarket, 'timeInForce'>) => {
+          }: VegaValueFormatterParams<Order, 'timeInForce'>) => {
             if (
               value === OrderTimeInForce.TIME_IN_FORCE_GTT &&
               data.expiresAt
@@ -224,7 +224,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="createdAt"
           valueFormatter={({
             value,
-          }: VegaValueFormatterParams<OrderWithMarket, 'createdAt'>) => {
+          }: VegaValueFormatterParams<Order, 'createdAt'>) => {
             return value ? getDateTimeFormat().format(new Date(value)) : value;
           }}
         />
@@ -232,7 +232,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="updatedAt"
           valueFormatter={({
             value,
-          }: VegaValueFormatterParams<OrderWithMarket, 'updatedAt'>) => {
+          }: VegaValueFormatterParams<Order, 'updatedAt'>) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
@@ -240,9 +240,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           colId="amend"
           headerName=""
           field="status"
-          cellRenderer={({
-            data,
-          }: VegaICellRendererParams<OrderWithMarket>) => {
+          cellRenderer={({ data }: VegaICellRendererParams<Order>) => {
             if (isOrderAmendable(data)) {
               return (
                 <div className="flex gap-2">
@@ -286,7 +284,7 @@ export const isOrderActive = (status: OrderStatus) => {
   ].includes(status);
 };
 
-export const isOrderAmendable = (order: OrderWithMarket | undefined) => {
+export const isOrderAmendable = (order: Order | undefined) => {
   if (!order || order.peggedOrder || order.liquidityProvision) {
     return false;
   }

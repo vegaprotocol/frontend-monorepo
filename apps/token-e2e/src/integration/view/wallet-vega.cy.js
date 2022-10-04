@@ -6,6 +6,7 @@ const connectButton = '[data-testid="connect-vega"]';
 const getVegaLink = '[data-testid="link"]';
 const dialog = '[role="dialog"]';
 const dialogHeader = '[data-testid="dialog-title"]';
+const walletDialogHeader = '[data-testid="wallet-dialog-title"]';
 const connectorsList = '[data-testid="connectors-list"]';
 const dialogCloseBtn = '[data-testid="dialog-close"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
@@ -29,7 +30,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Vega Wallet - verify elements on widget',
-  { tags: '@smoke' },
+  { tags: '@regression' },
   function () {
     before('visit token home page', function () {
       cy.visit('/');
@@ -75,17 +76,23 @@ context(
 
       it('should have Connect Vega header visible', function () {
         cy.get(dialog).within(() => {
-          cy.get(dialogHeader)
+          cy.get(walletDialogHeader)
             .should('be.visible')
-            .and('have.text', 'Connect to your Vega Wallet');
+            .and('have.text', 'Connect');
         });
       });
 
-      it('should have REST connector visible on list', function () {
+      it('should have gui, cli and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
-          cy.get('button')
+          cy.getByTestId('connector-gui')
             .should('be.visible')
-            .and('have.text', 'rest provider');
+            .and('have.text', 'Desktop wallet app');
+          cy.getByTestId('connector-cli')
+            .should('be.visible')
+            .and('have.text', 'Command line wallet app');
+          cy.getByTestId('connector-hosted')
+            .should('be.visible')
+            .and('have.text', 'Hosted Fairground wallet');
         });
       });
 
@@ -97,9 +104,11 @@ context(
     });
 
     describe('when rest connector form opened', function () {
-      before('click rest provider link', function () {
+      // Note using desktop wallet app link temporarily whilst its still on v1,
+      // tests will need to be updated to handle v2
+      before('click desktop wallet app link', function () {
         cy.get(connectorsList).within(() => {
-          cy.get('button').click();
+          cy.getByTestId('connector-gui').click();
         });
       });
 
@@ -123,14 +132,6 @@ context(
         });
       });
 
-      it('should have Connect Vega header visible', function () {
-        cy.get(dialog).within(() => {
-          cy.get(dialogHeader)
-            .should('be.visible')
-            .and('have.text', 'Connect to your Vega Wallet');
-        });
-      });
-
       it('should have close button visible', function () {
         cy.get(dialog).within(() => {
           cy.get(dialogCloseBtn).should('be.visible');
@@ -145,7 +146,14 @@ context(
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
-
+        cy.visit('/');
+        cy.get(walletContainer).within(() => {
+          cy.get(connectButton).click();
+        });
+        cy.get(connectorsList).within(() => {
+          // using gui option to connect using wallet service V1
+          cy.getByTestId('connector-gui').click();
+        });
         //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
         // then code below can be removed
         cy.get(restConnectorForm).within(() => {
@@ -165,13 +173,17 @@ context(
         });
       });
 
-      it('should have truncated account number visible', function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(accountNo)
-            .should('be.visible')
-            .and('have.text', Cypress.env('vegaWalletPublicKeyShort'));
-        });
-      });
+      it(
+        'should have truncated account number visible',
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(accountNo)
+              .should('be.visible')
+              .and('have.text', Cypress.env('vegaWalletPublicKeyShort'));
+          });
+        }
+      );
 
       it.skip('should have wallet name visible', function () {
         cy.get(walletContainer).within(() => {
@@ -189,15 +201,19 @@ context(
         });
       });
 
-      it('should have Vega Associated currency value visible', function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(currencyValue)
-            .should('be.visible')
-            .and('have.text', `0.000000000000000000`);
-        });
-      });
+      it(
+        'should have Vega Associated currency value visible',
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(currencyValue)
+              .should('be.visible')
+              .and('have.text', `0.000000000000000000`);
+          });
+        }
+      );
 
-      it('should have Unstaked value visible', function () {
+      it('should have Unstaked value visible', { tags: '@smoke' }, function () {
         cy.get(walletContainer).within(() => {
           cy.get(vegaUnstaked)
             .should('be.visible')
@@ -317,6 +333,7 @@ context(
             .and('be.visible')
             .click({ force: true });
         });
+        cy.getByTestId('connector-gui').click();
         cy.get(restConnectorForm).within(() => {
           cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
           cy.get('#passphrase')

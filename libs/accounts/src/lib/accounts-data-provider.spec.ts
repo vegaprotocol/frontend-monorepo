@@ -1,7 +1,6 @@
 import { AccountType } from '@vegaprotocol/types';
-import type { AccountFields } from './accounts-data-provider';
-import { getAccountData } from './accounts-data-provider';
-import type { AccountFieldsFragment } from './__generated___/Accounts';
+import type { AccountFields, Account } from './accounts-data-provider';
+import { getAccountData, getId } from './accounts-data-provider';
 
 describe('getAccountData', () => {
   it('should return the correct aggregated data', () => {
@@ -10,7 +9,42 @@ describe('getAccountData', () => {
   });
 });
 
-const accounts: AccountFieldsFragment[] = [
+describe('getId', () => {
+  it('should return the correct string', () => {
+    expect(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        asset: { id: 'assetId' },
+        market: null,
+      })
+    ).toEqual(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        assetId: 'assetId',
+        marketId: '',
+      })
+    );
+    expect(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        asset: { id: 'assetId' },
+        market: { id: 'testId' },
+      })
+    ).toEqual(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        assetId: 'assetId',
+        marketId: 'testId',
+      })
+    );
+  });
+});
+
+const accounts = [
   {
     __typename: 'Account',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
@@ -115,9 +149,9 @@ const accounts: AccountFieldsFragment[] = [
       decimals: 5,
     },
   },
-];
+] as Account[];
 
-const accountResult: AccountFields[] = [
+const accountResult = [
   {
     asset: {
       __typename: 'Asset',
@@ -240,4 +274,4 @@ const accountResult: AccountFields[] = [
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '0',
   },
-];
+] as AccountFields[];

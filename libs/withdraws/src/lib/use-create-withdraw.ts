@@ -1,5 +1,8 @@
-import { determineId } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useVegaTransaction,
+  useVegaWallet,
+  determineId,
+} from '@vegaprotocol/wallet';
 import { useCallback, useState } from 'react';
 import { useWithdrawalApproval } from './use-withdrawal-approval';
 import { useWithdrawalEvent } from './use-withdrawal-event';
@@ -22,7 +25,7 @@ export const useCreateWithdraw = () => {
     null
   );
 
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { transaction, send, setComplete, reset, Dialog } =
     useVegaTransaction();
 
@@ -30,15 +33,13 @@ export const useCreateWithdraw = () => {
 
   const submit = useCallback(
     async (withdrawal: WithdrawalArgs) => {
-      if (!keypair) {
+      if (!pubKey) {
         return;
       }
 
       setAvailableTimestamp(withdrawal.availableTimestamp);
 
-      const res = await send({
-        pubKey: keypair.pub,
-        propagate: true,
+      const res = await send(pubKey, {
         withdrawSubmission: {
           amount: withdrawal.amount,
           asset: withdrawal.asset,
@@ -50,17 +51,17 @@ export const useCreateWithdraw = () => {
         },
       });
 
-      if (res?.signature) {
-        const id = determineId(res.signature);
+      if (res) {
+        const withdrawalId = determineId(res.signature);
 
-        const withdrawal = await waitForWithdrawal(id, keypair.pub);
+        const withdrawal = await waitForWithdrawal(withdrawalId, pubKey);
         setWithdrawal(withdrawal);
         const approval = await waitForWithdrawalApproval(withdrawal.id);
         setApproval(approval);
         setComplete();
       }
     },
-    [keypair, send, waitForWithdrawal, waitForWithdrawalApproval, setComplete]
+    [pubKey, send, waitForWithdrawal, waitForWithdrawalApproval, setComplete]
   );
 
   return {

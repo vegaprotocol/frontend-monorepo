@@ -1,9 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  VegaWalletContextShape,
-  VegaKeyExtended,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import {
   MarketState,
   MarketStateMapping,
@@ -44,16 +41,12 @@ const market = {
 };
 
 const defaultWalletContext = {
-  keypair: {
-    name: 'keypair0',
-    tainted: false,
-    pub: '111111__111111',
-  } as VegaKeyExtended,
-  keypairs: [],
+  pubKey: '111111__111111',
+  pubKeys: [],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
+  selectPubKey: jest.fn(),
   connector: null,
 };
 
@@ -98,14 +91,7 @@ describe('useOrderValidation', () => {
   });
 
   it('Returns an error message when no keypair found', () => {
-    const { result } = setup(defaultOrder, { keypair: null });
-    expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
-  });
-
-  it('Returns an error message when the keypair is tainted', () => {
-    const { result } = setup(defaultOrder, {
-      keypair: { ...defaultWalletContext.keypair, tainted: true },
-    });
+    const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 

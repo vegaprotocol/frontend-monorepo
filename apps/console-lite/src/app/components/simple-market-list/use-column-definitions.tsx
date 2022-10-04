@@ -7,7 +7,7 @@ import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ValueSetterParams } from 'ag-grid-community';
 import { IconNames } from '@blueprintjs/icons';
 import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../../constants';
-import type { Candle, Market } from '@vegaprotocol/market-list';
+import type { MarketWithCandles as Market } from '@vegaprotocol/market-list';
 
 interface Props {
   isMobile: boolean;
@@ -69,15 +69,16 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
           data,
           setValue,
         }: {
-          data: { id: string; candles: Candle[] };
+          data: Market;
           setValue: (arg: unknown) => void;
-        }) => (
-          <SimpleMarketPercentChange
-            candles={data.candles}
-            marketId={data.id}
-            setValue={setValue}
-          />
-        ),
+        }) =>
+          data.candles && (
+            <SimpleMarketPercentChange
+              candles={data.candles}
+              marketId={data.id}
+              setValue={setValue}
+            />
+          ),
         comparator: (valueA: number | '-', valueB: number | '-') => {
           if (valueA === valueB) return 0;
           if (valueA === '-') {

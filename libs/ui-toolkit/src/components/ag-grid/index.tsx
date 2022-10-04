@@ -17,10 +17,11 @@ type RowHelper<TObj, TRow, TField extends Field> = Omit<
   value: Get<TRow, TField>;
 };
 
-export type VegaValueFormatterParams<
+export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<
+  ValueFormatterParams,
   TRow,
-  TField extends Field = string
-> = RowHelper<ValueFormatterParams, TRow, TField>;
+  TField
+>;
 
 export type VegaICellRendererParams<
   TRow,

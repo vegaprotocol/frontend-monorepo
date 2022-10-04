@@ -14,120 +14,124 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 const ownStake = '[data-testid="own-stake"]';
 const nominatedStake = '[data-testid="nominated-stake"]';
 
-context(
-  'Staking Page - verify elements on page',
-  { tags: '@smoke' },
-  function () {
-    before('navigate to staking page', function () {
-      cy.visit('/').navigate_to('staking');
-    });
+context('Staking Page - verify elements on page', function () {
+  before('navigate to staking page', function () {
+    cy.visit('/').navigate_to('staking');
+  });
 
-    describe('with wallets disconnected', function () {
-      describe('description section', function () {
-        it('should have staking tab highlighted', function () {
-          cy.verify_tab_highlighted('staking');
-        });
-
-        it('should have STAKING ON VEGA header visible', function () {
-          cy.verify_page_header('Staking');
-        });
-
-        it('should have Staking Guide link visible', function () {
-          // 2001-STKE-003
-          cy.get(guideLink)
-            .should('be.visible')
-            .and('have.text', 'Read more about staking on Vega')
-            .and(
-              'have.attr',
-              'href',
-              'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega'
-            );
-        });
+  describe('with wallets disconnected', { tags: '@smoke' }, function () {
+    describe('description section', function () {
+      it('should have staking tab highlighted', function () {
+        cy.verify_tab_highlighted('staking');
       });
 
-      describe('Should be able to see validator list from the staking page', function () {
-        // 2001-STKE-050
-        it('Should be able to see validator names', function () {
-          cy.get('[col-id="validator"]')
-            .should('have.length.at.least', 1)
-            .each(($name) => {
-              cy.wrap($name).should('not.be.empty');
-            });
-        });
+      it('should have STAKING ON VEGA header visible', function () {
+        cy.verify_page_header('Staking');
+      });
 
-        it('Should be able to see validator status', function () {
-          cy.get('[col-id="status"]')
-            .should('have.length.at.least', 1)
-            .each(($status) => {
-              cy.wrap($status).should('not.be.empty');
-            });
-        });
-
-        it('Should be able to see total stake for this epoch', function () {
-          cy.get('[col-id="totalStakeThisEpoch"]')
-            .should('have.length.at.least', 1)
-            .each(($totalStaked) => {
-              cy.wrap($totalStaked).should('not.be.empty');
-            });
-        });
-
-        it('Should be able to see validator staked for this epoch', function () {
-          cy.get('[col-id="validatorStake"]')
-            .should('have.length.at.least', 1)
-            .each(($validatorStake) => {
-              cy.wrap($validatorStake).should('not.be.empty');
-            });
-        });
-
-        it('Should be able to see validator staked for next epoch', function () {
-          cy.get('[col-id="pendingStake"]')
-            .should('have.length.at.least', 1)
-            .each(($pendingStake) => {
-              cy.wrap($pendingStake).should('not.be.empty');
-            });
-        });
-
-        // 2001-STKE-021
-        it('Should be able to see validator ranking score', function () {
-          cy.get('.ag-body-horizontal-scroll-viewport').scrollTo('right');
-          cy.get('[col-id="rankingScore"]')
-            .should('have.length.at.least', 1)
-            .each(($rankingScore) => {
-              cy.wrap($rankingScore).should('not.be.empty');
-            });
-        });
-
-        // 2001-STKE-022
-        it('Should be able to see validator stake score', function () {
-          cy.get('[col-id="stakeScore"]')
-            .should('have.length.at.least', 1)
-            .each(($stakeScore) => {
-              cy.wrap($stakeScore).should('not.be.empty');
-            });
-        });
-
-        // 2001-STKE-023
-        it('Should be able to see validator performance score', function () {
-          cy.get('[col-id="performanceScore"]')
-            .should('have.length.at.least', 1)
-            .each(($performanceScore) => {
-              cy.wrap($performanceScore).should('not.be.empty');
-            });
-        });
-
-        // 2001-STKE-024
-        it('Should be able to see validator voting power score', function () {
-          cy.get('[col-id="votingPower"]')
-            .should('have.length.at.least', 1)
-            .each(($votingPower) => {
-              cy.wrap($votingPower).should('not.be.empty');
-            });
-        });
+      it('should have Staking Guide link visible', function () {
+        // 2001-STKE-003
+        cy.get(guideLink)
+          .should('be.visible')
+          .and('have.text', 'Read more about staking on Vega')
+          .and(
+            'have.attr',
+            'href',
+            'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega'
+          );
       });
     });
+  });
 
-    // 2001-STKE-050
-    describe('Should be able to see static information about a validator', function () {
+  describe(
+    'Should be able to see validator list from the staking page',
+    { tags: '@regression' },
+    function () {
+      // 2001-STKE-050
+      it('Should be able to see validator names', function () {
+        cy.get('[col-id="validator"]')
+          .should('have.length.at.least', 1)
+          .each(($name) => {
+            cy.wrap($name).should('not.be.empty');
+          });
+      });
+
+      it('Should be able to see validator status', function () {
+        cy.get('[col-id="status"]')
+          .should('have.length.at.least', 1)
+          .each(($status) => {
+            cy.wrap($status).should('not.be.empty');
+          });
+      });
+
+      it('Should be able to see total stake for this epoch', function () {
+        cy.get('[col-id="totalStakeThisEpoch"]')
+          .should('have.length.at.least', 1)
+          .each(($totalStaked) => {
+            cy.wrap($totalStaked).should('not.be.empty');
+          });
+      });
+
+      it('Should be able to see validator staked for this epoch', function () {
+        cy.get('[col-id="validatorStake"]')
+          .should('have.length.at.least', 1)
+          .each(($validatorStake) => {
+            cy.wrap($validatorStake).should('not.be.empty');
+          });
+      });
+
+      it('Should be able to see validator staked for next epoch', function () {
+        cy.get('[col-id="pendingStake"]')
+          .should('have.length.at.least', 1)
+          .each(($pendingStake) => {
+            cy.wrap($pendingStake).should('not.be.empty');
+          });
+      });
+
+      // 2001-STKE-021
+      it('Should be able to see validator ranking score', function () {
+        cy.get('.ag-body-horizontal-scroll-viewport').scrollTo('right');
+        cy.get('[col-id="rankingScore"]')
+          .should('have.length.at.least', 1)
+          .each(($rankingScore) => {
+            cy.wrap($rankingScore).should('not.be.empty');
+          });
+      });
+
+      // 2001-STKE-022
+      it('Should be able to see validator stake score', function () {
+        cy.get('[col-id="stakeScore"]')
+          .should('have.length.at.least', 1)
+          .each(($stakeScore) => {
+            cy.wrap($stakeScore).should('not.be.empty');
+          });
+      });
+
+      // 2001-STKE-023
+      it('Should be able to see validator performance score', function () {
+        cy.get('[col-id="performanceScore"]')
+          .should('have.length.at.least', 1)
+          .each(($performanceScore) => {
+            cy.wrap($performanceScore).should('not.be.empty');
+          });
+      });
+
+      // 2001-STKE-024
+      it('Should be able to see validator voting power score', function () {
+        cy.get('[col-id="votingPower"]')
+          .should('have.length.at.least', 1)
+          .each(($votingPower) => {
+            cy.wrap($votingPower).should('not.be.empty');
+          });
+      });
+    }
+  );
+
+  // 2001-STKE-050
+  describe(
+    'Should be able to see static information about a validator',
+    { tags: '@smoke' },
+    function () {
       before('connect wallets and click on validator', function () {
         cy.vega_wallet_import();
         cy.vega_wallet_connect();
@@ -210,6 +214,6 @@ context(
           cy.get(nextEpochInfo).should('contain.text', 'Next epoch');
         });
       });
-    });
-  }
-);
+    }
+  );
+});

@@ -10,10 +10,10 @@ import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import type { Order } from '../deal-ticket-validation';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
 import { MarketTradingMode } from '@vegaprotocol/types';
@@ -22,9 +22,9 @@ export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
   market: DealTicketMarketFragment;
-  submit: (order: Order) => void;
+  submit: (order: OrderSubmissionBody['orderSubmission']) => void;
   transactionStatus: TransactionStatus;
-  defaultOrder?: Order;
+  defaultOrder?: OrderSubmissionBody['orderSubmission'];
 }
 
 export const DealTicket = ({
@@ -39,7 +39,7 @@ export const DealTicket = ({
     watch,
     formState: { errors },
     setValue,
-  } = useForm<Order>({
+  } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
@@ -55,7 +55,7 @@ export const DealTicket = ({
   const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
-    (order: Order) => {
+    (order: OrderSubmissionBody['orderSubmission']) => {
       if (!isDisabled) {
         submit({
           ...order,
