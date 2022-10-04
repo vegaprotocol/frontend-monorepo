@@ -1,5 +1,3 @@
-import '../support/common.functions';
-
 //Tests set to skip until market bug for capsule checkpoint is fixed
 context.skip('Market page', { tags: '@regression' }, function () {
   describe('Verify elements on page', function () {

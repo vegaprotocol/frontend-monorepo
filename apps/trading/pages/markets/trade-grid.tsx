@@ -1,4 +1,8 @@
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import {
+  compileGridData,
+  DealTicketContainer,
+  TradingModeTooltip,
+} from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { ColumnKind, SelectMarketPopover } from '@vegaprotocol/market-list';
@@ -13,7 +17,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
-import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
@@ -39,8 +42,8 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 import { Header, HeaderStat } from '../../components/header';
+import { AccountsContainer } from '../portfolio/accounts-container';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -173,9 +176,7 @@ export const TradeMarketHeader = ({
         description={
           <TradingModeTooltip
             market={market}
-            onSelect={(marketId: string) => {
-              onSelect(marketId);
-            }}
+            compiledGrid={compileGridData(market, onSelect)}
           />
         }
       >

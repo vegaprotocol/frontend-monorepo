@@ -1,46 +1,40 @@
 import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 
 beforeEach(() => {
   cy.mockGQL((req) => {
     mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
+  cy.mockWeb3Provider();
   cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
 });
 
 describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
-    const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]';
+    const tradingAccountRowId = '[row-id="asset-0"]';
     cy.getByTestId('Collateral').click();
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
     connectVegaWallet();
+    connectEthereumWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')
-      .should('be.visible')
       .get(tradingAccountRowId)
       .find('[col-id="asset.symbol"]')
-      .should('have.text', 'tEURO');
+      .should('have.text', 'AST0');
 
     cy.getByTestId('tab-accounts')
-      .should('be.visible')
       .get(tradingAccountRowId)
-      .find('[col-id="type"]')
-      .should('have.text', 'General');
+      .find('[col-id="breakdown"]')
+      .should('have.text', 'Collateral breakdown');
 
     cy.getByTestId('tab-accounts')
-      .should('be.visible')
       .get(tradingAccountRowId)
-      .find('[col-id="market.tradableInstrument.instrument.name"]')
-      .should('have.text', '—');
-
-    cy.getByTestId('tab-accounts')
-      .should('be.visible')
-      .get(tradingAccountRowId)
-      .find('[col-id="balance"]')
+      .find('[col-id="deposited"]')
       .should('have.text', '1,000.00000');
   });
 });

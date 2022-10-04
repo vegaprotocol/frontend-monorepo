@@ -8,6 +8,7 @@
     "test": "nx test",
     "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack",
     "test:all": "nx run-many --all --target=test",
+    "build:all": "nx run-many --all --target=build",
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl"
   },
   "engines": {
@@ -59,7 +60,7 @@
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.21",
     "next": "12.2.3",
-    "pennant": "^0.4.14",
+    "pennant": "^0.4.18",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "18.2.0",

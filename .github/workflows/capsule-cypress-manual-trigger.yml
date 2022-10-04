@@ -15,9 +15,14 @@ on:
           - stats-e2e
           - token-e2e
           - trading-e2e
-      runAlltests:
+      smokeOnly:
         description: 'Run only smoke tests?'
         required: true
+        type: boolean
+        default: false
+      skip-nx-cache:
+        description: 'Add --skip-nx-cache to cypress test'
+        required: false
         type: boolean
         default: false
 
@@ -30,6 +35,23 @@ jobs:
       GOBIN: /home/runner/go/bin
       VEGA_VERSION: 'v0.57.0'
     steps:
+      #######
+      ## Setup flags
+      #######
+
+      - name: Set smoke tag
+        if: ${{ github.event.inputs.smokeOnly == 'true' }}
+        run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
+
+      - name: Set --skip-nx-cache flag
+        if: ${{ github.event.inputs.skip-nx-cache == 'true' }}
+        run: echo SKIP_NX_CACHE="--skip-nx-cache" >> $GITHUB_ENV
+
+      # See if we capsule is needed for this project
+      - name: Set capsule flag
+        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
+        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+
       #######
       ## Setup langs
       #######
@@ -61,11 +83,6 @@ jobs:
         with:
           fetch-depth: 0
           path: './frontend-monorepo'
-
-      # See if we capsule is needed for this project
-      - name: Set capsule flag if necessary
-        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
@@ -113,22 +130,18 @@ jobs:
       ## Run some tests
       ######
 
-      - name: Set smoke tag if necessary
-        if: ${{ github.event.inputs.runAlltests==false }}
-        run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
-
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
         run: yarn cypress install
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e ${{ env.SKIP_NX_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
 
       ######
