@@ -54,7 +54,7 @@ export const VegaConnectDialog = ({
     if (loading || !data) {
       return (
         <ConnectDialogContent>
-          <ConnectDialogTitle>{t('Fetchign chain ID')}</ConnectDialogTitle>
+          <ConnectDialogTitle>{t('Fetching chain ID')}</ConnectDialogTitle>
           <div className="flex justify-center items-center my-6">
             <Loader />
           </div>
@@ -161,6 +161,40 @@ const ConnectorList = ({
     <>
       <ConnectDialogContent>
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
+        {urlInputExpanded ? (
+          <>
+            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+              {t('Custom wallet location')}
+            </p>
+            <FormGroup
+              labelFor="wallet-url"
+              label={t('Custom wallet location')}
+              hideLabel={true}
+            >
+              <Input
+                value={walletUrl}
+                onChange={(e) => setWalletUrl(e.target.value)}
+                name="wallet-url"
+              />
+            </FormGroup>
+            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+              {t('Choose wallet app to connect')}
+            </p>
+          </>
+        ) : (
+          <p className="mb-6 text-neutral-600 dark:text-neutral-400">
+            {t(
+              'Choose wallet app to connect, or to change port or server URL enter a '
+            )}
+            <button
+              className="underline"
+              onClick={() => setUrlInputExpanded(true)}
+            >
+              {t('custom wallet location')}
+            </button>{' '}
+            {t(' first')}
+          </p>
+        )}
         <ul data-testid="connectors-list" className="mb-6">
           <li className="mb-4">
             <ConnectionOption
@@ -177,7 +211,7 @@ const ConnectorList = ({
             />
           </li>
           {!isMainnet && (
-            <li className="mb-0">
+            <li className="mb-0 border-t pt-4">
               <ConnectionOption
                 type="hosted"
                 text={t('Hosted Fairground wallet')}
@@ -186,26 +220,6 @@ const ConnectorList = ({
             </li>
           )}
         </ul>
-        {urlInputExpanded ? (
-          <FormGroup label={t('Wallet location')} labelFor="wallet-url">
-            <Input
-              value={walletUrl}
-              onChange={(e) => setWalletUrl(e.target.value)}
-              name="wallet-url"
-            />
-          </FormGroup>
-        ) : (
-          <p className="mb-6 text-center text-neutral-600 dark:text-neutral-400">
-            {t('Or')}{' '}
-            <button
-              className="underline"
-              onClick={() => setUrlInputExpanded(true)}
-            >
-              {t('enter a custom wallet location')}
-            </button>{' '}
-            {t('to change port or service URL')}
-          </p>
-        )}
       </ConnectDialogContent>
       <ConnectDialogFooter />
     </>
