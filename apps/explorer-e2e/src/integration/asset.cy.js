@@ -4,7 +4,7 @@ context('Asset page', { tags: '@regression' }, function () {
     const assetHeader = '[data-testid="asset-header"]';
     const jsonSection = '.language-json';
 
-    before('navigate to parties page and search for party', function () {
+    before('Navigate to assets page', function () {
       cy.visit('/');
       cy.get(assetsNavigation).click();
     });
