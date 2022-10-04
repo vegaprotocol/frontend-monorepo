@@ -6,7 +6,7 @@ import { generateChainId } from './mocks/generate-chain-id';
 registerCypressGrep();
 
 before(() => {
-  // Mock chainId fetch which happens on every page for wallet connection
+  // Mock chainId fetch which happens on every page wallet connection
   cy.mockGQL((req) => {
     aliasQuery(req, 'ChainId', generateChainId());
   });
