@@ -16,7 +16,7 @@ export function addGetAssetInformation() {
         ... on ERC20{contractAddress} \
         ... on BuiltinAsset{maxFaucetAmountMint}} \
         infrastructureFeeAccount{__typename type balance} \
-        globalRewardPoolAccount {balance}}}'
+        globalRewardPoolAccount {balance}}}';
     cy.request({
       method: 'POST',
       url: `http://localhost:3028/query`,
