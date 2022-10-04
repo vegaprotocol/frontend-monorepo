@@ -35,14 +35,18 @@ context('Parties page', { tags: '@regression' }, function () {
       cy.get(partiesSearchAction).click();
       cy.get_connected_parties_accounts().as('party_accounts');
 
-      // Ensure balance of each party asset is correct 
+      // Ensure balance of each party asset is correct
       cy.get('@party_accounts').then((accounts) => {
         assetsInTest.forEach((asset) => {
           cy.get_asset_decimals(assetData[asset].id).then((assetDecimals) => {
-            assert.equal(accounts[assetData[asset].id].balance, assetData[asset].amount + assetDecimals, `Checking ${assetData[asset].id} faucet was successfull`)
+            assert.equal(
+              accounts[assetData[asset].id].balance,
+              assetData[asset].amount + assetDecimals,
+              `Checking ${assetData[asset].id} faucet was successfull`
+            );
           });
-        })
-      })
+        });
+      });
     });
 
     it('should see party address id - having searched', function () {
@@ -105,8 +109,8 @@ context('Parties page', { tags: '@regression' }, function () {
           .get_party_accounts_data_from_js_object()
           .then((accountsListedInJson) => {
             cy.get_asset_information().then((assetsInfo) => {
-
-              const assetInfo = assetsInfo[accountsListedInJson[assetInTest].asset.name];
+              const assetInfo =
+                assetsInfo[accountsListedInJson[assetInTest].asset.name];
 
               assert.equal(
                 accountsListedInJson[assetInTest].asset.name,
@@ -134,7 +138,7 @@ context('Parties page', { tags: '@regression' }, function () {
                   assetData[assetInTest].amount + assetDecimals
                 );
               });
-            })
+            });
           });
       });
     });
@@ -205,13 +209,15 @@ context('Parties page', { tags: '@regression' }, function () {
         },
         headers: { 'content-type': 'application/json' },
       })
-        .its(`body.data.partiesConnection.edges.1.node.accountsConnection.edges`)
+        .its(
+          `body.data.partiesConnection.edges.1.node.accountsConnection.edges`
+        )
         .then(function (response) {
           let accounts = {};
           response.forEach((account) => {
-            accounts[account.node.asset.id] = account.node
-          })
-          return accounts
+            accounts[account.node.asset.id] = account.node;
+          });
+          return accounts;
         });
     });
 
@@ -223,7 +229,7 @@ context('Parties page', { tags: '@regression' }, function () {
           account,
           entry
         ) {
-          account[entry.asset.id] = entry
+          account[entry.asset.id] = entry;
           return account;
         },
         {});
