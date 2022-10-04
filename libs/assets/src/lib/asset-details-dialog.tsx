@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -104,7 +104,10 @@ export const AssetDetailsDialog = ({
       {
         key: 'withdrawalthreshold',
         label: t('Withdrawal threshold'),
-        value: (asset.node.source as Schema.ERC20).withdrawThreshold,
+        value: addDecimalsFormatNumber(
+          (asset.node.source as Schema.ERC20).withdrawThreshold,
+          asset.node.decimals
+        ),
         tooltip: t(
           'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
         ),
@@ -112,7 +115,10 @@ export const AssetDetailsDialog = ({
       {
         key: 'lifetimelimit',
         label: t('Lifetime limit'),
-        value: (asset.node.source as Schema.ERC20).lifetimeLimit,
+        value: addDecimalsFormatNumber(
+          (asset.node.source as Schema.ERC20).lifetimeLimit,
+          asset.node.decimals
+        ),
         tooltip: t(
           'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'
         ),
