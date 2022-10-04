@@ -179,4 +179,4 @@ Cypress.Commands.add('wait_for_proposal_submitted', () => {
   );
   cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
   cy.get(dialogCloseButton).click();
-})
+});

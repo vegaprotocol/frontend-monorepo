@@ -159,18 +159,19 @@ context(
         ).should('be.visible');
       });
 
-      it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.contains('Confirm transaction in wallet', epochTimeout).should(
-          'be.visible'
-        );
-        cy.wait_for_proposal_submitted();
-      });
+      it(
+        'Able to submit a valid freeform proposal - with minimum required tokens associated',
+        { tags: '@smoke' },
+        function () {
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
+          );
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50');
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.wait_for_proposal_submitted();
+        }
+      );
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
@@ -897,10 +898,10 @@ context(
       });
 
       function createFreeformProposal(proposerBalance) {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          proposerBalance
+        cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM).as(
+          'freeformProposal'
         );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM).as('freeformProposal');
         cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();

@@ -26,20 +26,26 @@ const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const proposalValidationDeadline =
+  '[data-testid="proposal-validation-deadline"]';
 const voteButtons = '[data-testid="vote-buttons"]';
 const voteStatus = '[data-testid="vote-status"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
-const inputError = '[data-testid="input-error-text"]'
+const inputError = '[data-testid="input-error-text"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
+const newProposalTerms = '[data-testid="proposal-terms"]';
 const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
-const currentParameterValue = '[data-testid="selected-proposal-param-current-value"]'
-const newProposedParameterValue = '[data-testid="selected-proposal-param-new-value"]'
+const proposalMarketSelect = '[data-testid="proposal-market-select"]';
+const currentParameterValue =
+  '[data-testid="selected-proposal-param-current-value"]';
+const newProposedParameterValue =
+  '[data-testid="selected-proposal-param-new-value"]';
 
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
@@ -50,7 +56,9 @@ const governanceProposalType = {
 };
 
 context(
-  'Governance flow - form validations for different governance proposals', { tags: '@slow' }, function() {
+  'Governance flow - form validations for different governance proposals',
+  { tags: '@slow' },
+  function () {
     before('connect wallets and set approval limit', function () {
       cy.vega_wallet_import();
       cy.visit('/');
@@ -108,52 +116,145 @@ context(
           req.alias = 'proposalSubmissionCompletion';
         }
       });
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
     });
 
     it('Able to submit valid update network parameter proposal', function () {
-      cy.ensure_specified_unstaked_tokens_are_associated(
-        this.minProposerBalance
-      );
       cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
-        cy.get(newProposalTitle).type('Test update network parameter proposal');
-        cy.get(newProposalDescription).type('E2E test for proposals')
-        cy.get(proposalParameterSelect).select('governance_proposal_asset_minEnact')
-        cy.get(currentParameterValue).should('have.value', '2s')
-        cy.get(newProposedParameterValue).type('5s')
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.wait_for_proposal_submitted();
-    })
+      cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.get(newProposalTitle).type('Test update network parameter proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+
+      cy.get(proposalParameterSelect).find('option').should('have.length', 109);
+      cy.get(proposalParameterSelect).select(
+        'governance_proposal_asset_minEnact'
+      );
+      cy.get(currentParameterValue).should('have.value', '2s');
+      cy.get(newProposedParameterValue).type('5s');
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
 
     it('Unable to submit network parameter with missing/invalid fields', function () {
-      cy.ensure_specified_unstaked_tokens_are_associated(
-        this.minProposerBalance
-      );
-
       cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.get(inputError).should('have.length', 3)
-        cy.get(newProposalTitle).type('Invalid update network parameter proposal');
-        cy.get(newProposalDescription).type('E2E invalid test for proposals')
-        cy.get(proposalParameterSelect).select('spam_protection_proposal_min_tokens')
-        cy.get(newProposedParameterValue).type('0')
-        cy.get(proposalVoteDeadline).clear().type('0')
-        cy.get(newProposalSubmitButton).click();
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'not.exist'
-        );
-        cy.get(proposalVoteDeadline).clear().type('9000')
-        cy.get(newProposalSubmitButton).click();
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'not.exist'
-        );
-    })
+      cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.get(inputError).should('have.length', 3);
+      cy.get(newProposalTitle).type(
+        'Invalid update network parameter proposal'
+      );
+      cy.get(newProposalDescription).type('E2E invalid test for proposals');
+      cy.get(proposalParameterSelect).select(
+        'spam_protection_proposal_min_tokens'
+      );
+      cy.get(newProposedParameterValue).type('0');
+      cy.get(proposalVoteDeadline).clear().type('0');
+      cy.get(newProposalSubmitButton).click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'not.exist'
+      );
+      cy.get(proposalVoteDeadline).clear().type('9000');
+      cy.get(newProposalSubmitButton).click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'not.exist'
+      );
+    });
 
     it('Able to submit valid new market proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
-        cy.get(newProposalDescription).type('E2E test for proposals')
-    })
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/new-market').then((newMarketProposal) => {
+        let newMarketPayload = JSON.stringify(newMarketProposal);
+        cy.get(newProposalTerms).type(newMarketPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
 
-});
+    it('Unable to submit new market proposal with missing/invalid fields', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.get(inputError).should('have.length', 3);
+      // cy.get(newProposalTitle).type(
+      //   'Invalid update network parameter proposal'
+      // );
+      // cy.get(newProposalDescription).type('E2E invalid test for proposals');
+      // cy.fixture('/proposals/new-market').then((newMarketProposal) => {
+      //   // newMarketProposal.unexpectedField = `i shouldn't be here`;
+      //   let newMarketPayload = JSON.stringify(newMarketProposal);
+      //   cy.get(newProposalTerms).type(newMarketPayload, {
+      //     parseSpecialCharSequences: false,
+      //     delay: 2,
+      //   });
+      // });
+      // cy.get(newProposalSubmitButton).should('be.visible').click();
+      // cy.get(feedbackError)
+      //     .contains('Unknown field unexpectedField in vega proposal terms')
+      //     .should('be.visible');
+    });
+
+    // json bug
+    it.skip('Able to submit update market proposal', function () {
+      const marketId =
+        '315a8e48db0a292c92b617264728048c82c20efc922c75fd292fc54e5c727c81';
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_MARKET);
+      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.get(proposalMarketSelect).select(marketId);
+      cy.get('[data-testid="update-market-details"]').within(() => {
+        cy.get('dd').eq(0).should('have.text', 'Oranges Daily');
+        cy.get('dd').eq(1).should('have.text', 'ORANGES.24h');
+        cy.get('dd').eq(2).should('have.text', marketId);
+      });
+      cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
+        let newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
+        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
+
+    it('Able to submit new asset proposal', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.NEW_ASSET);
+      cy.get(newProposalTitle).type('Test new asset proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/new-asset').then((newAssetProposal) => {
+        let newAssetPayload = JSON.stringify(newAssetProposal);
+        cy.get(newProposalTerms).type(newAssetPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'be.visible'
+      );
+      cy.contains('Proposal waiting for node vote', proposalTimeout).should(
+        'be.visible'
+      );
+      cy.get(dialogCloseButton).click();
+    });
+
+    it('Unable to submit new asset proposal with missing/invalid fields', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.NEW_ASSET);
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.get(inputError).should('have.length', 3);
+      cy.get(newProposalTitle).type('Invalid new asset proposal');
+      cy.get(newProposalDescription).type('Invalid E2E test for proposals');
+      cy.get(proposalValidationDeadline).clear().type('2');
+      cy.get(newProposalSubmitButton).click();
+      cy.contains('Awaiting network confirmation', epochTimeout).should(
+        'not.exist'
+      );
+    });
+  }
+);
