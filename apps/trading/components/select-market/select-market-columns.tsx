@@ -95,15 +95,15 @@ const headers: Column[] = [
     onlyOnDetailed: false,
   },
   {
-    kind: ColumnKind.Asset,
-    value: t('Settlement asset'),
-    className: `${cellClassNames} hidden sm:table-cell`,
-    onlyOnDetailed: false,
-  },
-  {
     kind: ColumnKind.Sparkline,
     value: t(''),
     className: `${cellClassNames} hidden lg:table-cell`,
+    onlyOnDetailed: false,
+  },
+  {
+    kind: ColumnKind.Asset,
+    value: t('Settlement asset'),
+    className: `${cellClassNames} hidden sm:table-cell`,
     onlyOnDetailed: false,
   },
   {
