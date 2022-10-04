@@ -7,7 +7,7 @@ import {
 import * as React from 'react';
 import classNames from 'classnames';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { SIDE_NAMES } from './side-selector';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
@@ -36,7 +36,7 @@ interface Props {
   market: DealTicketMarketFragment;
   isDisabled: boolean;
   transactionStatus?: string;
-  order: Order;
+  order: OrderSubmissionBody['orderSubmission'];
   estCloseOut: string;
   estMargin: string;
   quoteName: string;

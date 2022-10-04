@@ -13,7 +13,9 @@ Cypress.Commands.add('vega_wallet_connect', () => {
       .and('be.visible')
       .click({ force: true });
   });
-  cy.contains('rest provider').click();
+  // Connect with gui as its the v1 service and tests should still pass. This will need
+  // to be update to use v2
+  cy.getByTestId('connector-gui').click();
   cy.get(restConnectorForm).within(() => {
     cy.get('#wallet').click().type(vegaWalletName);
     cy.get('#passphrase').click().type(vegaWalletPassphrase);

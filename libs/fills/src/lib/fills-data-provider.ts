@@ -54,11 +54,10 @@ const update = (
   });
 };
 
-export type Trade = FillFieldsFragment;
-export type TradeWithMarket = Omit<Trade, 'market'> & { market?: Market };
-export type TradeWithMarketEdge = {
+export type Trade = Omit<FillFieldsFragment, 'market'> & { market?: Market };
+export type TradeEdge = {
   cursor: FillEdgeFragment['cursor'];
-  node: TradeWithMarket;
+  node: Trade;
 };
 
 const getData = (responseData: FillsQuery): FillEdgeFragment[] =>
@@ -84,11 +83,11 @@ export const fillsProvider = makeDataProvider({
 });
 
 export const fillsWithMarketProvider = makeDerivedDataProvider<
-  (TradeWithMarketEdge | null)[],
-  TradeWithMarket[]
+  (TradeEdge | null)[],
+  Trade[]
 >(
   [fillsProvider, marketsProvider],
-  (partsData): (TradeWithMarketEdge | null)[] =>
+  (partsData): (TradeEdge | null)[] =>
     (partsData[0] as ReturnType<typeof getData>)?.map(
       (edge) =>
         edge && {
@@ -101,11 +100,11 @@ export const fillsWithMarketProvider = makeDerivedDataProvider<
           },
         }
     ) || null,
-  (parts): TradeWithMarket[] | undefined => {
+  (parts): Trade[] | undefined => {
     if (!parts[0].isUpdate) {
       return;
     }
-    // map FillsSub_trades[] from subscription to updated TradeWithMarket[]
+    // map FillsSub_trades[] from subscription to updated Trade[]
     return (parts[0].delta as ReturnType<typeof getDelta>).map(
       (deltaTrade) => ({
         ...((parts[0].data as ReturnType<typeof getData>)?.find(

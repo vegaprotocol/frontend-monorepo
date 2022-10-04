@@ -8,10 +8,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import type {
-  TradeWithMarket,
-  TradeWithMarketEdge,
-} from './trades-data-provider';
+import type { Trade, TradeEdge } from './trades-data-provider';
 import type { TradesVariables } from './__generated__/Trades';
 
 interface TradesContainerProps {
@@ -20,7 +17,7 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(TradeWithMarketEdge | null)[] | null>(null);
+  const dataRef = useRef<(TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -45,13 +42,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   }, []);
 
   const update = useCallback(
-    ({
-      data,
-      delta,
-    }: {
-      data: (TradeWithMarketEdge | null)[];
-      delta: TradeWithMarket[];
-    }) => {
+    ({ data, delta }: { data: (TradeEdge | null)[]; delta: Trade[] }) => {
       if (!gridRef.current?.api) {
         return false;
       }
@@ -79,7 +70,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data,
       totalCount,
     }: {
-      data: (TradeWithMarketEdge | null)[];
+      data: (TradeEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -98,7 +89,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<TradeWithMarketEdge>(
+  const getRows = makeInfiniteScrollGetRows<TradeEdge>(
     newRows,
     dataRef,
     totalCountRef,

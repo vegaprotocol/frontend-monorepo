@@ -10,18 +10,9 @@ import {
   Popover,
 } from '@vegaprotocol/ui-toolkit';
 import { useMarketList } from '@vegaprotocol/market-list';
-import type {
-  Market,
-  MarketData,
-  MarketCandles,
-  Candle,
-} from '@vegaprotocol/market-list';
+import type { MarketWithCandles, MarketWithData } from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  Positions_party,
-  PositionsSubscription_positions,
-  Positions_party_positionsConnection_edges_node,
-} from '@vegaprotocol/positions';
+import type { Positions_party_positionsConnection_edges_node } from '@vegaprotocol/positions';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
@@ -32,19 +23,17 @@ import {
   columnHeadersPositionMarkets,
   columnsPositionMarkets,
   columnHeaders,
-  columns,
+  columnHeaders,
 } from './select-market-columns';
+
+type Market = MarketWithCandles & MarketWithData;
 
 export const SelectMarketLandingTable = ({
   markets,
-  marketsData,
-  marketsCandles,
   onSelect,
   onCellClick,
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
-  marketsCandles: MarketCandles[] | undefined;
+  markets: Market[] | null;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
@@ -65,17 +54,7 @@ export const SelectMarketLandingTable = ({
                 key={i}
                 detailed={false}
                 onSelect={onSelect}
-                columns={columns(
-                  market,
-                  marketsData?.find(
-                    (marketData) => marketData.market.id === market.id
-                  ),
-                  marketsCandles?.find(
-                    (marketCandles) => marketCandles.marketId === market.id
-                  )?.candles,
-                  onSelect,
-                  onCellClick
-                )}
+                columns={columns(market, onSelect, onCellClick)}
               />
             ))}
           </tbody>
@@ -90,29 +69,19 @@ export const SelectMarketLandingTable = ({
 
 export const SelectAllMarketsTableBody = ({
   markets,
-  marketsData,
-  marketsCandles,
   positions,
   onSelect,
   onCellClick,
   headers = columnHeaders,
-  tableColumns = (market, marketData, candles) =>
-    columns(market, marketData, candles, onSelect, onCellClick),
+  tableColumns = (market) => columns(market, onSelect, onCellClick),
 }: {
-  markets: Market[] | undefined;
-  marketsData: MarketData[] | undefined;
-  marketsCandles: MarketCandles[] | undefined;
+  markets?: Market[] | null;
   positions?: Positions_party_positionsConnection_edges_node[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
   headers?: Column[];
-  tableColumns?: (
-    market: Market,
-    marketData: MarketData | undefined,
-    candles: Candle[] | undefined,
-    openVolume?: string
-  ) => Column[];
+  tableColumns?: (market: Market, openVolume?: string) => Column[];
 }) => {
   if (!markets) return null;
   return (
@@ -130,12 +99,6 @@ export const SelectAllMarketsTableBody = ({
             onSelect={onSelect}
             columns={tableColumns(
               market,
-              marketsData?.find(
-                (marketData) => marketData.market.id === market.id
-              ),
-              marketsCandles?.find(
-                (marketCandles) => marketCandles.marketId === market.id
-              )?.candles,
               positions &&
                 positions.find((p) => p.market.id === market.id)?.openVolume
             )}
@@ -157,18 +120,15 @@ export const SelectMarketPopover = ({
 }) => {
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
-  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data: party, loading: positionsLoading } = useDataProvider<
-    Positions_party,
-    PositionsSubscription_positions[]
-  >({
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
+  const { data: party, loading: positionsLoading } = useDataProvider({
     dataProvider: positionsDataProvider,
     noUpdate: true,
     variables,
-    skip: !keypair,
+    skip: !pubKey,
   });
 
   const onSelectMarket = (marketId: string) => {
@@ -179,7 +139,7 @@ export const SelectMarketPopover = ({
   const iconClass = open ? 'rotate-180' : '';
   const markets = useMemo(
     () =>
-      data?.markets?.filter((market) =>
+      data?.filter((market) =>
         party?.positionsConnection?.edges?.find(
           (edge) => edge.node.market.id === market.id
         )
@@ -202,31 +162,27 @@ export const SelectMarketPopover = ({
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        {marketsLoading || (keypair?.pub && positionsLoading) ? (
+        {marketsLoading || (pubKey && positionsLoading) ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
             Loading market data
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">
-            {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
+            {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody
                   markets={markets}
-                  marketsData={data?.marketsData}
-                  marketsCandles={data?.marketsCandles}
                   positions={party?.positionsConnection?.edges
                     ?.filter((edge) => edge.node)
                     .map((edge) => edge.node)}
                   onSelect={onSelectMarket}
                   onCellClick={onCellClick}
                   headers={columnHeadersPositionMarkets}
-                  tableColumns={(market, marketData, candles, openVolume) =>
+                  tableColumns={(market, openVolume) =>
                     columnsPositionMarkets(
                       market,
-                      marketData,
-                      candles,
                       onSelectMarket,
                       openVolume,
                       onCellClick
@@ -237,9 +193,7 @@ export const SelectMarketPopover = ({
             ) : null}
             <TableTitle>{t('All markets')}</TableTitle>
             <SelectAllMarketsTableBody
-              markets={data?.markets}
-              marketsData={data?.marketsData}
-              marketsCandles={data?.marketsCandles}
+              markets={data}
               onSelect={onSelectMarket}
               onCellClick={onCellClick}
             />
@@ -323,9 +277,7 @@ const LandingDialogContainer = ({
 
   return (
     <SelectMarketLandingTable
-      markets={data?.markets}
-      marketsData={data?.marketsData}
-      marketsCandles={data?.marketsCandles}
+      markets={data}
       onSelect={onSelect}
       onCellClick={onCellClick}
     />

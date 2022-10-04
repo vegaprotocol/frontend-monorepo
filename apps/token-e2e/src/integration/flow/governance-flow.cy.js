@@ -36,6 +36,8 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
+const noOpenProposals = '[data-testid="no-open-proposals"]';
+const noClosedProposals = '[data-testid="no-closed-proposals"]';
 
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
@@ -140,6 +142,16 @@ context(
         });
       });
 
+      it('should be able to see that no proposals exist', function () {
+        // 1004-VOTE-003
+        cy.get(noOpenProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no open or yet to enact proposals');
+        cy.get(noClosedProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no enacted or rejected proposals');
+      });
+
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
         cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
         cy.contains(
@@ -147,23 +159,29 @@ context(
         ).should('be.visible');
       });
 
-      it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.contains('Confirm transaction in wallet', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-      });
+      it(
+        'Able to submit a valid freeform proposal - with minimum required tokens associated',
+        { tags: '@smoke' },
+        function () {
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
+          );
+          cy.navigate_to_page_if_not_already_loaded('governance');
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50');
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.contains('Confirm transaction in wallet', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Awaiting network confirmation', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Proposal submitted', proposalTimeout).should(
+            'be.visible'
+          );
+          cy.get(dialogCloseButton).click();
+        }
+      );
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
@@ -1135,7 +1153,7 @@ context(
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet')
           .click();
-        cy.contains('rest provider').click();
+        cy.getByTestId('connector-gui').click();
         cy.get(restConnectorForm).within(() => {
           cy.get('#wallet').click().type(vegaWalletName);
           cy.get('#passphrase').click().type(vegaWalletPassphrase);

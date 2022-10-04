@@ -16,12 +16,12 @@ const generateJsx = (context: PartialDeep<VegaWalletContextShape>) => {
 
 describe('VegaWalletContainer', () => {
   it('doesnt render children if not connected', () => {
-    render(generateJsx({ keypair: null }));
+    render(generateJsx({ pubKey: null }));
     expect(screen.queryByTestId('child')).not.toBeInTheDocument();
   });
 
   it('renders children if connected', () => {
-    render(generateJsx({ keypair: { pub: '0x123' } }));
+    render(generateJsx({ pubKey: '0x123' }));
     expect(screen.getByTestId('child')).toBeInTheDocument();
   });
 });

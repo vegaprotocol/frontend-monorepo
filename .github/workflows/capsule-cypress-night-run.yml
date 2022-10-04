@@ -5,6 +5,7 @@ name: Cypress tests -- night run
 on:
   schedule:
     - cron: '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   nightly:

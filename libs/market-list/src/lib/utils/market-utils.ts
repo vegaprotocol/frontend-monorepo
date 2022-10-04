@@ -16,7 +16,7 @@ export const totalFees = (fees: Market['fees']['factors']) => {
   );
 };
 
-export const mapDataToMarketList = (markets: Market[]) => {
+export const filterAndSortMarkets = (markets: Market[]) => {
   const tradingModesOrdering = [
     MarketTradingMode.TRADING_MODE_CONTINUOUS,
     MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,

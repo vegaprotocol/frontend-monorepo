@@ -12,11 +12,11 @@ export const AssociateContainer = () => {
 
   return (
     <StakingWalletsContainer>
-      {({ address, currVegaKey }) =>
-        currVegaKey ? (
+      {({ address, pubKey }) =>
+        pubKey ? (
           <AssociatePage
             address={address}
-            vegaKey={currVegaKey}
+            vegaKey={pubKey}
             ethereumConfig={config}
           />
         ) : (

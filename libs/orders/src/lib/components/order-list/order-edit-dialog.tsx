@@ -16,12 +16,12 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
-import type { OrderWithMarket } from '../order-data-provider';
+import type { Order } from '../order-data-provider';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderWithMarket;
+  order: Order;
   onSubmit: (fields: FormFields) => void;
 }
 

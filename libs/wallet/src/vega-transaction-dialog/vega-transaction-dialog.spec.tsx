@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { WalletError } from '../connectors';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
@@ -58,7 +59,7 @@ describe('VegaTransactionDialog', () => {
         {...props}
         transaction={{
           ...props.transaction,
-          error: 'rejected',
+          error: new WalletError('rejected', 1),
           status: VegaTxStatus.Error,
         }}
       />

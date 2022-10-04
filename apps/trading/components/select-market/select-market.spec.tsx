@@ -2,15 +2,16 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type {
+  MarketWithCandles,
+  MarketWithData,
   MarketData,
-  MarketCandles,
-  Market,
 } from '@vegaprotocol/market-list';
-
 import {
   SelectAllMarketsTableBody,
   SelectMarketLandingTable,
 } from './select-market';
+
+type Market = MarketWithCandles & MarketWithData;
 
 jest.mock(
   'next/link',
@@ -19,7 +20,11 @@ jest.mock(
       children
 );
 
-const MARKET_A = {
+type PartialMarket = Partial<
+  Omit<Market, 'data'> & { data: Partial<MarketData> }
+>;
+
+const MARKET_A: PartialMarket = {
   __typename: 'Market',
   id: '1',
   decimalPlaces: 2,
@@ -33,8 +38,10 @@ const MARKET_A = {
       name: 'ABCDEF 1-Day',
       product: {
         __typename: 'Future',
+        quoteName: 'ABCDEF',
         settlementAsset: {
           __typename: 'Asset',
+          decimals: 2,
           symbol: 'ABC',
         },
       },
@@ -53,68 +60,16 @@ const MARKET_A = {
       makerFee: '0.01',
     },
   },
-} as Market;
-
-const MARKET_B = {
-  __typename: 'Market',
-  id: '2',
-  decimalPlaces: 2,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  tradableInstrument: {
-    __typename: 'TradableInstrument',
-    instrument: {
-      __typename: 'Instrument',
-      id: '2',
-      code: 'XYZ',
-      name: 'XYZ 1-Day',
-      product: {
-        __typename: 'Future',
-        settlementAsset: {
-          __typename: 'Asset',
-          symbol: 'XYZ',
-        },
-      },
-      metadata: {
-        __typename: 'InstrumentMetadata',
-        tags: ['XYZ'],
-      },
+  data: {
+    __typename: 'MarketData',
+    market: {
+      __typename: 'Market',
+      id: '1',
     },
+    markPrice: '90',
+    trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    indicativeVolume: '1000',
   },
-  fees: {
-    __typename: 'Fees',
-    factors: {
-      __typename: 'FeeFactors',
-      infrastructureFee: '0.01',
-      liquidityFee: '0.01',
-      makerFee: '0.01',
-    },
-  },
-} as Market;
-
-const MARKET_DATA_A: Partial<MarketData> = {
-  __typename: 'MarketData',
-  market: {
-    __typename: 'Market',
-    id: '1',
-  },
-  markPrice: '90',
-  trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
-  indicativeVolume: '1000',
-};
-
-const MARKET_DATA_B: Partial<MarketData> = {
-  __typename: 'MarketData',
-  market: {
-    __typename: 'Market',
-    id: '2',
-  },
-  markPrice: '123.123',
-  trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
-  indicativeVolume: '2000',
-};
-
-const MARKET_CANDLES_A: Partial<MarketCandles> = {
-  marketId: '1',
   candles: [
     {
       __typename: 'Candle',
@@ -135,8 +90,52 @@ const MARKET_CANDLES_A: Partial<MarketCandles> = {
   ],
 };
 
-const MARKET_CANDLES_B: Partial<MarketCandles> = {
-  marketId: '2',
+const MARKET_B: PartialMarket = {
+  __typename: 'Market',
+  id: '2',
+  decimalPlaces: 2,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  tradableInstrument: {
+    __typename: 'TradableInstrument',
+    instrument: {
+      __typename: 'Instrument',
+      id: '2',
+      code: 'XYZ',
+      name: 'XYZ 1-Day',
+      product: {
+        __typename: 'Future',
+        quoteName: 'XYZ',
+        settlementAsset: {
+          __typename: 'Asset',
+          decimals: 2,
+          symbol: 'XYZ',
+        },
+      },
+      metadata: {
+        __typename: 'InstrumentMetadata',
+        tags: ['XYZ'],
+      },
+    },
+  },
+  fees: {
+    __typename: 'Fees',
+    factors: {
+      __typename: 'FeeFactors',
+      infrastructureFee: '0.01',
+      liquidityFee: '0.01',
+      makerFee: '0.01',
+    },
+  },
+  data: {
+    __typename: 'MarketData',
+    market: {
+      __typename: 'Market',
+      id: '2',
+    },
+    markPrice: '123.123',
+    trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    indicativeVolume: '2000',
+  },
   candles: [
     {
       __typename: 'Candle',
@@ -155,14 +154,9 @@ describe('SelectMarket', () => {
     const onCellClick = jest.fn();
     const { container } = render(
       <SelectAllMarketsTableBody
-        markets={[MARKET_A, MARKET_B]}
-        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
-        marketsCandles={[
-          MARKET_CANDLES_A as MarketCandles,
-          MARKET_CANDLES_B as MarketCandles,
-        ]}
-        onSelect={onSelect}
+        markets={[MARKET_A as Market, MARKET_B as Market]}
         onCellClick={onCellClick}
+        onSelect={onSelect}
       />
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
@@ -178,14 +172,9 @@ describe('SelectMarket', () => {
 
     render(
       <SelectMarketLandingTable
-        markets={[MARKET_A, MARKET_B]}
-        marketsData={[MARKET_DATA_A as MarketData, MARKET_DATA_B as MarketData]}
-        marketsCandles={[
-          MARKET_CANDLES_A as MarketCandles,
-          MARKET_CANDLES_B as MarketCandles,
-        ]}
-        onSelect={onSelect}
+        markets={[MARKET_A as Market, MARKET_B as Market]}
         onCellClick={onCellClick}
+        onSelect={onSelect}
       />
     );
     fireEvent.click(screen.getByTestId(`market-link-1`));

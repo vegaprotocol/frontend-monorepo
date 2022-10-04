@@ -11,7 +11,6 @@ import { TxState } from '../../../hooks/transaction-reducer';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { removeDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 
@@ -26,7 +25,7 @@ export const WalletAssociate = ({
   perform: () => void;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
-  vegaKey: VegaKeyExtended;
+  vegaKey: string;
   address: string;
   ethereumConfig: EthereumConfig;
 }) => {
@@ -100,7 +99,7 @@ export const WalletAssociate = ({
   } else {
     pageContent = (
       <>
-        <AssociateInfo pubKey={vegaKey.pub} />
+        <AssociateInfo pubKey={vegaKey} />
         <TokenInput
           approveText={t('Approve VEGA tokens for staking on Vega')}
           submitText={t('Associate VEGA Tokens with key')}

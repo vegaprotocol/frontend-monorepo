@@ -1,6 +1,6 @@
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { Market } from '../markets-provider';
-import { mapDataToMarketList, totalFees } from './market-utils';
+import { filterAndSortMarkets, totalFees } from './market-utils';
 
 const MARKET_A: Partial<Market> = {
   id: '1',
@@ -48,7 +48,7 @@ const MARKET_D: Partial<Market> = {
 
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
-    const result = mapDataToMarketList([
+    const result = filterAndSortMarkets([
       MARKET_A,
       MARKET_B,
       MARKET_C,

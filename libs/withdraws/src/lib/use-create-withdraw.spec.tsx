@@ -11,9 +11,9 @@ import {
   initialState,
   VegaTxStatus,
   VegaWalletContext,
+  determineId,
 } from '@vegaprotocol/wallet';
 import { waitFor } from '@testing-library/react';
-import { determineId } from '@vegaprotocol/react-helpers';
 import type {
   WithdrawalEvent,
   WithdrawalEvent_busEvents_event_Withdrawal,
@@ -51,7 +51,7 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-const pubkey = '0x123';
+const pubKey = '0x123';
 let mockSend: jest.Mock;
 let withdrawalInput: WithdrawalArgs;
 let withdrawalEvent: WithdrawalEvent_busEvents_event_Withdrawal;
@@ -61,9 +61,7 @@ let mockWithdrawalEvent: MockedResponse<WithdrawalEvent>;
 beforeEach(() => {
   mockSend = jest
     .fn()
-    .mockReturnValue(
-      Promise.resolve({ txHash, tx: { signature: { value: signature } } })
-    );
+    .mockReturnValue(Promise.resolve({ transactionHash: txHash, signature }));
   withdrawalEvent = {
     id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
     status: WithdrawalStatus.STATUS_OPEN,
@@ -120,7 +118,7 @@ beforeEach(() => {
   mockWithdrawalEvent = {
     request: {
       query: WITHDRAWAL_BUS_EVENT_SUB,
-      variables: { partyId: pubkey },
+      variables: { partyId: pubKey },
     },
     result: {
       data: {
@@ -137,11 +135,10 @@ beforeEach(() => {
 });
 
 it('creates withdrawal and waits for approval creation', async () => {
-  const { result } = setup(
-    // @ts-ignore only need pub property from keypair
-    { sendTx: mockSend, keypair: { pub: pubkey } },
-    [mockWithdrawalEvent, mockERC20Approval]
-  );
+  const { result } = setup({ sendTx: mockSend, pubKey }, [
+    mockWithdrawalEvent,
+    mockERC20Approval,
+  ]);
 
   expect(result.current.transaction).toEqual(initialState);
   expect(result.current.submit).toEqual(expect.any(Function));
@@ -152,9 +149,7 @@ it('creates withdrawal and waits for approval creation', async () => {
     result.current.submit(withdrawalInput);
   });
 
-  expect(mockSend).toHaveBeenCalledWith({
-    pubKey: pubkey,
-    propagate: true,
+  expect(mockSend).toHaveBeenCalledWith(pubKey, {
     withdrawSubmission: {
       amount: withdrawalInput.amount,
       asset: withdrawalInput.asset,

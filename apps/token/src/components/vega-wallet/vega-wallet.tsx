@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -22,18 +22,20 @@ import {
 } from '../wallet-card';
 import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
-  const { keypair, keypairs } = useVegaWallet();
+  const { pubKey, pubKeys } = useVegaWallet();
+  const pubKeyObj = useMemo(() => {
+    return pubKeys?.find((pk) => pk.publicKey === pubKey);
+  }, [pubKey, pubKeys]);
 
-  const child = !keypairs ? (
+  const child = !pubKeys ? (
     <VegaWalletNotConnected />
   ) : (
-    <VegaWalletConnected vegaKeys={keypairs} />
+    <VegaWalletConnected vegaKeys={pubKeys.map((pk) => pk.publicKey)} />
   );
 
   return (
@@ -41,19 +43,19 @@ export const VegaWallet = () => {
       <WalletCard>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
-          {keypair && (
+          {pubKeyObj && (
             <>
               <div
                 data-testid="wallet-name"
                 className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
               >
-                {keypair.name}
+                {pubKeyObj.name}
               </div>
               <span
                 data-testid="vega-account-truncated"
                 className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
               >
-                {truncateMiddle(keypair.pub)}
+                {truncateMiddle(pubKeyObj.publicKey)}
               </span>
             </>
           )}
@@ -109,7 +111,7 @@ const VegaWalletAssetList = ({ accounts }: VegaWalletAssetsListProps) => {
 };
 
 interface VegaWalletConnectedProps {
-  vegaKeys: VegaKeyExtended[];
+  vegaKeys: string[];
 }
 
 const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {

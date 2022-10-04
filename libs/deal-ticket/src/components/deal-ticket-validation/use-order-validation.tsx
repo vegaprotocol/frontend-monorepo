@@ -10,8 +10,8 @@ import {
   OrderTimeInForce,
   OrderType,
 } from '@vegaprotocol/types';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import type { Order } from './get-default-order';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
@@ -30,7 +30,7 @@ export type ValidationProps = {
   market: DealTicketMarketFragment;
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
-  fieldErrors?: FieldErrors<Order>;
+  fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
 };
 
 export const marketTranslations = (marketState: MarketState) => {
@@ -51,19 +51,12 @@ export const useOrderValidation = ({
   message: React.ReactNode | string;
   isDisabled: boolean;
 } => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
   const { message, isDisabled } = useMemo(() => {
-    if (!keypair) {
+    if (!pubKey) {
       return { message: t('No public key selected'), isDisabled: true };
-    }
-
-    if (keypair.tainted) {
-      return {
-        isDisabled: true,
-        message: t('Selected public key has been tainted'),
-      };
     }
 
     if (
@@ -292,7 +285,7 @@ export const useOrderValidation = ({
     return { isDisabled: false, message: '' };
   }, [
     minSize,
-    keypair,
+    pubKey,
     market,
     fieldErrors?.size?.type,
     fieldErrors?.size?.message,

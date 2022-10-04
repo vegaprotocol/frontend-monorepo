@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { formatLabel, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
@@ -74,9 +74,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   if (transaction.status === VegaTxStatus.Error) {
     content = (
       <div data-testid={transaction.status}>
-        <p>{transaction.error && formatLabel(transaction.error)}</p>
-        {transaction.details && (
-          <p>{formatLabel(transaction.details.join(', '))}</p>
+        <p>{transaction.error && transaction.error.message}</p>
+        {transaction.error && transaction.error.data && (
+          <p>{transaction.error.data}</p>
         )}
       </div>
     );

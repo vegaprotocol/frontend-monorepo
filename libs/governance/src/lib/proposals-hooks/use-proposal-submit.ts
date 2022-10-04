@@ -1,13 +1,16 @@
 import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
-import { determineId } from '@vegaprotocol/react-helpers';
+import {
+  useVegaWallet,
+  useVegaTransaction,
+  determineId,
+} from '@vegaprotocol/wallet';
 import { useProposalEvent } from './use-proposal-event';
 import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import type { ProposalEvent_busEvents_event_Proposal } from './__generated__/ProposalEvent';
 
 export const useProposalSubmit = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const waitForProposalEvent = useProposalEvent(transaction);
@@ -17,35 +20,31 @@ export const useProposalSubmit = () => {
 
   const submit = useCallback(
     async (proposal: ProposalSubmission) => {
-      if (!keypair || !proposal) {
+      if (!pubKey || !proposal) {
         return;
       }
 
       setFinalizedProposal(null);
 
       try {
-        const res = await send({
-          pubKey: keypair.pub,
-          propagate: true,
+        const res = await send(pubKey, {
           proposalSubmission: proposal,
         });
 
-        if (res?.signature) {
-          const resId = determineId(res.signature);
-          if (resId) {
-            waitForProposalEvent(resId, keypair.pub, (p) => {
+        if (res) {
+          const proposalId = determineId(res.signature);
+          if (proposalId) {
+            waitForProposalEvent(proposalId, pubKey, (p) => {
               setFinalizedProposal(p);
               setComplete();
             });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
-        return;
       }
     },
-    [keypair, send, setComplete, waitForProposalEvent]
+    [pubKey, send, setComplete, waitForProposalEvent]
   );
 
   return {

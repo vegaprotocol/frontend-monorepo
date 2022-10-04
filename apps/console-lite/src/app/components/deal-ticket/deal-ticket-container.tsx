@@ -37,13 +37,13 @@ const PARTY_BALANCE_QUERY = gql`
 
 export const DealTicketContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const { data: partyData, loading } = useQuery<PartyBalanceQuery>(
     PARTY_BALANCE_QUERY,
     {
-      variables: { partyId: keypair?.pub },
-      skip: !keypair?.pub,
+      variables: { partyId: pubKey },
+      skip: !pubKey,
     }
   );
 
@@ -63,7 +63,7 @@ export const DealTicketContainer = () => {
               data.market.tradableInstrument.instrument.product?.settlementAsset
             }
             accounts={partyData?.party?.accounts || []}
-            isWalletConnected={!!keypair?.pub}
+            isWalletConnected={!!pubKey}
           />
         );
 
@@ -82,7 +82,7 @@ export const DealTicketContainer = () => {
   return (
     <section className="flex p-4 md:p-6">
       <section className="w-full md:w-1/2 md:min-w-[500px]">
-        {keypair ? container : <ConnectWallet />}
+        {pubKey ? container : <ConnectWallet />}
       </section>
       <Baubles />
     </section>

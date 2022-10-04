@@ -1,60 +1,76 @@
 import { act, renderHook } from '@testing-library/react';
-import type {
-  VegaKeyExtended,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
-import type { OrderEvent, OrderEvent_busEvents } from './';
+import type { OrderEvent } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderFields } from '../components';
+import type { OrderWithMarket } from '../components';
 import { generateOrder } from '../components';
+import {
+  OrderStatus,
+  OrderType,
+  OrderTimeInForce,
+  Side,
+  BusEventType,
+} from '@vegaprotocol/types';
 
 const defaultWalletContext = {
-  keypair: null,
-  keypairs: [],
+  pubKey: null,
+  pubKeys: [],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),
   disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
+  selectPubKey: jest.fn(),
   connector: null,
 };
 
-function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
+function setup(
+  order: OrderWithMarket,
+  context?: Partial<VegaWalletContextShape>
+) {
   const mocks: MockedResponse<OrderEvent> = {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.pubKey || '',
       },
     },
     result: {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: BusEventType.Order,
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
+              expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: 'market-id',
                 decimalPlaces: 5,
+                positionDecimalPlaces: 0,
+                tradableInstrument: {
+                  __typename: 'TradableInstrument',
+                  instrument: {
+                    name: 'UNIDAI Monthly (30 Jun 2022)',
+                    __typename: 'Instrument',
+                  },
+                },
                 __typename: 'Market',
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },
@@ -63,33 +79,42 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
     request: {
       query: ORDER_EVENT_SUB,
       variables: {
-        partyId: context?.keypair?.pub || '',
+        partyId: context?.pubKey || '',
       },
     },
     result: {
       data: {
         busEvents: [
           {
-            type: 'Order',
+            type: BusEventType.Order,
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
+              expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Side.SIDE_BUY,
               market: {
-                name: 'UNIDAI Monthly (30 Jun 2022)',
+                id: 'market-id',
                 decimalPlaces: 5,
+                positionDecimalPlaces: 0,
+                tradableInstrument: {
+                  __typename: 'TradableInstrument',
+                  instrument: {
+                    name: 'UNIDAI Monthly (30 Jun 2022)',
+                    __typename: 'Instrument',
+                  },
+                },
                 __typename: 'Market',
               },
               __typename: 'Order',
             },
             __typename: 'BusEvent',
-          } as OrderEvent_busEvents,
+          },
         ],
       },
     },
@@ -110,26 +135,22 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
+    const pubKeyObj = { publicKey: '0x123', name: 'test key 1' };
     const order = generateOrder({
       price: '123456789',
       market: { decimalPlaces: 2 },
     });
     const { result } = setup(order, {
       sendTx: mockSendTx,
-      keypairs: [keypair],
-      keypair,
+      pubKeys: [pubKeyObj],
+      pubKey: pubKeyObj.publicKey,
     });
 
     act(() => {
       result.current.edit({ price: '1234567.89' });
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith({
-      pubKey: keypair.pub,
-      propagate: true,
+    expect(mockSendTx).toHaveBeenCalledWith(pubKeyObj.publicKey, {
       orderAmendment: {
         orderId: order.id,
         // eslint-disable-next-line
@@ -157,8 +178,8 @@ describe('useOrderEdit', () => {
     const mockSendTx = jest.fn();
     const { result } = setup(order, {
       sendTx: mockSendTx,
-      keypairs: [],
-      keypair: null,
+      pubKeys: [],
+      pubKey: null,
     });
     await act(async () => {
       result.current.edit(order);

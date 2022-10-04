@@ -6,11 +6,11 @@ import { HorizontalMenu } from '../horizontal-menu';
 import * as constants from './constants';
 
 export const Portfolio = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { pathname } = useLocation();
   const module = pathname.split('/portfolio/')?.[1] ?? '';
-  const outlet = useOutlet({ partyId: keypair?.pub || '' });
-  if (!keypair) {
+  const outlet = useOutlet({ partyId: pubKey || '' });
+  if (!pubKey) {
     return (
       <section className="xl:w-1/2">
         <ConnectWallet />

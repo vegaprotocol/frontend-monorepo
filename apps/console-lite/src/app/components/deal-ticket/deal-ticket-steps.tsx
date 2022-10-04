@@ -11,7 +11,7 @@ import {
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
 import {
   t,
@@ -61,7 +61,7 @@ export const DealTicketSteps = ({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<Order>({
+  } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
@@ -80,15 +80,15 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const estMargin = useOrderMargin({
     order,
     market,
-    partyId: keypair?.pub || '',
+    partyId: pubKey || '',
   });
 
   const maxTrade = useMaximumPositionSize({
-    partyId: keypair?.pub || '',
+    partyId: pubKey || '',
     accounts: partyData?.party?.accounts || [],
     marketId: market.id,
     settlementAssetId:
@@ -205,7 +205,7 @@ export const DealTicketSteps = ({
   );
 
   const onSubmit = useCallback(
-    (order: Order) => {
+    (order: OrderSubmissionBody['orderSubmission']) => {
       if (transactionStatus !== 'pending') {
         submit({
           ...order,
