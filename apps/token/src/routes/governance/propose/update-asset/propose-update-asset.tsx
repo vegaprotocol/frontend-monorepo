@@ -6,6 +6,7 @@ import {
   getEnactmentTimestamp,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { validateJson } from '@vegaprotocol/react-helpers';
 import {
   ProposalFormMinRequirements,
   ProposalFormTitle,
@@ -30,7 +31,7 @@ export interface UpdateAssetProposalFormFields {
   proposalReference: string;
 }
 
-const docsLink = '/update-asset-proposal';
+const DOCS_LINK = '/update-asset-proposal';
 
 export const ProposeUpdateAsset = () => {
   const {
@@ -95,9 +96,9 @@ export const ProposeUpdateAsset = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <Link
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</Link>
               </p>
             )}
 
@@ -138,20 +139,11 @@ export const ProposeUpdateAsset = () => {
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
                     required: t('Required'),
-                    validate: {
-                      validateJson: (value) => {
-                        try {
-                          JSON.parse(value);
-                          return true;
-                        } catch (e) {
-                          return t('Must be valid JSON');
-                        }
-                      },
-                    },
+                    validate: (value) => validateJson(value),
                   })}
                   labelOverride={'Terms.updateAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={docsLink}
+                  customDocLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline

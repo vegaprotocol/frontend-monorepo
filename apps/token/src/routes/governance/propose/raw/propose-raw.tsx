@@ -9,6 +9,7 @@ import {
   Link,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
+import { validateJson } from '@vegaprotocol/react-helpers';
 import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
   ProposalFormSubmit,
@@ -74,16 +75,7 @@ export const ProposeRaw = () => {
                     data-testid="proposal-data"
                     {...register('rawProposalData', {
                       required: t('Required'),
-                      validate: {
-                        validateJson: (value) => {
-                          try {
-                            JSON.parse(value);
-                            return true;
-                          } catch (e) {
-                            return t('Must be valid JSON');
-                          }
-                        },
-                      },
+                      validate: (value) => validateJson(value),
                     })}
                   />
                   {errors.rawProposalData?.message && (

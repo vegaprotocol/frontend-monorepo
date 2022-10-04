@@ -81,16 +81,12 @@ describe('Propose New Asset', () => {
 
   it('should render the title', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByText('New asset proposal')).toBeTruthy()
-    );
+    expect(await screen.findByText('New asset proposal')).toBeTruthy();
   });
 
   it('should render the form components', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('new-asset-proposal-form')).toBeTruthy()
-    );
+    expect(await screen.findByTestId('new-asset-proposal-form')).toBeTruthy();
     expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
     expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
     expect(screen.getByTestId('proposal-title')).toBeTruthy();
