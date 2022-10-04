@@ -53,8 +53,7 @@ describe('FillsTable', () => {
 
     await screen.findByText('Market');
     const headers = screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(7);
-    expect(headers.map((h) => h.textContent?.trim())).toEqual([
+    const expectedHeaders = [
       'Market',
       'Size',
       'Value',
@@ -62,48 +61,12 @@ describe('FillsTable', () => {
       'Role',
       'Fee',
       'Date',
-    ]);
+    ];
+    expect(headers).toHaveLength(expectedHeaders.length);
+    expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
   it('formats cells correctly for buyer fill', async () => {
-    const partyId = 'party-id';
-    const buyerFill = generateFill({
-      ...defaultFill,
-      buyer: {
-        id: partyId,
-      },
-      aggressor: Side.SIDE_SELL,
-      buyerFee: {
-        makerFee: '2',
-        infrastructureFee: '2',
-        liquidityFee: '2',
-      },
-    });
-
-    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
-
-    await waitForGridToBeInTheDOM();
-    await waitForDataToHaveLoaded();
-
-    const cells = screen.getAllByRole('gridcell');
-    const expectedValues = [
-      buyerFill.market?.tradableInstrument.instrument.name || '',
-      '+3.00000',
-      '1.00 BTC',
-      '3.00 BTC',
-      'Maker',
-      '0.06 BTC',
-      getDateTimeFormat().format(new Date(buyerFill.createdAt)),
-    ];
-    cells.forEach((cell, i) => {
-      expect(cell).toHaveTextContent(expectedValues[i]);
-    });
-
-    const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-green-dark');
-  });
-
-  it('should format cells correctly for buyer fill', async () => {
     const partyId = 'party-id';
     const buyerFill = generateFill({
       ...defaultFill,
@@ -175,6 +138,7 @@ describe('FillsTable', () => {
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
     expect(amountCell).toHaveClass('text-vega-red-dark');
+    screen.debug();
   });
 
   it('should render correct maker or taker role', async () => {

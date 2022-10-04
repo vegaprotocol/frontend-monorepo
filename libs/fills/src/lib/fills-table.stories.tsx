@@ -11,9 +11,29 @@ export default {
 const Template: Story<Props> = (args) => <FillsTable {...args} />;
 export const Default = Template.bind({});
 
+const partyId = 'party-id';
 Default.args = {
-  partyId: 'party-id',
-  rowData: Array(5)
-    .fill(null)
-    .map(() => generateFill()),
+  partyId,
+  rowData: [
+    generateFill({
+      seller: {
+        id: partyId,
+      },
+    }),
+    generateFill({
+      buyer: {
+        id: partyId,
+      },
+    }),
+    generateFill({
+      seller: {
+        id: partyId,
+      },
+    }),
+    generateFill({
+      buyer: {
+        id: partyId,
+      },
+    }),
+  ],
 };
