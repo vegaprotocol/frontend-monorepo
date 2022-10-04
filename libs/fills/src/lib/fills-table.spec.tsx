@@ -51,7 +51,6 @@ describe('FillsTable', () => {
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
-    await screen.findByText('Market');
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
       'Market',
