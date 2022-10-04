@@ -15,7 +15,7 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
