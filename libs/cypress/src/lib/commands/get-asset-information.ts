@@ -12,7 +12,12 @@ export function addGetAssetInformation() {
   // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('get_asset_information', () => {
     const mutation =
-      '{ assets {name id decimals globalRewardPoolAccount {balance}}}';
+      // '{ assets {name id decimals globalRewardPoolAccount {balance}}}';
+      '{ assets {name id symbol decimals source{__typename \
+        ... on ERC20{contractAddress} \
+        ... on BuiltinAsset{maxFaucetAmountMint}} \
+        infrastructureFeeAccount{__typename type balance} \
+        globalRewardPoolAccount {balance}}}'
     cy.request({
       method: 'POST',
       url: `http://localhost:3028/query`,
@@ -25,14 +30,17 @@ export function addGetAssetInformation() {
       .then(function (response) {
         // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
         const object = response.reduce(function (assets, entry) {
-          assets[entry.name] = {
-            rewardPoolBalance: entry.globalRewardPoolAccount.balance,
-            id: entry.id,
-            decimals: entry.decimals,
-          };
+          assets[entry.name] = entry 
+          // {
+          //   rewardPoolBalance: entry.globalRewardPoolAccount.balance,
+          //   id: entry.id,
+          //   decimals: entry.decimals,
+          //   symbol: entry.symbol,
+          //   source: entry.source,
+          //   infrastructureFeeAccount: entry.infrastructureFeeAccount
+          // };
           return assets;
         }, {});
-
         return object;
       });
   });
