@@ -16,26 +16,20 @@ export const generateWithdrawFormQuery = (
     txHash: null,
     __typename: 'Withdrawal',
   };
-  const account: WithdrawFormQuery_party_accounts = {
-    type: AccountType.ACCOUNT_TYPE_GENERAL,
-    balance: '100000000',
-    asset: {
-      __typename: 'Asset',
-      id: 'asset-0',
-      symbol: 'AST0',
-    },
-    __typename: 'Account',
-  };
+
+  // NOTE: These assets ids and contract addresses are real assets on Sepolia, this is needed
+  // because we don't currently mock our seplia infura provider. If we change network these will
+  // need to be updated
   const assetEdge1: WithdrawFormQuery_assetsConnection_edges = {
     node: {
-      id: 'asset-0',
-      symbol: 'AST0',
-      name: 'Asset 0',
+      id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
+      symbol: 'tBTC',
+      name: 'Sepolia tBTC',
       decimals: 5,
       status: AssetStatus.STATUS_ENABLED,
       source: {
         __typename: 'ERC20',
-        contractAddress: '0x5E4b9aDA947130Fc320a144cd22bC1641e5c9d81',
+        contractAddress: '0x1d525fB145Af5c51766a89706C09fE07E6058D1D',
       },
       __typename: 'Asset',
     },
@@ -43,9 +37,9 @@ export const generateWithdrawFormQuery = (
   };
   const assetEdge2: WithdrawFormQuery_assetsConnection_edges = {
     node: {
-      id: 'asset-1',
-      symbol: 'AST1',
-      name: 'Asset 1',
+      id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
+      symbol: 'tUSDC',
+      name: 'Sepolia tUSDC',
       decimals: 5,
       status: AssetStatus.STATUS_ENABLED,
       source: {
@@ -56,6 +50,17 @@ export const generateWithdrawFormQuery = (
     },
     __typename: 'AssetEdge',
   };
+  const account: WithdrawFormQuery_party_accounts = {
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    balance: '100000000',
+    asset: {
+      __typename: 'Asset',
+      id: assetEdge1.node.id,
+      symbol: 'AST0',
+    },
+    __typename: 'Account',
+  };
+
   const defaultResult = {
     party: {
       id: 'party-0',
@@ -68,6 +73,5 @@ export const generateWithdrawFormQuery = (
       edges: [assetEdge1, assetEdge2],
     },
   };
-
   return merge(defaultResult, override);
 };

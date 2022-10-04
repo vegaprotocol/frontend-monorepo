@@ -14,6 +14,8 @@ describe('withdraw', { tags: '@smoke' }, () => {
   const useMaximumAmount = 'use-maximum';
   const submitWithdrawBtn = 'submit-withdrawal';
   const ethAddressValue = Cypress.env('ETHEREUM_WALLET_ADDRESS');
+  const asset1Name = 'Sepolia tBTC';
+  const asset2Name = 'Sepolia tUSDC';
 
   beforeEach(() => {
     cy.mockWeb3Provider();
@@ -52,7 +54,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.get(toAddressField).should('have.value', ethAddressValue);
   });
   it('min amount', () => {
-    cy.get(assetSelectField).select('Asset 0'); // Select asset so we have a min viable amount calculated
+    cy.get(assetSelectField).select(asset1Name); // Select asset so we have a min viable amount calculated
     cy.get(amountField).clear().type('0');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -61,7 +63,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
-    cy.get(assetSelectField).select('Asset 1'); // Will be above maximum because the vega wallet doesnt have any collateral
+    cy.get(assetSelectField).select(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
     cy.get(amountField).clear().type('1');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -71,7 +73,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   });
 
   it('can set amount using use maximum button', () => {
-    cy.get(assetSelectField).select('Asset 0');
+    cy.get(assetSelectField).select(asset1Name);
     cy.getByTestId(useMaximumAmount).click();
     cy.get(amountField).should('have.value', '1000.00000');
   });
@@ -86,7 +88,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
         },
       },
     });
-    cy.get(assetSelectField).select('Asset 0');
+    cy.get(assetSelectField).select(asset1Name);
     cy.getByTestId('balance-available')
       .should('contain.text', 'Balance available')
       .find('td')

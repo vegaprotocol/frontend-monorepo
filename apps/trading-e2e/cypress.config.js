@@ -48,6 +48,7 @@ module.exports = defineConfig({
     TRUNCATED_VEGA_PUBLIC_KEY2: '1a18cd…0cf2e4',
     ETHEREUM_WALLET_ADDRESS: '0x265Cc6d39a1B53d0d92068443009eE7410807158',
     ETHERSCAN_URL: 'https://sepolia.etherscan.io',
+    ETHEREUM_CHAIN_ID: 11155111,
     tsConfig: 'tsconfig.json',
     TAGS: 'not @todo and not @ignore and not @manual',
     TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
