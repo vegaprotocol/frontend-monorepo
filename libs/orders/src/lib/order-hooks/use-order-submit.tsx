@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId, toNanoSeconds } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
+import { toNanoSeconds } from '@vegaprotocol/react-helpers';
+import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
 import { OrderTimeInForce } from '@vegaprotocol/types';
@@ -85,7 +85,7 @@ export const getOrderDialogIcon = (
 };
 
 export const useOrderSubmit = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const {
     send,
@@ -107,16 +107,14 @@ export const useOrderSubmit = () => {
 
   const submit = useCallback(
     async (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!keypair || !order.side) {
+      if (!pubKey || !order.side) {
         return;
       }
 
       setFinalizedOrder(null);
 
       try {
-        const res = await send({
-          pubKey: keypair.pub,
-          propagate: true,
+        const res = await send(pubKey, {
           orderSubmission: {
             ...order,
             price:
@@ -131,22 +129,20 @@ export const useOrderSubmit = () => {
           },
         });
 
-        if (res?.signature) {
-          const resId = determineId(res.signature);
-          if (resId) {
-            waitForOrderEvent(resId, keypair.pub, (order) => {
+        if (res) {
+          const orderId = determineId(res.signature);
+          if (orderId) {
+            waitForOrderEvent(orderId, pubKey, (order) => {
               setFinalizedOrder(order);
               setComplete();
             });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
-        return;
       }
     },
-    [keypair, send, setComplete, waitForOrderEvent]
+    [pubKey, send, setComplete, waitForOrderEvent]
   );
 
   return {

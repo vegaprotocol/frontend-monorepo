@@ -43,7 +43,7 @@ beforeEach(() => {
     isFaucetable: true,
   };
 
-  (useVegaWallet as jest.Mock).mockReturnValue({ keypair: null });
+  (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null });
   (useWeb3React as jest.Mock).mockReturnValue({ account: MOCK_ETH_ADDRESS });
 });
 
@@ -180,7 +180,7 @@ describe('Deposit form', () => {
 
   it('handles deposit approvals', () => {
     const mockUseVegaWallet = useVegaWallet as jest.Mock;
-    mockUseVegaWallet.mockReturnValue({ keypair: null });
+    mockUseVegaWallet.mockReturnValue({ pubKey: null });
 
     const mockUseWeb3React = useWeb3React as jest.Mock;
     mockUseWeb3React.mockReturnValue({ account: undefined });
@@ -203,10 +203,10 @@ describe('Deposit form', () => {
   });
 
   it('handles submitting a deposit', async () => {
-    const vegaKey =
+    const pubKey =
       'f8885edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
     const mockUseVegaWallet = useVegaWallet as jest.Mock;
-    mockUseVegaWallet.mockReturnValue({ keypair: { pub: vegaKey } });
+    mockUseVegaWallet.mockReturnValue({ pubKey });
 
     const account = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
     const mockUseWeb3React = useWeb3React as jest.Mock;
@@ -255,10 +255,11 @@ describe('Deposit form', () => {
         // @ts-ignore contract address definitely defined
         assetSource: asset.source.contractAddress,
         amount: '8',
-        vegaPublicKey: vegaKey,
+        vegaPublicKey: pubKey,
       });
     });
   });
+
   it('shows "View asset details" button when an asset is selected', async () => {
     render(<DepositForm {...props} selectedAsset={asset} />);
     expect(await screen.getByTestId('view-asset-details')).toBeInTheDocument();

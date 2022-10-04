@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
@@ -7,17 +9,11 @@ import {
   Link,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
-
-import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
-import type { Column, OnCellClickHandler } from './select-market-columns';
-import {
-  columnHeadersPositionMarkets,
-  columnsPositionMarkets,
-} from './select-market-columns';
-import { columnHeaders } from './select-market-columns';
-import { columns } from './select-market-columns';
-import type { MarketWithCandles, MarketWithData } from '../';
+import { useMarketList } from '@vegaprotocol/market-list';
+import type {
+  MarketWithCandles,
+  MarketWithData,
+} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions_party_positionsConnection_edges_node } from '@vegaprotocol/positions';
 import { positionsDataProvider } from '@vegaprotocol/positions';
@@ -25,7 +21,13 @@ import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
-import { useMarketList } from '../markets-provider';
+import type { Column, OnCellClickHandler } from './select-market-columns';
+import {
+  columnHeadersPositionMarkets,
+  columnsPositionMarkets,
+  columnHeaders,
+  columns,
+} from './select-market-columns';
 
 type Market = MarketWithCandles & MarketWithData;
 
@@ -121,15 +123,15 @@ export const SelectMarketPopover = ({
 }) => {
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300';
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data, loading: marketsLoading } = useMarketList();
-  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const { data: party, loading: positionsLoading } = useDataProvider({
     dataProvider: positionsDataProvider,
     noUpdate: true,
     variables,
-    skip: !keypair,
+    skip: !pubKey,
   });
 
   const onSelectMarket = (marketId: string) => {
@@ -163,14 +165,14 @@ export const SelectMarketPopover = ({
         className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        {marketsLoading || (keypair?.pub && positionsLoading) ? (
+        {marketsLoading || (pubKey && positionsLoading) ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
             Loading market data
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">
-            {keypair && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
+            {pubKey && (party?.positionsConnection?.edges?.length ?? 0) > 0 ? (
               <>
                 <TableTitle>{t('My markets')}</TableTitle>
                 <SelectAllMarketsTableBody

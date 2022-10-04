@@ -15,11 +15,16 @@ import {
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
-
-import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
-
+import {
+  calcCandleHigh,
+  calcCandleLow,
+  totalFees,
+} from '@vegaprotocol/market-list';
 import type { CandleClose } from '@vegaprotocol/types';
-import type { MarketWithData, MarketWithCandles } from '../';
+import type {
+  MarketWithData,
+  MarketWithCandles,
+} from '@vegaprotocol/market-list';
 import isNil from 'lodash/isNil';
 
 type Market = MarketWithData & MarketWithCandles;

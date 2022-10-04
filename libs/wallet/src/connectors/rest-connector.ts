@@ -1,17 +1,26 @@
 import * as Sentry from '@sentry/react';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
-import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from './vega-connector';
-import type { TransactionError, TransactionSubmission } from '../wallet-types';
+import { clearConfig, getConfig, setConfig } from '../storage';
+import type { Transaction, VegaConnector } from './vega-connector';
+import { WalletError } from './vega-connector';
 import { z } from 'zod';
+import { t } from '@vegaprotocol/react-helpers';
+
+type TransactionError =
+  | {
+      errors: {
+        [key: string]: string[];
+      };
+      details?: string[];
+    }
+  | {
+      error: string;
+      details?: string[];
+    };
+
+const VERSION = 'v1';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
-interface RestConnectorConfig {
-  token: string | null;
-  connector: 'rest';
-  url: string | null;
-}
 
 enum Endpoints {
   Auth = 'auth/token',
@@ -24,26 +33,16 @@ export const AuthTokenSchema = z.object({
 });
 
 export const TransactionResponseSchema = z.object({
-  txId: z.string(),
   txHash: z.string(),
   tx: z.object({
-    From: z.object({
-      PubKey: z.string(),
-    }),
-    input_data: z.string(),
-    pow: z.object({
-      tid: z.string(),
-      nonce: z.number(),
-    }),
     signature: z.object({
-      algo: z.string(),
       value: z.string(),
-      version: z.number(),
     }),
   }),
   sentAt: z.string(),
   receivedAt: z.string(),
 });
+export type V1TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 
 export const GetKeysSchema = z.object({
   keys: z.array(
@@ -69,33 +68,28 @@ export const GetKeysSchema = z.object({
  * Connector for using the Vega Wallet Service rest api, requires authentication to get a session token
  */
 export class RestConnector implements VegaConnector {
-  configKey = WALLET_CONFIG;
-  description = 'Connects using REST to a running Vega wallet service';
   url: string | null = null;
   token: string | null = null;
 
   constructor() {
-    const cfg = this.getConfig();
+    const cfg = getConfig();
     if (cfg) {
       this.token = cfg.token;
       this.url = cfg.url;
     }
   }
 
-  async authenticate(
-    url: string,
-    params: {
-      wallet: string;
-      passphrase: string;
-    }
-  ) {
-    try {
-      this.url = url;
+  async sessionActive() {
+    return Boolean(this.token);
+  }
 
+  async authenticate(params: { wallet: string; passphrase: string }) {
+    try {
       const res = await this.request(Endpoints.Auth, {
         method: 'post',
         body: JSON.stringify(params),
       });
+      console.log(res);
 
       if (res.status === 403) {
         return { success: false, error: t('Invalid credentials') };
@@ -108,7 +102,7 @@ export class RestConnector implements VegaConnector {
       const data = AuthTokenSchema.parse(res.data);
 
       // Store the token, and other things for later
-      this.setConfig({
+      setConfig({
         connector: 'rest',
         token: data.token,
         url: this.url,
@@ -136,10 +130,16 @@ export class RestConnector implements VegaConnector {
 
       const data = GetKeysSchema.parse(res.data);
 
-      return data.keys;
+      return data.keys.map((k) => {
+        const nameMeta = k.meta.find((m) => m.key === 'name');
+        return {
+          publicKey: k.pub,
+          name: nameMeta ? nameMeta.value : t('No name'),
+        };
+      });
     } catch (err) {
       // keysGet failed, its likely that the session has expired so remove the token from storage
-      this.clearConfig();
+      clearConfig();
       return null;
     }
   }
@@ -157,12 +157,17 @@ export class RestConnector implements VegaConnector {
     } finally {
       // Always clear config, if authTokenDelete fails the user still tried to
       // connect so clear the config (and containing token) from storage
-      this.clearConfig();
+      clearConfig();
     }
   }
 
-  async sendTx(body: TransactionSubmission) {
+  async sendTx(pubKey: string, transaction: Transaction) {
     try {
+      const body = {
+        pubKey,
+        propagate: true,
+        ...transaction,
+      };
       const res = await this.request(Endpoints.Command, {
         method: 'post',
         body: JSON.stringify(body),
@@ -177,45 +182,22 @@ export class RestConnector implements VegaConnector {
       }
 
       if (res.error) {
-        if (res.details) {
-          return {
-            error: res.error,
-            details: res.details,
-          };
-        }
-        return {
-          error: res.error,
-        };
+        throw new WalletError(res.error, 1, res.details);
       }
 
       const data = TransactionResponseSchema.parse(res.data);
 
-      return data;
+      // Make return value match that of v2 service
+      return {
+        transactionHash: data.txHash,
+        signature: data.tx.signature.value,
+        receivedAt: data.receivedAt,
+        sentAt: data.sentAt,
+      };
     } catch (err) {
       Sentry.captureException(err);
       return null;
     }
-  }
-
-  private setConfig(cfg: RestConnectorConfig) {
-    LocalStorage.setItem(this.configKey, JSON.stringify(cfg));
-  }
-
-  private getConfig(): RestConnectorConfig | null {
-    const cfg = LocalStorage.getItem(this.configKey);
-    if (cfg) {
-      try {
-        return JSON.parse(cfg);
-      } catch {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  private clearConfig() {
-    LocalStorage.removeItem(this.configKey);
   }
 
   /** Parse more complex error object into a single string */
@@ -255,13 +237,16 @@ export class RestConnector implements VegaConnector {
     details?: string;
   }> {
     try {
-      const fetchResult = await fetch(`${this.url}/${endpoint}`, {
-        ...options,
-        headers: {
-          ...options.headers,
-          'Content-Type': 'application/json',
-        },
-      });
+      const fetchResult = await fetch(
+        `${this.url}/api/${VERSION}/${endpoint}`,
+        {
+          ...options,
+          headers: {
+            ...options.headers,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!fetchResult.ok) {
         const errorData = await fetchResult.json();

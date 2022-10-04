@@ -17,7 +17,7 @@ export const VegaManageDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaManageDialogProps) => {
-  const { keypair, keypairs, selectPublicKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   return (
     <Dialog
       title={t('SELECT A VEGA KEY')}
@@ -26,14 +26,14 @@ export const VegaManageDialog = ({
       intent={Intent.Primary}
       size="small"
     >
-      {keypairs ? (
+      {pubKeys ? (
         <ul className="mb-4" data-testid="keypair-list">
-          {keypairs.map((kp) => {
-            const isSelected = kp.pub === keypair?.pub;
+          {pubKeys.map((pk) => {
+            const isSelected = pk.publicKey === pubKey;
             return (
               <li
-                key={kp.pub}
-                data-testid={`key-${kp.pub}`}
+                key={pk.publicKey}
+                data-testid={`key-${pk.publicKey}`}
                 className="mb-2 last:mb-0"
               >
                 <div
@@ -41,13 +41,13 @@ export const VegaManageDialog = ({
                   data-testid={isSelected ? 'selected-key' : ''}
                 >
                   <p data-testid="vega-public-key-full">
-                    {kp.name} {truncateByChars(kp.pub)}
+                    {truncateByChars(pk.publicKey)}
                   </p>
                   <div className="flex gap-4 ml-auto">
                     {!isSelected && (
                       <button
                         onClick={() => {
-                          selectPublicKey(kp.pub);
+                          selectPubKey(pk.publicKey);
                           setDialogOpen(false);
                         }}
                         disabled={isSelected}
@@ -57,7 +57,7 @@ export const VegaManageDialog = ({
                         {t('Select')}
                       </button>
                     )}
-                    <CopyWithTooltip text={kp.pub}>
+                    <CopyWithTooltip text={pk.publicKey}>
                       <button
                         data-testid="copy-vega-public-key"
                         className="underline"

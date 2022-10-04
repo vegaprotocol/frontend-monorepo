@@ -6,7 +6,6 @@ import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 export const ContractAssociate = ({
   perform,
@@ -17,7 +16,7 @@ export const ContractAssociate = ({
   perform: () => void;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
-  vegaKey: VegaKeyExtended | null;
+  vegaKey: string | null;
 }) => {
   const { t } = useTranslation();
   const {
@@ -51,7 +50,7 @@ export const ContractAssociate = ({
             'You can associate tokens while they are held in the vesting contract, when they unlock you will need to dissociate them before they can be redeemed.'
           )}
         </Callout>
-        <AssociateInfo pubKey={vegaKey ? vegaKey.pub : null} />
+        <AssociateInfo pubKey={vegaKey ? vegaKey : null} />
         <TokenInput
           submitText={t('Associate VEGA Tokens with key')}
           perform={perform}

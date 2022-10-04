@@ -10,24 +10,15 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import type { Trade } from './fills-data-provider';
-import type { Market } from '@vegaprotocol/market-list';
-import classNames from 'classnames';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
-};
-
-type AccountsTableValueFormatterParams = Omit<
-  ValueFormatterParams,
-  'data' | 'value'
-> & {
-  data: Trade | null;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
@@ -49,11 +40,15 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Size')}
           type="rightAligned"
           field="size"
-          cellClass={({ data }: { data: Trade }) => {
-            return classNames('text-right', {
-              [positiveClassNames]: data?.buyer.id === partyId,
-              [negativeClassNames]: data?.seller.id,
-            });
+          cellClassRules={{
+            [positiveClassNames]: ({ data }: { data: Trade }) => {
+              const partySide = getPartySide(data, partyId);
+              return partySide === 'buyer';
+            },
+            [negativeClassNames]: ({ data }: { data: Trade }) => {
+              const partySide = getPartySide(data, partyId);
+              return partySide === 'seller';
+            },
           }}
           valueFormatter={formatSize(partyId)}
         />
@@ -85,12 +80,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field="createdAt"
           valueFormatter={({
             value,
-          }: AccountsTableValueFormatterParams & {
-            value: Trade['createdAt'];
-          }) => {
-            if (value === undefined) {
-              return value;
-            }
+          }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
             return getDateTimeFormat().format(new Date(value));
           }}
         />
@@ -102,11 +92,9 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
 const formatPrice = ({
   value,
   data,
-}: AccountsTableValueFormatterParams & {
-  value?: Trade['price'];
-}) => {
-  if (value === undefined || !data || !data?.market) {
-    return undefined;
+}: VegaValueFormatterParams<Trade, 'price'>) => {
+  if (!data.market) {
+    return '-';
   }
   const asset =
     data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -118,19 +106,16 @@ const formatPrice = ({
 };
 
 const formatSize = (partyId: string) => {
-  return ({
-    value,
-    data,
-  }: AccountsTableValueFormatterParams & {
-    value?: Trade['size'];
-  }) => {
-    if (value === undefined || !data || !data?.market) {
-      return undefined;
+  return ({ value, data }: VegaValueFormatterParams<Trade, 'size'>) => {
+    if (!data.market) {
+      return '-';
     }
-    let prefix;
-    if (data?.buyer.id === partyId) {
+    let prefix = '';
+    const partySide = getPartySide(data, partyId);
+
+    if (partySide === 'buyer') {
       prefix = '+';
-    } else if (data?.seller.id) {
+    } else if (partySide === 'seller') {
       prefix = '-';
     }
 
@@ -142,14 +127,25 @@ const formatSize = (partyId: string) => {
   };
 };
 
+const getPartySide = (
+  data: Trade,
+  partyId: string
+): 'buyer' | 'seller' | undefined => {
+  let result = undefined;
+  if (data?.buyer.id === partyId) {
+    result = 'buyer' as const;
+  } else if (data?.seller.id === partyId) {
+    result = 'seller' as const;
+  }
+  return result;
+};
+
 const formatTotal = ({
   value,
   data,
-}: AccountsTableValueFormatterParams & {
-  value?: Trade['price'];
-}) => {
-  if (value === undefined || !data || !data?.market) {
-    return undefined;
+}: VegaValueFormatterParams<Trade, 'price'>) => {
+  if (!data?.market) {
+    return '-';
   }
   const asset =
     data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -164,15 +160,7 @@ const formatTotal = ({
 };
 
 const formatRole = (partyId: string) => {
-  return ({
-    value,
-    data,
-  }: AccountsTableValueFormatterParams & {
-    value?: Trade['aggressor'];
-  }) => {
-    if (value === undefined) {
-      return value;
-    }
+  return ({ value, data }: VegaValueFormatterParams<Trade, 'aggressor'>) => {
     const taker = t('Taker');
     const maker = t('Maker');
     if (data?.buyer.id === partyId) {
@@ -197,11 +185,12 @@ const formatFee = (partyId: string) => {
   return ({
     value,
     data,
-  }: AccountsTableValueFormatterParams & {
-    value?: Market['tradableInstrument']['instrument']['product'];
-  }) => {
-    if (value === undefined) {
-      return value;
+  }: VegaValueFormatterParams<
+    Trade,
+    'market.tradableInstrument.instrument.product'
+  >) => {
+    if (!value?.settlementAsset) {
+      return '-';
     }
     const asset = value.settlementAsset;
     let feesObj;

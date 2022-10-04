@@ -15,7 +15,7 @@ export const useRefreshBalances = (address: string) => {
     appState: { decimals },
     appDispatch,
   } = useAppState();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { token, staking, vesting } = useContracts();
   const { config } = useEthereumConfig();
 
@@ -29,8 +29,8 @@ export const useRefreshBalances = (address: string) => {
           vesting.user_stats(address),
           token.allowance(address, config.staking_bridge_contract.address),
           // Refresh connected vega key balances as well if we are connected to a vega key
-          keypair?.pub ? staking.stake_balance(address, keypair.pub) : null,
-          keypair?.pub ? vesting.stake_balance(address, keypair.pub) : null,
+          pubKey ? staking.stake_balance(address, pubKey) : null,
+          pubKey ? vesting.stake_balance(address, pubKey) : null,
         ]);
 
       const balance = toBigNum(b, decimals);
@@ -52,14 +52,5 @@ export const useRefreshBalances = (address: string) => {
     } catch (err) {
       Sentry.captureException(err);
     }
-  }, [
-    address,
-    decimals,
-    appDispatch,
-    keypair?.pub,
-    staking,
-    token,
-    vesting,
-    config,
-  ]);
+  }, [address, decimals, appDispatch, pubKey, staking, token, vesting, config]);
 };

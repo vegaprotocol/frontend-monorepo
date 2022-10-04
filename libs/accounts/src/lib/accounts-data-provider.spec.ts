@@ -1,7 +1,6 @@
 import { AccountType } from '@vegaprotocol/types';
-import type { AccountFields } from './accounts-data-provider';
+import type { AccountFields, Account } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
-import type { AccountFieldsFragment } from './__generated___/Accounts';
 
 describe('getAccountData', () => {
   it('should return the correct aggregated data', () => {
@@ -10,7 +9,7 @@ describe('getAccountData', () => {
   });
 });
 
-const accounts: AccountFieldsFragment[] = [
+const accounts = [
   {
     __typename: 'Account',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
@@ -115,9 +114,9 @@ const accounts: AccountFieldsFragment[] = [
       decimals: 5,
     },
   },
-];
+] as Account[];
 
-const accountResult: AccountFields[] = [
+const accountResult = [
   {
     asset: {
       __typename: 'Asset',
@@ -240,4 +239,4 @@ const accountResult: AccountFields[] = [
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     used: '0',
   },
-];
+] as AccountFields[];

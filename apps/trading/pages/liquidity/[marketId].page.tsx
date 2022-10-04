@@ -28,10 +28,9 @@ import { Schema } from '@vegaprotocol/types';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
-  const partyId = keypair?.pub;
   // Default to first marketId query item if found
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
@@ -49,7 +48,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   } = useDataProvider({
     dataProvider: liquidityProvisionsDataProvider,
     update,
-    variables: { marketId, partyId },
+    variables: { marketId, pubKey },
   });
 
   const targetStake = marketProvision?.market?.data?.targetStake;
@@ -67,8 +66,8 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
 
   const myLpEdges = useMemo(
-    () => liquidityProviders?.filter((e) => e.party.id === partyId),
-    [liquidityProviders, partyId]
+    () => liquidityProviders?.filter((e) => e.party.id === pubKey),
+    [liquidityProviders, pubKey]
   );
   const activeEdges = useMemo(
     () =>
@@ -92,11 +91,13 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   }
 
   const getActiveDefaultId = () => {
-    if (myLpEdges && myLpEdges.length > 0)
+    if (myLpEdges && myLpEdges.length > 0) {
       return LiquidityTabs.MyLiquidityProvision;
+    }
     if (activeEdges?.length) return LiquidityTabs.Active;
-    else if (inactiveEdges && inactiveEdges.length > 0)
+    else if (inactiveEdges && inactiveEdges.length > 0) {
       return LiquidityTabs.Inactive;
+    }
     return LiquidityTabs.Active;
   };
 
@@ -148,31 +149,39 @@ const LiquidityPage = ({ id }: { id?: string }) => {
           <Tab
             id={LiquidityTabs.MyLiquidityProvision}
             name={t('My liquidity provision')}
-            hidden={!partyId}
+            hidden={!pubKey}
           >
-            <LiquidityTable
-              ref={gridRef}
-              data={myLpEdges}
-              symbol={symbol}
-              assetDecimalPlaces={assetDecimalPlaces}
-            />
+            {myLpEdges && (
+              <LiquidityTable
+                ref={gridRef}
+                data={myLpEdges}
+                symbol={symbol}
+                assetDecimalPlaces={assetDecimalPlaces}
+              />
+            )}
           </Tab>
           <Tab id={LiquidityTabs.Active} name={t('Active')}>
-            <LiquidityTable
-              ref={gridRef}
-              data={activeEdges}
-              symbol={symbol}
-              assetDecimalPlaces={assetDecimalPlaces}
-            />
+            {activeEdges && (
+              <LiquidityTable
+                ref={gridRef}
+                data={activeEdges}
+                symbol={symbol}
+                assetDecimalPlaces={assetDecimalPlaces}
+              />
+            )}
           </Tab>
-          <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
-            <LiquidityTable
-              ref={gridRef}
-              data={inactiveEdges}
-              symbol={symbol}
-              assetDecimalPlaces={assetDecimalPlaces}
-            />
-          </Tab>
+          {
+            <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
+              {inactiveEdges && (
+                <LiquidityTable
+                  ref={gridRef}
+                  data={inactiveEdges}
+                  symbol={symbol}
+                  assetDecimalPlaces={assetDecimalPlaces}
+                />
+              )}
+            </Tab>
+          }
         </Tabs>
       </div>
     </AsyncRenderer>

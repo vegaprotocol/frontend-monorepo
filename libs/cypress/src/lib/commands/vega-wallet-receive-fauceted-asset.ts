@@ -46,9 +46,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
             }, {});
           assert.exists(
             assets[assetName],
-            `${assetName} is not a faucetable asset, only the following assets can be faucted: ${Object.keys(
-              validAssets
-            )}`
+            `${assetName} is not a faucet-able asset, only the following assets can be faucet-ed: ${validAssets}`
           );
         }
       });

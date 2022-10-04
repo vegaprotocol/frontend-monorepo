@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { ColumnKind, SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   t,
@@ -14,6 +13,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import type { Market, MarketVariables } from './__generated__/Market';
+import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
 
 // Top level page query
 const MARKET_QUERY = gql`

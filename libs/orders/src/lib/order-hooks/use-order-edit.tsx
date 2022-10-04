@@ -12,7 +12,7 @@ export interface EditOrderArgs {
 }
 
 export const useOrderEdit = (order: Order | null) => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
@@ -34,16 +34,14 @@ export const useOrderEdit = (order: Order | null) => {
 
   const edit = useCallback(
     async (args: EditOrderArgs) => {
-      if (!keypair || !order || !order.market) {
+      if (!pubKey || !order || !order.market) {
         return;
       }
 
       setUpdatedOrder(null);
 
       try {
-        await send({
-          pubKey: keypair.pub,
-          propagate: true,
+        await send(pubKey, {
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
@@ -56,7 +54,7 @@ export const useOrderEdit = (order: Order | null) => {
           },
         });
 
-        waitForOrderEvent(order.id, keypair.pub, (updatedOrder) => {
+        waitForOrderEvent(order.id, pubKey, (updatedOrder) => {
           setUpdatedOrder(updatedOrder);
           setComplete();
         });
@@ -65,7 +63,7 @@ export const useOrderEdit = (order: Order | null) => {
         return;
       }
     },
-    [keypair, send, order, setComplete, waitForOrderEvent]
+    [pubKey, send, order, setComplete, waitForOrderEvent]
   );
 
   return {

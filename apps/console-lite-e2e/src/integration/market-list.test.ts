@@ -79,9 +79,9 @@ describe('market list', { tags: '@smoke' }, () => {
       cy.visit('/markets');
       cy.wait('@Markets').then((filters) => {
         const data: MarketsQuery | undefined = filters?.response?.body?.data;
-        if (data.marketsConnection.edges.length) {
+        if (data?.marketsConnection?.edges.length) {
           const asset =
-            data.marketsConnection.edges[0].node.tradableInstrument.instrument
+            data?.marketsConnection?.edges[0].node.tradableInstrument.instrument
               .product.settlementAsset.symbol;
           cy.visit(`/markets/Suspended/Future/${asset}`);
           cy.getByTestId('market-assets-menu')
