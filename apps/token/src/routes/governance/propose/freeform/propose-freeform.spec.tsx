@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ProposeFreeform } from './propose-freeform';
 import { MockedProvider } from '@apollo/client/testing';
 import { mockWalletContext } from '../../test-helpers/mocks';
