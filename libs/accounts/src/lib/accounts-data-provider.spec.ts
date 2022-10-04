@@ -1,11 +1,46 @@
 import { AccountType } from '@vegaprotocol/types';
 import type { AccountFields, Account } from './accounts-data-provider';
-import { getAccountData } from './accounts-data-provider';
+import { getAccountData, getId } from './accounts-data-provider';
 
 describe('getAccountData', () => {
   it('should return the correct aggregated data', () => {
     const data = getAccountData(accounts);
     expect(data).toEqual(accountResult);
+  });
+});
+
+describe('getId', () => {
+  it('should return the correct string', () => {
+    expect(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        asset: { id: 'assetId' },
+        market: null,
+      })
+    ).toEqual(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        assetId: 'assetId',
+        marketId: '',
+      })
+    );
+    expect(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        asset: { id: 'assetId' },
+        market: { id: 'testId' },
+      })
+    ).toEqual(
+      getId({
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        balance: '1',
+        assetId: 'assetId',
+        marketId: 'testId',
+      })
+    );
   });
 });
 

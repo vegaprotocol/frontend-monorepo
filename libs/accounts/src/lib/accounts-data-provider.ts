@@ -37,7 +37,7 @@ export const getId = (
 ) =>
   isAccount(account)
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
-    : `${account.type}-${account.assetId}-${account.marketId}`;
+    : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
   market?: Market | null;
