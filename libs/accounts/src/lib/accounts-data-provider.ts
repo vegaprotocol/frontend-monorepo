@@ -34,10 +34,12 @@ export const getId = (
   account:
     | AccountFieldsFragment
     | IterableElement<AccountEventsSubscription['accounts']>
-) =>
-  isAccount(account)
+) => {
+  console.log('account', account);
+  return isAccount(account)
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
-    : `${account.type}-${account.assetId}-${account.marketId}`;
+    : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
+};
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
   market?: Market | null;
@@ -51,7 +53,11 @@ const update = (
   return produce(data, (draft) => {
     deltas.forEach((delta) => {
       const id = getId(delta);
-      const index = draft.findIndex((a) => getId(a) === id);
+      console.log('getId(delta)', getId(delta));
+      const index = draft.findIndex((a) => {
+        console.log('getId(a)', getId(a), a);
+        return getId(a) === id;
+      });
       if (index !== -1) {
         draft[index].balance = delta.balance;
       } else {
