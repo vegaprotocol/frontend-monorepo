@@ -1,42 +1,11 @@
-const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
-const vegaWalletStakedBalances =
-  '[data-testid="vega-wallet-balance-staked-validators"]';
-const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const vegaWalletNameElement = '[data-testid="wallet-name"]';
-const vegaWallet = '[data-testid="vega-wallet"]';
-const vegaWalletName = Cypress.env('vegaWalletName');
-const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
-const viewProposalButton = '[data-testid="view-proposal-btn"]';
-const openProposals = '[data-testid="open-proposals"]';
-const proposalResponseProposalIdPath =
-  'response.body.data.busEvents.0.event.id';
-const proposalVoteProgressForPercentage =
-  '[data-testid="vote-progress-indicator-percentage-for"]';
-const proposalVoteProgressAgainstPercentage =
-  '[data-testid="vote-progress-indicator-percentage-against"]';
-const proposalVoteProgressForTokens =
-  '[data-testid="vote-progress-indicator-tokens-for"]';
-const proposalVoteProgressAgainstTokens =
-  '[data-testid="vote-progress-indicator-tokens-against"]';
-const changeVoteButton = '[data-testid="change-vote-button"]';
-const proposalDetailsTitle = '[data-testid="proposal-title"]';
-const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
   '[data-testid="proposal-validation-deadline"]';
-const voteButtons = '[data-testid="vote-buttons"]';
-const voteStatus = '[data-testid="vote-status"]';
-const rejectProposalsLink = '[href="/governance/rejected"]';
-const feedbackError = '[data-testid="Error"]';
 const inputError = '[data-testid="input-error-text"]';
-const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
-const restConnectorForm = '[data-testid="rest-connector-form"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
 const newProposalTerms = '[data-testid="proposal-terms"]';
@@ -63,43 +32,6 @@ context(
       cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.get_network_parameters().then((network_parameters) => {
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minProposerBalance']
-        ).as('minProposerBalance');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minVoterBalance']
-        ).as('minVoterBalance');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.requiredMajority'] *
-            100
-        ).as('requiredMajority');
-        cy.wrap(
-          network_parameters[
-            'governance.proposal.freeform.requiredParticipation'
-          ] * 100
-        ).as('requiredParticipation');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minClose'].split(
-            'h'
-          )[0] / 24
-        ).as('minCloseDays');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.maxClose'].split(
-            'h'
-          )[0] / 24
-        ).as('maxCloseDays');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.minClose'].split(
-            'h'
-          )[0]
-        ).as('minCloseHours');
-        cy.wrap(
-          network_parameters['governance.proposal.freeform.maxClose'].split(
-            'h'
-          )[0]
-        ).as('maxCloseHours');
-      });
       cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
       cy.reload();
@@ -116,9 +48,7 @@ context(
           req.alias = 'proposalSubmissionCompletion';
         }
       });
-      cy.ensure_specified_unstaked_tokens_are_associated(
-        this.minProposerBalance
-      );
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
     });
 
     it('Able to submit valid update network parameter proposal', function () {
