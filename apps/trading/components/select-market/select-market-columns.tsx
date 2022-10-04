@@ -21,7 +21,10 @@ import {
   totalFees,
 } from '@vegaprotocol/market-list';
 import type { CandleClose } from '@vegaprotocol/types';
-import type { MarketWithData, MarketWithCandles } from '@vegaprotocol/market-list';
+import type {
+  MarketWithData,
+  MarketWithCandles,
+} from '@vegaprotocol/market-list';
 import isNil from 'lodash/isNil';
 
 type Market = MarketWithData & MarketWithCandles;

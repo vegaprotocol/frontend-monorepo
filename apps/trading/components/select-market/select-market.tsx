@@ -10,7 +10,10 @@ import {
   Popover,
 } from '@vegaprotocol/ui-toolkit';
 import { useMarketList } from '@vegaprotocol/market-list';
-import type { MarketWithCandles, MarketWithData } from '@vegaprotocol/market-list';
+import type {
+  MarketWithCandles,
+  MarketWithData,
+} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions_party_positionsConnection_edges_node } from '@vegaprotocol/positions';
 import { positionsDataProvider } from '@vegaprotocol/positions';
@@ -23,7 +26,7 @@ import {
   columnHeadersPositionMarkets,
   columnsPositionMarkets,
   columnHeaders,
-  columnHeaders,
+  columns,
 } from './select-market-columns';
 
 type Market = MarketWithCandles & MarketWithData;
