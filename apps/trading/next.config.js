@@ -19,7 +19,6 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-  assetPrefix: '.',
   pageExtensions: ['page.tsx', 'page.jsx'],
 };
 
