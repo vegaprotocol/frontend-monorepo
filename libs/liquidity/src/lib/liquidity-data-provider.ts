@@ -1,7 +1,11 @@
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import produce from 'immer';
 import type { IterableElement } from 'type-fest';
 import type {
+  LiquidityProviderFeeShareFieldsFragment,
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsSubscription,
   MarketLiquidityQuery,
@@ -97,3 +101,40 @@ export const marketLiquidityDataProvider = makeDataProvider<
     return delta;
   },
 });
+
+export const liquidityFeeShareDataProvider = makeDataProvider<
+  MarketLiquidityQuery,
+  LiquidityProviderFeeShareFieldsFragment[],
+  LiquidityProviderFeeShareFieldsFragment,
+  LiquidityProviderFeeShareFieldsFragment[]
+>({
+  query: MarketLiquidityDocument,
+  subscriptionQuery: LiquidityProvisionsDocument,
+  update: (data, delta) => {
+    return delta;
+  },
+  getData: (data) => {
+    return data.market?.data?.liquidityProviderFeeShare || [];
+  },
+  getDelta: (delta) => {
+    return [delta];
+  },
+});
+
+export const lpAggregatedDataProvider = makeDerivedDataProvider<
+  LiquidityProvisionFieldsFragment[],
+  never
+>(
+  [
+    liquidityProvisionsDataProvider,
+    marketLiquidityDataProvider,
+    liquidityFeeShareDataProvider,
+  ],
+  (parts) => {
+    // TODO add fee share and liquidity provision party merge
+    console.log('liquidityProvisionsDataProvider', parts[0]);
+    console.log('marketLiquidityDataProvider', parts[1]);
+    console.log('liquidityFeeShareDataProvider', parts[2]);
+    return [parts[0], parts[1], parts[2]];
+  }
+);

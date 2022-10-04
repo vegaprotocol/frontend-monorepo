@@ -33,10 +33,11 @@ export interface LiquidityTableProps {
   data?: LiquidityProvisionFieldsFragment[];
   symbol?: string;
   assetDecimalPlaces?: number;
+  stakeToCcySiskas: BigNumber;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces }, ref) => {
+  ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
@@ -61,7 +62,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       >
         <AgGridColumn
           headerName={t('Party')}
-          field="party"
+          field="party.id"
           headerTooltip={t(
             'The public key of the party making this commitment.'
           )}

@@ -1,3 +1,7 @@
+import type {
+  LiquidityProvisionFieldsFragment,
+  LiquidityProvisionsSubscription,
+} from '@vegaprotocol/liquidity';
 import { marketLiquidityDataProvider } from '@vegaprotocol/liquidity';
 import {
   liquidityProvisionsDataProvider,
@@ -25,6 +29,7 @@ import { useRef, useMemo } from 'react';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import Link from 'next/link';
 import { Schema } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
@@ -45,7 +50,10 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     data: liquidityProviders,
     loading,
     error,
-  } = useDataProvider({
+  } = useDataProvider<
+    LiquidityProvisionFieldsFragment[],
+    LiquidityProvisionsSubscription['liquidityProvisions']
+  >({
     dataProvider: liquidityProvisionsDataProvider,
     update,
     variables: { marketId, pubKey },
@@ -156,6 +164,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
                 ref={gridRef}
                 data={myLpEdges}
                 symbol={symbol}
+                stakeToCcySiskas={new BigNumber(stakeToCcySiska ?? 1)}
                 assetDecimalPlaces={assetDecimalPlaces}
               />
             )}
@@ -167,6 +176,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
                 data={activeEdges}
                 symbol={symbol}
                 assetDecimalPlaces={assetDecimalPlaces}
+                stakeToCcySiskas={new BigNumber(stakeToCcySiska ?? 1)}
               />
             )}
           </Tab>
@@ -178,6 +188,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
                   data={inactiveEdges}
                   symbol={symbol}
                   assetDecimalPlaces={assetDecimalPlaces}
+                  stakeToCcySiskas={new BigNumber(stakeToCcySiska ?? 1)}
                 />
               )}
             </Tab>
