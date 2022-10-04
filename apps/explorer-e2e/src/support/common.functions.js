@@ -67,3 +67,11 @@ Cypress.Commands.add(
     return clipboard.args[0][1];
   }
 );
+
+Cypress.Commands.add(
+  'convert_string_json_to_js_object',
+  { prevSubject: true },
+  (jsonBlobString) => {
+    return JSON.parse(jsonBlobString);
+  }
+);

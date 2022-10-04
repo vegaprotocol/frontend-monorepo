@@ -33,6 +33,16 @@ context('Parties page', { tags: '@regression' }, function () {
       // Deliberate slow entry of party id/key - enabling transactions to sync
       cy.get(partiesSearchBox).type(vegaWalletPublicKey, { delay: 120 });
       cy.get(partiesSearchAction).click();
+      cy.get_connected_parties_accounts().as('party_accounts');
+
+      // Ensure balance of each party asset is correct 
+      cy.get('@party_accounts').then((accounts) => {
+        assetsInTest.forEach((asset) => {
+          cy.get_asset_decimals(assetData[asset].id).then((assetDecimals) => {
+            assert.equal(accounts[assetData[asset].id].balance, assetData[asset].amount + assetDecimals, `Checking ${assetData[asset].id} faucet was successfull`)
+          });
+        })
+      })
     });
 
     it('should see party address id - having searched', function () {
@@ -42,7 +52,7 @@ context('Parties page', { tags: '@regression' }, function () {
         .should('be.visible');
     });
 
-    it('should see each asset - within asset data section', function () {
+    it('should see each asset and balance - within asset data section', function () {
       assetsInTest.forEach((asset) => {
         cy.contains(assetData[asset].name, txTimeout).should('be.visible');
         cy.contains(assetData[asset].name)
@@ -88,20 +98,81 @@ context('Parties page', { tags: '@regression' }, function () {
     it('should be able to see JSON of each asset containing correct balance and decimals', function () {
       cy.get(partiesJsonSection).should('be.visible');
 
-      assetsInTest.forEach((asset) => {
+      assetsInTest.forEach((assetInTest) => {
         cy.get(partiesJsonSection)
           .invoke('text')
           .convert_string_json_to_js_object()
-          .get_party_accounts_data()
-          .then((accounts) => {
-            cy.get_asset_decimals(asset).then((assetDecimals) => {
+          .get_party_accounts_data_from_js_object()
+          .then((accountsListedInJson) => {
+            cy.get_asset_information().then((assetsInfo) => {
+
+              const assetInfo = assetsInfo[accountsListedInJson[assetInTest].asset.name];
+
               assert.equal(
-                accounts[asset].balance,
-                assetData[asset].amount + assetDecimals
+                accountsListedInJson[assetInTest].asset.name,
+                assetInfo.name
               );
-            });
+              assert.equal(
+                accountsListedInJson[assetInTest].asset.id,
+                assetInfo.id
+              );
+              assert.equal(
+                accountsListedInJson[assetInTest].asset.decimals,
+                assetInfo.decimals
+              );
+              assert.equal(
+                accountsListedInJson[assetInTest].asset.symbol,
+                assetInfo.symbol
+              );
+              assert.equal(
+                accountsListedInJson[assetInTest].asset.source.__typename,
+                assetInfo.source.__typename
+              );
+              cy.get_asset_decimals(assetInTest).then((assetDecimals) => {
+                assert.equal(
+                  accountsListedInJson[assetInTest].balance,
+                  assetData[assetInTest].amount + assetDecimals
+                );
+              });
+            })
           });
       });
+    });
+
+    it('should be able to switch parties page between light and dark mode', function () {
+      const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
+      const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
+      const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
+      const blackThemeSelectedMenuOptionColor = 'rgb(223, 255, 11)';
+      const blackThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
+      const blackThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
+      const themeSwitcher = '[data-testid="theme-switcher"]';
+      const jsonFields = '.hljs';
+      const sideMenuBackground = '.absolute';
+
+      // White Mode
+      cy.get(themeSwitcher).click();
+      cy.get(partiesMenuHeader)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeSelectedMenuOptionColor);
+      cy.get(jsonFields)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeJsonFieldBackColor);
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeSideMenuBackgroundColor);
+
+      // Dark Mode
+      cy.get(themeSwitcher).click();
+      cy.get(partiesMenuHeader)
+        .should('have.css', 'background-color')
+        .and('include', blackThemeSelectedMenuOptionColor);
+      cy.get(jsonFields)
+        .should('have.css', 'background-color')
+        .and('include', blackThemeJsonFieldBackColor);
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .and('include', blackThemeSideMenuBackgroundColor);
     });
 
     after(
@@ -122,28 +193,37 @@ context('Parties page', { tags: '@regression' }, function () {
       });
     });
 
-    Cypress.Commands.add(
-      'convert_string_json_to_js_object',
-      { prevSubject: true },
-      (jsonBlobString) => {
-        return JSON.parse(jsonBlobString);
-      }
-    );
+    Cypress.Commands.add('get_connected_parties_accounts', () => {
+      const mutation =
+        '{partiesConnection {edges{node{accountsConnection{edges{node{\
+          balance type asset {id symbol decimals}}}}}}}}';
+      cy.request({
+        method: 'POST',
+        url: `http://localhost:3028/query`,
+        body: {
+          query: mutation,
+        },
+        headers: { 'content-type': 'application/json' },
+      })
+        .its(`body.data.partiesConnection.edges.1.node.accountsConnection.edges`)
+        .then(function (response) {
+          let accounts = {};
+          response.forEach((account) => {
+            accounts[account.node.asset.id] = account.node
+          })
+          return accounts
+        });
+    });
 
     Cypress.Commands.add(
-      'get_party_accounts_data',
+      'get_party_accounts_data_from_js_object',
       { prevSubject: true },
       (jsObject) => {
         const accounts = jsObject.party.accounts.reduce(function (
           account,
           entry
         ) {
-          account[entry.asset.id] = {
-            balance: entry.balance,
-            id: entry.asset.id,
-            decimals: entry.asset.decimals,
-            name: entry.asset.name,
-          };
+          account[entry.asset.id] = entry
           return account;
         },
         {});
