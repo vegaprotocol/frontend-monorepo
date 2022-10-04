@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type {
   ValueProps,

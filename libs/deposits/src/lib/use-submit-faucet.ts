@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react';
 import { useEthereumTransaction, useTokenContract } from '@vegaprotocol/web3';
 import { useDepositStore } from './deposit-store';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 
 export const useSubmitFaucet = () => {
   const { asset, update } = useDepositStore();

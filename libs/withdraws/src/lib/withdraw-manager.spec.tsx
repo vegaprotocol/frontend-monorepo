@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
-import type { Account } from './types';
+import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 
 const asset = generateAsset();
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
@@ -17,7 +17,7 @@ jest.mock('@web3-react/core', () => ({
 jest.mock('./use-withdraw-asset', () => ({
   useWithdrawAsset: (
     assets: Asset[],
-    accounts: Account[],
+    accounts: AccountFieldsFragment[],
     assetId?: string
   ) => ({
     asset,

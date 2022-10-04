@@ -1,9 +1,11 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { generateAccounts } from '../support/mocks/generate-accounts';
 import { generateChainId } from '../support/mocks/generate-chain-id';
+import {
+  generateAccounts,
+  generateAssets,
+} from '../support/mocks/generate-accounts';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-import { generateWithdrawFormQuery } from '../support/mocks/generate-withdraw-page-query';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
@@ -24,7 +26,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
       aliasQuery(req, 'ChainId', generateChainId());
       aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
+      aliasQuery(req, 'Assets', generateAssets());
       aliasQuery(req, 'Accounts', generateAccounts());
     });
     cy.mockGQLSubscription();
@@ -39,7 +41,8 @@ describe('withdraw', { tags: '@smoke' }, () => {
     connectEthereumWallet();
 
     cy.getByTestId('withdraw-dialog-button').click();
-    cy.wait('@WithdrawFormQuery');
+    cy.wait('@Accounts');
+    cy.wait('@Assets');
   });
 
   it('form validation', () => {
