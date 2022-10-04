@@ -21,7 +21,7 @@ import registerCypressGrep from 'cypress-grep';
 import { aliasQuery } from '@vegaprotocol/cypress';
 registerCypressGrep();
 
-beforeEach(() => {
+before(() => {
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasQuery(req, 'ChainId', {

@@ -138,7 +138,6 @@ describe('FillsTable', () => {
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
     expect(amountCell).toHaveClass('text-vega-red-dark');
-    screen.debug();
   });
 
   it('should render correct maker or taker role', async () => {
