@@ -8,13 +8,13 @@ import {
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
-import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
+import { FillsDocument, FillsEventDocument } from './__generated___/Fills';
 import type {
   FillsQuery,
   FillFieldsFragment,
   FillEdgeFragment,
   FillsEventSubscription,
-} from './__generated__/Fills';
+} from './__generated___/Fills';
 
 const update = (
   data: FillEdgeFragment[] | null,

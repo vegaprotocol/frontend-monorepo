@@ -27,37 +27,37 @@ export type AssetsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 export type AssetsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus } } | null> | null } | null };
 
 export const AccountFieldsFragmentDoc = gql`
-  fragment AccountFields on Account {
-    type
-    balance
-    market {
-      id
-    }
-    asset {
-      id
-    }
-  }
-`;
-export const AssetsFieldsFragmentDoc = gql`
-  fragment AssetsFields on Asset {
+    fragment AccountFields on Account {
+  type
+  balance
+  market {
     id
-    name
-    symbol
-    decimals
-    quantum
-    status
   }
-`;
+  asset {
+    id
+  }
+}
+    `;
+export const AssetsFieldsFragmentDoc = gql`
+    fragment AssetsFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  quantum
+  status
+}
+    `;
 export const AccountsDocument = gql`
-  query Accounts($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      accounts {
-        ...AccountFields
-      }
+    query Accounts($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accounts {
+      ...AccountFields
     }
   }
-${AccountFieldsFragmentDoc}`;
+}
+    ${AccountFieldsFragmentDoc}`;
 
 /**
  * __useAccountsQuery__
@@ -76,26 +76,26 @@ ${AccountFieldsFragmentDoc}`;
  * });
  */
 export function useAccountsQuery(baseOptions: Apollo.QueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+      }
 export function useAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountsQuery, AccountsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountsQuery, AccountsQueryVariables>(AccountsDocument, options);
+        }
 export type AccountsQueryHookResult = ReturnType<typeof useAccountsQuery>;
 export type AccountsLazyQueryHookResult = ReturnType<typeof useAccountsLazyQuery>;
 export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
 export const AccountEventsDocument = gql`
-  subscription AccountEvents($partyId: ID!) {
-    accounts(partyId: $partyId) {
-      type
-      balance
-      assetId
-      marketId
-    }
+    subscription AccountEvents($partyId: ID!) {
+  accounts(partyId: $partyId) {
+    type
+    balance
+    assetId
+    marketId
   }
-`;
+}
+    `;
 
 /**
  * __useAccountEventsSubscription__
@@ -114,22 +114,22 @@ export const AccountEventsDocument = gql`
  * });
  */
 export function useAccountEventsSubscription(baseOptions: Apollo.SubscriptionHookOptions<AccountEventsSubscription, AccountEventsSubscriptionVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useSubscription<AccountEventsSubscription, AccountEventsSubscriptionVariables>(AccountEventsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<AccountEventsSubscription, AccountEventsSubscriptionVariables>(AccountEventsDocument, options);
+      }
 export type AccountEventsSubscriptionHookResult = ReturnType<typeof useAccountEventsSubscription>;
 export type AccountEventsSubscriptionResult = Apollo.SubscriptionResult<AccountEventsSubscription>;
 export const AssetsDocument = gql`
-  query Assets {
-    assetsConnection {
-      edges {
-        node {
-          ...AssetsFields
-        }
+    query Assets {
+  assetsConnection {
+    edges {
+      node {
+        ...AssetsFields
       }
     }
   }
-${AssetsFieldsFragmentDoc}`;
+}
+    ${AssetsFieldsFragmentDoc}`;
 
 /**
  * __useAssetsQuery__
@@ -147,13 +147,13 @@ ${AssetsFieldsFragmentDoc}`;
  * });
  */
 export function useAssetsQuery(baseOptions?: Apollo.QueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
+      }
 export function useAssetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
-  const options = {...defaultOptions, ...baseOptions}
-  return Apollo.useLazyQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
+        }
 export type AssetsQueryHookResult = ReturnType<typeof useAssetsQuery>;
 export type AssetsLazyQueryHookResult = ReturnType<typeof useAssetsLazyQuery>;
 export type AssetsQueryResult = Apollo.QueryResult<AssetsQuery, AssetsQueryVariables>;

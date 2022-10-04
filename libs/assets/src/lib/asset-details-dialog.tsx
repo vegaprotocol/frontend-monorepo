@@ -9,7 +9,7 @@ import {
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { useAssetsConnectionQuery } from './__generated__/Assets';
+import { useAssetsConnectionQuery } from './__generated___/Assets';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 

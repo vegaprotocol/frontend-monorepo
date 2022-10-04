@@ -10,7 +10,7 @@ import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';

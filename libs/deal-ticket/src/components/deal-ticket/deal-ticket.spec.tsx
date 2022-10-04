@@ -2,7 +2,7 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
