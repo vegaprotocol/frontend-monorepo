@@ -158,6 +158,16 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
+      <HeaderStat heading={t('Price')}>
+        <div data-testid="mark-price">
+          {market.data && market.data.markPrice !== '0'
+            ? addDecimalsFormatNumber(
+                market.data.markPrice,
+                market.decimalPlaces
+              )
+            : '-'}
+        </div>
+      </HeaderStat>
       <HeaderStat heading={t('Change (24h)')}>
         <PriceCellChange
           candles={candlesClose}
@@ -191,16 +201,6 @@ export const TradeMarketHeader = ({
             ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
             : MarketTradingModeMapping[market.tradingMode]}
-        </div>
-      </HeaderStat>
-      <HeaderStat heading={t('Price')}>
-        <div data-testid="mark-price">
-          {market.data && market.data.markPrice !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.markPrice,
-                market.decimalPlaces
-              )
-            : '-'}
         </div>
       </HeaderStat>
       {symbol ? (

@@ -1,9 +1,8 @@
 import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
-import type { Positions } from './__generated__/Positions';
-import { getMetrics, rejoinPositionData } from './positions-data-providers';
 import type { MarketWithData } from '@vegaprotocol/market-list';
-import type { Margins } from './__generated__/Margins';
+import type { PositionsQuery, MarginsQuery } from './__generated___/Positions';
+import { getMetrics, rejoinPositionData } from './positions-data-providers';
 
 const accounts = [
   {
@@ -64,7 +63,7 @@ const accounts = [
   },
 ] as Account[];
 
-const positions: Positions = {
+const positions: PositionsQuery = {
   party: {
     __typename: 'Party',
     id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
@@ -163,7 +162,7 @@ const marketsData = [
   },
 ] as MarketWithData[];
 
-const margins: Margins = {
+const margins: MarginsQuery = {
   party: {
     id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
     marginsConnection: {

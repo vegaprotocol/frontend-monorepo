@@ -1,6 +1,7 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
+import { generateChainId } from '../support/mocks/generate-chain-id';
 
 describe('vega wallet', { tags: '@smoke' }, () => {
   const connectVegaBtn = 'connect-vega-wallet';
@@ -13,9 +14,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/portfolio');
     cy.mockGQL((req) => {
-      aliasQuery(req, 'ChainId', {
-        statistics: { __typename: 'Statistics', chainId: 'test-chain-id' },
-      });
+      aliasQuery(req, 'ChainId', generateChainId());
     });
     cy.mockGQLSubscription();
     cy.get('main[data-testid="portfolio"]').should('exist');

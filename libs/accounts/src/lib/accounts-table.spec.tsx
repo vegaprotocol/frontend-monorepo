@@ -32,28 +32,18 @@ const singleRow = {
 const singleRowData = [singleRow];
 
 describe('AccountsTable', () => {
-  it('should render successfully', async () => {
-    await act(async () => {
-      render(<AccountTable rowData={[]} onClickAsset={() => null} />);
-    });
-    const headers = await screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(6);
-    expect(
-      headers?.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
-  });
-
   it('should render correct columns', async () => {
     await act(async () => {
       render(
         <AccountTable rowData={singleRowData} onClickAsset={() => null} />
       );
     });
-    const headers = await screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(6);
+    const expectedHeaders = ['Asset', 'Deposited', 'Used', '', ''];
+    const headers = await screen.findAllByRole('columnheader');
+    expect(headers).toHaveLength(expectedHeaders.length);
     expect(
       headers?.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Asset', 'Deposited', 'Used', '', '', '']);
+    ).toEqual(expectedHeaders);
   });
 
   it('should apply correct formatting', async () => {
@@ -62,14 +52,13 @@ describe('AccountsTable', () => {
         <AccountTable rowData={singleRowData} onClickAsset={() => null} />
       );
     });
-    const cells = await screen.getAllByRole('gridcell');
+    const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
       'tBTC',
       '1,256.00000',
       '1,256.00001,256.0000',
       'Collateral breakdown',
       'Deposit',
-      'Withdraw',
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);

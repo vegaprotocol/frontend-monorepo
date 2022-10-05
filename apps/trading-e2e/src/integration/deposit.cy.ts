@@ -1,5 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateDepositPage } from '../support/mocks/generate-deposit-page';
+import { generateAssets } from '../support/mocks/generate-accounts';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
@@ -14,7 +14,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockGQLSubscription();
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'DepositPage', generateDepositPage());
+      aliasQuery(req, 'Assets', generateAssets());
     });
     cy.visit('/portfolio/deposit');
 
@@ -22,7 +22,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
 
-    cy.wait('@DepositPage');
+    cy.wait('@Assets');
   });
 
   it('handles empty fields', () => {
@@ -41,7 +41,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
 
     // Deposit amount smaller than minimum viable for selected asset
     // Select an amount so that we have a known decimal places value to work with
-    cy.get(assetSelectField).select('Asset 0');
+    cy.get(assetSelectField).select('Euro');
     cy.get(amountField)
       .clear()
       .type('0.00000000000000000000000000000000001')

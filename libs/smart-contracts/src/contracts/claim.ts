@@ -9,11 +9,11 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  * Example:
  * ```
  * const provider = new Web3.providers.HttpProvider(
- *   "https://ropsten.infura.io/v3/5aff9e61ad844bcf982d0d0c3f1d29f1"
+ *   "https://sepolia.infura.io/v3/5aff9e61ad844bcf982d0d0c3f1d29f1"
  * );
  * const web3 = new Web3(provider)
 
- * // Ropsten address
+ * // Sepolia address
  * const contract = new VegaClaim(web3, "0xAf5dC1772714b2F4fae3b65eb83100f1Ea677b21")
  * contract.isCountryBlocked("US").then(console.log)
  * contract.isClaimValid({ claimCode: "0x...", expiry: 0, nonce: "0x00", account: "0x00" })

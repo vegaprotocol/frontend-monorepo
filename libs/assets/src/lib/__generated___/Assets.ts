@@ -3,58 +3,63 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AssetsConnectionQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type AssetsFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } };
+
+export type AssetsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type AssetsConnectionQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } } } | null> | null } | null };
+export type AssetsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } } | null> | null } | null };
 
-
-export const AssetsConnectionDocument = gql`
-    query AssetsConnection {
-  assetsConnection {
-    edges {
-      node {
-        id
-        name
-        symbol
-        decimals
-        quantum
-        source {
-          ... on ERC20 {
-            contractAddress
-            lifetimeLimit
-            withdrawThreshold
-          }
-        }
-      }
+export const AssetsFieldsFragmentDoc = gql`
+    fragment AssetsFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  quantum
+  status
+  source {
+    ... on ERC20 {
+      contractAddress
     }
   }
 }
     `;
+export const AssetsDocument = gql`
+    query Assets {
+  assetsConnection {
+    edges {
+      node {
+        ...AssetsFields
+      }
+    }
+  }
+}
+    ${AssetsFieldsFragmentDoc}`;
 
 /**
- * __useAssetsConnectionQuery__
+ * __useAssetsQuery__
  *
- * To run a query within a React component, call `useAssetsConnectionQuery` and pass it any options that fit your needs.
- * When your component renders, `useAssetsConnectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAssetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAssetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAssetsConnectionQuery({
+ * const { data, loading, error } = useAssetsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAssetsConnectionQuery(baseOptions?: Apollo.QueryHookOptions<AssetsConnectionQuery, AssetsConnectionQueryVariables>) {
+export function useAssetsQuery(baseOptions?: Apollo.QueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AssetsConnectionQuery, AssetsConnectionQueryVariables>(AssetsConnectionDocument, options);
+        return Apollo.useQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
       }
-export function useAssetsConnectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AssetsConnectionQuery, AssetsConnectionQueryVariables>) {
+export function useAssetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AssetsConnectionQuery, AssetsConnectionQueryVariables>(AssetsConnectionDocument, options);
+          return Apollo.useLazyQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
         }
-export type AssetsConnectionQueryHookResult = ReturnType<typeof useAssetsConnectionQuery>;
-export type AssetsConnectionLazyQueryHookResult = ReturnType<typeof useAssetsConnectionLazyQuery>;
-export type AssetsConnectionQueryResult = Apollo.QueryResult<AssetsConnectionQuery, AssetsConnectionQueryVariables>;
+export type AssetsQueryHookResult = ReturnType<typeof useAssetsQuery>;
+export type AssetsLazyQueryHookResult = ReturnType<typeof useAssetsLazyQuery>;
+export type AssetsQueryResult = Apollo.QueryResult<AssetsQuery, AssetsQueryVariables>;

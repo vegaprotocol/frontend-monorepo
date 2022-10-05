@@ -10,4 +10,3 @@ export * from './lib/use-verify-withdrawal';
 export * from './lib/use-withdrawals';
 export * from './lib/__generated__/Withdrawals';
 export * from './lib/__generated__/WithdrawalFields';
-export * from './lib/__generated__/WithdrawFormQuery';
