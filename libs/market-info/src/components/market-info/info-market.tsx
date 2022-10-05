@@ -3,44 +3,40 @@ import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
-import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
+import type {
+  Schema} from '@vegaprotocol/types';
 import {
   AccountType,
   Interval,
   MarketStateMapping,
-  MarketTradingModeMapping,
+  MarketTradingModeMapping
 } from '@vegaprotocol/types';
-import { MARKET_INFO_QUERY } from './info-market-query';
-import type {
-  MarketInfoQuery,
-  MarketInfoQuery_market,
-  MarketInfoQuery_market_candlesConnection_edges,
-} from './__generated__/MarketInfoQuery';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
+import { useMarketInfoQuery } from './__generated___/MarketInfo';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
 };
 
 export interface InfoProps {
-  market: MarketInfoQuery_market;
+  market: Schema.Market;
   onSelect: (id: string) => void;
 }
 
 export const calcCandleVolume = (
-  m: MarketInfoQuery_market
+  m: Schema.Market
 ): string | undefined => {
   return m.candlesConnection?.edges
     ?.reduce(
       (
         acc: BigNumber,
-        c: MarketInfoQuery_market_candlesConnection_edges | null
+        c: Schema.CandleEdge | null
       ) => {
         return acc.plus(new BigNumber(c?.node?.volume ?? 0));
       },
@@ -65,16 +61,14 @@ export const MarketInfoContainer = ({
     () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
     [marketId, yTimestamp]
   );
-  const { data, loading, error } = useQuery<MarketInfoQuery>(
-    MARKET_INFO_QUERY,
+  const { data, loading, error } = useMarketInfoQuery(
     {
       variables,
-      errorPolicy: 'ignore',
     }
   );
 
   return (
-    <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
+    <AsyncRenderer data={data} loading={loading} error={error}>
       {data && data.market ? (
         <Info market={data.market} onSelect={onSelect} />
       ) : (
@@ -314,9 +308,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           data={market.tradableInstrument.instrument.product.oracleSpecBinding}
         >
           <ExternalLink
-            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForSettlementPrice.id}`}
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForSettlementData.id}`}
           >
-            {t('View price oracle specification')}
+            {t('View settlement data oracle specification')}
           </ExternalLink>
           <ExternalLink
             href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}

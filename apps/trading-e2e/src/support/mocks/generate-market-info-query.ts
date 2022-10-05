@@ -149,7 +149,7 @@ export const generateMarketInfoQuery = (
               name: 'tBTC TEST',
               decimals: 5,
             },
-            oracleSpecForSettlementPrice: {
+            oracleSpecForSettlementData: {
               __typename: 'OracleSpec',
               id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
             },
@@ -159,7 +159,7 @@ export const generateMarketInfoQuery = (
             },
             oracleSpecBinding: {
               __typename: 'OracleSpecToFutureBinding',
-              settlementPriceProperty: 'prices.BTC.value',
+              settlementDataProperty: 'prices.BTC.value',
               tradingTerminationProperty: 'termination.BTC.value',
             },
           },

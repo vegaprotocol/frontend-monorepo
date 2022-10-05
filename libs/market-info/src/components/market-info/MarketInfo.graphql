@@ -1,9 +1,25 @@
-query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
+query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
     state
+    tradingMode
+    proposal {
+      id
+      rationale {
+        title
+        description
+      }
+    }
+    marketTimestamps {
+      open
+      close
+    }
+    openingAuction {
+      durationSecs
+      volume
+    }
     accounts {
       type
       asset {
@@ -12,13 +28,6 @@ query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
       balance
     }
     tradingMode
-    accounts {
-      type
-      asset {
-        id
-      }
-      balance
-    }
     fees {
       factors {
         makerFee
@@ -40,27 +49,23 @@ query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
       short
       long
     }
-    accounts {
-      type
-      asset {
-        id
-      }
-      balance
-    }
     data {
       market {
         id
       }
       markPrice
-      indicativeVolume
       bestBidVolume
       bestOfferVolume
       bestStaticBidVolume
       bestStaticOfferVolume
-      openInterest
       bestBidPrice
       bestOfferPrice
       trigger
+      openInterest
+      suppliedStake
+      openInterest
+      targetStake
+      marketValueProxy
       priceMonitoringBounds {
         minValidPrice
         maxValidPrice
@@ -101,15 +106,16 @@ query MarketInfoQuery($marketId: ID!, $interval: Interval!, $since: String!) {
               id
               symbol
               name
+              decimals
             }
-            oracleSpecForSettlementPrice {
+            oracleSpecForSettlementData {
               id
             }
             oracleSpecForTradingTermination {
               id
             }
             oracleSpecBinding {
-              settlementPriceProperty
+              settlementDataProperty
               tradingTerminationProperty
             }
           }
