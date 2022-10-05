@@ -36,7 +36,7 @@ export const getId = (
     | IterableElement<AccountEventsSubscription['accounts']>
 ) =>
   isAccount(account)
-    ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
+    ? `${account.type}-${account.asset.id}-${account.market?.id || 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
@@ -124,6 +124,7 @@ const getAssetAccountAggregation = (
   accountList: Account[],
   assetId: string
 ): AccountFields => {
+  console.log(accountList);
   const accounts = accountList.filter((a) => a.asset.id === assetId);
   const available = getTotalBalance(
     accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
