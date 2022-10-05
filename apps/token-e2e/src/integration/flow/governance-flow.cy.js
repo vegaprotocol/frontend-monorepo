@@ -28,7 +28,11 @@ const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const minVoteButton = '[data-testid="min-vote"]';
+const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
+const votingDate = '[data-testid="voting-date"]';
+const voteTwoMinExtraNote = '[data-testid="voting-2-mins-extra"]';
 const voteStatus = '[data-testid="vote-status"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
@@ -152,13 +156,17 @@ context(
           .and('have.text', 'There are no enacted or rejected proposals');
       });
 
+      // 1005-PROP-002
+      // 1005-PROP-003
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
+        // 1005-PROP-005
         cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
         cy.contains(
           `You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`
         ).should('be.visible');
       });
 
+      // 1005-PROP-011
       it(
         'Able to submit a valid freeform proposal - with minimum required tokens associated',
         { tags: '@smoke' },
@@ -167,8 +175,17 @@ context(
             this.minProposerBalance
           );
           cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.get(minVoteButton).should('be.visible'); // 1005-PROP-008
+          cy.get(maxVoteButton).should('be.visible');
+          cy.get(votingDate).should('not.be.empty');
+          cy.get(voteTwoMinExtraNote).should(
+            'contain.text',
+            'we add 2 minutes of extra time'
+          );
           cy.enter_unique_freeform_proposal_body('50');
           cy.get(newProposalSubmitButton).should('be.visible').click();
+          // 1005-PROP-012
+          // 1005-PROP-016
           cy.wait_for_proposal_submitted();
         }
       );
@@ -355,6 +372,7 @@ context(
           });
       });
 
+      // 1005-todo-PROP-019
       // Skipping test due to bug - should be solved when #1223 released
       it.skip('Newly created freeform proposal details - shows full link included in description', function () {
         createFreeformProposal(this.minProposerBalance);
@@ -738,7 +756,7 @@ context(
           .and('be.visible');
       });
 
-      it('Unable to create a freeform proposal - when no tokens are associated', function () {
+      it.only('Unable to create a freeform proposal - when no tokens are associated', function () {
         cy.vega_wallet_teardown();
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
           '0.000000000000000000',
@@ -839,6 +857,7 @@ context(
       });
 
       // Have to skip because #1326 bug doesn't handle below scenario
+      // 1005-todo-PROP-009
       it.skip('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
@@ -899,10 +918,8 @@ context(
 
       function createFreeformProposal(proposerBalance) {
         cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM).as(
-          'freeformProposal'
-        );
-        cy.enter_unique_freeform_proposal_body('50');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50').as('freeformProposal');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
