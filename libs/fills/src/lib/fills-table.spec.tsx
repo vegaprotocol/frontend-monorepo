@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
@@ -47,7 +47,9 @@ describe('FillsTable', () => {
   });
 
   it('correct columns are rendered', async () => {
-    render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
+    await act(async () => {
+      render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
