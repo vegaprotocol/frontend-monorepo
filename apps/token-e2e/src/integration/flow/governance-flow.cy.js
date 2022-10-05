@@ -756,7 +756,7 @@ context(
           .and('be.visible');
       });
 
-      it.only('Unable to create a freeform proposal - when no tokens are associated', function () {
+      it('Unable to create a freeform proposal - when no tokens are associated', function () {
         cy.vega_wallet_teardown();
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
           '0.000000000000000000',
