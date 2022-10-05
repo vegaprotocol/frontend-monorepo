@@ -1,8 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
-import { forwardRef, useEffect, useMemo, useRef } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
@@ -92,6 +93,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     errorPolicy: 'ignore',
   });
   const navigate = useNavigate();
+  const [showCondensedTopThird, setShowCondensedTopThird] = useState(true);
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
@@ -113,7 +115,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
-    return data.nodes.map(
+    const canonisedNodes = data.nodes.map(
       ({
         id,
         name,
@@ -166,7 +168,19 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         };
       }
     );
-  }, [data, t]);
+
+    if (!showCondensedTopThird) {
+      return canonisedNodes;
+    }
+
+    const topThird = Math.floor(data.nodes.length / 3);
+    const sortedByRanking = canonisedNodes.sort(
+      (a, b) =>
+        new BigNumber(b[RANKING_SCORE]).toNumber() -
+        new BigNumber(a[RANKING_SCORE]).toNumber()
+    );
+    return sortedByRanking.slice(topThird);
+  }, [data, t, showCondensedTopThird]);
 
   const gridRef = useRef<AgGridReact | null>(null);
 
@@ -247,6 +261,14 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
     return (
       <div data-testid="validators-grid">
+        {showCondensedTopThird && (
+          <div className="flex items-center gap-2 mb-2">
+            <div>{t('Hidden top third')}</div>
+            <Button size="sm" onClick={() => setShowCondensedTopThird(false)}>
+              {t('Show All')}
+            </Button>
+          </div>
+        )}
         <AgGrid
           domLayout="autoHeight"
           style={{ width: '100%' }}
