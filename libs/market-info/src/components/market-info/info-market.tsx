@@ -1,16 +1,15 @@
 import { useMemo } from 'react';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { totalFees } from '@vegaprotocol/market-list';
-import type {
-  Schema} from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import {
   AccountType,
   Interval,
   MarketStateMapping,
-  MarketTradingModeMapping
+  MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { MarketInfoTable } from './info-key-value-table';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -18,7 +17,7 @@ import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
-import { useMarketInfoQuery } from './__generated___/MarketInfo';
+import { marketInfoDataProvider } from './market-info-data-provider';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -29,19 +28,11 @@ export interface InfoProps {
   onSelect: (id: string) => void;
 }
 
-export const calcCandleVolume = (
-  m: Schema.Market
-): string | undefined => {
+export const calcCandleVolume = (m: Schema.Market): string | undefined => {
   return m.candlesConnection?.edges
-    ?.reduce(
-      (
-        acc: BigNumber,
-        c: Schema.CandleEdge | null
-      ) => {
-        return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-      },
-      new BigNumber(m.candlesConnection?.edges[0]?.node.volume ?? 0)
-    )
+    ?.reduce((acc: BigNumber, c: Schema.CandleEdge | null) => {
+      return acc.plus(new BigNumber(c?.node?.volume ?? 0));
+    }, new BigNumber(m.candlesConnection?.edges[0]?.node.volume ?? 0))
     ?.toString();
 };
 
@@ -61,11 +52,12 @@ export const MarketInfoContainer = ({
     () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
     [marketId, yTimestamp]
   );
-  const { data, loading, error } = useMarketInfoQuery(
-    {
-      variables,
-    }
-  );
+
+  const { data, loading, error } = useDataProvider({
+    dataProvider: marketInfoDataProvider,
+    noUpdate: true,
+    variables,
+  });
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
