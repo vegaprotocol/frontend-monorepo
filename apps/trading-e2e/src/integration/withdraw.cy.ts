@@ -53,7 +53,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.get(toAddressField).should('have.value', ethAddressValue);
   });
   it('min amount', () => {
-    cy.get(assetSelectField).select(asset1Name); // Select asset so we have a min viable amount calculated
+    selectAsset(asset1Name);
     cy.get(amountField).clear().type('0');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -62,7 +62,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
-    cy.get(assetSelectField).select(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
+    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
     cy.get(amountField).clear().type('1');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -72,7 +72,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   });
 
   it('can set amount using use maximum button', () => {
-    cy.get(assetSelectField).select(asset1Name);
+    selectAsset(asset1Name);
     cy.getByTestId(useMaximumAmount).click();
     cy.get(amountField).should('have.value', '1000.00000');
   });
@@ -87,7 +87,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
         },
       },
     });
-    cy.get(assetSelectField).select(asset1Name);
+    selectAsset(asset1Name);
     cy.getByTestId('balance-available')
       .should('contain.text', 'Balance available')
       .find('td')
@@ -110,4 +110,13 @@ describe('withdraw', { tags: '@smoke' }, () => {
 
   it.skip('creates a withdrawal on submit'); // Needs capsule
   it.skip('creates a withdrawal on submit and prompts to complete withdrawal'); // Needs capsule
+
+  const selectAsset = (assetName: string) => {
+    cy.get(assetSelectField).select(assetName);
+    // The asset only gets set once the queries (getWithdrawThreshold, getDelay)
+    // against the Ethereum change resolve, we should fix this but for now just force
+    // some wait time
+    // eslint-disable-next-line
+    cy.wait(1000);
+  };
 });
