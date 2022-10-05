@@ -154,6 +154,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             colId="transact"
             headerName=""
             sortable={false}
+            minWidth={250}
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
