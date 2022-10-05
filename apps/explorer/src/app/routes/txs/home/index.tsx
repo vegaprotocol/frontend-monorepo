@@ -1,86 +1,73 @@
 import { DATA_SOURCES } from '../../../config';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
-import { JumpToBlock } from '../../../components/jump-to-block';
 import { TxsInfiniteList } from '../../../components/txs';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
-import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
-
-interface TxsProps {
-  latestBlockHeight: string;
-}
+import type {
+  BlockExplorerTransaction,
+  BlockExplorerTransactions,
+} from '../../../routes/types/block-explorer-response';
 
 interface TxsStateProps {
-  txsData: ChainExplorerTxResponse[];
+  txsData: BlockExplorerTransaction[];
   hasMoreTxs: boolean;
-  nextPage: number;
+  lastCursor: string;
 }
 
-const Txs = ({ latestBlockHeight }: TxsProps) => {
-  const [{ txsData, hasMoreTxs, nextPage }, setTxsState] =
+const BE_TXS_PER_REQUEST = 100;
+
+export const TxsList = () => {
+  const [{ txsData, hasMoreTxs, lastCursor }, setTxsState] =
     useState<TxsStateProps>({
       txsData: [],
       hasMoreTxs: true,
-      nextPage: 1,
+      lastCursor: '',
     });
 
-  const reusedBodyParams = useMemo(
-    () => ({
-      node_url: DATA_SOURCES.tendermintUrl,
-      transaction_height: parseInt(latestBlockHeight),
-      page_size: 30,
-    }),
-    [latestBlockHeight]
-  );
-
   const {
-    state: { error, loading },
+    state: { data, error, loading },
     refetch,
-  } = useFetch(
-    DATA_SOURCES.chainExplorerUrl,
-    {
-      method: 'POST',
-      body: JSON.stringify(reusedBodyParams),
-    },
+  } = useFetch<BlockExplorerTransactions>(
+    `${DATA_SOURCES.blockExplorerUrl}/transactions?` +
+      new URLSearchParams({
+        limit: BE_TXS_PER_REQUEST.toString(10),
+      }),
+    {},
     false
   );
 
-  const loadTxs = useCallback(async () => {
-    const data = await refetch(
-      undefined,
-      JSON.stringify({
-        ...reusedBodyParams,
-        page_number: nextPage,
-      })
-    );
-
-    if (data) {
+  useEffect(() => {
+    if (data?.transactions?.length) {
       setTxsState((prev) => ({
-        ...prev,
-        nextPage: prev.nextPage + 1,
+        txsData: [...prev.txsData, ...data.transactions],
         hasMoreTxs: true,
-        txsData: [...prev.txsData, ...(data as ChainExplorerTxResponse[])],
+        lastCursor:
+          data.transactions[data.transactions.length - 1].cursor || '',
       }));
     }
-  }, [nextPage, refetch, reusedBodyParams]);
+  }, [data?.transactions]);
+
+  const loadTxs = useCallback(() => {
+    return refetch({
+      limit: BE_TXS_PER_REQUEST,
+      before: lastCursor,
+    });
+  }, [lastCursor, refetch]);
+
+  const refreshTxs = useCallback(async () => {
+    setTxsState((prev) => ({
+      ...prev,
+      lastCursor: '',
+      hasMoreTxs: true,
+      txsData: [],
+    }));
+  }, [setTxsState]);
 
   return (
     <section>
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <BlocksRefetch
-        refetch={() =>
-          refetch(
-            undefined,
-            JSON.stringify({
-              ...reusedBodyParams,
-              page_number: 1,
-            })
-          )
-        }
-      />
+      <BlocksRefetch refetch={refreshTxs} />
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
@@ -89,42 +76,6 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
         error={error}
         className="mb-28"
       />
-      <JumpToBlock />
     </section>
   );
 };
-
-export const TxsHome = () => {
-  const {
-    state: { data, error, loading },
-  } = useFetch<TendermintBlockchainResponse>(
-    `${DATA_SOURCES.tendermintUrl}/blockchain`
-  );
-
-  return (
-    <AsyncRenderer
-      loading={!!loading}
-      loadingMessage={t('Getting latest block height...')}
-      error={error}
-      data={data}
-      noDataMessage={t('Could not get latest block height')}
-      render={(data) => (
-        <Txs
-          latestBlockHeight={
-            data?.result?.block_metas?.[0]?.header?.height || ''
-          }
-        />
-      )}
-    />
-  );
-};
-
-export const TxsHomeFallback = () => (
-  <>
-    <RouteTitle>{t('Transactions')}</RouteTitle>
-    <div>
-      The transactions list is currently disabled. Please use the search bar to
-      discover transaction data
-    </div>
-  </>
-);
