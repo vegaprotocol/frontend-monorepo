@@ -1,7 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import type { MarketState } from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import { generateAccounts, generateAssets } from './mocks/generate-accounts';
+import { generateAccounts } from './mocks/generate-accounts';
+import { generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
 import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';

@@ -1,10 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { generateChainId } from '../support/mocks/generate-chain-id';
-import {
-  generateAccounts,
-  generateAssets,
-} from '../support/mocks/generate-accounts';
+import { generateAccounts } from '../support/mocks/generate-accounts';
+import { generateAssets } from '../support/mocks/generate-assets';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
