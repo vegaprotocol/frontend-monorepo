@@ -2,7 +2,9 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
+import BigNumber from 'bignumber.js';
 import produce from 'immer';
+import { AccountType } from '@vegaprotocol/types';
 import type { IterableElement } from 'type-fest';
 import type {
   LiquidityProviderFeeShareFieldsFragment,
@@ -143,6 +145,14 @@ export const getLiquidityProvision = (
       pubKey: lp.party.id,
       assetDecimalPlaces:
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
+      balance:
+        lp.party.accountsConnection?.edges
+          ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_BOND)
+          ?.reduce(
+            (acc, e) => acc.plus(new BigNumber(e?.node.balance ?? 0)),
+            new BigNumber(0)
+          )
+          .toString() ?? '0',
     };
   });
 };

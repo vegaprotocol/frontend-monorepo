@@ -33,7 +33,7 @@ export interface LiquidityTableProps {
   data?: LiquidityProvisionFieldsFragment[];
   symbol?: string;
   assetDecimalPlaces?: number;
-  stakeToCcySiskas: BigNumber;
+  stakeToCcySiskas: string;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
@@ -42,6 +42,14 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
+    const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
+      if (!value) return '-';
+      const newValue = new BigNumber(value)
+        .times(stakeToCcySiskas ?? 1)
+        .toString();
+      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
+    };
+
     if (!data) return null;
     return (
       <AgGrid
@@ -106,21 +114,21 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         />
         <AgGridColumn
           headerName={t('Obligation')}
-          field="obligation"
+          field="commitmentAmount"
           type="rightAligned"
           headerTooltip={t(
             'The liquidity provider’s obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={stakeToCcySiskasFormatter}
         />
         <AgGridColumn
           headerName={t('Supplied')}
           headerTooltip={t(
             'The amount of the settlement asset supplied for liquidity by this provider, calculated as the bond account balance multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
-          field="supplied"
+          field="balance"
           type="rightAligned"
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={stakeToCcySiskasFormatter}
         />
         <AgGridColumn
           headerName={t('Status')}
