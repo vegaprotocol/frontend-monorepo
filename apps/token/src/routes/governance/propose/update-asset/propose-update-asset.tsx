@@ -22,7 +22,7 @@ import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
-export interface NewMarketProposalFormFields {
+export interface UpdateAssetProposalFormFields {
   proposalVoteDeadline: string;
   proposalEnactmentDeadline: string;
   proposalTitle: string;
@@ -31,19 +31,19 @@ export interface NewMarketProposalFormFields {
   proposalReference: string;
 }
 
-const DOCS_LINK = '/new-market-proposal';
+const DOCS_LINK = '/update-asset-proposal';
 
-export const ProposeNewMarket = () => {
+export const ProposeUpdateAsset = () => {
   const {
     params,
     loading: networkParamsLoading,
     error: networkParamsError,
   } = useNetworkParams([
-    NetworkParams.governance_proposal_market_maxClose,
-    NetworkParams.governance_proposal_market_minClose,
-    NetworkParams.governance_proposal_market_maxEnact,
-    NetworkParams.governance_proposal_market_minEnact,
-    NetworkParams.governance_proposal_market_minProposerBalance,
+    NetworkParams.governance_proposal_updateAsset_minClose,
+    NetworkParams.governance_proposal_updateAsset_maxClose,
+    NetworkParams.governance_proposal_updateAsset_minEnact,
+    NetworkParams.governance_proposal_updateAsset_maxEnact,
+    NetworkParams.governance_proposal_updateAsset_minProposerBalance,
     NetworkParams.spam_protection_proposal_min_tokens,
   ]);
 
@@ -53,17 +53,17 @@ export const ProposeNewMarket = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<NewMarketProposalFormFields>();
+  } = useForm<UpdateAssetProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
-  const onSubmit = async (fields: NewMarketProposalFormFields) => {
+  const onSubmit = async (fields: UpdateAssetProposalFormFields) => {
     await submit({
       rationale: {
         title: fields.proposalTitle,
         description: fields.proposalDescription,
       },
       terms: {
-        newMarket: {
+        updateAsset: {
           ...JSON.parse(fields.proposalTerms),
         },
         closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
@@ -81,13 +81,13 @@ export const ProposeNewMarket = () => {
       error={networkParamsError}
       data={params}
     >
-      <Heading title={t('NewMarketProposal')} />
+      <Heading title={t('UpdateAssetProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
             <ProposalFormMinRequirements
               minProposerBalance={
-                params.governance_proposal_market_minProposerBalance
+                params.governance_proposal_updateAsset_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
             />
@@ -104,15 +104,15 @@ export const ProposeNewMarket = () => {
 
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
-                {t('MoreMarketsInfo')}{' '}
+                {t('MoreAssetsInfo')}{' '}
                 <Link
-                  href={`${VEGA_EXPLORER_URL}/markets`}
+                  href={`${VEGA_EXPLORER_URL}/assets`}
                   target="_blank"
-                >{`${VEGA_EXPLORER_URL}/markets`}</Link>
+                >{`${VEGA_EXPLORER_URL}/assets`}</Link>
               </p>
             )}
 
-            <div data-testid="new-market-proposal-form">
+            <div data-testid="update-asset-proposal-form">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ProposalFormSubheader>
                   {t('ProposalRationale')}
@@ -132,14 +132,16 @@ export const ProposeNewMarket = () => {
                   errorMessage={errors?.proposalDescription?.message}
                 />
 
-                <ProposalFormSubheader>{t('NewMarket')}</ProposalFormSubheader>
+                <ProposalFormSubheader>
+                  {t('UpdateAsset')}
+                </ProposalFormSubheader>
 
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
                     required: t('Required'),
                     validate: (value) => validateJson(value),
                   })}
-                  labelOverride={'Terms.newMarket (JSON format)'}
+                  labelOverride={'Terms.updateAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
                   customDocLink={DOCS_LINK}
                 />
@@ -149,16 +151,20 @@ export const ProposeNewMarket = () => {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
-                  voteMinClose={params.governance_proposal_market_minClose}
-                  voteMaxClose={params.governance_proposal_market_maxClose}
+                  voteMinClose={params.governance_proposal_updateAsset_minClose}
+                  voteMaxClose={params.governance_proposal_updateAsset_maxClose}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
                   enactmentErrorMessage={
                     errors?.proposalEnactmentDeadline?.message
                   }
-                  enactmentMinClose={params.governance_proposal_market_minEnact}
-                  enactmentMaxClose={params.governance_proposal_market_maxEnact}
+                  enactmentMinClose={
+                    params.governance_proposal_updateAsset_minEnact
+                  }
+                  enactmentMaxClose={
+                    params.governance_proposal_updateAsset_maxEnact
+                  }
                 />
 
                 <ProposalFormSubmit isSubmitting={isSubmitting} />

@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { ProposeNewMarket } from './propose-new-market';
 import { MockedProvider } from '@apollo/client/testing';
-import { mockWalletContext } from '../../test-helpers/mocks';
-import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
+import { MemoryRouter as Router } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { BrowserRouter as Router } from 'react-router-dom';
-import type { MockedResponse } from '@apollo/client/testing';
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
+import { mockWalletContext } from '../../test-helpers/mocks';
+import { ProposeUpdateAsset } from './propose-update-asset';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { MockedResponse } from '@apollo/client/testing';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({
@@ -15,7 +15,7 @@ jest.mock('@vegaprotocol/environment', () => ({
   }),
 }));
 
-const newMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+const updateAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
     query: NETWORK_PARAMETERS_QUERY,
   },
@@ -24,27 +24,27 @@ const newMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
       networkParameters: [
         {
           __typename: 'NetworkParameter',
-          key: 'governance.proposal.market.maxClose',
+          key: 'governance.proposal.updateAsset.maxClose',
           value: '8760h0m0s',
         },
         {
           __typename: 'NetworkParameter',
-          key: 'governance.proposal.market.maxEnact',
+          key: 'governance.proposal.updateAsset.maxEnact',
           value: '8760h0m0s',
         },
         {
           __typename: 'NetworkParameter',
-          key: 'governance.proposal.market.minClose',
+          key: 'governance.proposal.updateAsset.minClose',
           value: '1h0m0s',
         },
         {
           __typename: 'NetworkParameter',
-          key: 'governance.proposal.market.minEnact',
+          key: 'governance.proposal.updateAsset.minEnact',
           value: '2h0m0s',
         },
         {
           __typename: 'NetworkParameter',
-          key: 'governance.proposal.market.minProposerBalance',
+          key: 'governance.proposal.updateAsset.minProposerBalance',
           value: '1',
         },
         {
@@ -60,10 +60,10 @@ const newMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
 const renderComponent = () =>
   render(
     <Router>
-      <MockedProvider mocks={[newMarketNetworkParamsQueryMock]}>
+      <MockedProvider mocks={[updateAssetNetworkParamsQueryMock]}>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
-            <ProposeNewMarket />
+            <ProposeUpdateAsset />
           </VegaWalletContext.Provider>
         </AppStateProvider>
       </MockedProvider>
@@ -73,15 +73,22 @@ const renderComponent = () =>
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.
 
-describe('Propose New Market', () => {
+describe('Propose Update Asset', () => {
   it('should render successfully', async () => {
     const { baseElement } = renderComponent();
     await expect(baseElement).toBeTruthy();
   });
 
+  it('should render the title', async () => {
+    renderComponent();
+    expect(await screen.findByText('Update asset proposal')).toBeTruthy();
+  });
+
   it('should render the form components', async () => {
     renderComponent();
-    expect(await screen.findByTestId('new-market-proposal-form')).toBeTruthy();
+    expect(
+      await screen.findByTestId('update-asset-proposal-form')
+    ).toBeTruthy();
     expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
     expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
     expect(screen.getByTestId('proposal-title')).toBeTruthy();
