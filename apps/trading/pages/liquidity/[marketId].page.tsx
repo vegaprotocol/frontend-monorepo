@@ -56,9 +56,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     update,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
-
-  // TODO: Remove this - only for debug purposes.
-  console.log({ liquidityProviders });
+  console.log({ liquidityProviders }); // TODO: Remove this
 
   const targetStake = marketProvision?.market?.data?.targetStake;
   const suppliedStake = marketProvision?.market?.data?.suppliedStake;
@@ -116,7 +114,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
         <Header
           title={
             <Link href={`/markets/${marketId}`} passHref={true}>
-              <UiToolkitLink>
+              <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
                 {`${
                   marketProvision?.market?.tradableInstrument.instrument.name
                 } ${t('liquidity provision')}`}
