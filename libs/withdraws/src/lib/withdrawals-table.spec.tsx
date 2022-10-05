@@ -2,8 +2,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { act, render, screen } from '@testing-library/react';
 import { getTimeFormat } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
+import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { generateWithdrawal } from './test-helpers';
-import type { WithdrawalsTableProps } from './withdrawals-table';
 import { StatusCell } from './withdrawals-table';
 import { WithdrawalsTable } from './withdrawals-table';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
@@ -12,7 +12,7 @@ jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
 }));
 
-const generateJsx = (props: WithdrawalsTableProps) => (
+const generateJsx = (props: TypedDataAgGrid<WithdrawalFields>) => (
   <MockedProvider>
     <WithdrawalsTable {...props} />
   </MockedProvider>
@@ -22,7 +22,7 @@ describe('renders the correct columns', () => {
   it('incomplete withdrawal', async () => {
     const withdrawal = generateWithdrawal();
     await act(async () => {
-      render(generateJsx({ withdrawals: [withdrawal] }));
+      render(generateJsx({ rowData: [withdrawal] }));
     });
 
     const headers = screen.getAllByRole('columnheader');
@@ -58,7 +58,7 @@ describe('renders the correct columns', () => {
     });
 
     await act(async () => {
-      render(generateJsx({ withdrawals: [withdrawal] }));
+      render(generateJsx({ rowData: [withdrawal] }));
     });
 
     const cells = screen.getAllByRole('gridcell');

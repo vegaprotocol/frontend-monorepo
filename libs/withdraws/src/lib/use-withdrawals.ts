@@ -124,10 +124,10 @@ export const useWithdrawals = () => {
   const completed = useMemo(() => {
     return withdrawals
       .filter((w) => w.txHash)
-      .sort(
-        (a, b) =>
-          new Date(b.withdrawnTimestamp || b.createdTimestamp).getTime() -
-          new Date(a.withdrawnTimestamp || a.createdTimestamp).getTime()
+      .sort((a, b) =>
+        (b.withdrawnTimestamp || b.createdTimestamp).localeCompare(
+          a.withdrawnTimestamp || a.createdTimestamp
+        )
       );
   }, [withdrawals]);
 

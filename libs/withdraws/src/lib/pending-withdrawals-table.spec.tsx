@@ -1,16 +1,17 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { generateWithdrawal } from './test-helpers';
-import type { PendingWithdrawalsTableProps } from './pending-withdrawals-table';
 import { CompleteCell } from './pending-withdrawals-table';
 import { PendingWithdrawalsTable } from './pending-withdrawals-table';
 import { getTimeFormat } from '@vegaprotocol/react-helpers';
+import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
+import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
 }));
 
-const generateTable = (props: PendingWithdrawalsTableProps) => (
+const generateTable = (props: TypedDataAgGrid<WithdrawalFields>) => (
   <MockedProvider>
     <PendingWithdrawalsTable {...props} />
   </MockedProvider>
@@ -20,7 +21,7 @@ describe('PendingWithdrawalsTable', () => {
   it('displays correct columns', async () => {
     const withdrawal = generateWithdrawal();
     await act(async () => {
-      render(generateTable({ withdrawals: [withdrawal] }));
+      render(generateTable({ rowData: [withdrawal] }));
     });
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(5);
@@ -35,7 +36,7 @@ describe('PendingWithdrawalsTable', () => {
   it('displays given withdrawals', async () => {
     const withdrawal = generateWithdrawal();
     await act(async () => {
-      render(generateTable({ withdrawals: [withdrawal] }));
+      render(generateTable({ rowData: [withdrawal] }));
     });
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [

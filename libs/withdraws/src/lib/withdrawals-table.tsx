@@ -6,6 +6,7 @@ import {
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import type {
+  TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
@@ -14,16 +15,11 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 
-export interface WithdrawalsTableProps {
-  withdrawals: WithdrawalFields[];
-}
-
-export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
+export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
   const { ETHERSCAN_URL } = useEnvironment();
 
   return (
     <AgGrid
-      rowData={withdrawals}
       overlayNoRowsTemplate={t('No withdrawals')}
       defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%' }}
@@ -31,6 +27,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
       suppressCellFocus={true}
       domLayout="autoHeight"
       rowHeight={30}
+      {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
       <AgGridColumn

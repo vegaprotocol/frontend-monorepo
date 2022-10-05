@@ -60,10 +60,10 @@ const WithdrawPendingContainer = () => {
       <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
       <div className="w-full h-[500px]">
         {pending && pending.length > 0 && (
-          <PendingWithdrawalsTable withdrawals={pending} />
+          <PendingWithdrawalsTable rowData={pending} />
         )}
         <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
-        <WithdrawalsTable withdrawals={completed} />
+        <WithdrawalsTable rowData={completed} />
       </div>
       <WithdrawalDialogs
         withdrawDialog={withdrawDialog}

@@ -39,12 +39,12 @@ export const WithdrawalsContainer = () => {
                   {pending && pending.length > 0 && (
                     <>
                       <h4 className="pt-3 pb-1">{t('Pending withdrawals')}</h4>
-                      <PendingWithdrawalsTable withdrawals={pending} />
+                      <PendingWithdrawalsTable rowData={pending} />
                     </>
                   )}
 
                   <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
-                  <WithdrawalsTable withdrawals={completed} />
+                  <WithdrawalsTable rowData={completed} />
                 </>
               )}
             />
