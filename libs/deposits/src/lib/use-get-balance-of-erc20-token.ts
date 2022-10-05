@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useGetBalanceOfERC20Token = (

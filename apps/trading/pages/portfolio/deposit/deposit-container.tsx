@@ -1,37 +1,24 @@
-import { gql } from '@apollo/client';
-import { PageQueryContainer } from '../../../components/page-query-container';
-import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
+import { useDataProvider, t } from '@vegaprotocol/react-helpers';
+import { enabledAssetsProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { Splash } from '@vegaprotocol/ui-toolkit';
-import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
-
-const DEPOSIT_PAGE_QUERY = gql`
-  ${ASSET_FRAGMENT}
-  query DepositPage {
-    assetsConnection {
-      edges {
-        node {
-          ...AssetFields
-        }
-      }
-    }
-  }
-`;
+import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 
 /**
  *  Fetches data required for the Deposit page
  */
 export const DepositContainer = () => {
   const { VEGA_ENV } = useEnvironment();
-
+  const { data, error, loading } = useDataProvider({
+    dataProvider: enabledAssetsProvider,
+  });
   return (
-    <PageQueryContainer<DepositPage>
-      query={DEPOSIT_PAGE_QUERY}
-      render={(data) => {
-        const assets = getEnabledAssets(data);
-        if (!assets.length) {
+    <AsyncRenderer
+      data={data}
+      error={error}
+      loading={loading}
+      render={(assets) => {
+        if (!assets || !assets.length) {
           return (
             <Splash>
               <p>{t('No assets on this network')}</p>

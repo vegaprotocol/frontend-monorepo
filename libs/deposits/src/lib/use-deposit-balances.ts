@@ -6,7 +6,7 @@ import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 
 /**
  * Hook which fetches all the balances required for depositing

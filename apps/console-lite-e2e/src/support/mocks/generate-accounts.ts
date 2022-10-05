@@ -1,5 +1,6 @@
 import merge from 'lodash/merge';
-import type { AccountsQuery, AssetsQuery } from '@vegaprotocol/accounts';
+import type { AccountsQuery } from '@vegaprotocol/accounts';
+import type { AssetsQuery } from '@vegaprotocol/assets';
 import { AccountType, Schema as Types } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
@@ -86,6 +87,7 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             symbol: 'tEURO',
             decimals: 5,
             name: 'Euro',
+            source: {},
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
           },
@@ -96,6 +98,7 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             symbol: 'tDAI',
             decimals: 5,
             name: 'DAI',
+            source: {},
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
           },
@@ -106,6 +109,7 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             symbol: 'AST0',
             decimals: 5,
             name: 'Asto',
+            source: {},
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
           },

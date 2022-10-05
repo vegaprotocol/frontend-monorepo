@@ -1,4 +1,4 @@
-import type { ERC20Asset } from '@vegaprotocol/react-helpers';
+import type { ERC20Asset } from '@vegaprotocol/assets';
 import { Token, TokenFaucetable } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';

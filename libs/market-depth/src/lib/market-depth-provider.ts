@@ -60,19 +60,10 @@ const update: Update<
 > = (data, deltas, reload) => {
   for (const delta of deltas) {
     if (delta.marketId !== data.id) {
-      //console.log('wrong-market');
       continue;
     }
     const sequenceNumber = Number(delta.sequenceNumber);
-    console.log(delta.previousSequenceNumber, delta.sequenceNumber);
     if (sequenceNumber <= sequenceNumbers[delta.marketId]) {
-      /*
-      console.log(
-        'smaller sequence number',
-        sequenceNumber,
-        sequenceNumbers[delta.marketId]
-      );
-      */
       return data;
     }
     /*
@@ -82,8 +73,6 @@ const update: Update<
       return;
     }
     */
-    // const { buy, sell } = delta;
-    // console.log({ buy, sell });
     sequenceNumbers[delta.marketId] = sequenceNumber;
     const updatedData = {
       ...data,
@@ -95,7 +84,6 @@ const update: Update<
     if (delta.sell) {
       updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
     }
-    // console.log({ updatedData });
     return updatedData;
   }
   return data;

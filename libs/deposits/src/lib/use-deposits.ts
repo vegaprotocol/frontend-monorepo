@@ -8,13 +8,13 @@ import { Schema } from '@vegaprotocol/types';
 import {
   useDepositsQuery,
   DepositEventDocument,
-} from './__generated__/Deposit';
+} from './__generated___/Deposit';
 import type {
   DepositFieldsFragment,
   DepositsQuery,
   DepositEventSubscription,
   DepositEventSubscriptionVariables,
-} from './__generated__/Deposit';
+} from './__generated___/Deposit';
 
 export const useDeposits = () => {
   const { pubKey } = useVegaWallet();
