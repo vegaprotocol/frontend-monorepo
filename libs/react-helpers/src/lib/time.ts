@@ -1,3 +1,3 @@
-export const toNanoSeconds = (date: Date) => {
-  return date.getTime().toString() + '000000';
+export const toNanoSeconds = (date: Date | string) => {
+  return new Date(date).getTime().toString() + '000000';
 };

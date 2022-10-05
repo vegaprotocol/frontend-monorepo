@@ -30,7 +30,7 @@ context(
   'Staking Tab - with eth and vega wallets connected',
   { tags: '@slow' },
   function () {
-    // 1002-STKE-002, 1002-STKE-032
+    // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.vega_wallet_import();
       cy.visit('/');
@@ -54,60 +54,64 @@ context(
         }
       );
 
-      it('Able to stake against a validator - using vega from wallet', function () {
-        cy.staking_page_associate_tokens('3');
+      it(
+        'Able to stake against a validator - using vega from wallet',
+        { tags: '@smoke' },
+        function () {
+          cy.staking_page_associate_tokens('3');
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          3.0,
-          txTimeout
-        );
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            3.0,
+            txTimeout
+          );
 
-        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-          .contains('3.0', txTimeout)
-          .should('be.visible');
+          cy.get(ethWalletTotalAssociatedBalance, txTimeout)
+            .contains('3.0', txTimeout)
+            .should('be.visible');
 
-        cy.get(ethWalletAssociatedBalances, txTimeout)
-          .contains(vegaWalletPublicKeyShort, txTimeout)
-          .parent()
-          .should('contain', 3.0, txTimeout);
+          cy.get(ethWalletAssociatedBalances, txTimeout)
+            .contains(vegaWalletPublicKeyShort, txTimeout)
+            .parent()
+            .should('contain', 3.0, txTimeout);
 
-        cy.get('button').contains('Select a validator to nominate').click();
+          cy.get('button').contains('Select a validator to nominate').click();
 
-        // 1002-STKE-031
-        cy.click_on_validator_from_list(0);
+          // 2001-STKE-031
+          cy.click_on_validator_from_list(0);
 
-        // 1002-STKE-033, 1002-STKE-034, 1002-STKE-037
-        cy.staking_validator_page_add_stake('2');
+          // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
+          cy.staking_validator_page_add_stake('2');
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          1.0,
-          txTimeout
-        );
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            1.0,
+            txTimeout
+          );
 
-        // 1002-STKE-039
-        cy.get(vegaWalletStakedBalances, txTimeout)
-          .should('contain', 2.0, txTimeout)
-          .and('contain', partValidatorId);
+          // 2001-STKE-039
+          cy.get(vegaWalletStakedBalances, txTimeout)
+            .should('contain', 2.0, txTimeout)
+            .and('contain', partValidatorId);
 
-        cy.get(stakeNextEpochValue, epochTimeout) // 1002-STKE-016
-          .contains(2.0, epochTimeout)
-          .should('be.visible');
+          cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016
+            .contains(2.0, epochTimeout)
+            .should('be.visible');
 
-        cy.get(stakeThisEpochValue, epochTimeout) // 1002-STKE-013
-          .contains(2.0, epochTimeout)
-          .should('be.visible');
+          cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
+            .contains(2.0, epochTimeout)
+            .should('be.visible');
 
-        cy.navigate_to('staking');
+          cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '2.00',
-          '100%'
-        );
-      });
+          cy.validate_validator_list_total_stake_and_share(
+            '0',
+            '',
+            '2.00',
+            '100%'
+          );
+        }
+      );
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
         cy.staking_page_associate_tokens('3', { type: 'contract' });
@@ -303,7 +307,7 @@ context(
         });
       });
 
-      // 1002-STKE-041
+      // 2001-STKE-041
       it('Able to remove part of a stake against a validator', function () {
         cy.staking_page_associate_tokens('4');
 
@@ -330,13 +334,13 @@ context(
         );
 
         cy.navigate_to('staking');
-        // 1002-STKE-040
+        // 2001-STKE-040
         cy.click_on_validator_from_list(0);
 
-        // 1002-STKE-044, 1002-STKE-048
+        // 2001-STKE-044, 2001-STKE-048
         cy.staking_validator_page_remove_stake('1');
 
-        // 1002-STKE-049
+        // 2001-STKE-049
         cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -670,7 +674,7 @@ context(
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
-        // 1002-STKE-004
+        // 2001-STKE-004
         cy.staking_page_associate_tokens('3');
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -706,7 +710,7 @@ context(
       });
 
       it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
-        // 1002-STKE-004
+        // 2001-STKE-004
         cy.staking_page_associate_tokens('3', { type: 'contract' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -742,7 +746,7 @@ context(
       });
 
       it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
-        // 1002-STKE-004
+        // 2001-STKE-004
         cy.staking_page_associate_tokens('3', { type: 'wallet' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -778,7 +782,7 @@ context(
       });
 
       it('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
-        // 1002-STKE-004
+        // 2001-STKE-004
         cy.staking_page_associate_tokens('6');
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -869,7 +873,7 @@ context(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
           if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restartVegacapsuleNetwork();
+            cy.restart_vegacapsule_network();
           }
         }
       );

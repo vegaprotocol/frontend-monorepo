@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PositionMargin } from './use-market-positions';
 import useOrderMargin from './use-order-margin';
@@ -53,7 +53,7 @@ describe('useOrderMargin Hook', () => {
   it('margin should be properly calculated', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
-        order: order as Order,
+        order: order as OrderSubmissionBody['orderSubmission'],
         market: market as DealTicketMarketFragment,
         partyId,
       })
@@ -71,7 +71,7 @@ describe('useOrderMargin Hook', () => {
   it('fees should be properly calculated', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
-        order: order as Order,
+        order: order as OrderSubmissionBody['orderSubmission'],
         market: market as DealTicketMarketFragment,
         partyId,
       })
@@ -83,7 +83,7 @@ describe('useOrderMargin Hook', () => {
     mockMarketPositions = null;
     const { result } = renderHook(() =>
       useOrderMargin({
-        order: order as Order,
+        order: order as OrderSubmissionBody['orderSubmission'],
         market: market as DealTicketMarketFragment,
         partyId,
       })
@@ -110,7 +110,7 @@ describe('useOrderMargin Hook', () => {
     };
     const { result } = renderHook(() =>
       useOrderMargin({
-        order: order as Order,
+        order: order as OrderSubmissionBody['orderSubmission'],
         market: market as DealTicketMarketFragment,
         partyId,
       })

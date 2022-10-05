@@ -3,7 +3,7 @@ import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
 import { marketProvider } from '@vegaprotocol/market-list';
 import type { Market } from '@vegaprotocol/market-list';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { BigNumber } from 'bignumber.js';
 import {
   formatNumber,
@@ -13,7 +13,7 @@ import {
 
 interface Props {
   marketId: string;
-  order: Order;
+  order: OrderSubmissionBody['orderSubmission'];
 }
 
 const useCalculateSlippage = ({ marketId, order }: Props) => {

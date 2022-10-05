@@ -17,11 +17,11 @@ const getRowId = ({ data }: { data: Position }) => data.marketId;
 
 const PositionsAsset = ({ partyId, assetSymbol }: Props) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, getRows } = usePositionsData({
+  const { data, error, loading, getRows } = usePositionsData(
     partyId,
-    assetSymbol,
     gridRef,
-  });
+    assetSymbol
+  );
   const { columnDefs, defaultColDef } = useColumnDefinitions();
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
@@ -47,7 +47,7 @@ const PositionsAsset = ({ partyId, assetSymbol }: Props) => {
         defaultColDef={defaultColDef}
         getRowId={getRowId}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        data={data?.length ? undefined : []}
+        rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
         components={{ PriceFlashCell }}
       />

@@ -2,26 +2,7 @@ const vegaWalletContainer = '[data-testid="vega-wallet"]';
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
-const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
-
-Cypress.Commands.add('vega_wallet_import', () => {
-  cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);
-  cy.exec(`vega wallet init -f --home ${vegaWalletLocation}`);
-  cy.exec(
-    `vega wallet import -w ${vegaWalletName} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet`,
-    { failOnNonZeroExit: false }
-  );
-  cy.exec(
-    `vega wallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
-  );
-
-  cy.exec(`vega wallet version`)
-    .its('stdout')
-    .then((output) => {
-      cy.log(output);
-    });
-});
 
 Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');
@@ -32,7 +13,9 @@ Cypress.Commands.add('vega_wallet_connect', () => {
       .and('be.visible')
       .click({ force: true });
   });
-  cy.contains('Rest provider').click();
+  // Connect with gui as its the v1 service and tests should still pass. This will need
+  // to be update to use v2
+  cy.getByTestId('connector-gui').click();
   cy.get(restConnectorForm).within(() => {
     cy.get('#wallet').click().type(vegaWalletName);
     cy.get('#passphrase').click().type(vegaWalletPassphrase);

@@ -10,12 +10,9 @@ const vegaWallet = '[data-testid="vega-wallet"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
-const newProposalButton = '[data-testid="new-proposal-link"]';
-const newProposalDatabox = '[data-testid="proposal-data"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
-const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const proposalResponseProposalIdPath =
   'response.body.data.busEvents.0.event.id';
@@ -30,6 +27,7 @@ const proposalVoteProgressAgainstTokens =
 const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
+const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const voteButtons = '[data-testid="vote-buttons"]';
 const voteStatus = '[data-testid="vote-status"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
@@ -38,6 +36,16 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
+const noOpenProposals = '[data-testid="no-open-proposals"]';
+const noClosedProposals = '[data-testid="no-closed-proposals"]';
+
+const governanceProposalType = {
+  NETWORK_PARAMETER: 'Network parameter',
+  NEW_MARKET: 'New market',
+  UPDATE_MARKET: 'Update market',
+  NEW_ASSET: 'New asset',
+  FREEFORM: 'Freeform',
+};
 
 context(
   'Governance flow - with eth and vega wallets connected',
@@ -73,6 +81,16 @@ context(
             'h'
           )[0] / 24
         ).as('maxCloseDays');
+        cy.wrap(
+          network_parameters['governance.proposal.freeform.minClose'].split(
+            'h'
+          )[0]
+        ).as('minCloseHours');
+        cy.wrap(
+          network_parameters['governance.proposal.freeform.maxClose'].split(
+            'h'
+          )[0]
+        ).as('maxCloseHours');
       });
       cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
@@ -124,40 +142,52 @@ context(
         });
       });
 
+      it('should be able to see that no proposals exist', function () {
+        // 1004-VOTE-003
+        cy.get(noOpenProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no open or yet to enact proposals');
+        cy.get(noClosedProposals)
+          .should('be.visible')
+          .and('have.text', 'There are no enacted or rejected proposals');
+      });
+
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
         cy.contains(
           `You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`
         ).should('be.visible');
       });
 
-      it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.contains('Confirm transaction in wallet', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
-        );
-        cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-      });
+      it(
+        'Able to submit a valid freeform proposal - with minimum required tokens associated',
+        { tags: '@smoke' },
+        function () {
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
+          );
+          cy.navigate_to_page_if_not_already_loaded('governance');
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50');
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.contains('Confirm transaction in wallet', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Awaiting network confirmation', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Proposal submitted', proposalTimeout).should(
+            'be.visible'
+          );
+          cy.get(dialogCloseButton).click();
+        }
+      );
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
+        cy.navigate_to_page_if_not_already_loaded('governance');
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
           'contain',
           this.minProposerBalance,
@@ -176,12 +206,8 @@ context(
 
         cy.navigate_to('governance');
         cy.wait_for_spinner();
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -194,13 +220,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -223,13 +245,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -252,15 +270,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
-              'freeformProposal'
-            );
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50').as('freeformProposal');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -297,13 +309,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -330,32 +338,29 @@ context(
         // 1004-VOTE-005
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
-        );
+        ).then(() => {
+          let proposalHours = [
+            (Number(this.minCloseHours) + 1).toString(),
+            this.maxCloseHours,
+            (Number(this.minCloseHours) + 3).toString(),
+            (Number(this.minCloseHours) + 2).toString(),
+          ];
+          for (var index = 0; index < proposalHours.length; index++) {
+            cy.navigate_to_page_if_not_already_loaded('governance');
+            cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+            cy.enter_unique_freeform_proposal_body(proposalHours[index]);
+            cy.get(newProposalSubmitButton).should('be.visible').click();
+            cy.contains('Awaiting network confirmation', epochTimeout).should(
+              'be.visible'
+            );
+            cy.contains('Proposal submitted', proposalTimeout).should(
+              'be.visible'
+            );
+            cy.get(dialogCloseButton).click();
+            cy.wait_for_proposal_sync();
+          }
+        });
         // Ensuring that proposals are not posted in same order as sort order
-        let proposalDays = [
-          this.minCloseDays + 1,
-          this.maxCloseDays,
-          this.minCloseDays + 3,
-          this.minCloseDays + 2,
-        ];
-        for (var index = 0; index < proposalDays.length; index++) {
-          cy.navigate_to_page_if_not_allready_loaded('governance');
-          cy.get(newProposalButton).should('be.visible').click();
-          cy.create_ten_digit_unix_timestamp_for_specified_days(
-            proposalDays[index]
-          ).then((closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          });
-          cy.get(newProposalSubmitButton).should('be.visible').click();
-          cy.contains('Awaiting network confirmation', epochTimeout).should(
-            'be.visible'
-          );
-          cy.contains('Proposal submitted', proposalTimeout).should(
-            'be.visible'
-          );
-          cy.get(dialogCloseButton).click();
-          cy.wait_for_proposal_sync();
-        }
 
         let arrayOfProposals = [];
 
@@ -379,13 +384,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -406,13 +407,13 @@ context(
         cy.get_proposal_information_from_table('Total Supply')
           .invoke('text')
           .then((totalSupply) => {
-            let tokensRequiredToAcheiveResult = parseFloat(
+            let tokensRequiredToAchieveResult = parseFloat(
               (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
-              tokensRequiredToAcheiveResult
+              tokensRequiredToAchieveResult
             );
-            cy.navigate_to_page_if_not_allready_loaded('governance');
+            cy.navigate_to_page_if_not_already_loaded('governance');
             cy.get('@submittedProposal').within(() =>
               cy.get(viewProposalButton).click()
             );
@@ -432,14 +433,8 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
-              'freeformProposal'
-            );
-          }
-        );
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50').as('freeformProposal');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -474,15 +469,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp).as(
-              'freeformProposal'
-            );
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50').as('freeformProposal');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -517,13 +506,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -554,14 +539,15 @@ context(
       });
 
       it('Newly created freeform proposal details - shows proposed and closing dates', function () {
+        const closingVoteHrs = '72';
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('9').then(
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.create_ten_digit_unix_timestamp_for_specified_days('3').then(
           (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+            cy.enter_unique_freeform_proposal_body(closingVoteHrs);
             cy.get(newProposalSubmitButton).should('be.visible').click();
 
             cy.contains('Awaiting network confirmation', epochTimeout).should(
@@ -594,7 +580,7 @@ context(
           }
         );
         // 1004-VOTE-043
-        cy.contains('9 days left to vote').should('be.visible');
+        cy.contains('3 days left to vote').should('be.visible');
       });
 
       it('Newly created freeform proposal details - shows default status set to fail', function () {
@@ -603,13 +589,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -643,13 +625,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -714,13 +692,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -779,13 +753,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -837,13 +807,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -893,13 +859,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -918,13 +880,13 @@ context(
         cy.get_proposal_information_from_table('Total Supply')
           .invoke('text')
           .then((totalSupply) => {
-            let tokensRequiredToAcheiveResult = parseFloat(
+            let tokensRequiredToAchieveResult = parseFloat(
               (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
             ).toFixed(2);
             cy.ensure_specified_unstaked_tokens_are_associated(
-              tokensRequiredToAcheiveResult
+              tokensRequiredToAchieveResult
             );
-            cy.navigate_to_page_if_not_allready_loaded('governance');
+            cy.navigate_to_page_if_not_already_loaded('governance');
             cy.get('@submittedProposal').within(() =>
               cy.get(viewProposalButton).click()
             );
@@ -936,13 +898,13 @@ context(
               .and('be.visible');
             // 1004-VOTE-065
             cy.get(proposalVoteProgressForTokens)
-              .contains(tokensRequiredToAcheiveResult)
+              .contains(tokensRequiredToAchieveResult)
               .and('be.visible');
             cy.get(proposalVoteProgressAgainstTokens)
               .contains('0.00')
               .and('be.visible');
             cy.get_proposal_information_from_table('Tokens for proposal')
-              .should('have.text', tokensRequiredToAcheiveResult)
+              .should('have.text', tokensRequiredToAchieveResult)
               .and('be.visible');
             cy.get_proposal_information_from_table('Tokens against proposal')
               .should('have.text', '0.00')
@@ -973,67 +935,36 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days(
-          this.minCloseDays - 1
-        ).then((closingDateTimestamp) => {
-          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-        });
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('40');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
+          'not.exist'
         );
-        cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-        cy.wait_for_proposal_sync();
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get(rejectProposalsLink).click().wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list().within(() => {
-          cy.contains('Rejected').should('be.visible');
-          cy.contains('Close time too soon').should('be.visible');
-        });
       });
 
       it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days(
-          this.maxCloseDays + 1
-        ).then((closingDateTimestamp) => {
-          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-        });
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('100000');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
-          'be.visible'
+          'not.exist'
         );
-        cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
-        cy.get(dialogCloseButton).click();
-        cy.wait_for_proposal_sync();
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get(rejectProposalsLink).click().wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list().within(() => {
-          cy.contains('Rejected').should('be.visible');
-          cy.contains('Close time too late').should('be.visible');
-        });
       });
 
-      it('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
+      // No longer able to submit a rejected freeform proposal
+      it.skip('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days(
-          this.maxCloseDays + 1
-        ).then((closingDateTimestamp) => {
-          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-        });
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('500000000');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -1066,12 +997,8 @@ context(
           '0.000000000000000000',
           txTimeout
         );
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('49');
         cy.get(newProposalSubmitButton).should('be.visible').click();
 
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
@@ -1086,13 +1013,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance - 0.000001
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('49');
         cy.get(newProposalSubmitButton).should('be.visible').click();
 
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
@@ -1103,13 +1026,14 @@ context(
           .should('be.visible');
       });
 
-      it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
+      // Json containing unexpected field no longer fails submission
+      it.skip('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
         // 1004-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
@@ -1117,10 +1041,14 @@ context(
               freeformProposal.unexpectfield = `i shouldn't be here`;
               let proposalPayload = JSON.stringify(freeformProposal);
 
-              cy.get(newProposalDatabox).type(proposalPayload, {
+              cy.get(proposalDetailsTitle).type(
+                freeformProposal.rationale.title
+              );
+              cy.get(proposalDetailsDescription).type(proposalPayload, {
                 parseSpecialCharSequences: false,
                 delay: 2,
               });
+              cy.get(proposalVoteDeadline).clear().click().type('50');
             });
           }
         );
@@ -1128,28 +1056,33 @@ context(
 
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
         cy.get(feedbackError)
-          .contains('Unknown field unexpectfield in vega commands')
+          .contains('Unknown field unexpectfield in vega proposal terms')
           .should('be.visible');
       });
 
-      it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
+      // Json containing unexpected field no longer fails submission
+      it.skip('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
         // 1004-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
         cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
           (closingDateTimestamp) => {
             cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
               freeformProposal.terms.closingTimestamp = closingDateTimestamp;
-              freeformProposal.terms.unexpectfield = `i shouldn't be here`;
+              freeformProposal.terms.unexpectedField = `i shouldn't be here`;
               let proposalPayload = JSON.stringify(freeformProposal);
 
-              cy.get(newProposalDatabox).type(proposalPayload, {
+              cy.get(proposalDetailsTitle).type(
+                freeformProposal.rationale.title
+              );
+              cy.get(proposalDetailsDescription).type(proposalPayload, {
                 parseSpecialCharSequences: false,
                 delay: 2,
               });
+              cy.get(proposalVoteDeadline).clear().click().type('50');
             });
           }
         );
@@ -1166,13 +1099,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -1201,13 +1130,9 @@ context(
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.navigate_to_page_if_not_allready_loaded('governance');
-        cy.get(newProposalButton).should('be.visible').click();
-        cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
-          (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
-          }
-        );
+        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50');
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -1228,7 +1153,7 @@ context(
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet')
           .click();
-        cy.contains('Rest provider').click();
+        cy.getByTestId('connector-gui').click();
         cy.get(restConnectorForm).within(() => {
           cy.get('#wallet').click().type(vegaWalletName);
           cy.get('#passphrase').click().type(vegaWalletPassphrase);
@@ -1250,177 +1175,8 @@ context(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
           if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restartVegacapsuleNetwork();
+            cy.restart_vegacapsule_network();
           }
-        }
-      );
-
-      Cypress.Commands.add(
-        'convert_unix_timestamp_to_governance_data_table_date_format',
-        (unixTimestamp, monthTextLength = 'longMonth') => {
-          let dateSupplied = new Date(unixTimestamp * 1000),
-            year = dateSupplied.getFullYear(),
-            months = [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December',
-            ],
-            month = months[dateSupplied.getMonth()],
-            shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
-            date = dateSupplied.getDate();
-
-          if (monthTextLength === 'longMonth')
-            return `${date} ${month} ${year}`;
-          else return `${date} ${shortMonth} ${year}`;
-        }
-      );
-
-      Cypress.Commands.add(
-        'create_ten_digit_unix_timestamp_for_specified_days',
-        (durationDays) => {
-          let today = new Date();
-          let timestamp = today.setDate(
-            today.getDate() + parseInt(durationDays)
-          );
-          timestamp = Math.floor(timestamp / 1000);
-
-          return timestamp;
-        }
-      );
-
-      Cypress.Commands.add(
-        'enter_unique_freeform_proposal_body',
-        (timestamp) => {
-          cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
-            freeformProposal.terms.closingTimestamp = timestamp;
-            freeformProposal.rationale.title += timestamp;
-            let proposalPayload = JSON.stringify(freeformProposal);
-
-            cy.get(newProposalDatabox).type(proposalPayload, {
-              parseSpecialCharSequences: false,
-              delay: 2,
-            });
-
-            cy.wrap(freeformProposal);
-          });
-        }
-      );
-
-      Cypress.Commands.add('get_network_parameters', () => {
-        let mutation = '{networkParameters {key value}}';
-        cy.request({
-          method: 'POST',
-          url: `http://localhost:3028/query`,
-          body: {
-            query: mutation,
-          },
-          headers: { 'content-type': 'application/json' },
-        })
-          .its(`body.data.networkParameters`)
-          .then(function (response) {
-            let object = response.reduce(function (r, e) {
-              r[e.key] = e.value;
-              return r;
-            }, {});
-
-            return object;
-          });
-      });
-
-      Cypress.Commands.add('get_submitted_proposal_from_proposal_list', () => {
-        cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseProposalIdPath)
-          .then((proposalId) => {
-            return cy.get(`#${proposalId}`);
-          });
-      });
-
-      Cypress.Commands.add(
-        'get_governance_proposal_date_format_for_specified_days',
-        (days, shortOrLong) => {
-          cy.create_ten_digit_unix_timestamp_for_specified_days(days).then(
-            (date) => {
-              cy.convert_unix_timestamp_to_governance_data_table_date_format(
-                date,
-                shortOrLong
-              ).then((convertedDate) => {
-                return convertedDate;
-              });
-            }
-          );
-        }
-      );
-
-      Cypress.Commands.add('get_proposal_information_from_table', (heading) => {
-        cy.get(proposalInformationTableRows).contains(heading).siblings();
-      });
-
-      Cypress.Commands.add('vote_for_proposal', (vote) => {
-        cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
-        cy.get(voteButtons).contains(vote).click();
-        cy.contains('Casting vote...').should('be.visible');
-        cy.contains('Casting vote...', txTimeout).should('not.exist');
-      });
-
-      Cypress.Commands.add('wait_for_proposal_sync', () => {
-        // This is a workaround function required because after posting a proposal
-        // and waiting for the ProposalEvent network call to respond there can still be a few seconds
-        // before proposal appears in the list - so rather than hard coded wait - we just wait on the
-        // delegation checks that are performed on the governance page.
-
-        cy.intercept('POST', '/query', (req) => {
-          if (req.body.operationName === 'Delegations') {
-            req.alias = 'proposalDelegationsCompletion';
-          }
-        });
-
-        // waiting for two network calls
-        cy.wait([
-          '@proposalDelegationsCompletion',
-          '@proposalDelegationsCompletion',
-        ]);
-
-        // Turn off this intercept from here on in
-        cy.intercept('POST', '/query', (req) => {
-          if (req.body.operationName === 'Delegations') {
-            req.continue();
-          }
-        });
-      });
-
-      Cypress.Commands.add(
-        'navigate_to_page_if_not_allready_loaded',
-        (section) => {
-          cy.url().then((url) => {
-            if (url != `http://localhost:4210/${section}`) {
-              cy.navigate_to(section);
-              cy.wait_for_spinner();
-            }
-          });
-        }
-      );
-
-      Cypress.Commands.add(
-        'get_sort_order_of_supplied_array',
-        (suppliedArray) => {
-          const tempArray = [];
-          for (let index = 1; index < suppliedArray.length; index++) {
-            tempArray.push(
-              suppliedArray[index - 1].localeCompare(suppliedArray[index])
-            );
-          }
-          if (tempArray.every((n) => n <= 0)) return 'ascending';
-          else if (tempArray.every((n) => n >= 0)) return 'descending';
-          else return 'unsorted';
         }
       );
     });

@@ -39,12 +39,12 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0)}`;
+      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate="No liquidity provisions"
+        overlayNoRowsTemplate={t('No liquidity provisions')}
         getRowId={({ data }) => data.party}
         rowHeight={34}
         ref={ref}
@@ -54,6 +54,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           resizable: true,
           minWidth: 100,
           tooltipComponent: TooltipCellComponent,
+          sortable: true,
         }}
         rowData={data}
       >

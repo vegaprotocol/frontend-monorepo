@@ -52,6 +52,16 @@ export const PROPOSAL_FRAGMENT = gql`
             value
           }
         }
+        ... on UpdateAsset {
+          quantum
+          assetId
+          source {
+            ... on UpdateERC20 {
+              lifetimeLimit
+              withdrawThreshold
+            }
+          }
+        }
       }
     }
     votes {

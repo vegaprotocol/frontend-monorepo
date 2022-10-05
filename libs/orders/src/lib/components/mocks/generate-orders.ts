@@ -7,11 +7,11 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
-import type { OrderWithMarket } from '../';
+import type { Order } from '../';
 import type { PartialDeep } from 'type-fest';
 
-export const generateOrder = (partialOrder?: PartialDeep<OrderWithMarket>) => {
-  const order: OrderWithMarket = {
+export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
+  const order: Order = {
     __typename: 'Order',
     id: 'order-id2',
     market: {
@@ -69,6 +69,8 @@ export const generateOrder = (partialOrder?: PartialDeep<OrderWithMarket>) => {
     updatedAt: null,
     expiresAt: null,
     rejectionReason: null,
+    liquidityProvision: null,
+    peggedOrder: null,
   };
   return merge(order, partialOrder);
 };
@@ -88,7 +90,7 @@ export const marketOrder = generateOrder({
   status: OrderStatus.STATUS_ACTIVE,
 });
 
-export const generateMockOrders = (): OrderWithMarket[] => {
+export const generateMockOrders = (): Order[] => {
   return [
     generateOrder({
       id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
@@ -138,6 +140,6 @@ export const generateMockOrders = (): OrderWithMarket[] => {
   ];
 };
 
-export const generateOrdersArray = (): OrderWithMarket[] => {
+export const generateOrdersArray = (): Order[] => {
   return [marketOrder, limitOrder, ...generateMockOrders()];
 };

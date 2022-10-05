@@ -27,9 +27,14 @@ module.exports = defineConfig({
     networkQueryUrl: 'http://localhost:3028/query',
     ethUrl: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     commitHash: 'dev',
+    CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
     tsConfig: 'tsconfig.json',
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,
+    vegaWalletName: 'capsule_wallet',
+    vegaWalletLocation: '~/.vegacapsule/testnet/wallet',
+    vegaWalletPublicKey:
+      '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
   },
 });

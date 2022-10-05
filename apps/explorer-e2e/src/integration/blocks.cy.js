@@ -1,5 +1,3 @@
-import '../support/common.functions';
-
 context('Blocks page', { tags: '@regression' }, function () {
   before('visit token home page', function () {
     cy.visit('/');

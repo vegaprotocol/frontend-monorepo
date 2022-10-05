@@ -10,19 +10,21 @@ import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
-import type { Order } from '@vegaprotocol/orders';
-import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { getDefaultOrder } from '../deal-ticket-validation';
+import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
   market: DealTicketMarketFragment;
-  submit: (order: Order) => void;
+  submit: (order: OrderSubmissionBody['orderSubmission']) => void;
   transactionStatus: TransactionStatus;
-  defaultOrder?: Order;
+  defaultOrder?: OrderSubmissionBody['orderSubmission'];
 }
 
 export const DealTicket = ({
@@ -37,7 +39,7 @@ export const DealTicket = ({
     watch,
     formState: { errors },
     setValue,
-  } = useForm<Order>({
+  } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
@@ -53,7 +55,7 @@ export const DealTicket = ({
   const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
-    (order: Order) => {
+    (order: OrderSubmissionBody['orderSubmission']) => {
       if (!isDisabled) {
         submit({
           ...order,
@@ -69,6 +71,22 @@ export const DealTicket = ({
     },
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
+
+  const getPrice = () => {
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_OPENING_AUCTION ||
+      market.tradingMode === MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+    ) {
+      return market.data?.indicativePrice;
+    }
+    if (
+      market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    ) {
+      return null;
+    }
+    return market.depth.lastTrade?.price;
+  };
+  const price = getPrice();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
@@ -101,11 +119,8 @@ export const DealTicket = ({
         market={market}
         register={register}
         price={
-          market.depth.lastTrade
-            ? addDecimalsFormatNumber(
-                market.depth.lastTrade.price,
-                market.decimalPlaces
-              )
+          price
+            ? addDecimalsFormatNumber(price, market.decimalPlaces)
             : undefined
         }
         quoteName={market.tradableInstrument.instrument.product.quoteName}

@@ -15,12 +15,12 @@ import { PROPOSAL_EVENT_SUB } from '@vegaprotocol/governance';
 import type { ProposalEvent } from '@vegaprotocol/governance';
 
 describe('Raw proposal form', () => {
-  const pubkey = '0x123';
+  const pubKey = '0x123';
   const mockProposalEvent: MockedResponse<ProposalEvent> = {
     request: {
       query: PROPOSAL_EVENT_SUB,
       variables: {
-        partyId: pubkey,
+        partyId: pubKey,
       },
     },
     result: {
@@ -51,7 +51,7 @@ describe('Raw proposal form', () => {
           <VegaWalletContext.Provider
             value={
               {
-                keypair: { pub: pubkey },
+                pubKey,
                 sendTx: mockSendTx,
               } as unknown as VegaWalletContextShape
             }
@@ -103,13 +103,9 @@ describe('Raw proposal form', () => {
         setTimeout(
           () =>
             resolve({
-              txHash: 'tx-hash',
-              tx: {
-                signature: {
-                  value:
-                    'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
-                },
-              },
+              transactionHash: 'tx-hash',
+              signature:
+                'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
             }),
           100
         );
@@ -141,9 +137,7 @@ describe('Raw proposal form', () => {
       fireEvent.click(screen.getByTestId('proposal-submit'));
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith({
-      propagate: true,
-      pubKey: pubkey,
+    expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
       proposalSubmission: JSON.parse(inputJSON),
     });
 

@@ -6,11 +6,19 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generatePositions,
   emptyPositions,
+  generateMargins,
 } from '../support/mocks/generate-positions';
-import { generateAccounts } from '../support/mocks/generate-accounts';
+import {
+  generateAccounts,
+  generateAssets,
+} from '../support/mocks/generate-accounts';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
-import { generateFillsMarkets } from '../support/mocks/generate-markets';
+import {
+  generateFillsMarkets,
+  generateMarketsData,
+  generatePositionsMarkets,
+} from '../support/mocks/generate-markets';
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   afterEach(() => {
@@ -49,14 +57,18 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Positions', generatePositions());
+        aliasQuery(req, 'Margins', generateMargins());
+        aliasQuery(req, 'Markets', generatePositionsMarkets());
+        aliasQuery(req, 'MarketsData', generateMarketsData());
         aliasQuery(req, 'Accounts', generateAccounts());
+        aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/assets');
       connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
-      cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 3);
       cy.get(
         '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]'
       )
@@ -75,6 +87,10 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Positions', generatePositions());
         aliasQuery(req, 'Accounts', generateAccounts());
+        aliasQuery(req, 'Margins', generateMargins());
+        aliasQuery(req, 'Markets', generatePositionsMarkets());
+        aliasQuery(req, 'MarketsData', generateMarketsData());
+        aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/positions');
       connectVegaWallet();
@@ -126,6 +142,9 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Markets', {
           marketsConnection: { edges: [], __typename: 'MarketConnection' },
         });
+        aliasQuery(req, 'Assets', {
+          assetsConnection: { edges: null, __typename: 'AssetsConnection' },
+        });
       });
       cy.visit('/portfolio');
       connectVegaWallet();
@@ -133,22 +152,26 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
 
     it('"No data to display" should be always displayed', () => {
       cy.getByTestId('assets').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('positions').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('orders').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
 
       cy.getByTestId('fills').click();
-      cy.get('div.flex.items-center.justify-center').contains(
+      cy.get('div.flex.items-center.justify-center').should(
+        'contain.text',
         'No data to display'
       );
     });

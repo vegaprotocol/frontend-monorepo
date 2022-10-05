@@ -10,8 +10,7 @@ export interface CancelOrderArgs {
 }
 
 export const useOrderCancel = () => {
-  const { keypair } = useVegaWallet();
-  const waitForOrderEvent = useOrderEvent();
+  const { pubKey } = useVegaWallet();
 
   const [cancelledOrder, setCancelledOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
@@ -24,6 +23,8 @@ export const useOrderCancel = () => {
     Dialog,
   } = useVegaTransaction();
 
+  const waitForOrderEvent = useOrderEvent(transaction);
+
   const reset = useCallback(() => {
     resetTransaction();
     setCancelledOrder(null);
@@ -31,23 +32,21 @@ export const useOrderCancel = () => {
 
   const cancel = useCallback(
     async (args: CancelOrderArgs) => {
-      if (!keypair) {
+      if (!pubKey) {
         return;
       }
 
       setCancelledOrder(null);
 
       try {
-        await send({
-          pubKey: keypair.pub,
-          propagate: true,
+        await send(pubKey, {
           orderCancellation: {
             orderId: args.orderId,
             marketId: args.marketId,
           },
         });
 
-        waitForOrderEvent(args.orderId, keypair.pub, (cancelledOrder) => {
+        waitForOrderEvent(args.orderId, pubKey, (cancelledOrder) => {
           setCancelledOrder(cancelledOrder);
           setComplete();
         });
@@ -56,7 +55,7 @@ export const useOrderCancel = () => {
         return;
       }
     },
-    [keypair, send, setComplete, waitForOrderEvent]
+    [pubKey, send, setComplete, waitForOrderEvent]
   );
 
   return {

@@ -5,7 +5,7 @@ import { EXPIRE_DATE_FORMAT } from '../../constants';
 const SimpleMarketExpires = ({
   tags,
 }: {
-  tags: ReadonlyArray<string> | null;
+  tags?: ReadonlyArray<string> | null;
 }) => {
   if (tags) {
     const dateFound = tags.reduce<Date | null>((agg, tag) => {

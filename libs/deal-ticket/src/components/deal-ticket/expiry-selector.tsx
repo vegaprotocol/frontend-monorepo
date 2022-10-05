@@ -3,8 +3,8 @@ import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {
-  value?: Date;
-  onSelect: (expiration: Date | null) => void;
+  value?: string;
+  onSelect: (expiration: string | null) => void;
 }
 
 export const ExpirySelector = ({ value, onSelect }: ExpirySelectorProps) => {
@@ -19,7 +19,7 @@ export const ExpirySelector = ({ value, onSelect }: ExpirySelectorProps) => {
         name="expiration"
         type="datetime-local"
         value={dateFormatted}
-        onChange={(e) => onSelect(new Date(e.target.value))}
+        onChange={(e) => onSelect(e.target.value)}
         min={minDate}
       />
     </FormGroup>

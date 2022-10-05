@@ -1,33 +1,7 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketsDataQuery } from './__generated__/MarketsDataQuery';
+import type { MarketsDataQuery } from './__generated___/markets-data';
+import { MarketsDataDocument } from './__generated___/markets-data';
 import type { MarketData } from './market-data-provider';
-
-export const MARKETS_DATA_QUERY = gql`
-  query MarketsDataQuery {
-    marketsConnection {
-      edges {
-        node {
-          data {
-            market {
-              id
-            }
-            bestBidPrice
-            bestOfferPrice
-            markPrice
-            trigger
-            staticMidPrice
-            marketTradingMode
-            indicativeVolume
-            indicativePrice
-            bestStaticBidPrice
-            bestStaticOfferPrice
-          }
-        }
-      }
-    }
-  }
-`;
 
 const getData = (responseData: MarketsDataQuery): MarketData[] | null =>
   responseData.marketsConnection?.edges
@@ -40,6 +14,6 @@ export const marketsDataProvider = makeDataProvider<
   never,
   never
 >({
-  query: MARKETS_DATA_QUERY,
+  query: MarketsDataDocument,
   getData,
 });

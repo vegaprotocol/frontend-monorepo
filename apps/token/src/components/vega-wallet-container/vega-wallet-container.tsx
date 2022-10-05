@@ -1,5 +1,4 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,15 +9,15 @@ import {
 } from '../../contexts/app-state/app-state-context';
 
 interface VegaWalletContainerProps {
-  children: (key: VegaKeyExtended) => React.ReactElement;
+  children: (key: string) => React.ReactElement;
 }
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <p>
         <Button
@@ -36,5 +35,5 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
     );
   }
 
-  return children(keypair);
+  return children(pubKey);
 };

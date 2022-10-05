@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
 import { AssetDetailsDialog } from './asset-details-dialog';
-import { AssetsConnectionDocument } from './__generated__/Assets';
+import { AssetsConnectionDocument } from './__generated___/Assets';
 
 const mockedData = {
   data: {
@@ -239,7 +239,7 @@ const mockedData = {
             quantum: '1',
             source: {
               contractAddress: '0x8ec701DA58394F5d2c8C2873D31039454D5845C1',
-              lifetimeLimit: '0',
+              lifetimeLimit: '1000000000000',
               withdrawThreshold: '0',
               __typename: 'ERC20',
             },
@@ -257,7 +257,7 @@ const mockedData = {
             source: {
               contractAddress: '0xDc335304979D378255015c33AbFf09B60c31EBAb',
               lifetimeLimit: '0',
-              withdrawThreshold: '0',
+              withdrawThreshold: '100000000',
               __typename: 'ERC20',
             },
             __typename: 'Asset',

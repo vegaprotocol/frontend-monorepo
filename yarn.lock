@@ -17426,10 +17426,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@^0.4.16:
-  version "0.4.16"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.16.tgz#2fa3e157669f4c7e0d3c3b577d4ff3d508e3ad34"
-  integrity sha512-QA4Q8on0C7DgaY7nBOLwZBp1k+xW40ZzRGJZZPsiRECLd794OJaGeVG8BSAh4Ua2WG8MHoqEuxFKCf4p9pK6mw==
+pennant@^0.4.18:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.18.tgz#da287bd74abb41483d9dc732b89ceded249ecb7c"
+  integrity sha512-5CWfiPZLQrbx0EAU319tWjUH7iO+vt/wFfxqPLlAxsg6dyhO6Ix+oi8Z/FOgTaGMNey5tnDgDrZY9Jt3hej1aQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"

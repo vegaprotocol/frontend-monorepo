@@ -14,6 +14,7 @@ import type {
   Orders,
   Orders_party_ordersConnection_edges,
   Orders_party_ordersConnection_edges_node,
+  Orders_party_ordersConnection_edges_node_liquidityProvision,
   OrderSub,
   OrderSub_orders,
 } from '../';
@@ -40,6 +41,12 @@ export const ORDERS_QUERY = gql`
             expiresAt
             createdAt
             updatedAt
+            liquidityProvision {
+              __typename
+            }
+            peggedOrder {
+              __typename
+            }
           }
           cursor
         }
@@ -70,6 +77,10 @@ export const ORDERS_SUB = gql`
       expiresAt
       createdAt
       updatedAt
+      liquidityProvisionId
+      peggedOrder {
+        __typename
+      }
     }
   }
 `;
@@ -98,10 +109,20 @@ export const update = (
           draft.unshift(...draft.splice(index, 1));
         }
       } else if (newer) {
-        const { marketId, ...order } = node;
+        const { marketId, liquidityProvisionId, ...order } = node;
+
+        // If there is a liquidity provision id add the object to the resulting order
+        const liquidityProvision: Orders_party_ordersConnection_edges_node_liquidityProvision | null =
+          liquidityProvisionId
+            ? {
+                __typename: 'LiquidityProvision',
+              }
+            : null;
+
         draft.unshift({
           node: {
             ...order,
+            liquidityProvision: liquidityProvision,
             market: {
               __typename: 'Market',
               id: marketId,
@@ -116,11 +137,11 @@ export const update = (
   });
 };
 
-// #TODO Order name is in conflict with interface defines in use-order-submit
-type Order = Orders_party_ordersConnection_edges_node;
-export type OrderWithMarket = Omit<Order, 'market'> & { market?: Market };
-export type OrderWithMarketEdge = {
-  node: OrderWithMarket;
+export type Order = Omit<Orders_party_ordersConnection_edges_node, 'market'> & {
+  market?: Market;
+};
+export type OrderEdge = {
+  node: Order;
   cursor: Orders_party_ordersConnection_edges['cursor'];
 };
 
@@ -148,11 +169,11 @@ export const ordersProvider = makeDataProvider({
 });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
-  OrderWithMarketEdge[],
-  OrderWithMarket[]
+  OrderEdge[],
+  Order[]
 >(
   [ordersProvider, marketsProvider],
-  (partsData): OrderWithMarketEdge[] =>
+  (partsData): OrderEdge[] =>
     ((partsData[0] as Parameters<typeof update>['0']) || []).map((edge) => ({
       cursor: edge.cursor,
       node: {
@@ -162,11 +183,11 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
         ),
       },
     })),
-  (parts): OrderWithMarket[] | undefined => {
+  (parts): Order[] | undefined => {
     if (!parts[0].isUpdate) {
       return;
     }
-    // map OrderSub_orders[] from subscription to updated OrderWithMarket[]
+    // map OrderSub_orders[] from subscription to updated Order[]
     return (parts[0].delta as ReturnType<typeof getDelta>).map(
       (deltaOrder) => ({
         ...((parts[0].data as ReturnType<typeof getData>)?.find(

@@ -1,131 +1,92 @@
-import { gql } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import type {
-  Markets,
-  Markets_marketsConnection_edges_node,
-} from './__generated__/Markets';
+  MarketsQuery,
+  MarketFieldsFragment,
+} from './__generated___/markets';
 import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
 import { useMemo } from 'react';
 import { Interval } from '@vegaprotocol/types';
-import { mapDataToMarketList } from './utils';
+import { filterAndSortMarkets } from './utils';
+import { MarketsDocument } from './__generated___/markets';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export type Market = Markets_marketsConnection_edges_node;
+import type { Candle } from './market-candles-provider';
 
-const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketFields on Market {
-    id
-    decimalPlaces
-    positionDecimalPlaces
-    state
-    tradingMode
-    fees {
-      factors {
-        makerFee
-        infrastructureFee
-        liquidityFee
-      }
-    }
-    tradableInstrument {
-      instrument {
-        id
-        name
-        code
-        metadata {
-          tags
-        }
-        product {
-          ... on Future {
-            settlementAsset {
-              symbol
-              decimals
-            }
-            quoteName
-          }
-        }
-      }
-    }
-    marketTimestamps {
-      open
-      close
-    }
-  }
-`;
+export type Market = MarketFieldsFragment;
 
-export const MARKET_LIST_QUERY = gql`
-  ${MARKET_DATA_FRAGMENT}
-  query Markets {
-    marketsConnection {
-      edges {
-        node {
-          ...MarketFields
-        }
-      }
-    }
-  }
-`;
-
-const getData = (responseData: Markets): Market[] | null =>
+const getData = (responseData: MarketsQuery): Market[] | null =>
   responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
 
 export const marketsProvider = makeDataProvider<
-  Markets,
+  MarketsQuery,
   Market[],
   never,
   never
 >({
-  query: MARKET_LIST_QUERY,
+  query: MarketsDocument,
   getData,
+  fetchPolicy: 'cache-first',
 });
 
 export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
-  ([markets]) => mapDataToMarketList(markets)
+  ([markets]) => filterAndSortMarkets(markets)
 );
 
-export interface MarketsListData {
-  markets: Market[];
-  marketsData: MarketData[];
-  marketsCandles: MarketCandles[];
-}
+export type MarketWithCandles = Market & { candles?: Candle[] };
 
-export const marketListProvider = makeDerivedDataProvider<
-  MarketsListData,
+const addCandles = <T extends Market>(
+  markets: T[],
+  marketsCandles: MarketCandles[]
+) =>
+  markets.map((market) => ({
+    ...market,
+    candles: marketsCandles.find((data) => data.marketId === market.id)
+      ?.candles,
+  }));
+
+export const marketsWithCandlesProvider = makeDerivedDataProvider<
+  MarketWithCandles[],
   never
 >(
   [
     (callback, client) => activeMarketsProvider(callback, client),
-    (callback, client) => marketsDataProvider(callback, client),
     marketsCandlesProvider,
   ],
-  (parts) => {
-    return {
-      markets: parts[0] as Market[],
-      marketsData: parts[1] as MarketData[],
-      marketsCandles: parts[2] as MarketCandles[],
-    };
-  }
+  (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
 );
 
 export type MarketWithData = Market & { data?: MarketData };
+
+const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
+  markets.map((market) => ({
+    ...market,
+    data: marketsData.find((data) => data.market.id === market.id),
+  }));
 
 export const marketsWithDataProvider = makeDerivedDataProvider<
   MarketWithData[],
   never
 >([activeMarketsProvider, marketsDataProvider], (parts) =>
-  (parts[0] as Market[]).map((market) => ({
-    ...market,
-    data: (parts[1] as MarketData[]).find(
-      (data) => data.market.id === market.id
-    ),
-  }))
+  addData(parts[0] as Market[], parts[1] as MarketData[])
+);
+
+export const marketListProvider = makeDerivedDataProvider<
+  (MarketWithData & MarketWithCandles)[],
+  never
+>(
+  [
+    (callback, client) => marketsWithDataProvider(callback, client),
+    marketsCandlesProvider,
+  ],
+  (parts) =>
+    addCandles(parts[0] as MarketWithCandles[], parts[1] as MarketCandles[])
 );
 
 export const useMarketList = () => {
@@ -136,7 +97,7 @@ export const useMarketList = () => {
       interval: Interval.INTERVAL_I1H,
     };
   }, []);
-  const { data, loading, error } = useDataProvider<MarketsListData, never>({
+  const { data, loading, error } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
     noUpdate: true,

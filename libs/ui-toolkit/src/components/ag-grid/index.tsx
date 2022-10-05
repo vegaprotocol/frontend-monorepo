@@ -23,8 +23,7 @@ export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<
   TField
 >;
 
-export type VegaICellRendererParams<TRow, TField extends Field> = RowHelper<
-  ICellRendererParams,
+export type VegaICellRendererParams<
   TRow,
-  TField
->;
+  TField extends Field = string
+> = RowHelper<ICellRendererParams, TRow, TField>;

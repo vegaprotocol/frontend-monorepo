@@ -4,9 +4,9 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { PositionsManager } from './positions-manager';
 
 export const PositionsContainer = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
 
-  if (!keypair) {
+  if (!pubKey) {
     return (
       <Splash>
         <p>{t('Please connect Vega wallet')}</p>
@@ -14,5 +14,5 @@ export const PositionsContainer = () => {
     );
   }
 
-  return <PositionsManager partyId={keypair.pub} />;
+  return <PositionsManager partyId={pubKey} />;
 };

@@ -2,10 +2,12 @@ import '@vegaprotocol/cypress';
 
 import './common.functions.js';
 import './staking.functions.js';
+import './governance.functions.js';
 import './wallet-eth.functions.js';
 import './wallet-teardown.functions.js';
 import './wallet-vega.functions.js';
 import registerCypressGrep from 'cypress-grep';
+import { aliasQuery } from '@vegaprotocol/cypress';
 registerCypressGrep();
 
 // Hide fetch/XHR requests - They create a lot of noise in command log
@@ -17,3 +19,12 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
   style.setAttribute('data-hide-command-log-request', '');
   app.document.head.appendChild(style);
 }
+
+beforeEach(() => {
+  // Mock chainId fetch which happens on every page for wallet connection
+  cy.mockGQL((req) => {
+    aliasQuery(req, 'ChainId', {
+      statistics: { __typename: 'Statistics', chainId: 'test-chain-id' },
+    });
+  });
+});

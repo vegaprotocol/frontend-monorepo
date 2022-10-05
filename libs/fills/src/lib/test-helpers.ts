@@ -1,10 +1,10 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import { MarketState, MarketTradingMode, Side } from '@vegaprotocol/types';
-import type { TradeWithMarket } from './fills-data-provider';
+import type { Trade } from './fills-data-provider';
 
-export const generateFill = (override?: PartialDeep<TradeWithMarket>) => {
-  const defaultFill: TradeWithMarket = {
+export const generateFill = (override?: PartialDeep<Trade>) => {
+  const defaultFill: Trade = {
     __typename: 'Trade',
     id: '0',
     createdAt: '2005-04-02T19:37:00.000Z',

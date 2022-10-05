@@ -68,7 +68,7 @@ export const DepositForm = ({
 }: DepositFormProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const { account } = useWeb3React();
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const {
     register,
     handleSubmit,
@@ -78,9 +78,9 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id,
       from: account,
-      to: keypair?.pub,
+      to: pubKey ? pubKey : undefined,
+      asset: selectedAsset?.id || '',
     },
   });
 
@@ -152,7 +152,11 @@ export const DepositForm = ({
         <Controller
           control={control}
           name="asset"
-          rules={{ validate: { required } }}
+          rules={{
+            validate: {
+              required: (value) => !!selectedAsset || required(value),
+            },
+          }}
           render={({ field }) => (
             <Select
               id="asset"
@@ -161,6 +165,7 @@ export const DepositForm = ({
                 field.onChange(e);
                 onSelectAsset(e.target.value);
               }}
+              value={selectedAsset?.id || ''}
             >
               <option value="">{t('Please select')}</option>
               {assets.filter(isAssetTypeERC20).map((a) => (
@@ -215,6 +220,16 @@ export const DepositForm = ({
           <InputError intent="danger" forInput="to">
             {errors.to.message}
           </InputError>
+        )}
+        {pubKey && (
+          <UseButton
+            onClick={() => {
+              setValue('to', pubKey);
+              clearErrors('to');
+            }}
+          >
+            {t('Use connected')}
+          </UseButton>
         )}
       </FormGroup>
       {selectedAsset && max && deposited && (

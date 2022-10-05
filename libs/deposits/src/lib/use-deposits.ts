@@ -17,10 +17,10 @@ import type {
 } from './__generated__/Deposit';
 
 export const useDeposits = () => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { data, loading, error, subscribeToMore } = useDepositsQuery({
-    variables: { partyId: keypair?.pub || '' },
-    skip: !keypair?.pub,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
   });
 
   const deposits = useMemo(() => {
@@ -36,21 +36,21 @@ export const useDeposits = () => {
   }, [data]);
 
   useEffect(() => {
-    if (!keypair?.pub) return;
+    if (!pubKey) return;
 
     const unsub = subscribeToMore<
       DepositEventSubscription,
       DepositEventSubscriptionVariables
     >({
       document: DepositEventDocument,
-      variables: { partyId: keypair?.pub },
+      variables: { partyId: pubKey },
       updateQuery,
     });
 
     return () => {
       unsub();
     };
-  }, [keypair?.pub, subscribeToMore]);
+  }, [pubKey, subscribeToMore]);
 
   return { data, loading, error, deposits };
 };

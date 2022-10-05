@@ -17,7 +17,7 @@ interface VoteDetailsProps {
 }
 
 export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
-  const { keypair } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const {
     totalTokensPercentage,
     participationMet,
@@ -114,7 +114,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
           {t('governanceRequired')})
         </span>
       </p>
-      {keypair ? (
+      {pubKey ? (
         <>
           <h3 className="text-xl mb-2">{t('yourVote')}</h3>
           <VoteButtonsContainer

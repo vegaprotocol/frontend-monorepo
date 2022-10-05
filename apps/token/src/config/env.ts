@@ -54,9 +54,6 @@ export const ENV = {
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   flags: {
     NETWORK_DOWN: TRUTHY.includes(windowOrDefault('NX_NETWORK_DOWN')),
-    HOSTED_WALLET_ENABLED: TRUTHY.includes(
-      windowOrDefault('NX_HOSTED_WALLET_ENABLED')
-    ),
     MOCK: TRUTHY.includes(windowOrDefault('NX_MOCKED')),
     FAIRGROUND: TRUTHY.includes(windowOrDefault('NX_FAIRGROUND')),
     NETWORK_LIMITS: TRUTHY.includes(windowOrDefault('NX_NETWORK_LIMITS')),

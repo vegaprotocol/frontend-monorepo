@@ -45,7 +45,6 @@ module.exports = defineConfig({
     txTimeout: { timeout: 70000 },
     epochTimeout: { timeout: 6000 },
     blockConfirmations: 3,
-    CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,

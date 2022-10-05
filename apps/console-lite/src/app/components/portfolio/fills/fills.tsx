@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import type { AgGridReact } from 'ag-grid-react';
-import type { TradeWithMarket } from '@vegaprotocol/fills';
+import type { Trade } from '@vegaprotocol/fills';
 import { useFillsList } from '@vegaprotocol/fills';
 import type { BodyScrollEndEvent, BodyScrollEvent } from 'ag-grid-community';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -37,7 +37,7 @@ const FillsManager = () => {
       data={data?.length ? data : null}
       noDataMessage={NO_DATA_MESSAGE}
     >
-      <ConsoleLiteGrid<TradeWithMarket>
+      <ConsoleLiteGrid<Trade>
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}

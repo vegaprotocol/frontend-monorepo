@@ -1,14 +1,14 @@
 import type { UseFormRegister } from 'react-hook-form';
-import type { Order } from '@vegaprotocol/orders';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 
 export interface DealTicketAmountProps {
   orderType: Schema.OrderType;
   market: DealTicketMarketFragment;
-  register: UseFormRegister<Order>;
+  register: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
   quoteName: string;
   price?: string;
 }

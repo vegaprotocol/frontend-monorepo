@@ -1,36 +1,10 @@
-import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type {
-  MarketsCandlesQuery,
-  MarketsCandlesQuery_marketsConnection_edges_node as Market,
-  MarketsCandlesQuery_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
-} from './__generated__/MarketsCandlesQuery';
-
-export const MARKETS_CANDLES_QUERY = gql`
-  query MarketsCandlesQuery($interval: Interval!, $since: String!) {
-    marketsConnection {
-      edges {
-        node {
-          id
-          candlesConnection(interval: $interval, since: $since) {
-            edges {
-              node {
-                high
-                low
-                open
-                close
-                volume
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { MarketsCandlesDocument } from './__generated___/markets-candles';
+import type { MarketsCandlesQuery } from './__generated___/markets-candles';
+import type { Candle } from './market-candles-provider';
 
 export interface MarketCandles {
-  marketId: Market['id'];
+  marketId: string;
   candles: Candle[] | undefined;
 }
 
@@ -48,6 +22,6 @@ export const marketsCandlesProvider = makeDataProvider<
   never,
   never
 >({
-  query: MARKETS_CANDLES_QUERY,
+  query: MarketsCandlesDocument,
   getData,
 });

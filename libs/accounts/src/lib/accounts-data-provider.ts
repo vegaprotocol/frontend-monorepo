@@ -8,15 +8,26 @@ import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
+  AssetsFieldsFragment,
 } from './__generated___/Accounts';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/market-list';
+import { marketsProvider } from '@vegaprotocol/market-list';
+import { assetProvider } from './asset-data-provider';
 
 function isAccount(
   account:
     | AccountFieldsFragment
     | IterableElement<AccountEventsSubscription['accounts']>
 ): account is AccountFieldsFragment {
-  return (account as AccountFieldsFragment).__typename === 'Account';
+  return (
+    (account as AccountFieldsFragment).__typename === 'Account' ||
+    Boolean((account as AccountFieldsFragment).asset?.id)
+  );
 }
 
 export const getId = (
@@ -27,6 +38,11 @@ export const getId = (
   isAccount(account)
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId}`;
+
+export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
+  market?: Market | null;
+  asset: AssetsFieldsFragment;
+};
 
 const update = (
   data: AccountFieldsFragment[],
@@ -39,7 +55,13 @@ const update = (
       if (index !== -1) {
         draft[index].balance = delta.balance;
       } else {
-        // #TODO handle new account
+        draft.unshift({
+          __typename: 'Account',
+          type: delta.type,
+          balance: delta.balance,
+          market: delta.marketId ? { id: delta.marketId } : null,
+          asset: { id: delta.assetId },
+        });
       }
     });
   });
@@ -55,7 +77,7 @@ const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
 
-export const accountsDataProvider = makeDataProvider<
+export const accountsBasedDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
@@ -67,3 +89,107 @@ export const accountsDataProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export interface AccountFields extends Account {
+  available: string;
+  used: string;
+  deposited: string;
+  balance: string;
+  breakdown?: AccountFields[];
+}
+
+const USE_ACCOUNT_TYPES = [
+  AccountType.ACCOUNT_TYPE_MARGIN,
+  AccountType.ACCOUNT_TYPE_BOND,
+  AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+  AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+  AccountType.ACCOUNT_TYPE_FEES_MAKER,
+  AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
+];
+
+const getAssetIds = (data: Account[]) =>
+  Array.from(new Set(data.map((a) => a.asset.id))).sort();
+
+const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
+  accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
+
+export const getAccountData = (data: Account[]): AccountFields[] => {
+  return getAssetIds(data).map((assetId) => {
+    const accounts = data.filter((a) => a.asset.id === assetId);
+    return accounts && getAssetAccountAggregation(accounts, assetId);
+  });
+};
+
+const getAssetAccountAggregation = (
+  accountList: Account[],
+  assetId: string
+): AccountFields => {
+  const accounts = accountList.filter((a) => a.asset.id === assetId);
+  const available = getTotalBalance(
+    accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+  );
+
+  const used = getTotalBalance(
+    accounts.filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+  );
+
+  const balanceAccount: AccountFields = {
+    asset: accounts[0].asset,
+    balance: available.toString(),
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    available: available.toString(),
+    used: used.toString(),
+    deposited: (available + used).toString(),
+  };
+
+  const breakdown = accounts
+    .filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
+    .map((a) => ({
+      ...a,
+      asset: accounts[0].asset,
+      deposited: balanceAccount.deposited,
+      available: balanceAccount.available,
+      used: a.balance,
+    }));
+  return { ...balanceAccount, breakdown };
+};
+
+export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
+  [accountsBasedDataProvider, marketsProvider, assetProvider],
+  ([accounts, markets, assets]): Account[] | null => {
+    return accounts
+      ? accounts
+          .map((account: AccountFieldsFragment) => {
+            const market = markets.find(
+              (market: Market) => market.id === account.market?.id
+            );
+            const asset = assets.find(
+              (asset: AssetsFieldsFragment) => asset.id === account.asset?.id
+            );
+            if (asset) {
+              return {
+                ...account,
+                asset: {
+                  ...asset,
+                },
+                market: market
+                  ? {
+                      ...market,
+                    }
+                  : null,
+              };
+            }
+            return null;
+          })
+          .filter((account: Account | null) => Boolean(account))
+      : null;
+  }
+);
+
+export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
+  AccountFields[],
+  never
+>(
+  [accountsDataProvider],
+  (parts) => parts[0] && getAccountData(parts[0] as Account[])
+);

@@ -29,7 +29,8 @@ const toggleTheme = () => {
 };
 
 export function useThemeSwitcher(): [themeVariant, () => void] {
-  const [theme, setTheme] = useState<themeVariant>(getCurrentTheme());
+  const [theme, setTheme] = useState<themeVariant>(lightTheme);
+  useEffect(() => setTheme(getCurrentTheme()), []);
   useEffect(() => {
     if (theme === darkTheme) {
       document.documentElement.classList.add(darkThemeCssClass);

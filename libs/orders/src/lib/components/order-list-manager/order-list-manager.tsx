@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 
-import { OrderList } from '../';
+import { OrderList } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 
 interface OrderListManagerProps {
@@ -34,7 +34,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <OrderList
         ref={gridRef}
-        rowModelType="infinite"
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}

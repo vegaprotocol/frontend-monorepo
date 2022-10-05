@@ -6,7 +6,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../';
-import type { OrderWithMarketEdge, OrderWithMarket } from '../';
+import type { OrderEdge, Order } from '../';
 
 interface Props {
   partyId: string;
@@ -19,7 +19,7 @@ export const useOrderListData = ({
   gridRef,
   scrolledToTop,
 }: Props) => {
-  const dataRef = useRef<(OrderWithMarketEdge | null)[] | null>(null);
+  const dataRef = useRef<(OrderEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
@@ -40,27 +40,25 @@ export const useOrderListData = ({
   }, [gridRef]);
 
   const update = useCallback(
-    ({
-      data,
-      delta,
-    }: {
-      data: (OrderWithMarketEdge | null)[];
-      delta: OrderWithMarket[];
-    }) => {
+    ({ data, delta }: { data: (OrderEdge | null)[]; delta: Order[] }) => {
       if (!gridRef.current?.api) {
         return false;
       }
-      if (!scrolledToTop.current) {
-        const createdAt = dataRef.current?.[0]?.node.createdAt;
-        if (createdAt) {
-          newRows.current += delta.filter(
-            (trade) => trade.createdAt > createdAt
-          ).length;
+      if (dataRef.current?.length) {
+        if (!scrolledToTop.current) {
+          const createdAt = dataRef.current?.[0]?.node.createdAt;
+          if (createdAt) {
+            newRows.current += delta.filter(
+              (trade) => trade.createdAt > createdAt
+            ).length;
+          }
         }
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
       }
       dataRef.current = data;
-      gridRef.current.api.refreshInfiniteCache();
-      return true;
+      return false;
     },
     [gridRef, scrolledToTop]
   );
@@ -70,7 +68,7 @@ export const useOrderListData = ({
       data,
       totalCount,
     }: {
-      data: (OrderWithMarketEdge | null)[];
+      data: (OrderEdge | null)[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -89,7 +87,7 @@ export const useOrderListData = ({
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = makeInfiniteScrollGetRows<OrderWithMarketEdge>(
+  const getRows = makeInfiniteScrollGetRows<OrderEdge>(
     newRows,
     dataRef,
     totalCountRef,

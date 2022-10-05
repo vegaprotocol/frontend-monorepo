@@ -13,7 +13,7 @@ let mockDataProviderData = {
   error: undefined,
   loading: true,
   load: loadMock,
-  totalCount: 0,
+  totalCount: undefined,
 };
 
 let updateMock: jest.Mock;
@@ -98,7 +98,7 @@ describe('useOrderListData Hook', () => {
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
   });
 
-  it('methods for pagination should works', async () => {
+  it('methods for pagination should work', async () => {
     const successCallback = jest.fn();
     mockData = [
       {
@@ -114,12 +114,10 @@ describe('useOrderListData Hook', () => {
         },
       } as unknown as Orders_party_ordersConnection_edges,
     ];
-    mockDataProviderData = {
-      ...mockDataProviderData,
+    Object.assign(mockDataProviderData, {
       data: mockData,
       loading: false,
-      totalCount: 4,
-    };
+    });
     const mockDelta = [
       {
         node: {
@@ -142,8 +140,6 @@ describe('useOrderListData Hook', () => {
       }
     );
 
-    updateMock({ data: mockNextData, delta: mockDelta });
-
     const getRowsParams = {
       successCallback,
       failCallback: jest.fn(),
@@ -152,12 +148,14 @@ describe('useOrderListData Hook', () => {
     } as unknown as IGetRowsParams;
 
     await waitFor(async () => {
-      await result.current.getRows(getRowsParams);
+      const promise = result.current.getRows(getRowsParams);
+      updateMock({ data: mockNextData, delta: mockDelta });
+      await promise;
     });
     expect(loadMock).toHaveBeenCalled();
     expect(successCallback).toHaveBeenLastCalledWith(
       mockDelta.map((item) => item.node),
-      4
+      -1
     );
   });
 });

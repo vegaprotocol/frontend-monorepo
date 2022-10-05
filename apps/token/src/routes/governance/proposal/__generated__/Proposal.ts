@@ -33,8 +33,8 @@ export interface Proposal_proposal_party {
   id: string;
 }
 
-export interface Proposal_proposal_terms_change_UpdateAsset {
-  __typename: "UpdateAsset" | "NewFreeform";
+export interface Proposal_proposal_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
@@ -133,7 +133,37 @@ export interface Proposal_proposal_terms_change_UpdateNetworkParameter {
   networkParameter: Proposal_proposal_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type Proposal_proposal_terms_change = Proposal_proposal_terms_change_UpdateAsset | Proposal_proposal_terms_change_NewMarket | Proposal_proposal_terms_change_UpdateMarket | Proposal_proposal_terms_change_NewAsset | Proposal_proposal_terms_change_UpdateNetworkParameter;
+export interface Proposal_proposal_terms_change_UpdateAsset_source {
+  __typename: "UpdateERC20";
+  /**
+   * The lifetime limits deposit per address
+   * Note: this is a temporary measure for alpha mainnet
+   */
+  lifetimeLimit: string;
+  /**
+   * The maximum allowed per withdrawal
+   * Note: this is a temporary measure for alpha mainnet
+   */
+  withdrawThreshold: string;
+}
+
+export interface Proposal_proposal_terms_change_UpdateAsset {
+  __typename: "UpdateAsset";
+  /**
+   * The minimum economically meaningful amount of this specific asset
+   */
+  quantum: string;
+  /**
+   * The asset to update
+   */
+  assetId: string;
+  /**
+   * The source of the updated asset
+   */
+  source: Proposal_proposal_terms_change_UpdateAsset_source;
+}
+
+export type Proposal_proposal_terms_change = Proposal_proposal_terms_change_NewFreeform | Proposal_proposal_terms_change_NewMarket | Proposal_proposal_terms_change_UpdateMarket | Proposal_proposal_terms_change_NewAsset | Proposal_proposal_terms_change_UpdateNetworkParameter | Proposal_proposal_terms_change_UpdateAsset;
 
 export interface Proposal_proposal_terms {
   __typename: "ProposalTerms";

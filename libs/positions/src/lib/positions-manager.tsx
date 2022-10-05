@@ -17,10 +17,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     [submit]
   );
 
-  const { data, error, loading, assetSymbols } = usePositionsAssets({
-    partyId,
-  });
-
+  const { data, error, loading, assetSymbols } = usePositionsAssets(partyId);
   return (
     <>
       <AsyncRenderer loading={loading} error={error} data={data}>
@@ -33,8 +30,9 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           />
         ))}
       </AsyncRenderer>
+
       <Dialog>
-        <p>Your position was not closed! This is still not implemented. </p>
+        <p>Your position was not closed! This is still not implemented.</p>
       </Dialog>
     </>
   );

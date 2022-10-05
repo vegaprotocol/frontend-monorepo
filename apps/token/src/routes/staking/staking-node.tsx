@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
@@ -16,25 +15,21 @@ import { YourStake } from './your-stake';
 export const StakingNodeContainer = () => {
   return (
     <StakingWalletsContainer>
-      {({ currVegaKey }) =>
-        currVegaKey ? (
-          <StakingNodesContainer>
-            {({ data }) => <StakingNode vegaKey={currVegaKey} data={data} />}
-          </StakingNodesContainer>
-        ) : (
-          <ConnectToVega />
-        )
-      }
+      {({ pubKey }) => (
+        <StakingNodesContainer>
+          {({ data }) => <StakingNode pubKey={pubKey} data={data} />}
+        </StakingNodesContainer>
+      )}
     </StakingWalletsContainer>
   );
 };
 
 interface StakingNodeProps {
-  vegaKey: VegaKeyExtended;
+  pubKey: string;
   data?: StakingQueryResult;
 }
 
-export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
+export const StakingNode = ({ pubKey: vegaKey, data }: StakingNodeProps) => {
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
 
@@ -88,14 +83,14 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span className={'text-vega-red'}>
+      <span data-testid="staking-node-not-found" className={'text-vega-red'}>
         {t('stakingNodeNotFound', { node })}
       </span>
     );
   }
 
   return (
-    <>
+    <div data-testid="staking-node">
       <h2 data-test-id="validator-node-title" className="text-2xl break-word">
         {nodeInfo.name
           ? t('validatorTitle', { nodeName: nodeInfo.name })
@@ -117,22 +112,32 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
           />
         </section>
       )}
-      <section className="mb-4">
-        <YourStake
-          stakeNextEpoch={stakeNextEpoch}
-          stakeThisEpoch={stakeThisEpoch}
-        />
-      </section>
-      <section>
-        <StakingForm
-          pubkey={vegaKey.pub}
-          nodeId={nodeInfo.id}
-          nodeName={nodeInfo.name}
-          availableStakeToAdd={unstaked}
-          availableStakeToRemove={stakeNextEpoch}
-        />
-      </section>
-    </>
+      {vegaKey ? (
+        <>
+          <section className="mb-4">
+            <YourStake
+              stakeNextEpoch={stakeNextEpoch}
+              stakeThisEpoch={stakeThisEpoch}
+            />
+          </section>
+
+          <section>
+            <StakingForm
+              pubKey={vegaKey}
+              nodeId={nodeInfo.id}
+              nodeName={nodeInfo.name}
+              availableStakeToAdd={unstaked}
+              availableStakeToRemove={stakeNextEpoch}
+            />
+          </section>
+        </>
+      ) : (
+        <>
+          <h2>{t('Connect to see your stake')}</h2>
+          <ConnectToVega />
+        </>
+      )}
+    </div>
   );
 };
 

@@ -75,6 +75,13 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
         close: null,
         __typename: 'MarketTimestamps',
       },
+      depth: {
+        __typename: 'MarketDepth',
+        lastTrade: {
+          __typename: 'Trade',
+          price: '88470230',
+        },
+      },
       candlesConnection: {
         __typename: 'CandleDataConnection',
         edges: [
