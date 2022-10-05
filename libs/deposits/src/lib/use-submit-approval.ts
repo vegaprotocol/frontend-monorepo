@@ -1,4 +1,5 @@
-import { isAssetTypeERC20, removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import * as Sentry from '@sentry/react';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import {

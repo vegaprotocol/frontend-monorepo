@@ -1,32 +1,12 @@
-import { gql, useQuery } from '@apollo/client';
+import { useMemo } from 'react';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { getEnabledAssets, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
+import { enabledAssetsProvider } from '@vegaprotocol/assets';
+import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
-import type { DepositAssets } from './__generated__/DepositAssets';
-
-const DEPOSITS_QUERY = gql`
-  query DepositAssets {
-    assetsConnection {
-      edges {
-        node {
-          id
-          name
-          symbol
-          decimals
-          status
-          source {
-            ... on ERC20 {
-              contractAddress
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 
 /**
  *  Fetches data required for the Deposit page
@@ -34,20 +14,19 @@ const DEPOSITS_QUERY = gql`
 export const DepositContainer = () => {
   const { VEGA_ENV } = useEnvironment();
   const { pubKey } = useVegaWallet();
-
-  const { data, loading, error } = useQuery<DepositAssets>(DEPOSITS_QUERY, {
-    variables: { partyId: pubKey },
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
+  const { data, loading, error } = useDataProvider({
+    dataProvider: enabledAssetsProvider,
+    variables,
     skip: !pubKey,
   });
 
-  const assets = getEnabledAssets(data);
-
   return (
-    <AsyncRenderer<DepositAssets> data={data} loading={loading} error={error}>
-      {assets.length ? (
+    <AsyncRenderer data={data} loading={loading} error={error}>
+      {data && data.length ? (
         <Web3Container>
           <DepositManager
-            assets={assets}
+            assets={data}
             isFaucetable={VEGA_ENV !== Networks.MAINNET}
           />
         </Web3Container>

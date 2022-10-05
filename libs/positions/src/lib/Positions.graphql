@@ -4,38 +4,8 @@ fragment PositionFields on Position {
   unrealisedPNL
   averageEntryPrice
   updatedAt
-  marginsConnection {
-    edges {
-      node {
-        market {
-          id
-        }
-        maintenanceLevel
-        searchLevel
-        initialLevel
-        collateralReleaseLevel
-        asset {
-          symbol
-        }
-      }
-    }
-  }
   market {
     id
-    decimalPlaces
-    positionDecimalPlaces
-    tradingMode
-    tradableInstrument {
-      instrument {
-        name
-      }
-    }
-    data {
-      markPrice
-      market {
-        id
-      }
-    }
   }
 }
 
@@ -60,5 +30,44 @@ subscription PositionsSubscription($partyId: ID!) {
     averageEntryPrice
     updatedAt
     marketId
+  }
+}
+
+fragment MarginFields on MarginLevels {
+  maintenanceLevel
+  searchLevel
+  initialLevel
+  collateralReleaseLevel
+  asset {
+    id
+  }
+  market {
+    id
+  }
+}
+
+query Margins($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    marginsConnection {
+      edges {
+        node {
+          ...MarginFields
+        }
+      }
+    }
+  }
+}
+
+subscription MarginsSubscription($partyId: ID!) {
+  margins(partyId: $partyId) {
+    marketId
+    asset
+    partyId
+    maintenanceLevel
+    searchLevel
+    initialLevel
+    collateralReleaseLevel
+    timestamp
   }
 }

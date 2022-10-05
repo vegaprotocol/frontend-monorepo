@@ -26,22 +26,3 @@ subscription AccountEvents($partyId: ID!) {
     marketId
   }
 }
-
-fragment AssetsFields on Asset {
-  id
-  name
-  symbol
-  decimals
-  quantum
-  status
-}
-
-query Assets {
-  assetsConnection {
-    edges {
-      node {
-        ...AssetsFields
-      }
-    }
-  }
-}
