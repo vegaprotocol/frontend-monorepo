@@ -5,112 +5,121 @@ import {
 import BigNumber from 'bignumber.js';
 import produce from 'immer';
 import { AccountType } from '@vegaprotocol/types';
-import type { IterableElement } from 'type-fest';
-import type {
-  LiquidityProviderFeeShareFieldsFragment,
-  LiquidityProvisionFieldsFragment,
-  LiquidityProvisionsSubscription,
-  MarketLiquidityQuery,
+import { LiquidityProviderFeeShareUpdateDocument } from './__generated___/MarketLiquidity';
+import {
+  LiquidityProviderFeeShareDocument,
+  MarketLpDocument,
 } from './__generated___/MarketLiquidity';
+import type {
+  MarketLpQuery,
+  LiquidityProviderFeeShareFieldsFragment,
+  LiquidityProviderFeeShareQuery,
+  LiquidityProviderFeeShareUpdateSubscription,
+  LiquidityProvisionFieldsFragment,
+  LiquidityProvisionsQuery,
+  LiquidityProvisionsUpdateSubscription,
+} from './__generated___/MarketLiquidity';
+import { LiquidityProvisionsUpdateDocument } from './__generated___/MarketLiquidity';
 import { LiquidityProvisionsDocument } from './__generated___/MarketLiquidity';
-import { MarketLiquidityDocument } from './__generated___/MarketLiquidity';
-
-export function isLpFragment(
-  lp:
-    | LiquidityProvisionFieldsFragment
-    | IterableElement<LiquidityProvisionsSubscription['liquidityProvisions']>
-): lp is LiquidityProvisionFieldsFragment {
-  return (lp as LiquidityProvisionFieldsFragment).party !== undefined;
-}
-
-export const getId = (
-  lp:
-    | LiquidityProvisionFieldsFragment
-    | IterableElement<LiquidityProvisionsSubscription['liquidityProvisions']>
-) => (isLpFragment(lp) ? lp.party.id : lp.partyID);
-
-export const update = (
-  data: LiquidityProvisionFieldsFragment[],
-  deltas: LiquidityProvisionsSubscription['liquidityProvisions']
-) => {
-  return produce(data, (draft) => {
-    deltas?.forEach((delta) => {
-      const id = getId(delta);
-      const index = draft.findIndex((a) => getId(a) === id);
-      if (index !== -1) {
-        draft[index].commitmentAmount = delta.commitmentAmount;
-        draft[index].fee = delta.fee;
-        draft[index].updatedAt = delta.updatedAt;
-        draft[index].status = delta.status;
-      } else {
-        draft.unshift({
-          commitmentAmount: delta.commitmentAmount,
-          fee: delta.fee,
-          status: delta.status,
-          updatedAt: delta.updatedAt,
-          createdAt: delta.createdAt,
-          party: {
-            id: delta.partyID,
-          },
-          // TODO add accounts connection to the subscription
-        });
-      }
-    });
-  });
-};
-
-const getData = (responseData: MarketLiquidityQuery) => {
-  return (
-    responseData.market?.liquidityProvisionsConnection?.edges?.map(
-      (e) => e?.node
-    ) ?? []
-  ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
-};
-
-const getDelta = (
-  subscriptionData: LiquidityProvisionsSubscription
-): LiquidityProvisionsSubscription['liquidityProvisions'] =>
-  subscriptionData.liquidityProvisions;
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
-  MarketLiquidityQuery,
+  LiquidityProvisionsQuery,
   LiquidityProvisionFieldsFragment[],
-  LiquidityProvisionsSubscription,
-  LiquidityProvisionsSubscription['liquidityProvisions']
+  LiquidityProvisionsUpdateSubscription,
+  LiquidityProvisionsUpdateSubscription['liquidityProvisions']
 >({
-  query: MarketLiquidityDocument,
-  subscriptionQuery: LiquidityProvisionsDocument,
-  update,
-  getData,
-  getDelta,
+  query: LiquidityProvisionsDocument,
+  subscriptionQuery: LiquidityProvisionsUpdateDocument,
+  update: (
+    data: LiquidityProvisionFieldsFragment[],
+    deltas: LiquidityProvisionsUpdateSubscription['liquidityProvisions']
+  ) => {
+    return produce(data, (draft) => {
+      deltas?.forEach((delta) => {
+        const id = delta.partyID;
+        const index = draft.findIndex((a) => a.party.id === id);
+        if (index !== -1) {
+          draft[index].commitmentAmount = delta.commitmentAmount;
+          draft[index].fee = delta.fee;
+          draft[index].updatedAt = delta.updatedAt;
+          draft[index].status = delta.status;
+        } else {
+          draft.unshift({
+            commitmentAmount: delta.commitmentAmount,
+            fee: delta.fee,
+            status: delta.status,
+            updatedAt: delta.updatedAt,
+            createdAt: delta.createdAt,
+            party: {
+              id: delta.partyID,
+            },
+            // TODO add accounts connection to the subscription
+          });
+        }
+      });
+    });
+  },
+  getData: (responseData: LiquidityProvisionsQuery) => {
+    return (
+      responseData.market?.liquidityProvisionsConnection?.edges?.map(
+        (e) => e?.node
+      ) ?? []
+    ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
+  },
+  getDelta: (
+    subscriptionData: LiquidityProvisionsUpdateSubscription
+  ): LiquidityProvisionsUpdateSubscription['liquidityProvisions'] =>
+    subscriptionData.liquidityProvisions,
 });
 
 export const marketLiquidityDataProvider = makeDataProvider<
-  MarketLiquidityQuery,
-  MarketLiquidityQuery,
+  MarketLpQuery,
+  MarketLpQuery,
   never,
   never
 >({
-  query: MarketLiquidityDocument,
-  getData: (responseData: MarketLiquidityQuery) => responseData,
+  query: MarketLpDocument,
+  getData: (responseData: MarketLpQuery) => responseData,
 });
 
 export const liquidityFeeShareDataProvider = makeDataProvider<
-  MarketLiquidityQuery,
+  LiquidityProviderFeeShareQuery,
   LiquidityProviderFeeShareFieldsFragment[],
-  never,
-  never
+  LiquidityProviderFeeShareUpdateSubscription,
+  LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
 >({
-  query: MarketLiquidityDocument,
-  getData: (data) => {
-    return data.market?.data?.liquidityProviderFeeShare || [];
+  query: LiquidityProviderFeeShareDocument,
+  subscriptionQuery: LiquidityProviderFeeShareUpdateDocument,
+  update: (
+    data: LiquidityProviderFeeShareFieldsFragment[],
+    deltas: LiquidityProviderFeeShareUpdateSubscription['marketsData'][0]['liquidityProviderFeeShare']
+  ) => {
+    return produce(data, (draft) => {
+      deltas?.forEach((delta) => {
+        const id = delta.partyId;
+        const index = draft.findIndex((a) => a.party.id === id);
+        if (index !== -1) {
+          draft[index].equityLikeShare = delta.equityLikeShare;
+          draft[index].averageEntryValuation = delta.averageEntryValuation;
+        } else {
+          draft.unshift({
+            equityLikeShare: delta.equityLikeShare,
+            averageEntryValuation: delta.averageEntryValuation,
+            party: {
+              id: delta.partyId,
+            },
+            // TODO add accounts connection to the subscription
+          });
+        }
+      });
+    });
   },
+  getData: (data) => data.market?.data?.liquidityProviderFeeShare || [],
+  getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) =>
+    subscriptionData.marketsData[0].liquidityProviderFeeShare,
 });
 
-export const lpAggregatedDataProvider = makeDerivedDataProvider<
-  LiquidityProvisionFieldsFragment[],
-  never
->(
+export const lpAggregatedDataProvider = makeDerivedDataProvider(
   [
     liquidityProvisionsDataProvider,
     marketLiquidityDataProvider,
@@ -127,9 +136,9 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider<
 
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
-  marketLiquidity: MarketLiquidityQuery,
+  marketLiquidity: MarketLpQuery,
   liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
-) => {
+): LiquidityProvisionData[] => {
   // liquidityProvisions and liquidityFeeShare are two arrays that need to be merged based on the party id
   // liquidityProvisions comes from a subscription or a query
   // liquidityFeeShare comes from a query
@@ -137,12 +146,10 @@ export const getLiquidityProvision = (
     const market = marketLiquidity?.market;
     const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
     if (!feeShare) return lp;
-    return {
+    const lpData: LiquidityProvisionData = {
       ...lp,
-      tradableInstrument: market?.tradableInstrument,
       averageEntryValuation: feeShare?.averageEntryValuation,
       equityLikeShare: feeShare?.equityLikeShare,
-      pubKey: lp.party.id,
       assetDecimalPlaces:
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
       balance:
@@ -154,5 +161,14 @@ export const getLiquidityProvision = (
           )
           .toString() ?? '0',
     };
+    return lpData;
   });
 };
+
+export interface LiquidityProvisionData
+  extends LiquidityProvisionFieldsFragment {
+  assetDecimalPlaces?: number;
+  balance?: string;
+  averageEntryValuation?: string;
+  equityLikeShare?: string;
+}

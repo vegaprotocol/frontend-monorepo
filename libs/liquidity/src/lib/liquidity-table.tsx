@@ -15,7 +15,7 @@ import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
 import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
-import type { LiquidityProvisionFieldsFragment } from './__generated___/MarketLiquidity';
+import type { LiquidityProvisionData } from './liquidity-data-provider';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -30,7 +30,7 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
 };
 
 export interface LiquidityTableProps {
-  data?: LiquidityProvisionFieldsFragment[];
+  data?: LiquidityProvisionData[];
   symbol?: string;
   assetDecimalPlaces?: number;
   stakeToCcySiskas: string;
