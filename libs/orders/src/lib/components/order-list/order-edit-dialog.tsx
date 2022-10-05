@@ -26,7 +26,7 @@ interface OrderEditDialogProps {
 }
 
 interface FormFields {
-  entryPrice: string;
+  limitPrice: string;
 }
 
 export const OrderEditDialog = ({
@@ -92,21 +92,21 @@ export const OrderEditDialog = ({
         data-testid="edit-order"
         className="w-1/2 mt-4"
       >
-        <FormGroup label={t('Entry price')} labelFor="entryPrice">
+        <FormGroup label={t('Price')} labelFor="limitPrice">
           <Input
             type="number"
             step={step}
-            {...register('entryPrice', {
+            {...register('limitPrice', {
               required: t('You need to provide a price'),
               validate: {
                 min: (value) =>
                   Number(value) > 0 ? true : t('The price cannot be negative'),
               },
             })}
-            id="entryPrice"
+            id="limitPrice"
           />
-          {errors.entryPrice?.message && (
-            <InputError intent="danger">{errors.entryPrice.message}</InputError>
+          {errors.limitPrice?.message && (
+            <InputError intent="danger">{errors.limitPrice.message}</InputError>
           )}
         </FormGroup>
         <Button variant="primary" size="md" type="submit">

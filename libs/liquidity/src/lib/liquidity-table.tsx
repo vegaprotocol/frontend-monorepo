@@ -11,11 +11,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import type { LiquidityProvision } from './liquidity-data-provider';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
+import type { LiquidityProvisionFieldsFragment } from './__generated___/MarketLiquidity';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -30,17 +30,19 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
 };
 
 export interface LiquidityTableProps {
-  data: LiquidityProvision[];
+  data?: LiquidityProvisionFieldsFragment[];
   symbol?: string;
   assetDecimalPlaces?: number;
+  stakeToCcySiskas: BigNumber;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces }, ref) => {
+  ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
+    if (!data) return null;
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -60,7 +62,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       >
         <AgGridColumn
           headerName={t('Party')}
-          field="party"
+          field="party.id"
           headerTooltip={t(
             'The public key of the party making this commitment.'
           )}
@@ -124,7 +126,11 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerName={t('Status')}
           headerTooltip={t('The current status of this liquidity provision.')}
           field="status"
-          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+          valueFormatter={({
+            value,
+          }: {
+            value: Schema.LiquidityProvisionStatus;
+          }) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

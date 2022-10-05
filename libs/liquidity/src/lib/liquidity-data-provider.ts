@@ -1,175 +1,148 @@
-import { gql, useQuery } from '@apollo/client';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { AccountType } from '@vegaprotocol/types';
-import { useNetworkParam, NetworkParams } from '@vegaprotocol/react-helpers';
-import BigNumber from 'bignumber.js';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
+import produce from 'immer';
+import type { IterableElement } from 'type-fest';
 import type {
-  MarketLiquidity,
-  MarketLiquidity_market_data_liquidityProviderFeeShare,
-} from './__generated__';
+  LiquidityProviderFeeShareFieldsFragment,
+  LiquidityProvisionFieldsFragment,
+  LiquidityProvisionsSubscription,
+  MarketLiquidityQuery,
+} from './__generated___/MarketLiquidity';
+import { LiquidityProvisionsDocument } from './__generated___/MarketLiquidity';
+import { MarketLiquidityDocument } from './__generated___/MarketLiquidity';
 
-const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      decimalPlaces
-      positionDecimalPlaces
-      liquidityProvisionsConnection {
-        edges {
-          node {
-            id
-            party {
-              id
-              accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-                edges {
-                  node {
-                    type
-                    balance
-                  }
-                }
-              }
-            }
-            createdAt
-            updatedAt
-            commitmentAmount
-            fee
-            status
-          }
-        }
-      }
-      tradableInstrument {
-        instrument {
-          code
-          name
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
-        }
-      }
-      data {
-        market {
-          id
-        }
-        suppliedStake
-        openInterest
-        targetStake
-        marketValueProxy
-        liquidityProviderFeeShare {
-          party {
-            id
-          }
-          equityLikeShare
-          averageEntryValuation
-        }
-      }
-    }
-  }
-`;
-
-export interface LiquidityProvision {
-  party: string;
-  commitmentAmount: string | undefined;
-  fee: string | undefined;
-  equityLikeShare: string;
-  averageEntryValuation: string;
-  obligation: string | null;
-  supplied: string | null;
-  status?: LiquidityProvisionStatus;
-  createdAt: string | undefined;
-  updatedAt: string | null | undefined;
+export function isLpFragment(
+  lp:
+    | LiquidityProvisionFieldsFragment
+    | IterableElement<LiquidityProvisionsSubscription['liquidityProvisions']>
+): lp is LiquidityProvisionFieldsFragment {
+  return (lp as LiquidityProvisionFieldsFragment).party !== undefined;
 }
 
-export interface LiquidityData {
-  liquidityProviders: LiquidityProvision[];
-  suppliedStake?: string | null;
-  targetStake?: string | null;
-  code?: string;
-  symbol?: string;
-  decimalPlaces?: number;
-  positionDecimalPlaces?: number;
-  assetDecimalPlaces?: number;
-  name?: string;
-}
+export const getId = (
+  lp:
+    | LiquidityProvisionFieldsFragment
+    | IterableElement<LiquidityProvisionsSubscription['liquidityProvisions']>
+) => (isLpFragment(lp) ? lp.party.id : lp.partyID);
 
-export const useLiquidityProvision = ({
-  marketId,
-  partyId,
-}: {
-  partyId?: string;
-  marketId?: string;
-}) => {
-  const { param: stakeToCcySiskas } = useNetworkParam(
-    NetworkParams.market_liquidity_stakeToCcySiskas
-  );
-  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
-  const { data, loading, error } = useQuery<MarketLiquidity>(
-    MARKET_LIQUIDITY_QUERY,
-    {
-      variables: { marketId },
-    }
-  );
-  const liquidityProviders = (
-    data?.market?.data?.liquidityProviderFeeShare || []
-  )
-    ?.filter(
-      (p: MarketLiquidity_market_data_liquidityProviderFeeShare) =>
-        !partyId || p.party.id === partyId
-    ) // if partyId is provided, filter out other parties
-    .map((provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
-      const liquidityProvisionConnection =
-        data?.market?.liquidityProvisionsConnection?.edges?.find(
-          (e) => e?.node.party.id === provider.party.id
-        );
-      const balance =
-        liquidityProvisionConnection?.node?.party.accountsConnection?.edges?.reduce(
-          (acc, e) => {
-            return e?.node.type === AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
-              ? acc.plus(new BigNumber(e?.node.balance ?? 0))
-              : acc;
+export const update = (
+  data: LiquidityProvisionFieldsFragment[],
+  deltas: LiquidityProvisionsSubscription['liquidityProvisions']
+) => {
+  return produce(data, (draft) => {
+    deltas?.forEach((delta) => {
+      const id = getId(delta);
+      const index = draft.findIndex((a) => getId(a) === id);
+      if (index !== -1) {
+        draft[index].commitmentAmount = delta.commitmentAmount;
+        draft[index].fee = delta.fee;
+        draft[index].updatedAt = delta.updatedAt;
+        draft[index].status = delta.status;
+      } else {
+        draft.unshift({
+          commitmentAmount: delta.commitmentAmount,
+          fee: delta.fee,
+          status: delta.status,
+          updatedAt: delta.updatedAt,
+          createdAt: delta.createdAt,
+          party: {
+            id: delta.partyID,
           },
-          new BigNumber(0)
-        );
-      const obligation =
-        stakeToCcySiska &&
-        new BigNumber(stakeToCcySiska)
-          .times(liquidityProvisionConnection?.node?.commitmentAmount ?? 1)
-          .toString();
-      const supplied =
-        stakeToCcySiska &&
-        new BigNumber(stakeToCcySiska).times(balance ?? 1).toString();
-      return {
-        party: provider.party.id,
-        createdAt: liquidityProvisionConnection?.node?.createdAt,
-        updatedAt: liquidityProvisionConnection?.node?.updatedAt,
-        commitmentAmount: liquidityProvisionConnection?.node?.commitmentAmount,
-        fee: liquidityProvisionConnection?.node?.fee,
-        status: liquidityProvisionConnection?.node?.status,
-        equityLikeShare: provider.equityLikeShare,
-        averageEntryValuation: provider.averageEntryValuation,
-        obligation,
-        supplied,
-      };
+          // TODO add accounts connection to the subscription
+        });
+      }
     });
-  const liquidityData: LiquidityData = {
-    liquidityProviders,
-    suppliedStake: data?.market?.data?.suppliedStake,
-    targetStake: data?.market?.data?.targetStake,
-    decimalPlaces: data?.market?.decimalPlaces,
-    positionDecimalPlaces: data?.market?.positionDecimalPlaces,
-    code: data?.market?.tradableInstrument.instrument.code,
-    name: data?.market?.tradableInstrument.instrument.name,
-    assetDecimalPlaces:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset
-        .decimals,
-    symbol:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset
-        .symbol,
-  };
-  return { data: liquidityData, loading, error };
+  });
+};
+
+const getData = (responseData: MarketLiquidityQuery) => {
+  return (
+    responseData.market?.liquidityProvisionsConnection?.edges?.map(
+      (e) => e?.node
+    ) ?? []
+  ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
+};
+
+const getDelta = (
+  subscriptionData: LiquidityProvisionsSubscription
+): LiquidityProvisionsSubscription['liquidityProvisions'] =>
+  subscriptionData.liquidityProvisions;
+
+export const liquidityProvisionsDataProvider = makeDataProvider<
+  MarketLiquidityQuery,
+  LiquidityProvisionFieldsFragment[],
+  LiquidityProvisionsSubscription,
+  LiquidityProvisionsSubscription['liquidityProvisions']
+>({
+  query: MarketLiquidityDocument,
+  subscriptionQuery: LiquidityProvisionsDocument,
+  update,
+  getData,
+  getDelta,
+});
+
+export const marketLiquidityDataProvider = makeDataProvider<
+  MarketLiquidityQuery,
+  MarketLiquidityQuery,
+  never,
+  never
+>({
+  query: MarketLiquidityDocument,
+  getData: (responseData: MarketLiquidityQuery) => responseData,
+});
+
+export const liquidityFeeShareDataProvider = makeDataProvider<
+  MarketLiquidityQuery,
+  LiquidityProviderFeeShareFieldsFragment[],
+  never,
+  never
+>({
+  query: MarketLiquidityDocument,
+  getData: (data) => {
+    return data.market?.data?.liquidityProviderFeeShare || [];
+  },
+});
+
+export const lpAggregatedDataProvider = makeDerivedDataProvider<
+  LiquidityProvisionFieldsFragment[],
+  never
+>(
+  [
+    liquidityProvisionsDataProvider,
+    marketLiquidityDataProvider,
+    liquidityFeeShareDataProvider,
+  ],
+  ([liquidityProvisions, marketLiquidity, liquidityFeeShare]) => {
+    return getLiquidityProvision(
+      liquidityProvisions,
+      marketLiquidity,
+      liquidityFeeShare
+    );
+  }
+);
+
+export const getLiquidityProvision = (
+  liquidityProvisions: LiquidityProvisionFieldsFragment[],
+  marketLiquidity: MarketLiquidityQuery,
+  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
+) => {
+  // liquidityProvisions and liquidityFeeShare are two arrays that need to be merged based on the party id
+  // liquidityProvisions comes from a subscription or a query
+  // liquidityFeeShare comes from a query
+  return liquidityProvisions.map((lp) => {
+    const market = marketLiquidity?.market;
+    const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
+    if (!feeShare) return lp;
+    return {
+      ...lp,
+      tradableInstrument: market?.tradableInstrument,
+      averageEntryValuation: feeShare?.averageEntryValuation,
+      equityLikeShare: feeShare?.equityLikeShare,
+      pubKey: lp.party.id,
+      assetDecimalPlaces:
+        market?.tradableInstrument.instrument.product.settlementAsset.decimals,
+    };
+  });
 };
