@@ -1,13 +1,13 @@
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
-import type { Asset } from '@vegaprotocol/react-helpers';
-import type { Account } from './types';
+import type { Asset } from '@vegaprotocol/assets';
+import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useWithdrawAsset } from './use-withdraw-asset';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
-  accounts: Account[];
+  accounts: AccountFieldsFragment[];
   submit: (args: WithdrawalArgs) => void;
   assetId?: string;
 }

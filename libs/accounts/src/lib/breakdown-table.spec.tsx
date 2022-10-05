@@ -32,16 +32,11 @@ const singleRow = {
 const singleRowData = [singleRow];
 
 describe('BreakdownTable', () => {
-  it('should render successfully', async () => {
-    const { baseElement } = render(<BreakdownTable data={[]} />);
-    expect(baseElement).toBeTruthy();
-  });
-
   it('should render correct columns', async () => {
     await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
     });
-    const headers = await screen.getAllByRole('columnheader');
+    const headers = await screen.findAllByRole('columnheader');
     expect(headers).toHaveLength(5);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
@@ -52,7 +47,7 @@ describe('BreakdownTable', () => {
     await act(async () => {
       render(<BreakdownTable data={singleRowData} />);
     });
-    const cells = await screen.getAllByRole('gridcell');
+    const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
       'Margin',
       'BTCUSD Monthly (30 Jun 2022)',

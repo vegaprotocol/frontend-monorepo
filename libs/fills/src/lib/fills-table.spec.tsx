@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
@@ -47,11 +47,12 @@ describe('FillsTable', () => {
   });
 
   it('correct columns are rendered', async () => {
-    render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
+    await act(async () => {
+      render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
+    });
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
-    await screen.findByText('Market');
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
       'Market',
@@ -138,7 +139,6 @@ describe('FillsTable', () => {
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
     expect(amountCell).toHaveClass('text-vega-red-dark');
-    screen.debug();
   });
 
   it('should render correct maker or taker role', async () => {

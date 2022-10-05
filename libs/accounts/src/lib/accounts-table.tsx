@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type {
   ValueProps,
@@ -151,43 +151,34 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }}
           />
           <AgGridColumn
+            colId="transact"
             headerName=""
-            field="deposit"
-            maxWidth={200}
-            cellRenderer={({
-              value,
-              data,
-            }: VegaICellRendererParams<AccountFields, 'asset'>) => {
-              return (
-                <Button
-                  size="xs"
-                  data-testid="deposit"
-                  onClick={() => {
-                    onClickDeposit && onClickDeposit(data.asset.id);
-                  }}
-                >
-                  {t('Deposit')}
-                </Button>
-              );
-            }}
-          />
-          <AgGridColumn
-            headerName=""
-            field="withdraw"
-            maxWidth={200}
+            sortable={false}
             cellRenderer={({
               data,
-            }: VegaICellRendererParams<AccountFields, 'asset'>) => {
+            }: VegaICellRendererParams<AccountFields>) => {
               return (
-                <Button
-                  size="xs"
-                  data-testid="withdraw"
-                  onClick={() =>
-                    onClickWithdraw && onClickWithdraw(data.asset.id)
-                  }
-                >
-                  {t('Withdraw')}
-                </Button>
+                <div className="flex gap-2 justify-end">
+                  <Button
+                    size="xs"
+                    data-testid="deposit"
+                    onClick={() => {
+                      onClickDeposit && onClickDeposit(data.asset.id);
+                    }}
+                  >
+                    {t('Deposit')}
+                  </Button>
+
+                  <Button
+                    size="xs"
+                    data-testid="withdraw"
+                    onClick={() =>
+                      onClickWithdraw && onClickWithdraw(data.asset.id)
+                    }
+                  >
+                    {t('Withdraw')}
+                  </Button>
+                </div>
               );
             }}
           />

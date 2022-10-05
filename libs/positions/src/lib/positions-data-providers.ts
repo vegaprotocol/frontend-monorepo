@@ -1,37 +1,31 @@
-import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import type {
-  Positions,
-  Positions_party,
-  Positions_party_positionsConnection_edges,
-} from './__generated__/Positions';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-
-import type {
-  PositionsSubscription,
-  PositionsSubscription_positions,
-} from './__generated__/PositionsSubscription';
-
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
-import { marginsDataProvider } from './margin-data-provider';
 import type {
-  Margins_party,
-  Margins_party_marginsConnection_edges_node,
-} from './__generated__/Margins';
+  PositionsQuery,
+  PositionsSubscriptionSubscription,
+  MarginsQuery,
+  MarginFieldsFragment,
+} from './__generated___/Positions';
+import {
+  PositionsDocument,
+  PositionsSubscriptionDocument,
+} from './__generated___/Positions';
+import { marginsDataProvider } from './margin-data-provider';
 
 type PositionMarginLevel = Pick<
-  Margins_party_marginsConnection_edges_node,
+  MarginFieldsFragment,
   'maintenanceLevel' | 'searchLevel' | 'initialLevel'
 >;
 
@@ -40,7 +34,7 @@ interface PositionRejoined {
   openVolume: string;
   unrealisedPNL: string;
   averageEntryPrice: string;
-  updatedAt: string | null;
+  updatedAt?: string | null;
   market: MarketWithData | null;
   margins: PositionMarginLevel | null;
 }
@@ -69,51 +63,9 @@ export interface Position {
 }
 
 export interface Data {
-  party: Positions_party | null;
+  party: PositionsQuery['party'] | null;
   positions: Position[] | null;
 }
-
-const POSITION_FIELDS = gql`
-  fragment PositionFields on Position {
-    realisedPNL
-    openVolume
-    unrealisedPNL
-    averageEntryPrice
-    updatedAt
-    market {
-      id
-    }
-  }
-`;
-
-export const POSITIONS_QUERY = gql`
-  ${POSITION_FIELDS}
-  query Positions($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      positionsConnection {
-        edges {
-          node {
-            ...PositionFields
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const POSITIONS_SUBSCRIPTION = gql`
-  subscription PositionsSubscription($partyId: ID!) {
-    positions(partyId: $partyId) {
-      realisedPNL
-      openVolume
-      unrealisedPNL
-      averageEntryPrice
-      updatedAt
-      marketId
-    }
-  }
-`;
 
 export const getMetrics = (
   data: PositionRejoined[] | null,
@@ -221,19 +173,19 @@ export const getMetrics = (
       searchPrice: searchPrice
         .multipliedBy(10 ** marketDecimalPlaces)
         .toFixed(0),
-      updatedAt: position.updatedAt,
+      updatedAt: position.updatedAt || null,
     });
   });
   return metrics;
 };
 
 export const update = (
-  data: Positions_party,
-  deltas: PositionsSubscription_positions[]
+  data: PositionsQuery['party'],
+  deltas: PositionsSubscriptionSubscription['positions']
 ) => {
   return produce(data, (draft) => {
     deltas.forEach((delta) => {
-      if (!draft.positionsConnection?.edges || !delta) {
+      if (!draft?.positionsConnection?.edges || !delta) {
         return;
       }
       const index = draft.positionsConnection.edges.findIndex(
@@ -267,22 +219,22 @@ export const update = (
 };
 
 export const positionsDataProvider = makeDataProvider<
-  Positions,
-  Positions_party,
-  PositionsSubscription,
-  PositionsSubscription_positions[]
+  PositionsQuery,
+  PositionsQuery['party'],
+  PositionsSubscriptionSubscription,
+  PositionsSubscriptionSubscription['positions']
 >({
-  query: POSITIONS_QUERY,
-  subscriptionQuery: POSITIONS_SUBSCRIPTION,
+  query: PositionsDocument,
+  subscriptionQuery: PositionsSubscriptionDocument,
   update,
-  getData: (responseData: Positions) => responseData.party,
-  getDelta: (subscriptionData: PositionsSubscription) =>
+  getData: (responseData: PositionsQuery) => responseData.party,
+  getDelta: (subscriptionData: PositionsSubscriptionSubscription) =>
     subscriptionData.positions,
 });
 
 const upgradeMarginsConection = (
   marketId: string,
-  margins: Margins_party | null
+  margins: MarginsQuery['party'] | null
 ) => {
   if (marketId && margins?.marginsConnection?.edges) {
     const index =
@@ -302,26 +254,23 @@ const upgradeMarginsConection = (
 };
 
 export const rejoinPositionData = (
-  positions: Positions_party | null,
+  positions: PositionsQuery['party'] | null,
   marketsData: MarketWithData[] | null,
-  margins: Margins_party | null
+  margins: MarginsQuery['party'] | null
 ): PositionRejoined[] | null => {
   if (positions?.positionsConnection?.edges && marketsData && margins) {
-    return positions.positionsConnection.edges.map(
-      (nodes: Positions_party_positionsConnection_edges) => {
-        return {
-          realisedPNL: nodes.node.realisedPNL,
-          openVolume: nodes.node.openVolume,
-          unrealisedPNL: nodes.node.unrealisedPNL,
-          averageEntryPrice: nodes.node.averageEntryPrice,
-          updatedAt: nodes.node.updatedAt,
-          market:
-            marketsData?.find((market) => market.id === nodes.node.market.id) ||
-            null,
-          margins: upgradeMarginsConection(nodes.node.market.id, margins),
-        };
-      }
-    );
+    return positions.positionsConnection.edges.map(({ node }) => {
+      return {
+        realisedPNL: node.realisedPNL,
+        openVolume: node.openVolume,
+        unrealisedPNL: node.unrealisedPNL,
+        averageEntryPrice: node.averageEntryPrice,
+        updatedAt: node.updatedAt,
+        market:
+          marketsData?.find((market) => market.id === node.market.id) || null,
+        margins: upgradeMarginsConection(node.market.id, margins),
+      };
+    });
   }
   return null;
 };

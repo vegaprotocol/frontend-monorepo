@@ -6,7 +6,7 @@ import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
 import { useCallback, useEffect } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 
 interface DepositManagerProps {
   assetId?: string;

@@ -1,4 +1,4 @@
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
 import create from 'zustand';
 
