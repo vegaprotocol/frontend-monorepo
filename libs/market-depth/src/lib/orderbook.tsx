@@ -295,11 +295,10 @@ export const Orderbook = ({
         return;
       }
       const {
-        contentRect: { width, height },
+        contentRect: { width },
       } = entries[0];
       headerElement.current.style.width = `${width}px`;
       footerElement.current.style.width = `${width}px`;
-      setViewportHeight(height);
     },
     [headerElement, footerElement]
   );
