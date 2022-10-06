@@ -1,93 +1,59 @@
-import { gql, useQuery } from '@apollo/client';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumber,
+  makeDerivedDataProvider,
   t,
   titlefy,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+
+import type { Market, MarketData, Candle } from '@vegaprotocol/market-list';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
-import type { Market, MarketVariables } from './__generated__/Market';
 import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
+import {
+  marketProvider,
+  marketCandlesProvider,
+  marketDataProvider,
+} from '@vegaprotocol/market-list';
 
-// Top level page query
-const MARKET_QUERY = gql`
-  query Market($marketId: ID!, $interval: Interval!, $since: String!) {
-    market(id: $marketId) {
-      id
-      tradingMode
-      state
-      decimalPlaces
-      positionDecimalPlaces
-      data {
-        market {
-          id
-        }
-        auctionStart
-        auctionEnd
-        markPrice
-        indicativeVolume
-        indicativePrice
-        suppliedStake
-        targetStake
-        bestBidVolume
-        bestOfferVolume
-        bestStaticBidVolume
-        bestStaticOfferVolume
-        trigger
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              oracleSpecForTradingTermination {
-                id
-              }
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-                decimals
-              }
-            }
-          }
-        }
-      }
-      marketTimestamps {
-        open
-        close
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
-      candlesConnection(interval: $interval, since: $since) {
-        edges {
-          node {
-            open
-            close
-            volume
-          }
-        }
-      }
-    }
+const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
+  return markPrice && decimalPlaces
+    ? addDecimalsFormatNumber(markPrice, decimalPlaces)
+    : '-';
+};
+
+export interface SingleMarketData extends Market {
+  candles: Candle[];
+  data: MarketData;
+}
+
+const dataProvider = makeDerivedDataProvider<SingleMarketData, never>(
+  [marketProvider, marketCandlesProvider, marketDataProvider],
+  ([market, candles, marketData]) => {
+    return {
+      ...market,
+      candles,
+      data: marketData,
+    };
   }
-`;
+);
 
 const MarketPage = ({ id }: { id?: string }) => {
+  const [marketPrice, setMarketPrice] = useState('');
+  const dataRef = useRef<SingleMarketData | null>(null);
   const { query, push } = useRouter();
   const { w } = useWindowSize();
   const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
@@ -129,29 +95,37 @@ const MarketPage = ({ id }: { id?: string }) => {
     [marketId, yTimestamp]
   );
 
-  const { data, error, loading } = useQuery<Market, MarketVariables>(
-    MARKET_QUERY,
-    {
-      variables,
-      fetchPolicy: 'network-only',
-      errorPolicy: 'ignore',
-    }
+  const dataUpdate = useCallback(
+    ({ data }: { data: SingleMarketData }) => {
+      setMarketPrice(calculatePrice(data.data.markPrice, data.decimalPlaces));
+      if (isEqual(data, dataRef.current)) {
+        return true;
+      }
+      dataRef.current = data;
+      return false;
+    },
+    [setMarketPrice]
   );
 
+  const {
+    data: dataProvided,
+    error,
+    loading,
+  } = useDataProvider({
+    dataProvider,
+    update: dataUpdate,
+    variables,
+    skip: !marketId,
+  });
+  dataRef.current = dataProvided;
+  const marketName = dataProvided?.tradableInstrument.instrument.name;
+
   useEffect(() => {
-    const marketName = data?.market?.tradableInstrument.instrument.name;
-    const marketPrice =
-      data?.market && data?.market?.data
-        ? addDecimalsFormatNumber(
-            data.market.data.markPrice,
-            data.market.decimalPlaces
-          )
-        : null;
     if (marketName) {
       const pageTitle = titlefy([marketName, marketPrice]);
       update({ pageTitle });
     }
-  }, [data, update]);
+  }, [marketName, update, marketPrice]);
 
   if (!marketId) {
     return (
@@ -162,20 +136,20 @@ const MarketPage = ({ id }: { id?: string }) => {
   }
 
   return (
-    <AsyncRenderer<Market>
+    <AsyncRenderer<SingleMarketData>
       loading={loading}
       error={error}
-      data={data}
-      render={({ market }) => {
-        if (!market) {
+      data={dataProvided || undefined}
+      render={(data) => {
+        if (!data) {
           return <Splash>{t('Market not found')}</Splash>;
         }
         return (
           <>
             {w > 960 ? (
-              <TradeGrid market={market} onSelect={onSelect} />
+              <TradeGrid market={data} onSelect={onSelect} />
             ) : (
-              <TradePanels market={market} onSelect={onSelect} />
+              <TradePanels market={data} onSelect={onSelect} />
             )}
             <SelectMarketDialog
               dialogOpen={landingDialog && !riskNoticeDialog}

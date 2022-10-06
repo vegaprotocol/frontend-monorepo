@@ -12,6 +12,7 @@ import {
 export type Candle = MarketCandlesFieldsFragment;
 
 const update = (data: Candle[], delta: Candle) => {
+  console.log('update delta', delta);
   return data && delta ? [...data, delta] : data;
 };
 

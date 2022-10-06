@@ -8,7 +8,7 @@ export const marketProvider = makeDerivedDataProvider<Market, never>(
   ([markets], variables) => {
     if (markets) {
       const market = (markets as Market[]).find(
-        (market) => market.id === variables?.['marketId']
+        (market) => market.id === variables?.marketId
       );
       if (market) {
         return market;

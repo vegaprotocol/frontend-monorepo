@@ -14,7 +14,6 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Market_market } from './__generated__/Market';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
@@ -47,6 +46,7 @@ import {
   SelectMarketPopover,
 } from '../../components/select-market';
 import type { OnCellClickHandler } from '../../components/select-market';
+import type { SingleMarketData } from './[marketId].page';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -64,7 +64,7 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 type ExpiryLabelProps = {
-  market: Market_market;
+  market: SingleMarketData;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -72,7 +72,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
   if (market.marketTimestamps.close === null) {
     content = t('Not time-based');
   } else {
-    const closeDate = new Date(market.marketTimestamps.close);
+    const closeDate = new Date(market.marketTimestamps.close as string);
     const isExpired = Date.now() - closeDate.valueOf() > 0;
     const expiryDate = getDateFormat().format(closeDate);
     content = `${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`;
@@ -81,7 +81,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: Market_market;
+  market: SingleMarketData;
   explorerUrl?: string;
 };
 
@@ -114,7 +114,7 @@ const ExpiryTooltipContent = ({
 };
 
 interface TradeMarketHeaderProps {
-  market: Market_market;
+  market: SingleMarketData;
   onSelect: (marketId: string) => void;
 }
 
@@ -125,8 +125,8 @@ export const TradeMarketHeader = ({
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  const candlesClose: string[] = (market?.candlesConnection?.edges || [])
-    .map((candle) => candle?.node.close)
+  const candlesClose: string[] = (market?.candles || [])
+    .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
@@ -221,7 +221,7 @@ export const TradeMarketHeader = ({
 };
 
 interface TradeGridProps {
-  market: Market_market;
+  market: SingleMarketData;
   onSelect: (marketId: string) => void;
 }
 
@@ -329,7 +329,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: Market_market;
+  market: SingleMarketData;
   onSelect: (marketId: string) => void;
 }
 

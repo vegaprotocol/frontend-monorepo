@@ -21,8 +21,13 @@ fragment MarketFields on Market {
       }
       product {
         ... on Future {
+          oracleSpecForTradingTermination {
+            id
+          }
           settlementAsset {
+            id
             symbol
+            name
             decimals
           }
           quoteName
@@ -33,6 +38,11 @@ fragment MarketFields on Market {
   marketTimestamps {
     open
     close
+  }
+  depth {
+    lastTrade {
+      price
+    }
   }
 }
 
