@@ -25,6 +25,7 @@ export const MARKET_LIST_QUERY = gql`
           id
           data {
             targetStake
+            trigger
           }
           decimalPlaces
           positionDecimalPlaces
