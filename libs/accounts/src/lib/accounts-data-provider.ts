@@ -114,10 +114,12 @@ const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
 export const getAccountData = (data: Account[]): AccountFields[] => {
-  return getAssetIds(data).map((assetId) => {
-    const accounts = data.filter((a) => a.asset.id === assetId);
-    return accounts && getAssetAccountAggregation(accounts, assetId);
-  });
+  return getAssetIds(data)
+    .map((assetId) => {
+      const accounts = data.filter((a) => a.asset.id === assetId);
+      return accounts && getAssetAccountAggregation(accounts, assetId);
+    })
+    .filter((a) => a.deposited !== '0'); // filter empty accounts
 };
 
 const getAssetAccountAggregation = (

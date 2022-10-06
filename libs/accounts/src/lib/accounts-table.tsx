@@ -109,8 +109,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName={t('Deposited')}
+            headerName={t('Total')}
             field="deposited"
+            headerTooltip={t(
+              'This is the total amount of collateral in your general account.'
+            )}
             valueFormatter={({
               value,
               data,
