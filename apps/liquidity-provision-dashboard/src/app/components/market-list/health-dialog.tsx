@@ -23,7 +23,7 @@ const ROWS = [
   },
   {
     key: '2',
-    title: 'Liquidity auction',
+    title: 'Monitoring auction (liquidity)',
     copy: 'Markets below the target stake will see trading suspended and go into liquidity auction.',
     data: {
       status: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,

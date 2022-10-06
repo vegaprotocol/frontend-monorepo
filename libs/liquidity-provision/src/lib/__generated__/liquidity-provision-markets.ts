@@ -3,7 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { Interval, AuctionTrigger, MarketState, MarketTradingMode } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: LiquidityProvisionMarkets
 // ====================================================
@@ -14,6 +15,10 @@ export interface LiquidityProvisionMarkets_marketsConnection_edges_node_data {
    * The amount of stake targeted for this market
    */
   targetStake: string | null;
+  /**
+   * What triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
 }
 
 export interface LiquidityProvisionMarkets_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset {

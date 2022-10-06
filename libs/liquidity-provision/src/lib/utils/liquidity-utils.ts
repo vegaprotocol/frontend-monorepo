@@ -5,10 +5,12 @@ import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type {
   LiquidityProvisionMarkets_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset as SettlementAsset,
   LiquidityProvisionMarkets_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
-  LiquidityProvisionMarkets_marketsConnection_edges_node as Market,
+  LiquidityProvisionMarkets_marketsConnection_edges_node as MarketNode,
   LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges as LiquidityEdges,
 } from './../__generated__';
 import type { MarketCandles } from '@vegaprotocol/market-list';
+
+export type Market = MarketNode;
 
 export interface MarketsListData {
   markets: Market[];

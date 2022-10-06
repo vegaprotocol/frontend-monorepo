@@ -16,9 +16,17 @@ import {
   formatMarketLists,
 } from '@vegaprotocol/liquidity-provision';
 
-import type { MarketsListData } from '@vegaprotocol/liquidity-provision';
-import type { MarketTradingMode } from '@vegaprotocol/types';
-import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import type {
+  MarketsListData,
+  Market,
+} from '@vegaprotocol/liquidity-provision';
+
+import {
+  MarketTradingModeMapping,
+  MarketTradingMode,
+  AuctionTrigger,
+  AuctionTriggerMapping,
+} from '@vegaprotocol/types';
 
 import HealthBar from './health-bar';
 import HealthDialog from './health-dialog';
@@ -29,6 +37,10 @@ const agGridVariables = `
     --ag-row-hover-color: transparent;
     --ag-header-background-color: #F5F5F5;
     --ag-odd-row-background-color: transparent;
+    --ag-font-family: "Helvetica Neue";
+    --ag-font-size: 12px;
+
+    font-family: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   }
 
   .ag-theme-alpine .ag-cell {
@@ -46,6 +58,7 @@ const agGridVariables = `
   .ag-theme-alpine .ag-row {
     border: none;
     border-bottom: 1px solid #BFCCD6;
+    font-size: 12px;
   }
 `;
 
@@ -58,8 +71,8 @@ const marketNameCellRenderer = (props: GroupCellRendererParams) => {
 
   return (
     <>
-      <span style={{ lineHeight: '25px' }}>{value}</span>
-      <span style={{ lineHeight: '25px' }}>
+      <span style={{ lineHeight: '12px' }}>{value}</span>
+      <span style={{ lineHeight: '12px' }}>
         {data?.tradableInstrument?.instrument?.product?.settlementAsset?.symbol}
       </span>
     </>
@@ -157,9 +170,21 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             headerName={t('Status')}
             field="tradingMode"
             headerTooltip={t('This is the status tooltip')}
-            valueFormatter={({ value }: { value: MarketTradingMode }) =>
-              `${MarketTradingModeMapping[value]}`
-            }
+            valueFormatter={({
+              value,
+              data,
+            }: {
+              value: MarketTradingMode;
+              data: Market;
+            }) => {
+              return value ===
+                MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+                data.data?.trigger &&
+                data.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+                ? `${MarketTradingModeMapping[value]}
+                     - ${AuctionTriggerMapping[data.data.trigger]}`
+                : MarketTradingModeMapping[value];
+            }}
           />
 
           <AgGridColumn
@@ -177,7 +202,6 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
               );
             }}
             field="tradingMode"
-            headerTooltip={t('This is the health tooltip')}
             cellRenderer={healthCellRenderer}
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
