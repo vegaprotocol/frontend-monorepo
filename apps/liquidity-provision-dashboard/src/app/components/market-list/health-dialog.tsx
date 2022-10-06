@@ -1,9 +1,6 @@
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import type { MarketsListData } from '@vegaprotocol/liquidity-provision';
 import { MarketTradingMode } from '@vegaprotocol/types';
-
-import { MarketTradingModeMapping } from '@vegaprotocol/types';
 
 import HealthBar from './health-bar';
 
@@ -21,6 +18,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       target: '171320',
       committed: '220000',
+      decimals: 5,
     },
   },
   {
@@ -31,6 +29,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       target: '171320',
       committed: '150000',
+      decimals: 5,
     },
   },
   {
@@ -41,6 +40,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       target: '171320',
       committed: '140000',
+      decimals: 3,
     },
   },
 ];
@@ -76,6 +76,7 @@ export default function HealthDialog({ onChange, isOpen }: HealthDialogProps) {
                     status={r.data.status}
                     target={r.data.target}
                     committed={r.data.committed}
+                    decimals={r.data.decimals}
                     isExpanded
                   />
                 </td>

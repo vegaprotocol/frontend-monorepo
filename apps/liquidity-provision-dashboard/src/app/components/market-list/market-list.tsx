@@ -23,10 +23,12 @@ import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import HealthBar from './health-bar';
 import HealthDialog from './health-dialog';
 
-// #BFCCD6
 const agGridVariables = `
   .ag-theme-alpine {
     --ag-line-height: 24px;
+    --ag-row-hover-color: transparent;
+    --ag-header-background-color: #F5F5F5;
+    --ag-odd-row-background-color: transparent;
   }
 
   .ag-theme-alpine .ag-cell {
@@ -34,7 +36,6 @@ const agGridVariables = `
   }
 
   .ag-theme-alpine .ag-header {
-    background-color: #F5F5F5;
     border: 1px solid #BFCCD6;
   }
 
@@ -42,12 +43,10 @@ const agGridVariables = `
     border: none;
   }
 
-  .ag-theme-alpine .ag-body-viewport,
-  .ag-theme-alpine .ag-center-cols-clipper,
-  .ag-theme-alpine .ag-center-cols-viewport {
-    overflow: visible;
+  .ag-theme-alpine .ag-row {
+    border: none;
+    border-bottom: 1px solid #BFCCD6;
   }
-
 `;
 
 const displayValue = (value: string) => {
@@ -68,7 +67,6 @@ const marketNameCellRenderer = (props: GroupCellRendererParams) => {
 };
 
 const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
-  console.log('data: ', data);
   // TODO: get from liquidityProvisionsConnection + fee
   const committed = data.liquidityCommitted;
 
@@ -78,7 +76,9 @@ const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
         status={value}
         target={data.data.targetStake}
         committed={committed}
-        committedEdges={data.liquidityProvisionsConnection?.edges}
+        decimals={
+          data.tradableInstrument.instrument.product.settlementAsset.decimals
+        }
       />
     </div>
   );
@@ -112,12 +112,13 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           rowData={localData}
           className="ag-theme-alpine h-full"
           defaultColDef={{
+            resizable: true,
             sortable: true,
             unSortIcon: true,
             cellClass: ['flex', 'flex-col', 'justify-center'],
           }}
           getRowId={getRowId}
-          rowHeight={80}
+          rowHeight={92}
           ref={gridRef}
         >
           <AgGridColumn
@@ -125,11 +126,11 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             field="tradableInstrument.instrument.name"
             headerTooltip={t('This is the tooltip')}
             cellRenderer={marketNameCellRenderer}
-            flex={1}
+            minWidth={100}
           />
 
           <AgGridColumn
-            headerName={t('Volume 24h')}
+            headerName={t('Volume (24h)')}
             field="dayVolume"
             headerTooltip={t('This is the volume tooltip')}
             cellRenderer={({ value, data }: GroupCellRendererParams) => {
@@ -145,7 +146,10 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             headerName={t('Committed liquidity')}
             field="liquidityCommitted"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(value, data)
+              formatWithAsset(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+              )
             }
           />
 
@@ -195,13 +199,5 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
     </>
   );
 };
-{
-  /* <HealthBar
-                    status="TRADING_MODE_CONTINUOUS"
-                    target="171320"
-                    committed="220000"
-                    size="large"
-                    isExpanded={TransformStreamDefaultController}
-                  /> */
-}
+
 export default MarketList;
