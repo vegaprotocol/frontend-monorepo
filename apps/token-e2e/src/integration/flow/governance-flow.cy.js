@@ -147,7 +147,7 @@ context(
       });
 
       it('should be able to see that no proposals exist', function () {
-        // 1004-VOTE-003
+        // 3001-VOTE-003
         cy.get(noOpenProposals)
           .should('be.visible')
           .and('have.text', 'There are no open or yet to enact proposals');
@@ -237,8 +237,8 @@ context(
           .then((proposalId) => {
             cy.get(openProposals).within(() => {
               cy.get('@freeformProposal').then((freeformProposal) => {
-                // 1004-VOTE-008
-                // 1004-VOTE-034
+                // 3001-VOTE-008
+                // 3001-VOTE-034
                 cy.get(`#${proposalId}`)
                   .should('contain', freeformProposal.rationale.title)
                   .and('be.visible');
@@ -254,8 +254,8 @@ context(
       });
 
       it('Newly created freeform proposals list - shows open proposals in an open state', function () {
-        // 1004-VOTE-004
-        // 1004-VOTE-035
+        // 3001-VOTE-004
+        // 3001-VOTE-035
         createFreeformProposal(this.minProposerBalance);
         cy.wait('@proposalSubmissionCompletion')
           .its(proposalResponseProposalIdPath)
@@ -278,7 +278,7 @@ context(
       });
 
       it('Newly created freeform proposals list - proposals closest to closing date appear higher in list', function () {
-        // 1004-VOTE-005
+        // 3001-VOTE-005
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         ).then(() => {
@@ -320,7 +320,7 @@ context(
         cy.get_submitted_proposal_from_proposal_list()
           .as('submittedProposal')
           .within(() => {
-            // 1004-VOTE-039
+            // 3001-VOTE-039
             cy.get(voteStatus).should('have.text', 'Participation not reached');
             cy.get(viewProposalButton).click();
           });
@@ -361,7 +361,7 @@ context(
               });
             });
             cy.get('@freeformProposal').then((freeformProposal) => {
-              // 1004-VOTE-054
+              // 3001-VOTE-054
               cy.get(proposalDetailsTitle)
                 .should('contain', freeformProposal.rationale.title)
                 .and('be.visible');
@@ -385,7 +385,7 @@ context(
               });
             });
             cy.get('@freeformProposal').then(() => {
-              // 1004-VOTE-055
+              // 3001-VOTE-055
               cy.get(proposalDetailsDescription)
                 .should('have.attr', 'href')
                 .and(
@@ -431,13 +431,13 @@ context(
               .should('be.visible');
           }
         );
-        // 1004-VOTE-043
+        // 3001-VOTE-043
         cy.contains('3 days left to vote').should('be.visible');
       });
 
       it('Newly created freeform proposal details - shows default status set to fail', function () {
-        // 1004-VOTE-037
-        // 1004-VOTE-040
+        // 3001-VOTE-037
+        // 3001-VOTE-040
         createFreeformProposal(this.minProposerBalance);
         cy.get_submitted_proposal_from_proposal_list().within(() =>
           cy.get(viewProposalButton).click()
@@ -449,8 +449,8 @@ context(
         cy.get_proposal_information_from_table('Will pass')
           .contains('👎')
           .should('be.visible');
-        // 1004-VOTE-062
-        // 1004-VOTE-040
+        // 3001-VOTE-062
+        // 3001-VOTE-040
         cy.get_proposal_information_from_table('Majority met')
           .contains('👎')
           .should('be.visible');
@@ -464,7 +464,7 @@ context(
         cy.get_submitted_proposal_from_proposal_list()
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
-        // 1004-VOTE-080
+        // 3001-VOTE-080
         cy.get(voteButtons).contains('against').should('be.visible');
         cy.get(voteButtons).contains('for').should('be.visible');
         cy.vote_for_proposal('for');
@@ -472,8 +472,8 @@ context(
           '0',
           'shortMonth'
         ).then((votedDate) => {
-          // 1004-VOTE-051
-          // 1004-VOTE-093
+          // 3001-VOTE-051
+          // 3001-VOTE-093
           cy.contains('You voted:')
             .siblings()
             .contains('For')
@@ -499,11 +499,11 @@ context(
         cy.get_proposal_information_from_table('Tokens against proposal')
           .should('have.text', '0.00')
           .and('be.visible');
-        // 1004-VOTE-061
+        // 3001-VOTE-061
         cy.get_proposal_information_from_table('Participation required')
           .contains(`${this.requiredParticipation}%`)
           .should('be.visible');
-        // 1004-VOTE-066
+        // 3001-VOTE-066
         cy.get_proposal_information_from_table('Majority Required')
           .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
           .should('be.visible');
@@ -522,7 +522,7 @@ context(
           '0',
           'shortMonth'
         ).then((votedDate) => {
-          // 1004-VOTE-051
+          // 3001-VOTE-051
           cy.contains('You voted:')
             .siblings()
             .contains('Against')
@@ -565,7 +565,7 @@ context(
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
         cy.vote_for_proposal('against');
-        // 1004-VOTE-090
+        // 3001-VOTE-090
         cy.get(changeVoteButton).should('be.visible').click();
         cy.wait_for_spinner();
         cy.vote_for_proposal('for');
@@ -581,7 +581,7 @@ context(
         cy.get(proposalVoteProgressAgainstTokens)
           .contains('0.00')
           .and('be.visible');
-        // 1004-VOTE-064
+        // 3001-VOTE-064
         cy.get_proposal_information_from_table('Tokens for proposal')
           .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
           .and('be.visible');
@@ -643,7 +643,7 @@ context(
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
         cy.vote_for_proposal('for');
-        // 1004-VOTE-079
+        // 3001-VOTE-079
         cy.contains('You voted: For').should('be.visible');
         cy.get_proposal_information_from_table('Total Supply')
           .invoke('text')
@@ -664,7 +664,7 @@ context(
             cy.get(proposalVoteProgressAgainstPercentage)
               .contains('0.00%')
               .and('be.visible');
-            // 1004-VOTE-065
+            // 3001-VOTE-065
             cy.get(proposalVoteProgressForTokens)
               .contains(tokensRequiredToAchieveResult)
               .and('be.visible');
@@ -683,18 +683,18 @@ context(
             cy.get_proposal_information_from_table('Will pass')
               .contains('👍')
               .should('be.visible');
-            // 1004-VOTE-062
+            // 3001-VOTE-062
             cy.get_proposal_information_from_table('Majority met')
               .contains('👍')
               .should('be.visible');
             cy.get_proposal_information_from_table('Participation met')
               .contains('👍')
               .should('be.visible');
-            // 1004-VOTE-042
-            // 1004-VOTE-057
-            // 1004-VOTE-058
-            // 1004-VOTE-059
-            // 1004-VOTE-060
+            // 3001-VOTE-042
+            // 3001-VOTE-057
+            // 3001-VOTE-058
+            // 3001-VOTE-059
+            // 3001-VOTE-060
             cy.contains('Currently set to pass').should('be.visible');
           });
       });
@@ -792,7 +792,7 @@ context(
 
       // Json containing unexpected field no longer fails submission
       it.skip('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
-        // 1004-VOTE-038
+        // 3001-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
@@ -825,7 +825,7 @@ context(
 
       // Json containing unexpected field no longer fails submission
       it.skip('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
-        // 1004-VOTE-038
+        // 3001-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
@@ -892,8 +892,8 @@ context(
         cy.get_submitted_proposal_from_proposal_list()
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
-        // 1004-VOTE-075
-        // 1004-VOTE-076
+        // 3001-VOTE-075
+        // 3001-VOTE-076
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet')
@@ -906,13 +906,13 @@ context(
         });
         cy.get(vegaWalletNameElement).should('be.visible');
         cy.get(connectToVegaWalletButton).should('not.exist');
-        // 1004-VOTE-100
+        // 3001-VOTE-100
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
           '1.000000000000000000',
           txTimeout
         );
         cy.vote_for_proposal('against');
-        // 1004-VOTE-079
+        // 3001-VOTE-079
         cy.contains('You voted: Against').should('be.visible');
       });
 
