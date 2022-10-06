@@ -112,7 +112,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName={t('Total')}
             field="deposited"
             headerTooltip={t(
-              'This is the total amount of collateral in your general account.'
+              'This is the total amount of collateral used plus the amount available in your general account.'
             )}
             valueFormatter={({
               value,
