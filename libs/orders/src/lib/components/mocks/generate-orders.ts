@@ -64,9 +64,9 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       depth: {
         lastTrade: {
-          price: 'lastTradePrice'
-        }
-      }
+          price: 'lastTradePrice',
+        },
+      },
     },
     size: '10',
     type: OrderType.TYPE_MARKET,
