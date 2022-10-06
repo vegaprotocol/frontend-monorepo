@@ -351,10 +351,10 @@ interface UseButtonProps {
   onClick: () => void;
 }
 
-const UseButton = ({ children, onClick, ...props }: UseButtonProps) => {
+const UseButton = ({ children, ...props }: UseButtonProps) => {
   return (
     <span className="text-sm">
-      <ButtonLink type="button" onClick={onClick} {...props}>
+      <ButtonLink type="button" {...props}>
         {children}
       </ButtonLink>
     </span>
