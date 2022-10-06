@@ -59,6 +59,7 @@ export function RestConnectorForm({
         <Input
           {...register('wallet', { required: t('Required') })}
           id="wallet"
+          data-testid="rest-wallet"
           type="text"
         />
         {errors.wallet?.message && (
@@ -69,6 +70,7 @@ export function RestConnectorForm({
         <Input
           {...register('passphrase', { required: t('Required') })}
           id="passphrase"
+          data-testid="rest-passphrase"
           type="password"
         />
         {errors.passphrase?.message && (
