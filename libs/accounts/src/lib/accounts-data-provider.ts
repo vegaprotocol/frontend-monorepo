@@ -150,7 +150,8 @@ const getAssetAccountAggregation = (
       deposited: balanceAccount.deposited,
       available: balanceAccount.available,
       used: a.balance,
-    }));
+    }))
+    .filter((a) => a.used !== '0');
   return { ...balanceAccount, breakdown };
 };
 
