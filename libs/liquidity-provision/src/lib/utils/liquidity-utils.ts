@@ -3,7 +3,7 @@ import orderBy from 'lodash/orderBy';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type {
-  LiquidityProvisionMarkets_marketsConnection_edges_node as MarketNode,
+  LiquidityProvisionMarkets_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset as SettlementAsset,
   LiquidityProvisionMarkets_marketsConnection_edges_node_candlesConnection_edges_node as Candle,
   LiquidityProvisionMarkets_marketsConnection_edges_node as Market,
   LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges as LiquidityEdges,
@@ -79,19 +79,20 @@ const calcDayVolume = (market: Market) => {
   return edges
     .reduce((acc, c) => {
       return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-      // TODO: is this right? Should it not start on 0?
-    }, new BigNumber(edges?.[0]?.node?.volume ?? 0))
+    }, new BigNumber(edges[0]?.node.volume ?? 0))
     .toString();
 };
 
-export const formatWithAsset = (value: string, market: MarketNode) => {
+export const formatWithAsset = (
+  value: string,
+  settlementAsset: SettlementAsset
+) => {
   const formattedValue = addDecimalsFormatNumber(
     value,
-    market.tradableInstrument.instrument.product.settlementAsset.decimals
+    settlementAsset.decimals
   );
-  const asset =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
-  return `${formattedValue} ${asset}`;
+  const symbol = settlementAsset.symbol;
+  return `${formattedValue} ${symbol}`;
 };
 
 export const sumLiquidityCommitted = (edges: LiquidityEdges[]) => {
