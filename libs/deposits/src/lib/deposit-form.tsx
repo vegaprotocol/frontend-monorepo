@@ -210,14 +210,16 @@ export const DepositForm = ({
           </InputError>
         )}
         {pubKey && (
-          <UseButton
-            onClick={() => {
-              setValue('to', pubKey);
-              clearErrors('to');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
+          <span className="absolute top-0 right-0">
+            <UseButton
+              onClick={() => {
+                setValue('to', pubKey);
+                clearErrors('to');
+              }}
+            >
+              {t('Use connected')}
+            </UseButton>
+          </span>
         )}
       </FormGroup>
       {selectedAsset && max && deposited && (
