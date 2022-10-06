@@ -156,17 +156,17 @@ context(
           .and('have.text', 'There are no enacted or rejected proposals');
       });
 
-      // 1005-PROP-002
-      // 1005-PROP-003
+      // 3002-PROP-002
+      // 3002-PROP-003
       it('Submit a proposal form - shows how many vega tokens are required to make a proposal', function () {
-        // 1005-PROP-005
+        // 3002-PROP-005
         cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
         cy.contains(
           `You must have at least ${this.minProposerBalance} VEGA associated to make a proposal`
         ).should('be.visible');
       });
 
-      // 1005-PROP-011
+      // 3002-PROP-011
       it(
         'Able to submit a valid freeform proposal - with minimum required tokens associated',
         { tags: '@smoke' },
@@ -175,7 +175,7 @@ context(
             this.minProposerBalance
           );
           cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-          cy.get(minVoteButton).should('be.visible'); // 1005-PROP-008
+          cy.get(minVoteButton).should('be.visible'); // 3002-PROP-008
           cy.get(maxVoteButton).should('be.visible');
           cy.get(votingDate).should('not.be.empty');
           cy.get(voteTwoMinExtraNote).should(
@@ -184,8 +184,8 @@ context(
           );
           cy.enter_unique_freeform_proposal_body('50');
           cy.get(newProposalSubmitButton).should('be.visible').click();
-          // 1005-PROP-012
-          // 1005-PROP-016
+          // 3002-PROP-012
+          // 3002-PROP-016
           cy.wait_for_proposal_submitted();
         }
       );
