@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { InView } from 'react-intersection-observer';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
 import { Interval } from '@vegaprotocol/types';
@@ -68,13 +68,13 @@ const SimpleMarketPercentChangeWrapper = (props: Props) => {
 };
 
 const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const yesterday = useYesterday();
   const { data } = useDataProvider({
     dataProvider: marketCandlesProvider,
     variables: {
       marketId,
       interval: Interval.INTERVAL_I1D,
-      since: new Date(yesterday * 1000).toISOString(),
+      since: new Date(yesterday).toISOString(),
     },
   });
 
