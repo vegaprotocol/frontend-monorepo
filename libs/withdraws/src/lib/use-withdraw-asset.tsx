@@ -1,17 +1,17 @@
 import { captureException } from '@sentry/react';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
-import type { Account } from './types';
+import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useWithdrawStore } from './withdraw-store';
 
 export const useWithdrawAsset = (
   assets: Asset[],
-  accounts: Account[],
+  accounts: AccountFieldsFragment[],
   assetId?: string
 ) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();

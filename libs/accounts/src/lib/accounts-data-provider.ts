@@ -8,7 +8,6 @@ import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
-  AssetsFieldsFragment,
 } from './__generated___/Accounts';
 import {
   makeDataProvider,
@@ -17,7 +16,8 @@ import {
 import { AccountType } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import { assetProvider } from './asset-data-provider';
+import type { AssetsFieldsFragment } from '@vegaprotocol/assets';
+import { assetsProvider } from '@vegaprotocol/assets';
 
 function isAccount(
   account:
@@ -37,7 +37,7 @@ export const getId = (
 ) =>
   isAccount(account)
     ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
-    : `${account.type}-${account.assetId}-${account.marketId}`;
+    : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
   market?: Market | null;
@@ -77,7 +77,7 @@ const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
 
-export const accountsBasedDataProvider = makeDataProvider<
+export const accountsOnlyDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
@@ -155,7 +155,7 @@ const getAssetAccountAggregation = (
 };
 
 export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
-  [accountsBasedDataProvider, marketsProvider, assetProvider],
+  [accountsOnlyDataProvider, marketsProvider, assetsProvider],
   ([accounts, markets, assets]): Account[] | null => {
     return accounts
       ? accounts

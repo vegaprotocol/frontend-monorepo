@@ -1,4 +1,4 @@
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
@@ -6,8 +6,8 @@ import {
   t,
   removeDecimal,
   required,
-  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import {
   Button,
   ButtonLink,

@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { WithdrawForm } from './withdraw-form';
 import { generateAsset } from './test-helpers';
 import type { WithdrawFormProps } from './withdraw-form';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 
 jest.mock('@web3-react/core');
 

@@ -24,6 +24,7 @@ describe('Propose', () => {
     expect(screen.getByText('New market')).toBeTruthy();
     expect(screen.getByText('Update market')).toBeTruthy();
     expect(screen.getByText('New asset')).toBeTruthy();
+    expect(screen.getByText('Update asset')).toBeTruthy();
     expect(screen.getByText('Freeform')).toBeTruthy();
     expect(screen.getByText('Let me choose (raw proposal)')).toBeTruthy();
   });

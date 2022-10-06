@@ -1,8 +1,9 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { generateChainId } from '../support/mocks/generate-chain-id';
 import { generateAccounts } from '../support/mocks/generate-accounts';
+import { generateAssets } from '../support/mocks/generate-assets';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-import { generateWithdrawFormQuery } from '../support/mocks/generate-withdraw-page-query';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
@@ -14,13 +15,16 @@ describe('withdraw', { tags: '@smoke' }, () => {
   const useMaximumAmount = 'use-maximum';
   const submitWithdrawBtn = 'submit-withdrawal';
   const ethAddressValue = Cypress.env('ETHEREUM_WALLET_ADDRESS');
+  const asset1Name = 'Sepolia tBTC';
+  const asset2Name = 'Sepolia tUSDC';
 
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
+      aliasQuery(req, 'ChainId', generateChainId());
       aliasQuery(req, 'Withdrawals', generateWithdrawals());
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
+      aliasQuery(req, 'Assets', generateAssets());
       aliasQuery(req, 'Accounts', generateAccounts());
     });
     cy.mockGQLSubscription();
@@ -34,11 +38,9 @@ describe('withdraw', { tags: '@smoke' }, () => {
     // It also requires connection Ethereum wallet
     connectEthereumWallet();
 
-    cy.mockGQL((req) => {
-      aliasQuery(req, 'WithdrawFormQuery', generateWithdrawFormQuery());
-    });
     cy.getByTestId('withdraw-dialog-button').click();
-    cy.wait('@WithdrawFormQuery');
+    cy.wait('@Accounts');
+    cy.wait('@Assets');
   });
 
   it('form validation', () => {
@@ -52,7 +54,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.get(toAddressField).should('have.value', ethAddressValue);
   });
   it('min amount', () => {
-    cy.get(assetSelectField).select('Asset 0'); // Select asset so we have a min viable amount calculated
+    selectAsset(asset1Name);
     cy.get(amountField).clear().type('0');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -61,7 +63,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
-    cy.get(assetSelectField).select('Asset 1'); // Will be above maximum because the vega wallet doesnt have any collateral
+    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
     cy.get(amountField).clear().type('1');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -71,7 +73,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   });
 
   it('can set amount using use maximum button', () => {
-    cy.get(assetSelectField).select('Asset 0');
+    selectAsset(asset1Name);
     cy.getByTestId(useMaximumAmount).click();
     cy.get(amountField).should('have.value', '1000.00000');
   });
@@ -86,7 +88,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
         },
       },
     });
-    cy.get(assetSelectField).select('Asset 0');
+    selectAsset(asset1Name);
     cy.getByTestId('balance-available')
       .should('contain.text', 'Balance available')
       .find('td')
@@ -109,4 +111,13 @@ describe('withdraw', { tags: '@smoke' }, () => {
 
   it.skip('creates a withdrawal on submit'); // Needs capsule
   it.skip('creates a withdrawal on submit and prompts to complete withdrawal'); // Needs capsule
+
+  const selectAsset = (assetName: string) => {
+    cy.get(assetSelectField).select(assetName);
+    // The asset only gets set once the queries (getWithdrawThreshold, getDelay)
+    // against the Ethereum change resolve, we should fix this but for now just force
+    // some wait time
+    // eslint-disable-next-line
+    cy.wait(1000);
+  };
 });

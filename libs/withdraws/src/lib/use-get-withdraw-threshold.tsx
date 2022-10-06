@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useBridgeContract } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 /**
@@ -12,7 +12,7 @@ import { addDecimal } from '@vegaprotocol/react-helpers';
 export const useGetWithdrawThreshold = () => {
   const contract = useBridgeContract();
   const getThreshold = useCallback(
-    async (asset: Asset | undefined) => {
+    async (asset: Pick<Asset, 'source' | 'decimals'> | undefined) => {
       if (!contract || asset?.source.__typename !== 'ERC20') {
         return new BigNumber(Infinity);
       }

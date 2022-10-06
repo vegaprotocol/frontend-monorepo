@@ -2,13 +2,12 @@ import '@vegaprotocol/cypress';
 import 'cypress-real-events/support';
 import registerCypressGrep from 'cypress-grep';
 import { aliasQuery } from '@vegaprotocol/cypress';
+import { generateChainId } from './mocks/generate-chain-id';
 registerCypressGrep();
 
-beforeEach(() => {
-  // Mock chainId fetch which happens on every page for wallet connection
+before(() => {
+  // Mock chainId fetch which happens on every page wallet connection
   cy.mockGQL((req) => {
-    aliasQuery(req, 'ChainId', {
-      statistics: { __typename: 'Statistics', chainId: 'test-chain-id' },
-    });
+    aliasQuery(req, 'ChainId', generateChainId());
   });
 });

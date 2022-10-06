@@ -168,6 +168,21 @@ interface ProposalNewAssetTerms {
   validationTimestamp: number;
 }
 
+interface ProposalUpdateAssetTerms {
+  updateAsset: {
+    assetId: string;
+    changes: {
+      quantum: string;
+      erc20: {
+        withdrawThreshold: string;
+        lifetimeLimit: string;
+      };
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
 interface OracleSpecBinding {
   settlementPriceProperty: string;
   tradingTerminationProperty: string;
@@ -227,7 +242,8 @@ export interface ProposalSubmission {
     | ProposalNewMarketTerms
     | ProposalUpdateMarketTerms
     | ProposalNetworkParameterTerms
-    | ProposalNewAssetTerms;
+    | ProposalNewAssetTerms
+    | ProposalUpdateAssetTerms;
 }
 
 export interface ProposalSubmissionBody {

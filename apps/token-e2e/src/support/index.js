@@ -20,11 +20,14 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
   app.document.head.appendChild(style);
 }
 
-beforeEach(() => {
+before(() => {
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockGQL((req) => {
     aliasQuery(req, 'ChainId', {
-      statistics: { __typename: 'Statistics', chainId: 'test-chain-id' },
+      statistics: {
+        __typename: 'Statistics',
+        chainId: 'vega-fairground-202210041151',
+      },
     });
   });
 });

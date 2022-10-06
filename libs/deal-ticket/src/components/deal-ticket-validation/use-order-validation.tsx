@@ -218,14 +218,14 @@ export const useOrderValidation = ({
     if (fieldErrors?.size?.type === 'required') {
       return {
         isDisabled: true,
-        message: t('You need to provide an amount'),
+        message: t('You need to provide a size'),
       };
     }
 
     if (fieldErrors?.size?.type === 'min') {
       return {
         isDisabled: true,
-        message: t(`The amount cannot be lower than "${minSize}"`),
+        message: t(`Size cannot be lower than "${minSize}"`),
       };
     }
 
@@ -262,7 +262,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(
-          `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
+          `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
         ),
       };
     }

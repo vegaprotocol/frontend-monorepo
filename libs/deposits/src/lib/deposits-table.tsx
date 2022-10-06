@@ -10,7 +10,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
-import type { DepositFieldsFragment } from './__generated__/Deposit';
+import type { DepositFieldsFragment } from './__generated___/Deposit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 

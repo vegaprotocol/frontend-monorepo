@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
 import { AssetDetailsDialog } from './asset-details-dialog';
-import { AssetsConnectionDocument } from './__generated___/Assets';
+import { AssetsDocument } from './__generated___/Assets';
 
 const mockedData = {
   data: {
@@ -273,7 +273,7 @@ const mockedData = {
 const mocks = [
   {
     request: {
-      query: AssetsConnectionDocument,
+      query: AssetsDocument,
       variables: {},
     },
     result: mockedData,

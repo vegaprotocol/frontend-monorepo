@@ -26,7 +26,7 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import type { Proposals_proposalsConnection_edges_node as ProposalNode } from '../../proposals/__generated__/Proposals';
 
 const renderComponent = (
   proposal: ProposalNode,
@@ -172,7 +172,7 @@ describe('Proposals list item details', () => {
                   datetime: lastWeek.toString(),
                   party: {
                     __typename: 'Party',
-                    id: mockPubkey,
+                    id: mockPubkey.publicKey,
                     stakingSummary: {
                       __typename: 'StakingSummary',
                       currentStakeAvailable: '1000',
@@ -210,7 +210,7 @@ describe('Proposals list item details', () => {
                   datetime: lastWeek.toString(),
                   party: {
                     __typename: 'Party',
-                    id: mockPubkey,
+                    id: mockPubkey.publicKey,
                     stakingSummary: {
                       __typename: 'StakingSummary',
                       currentStakeAvailable: '1000',

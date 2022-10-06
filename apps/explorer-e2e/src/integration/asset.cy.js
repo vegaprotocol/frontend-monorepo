@@ -13,7 +13,7 @@ context('Asset page', { tags: '@regression' }, function () {
       cy.common_validate_blocks_data_displayed(assetHeader);
     });
 
-    it('Assets and all asset details are displayed', function () {
+    it('Assets and all asset details are displayed in JSON', function () {
       cy.get_asset_information().then((assetsInfo) => {
         const assetNames = Object.keys(assetsInfo);
         assert.isAtLeast(
@@ -21,56 +21,50 @@ context('Asset page', { tags: '@regression' }, function () {
           3,
           'Ensuring we have at least 3 assets to test'
         );
+
         assetNames.forEach((assetName) => {
-          const assetInfo = assetsInfo[assetName];
-          cy.get(assetHeader).contains(assetInfo.symbol);
           cy.get(assetHeader)
             .contains(assetName)
             .next()
             .within(() => {
-              cy.get(jsonSection).within(() => {
-                cy.contains(`"name": "${assetName}"`).should('be.visible');
-                cy.contains(`"id": "${assetInfo.id}"`).should('be.visible');
-                cy.contains(`"decimals": ${assetInfo.decimals}`).should(
-                  'be.visible'
-                );
-                cy.contains(`"symbol": "${assetInfo.symbol}"`).should(
-                  'be.visible'
-                );
-                cy.contains(
-                  `"__typename": "${assetInfo.infrastructureFeeAccount.__typename}"`
-                ).should('be.visible');
-                cy.contains(
-                  `"type": "${assetInfo.infrastructureFeeAccount.type}"`
-                ).should('be.visible');
-                cy.contains(
-                  `"balance": "${assetInfo.infrastructureFeeAccount.balance}"`
-                ).should('be.visible');
-                cy.contains(
-                  `"__typename": "${assetInfo.source.__typename}"`
-                ).should('be.visible');
+              cy.get(jsonSection)
+                .invoke('text')
+                .convert_string_json_to_js_object()
+                .then((assetsListedInJson) => {
+                  const assetInfo = assetsInfo[assetName];
 
-                if (assetInfo.source.__typename == 'ERC20') {
-                  cy.contains(
-                    `"contractAddress": "${assetInfo.source.contractAddress}"`
-                  ).should('be.visible');
-                }
+                  assert.equal(assetsListedInJson.name, assetInfo.name);
+                  assert.equal(assetsListedInJson.id, assetInfo.id);
+                  assert.equal(assetsListedInJson.decimals, assetInfo.decimals);
+                  assert.equal(assetsListedInJson.symbol, assetInfo.symbol);
+                  assert.equal(
+                    assetsListedInJson.source.__typename,
+                    assetInfo.source.__typename
+                  );
 
-                if (assetInfo.source.__typename == 'BuiltinAsset') {
-                  cy.contains(
-                    `"maxFaucetAmountMint": "${assetInfo.source.maxFaucetAmountMint}"`
-                  ).should('be.visible');
-                }
+                  if (assetInfo.source.__typename == 'ERC20') {
+                    assert.equal(
+                      assetsListedInJson.source.contractAddress,
+                      assetInfo.source.contractAddress
+                    );
+                  }
 
-                let knownAssetTypes = ['BuiltinAsset', 'ERC20'];
-                assert.include(
-                  knownAssetTypes,
-                  assetInfo.source.__typename,
-                  `Checking that current asset type of ${assetInfo.source.__typename} /
-                is one of: ${knownAssetTypes}: /
-                If fail then we need to add extra tests for un-encountered asset types`
-                );
-              });
+                  if (assetInfo.source.__typename == 'BuiltinAsset') {
+                    assert.equal(
+                      assetsListedInJson.source.maxFaucetAmountMint,
+                      assetInfo.source.maxFaucetAmountMint
+                    );
+                  }
+
+                  let knownAssetTypes = ['BuiltinAsset', 'ERC20'];
+                  assert.include(
+                    knownAssetTypes,
+                    assetInfo.source.__typename,
+                    `Checking that current asset type of ${assetInfo.source.__typename} /
+                  is one of: ${knownAssetTypes}: /
+                  If fail then we need to add extra tests for un-encountered asset types`
+                  );
+                });
             });
         });
       });

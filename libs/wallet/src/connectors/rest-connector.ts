@@ -283,7 +283,7 @@ export class RestConnector implements VegaConnector {
       }
     } catch (err) {
       return {
-        error: 'Failed to fetch',
+        error: 'No wallet detected',
       };
     }
   }

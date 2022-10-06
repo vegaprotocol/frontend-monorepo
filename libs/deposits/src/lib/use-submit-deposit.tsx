@@ -3,15 +3,12 @@ import * as Sentry from '@sentry/react';
 import type {
   DepositEventSubscription,
   DepositEventSubscriptionVariables,
-} from './__generated__/Deposit';
-import { DepositEventDocument } from './__generated__/Deposit';
+} from './__generated___/Deposit';
+import { DepositEventDocument } from './__generated___/Deposit';
 import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
-import {
-  isAssetTypeERC20,
-  remove0x,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { remove0x, removeDecimal } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import {
   useBridgeContract,
   useEthereumConfig,
