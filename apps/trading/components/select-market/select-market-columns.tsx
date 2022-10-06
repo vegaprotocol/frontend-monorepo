@@ -21,10 +21,6 @@ import {
   totalFees,
 } from '@vegaprotocol/market-list';
 import type { CandleClose } from '@vegaprotocol/types';
-import type {
-  MarketWithData,
-  MarketWithCandles,
-} from '@vegaprotocol/market-list';
 import isNil from 'lodash/isNil';
 
 export const cellClassNames = 'px-0 py-1 first:text-left text-right';
