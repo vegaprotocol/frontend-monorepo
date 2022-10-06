@@ -200,18 +200,6 @@ export const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to">
-        {keypair?.pub && (
-          <span className="absolute top-0 right-0">
-            <UseButton
-              onClick={() => {
-                setValue('to', keypair.pub);
-                clearErrors('to');
-              }}
-            >
-              {t('Use connected')}
-            </UseButton>
-          </span>
-        )}
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
           id="to"
