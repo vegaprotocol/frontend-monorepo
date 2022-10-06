@@ -16,7 +16,6 @@
 }
 
 .health-inner {
-  overflow: hidden;
   position: relative;
   height: 16px;
   width: 100%;
@@ -33,6 +32,13 @@
   top: 0;
   height: 100%;
   width: 100%;
+
+  &--expanded,
+  &:hover {
+    .health-committed-tooltip {
+      display: flex;
+    }
+  }
 }
 
 .health-committed--continuous {
@@ -53,6 +59,13 @@
   top: 0;
   transform: translateX(-50%);
   padding: 0 5px;
+
+  &--expanded,
+  &:hover {
+    .health-target-tooltip {
+      display: flex;
+    }
+  }
 }
 
 .health-target {
@@ -90,18 +103,15 @@
   transform: translate(-50%, -120%);
   border: 1px solid #bfccd6;
   background-color: #fff;
+  display: none;
+  padding: 2px 8px;
+  flex-direction: column;
+  z-index: 1;
+  min-width: 65px;
 }
 
 .health-committed-tooltip {
   min-width: 90px;
-}
-
-.health-committed-tooltip,
-.health-target-tooltip {
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
 }
 
 .health-tooltip::before,
