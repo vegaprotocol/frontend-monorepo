@@ -39,11 +39,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'XYZalpha',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -73,11 +79,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'XYZbeta',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -108,11 +120,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'DAI',
             settlementAsset: {
               symbol: 'tDAI',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -142,11 +160,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'XYZbeta',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -175,11 +199,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tUSDC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -210,11 +240,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tBTC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -244,11 +280,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'XYZgamma',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -279,11 +321,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tBTC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -314,11 +362,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'BTC',
             settlementAsset: {
               symbol: 'tBTC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -350,11 +404,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tUSDC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -386,11 +446,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'EURO',
             settlementAsset: {
               symbol: 'tEURO',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -420,11 +486,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'XYZgamma',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -455,11 +527,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tBTC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',
@@ -490,11 +568,17 @@ export const generateSimpleMarkets = (): MarketsQuery => {
           },
           product: {
             __typename: 'Future',
+            oracleSpecForTradingTermination: {
+              id: '',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'USD',
             settlementAsset: {
               symbol: 'tBTC',
               __typename: 'Asset',
               decimals: 5,
+              id: '',
+              name: '',
             },
           },
           __typename: 'Instrument',

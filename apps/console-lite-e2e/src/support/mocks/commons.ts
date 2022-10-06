@@ -114,12 +114,29 @@ export const protoMarket: Market = {
       },
       product: {
         __typename: 'Future',
+        oracleSpecForTradingTermination: {
+          id: 'orc-id',
+          __typename: 'OracleSpec',
+        },
         quoteName: 'DAI',
-        settlementAsset: { symbol: 'tDAI', __typename: 'Asset', decimals: 5 },
+        settlementAsset: {
+          symbol: 'tDAI',
+          __typename: 'Asset',
+          decimals: 5,
+          id: 'dai-id',
+          name: 'dai name',
+        },
       },
       __typename: 'Instrument',
     },
     __typename: 'TradableInstrument',
+  },
+  depth: {
+    __typename: 'MarketDepth',
+    lastTrade: {
+      __typename: 'Trade',
+      price: '88470230',
+    },
   },
   __typename: 'Market',
 };
