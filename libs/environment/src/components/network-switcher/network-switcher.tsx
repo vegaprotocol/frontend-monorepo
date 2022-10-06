@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Link,
