@@ -29,7 +29,7 @@ context(
           .and('have.attr', 'href')
           .and('equal', governanceDocsUrl);
 
-        // 1005-PROP-001
+        // 3002-PROP-001
         cy.request(governanceDocsUrl)
           .its('body')
           .then((body) => {

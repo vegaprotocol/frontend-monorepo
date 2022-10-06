@@ -54,9 +54,9 @@ context(
     it('Able to submit valid update network parameter proposal', function () {
       cy.navigate_to_page_if_not_already_loaded('governance');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
-      // 1005-PROP-006
+      // 3002-PROP-006
       cy.get(newProposalTitle).type('Test update network parameter proposal');
-      // 1005-PROP-007
+      // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
       cy.get(proposalParameterSelect).find('option').should('have.length', 109);
