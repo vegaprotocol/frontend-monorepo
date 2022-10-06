@@ -8,10 +8,8 @@ import {
   emptyPositions,
   generateMargins,
 } from '../support/mocks/generate-positions';
-import {
-  generateAccounts,
-  generateAssets,
-} from '../support/mocks/generate-accounts';
+import { generateAccounts } from '../support/mocks/generate-accounts';
+import { generateAssets } from '../support/mocks/generate-assets';
 import { generateOrders } from '../support/mocks/generate-orders';
 import { generateFills } from '../support/mocks/generate-fills';
 import {
