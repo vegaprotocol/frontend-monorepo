@@ -1,6 +1,6 @@
 import { lpAggregatedDataProvider } from '@vegaprotocol/liquidity';
 import { marketLiquidityDataProvider } from '@vegaprotocol/liquidity';
-import { LiquidityTable, update } from '@vegaprotocol/liquidity';
+import { LiquidityTable } from '@vegaprotocol/liquidity';
 import {
   addDecimalsFormatNumber,
   NetworkParams,
@@ -18,14 +18,11 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
 import { Header, HeaderStat } from '../../components/header';
 import { useRouter } from 'next/router';
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import Link from 'next/link';
 import { Schema } from '@vegaprotocol/types';
-import type {
-  LiquidityProvisionFieldsFragment,
-  LiquidityProvisionsSubscription,
-} from '@vegaprotocol/liquidity';
+import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
@@ -41,17 +38,30 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     noUpdate: true,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
+  const dataRef = useRef<LiquidityProvisionData[] | null>(null);
+
+  const update = useCallback(
+    ({ data }: { data: LiquidityProvisionData[] }) => {
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      if (dataRef.current?.length) {
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      }
+      return false;
+    },
+    [gridRef]
+  );
 
   const {
     data: liquidityProviders,
     loading,
     error,
-  } = useDataProvider<
-    LiquidityProvisionFieldsFragment[],
-    LiquidityProvisionsSubscription['liquidityProvisions']
-  >({
+  } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
-    update,
+    update, // TODO only accounts should use LP party ID
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
   console.log({ liquidityProviders }); // TODO: Remove this

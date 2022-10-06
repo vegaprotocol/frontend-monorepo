@@ -21,6 +21,8 @@ import type {
 } from './__generated___/MarketLiquidity';
 import { LiquidityProvisionsUpdateDocument } from './__generated___/MarketLiquidity';
 import { LiquidityProvisionsDocument } from './__generated___/MarketLiquidity';
+import type { Account } from '@vegaprotocol/accounts';
+import { accountsDataProvider } from '@vegaprotocol/accounts';
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
@@ -124,12 +126,19 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
     liquidityProvisionsDataProvider,
     marketLiquidityDataProvider,
     liquidityFeeShareDataProvider,
+    accountsDataProvider,
   ],
-  ([liquidityProvisions, marketLiquidity, liquidityFeeShare]) => {
+  ([
+    liquidityProvisions,
+    marketLiquidity,
+    liquidityFeeShare,
+    accounts,
+  ]): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
       marketLiquidity,
-      liquidityFeeShare
+      liquidityFeeShare,
+      accounts
     );
   }
 );
@@ -137,11 +146,13 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
   marketLiquidity: MarketLpQuery,
-  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
+  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
+  accounts: Account[]
 ): LiquidityProvisionData[] => {
   // liquidityProvisions and liquidityFeeShare are two arrays that need to be merged based on the party id
   // liquidityProvisions comes from a subscription or a query
   // liquidityFeeShare comes from a query
+  // accounts come from subscription or query
   return liquidityProvisions.map((lp) => {
     const market = marketLiquidity?.market;
     const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
@@ -153,10 +164,13 @@ export const getLiquidityProvision = (
       assetDecimalPlaces:
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
       balance:
-        lp.party.accountsConnection?.edges
-          ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_BOND)
+        accounts
+          ?.filter(
+            (a) => a?.type === AccountType.ACCOUNT_TYPE_BOND
+            // && a?.party.id === lp.party.id
+          )
           ?.reduce(
-            (acc, e) => acc.plus(new BigNumber(e?.node.balance ?? 0)),
+            (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)
           )
           .toString() ?? '0',
