@@ -18,15 +18,12 @@ EOT
   }
 
   wallet "wallet-1" {
-    binary = "vegawallet"
-
     template = <<-EOT
 Name = "DV"
 Level = "info"
 TokenExpiry = "168h0m0s"
 Port = 1789
 Host = "0.0.0.0"
-
 [API]
   [API.GRPC]
     Hosts = [{{range $i, $v := .Validators}}{{if ne $i 0}},{{end}}"127.0.0.1:30{{$i}}2"{{end}}]
@@ -54,7 +51,7 @@ EOT
       auth_soft_fail = true
     }
     docker_service "postgres-1" {
-      image = "vegaprotocol/timescaledb:2.7.1-pg14"
+      image = "vegaprotocol/timescaledb:2.8.0-pg14"
       cmd = "postgres"
       args = []
       env = {
@@ -66,6 +63,11 @@ EOT
         value = 5232
         to = 5432
       }
+      resources {
+        cpu = 600
+        memory = 900
+      }
+
       auth_soft_fail = true
     }
   }
@@ -90,7 +92,7 @@ EOT
   node_set "full" {
     count = 1
     mode = "full"
-	  data_node_binary = "data-node"
+    use_data_node = true
 
     config_templates {
       vega_file = "./node_set_templates/default/vega_full.tmpl"

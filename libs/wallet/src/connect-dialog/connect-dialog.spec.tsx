@@ -184,11 +184,11 @@ describe('VegaConnectDialog', () => {
 
     const fillInForm = () => {
       const walletValue = 'test-wallet';
-      fireEvent.change(screen.getByLabelText('Wallet name'), {
+      fireEvent.change(screen.getByTestId('rest-wallet'), {
         target: { value: walletValue },
       });
       const passphraseValue = 'test-passphrase';
-      fireEvent.change(screen.getByLabelText('Passphrase'), {
+      fireEvent.change(screen.getByTestId('rest-passphrase'), {
         target: { value: passphraseValue },
       });
       return { wallet: walletValue, passphrase: passphraseValue };
