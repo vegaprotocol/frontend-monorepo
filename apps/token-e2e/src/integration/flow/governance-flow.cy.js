@@ -35,12 +35,12 @@ const voteTwoMinExtraNote = '[data-testid="voting-2-mins-extra"]';
 const voteStatus = '[data-testid="vote-status"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
-const txTimeout = Cypress.env('txTimeout');
-const epochTimeout = Cypress.env('epochTimeout');
-const proposalTimeout = { timeout: 14000 };
 const restConnectorForm = '[data-testid="rest-connector-form"]';
 const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
+const txTimeout = Cypress.env('txTimeout');
+const epochTimeout = Cypress.env('epochTimeout');
+const proposalTimeout = { timeout: 14000 };
 
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
@@ -197,8 +197,7 @@ context(
         cy.navigate_to_page_if_not_already_loaded('governance');
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
           'contain',
-          this.minProposerBalance,
-          txTimeout
+          this.minProposerBalance
         );
         cy.navigate_to('staking');
         cy.wait_for_spinner();
@@ -207,8 +206,7 @@ context(
 
         cy.get(vegaWalletStakedBalances, txTimeout).should(
           'contain',
-          this.minProposerBalance,
-          txTimeout
+          this.minProposerBalance
         );
 
         cy.navigate_to('governance');
@@ -310,7 +308,6 @@ context(
 
         cy.navigate_to('governance');
         cy.wait_for_spinner();
-
         cy.get(proposalDetailsTitle)
           .each((proposalTitleElement) => {
             arrayOfProposals.push(proposalTitleElement.text());
