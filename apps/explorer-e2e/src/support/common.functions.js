@@ -47,6 +47,7 @@ Cypress.Commands.add(
   'convert_string_json_to_js_object',
   { prevSubject: true },
   (jsonBlobString) => {
+    // Note: this is a chaining function
     return JSON.parse(jsonBlobString);
   }
 );
@@ -55,6 +56,8 @@ Cypress.Commands.add(
   'add_commas_to_number_if_large_enough',
   { prevSubject: true },
   (number) => {
+    // This will turn 10000000.0000 into 10,000,000.000
+    // Note: this is a chaining function
     const beforeDecimal = number.split('.')[0];
     const afterDecimal = number.split('.')[1];
     const beforeDecimalWithCommas = beforeDecimal
