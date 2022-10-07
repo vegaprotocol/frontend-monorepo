@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js';
+
 Cypress.Commands.add(
   'common_validate_blocks_data_displayed',
   function (headerTestId) {
@@ -25,33 +27,6 @@ Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
   cy.get('[data-testid="open-menu"]').click();
 });
 
-Cypress.Commands.add('common_verify_json_parameters', function (expectedNum) {
-  cy.get('.hljs-attr')
-    .should('have.length.at.least', expectedNum)
-    .each(($paramName) => {
-      cy.wrap($paramName).should('not.be.empty');
-    });
-});
-
-Cypress.Commands.add(
-  'common_verify_json_string_values',
-  function (expectedNum) {
-    cy.get('.hljs-string')
-      .should('have.length.at.least', expectedNum)
-      .each(($paramValue) => {
-        cy.wrap($paramValue).should('not.be.empty');
-      });
-  }
-);
-
-Cypress.Commands.add('common_verify_json_int_values', function (expectedNum) {
-  cy.get('.hljs-number')
-    .should('have.length.at.least', expectedNum)
-    .each(($paramValue) => {
-      cy.wrap($paramValue).should('not.be.empty');
-    });
-});
-
 Cypress.Commands.add('monitor_clipboard', () => {
   cy.window().then((win) => {
     return cy.stub(win, 'prompt').returns(win.prompt);
@@ -75,3 +50,19 @@ Cypress.Commands.add(
     return JSON.parse(jsonBlobString);
   }
 );
+
+Cypress.Commands.add('add_commas_to_number_if_large_enough', {prevSubject:true}, (number) => {
+  const beforeDecimal = number.split('.')[0];
+  const afterDecimal = number.split('.')[1];
+  const beforeDecimalWithCommas = beforeDecimal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const formattedValue = beforeDecimalWithCommas + '.' + afterDecimal;
+  return formattedValue
+})
+
+Cypress.Commands.add('convert_number_to_eighteen_decimal', (number) => {
+  return BigNumber((number/1000000000000000000).toString()).toFixed(18);
+})
+
+Cypress.Commands.add('convert_number_to_four_decimal', (number) => {
+  return parseFloat(number).toFixed(4);
+})

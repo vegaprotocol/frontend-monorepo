@@ -69,27 +69,6 @@ Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
   });
 });
 
-Cypress.Commands.add('get_network_parameters', () => {
-  let mutation = '{networkParameters {key value}}';
-  cy.request({
-    method: 'POST',
-    url: `http://localhost:3028/query`,
-    body: {
-      query: mutation,
-    },
-    headers: { 'content-type': 'application/json' },
-  })
-    .its(`body.data.networkParameters`)
-    .then(function (response) {
-      let object = response.reduce(function (r, e) {
-        r[e.key] = e.value;
-        return r;
-      }, {});
-
-      return object;
-    });
-});
-
 Cypress.Commands.add('get_submitted_proposal_from_proposal_list', () => {
   cy.wait('@proposalSubmissionCompletion')
     .its(proposalResponseProposalIdPath)
