@@ -13,7 +13,7 @@ import Genesis from './genesis';
 import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
-import { TxsHome, TxsHomeFallback } from './txs/home';
+import { TxsList } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../config/flags';
 import { t } from '@vegaprotocol/react-helpers';
@@ -141,7 +141,7 @@ const routerConfig = [
       },
       {
         index: true,
-        element: flags.txsList ? <TxsHome /> : <TxsHomeFallback />,
+        element: <TxsList />,
       },
     ],
   },
