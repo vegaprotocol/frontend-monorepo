@@ -21,7 +21,7 @@ export const Tabs = ({ children, active: activeDefaultId }: TabsProps) => {
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
-          className="flex flex-nowrap overflow-visible bg-neutral-50 dark:bg-neutral-800"
+          className="flex flex-nowrap overflow-visible"
           role="tablist"
         >
           {Children.map(children, (child) => {
