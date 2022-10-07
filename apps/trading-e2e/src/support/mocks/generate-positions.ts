@@ -1,15 +1,15 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
-  Positions,
-  Positions_party_positionsConnection_edges_node,
-  Margins,
+  PositionsQuery,
+  PositionFieldsFragment,
+  MarginsQuery,
 } from '@vegaprotocol/positions';
 
 export const generatePositions = (
-  override?: PartialDeep<Positions>
-): Positions => {
-  const nodes: Positions_party_positionsConnection_edges_node[] = [
+  override?: PartialDeep<PositionsQuery>
+): PositionsQuery => {
+  const nodes: PositionFieldsFragment[] = [
     {
       __typename: 'Position',
       realisedPNL: '0',
@@ -48,7 +48,7 @@ export const generatePositions = (
     },
   ];
 
-  const defaultResult: Positions = {
+  const defaultResult: PositionsQuery = {
     party: {
       __typename: 'Party',
       id: Cypress.env('VEGA_PUBLIC_KEY'),
@@ -67,7 +67,7 @@ export const generatePositions = (
   return merge(defaultResult, override);
 };
 
-export const generateMargins = (): Margins => {
+export const generateMargins = (): MarginsQuery => {
   return {
     party: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),

@@ -83,6 +83,16 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
+                to={`${Routes.GOVERNANCE}/propose/update-asset`}
+              >
+                {t('UpdateAsset')}
+              </Link>
+            </p>
+          </li>
+          <li>
+            <p>
+              <Link
+                className="underline"
                 to={`${Routes.GOVERNANCE}/propose/freeform`}
               >
                 {t('Freeform')}

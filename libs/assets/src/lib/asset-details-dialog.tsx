@@ -1,5 +1,9 @@
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  t,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
+import type { Asset } from './assets-data-provider';
 import {
   Button,
   Dialog,
@@ -9,7 +13,7 @@ import {
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { useAssetsConnectionQuery } from './__generated___/Assets';
+import { assetsProvider } from './assets-data-provider';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
@@ -59,12 +63,10 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
-  const { data } = useAssetsConnectionQuery();
+  const { data } = useDataProvider({ dataProvider: assetsProvider });
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
-  const asset = data?.assetsConnection?.edges?.find(
-    (e) => e?.node.symbol === symbol
-  );
+  const asset = data?.find((a) => a?.symbol === symbol);
 
   let details: AssetDetails = [];
   if (asset != null) {
@@ -72,31 +74,31 @@ export const AssetDetailsDialog = ({
       {
         key: 'name',
         label: t('Name'),
-        value: asset.node.name,
+        value: asset.name,
         tooltip: '', // t('Name of the asset (e.g: Great British Pound)')
       },
       {
         key: 'symbol',
         label: t('Symbol'),
-        value: asset.node.symbol,
+        value: asset.symbol,
         tooltip: '', // t('Symbol of the asset (e.g: GBP)')
       },
       {
         key: 'decimals',
         label: t('Decimals'),
-        value: asset.node.decimals.toString(),
+        value: asset.decimals.toString(),
         tooltip: t('Number of decimal / precision handled by this asset'),
       },
       {
         key: 'quantum',
         label: t('Quantum'),
-        value: asset.node.quantum,
+        value: asset.quantum,
         tooltip: t('The minimum economically meaningful amount in the asset'),
       },
       {
         key: 'contractaddress',
         label: t('Contract address'),
-        value: (asset.node.source as Schema.ERC20).contractAddress,
+        value: (asset.source as Schema.ERC20).contractAddress,
         tooltip: t(
           'The address of the contract for the token, on the ethereum network'
         ),
@@ -105,8 +107,8 @@ export const AssetDetailsDialog = ({
         key: 'withdrawalthreshold',
         label: t('Withdrawal threshold'),
         value: addDecimalsFormatNumber(
-          (asset.node.source as Schema.ERC20).withdrawThreshold,
-          asset.node.decimals
+          (asset.source as Schema.ERC20).withdrawThreshold,
+          asset.decimals
         ),
         tooltip: t(
           'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
@@ -116,8 +118,8 @@ export const AssetDetailsDialog = ({
         key: 'lifetimelimit',
         label: t('Lifetime limit'),
         value: addDecimalsFormatNumber(
-          (asset.node.source as Schema.ERC20).lifetimeLimit,
-          asset.node.decimals
+          (asset.source as Schema.ERC20).lifetimeLimit,
+          asset.decimals
         ),
         tooltip: t(
           'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'

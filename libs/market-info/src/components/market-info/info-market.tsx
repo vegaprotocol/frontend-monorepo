@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { formatNumber, t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, useYesterday } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
@@ -44,10 +44,10 @@ export const MarketInfoContainer = ({
   marketId,
   onSelect,
 }: MarketInfoContainerProps) => {
+  const yesterday = useYesterday();
   const yTimestamp = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
+    return new Date(yesterday).toISOString();
+  }, [yesterday]);
   const variables = useMemo(
     () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
     [marketId, yTimestamp]

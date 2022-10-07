@@ -1,11 +1,15 @@
 import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { PubKey } from '@vegaprotocol/wallet';
 
-export const mockPubkey = '0x123';
+export const mockPubkey: PubKey = {
+  publicKey: '0x123',
+  name: 'test key 1',
+};
 
 export const mockWalletContext = {
-  pubKey: mockPubkey,
+  pubKey: mockPubkey.publicKey,
   pubKeys: [mockPubkey],
   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
   connect: jest.fn(),

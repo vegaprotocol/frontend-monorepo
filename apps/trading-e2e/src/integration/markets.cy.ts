@@ -115,7 +115,7 @@ describe('markets table', { tags: '@regression' }, () => {
         .should('have.attr', 'href')
         .and(
           'include',
-          'https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-liquidity-monitoring-auction'
+          'https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring'
         );
     });
 

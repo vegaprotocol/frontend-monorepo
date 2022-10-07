@@ -17,7 +17,7 @@ import type {
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import { AccountType } from '@vegaprotocol/types';
 
 const DELEGATIONS_QUERY = gql`
