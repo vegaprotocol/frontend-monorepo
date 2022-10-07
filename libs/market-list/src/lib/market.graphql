@@ -39,11 +39,6 @@ fragment SingleMarketFields on Market {
     open
     close
   }
-  depth {
-    lastTrade {
-      price
-    }
-  }
 }
 
 query Market($marketId: ID!) {

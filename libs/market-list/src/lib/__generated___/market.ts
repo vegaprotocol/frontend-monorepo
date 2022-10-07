@@ -3,14 +3,14 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type SingleMarketFieldsFragment = { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, depth: { __typename?: 'MarketDepth', lastTrade?: { __typename?: 'Trade', price: string } | null } };
+export type SingleMarketFieldsFragment = { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null } };
 
 export type MarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type MarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null }, depth: { __typename?: 'MarketDepth', lastTrade?: { __typename?: 'Trade', price: string } | null } } | null };
+export type MarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, state: Types.MarketState, tradingMode: Types.MarketTradingMode, fees: { __typename?: 'Fees', factors: { __typename?: 'FeeFactors', makerFee: string, infrastructureFee: string, liquidityFee: string } }, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename?: 'Future', quoteName: string, oracleSpecForTradingTermination: { __typename?: 'OracleSpec', id: string }, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } }, marketTimestamps: { __typename?: 'MarketTimestamps', open?: string | null, close?: string | null } } | null };
 
 export const SingleMarketFieldsFragmentDoc = gql`
     fragment SingleMarketFields on Market {
@@ -53,11 +53,6 @@ export const SingleMarketFieldsFragmentDoc = gql`
   marketTimestamps {
     open
     close
-  }
-  depth {
-    lastTrade {
-      price
-    }
   }
 }
     `;
