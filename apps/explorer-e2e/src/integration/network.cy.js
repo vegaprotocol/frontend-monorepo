@@ -1,5 +1,4 @@
 context('Network parameters page', { tags: '@smoke' }, function () {
-
   before('navigate to network parameter page', function () {
     cy.fixture('net_parameter_format_lookup').as('networkParameterFormat');
   });
@@ -22,10 +21,14 @@ context('Network parameters page', { tags: '@smoke' }, function () {
 
     it('should list each of the network parameters available', function () {
       cy.get_network_parameters().then((network_parameters) => {
-        const numberOfNetworkParametersInSystem = Object.keys(network_parameters).length;
-        cy.get(tableRows).should('have.length', numberOfNetworkParametersInSystem);
+        const numberOfNetworkParametersInSystem =
+          Object.keys(network_parameters).length;
+        cy.get(tableRows).should(
+          'have.length',
+          numberOfNetworkParametersInSystem
+        );
       });
-    })
+    });
 
     it('should list each network parameter displayed with json - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -33,8 +36,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.json.includes(parameterName))
-          {
+          if (this.networkParameterFormat.json.includes(parameterName)) {
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
@@ -42,18 +44,20 @@ context('Network parameters page', { tags: '@smoke' }, function () {
               .invoke('text')
               .convert_string_json_to_js_object()
               .then((jsonOnPage) => {
-                cy.wrap(parameterValue, {log:false})
+                cy.wrap(parameterValue, { log: false })
                   .convert_string_json_to_js_object()
-                  .then((jsonInSystem) => 
+                  .then((jsonInSystem) =>
                     assert.deepEqual(
-                      jsonOnPage, 
+                      jsonOnPage,
                       jsonInSystem,
-                      `Checking ${parameterName} has the correct value of ${jsonInSystem}`));
-              })
+                      `Checking ${parameterName} has the correct value of ${jsonInSystem}`
+                    )
+                  );
+              });
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as a percentage - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -61,25 +65,26 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.percentage.includes(parameterName))
-          {
-            const formattedPercentageParameter = (parseFloat(parameterValue)*100).toFixed(0) + "%";
+          if (this.networkParameterFormat.percentage.includes(parameterName)) {
+            const formattedPercentageParameter =
+              (parseFloat(parameterValue) * 100).toFixed(0) + '%';
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
               .next()
               .invoke('text')
-              .then(parameterValueOnPage => {
+              .then((parameterValueOnPage) => {
                 assert.equal(
-                  parameterValueOnPage, 
+                  parameterValueOnPage,
                   formattedPercentageParameter,
-                  `Checking ${parameterName} has the correct value of ${formattedPercentageParameter}`)
+                  `Checking ${parameterName} has the correct value of ${formattedPercentageParameter}`
+                );
                 cy.contains(parameterValueOnPage).should('be.visible');
-              })
+              });
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as an id - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -87,19 +92,18 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.id.includes(parameterName))
-          {
+          if (this.networkParameterFormat.id.includes(parameterName)) {
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
               .next()
               .should('contain', parameterValue)
               .and('be.visible')
-              .invoke('text')
+              .invoke('text');
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as a date - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -107,18 +111,17 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.date.includes(parameterName))
-          {
+          if (this.networkParameterFormat.date.includes(parameterName)) {
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
               .next()
               .should('contain', parameterValue)
-              .and('be.visible')
+              .and('be.visible');
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as a duration - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -126,27 +129,25 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.duration.includes(parameterName))
-          {
+          if (this.networkParameterFormat.duration.includes(parameterName)) {
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
               .next()
               .should('contain', parameterValue)
-              .and('be.visible')
+              .and('be.visible');
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as a currency value with four decimals - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
         network_parameters = Object.entries(network_parameters);
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
-          const parameterValue = network_parameter[1];          
-          if (this.networkParameterFormat.fiveDecimal.includes(parameterName))
-          {
+          const parameterValue = network_parameter[1];
+          if (this.networkParameterFormat.fiveDecimal.includes(parameterName)) {
             cy.convert_number_to_four_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
@@ -155,18 +156,19 @@ context('Network parameters page', { tags: '@smoke' }, function () {
                   .should('be.visible')
                   .next()
                   .invoke('text')
-                  .then(parameterValueOnPage => {
-                    assert.equal( 
+                  .then((parameterValueOnPage) => {
+                    assert.equal(
                       parameterValueOnPage,
                       parameterValueFormatted,
-                      `Checking ${parameterName} has the correct value of ${parameterValueFormatted}`)
+                      `Checking ${parameterName} has the correct value of ${parameterValueFormatted}`
+                    );
                     cy.contains(parameterValueOnPage).should('be.visible');
-                  })
-            })
+                  });
+              });
           }
-        })
+        });
       });
-    })
+    });
 
     it('should list each network parameter displayed as a currency value with eighteen decimals - in the correct format', function () {
       cy.get_network_parameters().then((network_parameters) => {
@@ -174,8 +176,9 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         network_parameters.forEach((network_parameter) => {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
-          if (this.networkParameterFormat.eighteenDecimal.includes(parameterName))
-          {
+          if (
+            this.networkParameterFormat.eighteenDecimal.includes(parameterName)
+          ) {
             cy.convert_number_to_eighteen_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
@@ -184,19 +187,20 @@ context('Network parameters page', { tags: '@smoke' }, function () {
                   .should('be.visible')
                   .next()
                   .invoke('text')
-                  .then(parameterValueOnPage => {
-                    assert.equal( 
+                  .then((parameterValueOnPage) => {
+                    assert.equal(
                       parameterValueOnPage,
                       parameterValueFormatted,
-                      `Checking ${parameterName} has the correct value of ${parameterValueFormatted}`)
+                      `Checking ${parameterName} has the correct value of ${parameterValueFormatted}`
+                    );
                     cy.contains(parameterValueOnPage).should('be.visible');
-                  })
-            })
+                  });
+              });
           }
-        })
+        });
       });
-    })
-    
+    });
+
     it('should be able to switch network parameter page - between light and dark mode', function () {
       const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
       const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
@@ -245,7 +249,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
             .should('be.visible')
             .next()
             .should('not.be.empty')
-            .and('be.visible')
+            .and('be.visible');
         });
       });
     });

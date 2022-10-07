@@ -51,18 +51,24 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('add_commas_to_number_if_large_enough', {prevSubject:true}, (number) => {
-  const beforeDecimal = number.split('.')[0];
-  const afterDecimal = number.split('.')[1];
-  const beforeDecimalWithCommas = beforeDecimal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  const formattedValue = beforeDecimalWithCommas + '.' + afterDecimal;
-  return formattedValue
-})
+Cypress.Commands.add(
+  'add_commas_to_number_if_large_enough',
+  { prevSubject: true },
+  (number) => {
+    const beforeDecimal = number.split('.')[0];
+    const afterDecimal = number.split('.')[1];
+    const beforeDecimalWithCommas = beforeDecimal
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const formattedValue = beforeDecimalWithCommas + '.' + afterDecimal;
+    return formattedValue;
+  }
+);
 
 Cypress.Commands.add('convert_number_to_eighteen_decimal', (number) => {
-  return BigNumber((number/1000000000000000000).toString()).toFixed(18);
-})
+  return BigNumber((number / 1000000000000000000).toString()).toFixed(18);
+});
 
 Cypress.Commands.add('convert_number_to_four_decimal', (number) => {
   return parseFloat(number).toFixed(4);
-})
+});
