@@ -67,23 +67,13 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
           },
           product: {
             __typename: 'Future',
-            oracleSpecForTradingTermination: {
-              id: 'oid',
-            },
             settlementAsset: {
               __typename: 'Asset',
               symbol: 'SYM',
               decimals: 18,
-              id: 'sym-id',
-              name: 'sym name',
             },
             quoteName: '',
           },
-        },
-      },
-      depth: {
-        lastTrade: {
-          price: 'lastTradePrice',
         },
       },
     },

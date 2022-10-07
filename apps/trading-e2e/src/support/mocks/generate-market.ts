@@ -1,9 +1,5 @@
 import merge from 'lodash/merge';
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import type { MarketQuery } from '@vegaprotocol/market-list';
