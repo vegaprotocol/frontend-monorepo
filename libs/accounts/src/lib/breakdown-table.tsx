@@ -74,21 +74,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
         />
-
-        <AgGridColumn
-          headerName={t('Deposited')}
-          field="deposited"
-          valueFormatter={({
-            value,
-            data,
-          }: VegaValueFormatterParams<AccountFields, 'deposited'>) => {
-            if (data && data.asset) {
-              return addDecimalsFormatNumber(value, data.asset.decimals);
-            }
-            return '-';
-          }}
-          maxWidth={300}
-        />
         <AgGridColumn
           headerName={t('Balance')}
           field="balance"
