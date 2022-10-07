@@ -1,9 +1,9 @@
 import { TxsInfiniteList } from './txs-infinite-list';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import type { BlockExplorerTransaction } from '../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
-const generateTxs = (number: number): BlockExplorerTransaction[] => {
+const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   return Array.from(Array(number)).map((_) => ({
     block: '87901',
     index: 2,

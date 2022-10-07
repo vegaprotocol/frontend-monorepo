@@ -1,4 +1,8 @@
 import { DATA_SOURCES } from '../../config';
+import type {
+  BlockExplorerTransaction,
+  BlockExplorerTransactions,
+} from '../../routes/types/block-explorer-response';
 
 export enum SearchTypes {
   Transaction = 'transaction',
@@ -52,28 +56,29 @@ export const detectTypeByFetching = async (
   }
 
   if (type === SearchTypes.Transaction) {
-    const hash = toHex(query);
+    const hash = toNonHex(query);
     const request = await fetch(
-      `${DATA_SOURCES.tendermintUrl}/tx?hash=${hash}`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions/${hash}`
     );
 
     if (request?.ok) {
-      const body = await request.json();
+      const body: BlockExplorerTransaction = await request.json();
 
-      if (body?.result?.tx) {
+      if (body?.transaction) {
         return SearchTypes.Transaction;
       }
     }
   } else if (type === SearchTypes.Party) {
     const party = toNonHex(query);
+
     const request = await fetch(
-      `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${party}'"`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${party}`
     );
 
     if (request.ok) {
-      const body = await request.json();
+      const body: BlockExplorerTransactions = await request.json();
 
-      if (body?.result?.txs?.length) {
+      if (body?.transactions?.length) {
         return SearchTypes.Party;
       }
     }
@@ -94,7 +99,7 @@ export const getSearchType = async (
         detectTypeByFetching(query, type)
       );
       const results = await Promise.all(promises);
-      return results.find((type) => type !== undefined);
+      return results.find((result) => result !== undefined);
     }
 
     return searchTypes[0];

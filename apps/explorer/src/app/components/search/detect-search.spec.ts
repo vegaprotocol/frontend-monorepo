@@ -89,8 +89,8 @@ describe('Detect Search', () => {
     expect(actual).toStrictEqual(expected);
   });
 
-  it("detectTypeByFetching should call fetch with hex query it's a transaction", async () => {
-    const query = 'abc';
+  it("detectTypeByFetching should call fetch with non-hex query it's a transaction", async () => {
+    const query = '0xabc';
     const type = SearchTypes.Transaction;
     // @ts-ignore issue related to polyfill
     fetch.mockImplementation(
@@ -99,8 +99,8 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                tx: query,
+              transaction: {
+                hash: query,
               },
             }),
         })
@@ -108,7 +108,7 @@ describe('Detect Search', () => {
     );
     const result = await detectTypeByFetching(query, type);
     expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx?hash=0x${query}`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions/${toNonHex(query)}`
     );
     expect(result).toBe(type);
   });
@@ -123,16 +123,14 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                txs: [query],
-              },
+              transactions: [query],
             }),
         })
       )
     );
     const result = await detectTypeByFetching(query, type);
     expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${query}'"`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${query}`
     );
     expect(result).toBe(type);
   });
@@ -150,7 +148,7 @@ describe('Detect Search', () => {
     );
     const result = await detectTypeByFetching(query, type);
     expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${query}'"`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${query}`
     );
     expect(result).toBe(undefined);
   });
@@ -166,9 +164,7 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                txs: [query],
-              },
+              transactions: [query],
             }),
         })
       )
@@ -188,8 +184,8 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                tx: query,
+              transaction: {
+                hash: query,
               },
             }),
         })
