@@ -42,7 +42,6 @@ describe('orders', { tags: '@smoke' }, () => {
 
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
-    expect(subscriptionMocks.OrderSub).to.be.calledOnce;
 
     cy.getByTestId('tab-orders').within(() => {
       cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {

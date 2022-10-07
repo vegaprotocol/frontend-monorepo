@@ -2,6 +2,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
+  useYesterday,
 } from '@vegaprotocol/react-helpers';
 import type {
   MarketsQuery,
@@ -90,13 +91,13 @@ export const marketListProvider = makeDerivedDataProvider<
 );
 
 export const useMarketList = () => {
+  const yesterday = useYesterday();
   const variables = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return {
-      since: new Date(yesterday * 1000).toISOString(),
+      since: new Date(yesterday).toISOString(),
       interval: Interval.INTERVAL_I1H,
     };
-  }, []);
+  }, [yesterday]);
   const { data, loading, error } = useDataProvider({
     dataProvider: marketListProvider,
     variables,

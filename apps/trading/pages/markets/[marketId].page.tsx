@@ -4,6 +4,7 @@ import {
   addDecimalsFormatNumber,
   t,
   titlefy,
+  useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
@@ -113,12 +114,12 @@ const MarketPage = ({ id }: { id?: string }) => {
     }
   };
 
+  const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
   const yTimestamp = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
+    return new Date(yesterday).toISOString();
+  }, [yesterday]);
 
   const variables = useMemo(
     () => ({

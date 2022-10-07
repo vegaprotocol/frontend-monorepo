@@ -15,8 +15,10 @@ import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
-import { useOrderValidation } from '../deal-ticket-validation/use-order-validation';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import {
+  isMarketInAuction,
+  useOrderValidation,
+} from '../deal-ticket-validation/use-order-validation';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -73,16 +75,15 @@ export const DealTicket = ({
   );
 
   const getPrice = () => {
-    if (
-      market.tradingMode === MarketTradingMode.TRADING_MODE_OPENING_AUCTION ||
-      market.tradingMode === MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-    ) {
-      return market.data?.indicativePrice;
-    }
-    if (
-      market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
-    ) {
-      return null;
+    if (isMarketInAuction(market)) {
+      //  0 can never be a valid uncrossing price as it would require there being orders on the book at that price.
+      if (
+        market.data?.indicativePrice &&
+        BigInt(market.data?.indicativePrice) !== BigInt(0)
+      ) {
+        return market.data.indicativePrice;
+      }
+      return '-';
     }
     return market.depth.lastTrade?.price;
   };
