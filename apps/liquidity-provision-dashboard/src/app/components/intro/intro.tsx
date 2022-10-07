@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-const Intro = () => {
+export const Intro = () => {
   return (
     <div className="px-6 py-6" data-testid="intro">
       <h2 className="text-2xl">{t('Become a liquidity provider')}</h2>
@@ -7,5 +7,3 @@ const Intro = () => {
     </div>
   );
 };
-
-export default Intro;

@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
-import HealthBar from './health-bar';
+import { HealthBar } from './health-bar';
 
 interface HealthDialogProps {
   isOpen: boolean;
@@ -17,8 +17,12 @@ const ROWS = [
     data: {
       status: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       target: '171320',
-      committed: '220000',
       decimals: 5,
+      providers: [
+        { fee: '0.6', commitmentAmount: 150000 },
+        { fee: '1', commitmentAmount: 150000 },
+        { fee: '2', commitmentAmount: 30000 },
+      ],
     },
   },
   {
@@ -28,8 +32,11 @@ const ROWS = [
     data: {
       status: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       target: '171320',
-      committed: '150000',
       decimals: 5,
+      providers: [
+        { fee: '0.6', commitmentAmount: 110000 },
+        { fee: '1', commitmentAmount: 50000 },
+      ],
     },
   },
   {
@@ -39,13 +46,16 @@ const ROWS = [
     data: {
       status: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       target: '171320',
-      committed: '140000',
       decimals: 3,
+      providers: [
+        { fee: '0.6', commitmentAmount: 110000 },
+        { fee: '1', commitmentAmount: 50000 },
+      ],
     },
   },
 ];
 
-export default function HealthDialog({ onChange, isOpen }: HealthDialogProps) {
+export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
   return (
     <Dialog size="medium" open={isOpen} onChange={onChange}>
       <h1 className="text-xl mb-4 pr-2 font-bold" data-testid="dialog-title">
@@ -73,9 +83,9 @@ export default function HealthDialog({ onChange, isOpen }: HealthDialogProps) {
                 <td className="py-10">
                   <HealthBar
                     size="large"
+                    providers={r.data.providers}
                     status={r.data.status}
                     target={r.data.target}
-                    committed={r.data.committed}
                     decimals={r.data.decimals}
                     isExpanded
                   />
@@ -87,4 +97,4 @@ export default function HealthDialog({ onChange, isOpen }: HealthDialogProps) {
       </table>
     </Dialog>
   );
-}
+};

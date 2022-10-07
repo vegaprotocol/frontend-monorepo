@@ -11,15 +11,9 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 
-import {
-  formatWithAsset,
-  formatMarketLists,
-} from '@vegaprotocol/liquidity-provision';
-
-import type {
-  MarketsListData,
-  Market,
-} from '@vegaprotocol/liquidity-provision';
+import { formatWithAsset } from '@vegaprotocol/liquidity';
+import type { MarketsListData, Market } from '@vegaprotocol/liquidity';
+import { formatMarketLists } from '../../lib/utils';
 
 import {
   MarketTradingModeMapping,
@@ -28,8 +22,8 @@ import {
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
 
-import HealthBar from './health-bar';
-import HealthDialog from './health-dialog';
+import { HealthBar } from './health-bar';
+import { HealthDialog } from './health-dialog';
 
 const agGridVariables = `
   .ag-theme-alpine {
@@ -37,6 +31,8 @@ const agGridVariables = `
     --ag-row-hover-color: transparent;
     --ag-header-background-color: #F5F5F5;
     --ag-odd-row-background-color: transparent;
+    --ag-header-foreground-color: #000;
+    --ag-secondary-foreground-color: #fff;
     --ag-font-family: "Helvetica Neue";
     --ag-font-size: 12px;
 
@@ -80,24 +76,21 @@ const marketNameCellRenderer = (props: GroupCellRendererParams) => {
 };
 
 const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
-  // TODO: get from liquidityProvisionsConnection + fee
-  const committed = data.liquidityCommitted;
-
   return (
     <div>
       <HealthBar
         status={value}
         target={data.data.targetStake}
-        committed={committed}
         decimals={
           data.tradableInstrument.instrument.product.settlementAsset.decimals
         }
+        providers={data.providers}
       />
     </div>
   );
 };
 
-const MarketList = ({ data }: { data: MarketsListData }) => {
+export const MarketList = ({ data }: { data: MarketsListData }) => {
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
   const gridRef = useRef<AgGridReactType | null>(null);
   const localData = formatMarketLists(data);
@@ -137,7 +130,6 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           <AgGridColumn
             headerName={t('Market (futures)')}
             field="tradableInstrument.instrument.name"
-            headerTooltip={t('This is the tooltip')}
             cellRenderer={marketNameCellRenderer}
             minWidth={100}
           />
@@ -145,7 +137,6 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
-            headerTooltip={t('This is the volume tooltip')}
             cellRenderer={({ value, data }: GroupCellRendererParams) => {
               return (
                 <div>
@@ -156,7 +147,7 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           />
 
           <AgGridColumn
-            headerName={t('Committed liquidity')}
+            headerName={t('Committed bond/stake')}
             field="liquidityCommitted"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
               formatWithAsset(
@@ -169,7 +160,6 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
           <AgGridColumn
             headerName={t('Status')}
             field="tradingMode"
-            headerTooltip={t('This is the status tooltip')}
             valueFormatter={({
               value,
               data,
@@ -206,11 +196,7 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
           />
-          <AgGridColumn
-            headerName={t('Est. return / APY')}
-            field="apy"
-            headerTooltip={t('This is the APY tooltip')}
-          />
+          <AgGridColumn headerName={t('Est. return / APY')} field="apy" />
         </AgGridReact>
 
         <HealthDialog
@@ -223,5 +209,3 @@ const MarketList = ({ data }: { data: MarketsListData }) => {
     </>
   );
 };
-
-export default MarketList;

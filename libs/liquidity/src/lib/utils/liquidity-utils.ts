@@ -42,6 +42,7 @@ const sortMarkets = (markets: Market[]) =>
       tradingModesOrdering.indexOf(b.tradingMode)
   );
 
+// libs/market-list/src/lib/utils/market-utils.ts
 export const mapDataToMarketList = (markets: Market[]) => {
   const filteredMarkets = filterMarkets(markets) || [];
   const orderedMarkets = orderMarkets(filteredMarkets);
@@ -51,6 +52,7 @@ export const mapDataToMarketList = (markets: Market[]) => {
 
 const EMPTY_VALUE = ' - ';
 
+// apps/console-lite/src/app/components/simple-market-list/simple-market-percent-change.tsx
 export const getChange = (
   candles: (Candle | null)[] | null,
   lastClose?: string
@@ -76,7 +78,8 @@ export const getChange = (
   return EMPTY_VALUE;
 };
 
-const calcDayVolume = (market: Market) => {
+// libs/market-info/src/components/market-info/info-market.tsx
+export const calcDayVolume = (market: Market) => {
   const edges = market?.candlesConnection?.edges || [];
   return edges
     .reduce((acc, c) => {
@@ -111,29 +114,9 @@ export const sumLiquidityCommitted = (edges: LiquidityEdges[]) => {
     : 0;
 };
 
-const getCandle24hAgo = (marketId: string, candles24hAgo: MarketCandles[]) => {
+export const getCandle24hAgo = (
+  marketId: string,
+  candles24hAgo: MarketCandles[]
+) => {
   return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
-};
-
-export const formatMarketLists = ({
-  markets,
-  marketsCandles24hAgo,
-}: MarketsListData) => {
-  return markets.map((market) => {
-    const dayVolume = calcDayVolume(market);
-    const candle24hAgo = getCandle24hAgo(market.id, marketsCandles24hAgo);
-
-    const candles =
-      market.candlesConnection?.edges?.map((c) => (c ? c.node : null)) || null;
-    const volumeChange = getChange(candles, candle24hAgo?.close);
-
-    const liquidity = market.liquidityProvisionsConnection?.edges || [];
-
-    return {
-      ...market,
-      dayVolume,
-      volumeChange,
-      liquidityCommitted: sumLiquidityCommitted(liquidity as LiquidityEdges[]),
-    };
-  });
 };

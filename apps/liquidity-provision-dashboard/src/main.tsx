@@ -1,8 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
-import { createClient } from './app/lib/apollo-client';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import { createClient } from './app/lib/apollo-client';
 
 import App from './app/app';
 
