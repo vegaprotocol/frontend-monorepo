@@ -1,14 +1,11 @@
-import { useLiquidityProvision } from '@vegaprotocol/liquidity-provision';
-
+import { useMarketsLiquidity } from './hooks/use-markets-liquidity';
 import '../styles.scss';
 import { Header } from './components/header';
 import { Intro } from './components/intro';
 import { MarketList } from './components/market-list';
 
 export function App() {
-  const { data, error, loading } = useLiquidityProvision();
-
-  console.log('error: ', error);
+  const { data, error, loading } = useMarketsLiquidity();
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
