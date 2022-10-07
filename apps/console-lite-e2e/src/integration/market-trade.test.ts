@@ -296,7 +296,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
       cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
 
-      cy.getByTestId('place-order').click();
+      cy.getByTestId('place-order').should('be.enabled').click();
       cy.getByTestId('dialog-title').should(
         'have.text',
         'Awaiting network confirmation'
