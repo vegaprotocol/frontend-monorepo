@@ -69,6 +69,8 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('convert_number_to_eighteen_decimal', (number) => {
+  // this will take a number like this   : 700000000000000000000
+  // and convert it to a number like this: 700.000000000000000000
   return BigNumber((number / 1000000000000000000).toString()).toFixed(18);
 });
 
