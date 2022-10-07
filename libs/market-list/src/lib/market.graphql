@@ -1,4 +1,4 @@
-fragment MarketFields on Market {
+fragment SingleMarketFields on Market {
   id
   decimalPlaces
   positionDecimalPlaces
@@ -21,8 +21,13 @@ fragment MarketFields on Market {
       }
       product {
         ... on Future {
+          oracleSpecForTradingTermination {
+            id
+          }
           settlementAsset {
+            id
             symbol
+            name
             decimals
           }
           quoteName
@@ -34,14 +39,15 @@ fragment MarketFields on Market {
     open
     close
   }
+  depth {
+    lastTrade {
+      price
+    }
+  }
 }
 
-query Markets {
-  marketsConnection {
-    edges {
-      node {
-        ...MarketFields
-      }
-    }
+query Market($marketId: ID!) {
+  market(id: $marketId) {
+    ...SingleMarketFields
   }
 }

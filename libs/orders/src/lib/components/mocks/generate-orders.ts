@@ -47,14 +47,9 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           name: 'XYZ intrument',
           product: {
             __typename: 'Future',
-            oracleSpecForTradingTermination: {
-              id: 'oid',
-            },
             quoteName: '',
             settlementAsset: {
               __typename: 'Asset',
-              id: 'xyz-id',
-              name: 'XYZ',
               decimals: 1,
               symbol: 'XYZ',
             },
@@ -62,11 +57,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
         },
       },
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      depth: {
-        lastTrade: {
-          price: 'lastTradePrice',
-        },
-      },
     },
     size: '10',
     type: OrderType.TYPE_MARKET,

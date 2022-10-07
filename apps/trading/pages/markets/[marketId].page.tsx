@@ -19,16 +19,19 @@ import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-
-import type { Market, MarketData, Candle } from '@vegaprotocol/market-list';
-import { useGlobalStore } from '../../stores';
-import { TradeGrid, TradePanels } from './trade-grid';
-import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
+import type {
+  SingleMarketFieldsFragment,
+  MarketData,
+  Candle,
+} from '@vegaprotocol/market-list';
 import {
   marketProvider,
   marketCandlesProvider,
   marketDataProvider,
 } from '@vegaprotocol/market-list';
+import { useGlobalStore } from '../../stores';
+import { TradeGrid, TradePanels } from './trade-grid';
+import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -36,7 +39,7 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
     : '-';
 };
 
-export interface SingleMarketData extends Market {
+export interface SingleMarketData extends SingleMarketFieldsFragment {
   candles: Candle[];
   data: MarketData;
 }
@@ -73,12 +76,15 @@ const MarketPage = ({ id }: { id?: string }) => {
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
-  const onSelect = (id: string) => {
-    if (id && id !== marketId) {
-      updateStore({ marketId: id });
-      push(`/markets/${id}`);
-    }
-  };
+  const onSelect = useCallback(
+    (id: string) => {
+      if (id && id !== marketId) {
+        updateStore({ marketId: id });
+        push(`/markets/${id}`);
+      }
+    },
+    [marketId, updateStore, push]
+  );
 
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
@@ -108,18 +114,14 @@ const MarketPage = ({ id }: { id?: string }) => {
     [setMarketPrice]
   );
 
-  const {
-    data: dataProvided,
-    error,
-    loading,
-  } = useDataProvider({
+  const { data, error, loading } = useDataProvider({
     dataProvider,
     update: dataUpdate,
     variables,
     skip: !marketId,
   });
-  dataRef.current = dataProvided;
-  const marketName = dataProvided?.tradableInstrument.instrument.name;
+  dataRef.current = data;
+  const marketName = data?.tradableInstrument.instrument.name;
 
   useEffect(() => {
     if (marketName) {
@@ -140,7 +142,7 @@ const MarketPage = ({ id }: { id?: string }) => {
     <AsyncRenderer<SingleMarketData>
       loading={loading}
       error={error}
-      data={dataProvided || undefined}
+      data={data || undefined}
       render={(data) => {
         if (!data) {
           return <Splash>{t('Market not found')}</Splash>;

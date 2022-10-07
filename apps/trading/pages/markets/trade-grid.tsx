@@ -12,7 +12,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -225,91 +225,102 @@ interface TradeGridProps {
   onSelect: (marketId: string) => void;
 }
 
-export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
-  return (
-    <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
-      <ResizableGrid vertical={true}>
-        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid proportionalLayout={false} minSize={200}>
-            <ResizableGridPanel
-              priority={LayoutPriority.High}
-              minSize={200}
-              preferredSize="50%"
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="candles" name={t('Candles')}>
-                    <TradingViews.Candles marketId={market.id} />
-                  </Tab>
-                  <Tab id="depth" name={t('Depth')}>
-                    <TradingViews.Depth marketId={market.id} />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-            <ResizableGridPanel
-              priority={LayoutPriority.Low}
-              preferredSize={330}
-              minSize={300}
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="ticket" name={t('Ticket')}>
-                    <TradingViews.Ticket marketId={market.id} />
-                  </Tab>
-                  <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info
-                      marketId={market.id}
-                      onSelect={(id: string) => {
-                        onSelect(id);
-                      }}
-                    />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-            <ResizableGridPanel
-              priority={LayoutPriority.Low}
-              preferredSize={430}
-              minSize={200}
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="orderbook" name={t('Orderbook')}>
-                    <TradingViews.Orderbook marketId={market.id} />
-                  </Tab>
-                  <Tab id="trades" name={t('Trades')}>
-                    <TradingViews.Trades marketId={market.id} />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-          </ResizableGrid>
-        </ResizableGridPanel>
+const MainGrid = ({
+  marketId,
+  onSelect,
+}: {
+  marketId: string;
+  onSelect: (marketId: string) => void;
+}) => (
+  <ResizableGrid vertical>
+    <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
+      <ResizableGrid proportionalLayout={false} minSize={200}>
         <ResizableGridPanel
-          priority={LayoutPriority.Low}
-          preferredSize="25%"
-          minSize={50}
+          priority={LayoutPriority.High}
+          minSize={200}
+          preferredSize="50%"
         >
           <TradeGridChild>
             <Tabs>
-              <Tab id="positions" name={t('Positions')}>
-                <TradingViews.Positions />
+              <Tab id="candles" name={t('Candles')}>
+                <TradingViews.Candles marketId={marketId} />
               </Tab>
-              <Tab id="orders" name={t('Orders')}>
-                <TradingViews.Orders />
+              <Tab id="depth" name={t('Depth')}>
+                <TradingViews.Depth marketId={marketId} />
               </Tab>
-              <Tab id="fills" name={t('Fills')}>
-                <TradingViews.Fills />
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize={330}
+          minSize={300}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="ticket" name={t('Ticket')}>
+                <TradingViews.Ticket marketId={marketId} />
               </Tab>
-              <Tab id="accounts" name={t('Collateral')}>
-                <TradingViews.Collateral />
+              <Tab id="info" name={t('Info')}>
+                <TradingViews.Info
+                  marketId={marketId}
+                  onSelect={(id: string) => {
+                    onSelect(id);
+                  }}
+                />
+              </Tab>
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize={430}
+          minSize={200}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="orderbook" name={t('Orderbook')}>
+                <TradingViews.Orderbook marketId={marketId} />
+              </Tab>
+              <Tab id="trades" name={t('Trades')}>
+                <TradingViews.Trades marketId={marketId} />
               </Tab>
             </Tabs>
           </TradeGridChild>
         </ResizableGridPanel>
       </ResizableGrid>
+    </ResizableGridPanel>
+    <ResizableGridPanel
+      priority={LayoutPriority.Low}
+      preferredSize="25%"
+      minSize={50}
+    >
+      <TradeGridChild>
+        <Tabs>
+          <Tab id="positions" name={t('Positions')}>
+            <TradingViews.Positions />
+          </Tab>
+          <Tab id="orders" name={t('Orders')}>
+            <TradingViews.Orders />
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <TradingViews.Fills />
+          </Tab>
+          <Tab id="accounts" name={t('Collateral')}>
+            <TradingViews.Collateral />
+          </Tab>
+        </Tabs>
+      </TradeGridChild>
+    </ResizableGridPanel>
+  </ResizableGrid>
+);
+const MainGridWrapped = memo(MainGrid);
+
+export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
+  return (
+    <div className="h-full grid grid-rows-[min-content_1fr]">
+      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <MainGridWrapped marketId={market.id} onSelect={onSelect} />
     </div>
   );
 };
