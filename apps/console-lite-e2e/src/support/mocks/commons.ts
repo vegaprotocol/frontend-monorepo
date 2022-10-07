@@ -1,6 +1,6 @@
 import type { Market } from '@vegaprotocol/market-list';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 
 export const protoCandles = [
   { open: '9556163', close: '9587028', __typename: 'Candle' },
