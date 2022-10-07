@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import { formatNumber, t, useYesterday } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  t,
+  useDataProvider,
+  useYesterday,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
