@@ -3,6 +3,7 @@ import {
   generateSimpleMarkets,
   generateMarketsCandles,
   generateMarketsData,
+  generateMarket,
 } from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
@@ -31,6 +32,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
+      aliasQuery(req, 'Market', generateMarket());
     });
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
