@@ -201,7 +201,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should be able to switch network parameter page - between light and dark mode', function () {
+    it.skip('should be able to switch network parameter page - between light and dark mode', function () {
       const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
       const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
       const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
