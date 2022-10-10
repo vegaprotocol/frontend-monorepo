@@ -1,61 +1,73 @@
 import { useCallback } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';
+import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { usePositionEvent } from '../';
-import type { Position } from '../';
+import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 
 export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
 
-  const {
-    send,
-    transaction,
-    reset: resetTransaction,
-    setComplete,
-    Dialog,
-  } = useVegaTransaction();
-  const waitForPositionEvent = usePositionEvent(transaction);
-
-  const reset = useCallback(() => {
-    resetTransaction();
-  }, [resetTransaction]);
+  const { send, transaction, setComplete } = useVegaTransaction();
+  const waitForTransactionResult = usePositionEvent(transaction);
 
   const submit = useCallback(
-    async (position: Position) => {
-      if (!pubKey || position.openVolume === '0') {
+    async ({
+      marketId,
+      openVolume,
+    }: {
+      marketId: string;
+      openVolume: string;
+    }) => {
+      if (!pubKey || openVolume === '0') {
         return;
       }
 
       try {
+        // figure out if opsition is long or short and make side the opposite
+        const side = openVolume.startsWith('-')
+          ? Side.SIDE_BUY
+          : Side.SIDE_SELL;
+
+        // volume could be prefixed with '-' if position is short, remove it
+        const size = openVolume.replace('-', '');
+
         const res = await send(pubKey, {
-          orderCancellation: {
-            marketId: position.marketId,
-            orderId: '',
+          batchMarketInstruction: {
+            cancellations: [
+              {
+                marketId,
+                orderId: '', // omit order id to cancel all active orders
+              },
+            ],
+            submissions: [
+              {
+                marketId,
+                type: OrderType.TYPE_MARKET,
+                timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+                side,
+                size,
+              },
+            ],
           },
         });
 
-        if (res?.signature) {
-          const resId = determineId(res.signature);
-          if (resId) {
-            waitForPositionEvent(resId, pubKey, () => {
-              setComplete();
-            });
-          }
+        if (res) {
+          await waitForTransactionResult(res?.transactionHash, pubKey);
+          setComplete();
         }
+
         return res;
       } catch (e) {
         Sentry.captureException(e);
         return;
       }
     },
-    [pubKey, send, setComplete, waitForPositionEvent]
+    [pubKey, send, setComplete, waitForTransactionResult]
   );
 
   return {
     transaction,
-    Dialog,
     submit,
-    reset,
   };
 };

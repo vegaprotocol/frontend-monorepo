@@ -1,17 +1,21 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Position } from './positions-data-providers';
 import { PositionsTable, useClosePosition, usePositionsData } from '../';
 import type { AgGridReact } from 'ag-grid-react';
+import { ClosePositionDialog } from './close-position-dialog';
 
 interface PositionsManagerProps {
   partyId: string;
 }
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
-  const { submit, Dialog } = useClosePosition();
+  const { submit, transaction } = useClosePosition();
+  const [positionToClose, setPositionToClose] = useState<Position>();
+
   const onClose = useCallback(
     (position: Position) => {
+      setPositionToClose(position);
       submit(position);
     },
     [submit]
@@ -32,10 +36,10 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           onClose={onClose}
         />
       </AsyncRenderer>
-
-      <Dialog>
-        <p>Your position was not closed! This is still not implemented.</p>
-      </Dialog>
+      <ClosePositionDialog
+        position={positionToClose}
+        transaction={transaction}
+      />
     </>
   );
 };
