@@ -1,12 +1,12 @@
 context('Validator page', { tags: '@smoke' }, function () {
-  const validatorNavigation = 'a[href="/validators"]';
+  const validatorMenuHeading = 'a[href="/validators"]';
   const tendermintDataHeader = '[data-testid="tendermint-header"]';
   const vegaDataHeader = '[data-testid="vega-header"]';
   const jsonSection = '.language-json';
 
   before('Visit validators page and obtain data', function () {
     cy.visit('/');
-    cy.get(validatorNavigation).click();
+    cy.get(validatorMenuHeading).click();
     cy.get_validators().as('validators');
   });
 
@@ -19,7 +19,7 @@ context('Validator page', { tags: '@smoke' }, function () {
       );
     });
 
-    it('Validator page is displayed', function () {
+    it('should be able to see validator page sections', function () {
       cy.get(vegaDataHeader)
         .contains('Vega data')
         .and('is.visible')
@@ -37,7 +37,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         });
     });
 
-    it('Validator page contains relevant validator information', function () {
+    it('should be able to see relevant validator information', function () {
       this.validators.forEach((validator, index) => {
         cy.get(tendermintDataHeader)
           .contains('Tendermint data')
@@ -89,9 +89,9 @@ context('Validator page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('Validator page is displayed on mobile', function () {
+    it('should be able to see validator page displayed on mobile', function () {
       cy.common_switch_to_mobile_and_click_toggle();
-      cy.get(validatorNavigation).click();
+      cy.get(validatorMenuHeading).click();
       cy.get(vegaDataHeader)
         .contains('Vega data')
         .and('is.visible')
@@ -119,6 +119,52 @@ context('Validator page', { tags: '@smoke' }, function () {
             cy.contains(validator.voting_power).should('be.visible');
           });
       });
+    });
+
+    it('should be able to switch validator page between light and dark mode', function () {
+      const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
+      const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
+      const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
+      const darkThemeSelectedMenuOptionColor = 'rgb(223, 255, 11)';
+      const darkThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
+      const darkThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
+      const themeSwitcher = '[data-testid="theme-switcher"]';
+      const jsonFields = '.hljs';
+      const sideMenuBackground = '.absolute';
+
+      // Engage dark mode if not allready set
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .then((background_color) => {
+          if (background_color.includes(whiteThemeSideMenuBackgroundColor)) 
+            cy.get(themeSwitcher).click();
+        })
+
+      // Engage white mode
+      cy.get(themeSwitcher).click();
+
+      // White Mode
+      cy.get(validatorMenuHeading)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeSelectedMenuOptionColor);
+      cy.get(jsonFields)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeJsonFieldBackColor);
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .and('include', whiteThemeSideMenuBackgroundColor);
+
+      // Dark Mode
+      cy.get(themeSwitcher).click();
+      cy.get(validatorMenuHeading)
+        .should('have.css', 'background-color')
+        .and('include', darkThemeSelectedMenuOptionColor);
+      cy.get(jsonFields)
+        .should('have.css', 'background-color')
+        .and('include', darkThemeJsonFieldBackColor);
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .and('include', darkThemeSideMenuBackgroundColor);
     });
 
     Cypress.Commands.add('get_validators', () => {

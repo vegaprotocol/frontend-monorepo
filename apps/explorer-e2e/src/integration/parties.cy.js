@@ -147,15 +147,25 @@ context('Parties page', { tags: '@regression' }, function () {
       const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
       const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
       const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
-      const blackThemeSelectedMenuOptionColor = 'rgb(223, 255, 11)';
-      const blackThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
-      const blackThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
+      const darkThemeSelectedMenuOptionColor = 'rgb(223, 255, 11)';
+      const darkThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
+      const darkThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
       const themeSwitcher = '[data-testid="theme-switcher"]';
       const jsonFields = '.hljs';
       const sideMenuBackground = '.absolute';
 
-      // White Mode
+      // Engage dark mode if not allready set
+      cy.get(sideMenuBackground)
+        .should('have.css', 'background-color')
+        .then((background_color) => {
+          if (background_color.includes(whiteThemeSideMenuBackgroundColor)) 
+            cy.get(themeSwitcher).click();
+        })
+
+      // Engage white mode
       cy.get(themeSwitcher).click();
+
+      // White Mode
       cy.get(partiesMenuHeader)
         .should('have.css', 'background-color')
         .and('include', whiteThemeSelectedMenuOptionColor);
@@ -170,13 +180,13 @@ context('Parties page', { tags: '@regression' }, function () {
       cy.get(themeSwitcher).click();
       cy.get(partiesMenuHeader)
         .should('have.css', 'background-color')
-        .and('include', blackThemeSelectedMenuOptionColor);
+        .and('include', darkThemeSelectedMenuOptionColor);
       cy.get(jsonFields)
         .should('have.css', 'background-color')
-        .and('include', blackThemeJsonFieldBackColor);
+        .and('include', darkThemeJsonFieldBackColor);
       cy.get(sideMenuBackground)
         .should('have.css', 'background-color')
-        .and('include', blackThemeSideMenuBackgroundColor);
+        .and('include', darkThemeSideMenuBackgroundColor);
     });
 
     after(
