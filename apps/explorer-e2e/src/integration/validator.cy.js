@@ -136,9 +136,9 @@ context('Validator page', { tags: '@smoke' }, function () {
       cy.get(sideMenuBackground)
         .should('have.css', 'background-color')
         .then((background_color) => {
-          if (background_color.includes(whiteThemeSideMenuBackgroundColor)) 
+          if (background_color.includes(whiteThemeSideMenuBackgroundColor))
             cy.get(themeSwitcher).click();
-        })
+        });
 
       // Engage white mode
       cy.get(themeSwitcher).click();
