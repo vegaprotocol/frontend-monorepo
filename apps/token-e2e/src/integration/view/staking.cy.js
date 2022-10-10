@@ -138,7 +138,7 @@ context('Staking Page - verify elements on page', function () {
         cy.click_on_validator_from_list(0);
       });
 
-      // 2001-STKE-005
+      // 2001-STKE-006
       it('Should be able to see validator name', function () {
         cy.get(validatorTitle).should('not.be.empty');
       });
