@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ProposeNewMarket } from './propose-new-market';
 import { MockedProvider } from '@apollo/client/testing';
 import { mockWalletContext } from '../../test-helpers/mocks';
@@ -81,9 +81,7 @@ describe('Propose New Market', () => {
 
   it('should render the form components', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('new-market-proposal-form')).toBeTruthy()
-    );
+    expect(await screen.findByTestId('new-market-proposal-form')).toBeTruthy();
     expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
     expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
     expect(screen.getByTestId('proposal-title')).toBeTruthy();

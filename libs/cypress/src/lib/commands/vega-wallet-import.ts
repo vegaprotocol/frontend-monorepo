@@ -11,20 +11,20 @@ declare global {
 export function addVegaWalletImport() {
   // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('vega_wallet_import', () => {
-    cy.highlight(`Importing Vega Wallet ${Cypress.env('vegaWalletName')}`);
-    cy.exec(`vega wallet init -f --home ${Cypress.env('vegaWalletLocation')}`);
+    const walletName = Cypress.env('vegaWalletName');
+    const walletLocation = Cypress.env('vegaWalletLocation');
+
+    cy.highlight(`Importing Vega Wallet ${walletName}`);
+    cy.exec(`vega wallet init -f --home ${walletLocation}`);
     cy.exec(
-      `vega wallet import -w ${Cypress.env(
-        'vegaWalletName'
-      )} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ${Cypress.env(
-        'vegaWalletLocation'
-      )}`,
+      `vega wallet import -w ${walletName} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ${walletLocation}`,
       { failOnNonZeroExit: false }
     );
     cy.exec(
-      `vega wallet service run --network DV --automatic-consent  --home ${Cypress.env(
-        'vegaWalletLocation'
-      )}`
+      `vega wallet key generate -w ${walletName} -p ./src/fixtures/wallet/passphrase --home ${walletLocation}`
+    );
+    cy.exec(
+      `vega wallet service run --network DV --automatic-consent  --home ${walletLocation}`
     );
   });
 }

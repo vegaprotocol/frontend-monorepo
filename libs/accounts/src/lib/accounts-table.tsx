@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type {
   ValueProps,
@@ -109,8 +109,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             maxWidth={300}
           />
           <AgGridColumn
-            headerName={t('Deposited')}
+            headerName={t('Total')}
             field="deposited"
+            headerTooltip={t(
+              'This is the total amount of collateral used plus the amount available in your general account.'
+            )}
             valueFormatter={({
               value,
               data,
@@ -125,6 +128,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName={t('Used')}
             field="used"
             flex={2}
+            minWidth={150}
             maxWidth={500}
             headerComponentParams={progressBarHeaderComponentParams}
             cellRendererSelector={progressBarCellRendererSelector}
@@ -133,7 +137,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName=""
             field="breakdown"
-            maxWidth={150}
+            minWidth={150}
             cellRenderer={({
               value,
             }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
@@ -154,6 +158,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             colId="transact"
             headerName=""
             sortable={false}
+            minWidth={250}
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {

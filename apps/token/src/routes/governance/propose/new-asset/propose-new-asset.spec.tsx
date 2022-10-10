@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter as Router } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
@@ -81,16 +81,12 @@ describe('Propose New Asset', () => {
 
   it('should render the title', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByText('New asset proposal')).toBeTruthy()
-    );
+    expect(await screen.findByText('New asset proposal')).toBeTruthy();
   });
 
   it('should render the form components', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('new-asset-proposal-form')).toBeTruthy()
-    );
+    expect(await screen.findByTestId('new-asset-proposal-form')).toBeTruthy();
     expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
     expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
     expect(screen.getByTestId('proposal-title')).toBeTruthy();

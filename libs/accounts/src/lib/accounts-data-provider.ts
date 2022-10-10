@@ -8,7 +8,6 @@ import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
-  AssetsFieldsFragment,
 } from './__generated___/Accounts';
 import {
   makeDataProvider,
@@ -17,7 +16,8 @@ import {
 import { AccountType } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import { assetProvider } from './asset-data-provider';
+import type { AssetsFieldsFragment } from '@vegaprotocol/assets';
+import { assetsProvider } from '@vegaprotocol/assets';
 
 function isAccount(
   account:
@@ -77,7 +77,7 @@ const getDelta = (
   subscriptionData: AccountEventsSubscription
 ): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
 
-export const accountsBasedDataProvider = makeDataProvider<
+export const accountsOnlyDataProvider = makeDataProvider<
   AccountsQuery,
   AccountFieldsFragment[],
   AccountEventsSubscription,
@@ -114,10 +114,12 @@ const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
 export const getAccountData = (data: Account[]): AccountFields[] => {
-  return getAssetIds(data).map((assetId) => {
-    const accounts = data.filter((a) => a.asset.id === assetId);
-    return accounts && getAssetAccountAggregation(accounts, assetId);
-  });
+  return getAssetIds(data)
+    .map((assetId) => {
+      const accounts = data.filter((a) => a.asset.id === assetId);
+      return accounts && getAssetAccountAggregation(accounts, assetId);
+    })
+    .filter((a) => a.deposited !== '0'); // filter empty accounts
 };
 
 const getAssetAccountAggregation = (
@@ -150,12 +152,13 @@ const getAssetAccountAggregation = (
       deposited: balanceAccount.deposited,
       available: balanceAccount.available,
       used: a.balance,
-    }));
+    }))
+    .filter((a) => a.used !== '0');
   return { ...balanceAccount, breakdown };
 };
 
 export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
-  [accountsBasedDataProvider, marketsProvider, assetProvider],
+  [accountsOnlyDataProvider, marketsProvider, assetsProvider],
   ([accounts, markets, assets]): Account[] | null => {
     return accounts
       ? accounts

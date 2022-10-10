@@ -1,55 +1,21 @@
-import { gql } from '@apollo/client';
 import produce from 'immer';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  MarginsSubscriptionDocument,
+  MarginsDocument,
+} from './__generated___/Positions';
 import type {
-  MarginsSubscription,
-  MarginsSubscription_margins,
-} from './__generated__/MarginsSubscription';
-import type { Margins, Margins_party } from './__generated__/Margins';
+  MarginsQuery,
+  MarginsSubscriptionSubscription,
+} from './__generated___/Positions';
 
-export const MARGINS_QUERY = gql`
-  query Margins($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      marginsConnection {
-        edges {
-          node {
-            market {
-              id
-            }
-            maintenanceLevel
-            searchLevel
-            initialLevel
-            collateralReleaseLevel
-            asset {
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const MARGINS_SUBSCRIPTION = gql`
-  subscription MarginsSubscription($partyId: ID!) {
-    margins(partyId: $partyId) {
-      marketId
-      asset
-      partyId
-      maintenanceLevel
-      searchLevel
-      initialLevel
-      collateralReleaseLevel
-      timestamp
-    }
-  }
-`;
-
-const update = (data: Margins_party, delta: MarginsSubscription_margins) => {
+const update = (
+  data: MarginsQuery['party'],
+  delta: MarginsSubscriptionSubscription['margins']
+) => {
   return produce(data, (draft) => {
     const { marketId } = delta;
-    if (marketId && draft.marginsConnection?.edges) {
+    if (marketId && draft?.marginsConnection?.edges) {
       const index = draft.marginsConnection.edges.findIndex(
         (edge) => edge.node.market.id === marketId
       );
@@ -86,18 +52,18 @@ const update = (data: Margins_party, delta: MarginsSubscription_margins) => {
   });
 };
 
-const getData = (responseData: Margins) => responseData.party;
-const getDelta = (subscriptionData: MarginsSubscription) =>
+const getData = (responseData: MarginsQuery) => responseData.party;
+const getDelta = (subscriptionData: MarginsSubscriptionSubscription) =>
   subscriptionData.margins;
 
 export const marginsDataProvider = makeDataProvider<
-  Margins,
-  Margins_party,
-  MarginsSubscription,
-  MarginsSubscription_margins
+  MarginsQuery,
+  MarginsQuery['party'],
+  MarginsSubscriptionSubscription,
+  MarginsSubscriptionSubscription['margins']
 >({
-  query: MARGINS_QUERY,
-  subscriptionQuery: MARGINS_SUBSCRIPTION,
+  query: MarginsDocument,
+  subscriptionQuery: MarginsSubscriptionDocument,
   update,
   getData,
   getDelta,

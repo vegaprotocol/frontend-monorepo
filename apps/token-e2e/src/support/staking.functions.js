@@ -20,7 +20,7 @@ const vegaKeySelector = '#vega-key-selector';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
-Cypress.Commands.add('wait_for_begining_of_epoch', () => {
+Cypress.Commands.add('wait_for_beginning_of_epoch', () => {
   cy.contains('Waiting for next epoch to start', epochTimeout).should(
     'not.exist'
   );
@@ -34,7 +34,7 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
   cy.wait_for_spinner();
   cy.get(addStakeRadioButton, epochTimeout).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
-  cy.wait_for_begining_of_epoch();
+  cy.wait_for_beginning_of_epoch();
   cy.get(tokenSubmitButton, epochTimeout)
     .should('be.enabled')
     .and('contain', `Add ${stake} $VEGA tokens`)
@@ -47,7 +47,7 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
   cy.wait_for_spinner();
   cy.get(removeStakeRadioButton, epochTimeout).click();
   cy.get(tokenAmountInputBox).type(stake);
-  cy.wait_for_begining_of_epoch();
+  cy.wait_for_beginning_of_epoch();
   cy.get(tokenSubmitButton)
     .should('be.enabled', epochTimeout)
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
@@ -151,7 +151,7 @@ Cypress.Commands.add(
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.contains('Total stake this epoch').should('be.visible');
-    cy.wait_for_begining_of_epoch();
+    cy.wait_for_beginning_of_epoch();
     // below is to ensure validator list is shown
     cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
     cy.get(stakeValidatorListPendingStake, txTimeout).should(
@@ -180,7 +180,7 @@ Cypress.Commands.add(
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.contains('Total stake this epoch').should('be.visible');
-    cy.wait_for_begining_of_epoch();
+    cy.wait_for_beginning_of_epoch();
     cy.get(`[row-id="${positionOnList}"]`).within(() => {
       cy.get(stakeValidatorListName).should('have.text', expectedValidatorName);
       cy.get(stakeValidatorListTotalStake, epochTimeout).should(

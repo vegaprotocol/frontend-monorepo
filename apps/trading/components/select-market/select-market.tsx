@@ -15,7 +15,7 @@ import type {
   MarketWithData,
 } from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { Positions_party_positionsConnection_edges_node } from '@vegaprotocol/positions';
+import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import {
   SelectMarketTableHeader,
@@ -79,7 +79,7 @@ export const SelectAllMarketsTableBody = ({
   tableColumns = (market) => columns(market, onSelect, onCellClick),
 }: {
   markets?: Market[] | null;
-  positions?: Positions_party_positionsConnection_edges_node[];
+  positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;

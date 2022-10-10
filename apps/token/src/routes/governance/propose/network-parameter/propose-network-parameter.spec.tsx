@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { ProposeNetworkParameter } from './propose-network-parameter';
 import { MockedProvider } from '@apollo/client/testing';
 import { mockWalletContext } from '../../test-helpers/mocks';
@@ -81,16 +81,16 @@ describe('Propose Network Parameter', () => {
 
   it('should render the correct title', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByText('Update network parameter proposal')).toBeTruthy()
-    );
+    expect(
+      await screen.findByText('Update network parameter proposal')
+    ).toBeTruthy();
   });
 
   it('should render the form components', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('network-parameter-proposal-form')).toBeTruthy()
-    );
+    expect(
+      await screen.findByTestId('network-parameter-proposal-form')
+    ).toBeTruthy();
     expect(screen.getByTestId('min-proposal-requirements')).toBeTruthy();
     expect(screen.getByTestId('proposal-docs-link')).toBeTruthy();
     expect(screen.getByTestId('proposal-title')).toBeTruthy();
@@ -103,15 +103,15 @@ describe('Propose Network Parameter', () => {
 
   it('should render the network param select element with no initial value', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('proposal-parameter-select')).toHaveValue('')
+    expect(await screen.findByTestId('proposal-parameter-select')).toHaveValue(
+      ''
     );
   });
 
   it('should render the current param value and a new value input when the network param select element is changed', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByTestId('proposal-parameter-select')).toHaveValue('')
+    expect(await screen.findByTestId('proposal-parameter-select')).toHaveValue(
+      ''
     );
 
     fireEvent.change(screen.getByTestId('proposal-parameter-select'), {

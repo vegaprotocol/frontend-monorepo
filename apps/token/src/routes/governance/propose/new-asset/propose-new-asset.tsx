@@ -7,6 +7,7 @@ import {
   getValidationTimestamp,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { validateJson } from '@vegaprotocol/react-helpers';
 import {
   ProposalFormMinRequirements,
   ProposalFormTitle,
@@ -32,7 +33,7 @@ export interface NewAssetProposalFormFields {
   proposalReference: string;
 }
 
-const docsLink = '/new-asset-proposal';
+const DOCS_LINK = '/new-asset-proposal';
 
 export const ProposeNewAsset = () => {
   const {
@@ -100,9 +101,9 @@ export const ProposeNewAsset = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <Link
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</Link>
               </p>
             )}
 
@@ -141,20 +142,11 @@ export const ProposeNewAsset = () => {
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
                     required: t('Required'),
-                    validate: {
-                      validateJson: (value) => {
-                        try {
-                          JSON.parse(value);
-                          return true;
-                        } catch (e) {
-                          return t('Must be valid JSON');
-                        }
-                      },
-                    },
+                    validate: (value) => validateJson(value),
                   })}
                   labelOverride={'Terms.newAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={docsLink}
+                  customDocLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
