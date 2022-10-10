@@ -1,9 +1,6 @@
-import {
-  addDecimalsFormatNumber,
-  t,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { Asset } from './assets-data-provider';
+import { useAssetsDataProvider } from './assets-data-provider';
 import {
   Button,
   Dialog,
@@ -13,7 +10,6 @@ import {
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { assetsProvider } from './assets-data-provider';
 import type { Schema } from '@vegaprotocol/types';
 import create from 'zustand';
 
@@ -44,9 +40,10 @@ export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
 );
 
 type AssetDetails = {
-  key: string;
+  key: AssetDetail;
   label: string;
-  value: string;
+  value: string | null | undefined;
+  valueTooltip?: string;
   tooltip: string;
 }[];
 
@@ -57,46 +54,130 @@ export interface AssetDetailsDialogProps {
   onChange: (open: boolean) => void;
 }
 
+export enum AssetDetail {
+  ID,
+  TYPE,
+  NAME,
+  SYMBOL,
+  DECIMALS,
+  QUANTUM,
+  STATUS,
+  // erc20 details:
+  CONTRACT_ADDRESS,
+  WITHDRAWAL_THRESHOLD,
+  LIFETIME_LIMIT,
+  // builtin details:
+  MAX_FAUCET_AMOUNT_MINT,
+  // balances:
+  INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
+  GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
+  TAKER_FEE_REWARD_ACCOUNT_BALANCE,
+  MAKER_FEE_REWARD_ACCOUNT_BALANCE,
+  LP_FEE_REWARD_ACCOUNT_BALANCE,
+  MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
+}
+
+type Mapping = { [key in string]: { value: string; tooltip: string } };
+
+export const AssetStatusMapping: Mapping = {
+  STATUS_ENABLED: {
+    value: t('Enabled'),
+    tooltip: t('Asset can be used on the Vega network'),
+  },
+  STATUS_PENDING_LISTING: {
+    value: t('Pending listing'),
+    tooltip: t('Asset is pending listing on the ethereum bridge'),
+  },
+  STATUS_PROPOSED: {
+    value: t('Proposed'),
+    tooltip: t('Asset is proposed to be added to the network'),
+  },
+  STATUS_REJECTED: {
+    value: t('Rejected'),
+    tooltip: t('Asset has been rejected'),
+  },
+};
+
+export const AssetTypeMapping: Mapping = {
+  BuiltinAsset: {
+    value: 'Builtin asset',
+    tooltip: t('A Vega builtin asset'),
+  },
+  ERC20: {
+    value: 'ERC20',
+    tooltip: t('An asset originated from an Ethereum ERC20 Token'),
+  },
+};
+
+export const testId = (detail: AssetDetail, field: 'label' | 'value') =>
+  `${detail}_${field}`;
+
 export const AssetDetailsDialog = ({
   assetSymbol,
   trigger,
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
-  const { data } = useDataProvider({ dataProvider: assetsProvider });
+  const { data } = useAssetsDataProvider();
+
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
   const asset = data?.find((a) => a?.symbol === symbol);
 
   let details: AssetDetails = [];
   if (asset != null) {
+    const num = (n: string | undefined | null) => {
+      if (typeof n === 'undefined' || n == null) return '';
+      return addDecimalsFormatNumber(n, asset.decimals);
+    };
+
     details = [
       {
-        key: 'name',
+        key: AssetDetail.ID,
+        label: t('ID'),
+        value: asset.id,
+        tooltip: '',
+      },
+      {
+        key: AssetDetail.TYPE,
+        label: t('Type'),
+        value: AssetTypeMapping[asset.source.__typename].value,
+        valueTooltip: AssetTypeMapping[asset.source.__typename].tooltip,
+        tooltip: '',
+      },
+      {
+        key: AssetDetail.NAME,
         label: t('Name'),
         value: asset.name,
-        tooltip: '', // t('Name of the asset (e.g: Great British Pound)')
+        tooltip: '',
       },
       {
-        key: 'symbol',
+        key: AssetDetail.SYMBOL,
         label: t('Symbol'),
         value: asset.symbol,
-        tooltip: '', // t('Symbol of the asset (e.g: GBP)')
+        tooltip: '',
       },
       {
-        key: 'decimals',
+        key: AssetDetail.DECIMALS,
         label: t('Decimals'),
         value: asset.decimals.toString(),
         tooltip: t('Number of decimal / precision handled by this asset'),
       },
       {
-        key: 'quantum',
+        key: AssetDetail.QUANTUM,
         label: t('Quantum'),
         value: asset.quantum,
         tooltip: t('The minimum economically meaningful amount in the asset'),
       },
       {
-        key: 'contractaddress',
+        key: AssetDetail.STATUS,
+        label: t('Status'),
+        value: AssetStatusMapping[asset.status].value,
+        valueTooltip: AssetStatusMapping[asset.status].tooltip,
+        tooltip: t('The status of the asset in the Vega network'),
+      },
+      {
+        key: AssetDetail.CONTRACT_ADDRESS,
         label: t('Contract address'),
         value: (asset.source as Schema.ERC20).contractAddress,
         tooltip: t(
@@ -104,26 +185,64 @@ export const AssetDetailsDialog = ({
         ),
       },
       {
-        key: 'withdrawalthreshold',
+        key: AssetDetail.WITHDRAWAL_THRESHOLD,
         label: t('Withdrawal threshold'),
-        value: addDecimalsFormatNumber(
-          (asset.source as Schema.ERC20).withdrawThreshold,
-          asset.decimals
-        ),
+        value: num((asset.source as Schema.ERC20).withdrawThreshold),
         tooltip: t(
           'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
         ),
       },
       {
-        key: 'lifetimelimit',
+        key: AssetDetail.LIFETIME_LIMIT,
         label: t('Lifetime limit'),
-        value: addDecimalsFormatNumber(
-          (asset.source as Schema.ERC20).lifetimeLimit,
-          asset.decimals
-        ),
+        value: num((asset.source as Schema.ERC20).lifetimeLimit),
         tooltip: t(
           'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'
         ),
+      },
+      {
+        key: AssetDetail.MAX_FAUCET_AMOUNT_MINT,
+        label: t('Max faucet amount'),
+        value: num((asset.source as Schema.BuiltinAsset).maxFaucetAmountMint),
+        tooltip: t(
+          'Maximum amount that can be requested by a party through the built-in asset faucet at a time'
+        ),
+      },
+      {
+        key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
+        label: t('Infrastructure fee account balance'),
+        value: num(asset.infrastructureFeeAccount.balance),
+        tooltip: t('The infrastructure fee account for this asset'),
+      },
+      {
+        key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
+        label: t('Global reward pool account balance'),
+        value: num(asset.globalRewardPoolAccount?.balance),
+        tooltip: t('The global reward pool account for this asset'),
+      },
+      {
+        key: AssetDetail.TAKER_FEE_REWARD_ACCOUNT_BALANCE,
+        label: t('Taker fee reward account balance'),
+        value: num(asset.takerFeeRewardAccount?.balance),
+        tooltip: t('The taker fee reward account for this asset'),
+      },
+      {
+        key: AssetDetail.MAKER_FEE_REWARD_ACCOUNT_BALANCE,
+        label: t('Maker fee reward account balance'),
+        value: num(asset.makerFeeRewardAccount?.balance),
+        tooltip: t('The maker fee reward account for this asset'),
+      },
+      {
+        key: AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE,
+        label: t('Liquidity provision fee reward account balance'),
+        value: num(asset.lpFeeRewardAccount?.balance),
+        tooltip: t('The liquidity provision reward account for this asset'),
+      },
+      {
+        key: AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
+        label: t('Market proposer reward account balance'),
+        value: num(asset.marketProposerRewardAccount?.balance),
+        tooltip: t('The market proposer reward account for this asset'),
       },
     ];
   }
@@ -133,10 +252,10 @@ export const AssetDetailsDialog = ({
       <KeyValueTable>
         {details
           .filter(({ value }) => value && value.length > 0)
-          .map(({ key, label, value, tooltip }) => (
+          .map(({ key, label, value, tooltip, valueTooltip }) => (
             <KeyValueTableRow key={key}>
               <div
-                data-testid={`${key}_label`}
+                data-testid={testId(key, 'label')}
                 className="first-letter:uppercase"
               >
                 {tooltip.length > 0 ? (
@@ -147,13 +266,21 @@ export const AssetDetailsDialog = ({
                   <span>{label}</span>
                 )}
               </div>
-              <div data-testid={`${key}_value`}>{value}</div>
+              <div data-testid={testId(key, 'value')}>
+                {valueTooltip && valueTooltip?.length > 0 ? (
+                  <Tooltip description={valueTooltip}>
+                    <span>{value}</span>
+                  </Tooltip>
+                ) : (
+                  value
+                )}
+              </div>
             </KeyValueTableRow>
           ))}
       </KeyValueTable>
     </div>
   ) : (
-    <div className="py-12">
+    <div className="py-12" data-testid="splash">
       <Splash>{t('No data')}</Splash>
     </div>
   );
@@ -183,7 +310,7 @@ export const AssetDetailsDialog = ({
           size="sm"
           onClick={() => onChange(false)}
         >
-          Close
+          {t('Close')}
         </Button>
       </div>
     </Dialog>

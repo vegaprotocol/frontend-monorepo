@@ -4,11 +4,35 @@ fragment AssetsFields on Asset {
   symbol
   decimals
   quantum
-  status
   source {
+    __typename
     ... on ERC20 {
       contractAddress
+      lifetimeLimit
+      withdrawThreshold
     }
+    ... on BuiltinAsset {
+      maxFaucetAmountMint
+    }
+  }
+  status
+  infrastructureFeeAccount {
+    balance
+  }
+  globalRewardPoolAccount {
+    balance
+  }
+  takerFeeRewardAccount {
+    balance
+  }
+  makerFeeRewardAccount {
+    balance
+  }
+  lpFeeRewardAccount {
+    balance
+  }
+  marketProposerRewardAccount {
+    balance
   }
 }
 

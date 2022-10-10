@@ -1,6 +1,7 @@
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AssetsDocument } from './__generated___/Assets';
 import { AssetStatus } from '@vegaprotocol/types';
@@ -14,6 +15,8 @@ export type Asset = AssetsFieldsFragment;
 export interface ERC20AssetSource {
   __typename: 'ERC20';
   contractAddress: string;
+  lifetimeLimit: string;
+  withdrawThreshold: string;
 }
 
 export interface BuiltinAssetSource {
@@ -58,3 +61,8 @@ export const enabledAssetsProvider = makeDerivedDataProvider<
     (a) => a.status === AssetStatus.STATUS_ENABLED
   )
 );
+
+export const useAssetsDataProvider = () =>
+  useDataProvider({
+    dataProvider: assetsProvider,
+  });
