@@ -31,9 +31,8 @@ export const useClosePosition = () => {
 
         // volume could be prefixed with '-' if position is short, remove it
         const size = openVolume.replace('-', '');
-
-        const res = await send(pubKey, {
-          batchMarketInstruction: {
+        const command = {
+          batchMarketInstructions: {
             cancellations: [
               {
                 marketId,
@@ -42,7 +41,7 @@ export const useClosePosition = () => {
             ],
             submissions: [
               {
-                marketId,
+                marketId: marketId,
                 type: OrderType.TYPE_MARKET,
                 timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
                 side,
@@ -50,7 +49,10 @@ export const useClosePosition = () => {
               },
             ],
           },
-        });
+        };
+        console.log(command);
+
+        const res = await send(pubKey, command);
 
         if (res) {
           await waitForTransactionResult(res?.transactionHash, pubKey);
@@ -59,6 +61,7 @@ export const useClosePosition = () => {
 
         return res;
       } catch (e) {
+        console.log(e);
         Sentry.captureException(e);
         return;
       }

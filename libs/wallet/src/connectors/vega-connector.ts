@@ -256,7 +256,7 @@ export interface ProposalSubmissionBody {
 }
 
 export interface BatchMarketInstructionSubmissionBody {
-  batchMarketInstruction: {
+  batchMarketInstructions: {
     // Will be processed in this order and the total amount of instructions is
     // restricted by the net param spam.protection.max.batchSize
     cancellations?: OrderCancellation[];

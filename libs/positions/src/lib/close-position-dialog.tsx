@@ -3,6 +3,8 @@ import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import type { Position } from './positions-data-providers';
 
@@ -29,8 +31,12 @@ const ClosePositionContainer = ({
   position: Position;
   transaction: VegaTxState;
 }) => {
+  const { pubKey } = useVegaWallet();
+  const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const { data, error, loading } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
+    variables,
+    skip: !pubKey,
   });
   const { data: marketData } = useDataProvider({
     dataProvider: marketProvider,
@@ -51,6 +57,15 @@ const ClosePositionContainer = ({
       return true;
     });
   }, [data, position]);
+
+  if (transaction.status === VegaTxStatus.Error) {
+    return (
+      <div>
+        Tx error:{' '}
+        {transaction.error ? transaction.error.message : 'Tx failed (unknown)'}
+      </div>
+    );
+  }
 
   if (error) {
     return <div>Could not fetch order data</div>;
