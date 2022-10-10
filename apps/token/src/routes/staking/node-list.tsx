@@ -186,7 +186,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
       }
     );
 
-    if (canonisedNodes.length < 2 || !hideTopThird) {
+    if (canonisedNodes.length < 3 || !hideTopThird) {
       return canonisedNodes;
     }
 
