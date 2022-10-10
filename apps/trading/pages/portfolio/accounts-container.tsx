@@ -25,9 +25,7 @@ export const AccountsContainer = () => {
     <Web3Container>
       <div className="h-full">
         <header className="flex justify-between items-center p-4">
-          <h4 className="text-lg text-black dark:text-white">
-            {t('Collateral')}
-          </h4>
+          <h4 className="text-lg">{t('Collateral')}</h4>
           <Button onClick={() => setDepositDialog(true)}>Deposit</Button>
         </header>
         <AssetAccountTable partyId={pubKey} />

@@ -19,9 +19,7 @@ export const WithdrawalsContainer = () => {
       <VegaWalletContainer>
         <div className="h-full grid grid-rows-[min-content_1fr]">
           <header className="flex justify-between items-center p-4">
-            <h4 className="text-lg text-black dark:text-white">
-              {t('Withdrawals')}
-            </h4>
+            <h4 className="text-lg">{t('Withdrawals')}</h4>
             <Button
               onClick={() => setWithdrawDialog(true)}
               data-testid="withdraw-dialog-button"
