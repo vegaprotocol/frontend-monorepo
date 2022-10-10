@@ -16,8 +16,9 @@ import {
 import { AccountType } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { AssetsFieldsFragment } from '@vegaprotocol/assets';
+
 import { assetsProvider } from '@vegaprotocol/assets';
+import type { Asset } from '@vegaprotocol/assets';
 
 function isAccount(
   account:
@@ -41,7 +42,7 @@ export const getId = (
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
   market?: Market | null;
-  asset: AssetsFieldsFragment;
+  asset: Asset;
 };
 
 const update = (
@@ -164,7 +165,7 @@ export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
               (market: Market) => market.id === account.market?.id
             );
             const asset = assets.find(
-              (asset: AssetsFieldsFragment) => asset.id === account.asset?.id
+              (asset: Asset) => asset.id === account.asset?.id
             );
             if (asset) {
               return {

@@ -5,12 +5,8 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AssetsDocument } from './__generated___/Assets';
 import { AssetStatus } from '@vegaprotocol/types';
-import type {
-  AssetsQuery,
-  AssetsFieldsFragment,
-} from './__generated___/Assets';
-
-export type Asset = AssetsFieldsFragment;
+import type { AssetsQuery } from './__generated___/Assets';
+import type { Asset } from './asset-data-provider';
 
 export interface ERC20AssetSource {
   __typename: 'ERC20';

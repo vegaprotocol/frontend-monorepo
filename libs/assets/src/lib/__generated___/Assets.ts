@@ -1,65 +1,26 @@
 import { Schema as Types } from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
+import { AssetFieldsFragmentDoc } from './Asset';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AssetsFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, infrastructureFeeAccount: { __typename?: 'Account', balance: string }, globalRewardPoolAccount?: { __typename?: 'Account', balance: string } | null, takerFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, makerFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, lpFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, marketProposerRewardAccount?: { __typename?: 'Account', balance: string } | null };
-
 export type AssetsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
 export type AssetsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, infrastructureFeeAccount: { __typename?: 'Account', balance: string }, globalRewardPoolAccount?: { __typename?: 'Account', balance: string } | null, takerFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, makerFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, lpFeeRewardAccount?: { __typename?: 'Account', balance: string } | null, marketProposerRewardAccount?: { __typename?: 'Account', balance: string } | null } } | null> | null } | null };
 
-export const AssetsFieldsFragmentDoc = gql`
-    fragment AssetsFields on Asset {
-  id
-  name
-  symbol
-  decimals
-  quantum
-  source {
-    __typename
-    ... on ERC20 {
-      contractAddress
-      lifetimeLimit
-      withdrawThreshold
-    }
-    ... on BuiltinAsset {
-      maxFaucetAmountMint
-    }
-  }
-  status
-  infrastructureFeeAccount {
-    balance
-  }
-  globalRewardPoolAccount {
-    balance
-  }
-  takerFeeRewardAccount {
-    balance
-  }
-  makerFeeRewardAccount {
-    balance
-  }
-  lpFeeRewardAccount {
-    balance
-  }
-  marketProposerRewardAccount {
-    balance
-  }
-}
-    `;
+
 export const AssetsDocument = gql`
     query Assets {
   assetsConnection {
     edges {
       node {
-        ...AssetsFields
+        ...AssetFields
       }
     }
   }
 }
-    ${AssetsFieldsFragmentDoc}`;
+    ${AssetFieldsFragmentDoc}`;
 
 /**
  * __useAssetsQuery__

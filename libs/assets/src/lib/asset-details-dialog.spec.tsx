@@ -1,84 +1,17 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
 import { AssetStatus } from '@vegaprotocol/types';
-import {
-  AssetDetail,
-  AssetDetailsDialog,
-  testId,
-} from './asset-details-dialog';
-import type { AssetsFieldsFragment } from './__generated___/Assets';
+import { AssetDetailsDialog } from './asset-details-dialog';
+import { AssetDetail, testId } from './asset-details-table';
 import { AssetsDocument } from './__generated___/Assets';
-
-const generateBuiltinAsset = (
-  i: number,
-  status: AssetStatus
-): AssetsFieldsFragment => ({
-  id: `B-0${i}`,
-  name: `Builtin 0${i}`,
-  symbol: `BIA0${i}`,
-  decimals: 5,
-  quantum: '1',
-  source: {
-    maxFaucetAmountMint: '5000000000',
-    __typename: 'BuiltinAsset',
-  },
-  status: status,
-  infrastructureFeeAccount: {
-    balance: '0',
-    __typename: 'Account',
-  },
-  globalRewardPoolAccount: null,
-  takerFeeRewardAccount: null,
-  makerFeeRewardAccount: null,
-  lpFeeRewardAccount: null,
-  marketProposerRewardAccount: null,
-  __typename: 'Asset',
-});
+import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
 
 const mockedData = {
   data: {
     assetsConnection: {
       edges: [
         {
-          node: {
-            id: 'E-01',
-            name: 'ERC20 01',
-            symbol: 'EA01',
-            decimals: 3,
-            quantum: '1',
-            source: {
-              contractAddress: '0x123',
-              lifetimeLimit: '123000000',
-              withdrawThreshold: '50',
-              __typename: 'ERC20',
-            },
-            status: AssetStatus.STATUS_ENABLED,
-            infrastructureFeeAccount: {
-              balance: '1',
-              __typename: 'Account',
-            },
-            globalRewardPoolAccount: {
-              balance: '2',
-              __typename: 'Account',
-            },
-            takerFeeRewardAccount: {
-              balance: '3',
-              __typename: 'Account',
-            },
-            makerFeeRewardAccount: {
-              balance: '4',
-              __typename: 'Account',
-            },
-            lpFeeRewardAccount: {
-              balance: '5',
-              __typename: 'Account',
-            },
-            marketProposerRewardAccount: {
-              balance: '6',
-              __typename: 'Account',
-            },
-            __typename: 'Asset',
-          },
+          node: generateERC20Asset(1, AssetStatus.STATUS_ENABLED),
           __typename: 'AssetEdge',
         },
         {
