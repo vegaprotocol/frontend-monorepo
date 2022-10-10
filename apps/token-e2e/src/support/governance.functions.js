@@ -2,6 +2,7 @@ const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
+const rawProposalData = '[data-testid="proposal-data"]';
 const proposalResponseProposalIdPath =
   'response.body.data.busEvents.0.event.id';
 const voteButtons = '[data-testid="vote-buttons"]';
@@ -50,23 +51,26 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
-  cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
-    freeformProposal.terms.closingTimestamp = timestamp;
-    freeformProposal.rationale.title += timestamp;
-    let proposalPayload = JSON.stringify(freeformProposal);
+Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
+  cy.fixture('/proposals/raw.json').then((rawProposal) => {
+    rawProposal.terms.closingTimestamp = timestamp;
+    rawProposal.rationale.title += timestamp;
+    let proposalPayload = JSON.stringify(rawProposal);
 
-    cy.get(newProposalTitle).type(freeformProposal.rationale.title);
-
-    cy.get(newProposalDescription).type(proposalPayload, {
+    cy.get(rawProposalData).type(proposalPayload, {
       parseSpecialCharSequences: false,
       delay: 2,
     });
-
-    cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-
-    cy.wrap(freeformProposal);
+    cy.wrap(rawProposal);
   });
+});
+
+Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
+  cy.get(newProposalTitle).type(`${timestamp} test freeform proposal`);
+  cy.get(newProposalDescription).type(
+    'this is a e2e freeform proposal description'
+  );
+  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
 });
 
 Cypress.Commands.add('get_network_parameters', () => {

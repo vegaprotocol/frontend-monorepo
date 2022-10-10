@@ -22,6 +22,7 @@ const governanceProposalType = {
   UPDATE_MARKET: 'Update market',
   NEW_ASSET: 'New asset',
   FREEFORM: 'Freeform',
+  RAW: 'raw proposal',
 };
 
 context(
