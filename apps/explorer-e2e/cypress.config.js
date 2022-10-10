@@ -10,7 +10,7 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:3000',
     fileServerFolder: '.',
-    fixturesFolder: false,
+    fixturesFolder: './src/fixtures',
     specPattern: '**/*.cy.{js,jsx,ts,tsx}',
     modifyObstructiveCode: false,
     supportFile: './src/support/index.js',
