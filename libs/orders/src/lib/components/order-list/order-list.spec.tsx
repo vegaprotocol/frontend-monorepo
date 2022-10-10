@@ -183,7 +183,7 @@ describe('OrderListTable', () => {
       expect(amendCell.queryAllByRole('button')).toHaveLength(0);
     });
 
-    it('does not show buttons for pegged orders', async () => {
+    it('shows if an order is a pegged order and does not show order actions', async () => {
       const order = generateOrder({
         type: OrderType.TYPE_LIMIT,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
