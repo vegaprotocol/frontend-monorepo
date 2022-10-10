@@ -2,19 +2,22 @@ context('Validator page', { tags: '@smoke' }, function () {
   const validatorNavigation = 'a[href="/validators"]';
   const tendermintDataHeader = '[data-testid="tendermint-header"]';
   const vegaDataHeader = '[data-testid="vega-header"]';
-  const jsonSection = '.language-json'
-  
+  const jsonSection = '.language-json';
+
   before('Visit validators page and obtain data', function () {
     cy.visit('/');
     cy.get(validatorNavigation).click();
     cy.get_validators().as('validators');
-  })
+  });
 
   describe('Verify elements on page', function () {
-
     before('Ensure at least two validators are present', function () {
-      assert.isAtLeast(this.validators.length, 2, 'Ensuring at least two validators exist')
-    })
+      assert.isAtLeast(
+        this.validators.length,
+        2,
+        'Ensuring at least two validators exist'
+      );
+    });
 
     it('Validator page is displayed', function () {
       cy.get(vegaDataHeader)
@@ -23,7 +26,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         .next()
         .within(() => {
           cy.get(jsonSection).should('not.be.empty');
-        })
+        });
 
       cy.get(tendermintDataHeader)
         .contains('Tendermint data')
@@ -31,7 +34,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         .next()
         .within(() => {
           cy.get(jsonSection).should('not.be.empty');
-        })
+        });
     });
 
     it('Validator page contains relevant validator information', function () {
@@ -43,8 +46,9 @@ context('Validator page', { tags: '@smoke' }, function () {
             cy.get(jsonSection)
               .invoke('text')
               .convert_string_json_to_js_object()
-              .then((validatorsInJson) => { 
-                const validatorInJson = validatorsInJson.result.validators[index];
+              .then((validatorsInJson) => {
+                const validatorInJson =
+                  validatorsInJson.result.validators[index];
 
                 assert.equal(
                   validatorInJson.address,
@@ -80,9 +84,9 @@ context('Validator page', { tags: '@smoke' }, function () {
                   `Checking that validator proposer priority shown in json matches system data`
                 );
                 cy.contains(validator.proposer_priority).should('be.visible');
-              })
-          })
-      })
+              });
+          });
+      });
     });
 
     it('Validator page is displayed on mobile', function () {
@@ -94,7 +98,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         .next()
         .within(() => {
           cy.get(jsonSection).should('not.be.empty');
-        })
+        });
 
       cy.get(tendermintDataHeader)
         .contains('Tendermint data')
@@ -102,7 +106,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         .next()
         .within(() => {
           cy.get(jsonSection).should('not.be.empty');
-        })
+        });
 
       this.validators.forEach((validator) => {
         cy.get(tendermintDataHeader)
@@ -114,8 +118,8 @@ context('Validator page', { tags: '@smoke' }, function () {
             cy.contains(validator.pub_key.value).should('be.visible');
             cy.contains(validator.voting_power).should('be.visible');
             cy.contains(validator.proposer_priority).should('be.visible');
-          })
-      })
+          });
+      });
     });
 
     Cypress.Commands.add('get_validators', () => {
@@ -124,9 +128,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         url: `http://localhost:26617/validators`,
         headers: { 'content-type': 'application/json' },
       })
-        .its(
-          `body.result.validators`
-        )
+        .its(`body.result.validators`)
         .then(function (response) {
           let validators = [];
           response.forEach((account, index) => {
