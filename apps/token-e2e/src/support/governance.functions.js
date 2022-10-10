@@ -66,22 +66,11 @@ Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
 });
 
 Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
-  cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
-    freeformProposal.terms.closingTimestamp = timestamp;
-    freeformProposal.rationale.title += timestamp;
-    let proposalPayload = JSON.stringify(freeformProposal);
-
-    cy.get(newProposalTitle).type(freeformProposal.rationale.title);
-
-    cy.get(newProposalDescription).type(proposalPayload, {
-      parseSpecialCharSequences: false,
-      delay: 2,
-    });
-
-    cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-
-    cy.wrap(freeformProposal);
-  });
+  cy.get(newProposalTitle).type(`${timestamp} test freeform proposal`);
+  cy.get(newProposalDescription).type(
+    'this is a e2e freeform proposal description'
+  );
+  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
 });
 
 Cypress.Commands.add('get_submitted_proposal_from_proposal_list', () => {
