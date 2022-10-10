@@ -9,6 +9,7 @@
     "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack",
     "test:all": "nx run-many --all --target=test",
     "build:all": "nx run-many --all --target=build",
+    "lint:all": "nx run-many --all --target=lint",
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl"
   },
   "engines": {

@@ -144,9 +144,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="type"
           valueFormatter={({
+            data: order,
             value,
           }: VegaValueFormatterParams<Order, 'type'>) => {
             if (!value) return '-';
+            if (order.peggedOrder) return t('Pegged');
+            if (order.liquidityProvision) return t('Liquidity provision');
             return OrderTypeMapping[value];
           }}
         />
