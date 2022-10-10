@@ -1,11 +1,9 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, useCallback } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
-import type { GetRowsParams } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
@@ -38,37 +36,20 @@ export const AccountManager = ({
     },
     [gridRef]
   );
-  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+  const { data } = useDataProvider<AccountFields[], never>({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
   });
   dataRef.current = data;
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: GetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current?.length ?? -1;
-    successCallback(rowsThisBlock, lastRow);
-  };
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && (
-        <AccountTable
-          rowModelType={data?.length ? 'infinite' : 'clientSide'}
-          rowData={data?.length ? undefined : []}
-          ref={gridRef}
-          datasource={{ getRows }}
-          onClickAsset={onClickAsset}
-          onClickDeposit={onClickDeposit}
-          onClickWithdraw={onClickWithdraw}
-        />
-      )}
-    </AsyncRenderer>
+    <AccountTable
+      rowData={data}
+      ref={gridRef}
+      onClickAsset={onClickAsset}
+      onClickDeposit={onClickDeposit}
+      onClickWithdraw={onClickWithdraw}
+    />
   );
 };
 
