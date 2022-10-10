@@ -42,7 +42,10 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      entryPrice: addDecimalsFormatNumber(order.price, order.market?.decimalPlaces ?? 0),
+      entryPrice: addDecimalsFormatNumber(
+        order.price,
+        order.market?.decimalPlaces ?? 0
+      ),
     },
   });
 
