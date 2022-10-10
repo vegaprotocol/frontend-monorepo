@@ -19,7 +19,7 @@ export function addRestartVegacapsuleNetwork() {
     cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
     cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false })
       .its('stderr')
-      .should('contain', 'network cleaning up success');
+      .should('contain', 'Network has been successfully cleaned up');
 
     cy.exec(
       'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
@@ -39,6 +39,6 @@ export function addRestartVegacapsuleNetwork() {
             });
         }
       })
-      .should('contain', 'starting network success');
+      .should('contain', 'Network successfully started');
   });
 }
