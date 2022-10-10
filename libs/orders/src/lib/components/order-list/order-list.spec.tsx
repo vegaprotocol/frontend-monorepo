@@ -166,7 +166,7 @@ describe('OrderListTable', () => {
       expect(mockCancel).toHaveBeenCalledWith(order);
     });
 
-    it('does not show buttons for liquidity provision orders', async () => {
+    it('shows if an order is a liquidity provision order and does not show order actions', async () => {
       const order = generateOrder({
         type: OrderType.TYPE_LIMIT,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
