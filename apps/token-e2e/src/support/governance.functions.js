@@ -2,6 +2,7 @@ const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
+const rawProposalData = '[data-testid="proposal-data"]';
 const proposalResponseProposalIdPath =
   'response.body.data.busEvents.0.event.id';
 const voteButtons = '[data-testid="vote-buttons"]';
@@ -49,6 +50,20 @@ Cypress.Commands.add(
     return timestamp;
   }
 );
+
+Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
+  cy.fixture('/proposals/raw.json').then((rawProposal) => {
+    rawProposal.terms.closingTimestamp = timestamp;
+    rawProposal.rationale.title += timestamp;
+    let proposalPayload = JSON.stringify(rawProposal);
+
+    cy.get(rawProposalData).type(proposalPayload, {
+      parseSpecialCharSequences: false,
+      delay: 2,
+    });
+    cy.wrap(rawProposal);
+  });
+});
 
 Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
   cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
