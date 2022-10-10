@@ -102,7 +102,80 @@ const bufferSize = 30;
 // margin size in px, when reached scrollOffset will be updated
 const marginSize = bufferSize * 0.9 * rowHeight;
 
-
+const getBestStaticBidPriceLinePosition = (
+  bestStaticBidPrice: string | undefined,
+  fillGaps: boolean,
+  maxPriceLevel: string,
+  minPriceLevel: string,
+  resolution: number,
+  rows: OrderbookRowData[] | null
+) => {
+  let bestStaticBidPriceLinePosition = '';
+  if (maxPriceLevel !== '0' && minPriceLevel !== '0') {
+    if (
+      bestStaticBidPrice &&
+      BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
+      BigInt(bestStaticBidPrice) > BigInt(minPriceLevel)
+    ) {
+      if (fillGaps) {
+        bestStaticBidPriceLinePosition = (
+          ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
+            BigInt(resolution) +
+            BigInt(1)) *
+            BigInt(rowHeight) +
+          BigInt(1)
+        ).toString();
+      } else {
+        const index = rows?.findIndex(
+          (row) => BigInt(row.price) <= BigInt(bestStaticBidPrice)
+        );
+        if (index !== undefined && index !== -1) {
+          bestStaticBidPriceLinePosition = (
+            (index + 1) * rowHeight +
+            1
+          ).toString();
+        }
+      }
+    }
+  }
+  return bestStaticBidPriceLinePosition;
+};
+const getBestStaticOfferPriceLinePosition = (
+  bestStaticOfferPrice: string | undefined,
+  fillGaps: boolean,
+  maxPriceLevel: string,
+  minPriceLevel: string,
+  resolution: number,
+  rows: OrderbookRowData[] | null
+) => {
+  let bestStaticOfferPriceLinePosition = '';
+  if (
+    bestStaticOfferPrice &&
+    BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
+    BigInt(bestStaticOfferPrice) > BigInt(minPriceLevel)
+  ) {
+    if (fillGaps) {
+      bestStaticOfferPriceLinePosition = (
+        ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
+          BigInt(resolution) +
+          BigInt(2)) *
+          BigInt(rowHeight) +
+        BigInt(1)
+      ).toString();
+    } else {
+      const index = rows?.findIndex(
+        (row) => BigInt(row.price) <= BigInt(bestStaticOfferPrice)
+      );
+      if (index !== undefined && index !== -1) {
+        bestStaticOfferPriceLinePosition = (
+          (index + 2) * rowHeight +
+          1
+        ).toString();
+      }
+    }
+  }
+  return bestStaticOfferPriceLinePosition;
+};
 const OrderbookDebugInfo = ({
   decimalPlaces,
   numberOfRows,
@@ -471,60 +544,23 @@ export const Orderbook = ({
     .fill(null)
     .map((v, i) => Math.pow(10, i));
 
-  let bestStaticBidPriceLinePosition = '';
-  let bestStaticOfferPriceLinePosition = '';
-  if (maxPriceLevel !== '0' && minPriceLevel !== '0') {
-    if (
-      bestStaticBidPrice &&
-      BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
-      BigInt(bestStaticBidPrice) > BigInt(minPriceLevel)
-    ) {
-      if (fillGaps) {
-        bestStaticBidPriceLinePosition = (
-          ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-            BigInt(resolution) +
-            BigInt(1)) *
-            BigInt(rowHeight) +
-          BigInt(1)
-        ).toString();
-      } else {
-        const index = rows?.findIndex(
-          (row) => BigInt(row.price) <= BigInt(bestStaticBidPrice)
-        );
-        if (index !== undefined && index !== -1) {
-          bestStaticBidPriceLinePosition = (
-            (index + 1) * rowHeight +
-            1
-          ).toString();
-        }
-      }
-    }
-    if (
-      bestStaticOfferPrice &&
-      BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
-      BigInt(bestStaticOfferPrice) > BigInt(minPriceLevel)
-    ) {
-      if (fillGaps) {
-        bestStaticOfferPriceLinePosition = (
-          ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
-            BigInt(resolution) +
-            BigInt(2)) *
-            BigInt(rowHeight) +
-          BigInt(1)
-        ).toString();
-      } else {
-        const index = rows?.findIndex(
-          (row) => BigInt(row.price) <= BigInt(bestStaticOfferPrice)
-        );
-        if (index !== undefined && index !== -1) {
-          bestStaticOfferPriceLinePosition = (
-            (index + 2) * rowHeight +
-            1
-          ).toString();
-        }
-      }
-    }
-  }
+  const bestStaticBidPriceLinePosition = getBestStaticBidPriceLinePosition(
+    bestStaticBidPrice,
+    fillGaps,
+    maxPriceLevel,
+    minPriceLevel,
+    resolution,
+    rows
+  );
+
+  const bestStaticOfferPriceLinePosition = getBestStaticOfferPriceLinePosition(
+    bestStaticOfferPrice,
+    fillGaps,
+    maxPriceLevel,
+    minPriceLevel,
+    resolution,
+    rows
+  );
 
   /* eslint-disable jsx-a11y/no-static-element-interactions */
   return (
