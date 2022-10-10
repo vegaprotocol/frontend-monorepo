@@ -144,8 +144,4 @@ export const singleMarket: SingleMarketFieldsFragment = {
       },
     },
   },
-  depth: {
-    __typename: 'MarketDepth',
-    lastTrade: { __typename: 'Trade', price: '1001' },
-  },
 };
