@@ -37,10 +37,10 @@ describe('BreakdownTable', () => {
       render(<BreakdownTable data={singleRowData} />);
     });
     const headers = await screen.findAllByRole('columnheader');
-    expect(headers).toHaveLength(5);
+    expect(headers).toHaveLength(4);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Account type', 'Market', 'Used', 'Deposited', 'Balance']);
+    ).toEqual(['Account type', 'Market', 'Used', 'Balance']);
   });
 
   it('should apply correct formatting', async () => {
