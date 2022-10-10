@@ -1,10 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import debounce from 'lodash/debounce';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumber,
@@ -12,17 +7,14 @@ import {
   t,
   titlefy,
   useDataProvider,
-  useYesterday,
 } from '@vegaprotocol/react-helpers';
-import { Interval } from '@vegaprotocol/types';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import isEqual from 'lodash/isEqual';
-import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 import type {
   SingleMarketFieldsFragment,
   MarketData,
   Candle,
+  MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
 import {
   marketProvider,
@@ -44,20 +36,13 @@ export interface SingleMarketData extends SingleMarketFieldsFragment {
   data: MarketData;
 }
 
-const dataProvider = makeDerivedDataProvider<SingleMarketData, never>(
-  [marketProvider, marketCandlesProvider, marketDataProvider],
-  ([market, candles, marketData]) => {
-    return {
-      ...market,
-      candles,
-      data: marketData,
-    };
-  }
-);
-
-const MarketPage = ({ id }: { id?: string }) => {
-  const [marketPrice, setMarketPrice] = useState('');
-  const dataRef = useRef<SingleMarketData | null>(null);
+const MarketPage = ({
+  id,
+  marketId: mid,
+}: {
+  id?: string;
+  marketId?: string;
+}) => {
   const { query, push } = useRouter();
   const { w } = useWindowSize();
   const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
@@ -86,49 +71,45 @@ const MarketPage = ({ id }: { id?: string }) => {
     [marketId, updateStore, push]
   );
 
-  const yesterday = useYesterday();
-  // Cache timestamp for yesterday to prevent full unmount of market page when
-  // a rerender occurs
-  const yTimestamp = useMemo(() => {
-    return new Date(yesterday).toISOString();
-  }, [yesterday]);
-
   const variables = useMemo(
     () => ({
       marketId: marketId || '',
-      interval: Interval.INTERVAL_I1H,
-      since: yTimestamp,
     }),
-    [marketId, yTimestamp]
+    [marketId]
   );
 
-  const dataUpdate = useCallback(
-    ({ data }: { data: SingleMarketData }) => {
-      setMarketPrice(calculatePrice(data.data.markPrice, data.decimalPlaces));
-      if (isEqual(data, dataRef.current)) {
-        return true;
-      }
-      dataRef.current = data;
-      return false;
-    },
-    [setMarketPrice]
-  );
-
-  const { data, error, loading } = useDataProvider({
-    dataProvider,
-    update: dataUpdate,
+  const { data, error, loading } = useDataProvider<
+    SingleMarketFieldsFragment,
+    never
+  >({
+    dataProvider: marketProvider,
     variables,
     skip: !marketId,
   });
-  dataRef.current = data;
-  const marketName = data?.tradableInstrument.instrument.name;
 
-  useEffect(() => {
-    if (marketName) {
-      const pageTitle = titlefy([marketName, marketPrice]);
-      update({ pageTitle });
-    }
-  }, [marketName, update, marketPrice]);
+  const updateProvider = useCallback(
+    ({ data: marketData }: { data: MarketData }) => {
+      const marketName = data?.tradableInstrument.instrument.name;
+      const marketPrice = calculatePrice(
+        marketData.markPrice,
+        data?.decimalPlaces
+      );
+      if (marketName) {
+        const pageTitle = titlefy([marketName, marketPrice]);
+        update({ pageTitle });
+      }
+      return true;
+    },
+    [update, data?.tradableInstrument.instrument.name, data?.decimalPlaces]
+  );
+
+  useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
+    dataProvider: marketDataProvider,
+    update: updateProvider,
+    variables,
+    skip: !marketId || !data,
+    updateOnInit: true,
+  });
 
   if (!marketId) {
     return (
@@ -139,7 +120,7 @@ const MarketPage = ({ id }: { id?: string }) => {
   }
 
   return (
-    <AsyncRenderer<SingleMarketData>
+    <AsyncRenderer<SingleMarketFieldsFragment>
       loading={loading}
       error={error}
       data={data || undefined}

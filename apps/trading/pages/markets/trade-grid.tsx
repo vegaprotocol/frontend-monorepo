@@ -1,8 +1,4 @@
-import {
-  compileGridData,
-  DealTicketContainer,
-  TradingModeTooltip,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
@@ -22,23 +18,11 @@ import {
   ResizableGrid,
   ResizableGridPanel,
   ButtonLink,
-  PriceCellChange,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  addDecimalsFormatNumber,
-  getDateFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { getDateFormat, t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { CandleClose } from '@vegaprotocol/types';
-import {
-  AuctionTrigger,
-  AuctionTriggerMapping,
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { Header, HeaderStat } from '../../components/header';
 import { AccountsContainer } from '../portfolio/accounts-container';
 import {
@@ -46,7 +30,11 @@ import {
   SelectMarketPopover,
 } from '../../components/select-market';
 import type { OnCellClickHandler } from '../../components/select-market';
-import type { SingleMarketData } from './[marketId].page';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import { Last24hPriceChange } from '../../components/last-24h-price-change';
+import { MarketMarkPrice } from '../../components/market-mark-price';
+import { MarketVolume } from '../../components/market-volume';
+import { MarketTradingModeComponent } from '../../components/market-trading-mode';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -64,7 +52,7 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 type ExpiryLabelProps = {
-  market: SingleMarketData;
+  market: SingleMarketFieldsFragment;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -81,7 +69,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: SingleMarketData;
+  market: SingleMarketFieldsFragment;
   explorerUrl?: string;
 };
 
@@ -114,7 +102,7 @@ const ExpiryTooltipContent = ({
 };
 
 interface TradeMarketHeaderProps {
-  market: SingleMarketData;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
@@ -125,9 +113,6 @@ export const TradeMarketHeader = ({
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  const candlesClose: string[] = (market?.candles || [])
-    .map((candle) => candle?.close)
-    .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
@@ -158,51 +143,10 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <HeaderStat heading={t('Price')}>
-        <div data-testid="mark-price">
-          {market.data && market.data.markPrice !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.markPrice,
-                market.decimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')}>
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={market.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat heading={t('Volume')}>
-        <div data-testid="trading-volume">
-          {market.data && market.data.indicativeVolume !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.indicativeVolume,
-                market.positionDecimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-      <HeaderStat
-        heading={t('Trading mode')}
-        description={
-          <TradingModeTooltip
-            market={market}
-            compiledGrid={compileGridData(market, onSelect)}
-          />
-        }
-      >
-        <div data-testid="trading-mode">
-          {market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger &&
-          market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-            : MarketTradingModeMapping[market.tradingMode]}
-        </div>
-      </HeaderStat>
+      <MarketMarkPrice marketId={market.id} />
+      <Last24hPriceChange marketId={market.id} />
+      <MarketVolume marketId={market.id} />
+      <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
       {symbol ? (
         <HeaderStat heading={t('Settlement asset')}>
           <div data-testid="trading-mode">
@@ -221,7 +165,7 @@ export const TradeMarketHeader = ({
 };
 
 interface TradeGridProps {
-  market: SingleMarketData;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
@@ -340,7 +284,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: SingleMarketData;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
@@ -348,20 +292,16 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
-    const Component = TradingViews[view];
+    const Component = memo<{
+      marketId: string;
+      onSelect: (marketId: string) => void;
+    }>(TradingViews[view]);
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return (
-      <Component
-        marketId={market.id}
-        onSelect={(id: string) => {
-          onSelect(id);
-        }}
-      />
-    );
+    return <Component marketId={market.id} onSelect={onSelect} />;
   };
 
   return (
