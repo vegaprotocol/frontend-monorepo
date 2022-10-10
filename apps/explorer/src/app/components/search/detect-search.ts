@@ -1,8 +1,5 @@
 import { DATA_SOURCES } from '../../config';
-import type {
-  BlockExplorerTransaction,
-  BlockExplorerTransactions,
-} from '../../routes/types/block-explorer-response';
+import type { BlockExplorerTransaction } from '../../routes/types/block-explorer-response';
 
 export enum SearchTypes {
   Transaction = 'transaction',
@@ -46,46 +43,87 @@ export const detectTypeFromQuery = (
 };
 
 export const detectTypeByFetching = async (
-  query: string,
-  type: SearchTypes
+  query: string
 ): Promise<SearchTypes | undefined> => {
-  const TYPES = [SearchTypes.Party, SearchTypes.Transaction];
+  const hash = toNonHex(query);
+  const request = await fetch(
+    `${DATA_SOURCES.blockExplorerUrl}/transactions/${hash}`
+  );
 
-  if (!TYPES.includes(type)) {
-    throw new Error('Search type provided not recognised');
-  }
+  if (request?.ok) {
+    const body: BlockExplorerTransaction = await request.json();
 
-  if (type === SearchTypes.Transaction) {
-    const hash = toNonHex(query);
-    const request = await fetch(
-      `${DATA_SOURCES.blockExplorerUrl}/transactions/${hash}`
-    );
-
-    if (request?.ok) {
-      const body: BlockExplorerTransaction = await request.json();
-
-      if (body?.transaction) {
-        return SearchTypes.Transaction;
-      }
-    }
-  } else if (type === SearchTypes.Party) {
-    const party = toNonHex(query);
-
-    const request = await fetch(
-      `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${party}`
-    );
-
-    if (request.ok) {
-      const body: BlockExplorerTransactions = await request.json();
-
-      if (body?.transactions?.length) {
-        return SearchTypes.Party;
-      }
+    if (body?.transaction) {
+      return SearchTypes.Transaction;
     }
   }
 
-  return undefined;
+  return SearchTypes.Party;
 };
+
+// Code commented out because the current solution to detect a hex is temporary (by process of elimination)
+// export const detectTypeByFetching = async (
+//   query: string,
+//   type: SearchTypes
+// ): Promise<SearchTypes | undefined> => {
+//   const TYPES = [SearchTypes.Party, SearchTypes.Transaction];
+//
+//   if (!TYPES.includes(type)) {
+//     throw new Error('Search type provided not recognised');
+//   }
+//
+//   if (type === SearchTypes.Transaction) {
+//     const hash = toNonHex(query);
+//     const request = await fetch(
+//       `${DATA_SOURCES.blockExplorerUrl}/transactions/${hash}`
+//     );
+//
+//     if (request?.ok) {
+//       const body: BlockExplorerTransaction = await request.json();
+//
+//       if (body?.transaction) {
+//         return SearchTypes.Transaction;
+//       }
+//     }
+//   } else if (type === SearchTypes.Party) {
+//     const party = toNonHex(query);
+//
+//     const request = await fetch(
+//       `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${party}`
+//     );
+//
+//     if (request.ok) {
+//       const body: BlockExplorerTransactions = await request.json();
+//
+//       if (body?.transactions?.length) {
+//         return SearchTypes.Party;
+//       }
+//     }
+//   }
+//
+//   return undefined;
+// };
+
+// export const getSearchType = async (
+//   query: string
+// ): Promise<SearchTypes | undefined> => {
+//   const searchTypes = detectTypeFromQuery(query);
+//   const hasResults = searchTypes?.length;
+//
+//   if (hasResults) {
+//     if (hasResults > 1) {
+//       const promises = searchTypes.map((type) =>
+//         detectTypeByFetching(query, type)
+//       );
+//       const results = await Promise.all(promises);
+//       return results.find((result) => result !== undefined);
+//     }
+//
+//     return searchTypes[0];
+//   }
+//
+//   return undefined;
+// };
 
 export const getSearchType = async (
   query: string
@@ -95,11 +133,7 @@ export const getSearchType = async (
 
   if (hasResults) {
     if (hasResults > 1) {
-      const promises = searchTypes.map((type) =>
-        detectTypeByFetching(query, type)
-      );
-      const results = await Promise.all(promises);
-      return results.find((result) => result !== undefined);
+      return await detectTypeByFetching(query);
     }
 
     return searchTypes[0];
