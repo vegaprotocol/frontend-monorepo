@@ -199,6 +199,7 @@
   "governanceRequired": "Required",
   "daysLeft": "{{daysLeft}} left to vote.",
   "toVote": "to vote",
+  "youNeed{{amount}}AssociatedVegaTokensToVote": "You need a minimum of {{amount}} associated $VEGA tokens to vote",
   "voteFor": "Vote for",
   "voteAgainst": "Vote against",
   "noGovernanceTokens": "You need some VEGA tokens to participate in governance",

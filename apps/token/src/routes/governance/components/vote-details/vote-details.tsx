@@ -11,6 +11,7 @@ import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;
@@ -29,6 +30,42 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
     requiredMajorityPercentage,
     requiredParticipation,
   } = useVoteInformation({ proposal });
+
+  let minVoterBalance = null;
+  const { params } = useNetworkParams([
+    NetworkParams.governance_proposal_market_minVoterBalance,
+    NetworkParams.governance_proposal_updateMarket_minVoterBalance,
+    NetworkParams.governance_proposal_asset_minVoterBalance,
+    NetworkParams.governance_proposal_updateAsset_minVoterBalance,
+    NetworkParams.governance_proposal_updateNetParam_minVoterBalance,
+    NetworkParams.governance_proposal_freeform_minVoterBalance,
+  ]);
+
+  if (params) {
+    switch (proposal.terms.change.__typename) {
+      case 'NewMarket':
+        minVoterBalance = params.governance_proposal_market_minVoterBalance;
+        break;
+      case 'UpdateMarket':
+        minVoterBalance =
+          params.governance_proposal_updateMarket_minVoterBalance;
+        break;
+      case 'NewAsset':
+        minVoterBalance = params.governance_proposal_asset_minVoterBalance;
+        break;
+      case 'UpdateAsset':
+        minVoterBalance =
+          params.governance_proposal_updateAsset_minVoterBalance;
+        break;
+      case 'UpdateNetworkParameter':
+        minVoterBalance =
+          params.governance_proposal_updateNetParam_minVoterBalance;
+        break;
+      case 'NewFreeform':
+        minVoterBalance = params.governance_proposal_freeform_minVoterBalance;
+        break;
+    }
+  }
 
   const { t } = useTranslation();
   const { voteState, voteDatetime, castVote } = useUserVote(
@@ -122,6 +159,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             castVote={castVote}
             voteDatetime={voteDatetime}
             proposalState={proposal.state}
+            minVoterBalance={minVoterBalance}
             className="flex"
           />
         </>

@@ -23,6 +23,7 @@ interface VoteButtonsContainerProps {
   castVote: (vote: VoteValue) => void;
   voteDatetime: Date | null;
   proposalState: ProposalState;
+  minVoterBalance: string | null;
   className?: string;
 }
 
@@ -70,6 +71,7 @@ export const VoteButtons = ({
   voteDatetime,
   proposalState,
   currentStakeAvailable,
+  minVoterBalance,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
@@ -103,8 +105,24 @@ export const VoteButtons = ({
       return t('noGovernanceTokens');
     }
 
+    if (
+      minVoterBalance &&
+      currentStakeAvailable.isLessThan(Number(minVoterBalance))
+    ) {
+      return t('youNeed{{amount}}AssociatedVegaTokensToVote', {
+        amount: Number(minVoterBalance),
+      });
+    }
+
     return false;
-  }, [t, pubKey, currentStakeAvailable, proposalState, appDispatch]);
+  }, [
+    t,
+    pubKey,
+    currentStakeAvailable,
+    proposalState,
+    appDispatch,
+    minVoterBalance,
+  ]);
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);
