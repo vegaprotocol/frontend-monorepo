@@ -204,7 +204,7 @@ context('Staking Page - verify elements on page', function () {
         cy.get(nominatedStake).invoke('text').should('match', stakeNumberRegex);
       });
 
-      // 2001-STKE-011
+      // 2001-STKE-011 2002-SINC-001 2002-SINC-002
       it('should be able to see epoch information', function () {
         const epochTitle = 'h3';
         const nextEpochInfo = 'p';
