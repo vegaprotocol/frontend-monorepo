@@ -138,7 +138,7 @@ context('Staking Page - verify elements on page', function () {
         cy.click_on_validator_from_list(0);
       });
 
-      // 2001-STKE-005
+      // 2001-STKE-006
       it('Should be able to see validator name', function () {
         cy.get(validatorTitle).should('not.be.empty');
       });
@@ -204,7 +204,7 @@ context('Staking Page - verify elements on page', function () {
         cy.get(nominatedStake).invoke('text').should('match', stakeNumberRegex);
       });
 
-      // 2001-STKE-011
+      // 2001-STKE-011 2002-SINC-001 2002-SINC-002
       it('should be able to see epoch information', function () {
         const epochTitle = 'h3';
         const nextEpochInfo = 'p';

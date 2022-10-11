@@ -23,13 +23,16 @@ import { useMemo } from 'react';
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
 function AppBody({ Component, pageProps }: AppProps) {
-  const { connectDialog, pageTitle, update } = useGlobalStore((store) => ({
+  const { connectDialog, update } = useGlobalStore((store) => ({
     connectDialog: store.connectDialog,
-    pageTitle: store.pageTitle,
     update: store.update,
   }));
   const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
+
+  const { pageTitle } = useGlobalStore((store) => ({
+    pageTitle: store.pageTitle,
+  }));
 
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];

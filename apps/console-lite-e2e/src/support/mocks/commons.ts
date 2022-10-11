@@ -1,5 +1,6 @@
 import type { Market } from '@vegaprotocol/market-list';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 
 export const protoCandles = [
   { open: '9556163', close: '9587028', __typename: 'Candle' },
@@ -122,4 +123,25 @@ export const protoMarket: Market = {
     __typename: 'TradableInstrument',
   },
   __typename: 'Market',
+};
+
+export const singleMarket: SingleMarketFieldsFragment = {
+  ...protoMarket,
+  tradableInstrument: {
+    ...protoMarket.tradableInstrument,
+    instrument: {
+      ...protoMarket.tradableInstrument.instrument,
+      product: {
+        ...protoMarket.tradableInstrument.instrument.product,
+        settlementAsset: {
+          ...protoMarket.tradableInstrument.instrument.product.settlementAsset,
+          id: 'dai-id',
+          name: 'DAI Name',
+        },
+        oracleSpecForTradingTermination: {
+          id: 'oid',
+        },
+      },
+    },
+  },
 };

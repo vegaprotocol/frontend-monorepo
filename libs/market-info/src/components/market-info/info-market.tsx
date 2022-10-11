@@ -9,7 +9,6 @@ import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { totalFees } from '@vegaprotocol/market-list';
-import type { Schema } from '@vegaprotocol/types';
 import {
   AccountType,
   Interval,
@@ -23,21 +22,25 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
 import { marketInfoDataProvider } from './market-info-data-provider';
+import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
+import type { MarketInfoQuery } from './__generated___/MarketInfo';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
 };
 
 export interface InfoProps {
-  market: Schema.Market;
+  market: MarketInfoQuery['market'];
   onSelect: (id: string) => void;
 }
 
-export const calcCandleVolume = (m: Schema.Market): string | undefined => {
-  return m.candlesConnection?.edges
-    ?.reduce((acc: BigNumber, c: Schema.CandleEdge | null) => {
+export const calcCandleVolume = (
+  m: MarketInfoQuery['market']
+): string | undefined => {
+  return m?.candlesConnection?.edges
+    ?.reduce((acc: BigNumber, c) => {
       return acc.plus(new BigNumber(c?.node?.volume ?? 0));
-    }, new BigNumber(m.candlesConnection?.edges[0]?.node.volume ?? 0))
+    }, new BigNumber(m?.candlesConnection?.edges[0]?.node.volume ?? 0))
     ?.toString();
 };
 
@@ -82,7 +85,13 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const headerClassName = 'uppercase text-lg';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
-    market.tradableInstrument.instrument.product?.settlementAsset.symbol;
+    market?.tradableInstrument.instrument.product?.settlementAsset.symbol;
+  const assetId = useMemo(
+    () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
+    [market]
+  );
+  const { data: asset } = useAssetDataProvider(assetId);
+  if (!market) return null;
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -192,18 +201,16 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     },
     {
       title: t('Settlement asset'),
-      content: (
-        <MarketInfoTable
-          data={{
-            name: market.tradableInstrument.instrument.product?.settlementAsset
-              .name,
-            symbol:
-              market.tradableInstrument.instrument.product?.settlementAsset
-                .symbol,
-            assetID:
-              market.tradableInstrument.instrument.product?.settlementAsset.id,
-          }}
+      content: asset ? (
+        <AssetDetailsTable
+          asset={asset}
+          inline={true}
+          noBorder={true}
+          dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
+          ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
         />
+      ) : (
+        <Splash>{t('No data')}</Splash>
       ),
     },
     {

@@ -1,21 +1,9 @@
-import {
-  addDecimalsFormatNumber,
-  t,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
-import type { Asset } from './assets-data-provider';
-import {
-  Button,
-  Dialog,
-  Icon,
-  KeyValueTable,
-  KeyValueTableRow,
-  Splash,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
-import { assetsProvider } from './assets-data-provider';
-import type { Schema } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
+import { useAssetsDataProvider } from './assets-data-provider';
+import { Button, Dialog, Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import create from 'zustand';
+import { AssetDetailsTable } from './asset-details-table';
+import type { Asset } from './asset-data-provider';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -43,117 +31,30 @@ export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
   })
 );
 
-type AssetDetails = {
-  key: string;
-  label: string;
-  value: string;
-  tooltip: string;
-}[];
-
 export interface AssetDetailsDialogProps {
   assetSymbol: string | Asset;
   trigger?: HTMLElement | null;
   open: boolean;
   onChange: (open: boolean) => void;
 }
-
 export const AssetDetailsDialog = ({
   assetSymbol,
   trigger,
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
-  const { data } = useDataProvider({ dataProvider: assetsProvider });
+  const { data } = useAssetsDataProvider();
+
   const symbol =
     typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
   const asset = data?.find((a) => a?.symbol === symbol);
 
-  let details: AssetDetails = [];
-  if (asset != null) {
-    details = [
-      {
-        key: 'name',
-        label: t('Name'),
-        value: asset.name,
-        tooltip: '', // t('Name of the asset (e.g: Great British Pound)')
-      },
-      {
-        key: 'symbol',
-        label: t('Symbol'),
-        value: asset.symbol,
-        tooltip: '', // t('Symbol of the asset (e.g: GBP)')
-      },
-      {
-        key: 'decimals',
-        label: t('Decimals'),
-        value: asset.decimals.toString(),
-        tooltip: t('Number of decimal / precision handled by this asset'),
-      },
-      {
-        key: 'quantum',
-        label: t('Quantum'),
-        value: asset.quantum,
-        tooltip: t('The minimum economically meaningful amount in the asset'),
-      },
-      {
-        key: 'contractaddress',
-        label: t('Contract address'),
-        value: (asset.source as Schema.ERC20).contractAddress,
-        tooltip: t(
-          'The address of the contract for the token, on the ethereum network'
-        ),
-      },
-      {
-        key: 'withdrawalthreshold',
-        label: t('Withdrawal threshold'),
-        value: addDecimalsFormatNumber(
-          (asset.source as Schema.ERC20).withdrawThreshold,
-          asset.decimals
-        ),
-        tooltip: t(
-          'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
-        ),
-      },
-      {
-        key: 'lifetimelimit',
-        label: t('Lifetime limit'),
-        value: addDecimalsFormatNumber(
-          (asset.source as Schema.ERC20).lifetimeLimit,
-          asset.decimals
-        ),
-        tooltip: t(
-          'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'
-        ),
-      },
-    ];
-  }
-
   const content = asset ? (
     <div className="my-2">
-      <KeyValueTable>
-        {details
-          .filter(({ value }) => value && value.length > 0)
-          .map(({ key, label, value, tooltip }) => (
-            <KeyValueTableRow key={key}>
-              <div
-                data-testid={`${key}_label`}
-                className="first-letter:uppercase"
-              >
-                {tooltip.length > 0 ? (
-                  <Tooltip description={tooltip}>
-                    <span>{label}</span>
-                  </Tooltip>
-                ) : (
-                  <span>{label}</span>
-                )}
-              </div>
-              <div data-testid={`${key}_value`}>{value}</div>
-            </KeyValueTableRow>
-          ))}
-      </KeyValueTable>
+      <AssetDetailsTable asset={asset} />
     </div>
   ) : (
-    <div className="py-12">
+    <div className="py-12" data-testid="splash">
       <Splash>{t('No data')}</Splash>
     </div>
   );
@@ -183,7 +84,7 @@ export const AssetDetailsDialog = ({
           size="sm"
           onClick={() => onChange(false)}
         >
-          Close
+          {t('Close')}
         </Button>
       </div>
     </Dialog>

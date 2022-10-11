@@ -11,9 +11,8 @@ import {
 
 export type Candle = MarketCandlesFieldsFragment;
 
-const update = (data: Candle[], delta: Candle) => {
-  return data && delta ? [...data, delta] : data;
-};
+const update = (data: Candle[], delta: Candle) =>
+  data && delta ? [...data, delta] : data;
 
 const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
   responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
