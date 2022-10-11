@@ -18,7 +18,7 @@ export const WithdrawalsContainer = () => {
     <Web3Container>
       <VegaWalletContainer>
         <div className="h-full relative grid grid-rows-[1fr,min-content]">
-          <div className="h-full px-4">
+          <div className="h-full">
             <AsyncRenderer
               data={{ pending, completed }}
               loading={loading}
@@ -31,8 +31,9 @@ export const WithdrawalsContainer = () => {
                       <PendingWithdrawalsTable rowData={pending} />
                     </>
                   )}
-
-                  <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
+                  {completed && completed.length > 0 && (
+                    <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
+                  )}
                   <WithdrawalsTable rowData={completed} />
                 </>
               )}
