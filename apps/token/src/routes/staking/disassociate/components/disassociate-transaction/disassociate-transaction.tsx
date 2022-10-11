@@ -3,14 +3,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { StakingMethod } from '../../../components/staking-method-radio';
-import { TransactionCallout } from '../../../components/transaction-callout';
+import { StakingMethod } from '../../../../../components/staking-method-radio';
+import { TransactionCallout } from '../../../../../components/transaction-callout';
 import type {
   TransactionAction,
   TransactionState,
-} from '../../../hooks/transaction-reducer';
-import { TransactionActionType } from '../../../hooks/transaction-reducer';
-import Routes from '../../routes';
+} from '../../../../../hooks/transaction-reducer';
+import { TransactionActionType } from '../../../../../hooks/transaction-reducer';
+import Routes from '../../../../routes';
 
 export const DisassociateTransaction = ({
   amount,
