@@ -8,6 +8,7 @@ export * from './markets-data-provider';
 export * from './markets-provider';
 export * from './__generated___/market-candles';
 export * from './__generated___/market-data';
+export * from './__generated___/market';
 export * from './__generated___/markets';
 export * from './__generated___/markets-candles';
 export * from './__generated___/markets-data';
