@@ -1,8 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
-import { forwardRef, useEffect, useMemo, useRef } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +61,23 @@ interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
 }
 
+interface CanonisedNodeProps {
+  id: string;
+  [VALIDATOR]: {
+    avatarUrl: string | null;
+    name: string;
+  };
+  [STATUS]: string;
+  [TOTAL_STAKE_THIS_EPOCH]: string;
+  [SHARE]: string;
+  [VALIDATOR_STAKE]: string;
+  [PENDING_STAKE]: string;
+  [RANKING_SCORE]: string;
+  [STAKE_SCORE]: string;
+  [PERFORMANCE_SCORE]: string;
+  [VOTING_POWER]: string;
+}
+
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
   return (
@@ -92,6 +110,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     errorPolicy: 'ignore',
   });
   const navigate = useNavigate();
+  const [hideTopThird, setHideTopThird] = useState(true);
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
@@ -113,7 +132,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
-    return data.nodes.map(
+    const canonisedNodes = data.nodes.map(
       ({
         id,
         name,
@@ -166,7 +185,39 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         };
       }
     );
-  }, [data, t]);
+
+    if (canonisedNodes.length < 3 || !hideTopThird) {
+      return canonisedNodes;
+    }
+
+    const sortedByVotingPower = canonisedNodes.sort(
+      (a, b) =>
+        new BigNumber(b[VOTING_POWER]).toNumber() -
+        new BigNumber(a[VOTING_POWER]).toNumber()
+    );
+
+    // The point of identifying and hiding the group that could halt the network
+    // is that we assume the top 1/3 of stake is held by considerably less than
+    // 1/3 of the validators and we really want people not to stake any more to
+    // that group, because we want to make it require as many difference
+    // validators to collude as possible to halt the network, so we hide them.
+    const removeTopThirdOfStakeScores = sortedByVotingPower.reduce(
+      (acc, node) => {
+        if (acc.cumulativeScore < 3333) {
+          acc.cumulativeScore += Number(node[VOTING_POWER]);
+          return acc;
+        }
+        acc.remaining.push(node);
+        return acc;
+      },
+      { remaining: [], cumulativeScore: 0 } as {
+        remaining: CanonisedNodeProps[];
+        cumulativeScore: number;
+      }
+    );
+
+    return removeTopThirdOfStakeScores.remaining;
+  }, [data, t, hideTopThird]);
 
   const gridRef = useRef<AgGridReact | null>(null);
 
@@ -247,6 +298,30 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
     return (
       <div data-testid="validators-grid">
+        {hideTopThird && (
+          <div className="mb-6 py-4 px-4 md:px-12 bg-neutral-900  text-sm text-center">
+            <div className="mb-4">
+              <Button
+                data-testid="show-all-validators"
+                icon="list"
+                className="inline-flex items-center"
+                onClick={() => setHideTopThird(false)}
+              >
+                {t('Reveal top validators')}
+              </Button>
+            </div>
+            <p className="font-semibold">
+              {t(
+                'Validators with too great a stake share will have the staking rewards for their delegators penalised.'
+              )}
+            </p>
+            <p className="mb-0">
+              {t(
+                'To avoid penalties and increase decentralisation of the network, delegate to validators below.'
+              )}
+            </p>
+          </div>
+        )}
         <AgGrid
           domLayout="autoHeight"
           style={{ width: '100%' }}
