@@ -1,10 +1,9 @@
-import * as React from 'react';
 import classNames from 'classnames';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery_party_accounts } from './__generated__/PartyBalanceQuery';
-import { useSettlementAccount } from '../../hooks/use-settlement-account';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import { useSettlementAccount } from '@vegaprotocol/deal-ticket';
 
 interface DealTicketBalanceProps {
   settlementAsset: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];

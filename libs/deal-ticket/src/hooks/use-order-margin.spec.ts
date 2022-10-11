@@ -2,9 +2,9 @@ import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PositionMargin } from './use-market-positions';
 import useOrderMargin from './use-order-margin';
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
 
 let mockEstimateData = {
   estimateOrder: {
@@ -27,7 +27,16 @@ let mockMarketPositions: PositionMargin = {
   openVolume: new BigNumber(1),
   balance: new BigNumber(100000),
 };
-jest.mock('./use-market-positions', () => jest.fn(() => mockMarketPositions));
+
+jest.mock('./use-market-positions', () => ({
+  useMarketPositions: ({
+    marketId,
+    partyId,
+  }: {
+    marketId: string;
+    partyId: string;
+  }) => mockMarketPositions,
+}));
 
 describe('useOrderMargin Hook', () => {
   const order = {

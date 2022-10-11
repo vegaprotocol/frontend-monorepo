@@ -4,6 +4,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import {
+  useMaximumPositionSize,
+  useOrderCloseOut,
+} from '@vegaprotocol/deal-ticket';
+import {
   getDefaultOrder,
   useOrderValidation,
   validateSize,
@@ -31,12 +35,10 @@ import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
-import useOrderCloseOut from '../../hooks/use-order-closeout';
-import useOrderMargin from '../../hooks/use-order-margin';
-import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
-import useCalculateSlippage from '../../hooks/use-calculate-slippage';
 import { Side, OrderType } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
+import useCalculateSlippage from '../../hooks/use-calculate-slippage';
+import useOrderMargin from '../../hooks/use-order-margin';
 
 interface DealTicketMarketProps {
   market: DealTicketMarketFragment;

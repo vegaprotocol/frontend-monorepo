@@ -1,10 +1,9 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Icon, Tooltip, TrafficLight } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import * as constants from './constants';
-import { TrafficLight } from '../traffic-light';
 
 interface DealTicketEstimatesProps {
   quoteName?: string;
@@ -16,45 +15,6 @@ interface DealTicketEstimatesProps {
   size?: string;
   slippage?: string;
 }
-
-interface DataTitleProps {
-  children: ReactNode;
-  quoteName?: string;
-}
-
-export const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
-  <dt>
-    {children}
-    {quoteName && <small> ({quoteName})</small>}
-  </dt>
-);
-
-interface ValueTooltipProps {
-  value?: string;
-  children?: ReactNode;
-  description: string;
-  id?: string;
-}
-
-export const ValueTooltipRow = ({
-  value,
-  children,
-  description,
-  id,
-}: ValueTooltipProps) => (
-  <dd className="flex gap-x-2 items-center">
-    {value || children}
-    <Tooltip align="center" description={description}>
-      <div className="cursor-help" id={id || ''} tabIndex={-1}>
-        <Icon
-          name={IconNames.ISSUE}
-          className="block rotate-180"
-          ariaLabel={description}
-        />
-      </div>
-    </Tooltip>
-  </dd>
-);
 
 export const DealTicketEstimates = ({
   price,
@@ -130,4 +90,43 @@ export const DealTicketEstimates = ({
       </div>
     )}
   </dl>
+);
+
+interface DataTitleProps {
+  children: ReactNode;
+  quoteName?: string;
+}
+
+export const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
+  <dt>
+    {children}
+    {quoteName && <small> ({quoteName})</small>}
+  </dt>
+);
+
+interface ValueTooltipProps {
+  value?: string;
+  children?: ReactNode;
+  description: string;
+  id?: string;
+}
+
+export const ValueTooltipRow = ({
+  value,
+  children,
+  description,
+  id,
+}: ValueTooltipProps) => (
+  <dd className="flex gap-x-2 items-center">
+    {value || children}
+    <Tooltip align="center" description={description}>
+      <div className="cursor-help" id={id || ''} tabIndex={-1}>
+        <Icon
+          name={IconNames.ISSUE}
+          className="block rotate-180"
+          ariaLabel={description}
+        />
+      </div>
+    </Tooltip>
+  </dd>
 );
