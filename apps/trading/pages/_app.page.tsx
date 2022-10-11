@@ -24,9 +24,7 @@ const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
 const Title = () => {
   const { pageTitle } = useGlobalStore((store) => ({
-    connectDialog: store.connectDialog,
     pageTitle: store.pageTitle,
-    update: store.update,
   }));
 
   const { VEGA_ENV } = useEnvironment();
