@@ -57,7 +57,7 @@ describe('AccountsTable', () => {
       'tBTC',
       '1,256.00000',
       '1,256.00001,256.0000',
-      'Collateral breakdown',
+      'Breakdown',
       'Deposit',
     ];
     cells.forEach((cell, i) => {
