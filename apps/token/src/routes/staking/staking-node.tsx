@@ -7,10 +7,10 @@ import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { StakingForm } from './staking-form';
-import { StakingNodesContainer } from './staking-nodes-container';
-import { StakingWalletsContainer } from './staking-wallets-container';
+import { StakingWalletsContainer } from './components/staking-wallets-container';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
+import StakingNodesContainer from './staking-nodes-container';
 
 export const StakingNodeContainer = () => {
   return (
