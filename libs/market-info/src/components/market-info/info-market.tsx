@@ -90,7 +90,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
   );
-  const { data: asset } = useAssetDataProvider(assetId);
+  const { data: asset } = useAssetDataProvider(assetId ?? '');
   if (!market) return null;
   const marketDataPanels = [
     {
