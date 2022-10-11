@@ -14,11 +14,14 @@ import {
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 let sendOrderUpdate: (data: OrderSubData) => void;
-const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = function (send) {
-  sendOrderUpdate = send;
+const getOnOrderSub = () => {
+  const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = (send) => {
+    sendOrderUpdate = send;
+  };
+  return onOrderSub;
 };
 
-export const subscriptionMocks = { OrderSub: onOrderSub };
+export const getSubscriptionMocks = () => ({ OrderSub: getOnOrderSub() });
 
 export function updateOrder(override?: PartialDeep<OrderSub_orders>): void {
   const order: OrderSub_orders = {
@@ -42,5 +45,8 @@ export function updateOrder(override?: PartialDeep<OrderSub_orders>): void {
   const update: OrderSubData = {
     orders: [merge(order, override)],
   };
+  if (!sendOrderUpdate) {
+    throw new Error('OrderSub not called');
+  }
   sendOrderUpdate(update);
 }

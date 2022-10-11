@@ -7,7 +7,7 @@ import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 import {
   updateOrder,
-  subscriptionMocks,
+  getSubscriptionMocks,
 } from '../support/mocks/generate-ws-order-update';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
@@ -23,6 +23,7 @@ const editOrderBtn = 'edit';
 
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
+    const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrderSub');
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
@@ -129,6 +130,8 @@ describe('orders list', { tags: '@smoke' }, () => {
 
 describe('subscribe orders', { tags: '@smoke' }, () => {
   before(() => {
+    const subscriptionMocks = getSubscriptionMocks();
+    cy.spy(subscriptionMocks, 'OrderSub');
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
@@ -137,7 +140,9 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
     connectVegaWallet();
-    cy.wait('@Orders');
+    cy.wait('@Orders').then(() => {
+      expect(subscriptionMocks.OrderSub).to.be.calledOnce;
+    });
   });
   const orderId = '1234567890';
   //7002-SORD-053
