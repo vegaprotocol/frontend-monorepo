@@ -134,7 +134,7 @@ export const rows: Rows = [
   {
     key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
     label: t('Global reward pool account balance'),
-    tooltip: t('The global reward pool account for this asset'),
+    tooltip: t('The global rewards acquired for this asset'),
     value: (asset) => num(asset, asset.globalRewardPoolAccount?.balance),
   },
   {
