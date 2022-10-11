@@ -84,8 +84,10 @@ export const useOrderListData = ({
     insert,
     variables,
   });
-  totalCountRef.current = totalCount;
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    totalCountRef.current = totalCount;
+    dataRef.current = data;
+  }
 
   const getRows = makeInfiniteScrollGetRows<OrderEdge>(
     newRows,
