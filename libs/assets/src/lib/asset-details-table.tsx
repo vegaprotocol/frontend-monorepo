@@ -128,20 +128,20 @@ export const rows: Rows = [
   {
     key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
     label: t('Infrastructure fee account balance'),
-    tooltip: t('The infrastructure fee account for this asset'),
+    tooltip: t('The infrastructure fee account in this asset'),
     value: (asset) => num(asset, asset.infrastructureFeeAccount.balance),
   },
   {
     key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
     label: t('Global reward pool account balance'),
-    tooltip: t('The global rewards acquired for this asset'),
+    tooltip: t('The global rewards acquired in this asset'),
     value: (asset) => num(asset, asset.globalRewardPoolAccount?.balance),
   },
   {
     key: AssetDetail.MAKER_PAID_FEES_ACCOUNT_BALANCE,
     label: t('Maker paid fees account balance'),
     tooltip: t(
-      'The rewards acquired based on the fees paid to makers for this asset'
+      'The rewards acquired based on the fees paid to makers in this asset'
     ),
     value: (asset) => num(asset, asset.takerFeeRewardAccount?.balance),
   },
@@ -157,7 +157,7 @@ export const rows: Rows = [
     key: AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE,
     label: t('Liquidity provision fee reward account balance'),
     tooltip: t(
-      'The rewards acquired based on the liquidity provision fees for this asset'
+      'The rewards acquired based on the liquidity provision fees in this asset'
     ),
     value: (asset) => num(asset, asset.lpFeeRewardAccount?.balance),
   },
@@ -165,7 +165,7 @@ export const rows: Rows = [
     key: AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
     label: t('Market proposer reward account balance'),
     tooltip: t(
-      'The rewards acquired based on the market proposer reward for this asset'
+      'The rewards acquired based on the market proposer reward in this asset'
     ),
     value: (asset) => num(asset, asset.marketProposerRewardAccount?.balance),
   },
