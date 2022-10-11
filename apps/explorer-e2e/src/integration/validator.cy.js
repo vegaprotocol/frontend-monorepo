@@ -78,12 +78,9 @@ context('Validator page', { tags: '@smoke' }, function () {
                 );
                 cy.contains(validator.voting_power).should('be.visible');
 
-                assert.equal(
-                  validatorInJson.proposer_priority,
-                  validator.proposer_priority,
-                  `Checking that validator proposer priority shown in json matches system data`
-                );
-                cy.contains(validator.proposer_priority).should('be.visible');
+                // Proposer priority can change frequently mid test
+                // Therefore only checking the field name is present.
+                cy.contains('proposer_priority').should('be.visible');
               });
           });
       });
