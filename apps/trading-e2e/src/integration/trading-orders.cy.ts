@@ -220,7 +220,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       });
   });
 
-  it('must see a stopped order', () => {
+  it('must see a filled order', () => {
     // 7002-SORD-046
     // NOT COVERED:  Must be able to see/link to all trades that were created from this order
     updateOrder({
