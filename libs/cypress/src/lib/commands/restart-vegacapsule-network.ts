@@ -27,7 +27,7 @@ export function addRestartVegacapsuleNetwork() {
     )
       .its('stderr')
       .then((response) => {
-        if (!response.includes('starting network success')) {
+        if (!response.includes('Network successfully started')) {
           cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
           cy.exec(
             'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
