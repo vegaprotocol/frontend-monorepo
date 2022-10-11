@@ -54,13 +54,6 @@ export const generateMarket = (
         close: null,
         __typename: 'MarketTimestamps',
       },
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: {
-          __typename: 'Trade',
-          price: '88470230',
-        },
-      },
       fees: {
         __typename: 'Fees',
         factors: {
