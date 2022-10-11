@@ -11,6 +11,7 @@ import type {
   Erc20ApprovalVariables,
 } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
+import type { ERC20Asset } from '@vegaprotocol/assets';
 
 export enum ApprovalStatus {
   Idle = 'Idle',
@@ -80,7 +81,7 @@ export const useVerifyWithdrawal = () => {
           addDecimal(withdrawal.amount, withdrawal.asset.decimals)
         );
 
-        const threshold = await getThreshold(withdrawal.asset);
+        const threshold = await getThreshold(withdrawal.asset as ERC20Asset);
 
         if (threshold && amount.isGreaterThan(threshold)) {
           const delaySecs = await getDelay();

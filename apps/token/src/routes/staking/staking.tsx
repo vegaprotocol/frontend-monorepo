@@ -43,7 +43,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         </Callout>
       </section>
       <section>
-        <h2 className="text-2xl uppercase">{t('Nodes')}</h2>
+        <h2 className="text-2xl uppercase">{t('Validator nodes')}</h2>
         <NodeList data-testid="node-list" epoch={data?.epoch} />
       </section>
     </>
