@@ -12,7 +12,7 @@ import { TransactionEventDocument } from './__generated___/TransactionResult';
  * Returns a function that can be called to subscribe to a transaction
  * result event and resolves when an event with a matching txhash is seen
  */
-export const usePositionEvent = (transaction: VegaTxState) => {
+export const usePositionEvent = () => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 

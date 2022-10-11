@@ -10,7 +10,7 @@ interface PositionsManagerProps {
 }
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
-  const { submit, transaction } = useClosePosition();
+  const { submit, transaction, closingOrder } = useClosePosition();
   const [positionToClose, setPositionToClose] = useState<Position>();
 
   const onClose = useCallback(
@@ -37,8 +37,9 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
         />
       </AsyncRenderer>
       <ClosePositionDialog
-        position={positionToClose}
+        partyId={partyId}
         transaction={transaction}
+        order={closingOrder}
       />
     </>
   );

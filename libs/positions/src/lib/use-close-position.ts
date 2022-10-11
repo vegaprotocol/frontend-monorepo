@@ -1,15 +1,23 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { usePositionEvent } from '../';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 
+export interface ClosingOrder {
+  marketId: string;
+  type: OrderType.TYPE_MARKET;
+  timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK;
+  side: Side;
+  size: string;
+}
+
 export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
-
   const { send, transaction, setComplete } = useVegaTransaction();
-  const waitForTransactionResult = usePositionEvent(transaction);
+  const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
+  const waitForTransactionResult = usePositionEvent();
 
   const submit = useCallback(
     async ({
@@ -31,6 +39,14 @@ export const useClosePosition = () => {
 
         // volume could be prefixed with '-' if position is short, remove it
         const size = openVolume.replace('-', '');
+        const closingOrder = {
+          marketId: marketId,
+          type: OrderType.TYPE_MARKET as const,
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+          side,
+          size,
+        };
+        setClosingOrder(closingOrder);
         const command = {
           batchMarketInstructions: {
             cancellations: [
@@ -39,15 +55,7 @@ export const useClosePosition = () => {
                 orderId: '', // omit order id to cancel all active orders
               },
             ],
-            submissions: [
-              {
-                marketId: marketId,
-                type: OrderType.TYPE_MARKET,
-                timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-                side,
-                size,
-              },
-            ],
+            submissions: [closingOrder],
           },
         };
         console.log(command);
@@ -72,5 +80,6 @@ export const useClosePosition = () => {
   return {
     transaction,
     submit,
+    closingOrder,
   };
 };
