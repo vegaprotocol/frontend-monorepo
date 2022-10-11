@@ -149,7 +149,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     setBreakdown(value || null);
                   }}
                 >
-                  {t('Collateral breakdown')}
+                  {t('Breakdown')}
                 </ButtonLink>
               );
             }}
