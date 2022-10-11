@@ -81,7 +81,7 @@ export const rows: Rows = [
   {
     key: AssetDetail.QUANTUM,
     label: t('Quantum'),
-    tooltip: t('The minimum economically meaningful amount in the asset'),
+    tooltip: t('The minimum economically meaningful amount of the asset'),
     value: (asset) => asset.quantum,
   },
   {
@@ -103,7 +103,7 @@ export const rows: Rows = [
     key: AssetDetail.WITHDRAWAL_THRESHOLD,
     label: t('Withdrawal threshold'),
     tooltip: t(
-      'The maximum allowed per withdraw note: this is a temporary measure for restricted mainnet'
+      'The maximum allowed per withdrawal. Note: this is a temporary measure for restricted mainnet'
     ),
     value: (asset) =>
       num(asset, (asset.source as Schema.ERC20).withdrawThreshold),
@@ -112,7 +112,7 @@ export const rows: Rows = [
     key: AssetDetail.LIFETIME_LIMIT,
     label: t('Lifetime limit'),
     tooltip: t(
-      'The lifetime limits deposit per address note: this is a temporary measure for restricted mainnet'
+      'The lifetime deposit limit per address. Note: this is a temporary measure for restricted mainnet'
     ),
     value: (asset) => num(asset, (asset.source as Schema.ERC20).lifetimeLimit),
   },
@@ -140,25 +140,29 @@ export const rows: Rows = [
   {
     key: AssetDetail.TAKER_FEE_REWARD_ACCOUNT_BALANCE,
     label: t('Taker fee reward account balance'),
-    tooltip: t('The taker fee reward account for this asset'),
+    tooltip: t('The rewards acquired based on the taker fees for this asset'),
     value: (asset) => num(asset, asset.takerFeeRewardAccount?.balance),
   },
   {
     key: AssetDetail.MAKER_FEE_REWARD_ACCOUNT_BALANCE,
     label: t('Maker fee reward account balance'),
-    tooltip: t('The maker fee reward account for this asset'),
+    tooltip: t('The rewards acquired based on the maker fees for this asset'),
     value: (asset) => num(asset, asset.makerFeeRewardAccount?.balance),
   },
   {
     key: AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE,
     label: t('Liquidity provision fee reward account balance'),
-    tooltip: t('The liquidity provision reward account for this asset'),
+    tooltip: t(
+      'The rewards acquired based on the liquidity provision fees for this asset'
+    ),
     value: (asset) => num(asset, asset.lpFeeRewardAccount?.balance),
   },
   {
     key: AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
     label: t('Market proposer reward account balance'),
-    tooltip: t('The market proposer reward account for this asset'),
+    tooltip: t(
+      'The rewards acquired based on the market proposer reward for this asset'
+    ),
     value: (asset) => num(asset, asset.marketProposerRewardAccount?.balance),
   },
 ];
@@ -170,11 +174,11 @@ const AssetStatusMapping: Mapping = {
   },
   STATUS_PENDING_LISTING: {
     value: t('Pending listing'),
-    tooltip: t('Asset is pending listing on the ethereum bridge'),
+    tooltip: t('Asset needs to be added to the Ethereum bridge'),
   },
   STATUS_PROPOSED: {
     value: t('Proposed'),
-    tooltip: t('Asset is proposed to be added to the network'),
+    tooltip: t('Asset has been proposed to the network'),
   },
   STATUS_REJECTED: {
     value: t('Rejected'),
