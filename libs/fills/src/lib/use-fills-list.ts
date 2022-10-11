@@ -84,8 +84,10 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
     (TradeEdge | null)[],
     Trade[]
   >({ dataProvider: fillsWithMarketProvider, update, insert, variables });
-  totalCountRef.current = totalCount;
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    totalCountRef.current = totalCount;
+    dataRef.current = data;
+  }
 
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(
     newRows,

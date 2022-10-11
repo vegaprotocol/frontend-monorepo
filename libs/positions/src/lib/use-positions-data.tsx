@@ -58,7 +58,9 @@ export const usePositionsData = (
     update,
     variables,
   });
-  dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
+  if (!dataRef.current && data) {
+    dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
+  }
   const getRows = useCallback(
     async ({ successCallback, startRow, endRow }: GetRowsParams) => {
       const rowsThisBlock = dataRef.current

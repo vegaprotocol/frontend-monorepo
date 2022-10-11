@@ -43,7 +43,9 @@ export const AccountManager = ({
     update,
     variables,
   });
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    dataRef.current = data;
+  }
   const getRows = async ({
     successCallback,
     startRow,

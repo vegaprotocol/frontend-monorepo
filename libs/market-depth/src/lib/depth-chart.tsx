@@ -146,7 +146,9 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     variables,
   });
 
-  marketDataRef.current = marketData;
+  if (marketDataRef.current && marketData) {
+    marketDataRef.current = marketData;
+  }
 
   useEffect(() => {
     if (!marketData || !market || !data) {
