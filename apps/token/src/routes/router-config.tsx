@@ -70,7 +70,7 @@ const LazyStakingAssociate = React.lazy(
 const LazyStakingDisassociate = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-disassociate", webpackPrefetch: true */ './staking/disassociate/disassociate-page-container'
+      /* webpackChunkName: "route-staking-disassociate", webpackPrefetch: true */ './staking/disassociate'
     )
 );
 
