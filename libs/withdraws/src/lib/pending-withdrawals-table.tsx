@@ -60,7 +60,9 @@ export const PendingWithdrawalsTable = (
             value,
             data,
           }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
-            return addDecimalsFormatNumber(value, data.asset.decimals);
+            return value && data?.asset
+              ? addDecimalsFormatNumber(value, data.asset.decimals)
+              : null;
           }}
         />
         <AgGridColumn
@@ -105,7 +107,7 @@ export const PendingWithdrawalsTable = (
             WithdrawalFields,
             'createdTimestamp'
           >) => {
-            return getDateTimeFormat().format(new Date(value));
+            return value ? getDateTimeFormat().format(new Date(value)) : '';
           }}
         />
         <AgGridColumn

@@ -48,7 +48,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<AccountFields, 'type'>) =>
-            AccountTypeMapping[value]
+            value ? AccountTypeMapping[value] : ''
           }
         />
         <AgGridColumn
@@ -81,7 +81,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<AccountFields, 'balance'>) => {
-            if (data && data.asset) {
+            if (data && data.asset && value) {
               return addDecimalsFormatNumber(value, data.asset.decimals);
             }
             return '-';

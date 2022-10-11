@@ -81,7 +81,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
-            return getDateTimeFormat().format(new Date(value));
+            return value ? getDateTimeFormat().format(new Date(value)) : '';
           }}
         />
       </AgGrid>
@@ -93,7 +93,7 @@ const formatPrice = ({
   value,
   data,
 }: VegaValueFormatterParams<Trade, 'price'>) => {
-  if (!data.market) {
+  if (!data?.market || !value) {
     return '-';
   }
   const asset =
@@ -107,7 +107,7 @@ const formatPrice = ({
 
 const formatSize = (partyId: string) => {
   return ({ value, data }: VegaValueFormatterParams<Trade, 'size'>) => {
-    if (!data.market) {
+    if (!data?.market || !value) {
       return '-';
     }
     let prefix = '';
@@ -144,7 +144,7 @@ const formatTotal = ({
   value,
   data,
 }: VegaValueFormatterParams<Trade, 'price'>) => {
-  if (!data?.market) {
+  if (!data?.market || !value) {
     return '-';
   }
   const asset =
@@ -189,7 +189,7 @@ const formatFee = (partyId: string) => {
     Trade,
     'market.tradableInstrument.instrument.product'
   >) => {
-    if (!value?.settlementAsset) {
+    if (!value?.settlementAsset || !data) {
       return '-';
     }
     const asset = value.settlementAsset;

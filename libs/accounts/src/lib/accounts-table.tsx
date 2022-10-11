@@ -95,7 +95,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               value,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
-              return (
+              return value ? (
                 <ButtonLink
                   data-testid="deposit"
                   onClick={() => {
@@ -104,7 +104,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 >
                   {value}
                 </ButtonLink>
-              );
+              ) : null;
             }}
             maxWidth={300}
           />
@@ -120,6 +120,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
               data &&
               data.asset &&
+              value &&
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}
@@ -162,7 +163,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
-              return (
+              return data ? (
                 <div className="flex gap-2 justify-end">
                   <Button
                     size="xs"
@@ -184,7 +185,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     {t('Withdraw')}
                   </Button>
                 </div>
-              );
+              ) : null;
             }}
           />
         </AgGrid>
