@@ -7,6 +7,7 @@ import {
   positiveClassNames,
   negativeClassNames,
   t,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
@@ -93,7 +94,7 @@ const formatPrice = ({
   value,
   data,
 }: VegaValueFormatterParams<Trade, 'price'>) => {
-  if (!data?.market || !value) {
+  if (!data?.market || !isNumeric(value)) {
     return '-';
   }
   const asset =
@@ -107,7 +108,7 @@ const formatPrice = ({
 
 const formatSize = (partyId: string) => {
   return ({ value, data }: VegaValueFormatterParams<Trade, 'size'>) => {
-    if (!data?.market || !value) {
+    if (!data?.market || !isNumeric(value)) {
       return '-';
     }
     let prefix = '';
@@ -144,7 +145,7 @@ const formatTotal = ({
   value,
   data,
 }: VegaValueFormatterParams<Trade, 'price'>) => {
-  if (!data?.market || !value) {
+  if (!data?.market || !isNumeric(value)) {
     return '-';
   }
   const asset =

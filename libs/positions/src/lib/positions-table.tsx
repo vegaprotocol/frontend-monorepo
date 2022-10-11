@@ -222,6 +222,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: PositionsTableValueFormatterParams & {
             value: Position['markPrice'];
           }) => {
+            console.log('data, value', data, value);
             if (!data || !value || node?.rowPinned) {
               return undefined;
             }

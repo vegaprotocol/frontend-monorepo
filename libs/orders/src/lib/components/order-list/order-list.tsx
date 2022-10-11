@@ -14,6 +14,7 @@ import {
   t,
   positiveClassNames,
   negativeClassNames,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
   VegaICellRendererParams,
@@ -128,7 +129,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<Order, 'size'>) => {
-            if (!data?.market || !value) {
+            if (!data?.market || !isNumeric(value)) {
               return '-';
             }
             const prefix = data
@@ -177,7 +178,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
             value,
           }: VegaValueFormatterParams<Order, 'remaining'>) => {
-            if (!data || !data.market || !value) {
+            if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
               return '-';
             }
             const dps = data.market.positionDecimalPlaces;
@@ -201,7 +202,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (
               !data?.market ||
               data.type === OrderType.TYPE_MARKET ||
-              !value
+              !isNumeric(value)
             ) {
               return '-';
             }

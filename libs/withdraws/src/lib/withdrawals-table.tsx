@@ -4,6 +4,7 @@ import {
   t,
   truncateByChars,
   addDecimalsFormatNumber,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
   TypedDataAgGrid,
@@ -37,7 +38,7 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
           value,
           data,
         }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
-          return value && data?.asset
+          return isNumeric(value) && data?.asset
             ? addDecimalsFormatNumber(value, data.asset.decimals)
             : '';
         }}
