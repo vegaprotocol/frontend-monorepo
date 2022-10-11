@@ -13,12 +13,13 @@ import { SubHeading } from '../../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
+import { toNonHex } from '../../../components/search/detect-search';
 import { DATA_SOURCES } from '../../../config';
-import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
 import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
 } from './__generated__/PartyAssetsQuery';
+import type { BlockExplorerTransactions } from '../../../routes/types/block-explorer-response';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -57,13 +58,12 @@ const PARTY_ASSETS_QUERY = gql`
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
+  const partyId = party ? toNonHex(party) : '';
 
   const {
     state: { data: partyData },
-  } = useFetch<TendermintSearchTransactionResponse>(
-    `${
-      DATA_SOURCES.tendermintUrl
-    }/tx_search?query="tx.submitter='${party?.replace('0x', '')}'"`
+  } = useFetch<BlockExplorerTransactions>(
+    `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${partyId}`
   );
 
   const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
@@ -71,7 +71,7 @@ const Party = () => {
     {
       // Don't cache data for this query, party information can move quite quickly
       fetchPolicy: 'network-only',
-      variables: { partyId: party?.replace('0x', '') || '' },
+      variables: { partyId },
       skip: !party,
     }
   );

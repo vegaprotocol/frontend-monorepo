@@ -89,8 +89,8 @@ describe('Detect Search', () => {
     expect(actual).toStrictEqual(expected);
   });
 
-  it("detectTypeByFetching should call fetch with hex query it's a transaction", async () => {
-    const query = 'abc';
+  it("detectTypeByFetching should call fetch with non-hex query it's a transaction", async () => {
+    const query = '0xabc';
     const type = SearchTypes.Transaction;
     // @ts-ignore issue related to polyfill
     fetch.mockImplementation(
@@ -99,16 +99,16 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                tx: query,
+              transaction: {
+                hash: query,
               },
             }),
         })
       )
     );
-    const result = await detectTypeByFetching(query, type);
+    const result = await detectTypeByFetching(query);
     expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx?hash=0x${query}`
+      `${DATA_SOURCES.blockExplorerUrl}/transactions/${toNonHex(query)}`
     );
     expect(result).toBe(type);
   });
@@ -120,39 +120,12 @@ describe('Detect Search', () => {
     fetch.mockImplementation(
       jest.fn(() =>
         Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              result: {
-                txs: [query],
-              },
-            }),
-        })
-      )
-    );
-    const result = await detectTypeByFetching(query, type);
-    expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${query}'"`
-    );
-    expect(result).toBe(type);
-  });
-
-  it('detectTypeByFetching should return undefined if no matches', async () => {
-    const query = 'abc';
-    const type = SearchTypes.Party;
-    // @ts-ignore issue related to polyfill
-    fetch.mockImplementation(
-      jest.fn(() =>
-        Promise.resolve({
           ok: false,
         })
       )
     );
-    const result = await detectTypeByFetching(query, type);
-    expect(fetch).toHaveBeenCalledWith(
-      `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${query}'"`
-    );
-    expect(result).toBe(undefined);
+    const result = await detectTypeByFetching(query);
+    expect(result).toBe(type);
   });
 
   it('getSearchType should return party from fetch response', async () => {
@@ -163,13 +136,7 @@ describe('Detect Search', () => {
     fetch.mockImplementation(
       jest.fn(() =>
         Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              result: {
-                txs: [query],
-              },
-            }),
+          ok: false,
         })
       )
     );
@@ -177,7 +144,7 @@ describe('Detect Search', () => {
     expect(result).toBe(expected);
   });
 
-  it('getSearchType should return party from transaction response', async () => {
+  it('getSearchType should return transaction from fetch response', async () => {
     const query =
       '4624293CFE3D8B67A0AB448BAFF8FBCF1A1B770D9D5F263761D3D6CBEA94D97F';
     const expected = SearchTypes.Transaction;
@@ -188,8 +155,8 @@ describe('Detect Search', () => {
           ok: true,
           json: () =>
             Promise.resolve({
-              result: {
-                tx: query,
+              transaction: {
+                hash: query,
               },
             }),
         })
@@ -200,17 +167,8 @@ describe('Detect Search', () => {
   });
 
   it('getSearchType should return undefined from transaction response', async () => {
-    const query =
-      '0x4624293CFE3D8B67A0AB448BAFF8FBCF1A1B770D9D5F263761D3D6CBEA94D97F';
+    const query = 'u';
     const expected = undefined;
-    // @ts-ignore issue related to polyfill
-    fetch.mockImplementation(
-      jest.fn(() =>
-        Promise.resolve({
-          ok: false,
-        })
-      )
-    );
     const result = await getSearchType(query);
     expect(result).toBe(expected);
   });
