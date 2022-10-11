@@ -1,51 +1,47 @@
-import { useEnvironment } from '@vegaprotocol/environment';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { createConnectors } from '../../lib/web3-connectors';
+import type { Web3ReactHooks } from '@web3-react/core';
+import type { Connector } from '@web3-react/types';
 
 interface Web3ConnectorProps {
   children: ReactElement;
+  connectors: [Connector, Web3ReactHooks][];
+  chainId: number;
 }
 
-export function Web3Connector({ children }: Web3ConnectorProps) {
+export function Web3Connector({
+  children,
+  connectors,
+  chainId,
+}: Web3ConnectorProps) {
   const { appState, appDispatch } = useAppState();
-  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
-  const { config, loading, error } = useEthereumConfig();
-  const Connectors = useMemo(() => {
-    if (config?.chain_id) {
-      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
-    }
-    return undefined;
-  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
       appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
     },
     [appDispatch]
   );
-  const appChainId = Number(config?.chain_id);
+  const appChainId = Number(chainId);
   return (
-    <AsyncRenderer loading={loading} error={error} data={config}>
+    <>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
         {children}
       </Web3Content>
-      {Connectors && (
-        <Web3ConnectDialog
-          connectors={Connectors}
-          dialogOpen={appState.ethConnectOverlay}
-          setDialogOpen={setDialogOpen}
-          desiredChainId={appChainId}
-        />
-      )}
-    </AsyncRenderer>
+      <Web3ConnectDialog
+        connectors={connectors}
+        dialogOpen={appState.ethConnectOverlay}
+        setDialogOpen={setDialogOpen}
+        desiredChainId={appChainId}
+      />
+    </>
   );
 }
 
@@ -65,7 +61,7 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
     // wallet connect doesnt handle connectEagerly being called when connector is also in the
     // deps array.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connector]);
+  }, []);
 
   if (error) {
     return (
