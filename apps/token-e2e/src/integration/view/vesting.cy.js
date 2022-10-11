@@ -28,5 +28,21 @@ context(
           .and('have.text', 'Connect Ethereum wallet');
       });
     });
+
+    describe('with eth wallet connected', function () {
+      before('connect eth wallet', function () {
+        cy.ethereum_wallet_connect();
+      });
+
+      // 1005-VEST-001
+      // 1005-VEST-002
+      it('Able to view tranches', function () {
+        cy.get('[href="/tranches"]')
+          .should('have.text', 'all tranches')
+          .click();
+        cy.url().should('include', '/tranches');
+        cy.get('h1').should('contain.text', 'Vesting tranches');
+      });
+    });
   }
 );

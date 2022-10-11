@@ -16,9 +16,36 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             source: {
               __typename: 'ERC20',
               contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+              lifetimeLimit: '1',
+              withdrawThreshold: '2',
             },
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
+            infrastructureFeeAccount: {
+              balance: '1',
+              __typename: 'Account',
+            },
+            globalRewardPoolAccount: {
+              balance: '2',
+              __typename: 'Account',
+            },
+            takerFeeRewardAccount: {
+              balance: '3',
+              __typename: 'Account',
+            },
+            makerFeeRewardAccount: {
+              balance: '4',
+              __typename: 'Account',
+            },
+            lpFeeRewardAccount: {
+              balance: '5',
+              __typename: 'Account',
+            },
+            marketProposerRewardAccount: {
+              balance: '6',
+              __typename: 'Account',
+            },
+            __typename: 'Asset',
           },
         },
         {
@@ -30,9 +57,36 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             source: {
               __typename: 'ERC20',
               contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+              lifetimeLimit: '1',
+              withdrawThreshold: '2',
             },
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
+            infrastructureFeeAccount: {
+              balance: '1',
+              __typename: 'Account',
+            },
+            globalRewardPoolAccount: {
+              balance: '2',
+              __typename: 'Account',
+            },
+            takerFeeRewardAccount: {
+              balance: '3',
+              __typename: 'Account',
+            },
+            makerFeeRewardAccount: {
+              balance: '4',
+              __typename: 'Account',
+            },
+            lpFeeRewardAccount: {
+              balance: '5',
+              __typename: 'Account',
+            },
+            marketProposerRewardAccount: {
+              balance: '6',
+              __typename: 'Account',
+            },
+            __typename: 'Asset',
           },
         },
         {
@@ -43,9 +97,20 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             name: 'Asto',
             source: {
               __typename: 'BuiltinAsset',
+              maxFaucetAmountMint: '3',
             },
             quantum: '',
             status: Types.AssetStatus.STATUS_ENABLED,
+            infrastructureFeeAccount: {
+              balance: '0',
+              __typename: 'Account',
+            },
+            globalRewardPoolAccount: null,
+            takerFeeRewardAccount: null,
+            makerFeeRewardAccount: null,
+            lpFeeRewardAccount: null,
+            marketProposerRewardAccount: null,
+            __typename: 'Asset',
           },
         },
       ],

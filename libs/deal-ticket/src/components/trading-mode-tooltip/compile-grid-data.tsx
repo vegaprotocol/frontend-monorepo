@@ -11,7 +11,7 @@ import type { MarketDataGridProps } from './market-data-grid';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 
 export const compileGridData = (
-  market: DealTicketMarketFragment,
+  market: Omit<DealTicketMarketFragment, 'depth'>,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: MarketDataGridProps['grid'] = [];

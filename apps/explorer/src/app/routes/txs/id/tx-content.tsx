@@ -8,14 +8,14 @@ import {
   TableRow,
 } from '../../../components/table';
 import { TxOrderType } from '../../../components/txs';
-import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 
 interface TxContentProps {
-  data: ChainExplorerTxResponse | undefined;
+  data: BlockExplorerTransactionResult | undefined;
 }
 
 export const TxContent = ({ data }: TxContentProps) => {
-  if (!data?.Command) {
+  if (!data?.command) {
     return (
       <StatusMessage>
         {t('Could not retrieve transaction content')}
@@ -31,13 +31,13 @@ export const TxContent = ({ data }: TxContentProps) => {
             {t('Type')}
           </TableHeader>
           <TableCell modifier="bordered">
-            <TxOrderType orderType={data.Type} />
+            <TxOrderType orderType={data.type} />
           </TableCell>
         </TableRow>
       </TableWithTbody>
 
       <h3 className="font-mono mb-8">{t('Decoded transaction content')}</h3>
-      <SyntaxHighlighter data={JSON.parse(data.Command)} />
+      <SyntaxHighlighter data={data.command} />
     </>
   );
 };

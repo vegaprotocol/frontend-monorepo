@@ -93,12 +93,12 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta: MarketDepthSubscription_marketsDepthUpdate[];
+      delta?: MarketDepthSubscription_marketsDepthUpdate[];
     }) => {
       if (!dataRef.current) {
         return false;
       }
-      for (const delta of deltas) {
+      for (const delta of deltas || []) {
         if (delta.marketId !== marketId) {
           continue;
         }

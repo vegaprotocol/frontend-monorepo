@@ -39,7 +39,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       delta,
     }: {
       data: (TradeEdge | null)[] | null;
-      delta: Trade[];
+      delta?: Trade[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -48,7 +48,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
           if (createdAt) {
-            newRows.current += delta.filter(
+            newRows.current += (delta || []).filter(
               (trade) => trade.createdAt > createdAt
             ).length;
           }

@@ -1,19 +1,20 @@
-import { makeDerivedDataProvider } from '@vegaprotocol/react-helpers';
+import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { MarketDocument } from './__generated___/market';
+import type {
+  MarketQuery,
+  SingleMarketFieldsFragment,
+} from './__generated___/market';
 
-import type { Market } from './markets-provider';
-import { marketsProvider } from './markets-provider';
+const getData = (
+  responseData: MarketQuery
+): SingleMarketFieldsFragment | null => responseData?.market || null;
 
-export const marketProvider = makeDerivedDataProvider<Market, never>(
-  [(callback, client) => marketsProvider(callback, client)], // omit variables param
-  ([markets], variables) => {
-    if (markets) {
-      const market = (markets as Market[]).find(
-        (market) => market.id === variables?.['marketId']
-      );
-      if (market) {
-        return market;
-      }
-    }
-    return null;
-  }
-);
+export const marketProvider = makeDataProvider<
+  MarketQuery,
+  SingleMarketFieldsFragment,
+  never,
+  never
+>({
+  query: MarketDocument,
+  getData,
+});
