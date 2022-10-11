@@ -22,7 +22,14 @@ import { useMemo } from 'react';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
-const Title = () => {
+function AppBody({ Component, pageProps }: AppProps) {
+  const { connectDialog, update } = useGlobalStore((store) => ({
+    connectDialog: store.connectDialog,
+    update: store.update,
+  }));
+  const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
+  const [theme, toggleTheme] = useThemeSwitcher();
+
   const { pageTitle } = useGlobalStore((store) => ({
     pageTitle: store.pageTitle,
   }));
@@ -35,21 +42,11 @@ const Title = () => {
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
   }, [pageTitle, networkName]);
-  return <title>{title}</title>;
-};
-
-function AppBody({ Component, pageProps }: AppProps) {
-  const { connectDialog, update } = useGlobalStore((store) => ({
-    connectDialog: store.connectDialog,
-    update: store.update,
-  }));
-  const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
-  const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
-        <Title />
+        <title>{title}</title>
       </Head>
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
