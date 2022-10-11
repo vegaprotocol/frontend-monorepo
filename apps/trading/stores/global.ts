@@ -9,6 +9,8 @@ interface GlobalStore {
   marketId: string | null;
   pageTitle: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
+  updateTitle: (title: string) => void;
+  updateMarketId: (marketId: string) => void;
 }
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
@@ -23,5 +25,10 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
     if (state.marketId) {
       LocalStorage.setItem('marketId', state.marketId);
     }
+  },
+  updateTitle: (title: string) => set({ pageTitle: title }),
+  updateMarketId: (marketId: string) => {
+    set({ marketId });
+    LocalStorage.setItem('marketId', marketId);
   },
 }));

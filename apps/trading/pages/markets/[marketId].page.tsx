@@ -40,16 +40,20 @@ const MarketPage = ({
 }) => {
   const { query, push } = useRouter();
   const { w } = useWindowSize();
-  const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
-    (store) => ({
-      landingDialog: store.landingDialog,
-      riskNoticeDialog: store.riskNoticeDialog,
-      update: store.update,
-    })
-  );
-  const { update: updateStore } = useGlobalStore((store) => ({
+  const {
+    landingDialog,
+    riskNoticeDialog,
+    update,
+    updateTitle,
+    updateMarketId,
+  } = useGlobalStore((store) => ({
+    landingDialog: store.landingDialog,
+    riskNoticeDialog: store.riskNoticeDialog,
     update: store.update,
+    updateTitle: store.updateTitle,
+    updateMarketId: store.updateMarketId,
   }));
+
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   // Default to first marketId query item if found
@@ -59,11 +63,11 @@ const MarketPage = ({
   const onSelect = useCallback(
     (id: string) => {
       if (id && id !== marketId) {
-        updateStore({ marketId: id });
+        updateMarketId(id);
         push(`/markets/${id}`);
       }
     },
-    [marketId, updateStore, push]
+    [marketId, updateMarketId, push]
   );
 
   const variables = useMemo(
@@ -91,11 +95,11 @@ const MarketPage = ({
       );
       if (marketName) {
         const pageTitle = titlefy([marketName, marketPrice]);
-        update({ pageTitle });
+        updateTitle(pageTitle);
       }
       return true;
     },
-    [update, data?.tradableInstrument.instrument.name, data?.decimalPlaces]
+    [updateTitle, data?.tradableInstrument.instrument.name, data?.decimalPlaces]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
