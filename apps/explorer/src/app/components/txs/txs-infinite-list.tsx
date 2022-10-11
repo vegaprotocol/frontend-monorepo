@@ -3,19 +3,19 @@ import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
-import type { BlockExplorerTransaction } from '../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
   areTxsLoading: boolean | undefined;
-  txs: BlockExplorerTransaction[] | undefined;
+  txs: BlockExplorerTransactionResult[] | undefined;
   loadMoreTxs: () => void;
   error: Error | undefined;
   className?: string;
 }
 
 interface ItemProps {
-  index: BlockExplorerTransaction;
+  index: BlockExplorerTransactionResult;
   style: React.CSSProperties;
   isLoading: boolean;
   error: Error | undefined;

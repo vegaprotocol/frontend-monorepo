@@ -1,4 +1,4 @@
-export interface BlockExplorerTransaction {
+export interface BlockExplorerTransactionResult {
   block: string;
   index: number;
   hash: string;
@@ -10,5 +10,9 @@ export interface BlockExplorerTransaction {
 }
 
 export interface BlockExplorerTransactions {
-  transactions: BlockExplorerTransaction[];
+  transactions: BlockExplorerTransactionResult[];
+}
+
+export interface BlockExplorerTransaction {
+  transaction: BlockExplorerTransactionResult;
 }

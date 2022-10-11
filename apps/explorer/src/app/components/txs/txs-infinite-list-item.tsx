@@ -2,7 +2,7 @@ import React from 'react';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { Routes } from '../../routes/route-names';
 import { TxOrderType } from './tx-order-type';
-import type { BlockExplorerTransaction } from '../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import { toHex } from '../search/detect-search';
 
 const TRUNCATE_LENGTH = 14;
@@ -13,7 +13,7 @@ export const TxsInfiniteListItem = ({
   type,
   block,
   index,
-}: Partial<BlockExplorerTransaction>) => {
+}: Partial<BlockExplorerTransactionResult>) => {
   if (
     !hash ||
     !submitter ||
