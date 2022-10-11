@@ -40,7 +40,7 @@ export const useOrderListData = ({
   }, [gridRef]);
 
   const update = useCallback(
-    ({ data, delta }: { data: (OrderEdge | null)[]; delta: Order[] }) => {
+    ({ data, delta }: { data: (OrderEdge | null)[]; delta?: Order[] }) => {
       if (!gridRef.current?.api) {
         return false;
       }
@@ -48,7 +48,7 @@ export const useOrderListData = ({
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
           if (createdAt) {
-            newRows.current += delta.filter(
+            newRows.current += (delta || []).filter(
               (trade) => trade.createdAt > createdAt
             ).length;
           }

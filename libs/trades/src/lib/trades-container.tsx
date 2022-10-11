@@ -47,7 +47,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       delta,
     }: {
       data: (TradeEdge | null)[] | null;
-      delta: Trade[];
+      delta?: Trade[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
@@ -56,7 +56,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
           if (createdAt) {
-            newRows.current += delta.filter(
+            newRows.current += (delta || []).filter(
               (trade) => trade.createdAt > createdAt
             ).length;
           }
