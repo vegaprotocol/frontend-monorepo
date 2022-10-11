@@ -23,6 +23,7 @@ import { generatePath } from 'react-router-dom';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
+import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -92,6 +93,11 @@ export const Info = ({ market, onSelect }: InfoProps) => {
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market.tradableInstrument.instrument.product?.settlementAsset.symbol;
+  const assetId = useMemo(
+    () => market.tradableInstrument.instrument.product?.settlementAsset.id,
+    [market]
+  );
+  const { data: asset } = useAssetDataProvider(assetId);
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -201,18 +207,16 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     },
     {
       title: t('Settlement asset'),
-      content: (
-        <MarketInfoTable
-          data={{
-            name: market.tradableInstrument.instrument.product?.settlementAsset
-              .name,
-            symbol:
-              market.tradableInstrument.instrument.product?.settlementAsset
-                .symbol,
-            assetID:
-              market.tradableInstrument.instrument.product?.settlementAsset.id,
-          }}
+      content: asset ? (
+        <AssetDetailsTable
+          asset={asset}
+          inline={true}
+          noBorder={true}
+          dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
+          ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
         />
+      ) : (
+        <Splash>{t('No data')}</Splash>
       ),
     },
     {

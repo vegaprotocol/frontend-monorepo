@@ -71,10 +71,20 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('settlement asset displayed', () => {
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
-
-    validateMarketDataRow(0, 'Name', 'tBTC TEST');
-    validateMarketDataRow(1, 'Symbol', 'tBTC');
-    validateMarketDataRow(2, 'Asset ID', 'market-0');
+    validateMarketDataRow(0, 'ID', 'asset-id');
+    validateMarketDataRow(1, 'Type', 'ERC20');
+    validateMarketDataRow(2, 'Name', 'Euro');
+    validateMarketDataRow(3, 'Symbol', 'tEURO');
+    validateMarketDataRow(4, 'Decimals', '5');
+    validateMarketDataRow(5, 'Quantum', '1');
+    validateMarketDataRow(6, 'Status', 'Enabled');
+    validateMarketDataRow(
+      7,
+      'Contract address',
+      '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
+    );
+    validateMarketDataRow(8, 'Withdrawal threshold', '0.00050');
+    validateMarketDataRow(9, 'Lifetime limit', '1,230.00000');
   });
 
   it('metadata displayed', () => {
@@ -173,7 +183,9 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   afterEach('close toggle', () => {
-    cy.get('[data-state="open"]').find('button').click();
+    cy.get('[data-state="open"]').then((tab) => {
+      if (tab) tab.find('button').trigger('click');
+    });
   });
 
   function validateMarketDataRow(

@@ -1,0 +1,47 @@
+fragment AssetFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  quantum
+  source {
+    __typename
+    ... on ERC20 {
+      contractAddress
+      lifetimeLimit
+      withdrawThreshold
+    }
+    ... on BuiltinAsset {
+      maxFaucetAmountMint
+    }
+  }
+  status
+  infrastructureFeeAccount {
+    balance
+  }
+  globalRewardPoolAccount {
+    balance
+  }
+  takerFeeRewardAccount {
+    balance
+  }
+  makerFeeRewardAccount {
+    balance
+  }
+  lpFeeRewardAccount {
+    balance
+  }
+  marketProposerRewardAccount {
+    balance
+  }
+}
+
+query Asset($assetId: ID!) {
+  assetsConnection(id: $assetId) {
+    edges {
+      node {
+        ...AssetFields
+      }
+    }
+  }
+}
