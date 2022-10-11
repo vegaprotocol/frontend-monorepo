@@ -25,7 +25,7 @@ export const DealTicketBalance = ({
     accounts,
     AccountType.ACCOUNT_TYPE_GENERAL
   );
-  const formatedNumber =
+  const formattedNumber =
     settlementAccount?.balance &&
     settlementAccount.asset.decimals &&
     addDecimalsFormatNumber(
@@ -36,7 +36,7 @@ export const DealTicketBalance = ({
   const balance = (
     <p className="text-blue text-lg font-semibold">
       {settlementAccount
-        ? t(`${formatedNumber}`)
+        ? t(`${formattedNumber}`)
         : `No ${settlementAssetSymbol} left to trade`}
     </p>
   );
