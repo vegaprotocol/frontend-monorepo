@@ -114,6 +114,9 @@ context('Validator page', { tags: '@smoke' }, function () {
             cy.contains(validator.pub_key.type).should('be.visible');
             cy.contains(validator.pub_key.value).should('be.visible');
             cy.contains(validator.voting_power).should('be.visible');
+            // Proposer priority can change frequently mid test
+            // Therefore only checking the field name is present.
+            cy.contains('proposer_priority').should('be.visible');
           });
       });
     });
