@@ -1,6 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
-import { generateAsset } from '../support/mocks/generate-assets';
 import { mockTradingPage } from '../support/trading';
 
 const marketInfoBtn = 'Info';
