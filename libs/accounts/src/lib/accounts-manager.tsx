@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, useCallback } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
+import type { GetRowsParams } from './accounts-table';
 import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
@@ -44,14 +45,29 @@ export const AccountManager = ({
   if (!dataRef.current && data) {
     dataRef.current = data;
   }
+  const getRows = async ({
+    successCallback,
+    startRow,
+    endRow,
+  }: GetRowsParams) => {
+    const rowsThisBlock = dataRef.current
+      ? dataRef.current.slice(startRow, endRow)
+      : [];
+    const lastRow = dataRef.current?.length ?? -1;
+    successCallback(rowsThisBlock, lastRow);
+  };
   return (
-    <AccountTable
-      rowData={data}
-      ref={gridRef}
-      onClickAsset={onClickAsset}
-      onClickDeposit={onClickDeposit}
-      onClickWithdraw={onClickWithdraw}
-    />
+    data && (
+      <AccountTable
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
+        ref={gridRef}
+        datasource={{ getRows }}
+        onClickAsset={onClickAsset}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+      />
+    )
   );
 };
 
