@@ -33,8 +33,8 @@ export enum AssetDetail {
   // balances:
   INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
   GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
-  TAKER_FEE_REWARD_ACCOUNT_BALANCE,
-  MAKER_FEE_REWARD_ACCOUNT_BALANCE,
+  MAKER_PAID_FEES_ACCOUNT_BALANCE, // account type: ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES
+  MAKER_RECEIVED_FEES_ACCOUNT_BALANCE, // account type: ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
   LP_FEE_REWARD_ACCOUNT_BALANCE,
   MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
 }
@@ -138,15 +138,19 @@ export const rows: Rows = [
     value: (asset) => num(asset, asset.globalRewardPoolAccount?.balance),
   },
   {
-    key: AssetDetail.TAKER_FEE_REWARD_ACCOUNT_BALANCE,
-    label: t('Taker fee reward account balance'),
-    tooltip: t('The rewards acquired based on the taker fees for this asset'),
+    key: AssetDetail.MAKER_PAID_FEES_ACCOUNT_BALANCE,
+    label: t('Maker paid fees account balance'),
+    tooltip: t(
+      'The rewards acquired based on the fees paid to makers for this asset'
+    ),
     value: (asset) => num(asset, asset.takerFeeRewardAccount?.balance),
   },
   {
-    key: AssetDetail.MAKER_FEE_REWARD_ACCOUNT_BALANCE,
-    label: t('Maker fee reward account balance'),
-    tooltip: t('The rewards acquired based on the maker fees for this asset'),
+    key: AssetDetail.MAKER_RECEIVED_FEES_ACCOUNT_BALANCE,
+    label: t('Maker received fees account balance'),
+    tooltip: t(
+      'The rewards acquired based on fees received for being a maker on trades'
+    ),
     value: (asset) => num(asset, asset.makerFeeRewardAccount?.balance),
   },
   {
