@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
-import debounce from 'lodash/debounce';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import throttle from 'lodash/throttle';
 import {
   addDecimalsFormatNumber,
   t,
@@ -28,24 +28,24 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     skip: !marketId,
   });
 
+  const throttledSetMarketVolume = useRef(
+    throttle((volume: string) => {
+      setMarketVolume(volume);
+    }, constants.DEBOUNCE_UPDATE_TIME)
+  ).current;
   const update = useCallback(
-    debounce(
-      ({ data: marketData }: { data: MarketData }) => {
-        setMarketVolume(
-          marketData.indicativeVolume &&
-            data?.positionDecimalPlaces !== undefined
-            ? addDecimalsFormatNumber(
-                marketData.indicativeVolume,
-                data.positionDecimalPlaces
-              )
-            : '-'
-        );
-        return true;
-      },
-      constants.DEBOUNCE_UPDATE_TIME,
-      { leading: true, maxWait: 500 }
-    ),
-    [data]
+    ({ data: marketData }: { data: MarketData }) => {
+      throttledSetMarketVolume(
+        marketData.indicativeVolume && data?.positionDecimalPlaces !== undefined
+          ? addDecimalsFormatNumber(
+              marketData.indicativeVolume,
+              data.positionDecimalPlaces
+            )
+          : '-'
+      );
+      return true;
+    },
+    [data?.positionDecimalPlaces, throttledSetMarketVolume]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({

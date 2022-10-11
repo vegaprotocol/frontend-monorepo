@@ -1,6 +1,7 @@
+import { useCallback, useMemo, useRef, useState } from 'react';
+import throttle from 'lodash/throttle';
 import { t, useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useMemo, useState } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
@@ -12,6 +13,7 @@ import {
   marketProvider,
 } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
+import * as constants from '../constants';
 
 export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
   const [candlesClose, setCandlesClose] = useState<string[]>([]);
@@ -44,13 +46,21 @@ export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
     skip: !marketId,
   });
 
-  const update = useCallback(({ data }: { data: Candle[] }) => {
-    const candlesClose: string[] = data
-      .map((candle) => candle?.close)
-      .filter((c): c is CandleClose => c !== null);
-    setCandlesClose(candlesClose);
-    return true;
-  }, []);
+  const throttledSetCandles = useRef(
+    throttle((data: Candle[]) => {
+      const candlesClose: string[] = data
+        .map((candle) => candle?.close)
+        .filter((c): c is CandleClose => c !== null);
+      setCandlesClose(candlesClose);
+    }, constants.DEBOUNCE_UPDATE_TIME)
+  ).current;
+  const update = useCallback(
+    ({ data }: { data: Candle[] }) => {
+      throttledSetCandles(data);
+      return true;
+    },
+    [throttledSetCandles]
+  );
 
   useDataProvider<Candle[], Candle>({
     dataProvider: marketCandlesProvider,

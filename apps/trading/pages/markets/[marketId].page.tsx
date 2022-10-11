@@ -3,7 +3,6 @@ import debounce from 'lodash/debounce';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumber,
-  makeDerivedDataProvider,
   t,
   titlefy,
   useDataProvider,
@@ -16,11 +15,7 @@ import type {
   Candle,
   MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
-import {
-  marketProvider,
-  marketCandlesProvider,
-  marketDataProvider,
-} from '@vegaprotocol/market-list';
+import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
