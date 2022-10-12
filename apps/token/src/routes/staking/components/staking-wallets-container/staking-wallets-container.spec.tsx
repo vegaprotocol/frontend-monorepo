@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { useWeb3React } from '@web3-react/core';
 import { StakingWalletsContainer } from './staking-wallets-container';
 
