@@ -11,7 +11,7 @@ import type { PartialDeep } from 'type-fest';
 export const generateMarketInfoQuery = (
   override?: PartialDeep<MarketInfoQuery>
 ): MarketInfoQuery => {
-  const defaultResult: MarketInfoQuery = {
+  const defaultResult = {
     market: {
       __typename: 'Market',
       id: 'market-0',
