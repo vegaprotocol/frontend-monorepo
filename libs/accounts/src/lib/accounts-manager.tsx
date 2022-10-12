@@ -32,7 +32,7 @@ export const AccountManager = ({
     },
     [gridRef]
   );
-  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+  const { data, loading, error } = useDataProvider<AccountFields[], never>({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
@@ -52,18 +52,16 @@ export const AccountManager = ({
     successCallback(rowsThisBlock, lastRow);
   };
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && (
-        <AccountTable
-          rowModelType={data?.length ? 'infinite' : 'clientSide'}
-          rowData={data?.length ? undefined : []}
-          ref={gridRef}
-          datasource={{ getRows }}
-          onClickAsset={onClickAsset}
-          onClickDeposit={onClickDeposit}
-          onClickWithdraw={onClickWithdraw}
-        />
-      )}
+    <AsyncRenderer data={data || []} error={error} loading={loading}>
+      <AccountTable
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
+        ref={gridRef}
+        datasource={{ getRows }}
+        onClickAsset={onClickAsset}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+      />
     </AsyncRenderer>
   );
 };
