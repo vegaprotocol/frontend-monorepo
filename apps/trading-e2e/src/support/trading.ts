@@ -40,9 +40,6 @@ export const mockTradingPage = (
         },
         state: state,
         tradingMode: tradingMode,
-        data: {
-          trigger: trigger,
-        },
       },
     })
   );
