@@ -1,3 +1,5 @@
 {
-  "hosts": ["https://n00.stagnet1.vega.xyz/graphql"]
+  "hosts": [
+    "https://api.n00.stagnet1.vega.xyz/graphql"
+  ]
 }
