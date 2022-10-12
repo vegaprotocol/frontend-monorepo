@@ -4,7 +4,7 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
 const agGridLightVariables = `
   .ag-theme-balham {
-    --ag-background-color: ${colors};
+    --ag-background-color: ${colors.white};
     --ag-border-color: ${colors.neutral[300]};
     --ag-header-background-color: ${colors.white};
     --ag-odd-row-background-color: ${colors.white};
@@ -16,6 +16,10 @@ const agGridLightVariables = `
 
   .ag-theme-balham .ag-root-wrapper {
     border: 0;
+  }
+
+  .ag-theme-balham .ag-row {
+    border-width: 1px 0;
   }
 
   .ag-theme-balham .ag-react-container {

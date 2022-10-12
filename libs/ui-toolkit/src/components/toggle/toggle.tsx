@@ -42,9 +42,13 @@ export const Toggle = ({
   return (
     <fieldset className={fieldsetClasses} {...props}>
       {toggles.map(({ label, value }, key) => {
-        const isSelected = value === checkedValue;
         return (
-          <label key={key} className={labelClasses} htmlFor={label}>
+          <label
+            key={key}
+            className={labelClasses}
+            htmlFor={label}
+            data-testid={`${name}-${value}`}
+          >
             <input
               type="radio"
               id={label}
@@ -56,14 +60,7 @@ export const Toggle = ({
               }
               className={radioClasses}
             />
-            <span
-              className={buttonClasses}
-              data-testid={
-                isSelected ? `${name}-${value}-selected` : `${name}-${value}`
-              }
-            >
-              {label}
-            </span>
+            <span className={buttonClasses}>{label}</span>
           </label>
         );
       })}

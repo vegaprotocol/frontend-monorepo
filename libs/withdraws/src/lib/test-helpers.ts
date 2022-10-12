@@ -11,7 +11,6 @@ import type { Withdrawals_party_withdrawalsConnection_edges_node } from './__gen
 
 export const generateAsset = (override?: PartialDeep<Asset>) => {
   const defaultAsset: Asset = {
-    __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
@@ -19,9 +18,36 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
     decimals: 5,
     status: AssetStatus.STATUS_ENABLED,
     source: {
-      __typename: 'ERC20',
       contractAddress: 'contract-address',
+      lifetimeLimit: '123000000',
+      withdrawThreshold: '50',
+      __typename: 'ERC20',
     },
+    infrastructureFeeAccount: {
+      balance: '1',
+      __typename: 'Account',
+    },
+    globalRewardPoolAccount: {
+      balance: '2',
+      __typename: 'Account',
+    },
+    takerFeeRewardAccount: {
+      balance: '3',
+      __typename: 'Account',
+    },
+    makerFeeRewardAccount: {
+      balance: '4',
+      __typename: 'Account',
+    },
+    lpFeeRewardAccount: {
+      balance: '5',
+      __typename: 'Account',
+    },
+    marketProposerRewardAccount: {
+      balance: '6',
+      __typename: 'Account',
+    },
+    __typename: 'Asset',
   };
   return merge(defaultAsset, override);
 };

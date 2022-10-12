@@ -5,12 +5,12 @@ import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';
 import type {
-  BlockExplorerTransaction,
+  BlockExplorerTransactionResult,
   BlockExplorerTransactions,
 } from '../../../routes/types/block-explorer-response';
 
 interface TxsStateProps {
-  txsData: BlockExplorerTransaction[];
+  txsData: BlockExplorerTransactionResult[];
   hasMoreTxs: boolean;
   lastCursor: string;
 }

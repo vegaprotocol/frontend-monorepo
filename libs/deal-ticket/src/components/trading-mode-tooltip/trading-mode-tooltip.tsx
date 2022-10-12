@@ -5,18 +5,17 @@ import type { ReactNode } from 'react';
 import { MarketDataGrid } from './market-data-grid';
 
 type TradingModeTooltipProps = {
-  market: {
-    tradingMode: MarketTradingMode;
-    data: { trigger: AuctionTrigger | null } | null;
-  };
+  tradingMode: MarketTradingMode | null;
+  trigger: AuctionTrigger | null;
   compiledGrid: { label: ReactNode; value?: ReactNode }[];
 };
 
 export const TradingModeTooltip = ({
-  market,
+  tradingMode,
+  trigger,
   compiledGrid,
 }: TradingModeTooltipProps) => {
-  switch (market.tradingMode) {
+  switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <>
@@ -44,7 +43,7 @@ export const TradingModeTooltip = ({
       );
     }
     case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
-      switch (market.data?.trigger) {
+      switch (trigger) {
         case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <>

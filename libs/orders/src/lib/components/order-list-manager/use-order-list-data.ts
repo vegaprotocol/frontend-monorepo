@@ -33,28 +33,22 @@ export const useOrderListData = ({
       totalCountRef.current += newRows.current;
     }
     newRows.current = 0;
-    if (!gridRef.current?.api) {
-      return;
-    }
-    gridRef.current.api.refreshInfiniteCache();
+    gridRef.current?.api.refreshInfiniteCache();
   }, [gridRef]);
 
   const update = useCallback(
-    ({ data, delta }: { data: (OrderEdge | null)[]; delta: Order[] }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
+    ({ data, delta }: { data: (OrderEdge | null)[]; delta?: Order[] }) => {
       if (dataRef.current?.length) {
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
           if (createdAt) {
-            newRows.current += delta.filter(
+            newRows.current += (delta || []).filter(
               (trade) => trade.createdAt > createdAt
             ).length;
           }
         }
         dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
+        gridRef.current?.api.refreshInfiniteCache();
         return true;
       }
       dataRef.current = data;
@@ -84,8 +78,10 @@ export const useOrderListData = ({
     insert,
     variables,
   });
-  totalCountRef.current = totalCount;
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    totalCountRef.current = totalCount;
+    dataRef.current = data;
+  }
 
   const getRows = makeInfiniteScrollGetRows<OrderEdge>(
     newRows,

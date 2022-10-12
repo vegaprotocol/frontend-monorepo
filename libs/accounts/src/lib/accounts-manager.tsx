@@ -26,24 +26,20 @@ export const AccountManager = ({
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      if (dataRef.current?.length) {
-        dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
-        return true;
-      }
-      return false;
+      dataRef.current = data;
+      gridRef.current?.api.refreshInfiniteCache();
+      return true;
     },
     [gridRef]
   );
-  const { data, error, loading } = useDataProvider<AccountFields[], never>({
+  const { data, loading, error } = useDataProvider<AccountFields[], never>({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
   });
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    dataRef.current = data;
+  }
   const getRows = async ({
     successCallback,
     startRow,
@@ -56,18 +52,16 @@ export const AccountManager = ({
     successCallback(rowsThisBlock, lastRow);
   };
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && (
-        <AccountTable
-          rowModelType={data?.length ? 'infinite' : 'clientSide'}
-          rowData={data?.length ? undefined : []}
-          ref={gridRef}
-          datasource={{ getRows }}
-          onClickAsset={onClickAsset}
-          onClickDeposit={onClickDeposit}
-          onClickWithdraw={onClickWithdraw}
-        />
-      )}
+    <AsyncRenderer data={data || []} error={error} loading={loading}>
+      <AccountTable
+        rowModelType={data?.length ? 'infinite' : 'clientSide'}
+        rowData={data?.length ? undefined : []}
+        ref={gridRef}
+        datasource={{ getRows }}
+        onClickAsset={onClickAsset}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+      />
     </AsyncRenderer>
   );
 };

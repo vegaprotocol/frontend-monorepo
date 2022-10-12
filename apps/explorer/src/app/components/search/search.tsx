@@ -22,32 +22,29 @@ export const Search = () => {
       const query = fields.search;
 
       if (!query) {
-        setError(new Error(t('Search query required')));
-      } else {
-        const result = await getSearchType(query);
-        const urlAsHex = toHex(query);
-        const unrecognisedError = new Error(
-          t('Transaction type is not recognised')
-        );
-
-        if (result) {
-          switch (result) {
-            case SearchTypes.Party:
-              navigate(`${Routes.PARTIES}/${urlAsHex}`);
-              break;
-            case SearchTypes.Transaction:
-              navigate(`${Routes.TX}/${urlAsHex}`);
-              break;
-            case SearchTypes.Block:
-              navigate(`${Routes.BLOCKS}/${Number(query)}`);
-              break;
-            default:
-              setError(unrecognisedError);
-          }
-        }
-
-        setError(unrecognisedError);
+        return setError(new Error(t('Search query required')));
       }
+
+      const result = await getSearchType(query);
+      const urlAsHex = toHex(query);
+      const unrecognisedError = new Error(
+        t('Transaction type is not recognised')
+      );
+
+      if (result) {
+        switch (result) {
+          case SearchTypes.Party:
+            return navigate(`${Routes.PARTIES}/${urlAsHex}`);
+          case SearchTypes.Transaction:
+            return navigate(`${Routes.TX}/${urlAsHex}`);
+          case SearchTypes.Block:
+            return navigate(`${Routes.BLOCKS}/${Number(query)}`);
+          default:
+            return setError(unrecognisedError);
+        }
+      }
+
+      return setError(unrecognisedError);
     },
     [navigate]
   );
@@ -61,22 +58,24 @@ export const Search = () => {
         {t('Search by block number or transaction hash')}
       </label>
       <div className="flex items-stretch gap-2">
-        <Input
-          {...register('search')}
-          id="search"
-          data-testid="search"
-          className="text-white"
-          hasError={Boolean(error?.message)}
-          type="text"
-          placeholder={t('Enter block number, party id or transaction hash')}
-        />
-        {error?.message && (
-          <div className="absolute top-[100%] flex-1 w-full">
-            <InputError data-testid="search-error" intent="danger">
-              {error.message}
-            </InputError>
-          </div>
-        )}
+        <div className="flex grow relative">
+          <Input
+            {...register('search')}
+            id="search"
+            data-testid="search"
+            className="text-white"
+            hasError={Boolean(error?.message)}
+            type="text"
+            placeholder={t('Enter block number, party id or transaction hash')}
+          />
+          {error?.message && (
+            <div className="bg-white border border-t-0 border-accent absolute top-[100%] flex-1 w-full pb-2 px-2 rounded-b">
+              <InputError data-testid="search-error" intent="danger">
+                {error.message}
+              </InputError>
+            </div>
+          )}
+        </div>
         <Button type="submit" size="sm" data-testid="search-button">
           {t('Search')}
         </Button>
