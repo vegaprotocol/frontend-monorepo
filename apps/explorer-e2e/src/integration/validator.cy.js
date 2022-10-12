@@ -8,6 +8,7 @@ context('Validator page', { tags: '@smoke' }, function () {
     cy.visit('/');
     cy.get(validatorMenuHeading).click();
     cy.get_validators().as('validators');
+    cy.get_nodes().as('nodes');
   });
 
   describe('Verify elements on page', function () {
@@ -37,16 +38,16 @@ context('Validator page', { tags: '@smoke' }, function () {
         });
     });
 
-    it('should be able to see relevant validator information', function () {
-      this.validators.forEach((validator, index) => {
-        cy.get(tendermintDataHeader)
-          .contains('Tendermint data')
-          .next()
-          .within(() => {
-            cy.get(jsonSection)
-              .invoke('text')
-              .convert_string_json_to_js_object()
-              .then((validatorsInJson) => {
+    it('should be able to see relevant validator information in tendermint section', function () {
+      cy.get(tendermintDataHeader)
+        .contains('Tendermint data')
+        .next()
+        .within(() => {
+          cy.get(jsonSection)
+            .invoke('text')
+            .convert_string_json_to_js_object()
+            .then((validatorsInJson) => {
+              this.validators.forEach((validator, index) => {
                 const validatorInJson =
                   validatorsInJson.result.validators[index];
 
@@ -82,7 +83,98 @@ context('Validator page', { tags: '@smoke' }, function () {
                 // Therefore only checking the field name is present.
                 cy.contains('proposer_priority').should('be.visible');
               });
-          });
+            });
+        });
+    });
+
+    it('should be able to see relevant node information in vega data section', function () {
+      cy.get(vegaDataHeader)
+        .contains('Vega data')
+        .next()
+        .within(() => {
+          cy.get(jsonSection)
+            .invoke('text')
+            .convert_string_json_to_js_object()
+            .then((nodesInJson) => {
+              this.nodes.forEach((node, index) => {
+                const nodeInJson = nodesInJson.nodes[index];
+
+                // Vegacapsule shows no info or null for following fields:
+                // name, infoURL, avatarUrl, location, epoch data
+                // Therefore, these values remain unchecked.
+
+                assert.equal(
+                  nodeInJson.__typename,
+                  node.__typename,
+                  `Checking that node __typename shown in json matches system data`
+                );
+                cy.contains(node.__typename).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.id,
+                  node.id,
+                  `Checking that node id shown in json matches system data`
+                );
+                cy.contains(node.id).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.pubkey,
+                  node.pubkey,
+                  `Checking that node pubkey shown in json matches system data`
+                );
+                cy.contains(node.pubkey).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.tmPubkey,
+                  node.tmPubkey,
+                  `Checking that node tmPubkey shown in json matches system data`
+                );
+                cy.contains(node.tmPubkey).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.ethereumAddress,
+                  node.ethereumAddress,
+                  `Checking that node ethereumAddress shown in json matches system data`
+                );
+                cy.contains(node.ethereumAddress).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.stakedByOperator,
+                  node.stakedByOperator,
+                  `Checking that node stakedByOperator value shown in json matches system data`
+                );
+                cy.contains(node.stakedByOperator).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.stakedByDelegates,
+                  node.stakedByDelegates,
+                  `Checking that node stakedByDelegates value shown in json matches system data`
+                );
+                cy.contains(node.stakedByDelegates).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.stakedTotal,
+                  node.stakedTotal,
+                  `Checking that node stakedTotal shown in json matches system data`
+                );
+                cy.contains(node.stakedTotal).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.pendingStake,
+                  node.pendingStake,
+                  `Checking that node pendingStake shown in json matches system data`
+                );
+                cy.contains(node.pendingStake).should('be.visible');
+
+                assert.equal(
+                  nodeInJson.status,
+                  node.status,
+                  `Checking that node status shown in json matches system data`
+                );
+                cy.contains(node.status).should('be.visible');
+
+              });
+        });
       });
     });
 
@@ -105,11 +197,11 @@ context('Validator page', { tags: '@smoke' }, function () {
           cy.get(jsonSection).should('not.be.empty');
         });
 
-      this.validators.forEach((validator) => {
-        cy.get(tendermintDataHeader)
-          .contains('Tendermint data')
-          .next()
-          .within(() => {
+      cy.get(tendermintDataHeader)
+        .contains('Tendermint data')
+        .next()
+        .within(() => {
+          this.validators.forEach((validator) => {
             cy.contains(validator.address).should('be.visible');
             cy.contains(validator.pub_key.type).should('be.visible');
             cy.contains(validator.pub_key.value).should('be.visible');
@@ -118,7 +210,7 @@ context('Validator page', { tags: '@smoke' }, function () {
             // Therefore only checking the field name is present.
             cy.contains('proposer_priority').should('be.visible');
           });
-      });
+        });
     });
 
     it('should be able to switch validator page between light and dark mode', function () {
@@ -182,5 +274,31 @@ context('Validator page', { tags: '@smoke' }, function () {
           return validators;
         });
     });
+
+    Cypress.Commands.add('get_nodes', () => {
+      const mutation =
+        '{nodes { id name infoUrl avatarUrl pubkey tmPubkey ethereumAddress \
+          location stakedByOperator stakedByDelegates stakedTotal pendingStake \
+          epochData { total offline online __typename } status name __typename}}';
+      cy.request({
+        method: 'POST',
+        url: `http://localhost:3028/query`,
+        body: {
+          query: mutation,
+        },
+        headers: { 'content-type': 'application/json' },
+      })
+        .its(
+          `body.data.nodes`
+        )
+        .then(function (response) {
+          let nodes = [];
+          response.forEach((node) => {
+            nodes.push(node)
+          });
+          return nodes;
+        });
+    });
+
   });
 });
