@@ -1,5 +1,4 @@
-import { useEthereumConfig } from '@vegaprotocol/web3';
-import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
