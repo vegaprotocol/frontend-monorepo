@@ -6,7 +6,7 @@ import {
   BackToMarketLink,
   Icon,
   Tab,
-  Tabs
+  Tabs,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';

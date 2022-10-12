@@ -55,7 +55,11 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
 );
 ExternalLink.displayName = 'ExternalLink';
 
-export const BackToMarketLink = ({ children, className, ...props }: LinkProps) => (
+export const BackToMarketLink = ({
+  children,
+  className,
+  ...props
+}: LinkProps) => (
   <Link
     className={classNames(className, 'sm:text-lg md:text-xl lg:text-2xl')}
     {...props}
