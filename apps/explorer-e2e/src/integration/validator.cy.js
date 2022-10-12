@@ -172,10 +172,9 @@ context('Validator page', { tags: '@smoke' }, function () {
                   `Checking that node status shown in json matches system data`
                 );
                 cy.contains(node.status).should('be.visible');
-
               });
+            });
         });
-      });
     });
 
     it('should be able to see validator page displayed on mobile', function () {
@@ -288,17 +287,14 @@ context('Validator page', { tags: '@smoke' }, function () {
         },
         headers: { 'content-type': 'application/json' },
       })
-        .its(
-          `body.data.nodes`
-        )
+        .its(`body.data.nodes`)
         .then(function (response) {
           let nodes = [];
           response.forEach((node) => {
-            nodes.push(node)
+            nodes.push(node);
           });
           return nodes;
         });
     });
-
   });
 });
