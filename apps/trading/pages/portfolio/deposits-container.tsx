@@ -25,7 +25,11 @@ export const DepositsContainer = () => {
         setDepositDialog={setDepositDialog}
       />
       <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
-        <Button size="sm" variant="secondary" onClick={() => setDepositDialog(true)}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => setDepositDialog(true)}
+        >
           Deposit
         </Button>
       </div>
