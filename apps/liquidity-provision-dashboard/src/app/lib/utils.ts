@@ -1,24 +1,82 @@
+import BigNumber from 'bignumber.js';
+import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { sumLiquidityCommitted } from '@vegaprotocol/liquidity';
+
 import type {
-  LiquidityProvisionMarkets_marketsConnection_edges_node as MarketNode,
-  LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges as LiquidityEdges,
+  LiquidityProvisionMarket,
+  LiquidityProvisionsEdge,
 } from '@vegaprotocol/liquidity';
-import type { MarketCandles } from '@vegaprotocol/market-list';
+import type {
+  Candle,
+  MarketCandles,
+  MarketWithCandles,
+  MarketWithData,
+} from '@vegaprotocol/market-list';
 
-import {
-  calcDayVolume,
-  getCandle24hAgo,
-  getChange,
-  sumLiquidityCommitted,
-} from '@vegaprotocol/liquidity';
-
-export type Market = MarketNode;
-
-export interface MarketsListData {
-  markets: Market[];
-  marketsCandles24hAgo: MarketCandles[];
+interface SettlementAsset {
+  decimals: number;
+  symbol: string;
 }
 
-const formatHealth = (liquidityEdges: LiquidityEdges[]) => {
+export const formatWithAsset = (
+  value: string,
+  settlementAsset: SettlementAsset
+) => {
+  const formattedValue = addDecimalsFormatNumber(
+    value,
+    settlementAsset.decimals
+  );
+  const symbol = settlementAsset.symbol;
+  return `${formattedValue} ${symbol}`;
+};
+
+const getCandle24hAgo = (marketId: string, candles24hAgo: MarketCandles[]) => {
+  return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
+};
+
+interface Provider {
+  commitmentAmount: number;
+  fee: string;
+}
+
+export type FormattedMarket = MarketWithData &
+  MarketWithCandles & { providers?: Provider[] };
+
+export interface FormattedMarkets {
+  markets: FormattedMarket[];
+}
+
+const getChange = (candles: (Candle | null)[] | null, lastClose?: string) => {
+  if (candles) {
+    const firstCandle = candles.find((item) => item?.open);
+    const first = parseInt(firstCandle?.open || '-1');
+
+    const last =
+      typeof lastClose === 'undefined'
+        ? candles.reduceRight((aggr, item) => {
+            if (aggr === -1 && item?.close) {
+              aggr = parseInt(item.close);
+            }
+            return aggr;
+          }, -1)
+        : parseInt(lastClose);
+
+    if (first !== -1 && last !== -1) {
+      return Number(((last - first) / first) * 100).toFixed(3) + '%';
+    }
+  }
+  return ' - ';
+};
+
+const calcDayVolume = (candles: Candle[] = []) => {
+  return candles
+    .reduce((acc, c) => {
+      return acc.plus(new BigNumber(c?.volume ?? 0));
+    }, new BigNumber(candles[0]?.volume ?? 0))
+    .toString();
+};
+
+const formatHealth = (liquidityEdges: LiquidityProvisionsEdge[]) => {
   const lp = liquidityEdges.reduce(
     (
       total: { [x: string]: number },
@@ -44,26 +102,41 @@ const formatHealth = (liquidityEdges: LiquidityEdges[]) => {
   return sortedProviders;
 };
 
-export const formatMarketLists = ({
-  markets,
-  marketsCandles24hAgo,
-}: MarketsListData) => {
+const getLiquidityForMarket = (
+  marketId: string,
+  markets: LiquidityProvisionMarket[]
+) => {
+  const liquidity = markets.find(
+    (m) => m.id === marketId
+  )?.liquidityProvisionsConnection;
+  return liquidity?.edges || [];
+};
+
+export const addData = (
+  markets: (MarketWithData & MarketWithCandles)[],
+  marketsCandles24hAgo: MarketCandles[],
+  marketsLiquidity: LiquidityProvisionMarket[]
+) => {
   return markets.map((market) => {
-    const dayVolume = calcDayVolume(market);
+    const dayVolume = calcDayVolume(market.candles as Candle[]);
     const candle24hAgo = getCandle24hAgo(market.id, marketsCandles24hAgo);
 
-    const candles =
-      market.candlesConnection?.edges?.map((c) => (c ? c.node : null)) || null;
-    const volumeChange = getChange(candles, candle24hAgo?.close);
+    const volumeChange = getChange(
+      market.candles as Candle[],
+      candle24hAgo?.close
+    );
 
-    const liquidity = market.liquidityProvisionsConnection?.edges || [];
+    const liquidity = getLiquidityForMarket(
+      market.id,
+      marketsLiquidity
+    ) as LiquidityProvisionsEdge[];
 
     return {
       ...market,
       dayVolume,
       volumeChange,
-      liquidityCommitted: sumLiquidityCommitted(liquidity as LiquidityEdges[]),
-      providers: formatHealth(liquidity as LiquidityEdges[]),
+      liquidityCommitted: sumLiquidityCommitted(liquidity),
+      providers: formatHealth(liquidity),
     };
   });
 };
