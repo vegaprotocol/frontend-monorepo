@@ -35,10 +35,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       totalCountRef.current += newRows.current;
     }
     newRows.current = 0;
-    if (!gridRef.current?.api) {
-      return;
-    }
-    gridRef.current.api.refreshInfiniteCache();
+    gridRef.current?.api.refreshInfiniteCache();
   }, []);
 
   const update = useCallback(
@@ -49,9 +46,6 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       data: (TradeEdge | null)[] | null;
       delta?: Trade[];
     }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
       if (dataRef.current?.length) {
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
@@ -62,7 +56,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
           }
         }
         dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
+        gridRef.current?.api.refreshInfiniteCache();
         return true;
       }
       dataRef.current = data;

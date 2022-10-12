@@ -26,15 +26,9 @@ export const AccountManager = ({
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      if (dataRef.current?.length) {
-        dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
-        return true;
-      }
-      return false;
+      dataRef.current = data;
+      gridRef.current?.api.refreshInfiniteCache();
+      return true;
     },
     [gridRef]
   );
