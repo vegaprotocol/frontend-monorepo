@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
   getClosingTimestamp,
   useProposalSubmit,
+  deadlineToSeconds,
+  secondsToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -47,6 +49,13 @@ export const ProposeFreeform = () => {
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: FreeformProposalFormFields) => {
+    const minCloseAsHourString = secondsToRoundedHours(
+      deadlineToSeconds(params.governance_proposal_freeform_minClose)
+    ).toString();
+
+    const isThisDeadlineMinimum =
+      fields.proposalVoteDeadline === minCloseAsHourString;
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -54,7 +63,10 @@ export const ProposeFreeform = () => {
       },
       terms: {
         newFreeform: {},
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isThisDeadlineMinimum
+        ),
       },
     });
   };

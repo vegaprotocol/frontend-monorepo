@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { parse as ISO8601Parse, toSeconds } from 'iso8601-duration';
 import {
   ButtonLink,
   FormGroup,
@@ -8,18 +7,22 @@ import {
   InputError,
 } from '@vegaprotocol/ui-toolkit';
 import { addHours, addMinutes } from 'date-fns';
+import {
+  deadlineToSeconds,
+  secondsToRoundedHours,
+} from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface DeadlineProps {
   vote: number;
-  enactment: number;
+  enactment: number | undefined;
   validation: number;
 }
 
 interface DeadlineDatesProps {
   vote: Date;
-  enactment: Date;
+  enactment: Date | undefined;
   validation: Date;
 }
 
@@ -222,18 +225,12 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
     maxEnactmentSeconds,
   } = useMemo(
     () => ({
-      minVoteSeconds: toSeconds(
-        ISO8601Parse(`PT${voteMinClose.toUpperCase()}`)
-      ),
-      maxVoteSeconds: toSeconds(
-        ISO8601Parse(`PT${voteMaxClose.toUpperCase()}`)
-      ),
+      minVoteSeconds: deadlineToSeconds(voteMinClose),
+      maxVoteSeconds: deadlineToSeconds(voteMaxClose),
       minEnactmentSeconds:
-        enactmentMinClose &&
-        toSeconds(ISO8601Parse(`PT${enactmentMinClose.toUpperCase()}`)),
+        enactmentMinClose && deadlineToSeconds(enactmentMinClose),
       maxEnactmentSeconds:
-        enactmentMaxClose &&
-        toSeconds(ISO8601Parse(`PT${enactmentMaxClose.toUpperCase()}`)),
+        enactmentMaxClose && deadlineToSeconds(enactmentMaxClose),
     }),
     [voteMinClose, voteMaxClose, enactmentMinClose, enactmentMaxClose]
   );
@@ -243,17 +240,14 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
   const { minVoteHours, maxVoteHours, minEnactmentHours, maxEnactmentHours } =
     useMemo(
       () => ({
-        minVoteHours:
-          Math.floor(minVoteSeconds / 3600) > 1
-            ? Math.floor(minVoteSeconds / 3600)
-            : 1,
-        maxVoteHours: Math.floor(maxVoteSeconds / 3600),
-        minEnactmentHours:
-          minEnactmentSeconds && Math.floor(minEnactmentSeconds / 3600) > 1
-            ? Math.floor(minEnactmentSeconds / 3600)
-            : 1,
-        maxEnactmentHours:
-          maxEnactmentSeconds && Math.floor(maxEnactmentSeconds / 3600),
+        minVoteHours: secondsToRoundedHours(minVoteSeconds),
+        maxVoteHours: secondsToRoundedHours(maxVoteSeconds),
+        minEnactmentHours: minEnactmentSeconds
+          ? secondsToRoundedHours(minEnactmentSeconds)
+          : undefined,
+        maxEnactmentHours: maxEnactmentSeconds
+          ? secondsToRoundedHours(maxEnactmentSeconds)
+          : undefined,
       }),
       [minVoteSeconds, maxVoteSeconds, minEnactmentSeconds, maxEnactmentSeconds]
     );
@@ -269,7 +263,9 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
       deadlines.vote === minVoteHours
         ? addHours(addMinutes(new Date(), 2), deadlines.vote)
         : addHours(new Date(), deadlines.vote),
-    enactment: addHours(new Date(), deadlines.vote + deadlines.enactment),
+    enactment: deadlines.enactment
+      ? addHours(new Date(), deadlines.vote + deadlines.enactment)
+      : undefined,
     validation:
       deadlines.validation === 0
         ? addHours(addMinutes(new Date(), 2), deadlines.validation)
@@ -284,7 +280,9 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
           deadlines.vote === minVoteHours
             ? addHours(addMinutes(new Date(), 2), deadlines.vote)
             : addHours(new Date(), deadlines.vote),
-        enactment: addHours(new Date(), deadlines.vote + deadlines.enactment),
+        enactment: deadlines.enactment
+          ? addHours(new Date(), deadlines.vote + deadlines.enactment)
+          : undefined,
         validation:
           deadlines.validation === 0
             ? addHours(addMinutes(new Date(), 2), deadlines.validation)
@@ -301,7 +299,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
     setDeadlines((prev) => ({
       ...prev,
       vote: hours,
-      validation: Math.min(prev.validation, hours),
+      validation: prev.validation && Math.min(prev.validation, hours),
     }));
 
     // If the vote deadline is set to minimum, add 2 mins to the date as we do
@@ -317,7 +315,9 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
         hours === minVoteHours
           ? addHours(addMinutes(new Date(), 2), hours)
           : addHours(new Date(), hours),
-      enactment: addHours(new Date(), hours + deadlines.enactment),
+      enactment: deadlines.enactment
+        ? addHours(new Date(), hours + deadlines.enactment)
+        : undefined,
       validation: addHours(new Date(), Math.min(hours, deadlines.validation)),
     }));
   };
@@ -430,7 +430,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
         />
       )}
 
-      {enactmentMinClose && enactmentMaxClose && maxEnactmentHours && (
+      {minEnactmentHours && maxEnactmentHours && (
         <EnactmentForm
           enactmentRegister={enactmentRegister}
           deadlines={deadlines}
