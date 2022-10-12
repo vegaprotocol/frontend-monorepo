@@ -9,6 +9,7 @@ import {
   useMemo,
   useCallback,
   useContext,
+  Fragment,
 } from 'react';
 import classNames from 'classnames';
 
@@ -199,58 +200,72 @@ const OrderbookDebugInfo = ({
   minPriceLevel: string;
   resolution: number;
 }) => (
-  <div
-    className="absolute left-0 bottom-0 font-mono"
-    style={{
-      fontSize: '10px',
-      color: '#FFF',
-      background: '#000',
-      padding: '2px',
-    }}
-  >
-    <pre>
-      {JSON.stringify(
-        {
-          numberOfRows,
-          viewportHeight,
-          lockOnMidPrice,
-          priceInCenter: priceInCenter
-            ? addDecimalsFormatNumber(priceInCenter, decimalPlaces)
-            : '-',
-          maxPriceLevel: addDecimalsFormatNumber(
-            maxPriceLevel ?? '0',
-            decimalPlaces
-          ),
-          bestStaticBidPrice: addDecimalsFormatNumber(
-            bestStaticBidPrice ?? '0',
-            decimalPlaces
-          ),
-          bestStaticOfferPrice: addDecimalsFormatNumber(
-            bestStaticOfferPrice ?? '0',
-            decimalPlaces
-          ),
-          minPriceLevel: addDecimalsFormatNumber(
-            minPriceLevel ?? '0',
-            decimalPlaces
-          ),
-          midPrice: addDecimalsFormatNumber(
-            (bestStaticOfferPrice &&
-              bestStaticBidPrice &&
-              getPriceLevel(
-                BigInt(bestStaticOfferPrice) +
-                  (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
-                    BigInt(2),
-                resolution
-              )) ??
-              '0',
-            decimalPlaces
-          ),
-        },
-        null,
-        2
-      )}
-    </pre>
-  </div>
+  <Fragment>
+    <div
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '0',
+        borderTop: '1px solid rgba(255,0,0,0.5)',
+        background: 'black',
+        width: '100%',
+        transform: 'translateY(-50%)',
+      }}
+    ></div>
+    <div
+      className="absolute left-0 bottom-0 font-mono"
+      style={{
+        fontSize: '10px',
+        color: '#FFF',
+        background: '#000',
+        padding: '2px',
+      }}
+    >
+      <pre>
+        {JSON.stringify(
+          {
+            numberOfRows,
+            viewportHeight,
+            lockOnMidPrice,
+            priceInCenter: priceInCenter
+              ? addDecimalsFormatNumber(priceInCenter, decimalPlaces)
+              : '-',
+            maxPriceLevel: addDecimalsFormatNumber(
+              maxPriceLevel ?? '0',
+              decimalPlaces
+            ),
+            bestStaticBidPrice: addDecimalsFormatNumber(
+              bestStaticBidPrice ?? '0',
+              decimalPlaces
+            ),
+            bestStaticOfferPrice: addDecimalsFormatNumber(
+              bestStaticOfferPrice ?? '0',
+              decimalPlaces
+            ),
+            minPriceLevel: addDecimalsFormatNumber(
+              minPriceLevel ?? '0',
+              decimalPlaces
+            ),
+            midPrice: addDecimalsFormatNumber(
+              (bestStaticOfferPrice &&
+                bestStaticBidPrice &&
+                getPriceLevel(
+                  BigInt(bestStaticOfferPrice) +
+                    (BigInt(bestStaticBidPrice) -
+                      BigInt(bestStaticOfferPrice)) /
+                      BigInt(2),
+                  resolution
+                )) ??
+                '0',
+              decimalPlaces
+            ),
+          },
+          null,
+          2
+        )}
+      </pre>
+    </div>
+  </Fragment>
 );
 
 export const Orderbook = ({
@@ -268,6 +283,7 @@ export const Orderbook = ({
 }: OrderbookProps) => {
   const theme = useContext(ThemeContext);
   const scrollElement = useRef<HTMLDivElement>(null);
+  const rootElement = useRef<HTMLDivElement>(null);
   const gridElement = useRef<HTMLDivElement>(null);
   const headerElement = useRef<HTMLDivElement>(null);
   const footerElement = useRef<HTMLDivElement>(null);
@@ -345,21 +361,23 @@ export const Orderbook = ({
               (BigInt(maxPriceLevel) - BigInt(price)) / BigInt(resolution)
             ) +
               1) * // add one row for sticky header
-            rowHeight;
+              rowHeight +
+            rowHeight / 2 -
+            (viewportHeight % rowHeight);
         } else if (rows) {
           const index = rows.findIndex(
             (row) => BigInt(row.price) <= BigInt(price)
           );
           if (index !== -1) {
+            scrollTop =
+              index * rowHeight + rowHeight / 2 - (viewportHeight % rowHeight);
             if (
               price === rows[index].price ||
               index === 0 ||
               BigInt(rows[index].price) - BigInt(price) <
                 BigInt(price) - BigInt(rows[index - 1].price)
             ) {
-              scrollTop = index * rowHeight;
-            } else {
-              scrollTop = (index - 1) * rowHeight;
+              scrollTop += rowHeight;
             }
           }
         }
@@ -434,9 +452,9 @@ export const Orderbook = ({
   // handles window resize
   useEffect(() => {
     function handleResize() {
-      if (scrollElement.current) {
+      if (rootElement.current) {
         setViewportHeight(
-          scrollElement.current.clientHeight || window.innerHeight
+          rootElement.current.clientHeight || window.innerHeight
         );
       }
     }
@@ -478,17 +496,17 @@ export const Orderbook = ({
   );
   // handles resizing of the Allotment.Pane (y-axis)
   // adjusts the scroll height
-  const scrollElementResizeHandler: ResizeObserverCallback = useCallback(
+  const rootElementResizeHandler: ResizeObserverCallback = useCallback(
     (entries) => {
-      if (!scrollElement.current || entries.length === 0) {
+      if (!rootElement.current || entries.length === 0) {
         return;
       }
       setViewportHeight(entries[0].contentRect.height);
     },
-    [setViewportHeight, scrollElement]
+    [setViewportHeight, rootElement]
   );
   useResizeObserver(gridElement.current, gridResizeHandler);
-  useResizeObserver(scrollElement.current, scrollElementResizeHandler);
+  useResizeObserver(rootElement.current, rootElementResizeHandler);
 
   let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
   const prependingBufferSize = Math.min(bufferSize, offset);
@@ -566,6 +584,7 @@ export const Orderbook = ({
   return (
     <div
       className="h-full relative pl-2 text-xs"
+      ref={rootElement}
       onDoubleClick={() => setDebug(!debug)}
     >
       <div
