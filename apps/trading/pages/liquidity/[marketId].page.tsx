@@ -3,10 +3,10 @@ import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import {
   AsyncRenderer,
+  BackToMarketLink,
   Icon,
   Tab,
-  Tabs,
-  Link as UiToolkitLink,
+  Tabs
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { AgGridReact } from 'ag-grid-react';
@@ -75,12 +75,9 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <Link href={`/markets/${marketId}`} passHref={true}>
-              <UiToolkitLink className="hover:text-neutral-500 dark:hover:text-neutral-300 sm:text-lg md:text-xl lg:text-2xl">
-                <Icon name="chevron-left" size={6} />
-                {`${name}`}
-              </UiToolkitLink>
-            </Link>
+            <BackToMarketLink href={`/markets/${marketId}`} passHref={true}>
+              {`${name}`}
+            </BackToMarketLink>
           }
         >
           <HeaderStat

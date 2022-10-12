@@ -54,3 +54,14 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   </Link>
 );
 ExternalLink.displayName = 'ExternalLink';
+
+export const BackToMarketLink = ({ children, className, ...props }: LinkProps) => (
+  <Link
+    className={classNames(className, 'sm:text-lg md:text-xl lg:text-2xl')}
+    {...props}
+  >
+    <Icon name="chevron-left" size={6} />
+    {children}
+  </Link>
+);
+BackToMarketLink.displayName = 'BackToMarketLink';

@@ -44,8 +44,6 @@ export const WithdrawalsContainer = () => {
                       <PendingWithdrawalsTable rowData={pending} />
                     </>
                   )}
-
-                  <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
                   <WithdrawalsTable rowData={completed} />
                 </>
               )}
