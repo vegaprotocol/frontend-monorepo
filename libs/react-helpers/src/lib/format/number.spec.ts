@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { formatNumber, formatNumberPercentage, toNumberParts } from './number';
+import {
+  formatNumber,
+  formatNumberPercentage,
+  toNumberParts,
+  isNumeric,
+} from './number';
 
 describe('formatNumber and formatNumberPercentage', () => {
   it.each([
@@ -45,4 +50,41 @@ describe('toNumberParts', () => {
   ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
     expect(toNumberParts(v, d)).toStrictEqual(o);
   });
+});
+
+describe('isNumeric', () => {
+  it.each([
+    { i: null, o: false },
+    { i: undefined, o: false },
+    { i: 1, o: true },
+    { i: '1', o: true },
+    { i: '-1', o: true },
+    { i: 0.1, o: true },
+    { i: '.1', o: true },
+    { i: '-.1', o: true },
+    { i: 123, o: true },
+    { i: -123, o: true },
+    { i: '123', o: true },
+    { i: '123.01', o: true },
+    { i: '-123.01', o: true },
+    { i: '--123.01', o: false },
+    { i: '123.', o: false },
+    { i: '123.1.1', o: false },
+    { i: new BigNumber(123), o: true },
+    { i: new BigNumber(123.123), o: true },
+    { i: new BigNumber(123.123).toString(), o: true },
+    { i: new BigNumber(123), o: true },
+    { i: Infinity, o: false },
+  ])(
+    'returns correct results',
+    ({
+      i,
+      o,
+    }: {
+      i: number | string | undefined | null | BigNumber;
+      o: boolean;
+    }) => {
+      expect(isNumeric(i)).toStrictEqual(o);
+    }
+  );
 });
