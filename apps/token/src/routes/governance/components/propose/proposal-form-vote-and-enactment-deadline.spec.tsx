@@ -17,8 +17,10 @@ const maxEnactDeadline = '4h0m0s';
 
 const renderComponent = () => {
   const register = jest.fn();
+  const setValue = jest.fn();
   render(
     <ProposalFormVoteAndEnactmentDeadline
+      setValue={setValue}
       voteRegister={register('proposalVoteDeadline')}
       voteErrorMessage={undefined}
       voteMinClose={minVoteDeadline}

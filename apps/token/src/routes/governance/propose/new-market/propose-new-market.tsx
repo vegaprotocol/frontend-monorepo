@@ -4,6 +4,7 @@ import {
   useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { validateJson } from '@vegaprotocol/react-helpers';
@@ -53,10 +54,17 @@ export const ProposeNewMarket = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<NewMarketProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: NewMarketProposalFormFields) => {
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_market_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -66,10 +74,14 @@ export const ProposeNewMarket = () => {
         newMarket: {
           ...JSON.parse(fields.proposalTerms),
         },
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
-          fields.proposalEnactmentDeadline
+          fields.proposalEnactmentDeadline,
+          isVoteDeadlineAtMinimum
         ),
       },
     });
@@ -145,6 +157,7 @@ export const ProposeNewMarket = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  setValue={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}

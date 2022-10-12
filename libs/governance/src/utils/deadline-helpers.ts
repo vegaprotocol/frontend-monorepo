@@ -17,3 +17,6 @@ export const secondsToRoundedHours = (seconds: number) => {
   const hours = Math.round(seconds / 3600);
   return hours < 1 ? 1 : hours;
 };
+
+export const deadlineToRoundedHours = (deadline: string) =>
+  secondsToRoundedHours(deadlineToSeconds(deadline));

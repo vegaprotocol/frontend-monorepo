@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   getClosingTimestamp,
   useProposalSubmit,
-  deadlineToSeconds,
-  secondsToRoundedHours,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -45,16 +44,16 @@ export const ProposeFreeform = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<FreeformProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: FreeformProposalFormFields) => {
-    const minCloseAsHourString = secondsToRoundedHours(
-      deadlineToSeconds(params.governance_proposal_freeform_minClose)
-    ).toString();
-
-    const isThisDeadlineMinimum =
-      fields.proposalVoteDeadline === minCloseAsHourString;
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_freeform_minClose
+      ).toString();
 
     await submit({
       rationale: {
@@ -65,7 +64,7 @@ export const ProposeFreeform = () => {
         newFreeform: {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
-          isThisDeadlineMinimum
+          isVoteDeadlineAtMinimum
         ),
       },
     });
@@ -124,6 +123,7 @@ export const ProposeFreeform = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  setValue={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}

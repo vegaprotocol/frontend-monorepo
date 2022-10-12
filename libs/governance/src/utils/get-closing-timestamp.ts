@@ -6,7 +6,7 @@ import { addHours, addMinutes, getTime } from 'date-fns';
 
 export const getClosingTimestamp = (
   proposalVoteDeadline: string,
-  minimumDeadlineSelected?: boolean
+  minimumDeadlineSelected: boolean
 ) =>
   Math.floor(
     getTime(

@@ -9,6 +9,7 @@ import {
   useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -88,6 +89,7 @@ export const ProposeNetworkParameter = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
@@ -99,6 +101,13 @@ export const ProposeNetworkParameter = () => {
     const acutalNetworkParamKey = fields.proposalNetworkParameterKey
       .split('_')
       .join('.');
+
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_updateNetParam_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -111,10 +120,14 @@ export const ProposeNetworkParameter = () => {
             value: fields.proposalNetworkParameterValue,
           },
         },
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
-          fields.proposalEnactmentDeadline
+          fields.proposalEnactmentDeadline,
+          isVoteDeadlineAtMinimum
         ),
       },
     });
@@ -241,6 +254,7 @@ export const ProposeNetworkParameter = () => {
                 )}
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  setValue={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
