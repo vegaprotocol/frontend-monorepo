@@ -96,3 +96,7 @@ export const useNumberParts = (
 ): [integers: string, decimalPlaces: string] => {
   return React.useMemo(() => toNumberParts(value, decimals), [decimals, value]);
 };
+
+export const isNumeric = (
+  value?: string | number | BigNumber | null
+): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));

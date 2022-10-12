@@ -1,7 +1,11 @@
 import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  isNumeric,
+  t,
+} from '@vegaprotocol/react-helpers';
 import type {
   ValueProps,
   VegaICellRendererParams,
@@ -95,7 +99,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               value,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
-              return (
+              return value ? (
                 <ButtonLink
                   data-testid="deposit"
                   onClick={() => {
@@ -104,7 +108,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 >
                   {value}
                 </ButtonLink>
-              );
+              ) : null;
             }}
             maxWidth={300}
           />
@@ -120,6 +124,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
               data &&
               data.asset &&
+              isNumeric(value) &&
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}
@@ -162,7 +167,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
-              return (
+              return data ? (
                 <div className="flex gap-2 justify-end">
                   <Button
                     size="xs"
@@ -184,7 +189,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     {t('Withdraw')}
                   </Button>
                 </div>
-              );
+              ) : null;
             }}
           />
         </AgGrid>

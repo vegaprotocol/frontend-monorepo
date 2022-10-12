@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import {
   OrderRejectionReasonMapping,
@@ -108,7 +108,7 @@ describe('OrderListTable', () => {
       OrderTypeMapping[limitOrder.type || OrderType.TYPE_LIMIT],
       OrderStatusMapping[limitOrder.status],
       '5',
-      addDecimal(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
+      '-',
       `${
         OrderTimeInForceMapping[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
