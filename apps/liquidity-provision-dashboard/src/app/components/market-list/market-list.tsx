@@ -10,10 +10,8 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
-
-import type { FormattedMarket, FormattedMarkets } from './../../lib/utils';
-import { formatWithAsset } from './../../lib/utils';
-
+import type { Market, Markets } from '@vegaprotocol/liquidity';
+import { formatWithAsset } from '@vegaprotocol/liquidity';
 import {
   MarketTradingModeMapping,
   MarketTradingMode,
@@ -83,13 +81,13 @@ const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
         decimals={
           data.tradableInstrument.instrument.product.settlementAsset.decimals
         }
-        providers={data.providers}
+        levels={data.feeLevels}
       />
     </div>
   );
 };
 
-export const MarketList = ({ data }: { data: FormattedMarkets }) => {
+export const MarketList = ({ data }: { data: Markets }) => {
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
   const gridRef = useRef<AgGridReactType | null>(null);
   const localData = data.markets;
@@ -164,7 +162,7 @@ export const MarketList = ({ data }: { data: FormattedMarkets }) => {
               data,
             }: {
               value: MarketTradingMode;
-              data: FormattedMarket;
+              data: Market;
             }) => {
               return value ===
                 MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&

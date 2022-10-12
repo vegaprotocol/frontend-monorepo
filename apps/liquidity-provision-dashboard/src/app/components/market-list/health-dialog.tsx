@@ -18,7 +18,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       target: '171320',
       decimals: 5,
-      providers: [
+      levels: [
         { fee: '0.6', commitmentAmount: 150000 },
         { fee: '1', commitmentAmount: 150000 },
         { fee: '2', commitmentAmount: 30000 },
@@ -33,7 +33,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       target: '171320',
       decimals: 5,
-      providers: [
+      levels: [
         { fee: '0.6', commitmentAmount: 110000 },
         { fee: '1', commitmentAmount: 50000 },
       ],
@@ -47,7 +47,7 @@ const ROWS = [
       status: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       target: '171320',
       decimals: 3,
-      providers: [
+      levels: [
         { fee: '0.6', commitmentAmount: 110000 },
         { fee: '1', commitmentAmount: 50000 },
       ],
@@ -83,7 +83,7 @@ export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
                 <td className="py-10">
                   <HealthBar
                     size="large"
-                    providers={r.data.providers}
+                    levels={r.data.levels}
                     status={r.data.status}
                     target={r.data.target}
                     decimals={r.data.decimals}

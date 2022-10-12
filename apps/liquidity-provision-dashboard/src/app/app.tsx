@@ -1,4 +1,4 @@
-import { useMarketsLiquidity } from './hooks/use-markets-liquidity';
+import { useMarketsLiquidity } from '@vegaprotocol/liquidity';
 import '../styles.scss';
 import { Header } from './components/header';
 import { Intro } from './components/intro';
@@ -9,7 +9,6 @@ export function App() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :( </p>;
-  console.log('data: ', data);
 
   return (
     <div className="max-h-full min-h-full bg-white flex flex-col">

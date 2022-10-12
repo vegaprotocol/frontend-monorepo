@@ -112,7 +112,7 @@ const Bar = ({
   );
 };
 
-interface Providers {
+interface Levels {
   fee: string;
   commitmentAmount: number;
 }
@@ -121,20 +121,20 @@ export const HealthBar = ({
   status,
   target,
   decimals,
-  providers,
+  levels,
   size = 'small',
   isExpanded = false,
 }: {
   status: MarketTradingMode;
   target: string;
   decimals: number;
-  providers: Providers[];
+  levels: Levels[];
   isExpanded?: boolean;
   size?: 'small' | 'large';
 }) => {
   const targetNumber = parseInt(target, 10);
 
-  const committedNumber = providers
+  const committedNumber = levels
     .reduce((total, current) => {
       return total.plus(current.commitmentAmount);
     }, new BigNumber(0))
@@ -161,7 +161,7 @@ export const HealthBar = ({
           <div className="health-full bg-[#f5f5f5] w-full h-[inherit] absolute bottom-0 left-0"></div>
 
           <div className="health-bars h-[inherit] flex w-full">
-            {providers.map((p, index) => {
+            {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
 
               return (
