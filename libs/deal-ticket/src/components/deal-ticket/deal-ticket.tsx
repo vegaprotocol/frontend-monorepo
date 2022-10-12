@@ -19,7 +19,8 @@ import {
   isMarketInAuction,
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
-// import { DealTicketEstimates } from '../deal-ticket-estimates';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import { useFeeDealTicketDetails } from '../../hooks/use-fee-deal-ticket-details';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -49,6 +50,7 @@ export const DealTicket = ({
 
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
+  const order = watch();
   const { message, isDisabled: disabled } = useOrderValidation({
     market,
     orderType,
@@ -77,7 +79,8 @@ export const DealTicket = ({
 
   const getPrice = () => {
     if (isMarketInAuction(market)) {
-      //  0 can never be a valid uncrossing price as it would require there being orders on the book at that price.
+      // 0 can never be a valid uncrossing price
+      // as it would require there being orders on the book at that price.
       if (
         market.data?.indicativePrice &&
         BigInt(market.data?.indicativePrice) !== BigInt(0)
@@ -89,11 +92,7 @@ export const DealTicket = ({
     return market.depth.lastTrade?.price;
   };
   const price = getPrice();
-
-  // const details = [
-  //   { label: t('Fees'), value: `54.31 tDAI` },
-  //   { label: t('Notional value'), value: `32,013 tDAI` },
-  // ];
+  const details = useFeeDealTicketDetails(order, market);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
@@ -170,37 +169,7 @@ export const DealTicket = ({
           {message}
         </InputError>
       )}
-      {/* <DealTicketFeeDetails details={details} />
-       */}
-
-      {/* <DealTicketEstimates
-        size={order.size}
-        quoteName={quoteName}
-        fees={fees}
-        estCloseOut={estCloseOut}
-        notionalSize={notionalSize}
-        slippage={slippage.toString()}
-      /> */}
+      <DealTicketFeeDetails details={details} />
     </form>
-  );
-};
-
-export const DealTicketFeeDetails = ({
-  details,
-}: {
-  details: { label: string; value: string }[];
-}) => {
-  return (
-    <div>
-      {details.map(({ label, value }: { label: string; value: string }) => (
-        <div
-          key={label}
-          className="text-sm mt-2 flex justify-between items-center gap-4 flex-wrap"
-        >
-          <div>{label}</div>
-          <div>{value}</div>
-        </div>
-      ))}
-    </div>
   );
 };
