@@ -122,7 +122,7 @@ export const ProposeFreeform = () => {
                   errorMessage={errors?.proposalDescription?.message}
                 />
 
-                <ProposalFormVoteAndEnactmentDeadline
+                <ProposalFormVoteAndEnactmentDeadline<FreeformProposalFormFields>
                   setValue={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),

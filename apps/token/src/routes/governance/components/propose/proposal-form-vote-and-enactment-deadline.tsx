@@ -12,7 +12,8 @@ import {
   secondsToRoundedHours,
 } from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
-import type { UseFormRegisterReturn, SetFieldValue } from 'react-hook-form';
+import type { UseFormRegisterReturn } from 'react-hook-form';
+import type { UseFormSetValue } from 'react-hook-form';
 
 interface DeadlineProps {
   vote: number;
@@ -190,8 +191,8 @@ const EnactmentForm = ({
   );
 };
 
-export interface ProposalFormVoteAndEnactmentDeadlineProps {
-  setValue: SetFieldValue<any>;
+export interface ProposalFormVoteAndEnactmentDeadlineProps<T> {
+  setValue: UseFormSetValue<T>;
   voteRegister: UseFormRegisterReturn<'proposalVoteDeadline'>;
   voteErrorMessage: string | undefined;
   voteMinClose: string;
@@ -206,7 +207,7 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps {
   validationErrorMessage?: string;
 }
 
-export const ProposalFormVoteAndEnactmentDeadline = ({
+export function ProposalFormVoteAndEnactmentDeadline<TFormFields>({
   setValue,
   voteRegister,
   voteErrorMessage,
@@ -219,7 +220,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
   validationRequired,
   validationRegister,
   validationErrorMessage,
-}: ProposalFormVoteAndEnactmentDeadlineProps) => {
+}: ProposalFormVoteAndEnactmentDeadlineProps<TFormFields>) {
   const {
     minVoteSeconds,
     maxVoteSeconds,
@@ -387,7 +388,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
             <ButtonLink
               data-testid="min-vote"
               onClick={() => {
-                setValue('proposalVoteDeadline', minVoteHours);
+                setValue('test', minVoteHours);
                 updateVoteDeadlineAndDate(minVoteHours);
               }}
             >
@@ -451,4 +452,4 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
       )}
     </>
   );
-};
+}
