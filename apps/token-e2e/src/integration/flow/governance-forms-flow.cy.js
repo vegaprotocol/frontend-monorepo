@@ -25,6 +25,7 @@ const governanceProposalType = {
   RAW: 'raw proposal',
 };
 
+// 3001-VOTE-007
 context(
   'Governance flow - form validations for different governance proposals',
   { tags: '@slow' },
@@ -55,17 +56,18 @@ context(
     it('Able to submit valid update network parameter proposal', function () {
       cy.navigate_to_page_if_not_already_loaded('governance');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
-      // 1005-PROP-006
+      // 3002-PROP-006
       cy.get(newProposalTitle).type('Test update network parameter proposal');
-      // 1005-PROP-007
+      // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
       cy.get(proposalParameterSelect).find('option').should('have.length', 109);
       cy.get(proposalParameterSelect).select(
+        // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
       );
       cy.get(currentParameterValue).should('have.value', '2s');
-      cy.get(newProposedParameterValue).type('5s');
+      cy.get(newProposedParameterValue).type('5s'); // 3007-PNEC-003
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
     });
@@ -95,6 +97,7 @@ context(
       );
     });
 
+    // 3003-PMAN-001
     it('Able to submit valid new market proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
@@ -140,6 +143,7 @@ context(
       cy.wait_for_proposal_submitted();
     });
 
+    // 3001-VOTE-026 3001-VOTE-027  3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001
     it('Able to submit new asset proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_ASSET);
       cy.get(newProposalTitle).type('Test new asset proposal');
