@@ -5,6 +5,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 import type { DealTicketMarketFragment } from '../components';
+import { EST_SLIPPAGE } from '../components';
+import { EST_CLOSEOUT_TOOLTIP_TEXT } from '../components';
+import { EST_MARGIN_TOOLTIP_TEXT } from '../components';
+import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../components';
 import useCalculateSlippage from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import type { OrderMargin } from './use-order-margin';
@@ -67,10 +71,30 @@ export const useFeeDealTicketDetails = (
       labelDescription: totalFees(market.fees.factors),
       quoteName,
     },
-    { label: t('Notional size'), value: notionalSize, quoteName },
-    { label: t('Margin required'), value: estMargin?.margin, quoteName },
-    { label: t('Est. close out'), value: estCloseOut, quoteName },
-    { label: t('Slippage (estimated)'), value: slippageValue, quoteName },
+    {
+      label: t('Notional size'),
+      value: notionalSize,
+      quoteName,
+      labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
+    },
+    {
+      label: t('Margin required'),
+      value: estMargin?.margin,
+      quoteName,
+      labelDescription: EST_MARGIN_TOOLTIP_TEXT,
+    },
+    {
+      label: t('Est. close out'),
+      value: estCloseOut,
+      quoteName,
+      labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
+    },
+    {
+      label: t('Slippage (estimated)'),
+      value: slippageValue,
+      quoteName,
+      labelDescription: EST_SLIPPAGE,
+    },
   ];
   return details;
 };
