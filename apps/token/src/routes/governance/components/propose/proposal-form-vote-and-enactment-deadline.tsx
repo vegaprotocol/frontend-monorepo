@@ -12,12 +12,7 @@ import {
   secondsToRoundedHours,
 } from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
-import { Controller } from 'react-hook-form';
-import type {
-  UseFormRegisterReturn,
-  Control,
-  SetFieldValue,
-} from 'react-hook-form';
+import type { UseFormRegisterReturn, SetFieldValue } from 'react-hook-form';
 
 interface DeadlineProps {
   vote: number;
