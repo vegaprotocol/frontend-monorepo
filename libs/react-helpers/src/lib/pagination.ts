@@ -49,11 +49,10 @@ export const makeInfiniteScrollGetRows =
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
-      successCallback(
-        rowsThisBlock,
+      const lastRow =
         getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
-          newRows.current
-      );
+        newRows.current;
+      successCallback(rowsThisBlock, lastRow);
     } catch (e) {
       failCallback();
     }

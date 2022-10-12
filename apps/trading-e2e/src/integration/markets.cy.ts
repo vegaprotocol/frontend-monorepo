@@ -30,13 +30,15 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.wait('@MarketsCandles');
     openMarketDropDown();
     cy.getByTestId('price').invoke('text').should('not.be.empty');
-    cy.getByTestId('trading-mode').should('not.be.empty');
+    cy.getByTestId('trading-mode-col').should('not.be.empty');
     cy.getByTestId('taker-fee').should('contain.text', '%');
     cy.getByTestId('market-volume').should('not.be.empty');
     cy.getByTestId('market-name').should('not.be.empty');
   });
 
   it('Able to select market from dropdown', () => {
+    // 7002-SORD-001
+    // 7002-SORD-002
     cy.visit('/');
     cy.wait('@Markets');
     cy.wait('@MarketsData');
@@ -47,6 +49,7 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
+    cy.getByTestId('popover-trigger').should('not.be.empty');
     verifyMarketSummaryDisplayed();
   });
 
@@ -103,7 +106,7 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.visit('/markets/market-0');
     cy.wait('@Market');
 
-    cy.getByTestId('trading-mode').eq(0).realHover();
+    cy.getByTestId('trading-mode').realHover();
     cy.getByTestId('tooltip-market-info').within(() => {
       cy.get('span')
         .eq(0)
@@ -141,6 +144,7 @@ describe('markets table', { tags: '@regression' }, () => {
     const tradingMode = 'trading-mode';
 
     cy.getByTestId(marketSummaryBlock).within(() => {
+      cy.getByTestId('trading-mode').should('not.be.empty');
       cy.contains('Change (24h)');
       cy.getByTestId(percentageValue).should('not.be.empty');
       cy.getByTestId(priceChangeValue).should('not.be.empty');
