@@ -27,10 +27,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       totalCountRef.current += newRows.current;
     }
     newRows.current = 0;
-    if (!gridRef.current?.api) {
-      return;
-    }
-    gridRef.current.api.refreshInfiniteCache();
+    gridRef.current?.api.refreshInfiniteCache();
   }, [gridRef]);
 
   const update = useCallback(
@@ -41,9 +38,6 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
       data: (TradeEdge | null)[] | null;
       delta?: Trade[];
     }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
       if (dataRef.current?.length) {
         if (!scrolledToTop.current) {
           const createdAt = dataRef.current?.[0]?.node.createdAt;
@@ -54,7 +48,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
           }
         }
         dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
+        gridRef.current?.api.refreshInfiniteCache();
         return true;
       }
       dataRef.current = data;

@@ -1,5 +1,6 @@
 import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
+import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -200,4 +201,46 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
         cy.get('dd').should('contain.text', value);
       });
   }
+});
+
+describe('market states', { tags: '@smoke' }, function () {
+  //7002-SORD-062
+  //7002-SORD-063
+  //7002-SORD-066
+
+  const states = [
+    MarketState.STATE_REJECTED,
+    MarketState.STATE_CANCELLED,
+    MarketState.STATE_CLOSED,
+    MarketState.STATE_SETTLED,
+    MarketState.STATE_TRADING_TERMINATED,
+  ];
+
+  states.forEach((marketState) => {
+    describe(marketState, function () {
+      before(function () {
+        cy.mockGQL((req) => {
+          mockTradingPage(req, marketState);
+        });
+        cy.mockGQLSubscription();
+        cy.visit('/markets/market-0');
+        cy.wait('@Market');
+        connectVegaWallet();
+      });
+      it.skip('must display correct market state');
+      //7002-/SORD-/061 no state displayed
+      it('must display that market is not accepting orders', function () {
+        cy.getByTestId('dealticket-error-message').should(
+          'have.text',
+          `This market is ${marketState
+            .split('_')
+            .pop()
+            ?.toLowerCase()} and not accepting orders`
+        );
+      });
+      it('must have place order button disabled', function () {
+        cy.getByTestId('place-order').should('be.disabled');
+      });
+    });
+  });
 });
