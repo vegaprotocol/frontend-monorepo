@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import merge from 'lodash/merge';
 import { NodeList, NODES_QUERY } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
@@ -15,7 +15,7 @@ jest.mock('../../components/epoch-countdown', () => ({
 const nodeFactory = (overrides?: PartialDeep<Nodes_nodes>) => {
   const defaultNode = {
     id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
-    name: 'Skynet',
+    name: 'high',
     avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
     pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
     infoUrl: 'https://en.wikipedia.org/wiki/Skynet_(Terminator)',
@@ -32,7 +32,7 @@ const nodeFactory = (overrides?: PartialDeep<Nodes_nodes>) => {
       rankingScore: '0.67845061012234727427532760837568',
       stakeScore: '0.3392701644525644',
       performanceScore: '0.9998677767864936',
-      votingPower: '2407',
+      votingPower: '3500',
       status: 'tendermint',
       __typename: 'RankingScore',
     },
@@ -46,7 +46,7 @@ const MOCK_NODES = {
     nodeFactory(),
     nodeFactory({
       id: '966438c6bffac737cfb08173ffcb3f393c4692b099ad80cb45a82e2dc0a8cf99',
-      name: 'T-800 Terminator',
+      name: 'medium',
       pubkey:
         'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
       stakedTotal: '9618711883996159534058',
@@ -62,7 +62,7 @@ const MOCK_NODES = {
     }),
     nodeFactory({
       id: '12c81b738e8051152e1afe44376ec37bca9216466e6d44cdd772194bad0ada81',
-      name: 'NCC-1701-E',
+      name: 'low',
       pubkey:
         '0931a8fd8cc935458f470e435a05414387cea6f329d648be894fcd44bd517a2b',
       stakedTotal: '4041343338923442976709',
@@ -129,20 +129,30 @@ afterAll(() => {
 describe('Nodes list', () => {
   it('should render epoch info', async () => {
     renderNodeList();
-    await waitFor(() => {
-      expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
-    });
-    expect(screen.getByTestId('epoch-info')).toBeInTheDocument();
+    expect(await screen.findByTestId('epoch-info')).toBeInTheDocument();
   });
 
-  it('should render a list of all nodes', async () => {
+  it('should initially render a list of nodes with the top third hidden', async () => {
     renderNodeList();
 
-    await waitFor(() => {
-      expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
-      expect(screen.getByText(MOCK_NODES.nodes[1].name)).toBeInTheDocument();
-      expect(screen.getByText(MOCK_NODES.nodes[2].name)).toBeInTheDocument();
+    expect(await screen.findByText('medium')).toBeInTheDocument();
+    expect(screen.getByText('low')).toBeInTheDocument();
+    expect(screen.queryByText('high')).toBeNull();
+  });
+
+  it('should show all validators if button is pressed', async () => {
+    renderNodeList();
+
+    expect(await screen.findByText('medium')).toBeInTheDocument();
+    expect(screen.queryByText('high')).toBeNull();
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('show-all-validators'));
     });
+
+    expect(screen.getByText('high')).toBeInTheDocument();
+    expect(screen.getByText('medium')).toBeInTheDocument();
+    expect(screen.getByText('low')).toBeInTheDocument();
   });
 
   it('should display the correctly formatted fields in the correct columns', async () => {
@@ -179,11 +189,14 @@ describe('Nodes list', () => {
     };
 
     renderNodeList(MOCK_NODE);
-    await waitFor(() => {
-      expect(screen.getByText(MOCK_NODE.nodes[0].name)).toBeInTheDocument();
-    });
+
+    expect(await screen.findByTestId('validators-grid')).toBeInTheDocument();
 
     const grid = screen.getByTestId('validators-grid');
+
+    act(() => {
+      fireEvent.click(screen.getByTestId('show-all-validators'));
+    });
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="validator"]')

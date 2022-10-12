@@ -12,8 +12,9 @@ import type {
   MarketsDataQuery,
   MarketDataFieldsFragment,
 } from '@vegaprotocol/market-list';
-import { protoMarket, protoCandles } from './commons';
+import { protoMarket, protoCandles, singleMarket } from './commons';
 import type { PartialDeep } from 'type-fest';
+import type { MarketQuery } from '@vegaprotocol/market-list';
 
 export const generateSimpleMarkets = (): MarketsQuery => {
   const markets: Market[] = [
@@ -1374,6 +1375,14 @@ export const generatePositionsMarkets = () => {
         },
       ],
       __typename: 'MarketConnection',
+    },
+  };
+};
+
+export const generateMarket = (): MarketQuery => {
+  return {
+    market: {
+      ...singleMarket,
     },
   };
 };

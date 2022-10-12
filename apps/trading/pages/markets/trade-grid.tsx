@@ -1,8 +1,4 @@
-import {
-  compileGridData,
-  DealTicketContainer,
-  TradingModeTooltip,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
@@ -12,9 +8,8 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Market_market } from './__generated__/Market';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
@@ -23,23 +18,11 @@ import {
   ResizableGrid,
   ResizableGridPanel,
   ButtonLink,
-  PriceCellChange,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  addDecimalsFormatNumber,
-  getDateFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { getDateFormat, t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { CandleClose } from '@vegaprotocol/types';
-import {
-  AuctionTrigger,
-  AuctionTriggerMapping,
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { Header, HeaderStat } from '../../components/header';
 import { AccountsContainer } from '../portfolio/accounts-container';
 import {
@@ -47,6 +30,11 @@ import {
   SelectMarketPopover,
 } from '../../components/select-market';
 import type { OnCellClickHandler } from '../../components/select-market';
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
+import { Last24hPriceChange } from '../../components/last-24h-price-change';
+import { MarketMarkPrice } from '../../components/market-mark-price';
+import { MarketVolume } from '../../components/market-volume';
+import { MarketTradingModeComponent } from '../../components/market-trading-mode';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -64,7 +52,7 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 type ExpiryLabelProps = {
-  market: Market_market;
+  market: SingleMarketFieldsFragment;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
@@ -72,7 +60,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
   if (market.marketTimestamps.close === null) {
     content = t('Not time-based');
   } else {
-    const closeDate = new Date(market.marketTimestamps.close);
+    const closeDate = new Date(market.marketTimestamps.close as string);
     const isExpired = Date.now() - closeDate.valueOf() > 0;
     const expiryDate = getDateFormat().format(closeDate);
     content = `${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`;
@@ -81,7 +69,7 @@ const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
 };
 
 type ExpiryTooltipContentProps = {
-  market: Market_market;
+  market: SingleMarketFieldsFragment;
   explorerUrl?: string;
 };
 
@@ -114,7 +102,7 @@ const ExpiryTooltipContent = ({
 };
 
 interface TradeMarketHeaderProps {
-  market: Market_market;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
@@ -125,9 +113,6 @@ export const TradeMarketHeader = ({
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  const candlesClose: string[] = (market?.candlesConnection?.edges || [])
-    .map((candle) => candle?.node.close)
-    .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
@@ -158,51 +143,10 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <HeaderStat heading={t('Price')}>
-        <div data-testid="mark-price">
-          {market.data && market.data.markPrice !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.markPrice,
-                market.decimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')}>
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={market.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat heading={t('Volume')}>
-        <div data-testid="trading-volume">
-          {market.data && market.data.indicativeVolume !== '0'
-            ? addDecimalsFormatNumber(
-                market.data.indicativeVolume,
-                market.positionDecimalPlaces
-              )
-            : '-'}
-        </div>
-      </HeaderStat>
-      <HeaderStat
-        heading={t('Trading mode')}
-        description={
-          <TradingModeTooltip
-            market={market}
-            compiledGrid={compileGridData(market, onSelect)}
-          />
-        }
-      >
-        <div data-testid="trading-mode">
-          {market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger &&
-          market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-            : MarketTradingModeMapping[market.tradingMode]}
-        </div>
-      </HeaderStat>
+      <MarketMarkPrice marketId={market.id} />
+      <Last24hPriceChange marketId={market.id} />
+      <MarketVolume marketId={market.id} />
+      <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
       {symbol ? (
         <HeaderStat heading={t('Settlement asset')}>
           <div data-testid="trading-mode">
@@ -222,95 +166,106 @@ export const TradeMarketHeader = ({
 };
 
 interface TradeGridProps {
-  market: Market_market;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
-export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
-  return (
-    <div className="h-full grid grid-rows-[min-content_1fr]">
-      <TradeMarketHeader market={market} onSelect={onSelect} />
-      <ResizableGrid vertical={true}>
-        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid proportionalLayout={false} minSize={200}>
-            <ResizableGridPanel
-              priority={LayoutPriority.High}
-              minSize={200}
-              preferredSize="50%"
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="candles" name={t('Candles')}>
-                    <TradingViews.Candles marketId={market.id} />
-                  </Tab>
-                  <Tab id="depth" name={t('Depth')}>
-                    <TradingViews.Depth marketId={market.id} />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-            <ResizableGridPanel
-              priority={LayoutPriority.Low}
-              preferredSize={330}
-              minSize={300}
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="ticket" name={t('Ticket')}>
-                    <TradingViews.Ticket marketId={market.id} />
-                  </Tab>
-                  <Tab id="info" name={t('Info')}>
-                    <TradingViews.Info
-                      marketId={market.id}
-                      onSelect={(id: string) => {
-                        onSelect(id);
-                      }}
-                    />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-            <ResizableGridPanel
-              priority={LayoutPriority.Low}
-              preferredSize={430}
-              minSize={200}
-            >
-              <TradeGridChild>
-                <Tabs>
-                  <Tab id="orderbook" name={t('Orderbook')}>
-                    <TradingViews.Orderbook marketId={market.id} />
-                  </Tab>
-                  <Tab id="trades" name={t('Trades')}>
-                    <TradingViews.Trades marketId={market.id} />
-                  </Tab>
-                </Tabs>
-              </TradeGridChild>
-            </ResizableGridPanel>
-          </ResizableGrid>
-        </ResizableGridPanel>
+const MainGrid = ({
+  marketId,
+  onSelect,
+}: {
+  marketId: string;
+  onSelect: (marketId: string) => void;
+}) => (
+  <ResizableGrid vertical>
+    <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
+      <ResizableGrid proportionalLayout={false} minSize={200}>
         <ResizableGridPanel
-          priority={LayoutPriority.Low}
-          preferredSize="25%"
-          minSize={50}
+          priority={LayoutPriority.High}
+          minSize={200}
+          preferredSize="50%"
         >
           <TradeGridChild>
             <Tabs>
-              <Tab id="positions" name={t('Positions')}>
-                <TradingViews.Positions />
+              <Tab id="candles" name={t('Candles')}>
+                <TradingViews.Candles marketId={marketId} />
               </Tab>
-              <Tab id="orders" name={t('Orders')}>
-                <TradingViews.Orders />
+              <Tab id="depth" name={t('Depth')}>
+                <TradingViews.Depth marketId={marketId} />
               </Tab>
-              <Tab id="fills" name={t('Fills')}>
-                <TradingViews.Fills />
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize={330}
+          minSize={300}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="ticket" name={t('Ticket')}>
+                <TradingViews.Ticket marketId={marketId} />
               </Tab>
-              <Tab id="accounts" name={t('Collateral')}>
-                <TradingViews.Collateral />
+              <Tab id="info" name={t('Info')}>
+                <TradingViews.Info
+                  marketId={marketId}
+                  onSelect={(id: string) => {
+                    onSelect(id);
+                  }}
+                />
+              </Tab>
+            </Tabs>
+          </TradeGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel
+          priority={LayoutPriority.Low}
+          preferredSize={430}
+          minSize={200}
+        >
+          <TradeGridChild>
+            <Tabs>
+              <Tab id="orderbook" name={t('Orderbook')}>
+                <TradingViews.Orderbook marketId={marketId} />
+              </Tab>
+              <Tab id="trades" name={t('Trades')}>
+                <TradingViews.Trades marketId={marketId} />
               </Tab>
             </Tabs>
           </TradeGridChild>
         </ResizableGridPanel>
       </ResizableGrid>
+    </ResizableGridPanel>
+    <ResizableGridPanel
+      priority={LayoutPriority.Low}
+      preferredSize="25%"
+      minSize={50}
+    >
+      <TradeGridChild>
+        <Tabs>
+          <Tab id="positions" name={t('Positions')}>
+            <TradingViews.Positions />
+          </Tab>
+          <Tab id="orders" name={t('Orders')}>
+            <TradingViews.Orders />
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <TradingViews.Fills />
+          </Tab>
+          <Tab id="accounts" name={t('Collateral')}>
+            <TradingViews.Collateral />
+          </Tab>
+        </Tabs>
+      </TradeGridChild>
+    </ResizableGridPanel>
+  </ResizableGrid>
+);
+const MainGridWrapped = memo(MainGrid);
+
+export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
+  return (
+    <div className="h-full grid grid-rows-[min-content_1fr]">
+      <TradeMarketHeader market={market} onSelect={onSelect} />
+      <MainGridWrapped marketId={market.id} onSelect={onSelect} />
     </div>
   );
 };
@@ -330,7 +285,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: Market_market;
+  market: SingleMarketFieldsFragment;
   onSelect: (marketId: string) => void;
 }
 
@@ -338,20 +293,16 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
-    const Component = TradingViews[view];
+    const Component = memo<{
+      marketId: string;
+      onSelect: (marketId: string) => void;
+    }>(TradingViews[view]);
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return (
-      <Component
-        marketId={market.id}
-        onSelect={(id: string) => {
-          onSelect(id);
-        }}
-      />
-    );
+    return <Component marketId={market.id} onSelect={onSelect} />;
   };
 
   return (

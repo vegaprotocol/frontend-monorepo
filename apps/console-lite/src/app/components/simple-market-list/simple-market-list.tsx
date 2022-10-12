@@ -4,6 +4,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import {
   useScreenDimensions,
   useDataProvider,
+  useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { MarketState } from '@vegaprotocol/types';
@@ -33,13 +34,13 @@ const SimpleMarketList = () => {
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const gridRef = useRef<AgGridReact | null>(null);
 
+  const yesterday = useYesterday();
   const variables = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return {
-      since: new Date(yesterday * 1000).toISOString(),
+      since: new Date(yesterday).toISOString(),
       interval: Interval.INTERVAL_I1H,
     };
-  }, []);
+  }, [yesterday]);
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithCandlesProvider,
     variables,

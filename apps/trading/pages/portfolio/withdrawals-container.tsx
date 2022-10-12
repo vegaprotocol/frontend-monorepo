@@ -1,5 +1,6 @@
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import {
+  PendingWithdrawalsTable,
   useWithdrawals,
   WithdrawalDialogs,
   WithdrawalsTable,
@@ -10,7 +11,7 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { Web3Container } from '@vegaprotocol/web3';
 
 export const WithdrawalsContainer = () => {
-  const { withdrawals, loading, error } = useWithdrawals();
+  const { pending, completed, loading, error } = useWithdrawals();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
   return (
@@ -30,14 +31,24 @@ export const WithdrawalsContainer = () => {
               {t('Make withdrawal')}
             </Button>
           </header>
-          <div>
+          <div className="h-full px-4">
             <AsyncRenderer
-              data={withdrawals}
+              data={{ pending, completed }}
               loading={loading}
               error={error}
-              render={(data) => {
-                return <WithdrawalsTable withdrawals={data} />;
-              }}
+              render={({ pending, completed }) => (
+                <>
+                  {pending && pending.length > 0 && (
+                    <>
+                      <h4 className="pt-3 pb-1">{t('Pending withdrawals')}</h4>
+                      <PendingWithdrawalsTable rowData={pending} />
+                    </>
+                  )}
+
+                  <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
+                  <WithdrawalsTable rowData={completed} />
+                </>
+              )}
             />
           </div>
         </div>
