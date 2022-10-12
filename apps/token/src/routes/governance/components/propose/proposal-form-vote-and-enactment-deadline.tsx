@@ -12,7 +12,7 @@ import {
   secondsToRoundedHours,
 } from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
-import type { UseFormRegisterReturn, SetFieldValue } from 'react-hook-form';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface DeadlineProps {
   vote: number;
@@ -190,8 +190,13 @@ const EnactmentForm = ({
   );
 };
 
+type SharedFields =
+  | 'proposalVoteDeadline'
+  | 'proposalEnactmentDeadline'
+  | 'proposalValidationDeadline';
+
 export interface ProposalFormVoteAndEnactmentDeadlineProps {
-  setValue: SetFieldValue<any>;
+  onUseMinMax: (field: SharedFields, value: string) => void;
   voteRegister: UseFormRegisterReturn<'proposalVoteDeadline'>;
   voteErrorMessage: string | undefined;
   voteMinClose: string;
@@ -206,8 +211,8 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps {
   validationErrorMessage?: string;
 }
 
-export const ProposalFormVoteAndEnactmentDeadline = ({
-  setValue,
+export function ProposalFormVoteAndEnactmentDeadline({
+  onUseMinMax,
   voteRegister,
   voteErrorMessage,
   voteMinClose,
@@ -219,7 +224,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
   validationRequired,
   validationRegister,
   validationErrorMessage,
-}: ProposalFormVoteAndEnactmentDeadlineProps) => {
+}: ProposalFormVoteAndEnactmentDeadlineProps) {
   const {
     minVoteSeconds,
     maxVoteSeconds,
@@ -387,7 +392,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
             <ButtonLink
               data-testid="min-vote"
               onClick={() => {
-                setValue('proposalVoteDeadline', minVoteHours);
+                onUseMinMax('proposalVoteDeadline', minVoteHours.toString());
                 updateVoteDeadlineAndDate(minVoteHours);
               }}
             >
@@ -396,7 +401,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
             <ButtonLink
               data-testid="max-vote"
               onClick={() => {
-                setValue('proposalVoteDeadline', maxVoteHours);
+                onUseMinMax('proposalVoteDeadline', maxVoteHours.toString());
                 updateVoteDeadlineAndDate(maxVoteHours);
               }}
             >
@@ -451,4 +456,4 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
       )}
     </>
   );
-};
+}
