@@ -98,5 +98,5 @@ export const useNumberParts = (
 };
 
 export const isNumeric = (
-  value?: string | number
-): value is NonNullable<number | string> => /^-?\d+$/.test(String(value));
+  value?: string | number | BigNumber | null
+): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));

@@ -75,6 +75,7 @@ describe('isNumeric', () => {
     { i: new BigNumber(123.123).toString(), o: true },
     { i: new BigNumber(123), o: true },
     { i: Infinity, o: false },
+    { i: NaN, o: false },
   ])(
     'returns correct results',
     ({
