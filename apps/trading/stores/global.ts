@@ -2,7 +2,6 @@ import { LocalStorage } from '@vegaprotocol/react-helpers';
 import create from 'zustand';
 
 interface GlobalStore {
-  connectDialog: boolean;
   networkSwitcherDialog: boolean;
   landingDialog: boolean;
   riskNoticeDialog: boolean;
@@ -14,7 +13,6 @@ interface GlobalStore {
 }
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
-  connectDialog: false,
   networkSwitcherDialog: false,
   landingDialog: false,
   riskNoticeDialog: false,

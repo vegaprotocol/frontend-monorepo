@@ -42,9 +42,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
       </nav>
       <div className="flex items-center gap-2 ml-auto">
         <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
-        <VegaWalletConnectButton
-          setConnectDialog={(open) => update({ connectDialog: open })}
-        />
+        <VegaWalletConnectButton />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import create from 'zustand';
 import {
   Button,
   Dialog,
@@ -28,15 +29,28 @@ type WalletType = 'gui' | 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-  dialogOpen: boolean;
-  setDialogOpen: (isOpen: boolean) => void;
 }
 
-export const VegaConnectDialog = ({
-  connectors,
-  dialogOpen,
-  setDialogOpen,
-}: VegaConnectDialogProps) => {
+interface VegaWalletDialogStore {
+  dialogOpen: boolean;
+  updateDialogOpen: (open: boolean) => void;
+}
+
+export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
+  (set) => ({
+    dialogOpen: false,
+    updateDialogOpen: (open: boolean) => set({ dialogOpen: open }),
+  })
+);
+
+export const VegaConnectDialog = ({ connectors }: VegaConnectDialogProps) => {
+  const { dialogOpen, updateDialogOpen } = useVegaWalletDialogStore(
+    (store) => ({
+      dialogOpen: store.dialogOpen,
+      updateDialogOpen: store.updateDialogOpen,
+    })
+  );
+
   const { data, error, loading } = useChainIdQuery();
 
   const renderContent = () => {
@@ -66,14 +80,14 @@ export const VegaConnectDialog = ({
     return (
       <ConnectDialogContainer
         connectors={connectors}
-        closeDialog={() => setDialogOpen(false)}
+        closeDialog={() => updateDialogOpen(false)}
         appChainId={data.statistics.chainId}
       />
     );
   };
 
   return (
-    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+    <Dialog open={dialogOpen} size="small" onChange={updateDialogOpen}>
       {renderContent()}
     </Dialog>
   );

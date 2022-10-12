@@ -10,18 +10,15 @@ import {
   DropdownMenuTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useEffect, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-export interface VegaWalletConnectButtonProps {
-  setConnectDialog: (isOpen: boolean) => void;
-}
-
-export const VegaWalletConnectButton = ({
-  setConnectDialog,
-}: VegaWalletConnectButtonProps) => {
+export const VegaWalletConnectButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
+    updateDialogOpen: store.updateDialogOpen,
+  }));
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
 
@@ -64,7 +61,7 @@ export const VegaWalletConnectButton = ({
   return (
     <Button
       data-testid="connect-vega-wallet"
-      onClick={() => setConnectDialog(true)}
+      onClick={() => updateDialogOpen(true)}
       size="sm"
     >
       <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>
