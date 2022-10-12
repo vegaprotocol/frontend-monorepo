@@ -4,7 +4,6 @@ import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   BackToMarketLink,
-  Icon,
   Tab,
   Tabs,
 } from '@vegaprotocol/ui-toolkit';
@@ -14,7 +13,6 @@ import { Header, HeaderStat } from '../../components/header';
 import { useRouter } from 'next/router';
 import { useRef, useMemo } from 'react';
 import { tooltipMapping } from '@vegaprotocol/market-info';
-import Link from 'next/link';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
