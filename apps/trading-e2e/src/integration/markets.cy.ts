@@ -1,10 +1,19 @@
-import { MarketState } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
 describe('markets table', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
+      mockTradingPage(
+        req,
+        MarketState.STATE_ACTIVE,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
     });
     cy.mockGQLSubscription();
   });
@@ -42,6 +51,7 @@ describe('markets table', { tags: '@regression' }, () => {
     cy.visit('/');
     cy.wait('@Markets');
     cy.wait('@MarketsData');
+    cy.wait('@MarketData');
     cy.wait('@MarketsCandles');
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();

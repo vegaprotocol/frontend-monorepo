@@ -1,8 +1,15 @@
 import merge from 'lodash/merge';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import type { MarketQuery } from '@vegaprotocol/market-list';
+import type {
+  MarketData,
+  MarketQuery,
+  MarketsDataQuery,
+} from '@vegaprotocol/market-list';
 
 export const generateMarket = (
   override?: PartialDeep<MarketQuery>
@@ -68,4 +75,47 @@ export const generateMarket = (
   };
 
   return merge(defaultResult, override);
+};
+
+export const generateMarketData = (
+  override?: PartialDeep<MarketData>
+): MarketsDataQuery => {
+  const defaultMarket: MarketData = {
+    __typename: 'MarketData',
+    market: {
+      id: 'market-0',
+      __typename: 'Market',
+    },
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    staticMidPrice: '0',
+    indicativePrice: '0',
+    bestStaticBidPrice: '0',
+    bestStaticOfferPrice: '0',
+    indicativeVolume: '0',
+    bestBidPrice: '0',
+    bestOfferPrice: '0',
+    markPrice: '4612690058',
+    trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+  };
+
+  const marketsConnectionWrapper = (
+    marketData: MarketData
+  ): MarketsDataQuery => {
+    return {
+      marketsConnection: {
+        __typename: 'MarketConnection',
+        edges: [
+          {
+            __typename: 'MarketEdge',
+            node: {
+              __typename: 'Market',
+              data: marketData,
+            },
+          },
+        ],
+      },
+    };
+  };
+
+  return marketsConnectionWrapper(merge(defaultMarket, override));
 };
