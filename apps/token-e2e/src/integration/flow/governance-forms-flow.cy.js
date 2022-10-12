@@ -2,6 +2,7 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
   '[data-testid="proposal-validation-deadline"]';
+const proposalEnactmentDeadline = '[data-testid="proposal-enactment-deadline"]';
 const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
 const proposalMarketSelect = '[data-testid="proposal-market-select"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -21,6 +22,7 @@ const governanceProposalType = {
   NEW_MARKET: 'New market',
   UPDATE_MARKET: 'Update market',
   NEW_ASSET: 'New asset',
+  UPDATE_ASSET: 'Update asset',
   FREEFORM: 'Freeform',
   RAW: 'raw proposal',
 };
@@ -176,6 +178,29 @@ context(
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
+    });
+
+    it('Able to submit update asset proposal', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
+      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/update-asset').then((newAssetProposal) => {
+        let newAssetPayload = JSON.stringify(newAssetProposal);
+        cy.get(newProposalTerms).type(newAssetPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(proposalVoteDeadline).clear().click().type('50');
+      cy.get(proposalEnactmentDeadline).clear().click().type('50');
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
+
+    it('Unable to submit edit asset proposal with missing/invalid fields', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.get(inputError).should('have.length', 3);
     });
   }
 );
