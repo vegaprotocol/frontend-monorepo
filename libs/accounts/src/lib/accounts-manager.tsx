@@ -1,5 +1,6 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, useCallback } from 'react';
 import type { AccountFields } from './accounts-data-provider';
@@ -37,7 +38,7 @@ export const AccountManager = ({
     },
     [gridRef]
   );
-  const { data } = useDataProvider<AccountFields[], never>({
+  const { data, loading, error } = useDataProvider<AccountFields[], never>({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
@@ -57,7 +58,7 @@ export const AccountManager = ({
     successCallback(rowsThisBlock, lastRow);
   };
   return (
-    data && (
+    <AsyncRenderer data={data || []} error={error} loading={loading}>
       <AccountTable
         rowModelType={data?.length ? 'infinite' : 'clientSide'}
         rowData={data?.length ? undefined : []}
@@ -67,7 +68,7 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
       />
-    )
+    </AsyncRenderer>
   );
 };
 
