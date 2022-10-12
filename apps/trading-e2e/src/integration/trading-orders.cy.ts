@@ -1,45 +1,42 @@
-import { MarketState } from '@vegaprotocol/types';
+import {
+  MarketState,
+  OrderRejectionReason,
+  OrderStatus,
+} from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
-import type { onMessage } from '@vegaprotocol/cypress';
-import type {
-  OrderSub as OrderSubData,
-  OrderSubVariables,
-} from '@vegaprotocol/orders';
 import { connectVegaWallet } from '../support/vega-wallet';
+import {
+  updateOrder,
+  getSubscriptionMocks,
+} from '../support/mocks/generate-ws-order-update';
 
-const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = function (send) {
-  send({
-    orders: [],
+const orderSymbol = 'market.tradableInstrument.instrument.code';
+const orderSize = 'size';
+const orderType = 'type';
+const orderStatus = 'status';
+const orderRemaining = 'remaining';
+const orderPrice = 'price';
+const orderTimeInForce = 'timeInForce';
+const orderCreatedAt = 'createdAt';
+const cancelOrderBtn = 'cancel';
+const editOrderBtn = 'edit';
+
+describe('orders list', { tags: '@smoke' }, () => {
+  before(() => {
+    const subscriptionMocks = getSubscriptionMocks();
+    cy.spy(subscriptionMocks, 'OrderSub');
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+    });
+    cy.mockGQLSubscription(subscriptionMocks);
+    cy.visit('/markets/market-0');
+    cy.getByTestId('Orders').click();
+    cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
+    connectVegaWallet();
+    cy.wait('@Orders').then(() => {
+      expect(subscriptionMocks.OrderSub).to.be.calledOnce;
+    });
   });
-};
-
-const subscriptionMocks = { OrderSub: onOrderSub };
-
-before(() => {
-  cy.spy(subscriptionMocks, 'OrderSub');
-  cy.mockGQL((req) => {
-    mockTradingPage(req, MarketState.STATE_ACTIVE);
-  });
-  cy.mockGQLSubscription(subscriptionMocks);
-  cy.visit('/markets/market-0');
-  cy.getByTestId('Orders').click();
-  cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
-
-  connectVegaWallet();
-});
-
-describe('orders', { tags: '@smoke' }, () => {
-  const orderSymbol = 'market.tradableInstrument.instrument.code';
-  const orderSize = 'size';
-  const orderType = 'type';
-  const orderStatus = 'status';
-  const orderRemaining = 'remaining';
-  const orderPrice = 'price';
-  const orderTimeInForce = 'timeInForce';
-  const orderCreatedAt = 'createdAt';
-  const cancelOrderBtn = 'cancel';
-  const editOrderBtn = 'edit';
-
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
 
@@ -127,6 +124,144 @@ describe('orders', { tags: '@smoke' }, () => {
           .then(() => {
             expect(symbolNames).to.include.ordered.members(expectedOrderList);
           });
+      });
+  });
+});
+
+describe('subscribe orders', { tags: '@smoke' }, () => {
+  before(() => {
+    const subscriptionMocks = getSubscriptionMocks();
+    cy.spy(subscriptionMocks, 'OrderSub');
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
+    });
+    cy.mockGQLSubscription(subscriptionMocks);
+    cy.visit('/markets/market-0');
+    cy.getByTestId('Orders').click();
+    cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
+    connectVegaWallet();
+    cy.wait('@Orders').then(() => {
+      expect(subscriptionMocks.OrderSub).to.be.calledOnce;
+    });
+  });
+  const orderId = '1234567890';
+  //7002-SORD-053
+  //7002-SORD-040
+  it('must see an active order', () => {
+    // 7002-SORD-041
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Active');
+      });
+  });
+
+  it('must see an expired order', () => {
+    // 7002-SORD-042
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_EXPIRED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Expired');
+      });
+  });
+
+  it('must see a cancelled order', () => {
+    // 7002-SORD-043
+    // NOT COVERED:  see the txn that cancelled it and a link to the block explorer, if cancelled by a user transaction.
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_CANCELLED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Cancelled');
+      });
+  });
+
+  it('must see a stopped order', () => {
+    // 7002-SORD-044
+    // NOT COVERED:  see an explanation of why stopped
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_STOPPED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Stopped');
+      });
+  });
+
+  it('must see a partially filled order', () => {
+    // 7002-SORD-045
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_PARTIALLY_FILLED,
+      size: '5',
+      remaining: '1',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should(
+          'have.text',
+          'PartiallyFilled'
+        );
+        cy.get(`[col-id=${orderRemaining}]`).should('have.text', '4/5');
+      });
+  });
+
+  it('must see a filled order', () => {
+    // 7002-SORD-046
+    // NOT COVERED:  Must be able to see/link to all trades that were created from this order
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_FILLED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Filled');
+      });
+  });
+
+  it('must see a rejected order', () => {
+    // 7002-SORD-047
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_REJECTED,
+      rejectionReason: OrderRejectionReason.ORDER_ERROR_INTERNAL_ERROR,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should(
+          'have.text',
+          'Rejected: Internal error'
+        );
+      });
+  });
+
+  it('must see a parked order', () => {
+    // 7002-SORD-048
+    // NOT COVERED:   must see an explanation of why parked orders happen
+    updateOrder({
+      id: orderId,
+      status: OrderStatus.STATUS_PARKED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .should('be.visible')
+      .within(() => {
+        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Parked');
       });
   });
 });

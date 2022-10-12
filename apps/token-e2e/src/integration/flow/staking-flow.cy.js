@@ -11,6 +11,7 @@ const stakeAddStakeRadioButton = '[data-testid="add-stake-radio"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const totalStake = '[data-testid="total-stake"]';
 const stakeShare = '[data-testid="stake-percentage"]';
+const nominatedStake = '[data-testid="nominated-stake"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletUnstakedBalance =
@@ -88,19 +89,20 @@ context(
             1.0,
             txTimeout
           );
-
           // 2001-STKE-039
           cy.get(vegaWalletStakedBalances, txTimeout)
             .should('contain', 2.0, txTimeout)
             .and('contain', partValidatorId);
 
-          cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016
+          cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016 2001-STKE-038
             .contains(2.0, epochTimeout)
             .should('be.visible');
 
           cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
             .contains(2.0, epochTimeout)
             .should('be.visible');
+
+          cy.get(nominatedStake).should('have.text', 2); // 2001-STKE-017 2002-SINC-007
 
           cy.navigate_to('staking');
 
@@ -376,6 +378,7 @@ context(
         );
       });
 
+      // 2001-STKE-045
       it('Able to remove a full stake against a validator', function () {
         cy.staking_page_associate_tokens('3');
 

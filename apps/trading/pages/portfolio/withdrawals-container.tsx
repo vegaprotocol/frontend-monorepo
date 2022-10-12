@@ -17,21 +17,8 @@ export const WithdrawalsContainer = () => {
   return (
     <Web3Container>
       <VegaWalletContainer>
-        <div className="h-full grid grid-rows-[min-content_1fr]">
-          <header className="flex justify-between items-center p-3">
-            <h4 className="text-lg text-black dark:text-white">
-              {t('Withdrawals')}
-            </h4>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setWithdrawDialog(true)}
-              data-testid="withdraw-dialog-button"
-            >
-              {t('Make withdrawal')}
-            </Button>
-          </header>
-          <div className="h-full px-4">
+        <div className="h-full relative grid grid-rows-[1fr,min-content]">
+          <div className="h-full">
             <AsyncRenderer
               data={{ pending, completed }}
               loading={loading}
@@ -48,6 +35,15 @@ export const WithdrawalsContainer = () => {
                 </>
               )}
             />
+          </div>
+          <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+            <Button
+              size="sm"
+              onClick={() => setWithdrawDialog(true)}
+              data-testid="withdraw-dialog-button"
+            >
+              {t('Make withdrawal')}
+            </Button>
           </div>
         </div>
         <WithdrawalDialogs

@@ -4,6 +4,7 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
   truncateByChars,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
   VegaICellRendererParams,
@@ -35,7 +36,9 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
           value,
           data,
         }: VegaValueFormatterParams<DepositFieldsFragment, 'amount'>) => {
-          return addDecimalsFormatNumber(value, data.asset.decimals);
+          return isNumeric(value) && data
+            ? addDecimalsFormatNumber(value, data.asset.decimals)
+            : null;
         }}
       />
       <AgGridColumn
@@ -47,7 +50,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
           DepositFieldsFragment,
           'createdTimestamp'
         >) => {
-          return getDateTimeFormat().format(new Date(value));
+          return value ? getDateTimeFormat().format(new Date(value)) : '';
         }}
       />
       <AgGridColumn
@@ -56,7 +59,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         valueFormatter={({
           value,
         }: VegaValueFormatterParams<DepositFieldsFragment, 'status'>) => {
-          return DepositStatusMapping[value];
+          return value ? DepositStatusMapping[value] : '';
         }}
       />
       <AgGridColumn

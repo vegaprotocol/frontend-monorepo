@@ -303,6 +303,7 @@ context(
       });
     });
 
+    // 2002-SINC-016
     describe('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
         cy.vega_wallet_receive_fauceted_asset(

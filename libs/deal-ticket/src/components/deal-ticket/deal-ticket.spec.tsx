@@ -63,14 +63,14 @@ describe('DealTicket', () => {
 
     // Assert defaults are used
     expect(
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}-selected`)
+      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`)
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('order-side-SIDE_BUY-selected')
-    ).toBeInTheDocument();
+      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).toBeChecked();
     expect(
-      screen.queryByTestId('order-side-SIDE_SELL-selected')
-    ).not.toBeInTheDocument();
+      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
+    ).not.toBeChecked();
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       String(1 / Math.pow(10, market.positionDecimalPlaces))
     );
@@ -91,7 +91,9 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // BUY is selected by default
-    screen.getByTestId('order-side-SIDE_BUY-selected');
+    expect(
+      screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
+    ).toBeChecked();
 
     await act(async () => {
       fireEvent.change(screen.getByTestId('order-size'), {

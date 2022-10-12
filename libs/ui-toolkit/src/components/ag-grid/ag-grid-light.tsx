@@ -18,6 +18,10 @@ const agGridLightVariables = `
     border: 0;
   }
 
+  .ag-theme-balham .ag-row {
+    border-width: 1px 0;
+  }
+
   .ag-theme-balham .ag-react-container {
     overflow: hidden;
     text-overflow: ellipsis;

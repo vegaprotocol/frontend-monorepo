@@ -16,8 +16,8 @@ type RowHelper<TObj, TRow, TField extends Field> = Omit<
   TObj,
   'data' | 'value'
 > & {
-  data: TRow;
-  value: Get<TRow, TField>;
+  data?: TRow;
+  value?: Get<TRow, TField>;
 };
 
 export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<

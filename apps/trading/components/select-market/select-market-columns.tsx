@@ -284,7 +284,7 @@ export const columns = (
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
-      dataTestId: 'trading-mode',
+      dataTestId: 'trading-mode-col',
     },
     {
       kind: ColumnKind.Volume,
@@ -465,7 +465,7 @@ export const columnsPositionMarkets = (
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
-      dataTestId: 'trading-mode',
+      dataTestId: 'trading-mode-col',
     },
     {
       kind: ColumnKind.Volume,
