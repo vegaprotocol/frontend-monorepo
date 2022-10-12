@@ -109,7 +109,7 @@ export const VoteButtons = ({
       minVoterBalance &&
       currentStakeAvailable.isLessThan(Number(minVoterBalance))
     ) {
-      return t('youNeed{{amount}}AssociatedVegaTokensToVote', {
+      return t('youNeedAssociatedVegaTokensToVote', {
         amount: Number(minVoterBalance),
       });
     }

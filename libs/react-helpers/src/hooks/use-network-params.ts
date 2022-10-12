@@ -106,6 +106,7 @@ export const NetworkParams = {
   governance_proposal_freeform_minProposerBalance:
     'governance_proposal_freeform_minProposerBalance',
   validators_delegation_minAmount: 'validators_delegation_minAmount',
+  spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
   market_liquidity_stakeToCcySiskas: 'market_liquidity_stakeToCcySiskas',
 } as const;
