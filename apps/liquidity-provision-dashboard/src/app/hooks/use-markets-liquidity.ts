@@ -4,32 +4,41 @@ import {
   useDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { activeMarketsProvider } from '@vegaprotocol/liquidity';
-import type { MarketCandles } from '@vegaprotocol/market-list';
-import { marketsCandlesProvider } from '@vegaprotocol/market-list';
+import { liquidityMarketsProvider } from '@vegaprotocol/liquidity';
 import type {
-  MarketsListData,
-  LiquidityProvisionMarkets_marketsConnection_edges_node as Market,
-} from '@vegaprotocol/liquidity';
+  MarketCandles,
+  MarketWithCandles,
+  MarketWithData,
+} from '@vegaprotocol/market-list';
+import {
+  marketsCandlesProvider,
+  marketListProvider,
+} from '@vegaprotocol/market-list';
+import type { LiquidityProvisionMarket } from '@vegaprotocol/liquidity';
+
+import type { FormattedMarkets } from './../lib/utils';
+import { addData } from './../lib/utils';
 
 const liquidityProvisionProvider = makeDerivedDataProvider<
-  MarketsListData,
+  FormattedMarkets,
   never
 >(
   [
-    (callback, client, variables) =>
-      activeMarketsProvider(callback, client, variables),
+    marketListProvider,
     (callback, client, variables) =>
       marketsCandlesProvider(callback, client, {
         ...variables,
         interval: Interval.INTERVAL_I1D,
       }),
+    liquidityMarketsProvider,
   ],
   (parts) => {
-    return {
-      markets: parts[0] as Market[],
-      marketsCandles24hAgo: parts[1] as MarketCandles[],
-    };
+    const data = addData(
+      parts[0] as (MarketWithData & MarketWithCandles)[],
+      parts[1] as MarketCandles[],
+      parts[2] as LiquidityProvisionMarket[]
+    );
+    return { markets: data };
   }
 );
 
@@ -42,7 +51,7 @@ export const useMarketsLiquidity = () => {
     };
   }, []);
 
-  const { data, loading, error } = useDataProvider<MarketsListData, never>({
+  const { data, loading, error } = useDataProvider({
     dataProvider: liquidityProvisionProvider,
     variables,
     noUpdate: true,
