@@ -6,6 +6,7 @@ import {
   Input,
   InputError,
 } from '@vegaprotocol/ui-toolkit';
+import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { addHours, addMinutes } from 'date-fns';
 import {
   deadlineToSeconds,
@@ -109,7 +110,7 @@ const ValidationForm = ({
             {t('ThisWillSetValidationDeadlineTo')}
           </span>
           <span data-testid="validation-date" className="pl-2">
-            {deadlineDates.validation.toLocaleString()}
+            {getDateTimeFormat().format(deadlineDates.validation)}
           </span>
           {deadlines.validation === 0 && (
             <span
@@ -215,7 +216,7 @@ const EnactmentForm = ({
             {t('ThisWillSetEnactmentDeadlineTo')}
           </span>
           <span data-testid="enactment-date" className="pl-2">
-            {deadlineDates.enactment.toLocaleString()}
+            {getDateTimeFormat().format(deadlineDates.enactment)}
           </span>
         </p>
       )}
@@ -454,7 +455,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
               {t('ThisWillSetVotingDeadlineTo')}
             </span>
             <span data-testid="voting-date" className="pl-2">
-              {deadlineDates.vote.toLocaleString()}
+              {getDateTimeFormat().format(deadlineDates.vote)}
             </span>
             {deadlines.vote === minVoteHours && (
               <span
