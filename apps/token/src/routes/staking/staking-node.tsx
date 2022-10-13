@@ -7,29 +7,25 @@ import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { StakingForm } from './staking-form';
-import { StakingWalletsContainer } from './components/staking-wallets-container';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
 import StakingNodesContainer from './staking-nodes-container';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const StakingNodeContainer = () => {
   return (
-    <StakingWalletsContainer>
-      {({ pubKey }) => (
-        <StakingNodesContainer>
-          {({ data }) => <StakingNode pubKey={pubKey} data={data} />}
-        </StakingNodesContainer>
-      )}
-    </StakingWalletsContainer>
+    <StakingNodesContainer>
+      {({ data }) => <StakingNode data={data} />}
+    </StakingNodesContainer>
   );
 };
 
 interface StakingNodeProps {
-  pubKey: string;
   data?: StakingQueryResult;
 }
 
-export const StakingNode = ({ pubKey: vegaKey, data }: StakingNodeProps) => {
+export const StakingNode = ({ data }: StakingNodeProps) => {
+  const { pubKey: vegaKey } = useVegaWallet();
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
 
