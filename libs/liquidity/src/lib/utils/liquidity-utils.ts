@@ -11,7 +11,9 @@ export interface Provider {
   fee: string;
 }
 
-export const sumLiquidityCommitted = (providers: Provider[]) => {
+export const sumLiquidityCommitted = (
+  providers: Array<{ commitmentAmount: string }>
+) => {
   return providers
     ? providers.reduce((total: number, { commitmentAmount }) => {
         return total + parseInt(commitmentAmount, 10);
@@ -47,6 +49,7 @@ export const getCandle24hAgo = (
   return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
 };
 
+export const EMPTY_VALUE = ' - ';
 export const getChange = (candles: (Candle | null)[], lastClose?: string) => {
   const firstCandle = candles.find((item) => item?.open);
   if (firstCandle) {
@@ -66,14 +69,14 @@ export const getChange = (candles: (Candle | null)[], lastClose?: string) => {
     }
   }
 
-  return ' - ';
+  return EMPTY_VALUE;
 };
 
 export const calcDayVolume = (candles: Array<{ volume: string }> = []) => {
   return candles
     .reduce((acc, c) => {
       return acc.plus(new BigNumber(c?.volume ?? 0));
-    }, new BigNumber(candles[0]?.volume ?? 0))
+    }, new BigNumber(0))
     .toString();
 };
 
