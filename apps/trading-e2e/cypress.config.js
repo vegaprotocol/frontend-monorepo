@@ -37,14 +37,11 @@ module.exports = defineConfig({
     requestTimeout: 20000,
   },
   env: {
-    // TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',
-    TRADING_TEST_VEGA_WALLET_NAME: 'NEWWALLET',
+    TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',
     ETHEREUM_PROVIDER_URL:
       'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    /*VEGA_PUBLIC_KEY:
-      '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',*/
     VEGA_PUBLIC_KEY:
-      '2e1ef32e5804e14232406aebaad719087d326afa5c648b7824d0823d8a46c8d1',
+      '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
     VEGA_PUBLIC_KEY2:
       '1a18cdcaaa4f44a57b35a4e9b77e0701c17a476f2b407620f8c17371740cf2e4',
     TRUNCATED_VEGA_PUBLIC_KEY: '47836c…c7d278',
