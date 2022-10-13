@@ -40,13 +40,13 @@ const MarketPage = ({
 }) => {
   const { query, push } = useRouter();
   const { w } = useWindowSize();
-  const { landingDialog, riskNoticeDialog, update, updateMarketId } =
-    useGlobalStore((store) => ({
+  const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
+    (store) => ({
       landingDialog: store.landingDialog,
       riskNoticeDialog: store.riskNoticeDialog,
       update: store.update,
-      updateMarketId: store.updateMarketId,
-    }));
+    })
+  );
 
   const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
@@ -62,11 +62,11 @@ const MarketPage = ({
   const onSelect = useCallback(
     (id: string) => {
       if (id && id !== marketId) {
-        updateMarketId(id);
+        update({ marketId: id });
         push(`/markets/${id}`);
       }
     },
-    [marketId, updateMarketId, push]
+    [marketId, update, push]
   );
 
   const variables = useMemo(
@@ -111,6 +111,16 @@ const MarketPage = ({
     updateOnInit: true,
   });
 
+  const tradeView = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+    if (w > 960) {
+      return <TradeGrid market={data} onSelect={onSelect} />;
+    }
+    return <TradePanels market={data} onSelect={onSelect} />;
+  }, [w, data, onSelect]);
+
   if (!marketId) {
     return (
       <Splash>
@@ -130,11 +140,7 @@ const MarketPage = ({
         }
         return (
           <>
-            {w > 960 ? (
-              <TradeGrid market={data} onSelect={onSelect} />
-            ) : (
-              <TradePanels market={data} onSelect={onSelect} />
-            )}
+            {tradeView}
             <SelectMarketDialog
               dialogOpen={landingDialog && !riskNoticeDialog}
               setDialogOpen={(isOpen: boolean) =>

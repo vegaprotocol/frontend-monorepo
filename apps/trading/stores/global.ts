@@ -7,7 +7,6 @@ interface GlobalStore {
   riskNoticeDialog: boolean;
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
-  updateMarketId: (marketId: string) => void;
 }
 
 interface PageTitleStore {
@@ -25,10 +24,6 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
     if (state.marketId) {
       LocalStorage.setItem('marketId', state.marketId);
     }
-  },
-  updateMarketId: (marketId: string) => {
-    set({ marketId });
-    LocalStorage.setItem('marketId', marketId);
   },
 }));
 
