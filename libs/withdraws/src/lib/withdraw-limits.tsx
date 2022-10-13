@@ -1,12 +1,15 @@
-import { t } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
+import { compactNumber, t } from '@vegaprotocol/react-helpers';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 
 interface WithdrawLimitsProps {
   amount: string;
   threshold: BigNumber;
-  balance: string;
+  balance: BigNumber;
   delay: number | undefined;
+  asset: Asset;
 }
 
 export const WithdrawLimits = ({
@@ -14,40 +17,47 @@ export const WithdrawLimits = ({
   threshold,
   balance,
   delay,
+  asset,
 }: WithdrawLimitsProps) => {
-  let text = '';
-
-  if (threshold.isEqualTo(Infinity)) {
-    text = t('No limit');
-  } else if (threshold.isGreaterThan(1_000_000)) {
-    text = t('1m+');
-  } else {
-    text = threshold.toString();
-  }
-
   const delayTime =
     new BigNumber(amount).isGreaterThan(threshold) && delay
       ? formatDistanceToNow(Date.now() + delay * 1000)
       : t('None');
 
+  const limits = [
+    {
+      key: 'BALANCE_AVAILABLE',
+      label: t('Balance available'),
+      rawValue: balance,
+      value: balance ? compactNumber(balance, asset.decimals) : '-',
+    },
+    {
+      key: 'WITHDRAWAL_THRESHOLD',
+      label: t('Delayed withdrawal threshold'),
+      rawValue: threshold,
+      value: compactNumber(threshold, asset.decimals),
+    },
+    {
+      key: 'DELAY_TIME',
+      label: t('Delay time'),
+      value: delayTime,
+    },
+  ];
+
   return (
-    <table className="w-full text-sm">
-      <tbody>
-        <tr data-testid="balance-available">
-          <th className="text-left font-normal">{t('Balance available')}</th>
-          <td className="text-right">{balance}</td>
-        </tr>
-        <tr data-testid="withdrawal-threshold">
-          <th className="text-left font-normal">
-            {t('Delayed withdrawal threshold')}
-          </th>
-          <td className="text-right">{text}</td>
-        </tr>
-        <tr data-testid="delay-time">
-          <th className="text-left font-normal">{t('Delay time')}</th>
-          <td className="text-right">{delayTime}</td>
-        </tr>
-      </tbody>
-    </table>
+    <KeyValueTable>
+      {limits.map(({ key, label, rawValue, value }) => (
+        <KeyValueTableRow>
+          <div data-testid={`${key}_label`}>{label}</div>
+          <div
+            data-testid={`${key}_value`}
+            className="truncate"
+            title={rawValue?.toString()}
+          >
+            {value}
+          </div>
+        </KeyValueTableRow>
+      ))}
+    </KeyValueTable>
   );
 };
