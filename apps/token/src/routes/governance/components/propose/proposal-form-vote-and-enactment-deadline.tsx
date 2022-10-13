@@ -27,6 +27,9 @@ interface DeadlineDatesProps {
 }
 
 interface ValidationFormProps {
+  onValidationMinMax:
+    | ((field: 'proposalValidationDeadline', value: string) => void)
+    | undefined;
   validationRegister:
     | UseFormRegisterReturn<'proposalValidationDeadline'>
     | undefined;
@@ -37,6 +40,7 @@ interface ValidationFormProps {
 }
 
 const ValidationForm = ({
+  onValidationMinMax,
   validationRegister,
   deadlines,
   deadlineDates,
@@ -72,13 +76,24 @@ const ValidationForm = ({
         <div className="flex items-center gap-4 text-sm">
           <ButtonLink
             data-testid="min-validation"
-            onClick={() => updateValidationDeadlineAndDate(0)}
+            onClick={() => {
+              onValidationMinMax &&
+                onValidationMinMax('proposalValidationDeadline', '0');
+              updateValidationDeadlineAndDate(0);
+            }}
           >
             {t('UseMin')}
           </ButtonLink>
           <ButtonLink
             data-testid="max-validation"
-            onClick={() => updateValidationDeadlineAndDate(deadlines.vote)}
+            onClick={() => {
+              onValidationMinMax &&
+                onValidationMinMax(
+                  'proposalValidationDeadline',
+                  deadlines.vote.toString()
+                );
+              updateValidationDeadlineAndDate(deadlines.vote);
+            }}
           >
             {t('UseMax')}
           </ButtonLink>
@@ -111,6 +126,9 @@ const ValidationForm = ({
 };
 
 interface EnactmentFormProps {
+  onEnactMinMax:
+    | ((field: 'proposalEnactmentDeadline', value: string) => void)
+    | undefined;
   enactmentRegister:
     | UseFormRegisterReturn<'proposalEnactmentDeadline'>
     | undefined;
@@ -123,6 +141,7 @@ interface EnactmentFormProps {
 }
 
 const EnactmentForm = ({
+  onEnactMinMax,
   enactmentRegister,
   deadlines,
   deadlineDates,
@@ -160,13 +179,27 @@ const EnactmentForm = ({
         <div className="flex items-center gap-4 text-sm">
           <ButtonLink
             data-testid="min-enactment"
-            onClick={() => updateEnactmentDeadlineAndDate(minEnactmentHours)}
+            onClick={() => {
+              onEnactMinMax &&
+                onEnactMinMax(
+                  'proposalEnactmentDeadline',
+                  minEnactmentHours.toString()
+                );
+              updateEnactmentDeadlineAndDate(minEnactmentHours);
+            }}
           >
             {t('UseMin')}
           </ButtonLink>
           <ButtonLink
             data-testid="max-enactment"
-            onClick={() => updateEnactmentDeadlineAndDate(maxEnactmentHours)}
+            onClick={() => {
+              onEnactMinMax &&
+                onEnactMinMax(
+                  'proposalEnactmentDeadline',
+                  maxEnactmentHours.toString()
+                );
+              updateEnactmentDeadlineAndDate(maxEnactmentHours);
+            }}
           >
             {t('UseMax')}
           </ButtonLink>
@@ -190,38 +223,40 @@ const EnactmentForm = ({
   );
 };
 
-type SharedFields =
-  | 'proposalVoteDeadline'
-  | 'proposalEnactmentDeadline'
-  | 'proposalValidationDeadline';
-
 export interface ProposalFormVoteAndEnactmentDeadlineProps {
-  onUseMinMax: (field: SharedFields, value: string) => void;
+  onVoteMinMax: (field: 'proposalVoteDeadline', value: string) => void;
   voteRegister: UseFormRegisterReturn<'proposalVoteDeadline'>;
   voteErrorMessage: string | undefined;
   voteMinClose: string;
   voteMaxClose: string;
   enactmentRequired?: boolean;
+  onEnactMinMax?: (field: 'proposalEnactmentDeadline', value: string) => void;
   enactmentRegister?: UseFormRegisterReturn<'proposalEnactmentDeadline'>;
   enactmentErrorMessage?: string;
   enactmentMinClose?: string;
   enactmentMaxClose?: string;
   validationRequired?: boolean;
+  onValidationMinMax?: (
+    field: 'proposalValidationDeadline',
+    value: string
+  ) => void;
   validationRegister?: UseFormRegisterReturn<'proposalValidationDeadline'>;
   validationErrorMessage?: string;
 }
 
 export function ProposalFormVoteAndEnactmentDeadline({
-  onUseMinMax,
+  onVoteMinMax,
   voteRegister,
   voteErrorMessage,
   voteMinClose,
   voteMaxClose,
+  onEnactMinMax,
   enactmentRegister,
   enactmentErrorMessage,
   enactmentMinClose,
   enactmentMaxClose,
   validationRequired,
+  onValidationMinMax,
   validationRegister,
   validationErrorMessage,
 }: ProposalFormVoteAndEnactmentDeadlineProps) {
@@ -392,7 +427,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
             <ButtonLink
               data-testid="min-vote"
               onClick={() => {
-                onUseMinMax('proposalVoteDeadline', minVoteHours.toString());
+                onVoteMinMax('proposalVoteDeadline', minVoteHours.toString());
                 updateVoteDeadlineAndDate(minVoteHours);
               }}
             >
@@ -401,7 +436,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
             <ButtonLink
               data-testid="max-vote"
               onClick={() => {
-                onUseMinMax('proposalVoteDeadline', maxVoteHours.toString());
+                onVoteMinMax('proposalVoteDeadline', maxVoteHours.toString());
                 updateVoteDeadlineAndDate(maxVoteHours);
               }}
             >
@@ -435,6 +470,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
 
       {validationRequired && (
         <ValidationForm
+          onValidationMinMax={onValidationMinMax}
           validationRegister={validationRegister}
           deadlines={deadlines}
           deadlineDates={deadlineDates}
@@ -445,6 +481,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
 
       {minEnactmentHours && maxEnactmentHours && (
         <EnactmentForm
+          onEnactMinMax={onEnactMinMax}
           enactmentRegister={enactmentRegister}
           deadlines={deadlines}
           deadlineDates={deadlineDates}

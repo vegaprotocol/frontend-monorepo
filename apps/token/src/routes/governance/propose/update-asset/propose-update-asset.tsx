@@ -159,7 +159,7 @@ export const ProposeUpdateAsset = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
-                  setValue={setValue}
+                  onVoteMinMax={(field, value) => setValue(field, value)}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}

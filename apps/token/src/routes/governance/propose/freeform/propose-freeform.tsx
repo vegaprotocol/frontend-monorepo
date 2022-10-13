@@ -122,8 +122,8 @@ export const ProposeFreeform = () => {
                   errorMessage={errors?.proposalDescription?.message}
                 />
 
-                <ProposalFormVoteAndEnactmentDeadline<FreeformProposalFormFields>
-                  setValue={setValue}
+                <ProposalFormVoteAndEnactmentDeadline
+                  onVoteMinMax={(field, value) => setValue(field, value)}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
