@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AppLoader } from '../components/app-loader';
 import './styles.css';
-import { useGlobalStore } from '../stores';
+import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useMemo } from 'react';
 import DialogsContainer from './dialogs-container';
@@ -18,7 +18,8 @@ import DialogsContainer from './dialogs-container';
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
 const Title = () => {
-  const { pageTitle } = useGlobalStore((store) => ({
+  console.log('titleupdate');
+  const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
 

@@ -16,7 +16,7 @@ import type {
   MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
-import { useGlobalStore } from '../../stores';
+import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
 
@@ -40,18 +40,17 @@ const MarketPage = ({
 }) => {
   const { query, push } = useRouter();
   const { w } = useWindowSize();
-  const {
-    landingDialog,
-    riskNoticeDialog,
-    update,
-    updateTitle,
-    updateMarketId,
-  } = useGlobalStore((store) => ({
-    landingDialog: store.landingDialog,
-    riskNoticeDialog: store.riskNoticeDialog,
-    update: store.update,
+  const { landingDialog, riskNoticeDialog, update, updateMarketId } =
+    useGlobalStore((store) => ({
+      landingDialog: store.landingDialog,
+      riskNoticeDialog: store.riskNoticeDialog,
+      update: store.update,
+      updateMarketId: store.updateMarketId,
+    }));
+
+  const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
+    pageTitle: store.pageTitle,
     updateTitle: store.updateTitle,
-    updateMarketId: store.updateMarketId,
   }));
 
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
@@ -86,20 +85,22 @@ const MarketPage = ({
     skip: !marketId,
   });
 
+  const marketName = data?.tradableInstrument.instrument.name;
   const updateProvider = useCallback(
     ({ data: marketData }: { data: MarketData }) => {
-      const marketName = data?.tradableInstrument.instrument.name;
       const marketPrice = calculatePrice(
         marketData.markPrice,
         data?.decimalPlaces
       );
       if (marketName) {
-        const pageTitle = titlefy([marketName, marketPrice]);
-        updateTitle(pageTitle);
+        const newPageTitle = titlefy([marketName, marketPrice]);
+        if (pageTitle !== newPageTitle) {
+          updateTitle(newPageTitle);
+        }
       }
       return true;
     },
-    [updateTitle, data?.tradableInstrument.instrument.name, data?.decimalPlaces]
+    [updateTitle, pageTitle, marketName, data?.decimalPlaces]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({

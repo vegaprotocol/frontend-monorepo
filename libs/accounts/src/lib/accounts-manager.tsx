@@ -27,7 +27,7 @@ export const AccountManager = ({
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
       dataRef.current = data;
-      gridRef.current?.api.refreshInfiniteCache();
+      gridRef.current?.api?.refreshInfiniteCache();
       return true;
     },
     [gridRef]
