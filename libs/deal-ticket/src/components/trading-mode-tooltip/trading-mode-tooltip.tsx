@@ -18,16 +18,16 @@ export const TradingModeTooltip = ({
   switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
-        <>
+        <section data-testid="trading-mode-tooltip">
           {t(
             'This is the standard trading mode where trades are executed whenever orders are received.'
           )}
-        </>
+        </section>
       );
     }
     case MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
-        <>
+        <section data-testid="trading-mode-tooltip">
           <p className="mb-4">
             <span>
               {t(
@@ -39,15 +39,15 @@ export const TradingModeTooltip = ({
             </ExternalLink>
           </p>
           <MarketDataGrid grid={compiledGrid} />
-        </>
+        </section>
       );
     }
     case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
         case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
-            <>
-              <p data-testid="tooltip-market-info" className="mb-4">
+            <section data-testid="trading-mode-tooltip">
+              <p className="mb-4">
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -58,12 +58,12 @@ export const TradingModeTooltip = ({
                 </ExternalLink>
               </p>
               <MarketDataGrid grid={compiledGrid} />
-            </>
+            </section>
           );
         }
         case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
-            <>
+            <section data-testid="trading-mode-tooltip">
               <p className="mb-4">
                 <span>
                   {t('This market is in auction due to high price volatility.')}
@@ -73,7 +73,7 @@ export const TradingModeTooltip = ({
                 </ExternalLink>
               </p>
               <MarketDataGrid grid={compiledGrid} />
-            </>
+            </section>
           );
         }
         default: {
@@ -82,7 +82,11 @@ export const TradingModeTooltip = ({
       }
     }
     case MarketTradingMode.TRADING_MODE_NO_TRADING: {
-      return <>{t('No trading enabled for this market.')}</>;
+      return (
+        <section data-testid="trading-mode-tooltip">
+          {t('No trading enabled for this market.')}
+        </section>
+      );
     }
     case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
     default: {

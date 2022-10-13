@@ -83,8 +83,8 @@ const ExpiryTooltipContent = ({
         .oracleSpecForTradingTermination?.id;
 
     return (
-      <>
-        <p data-testid="expiry-tool-tip" className="mb-2">
+      <section data-testid="expiry-tool-tip">
+        <p className="mb-2">
           {t(
             'This market expires when triggered by its oracle, not on a set date.'
           )}
@@ -94,7 +94,7 @@ const ExpiryTooltipContent = ({
             {t('View oracle specification')}
           </Link>
         )}
-      </>
+      </section>
     );
   }
 
@@ -140,6 +140,7 @@ export const TradeMarketHeader = ({
             explorerUrl={VEGA_EXPLORER_URL}
           />
         }
+        testId="market-expiry"
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
@@ -148,8 +149,11 @@ export const TradeMarketHeader = ({
       <MarketVolume marketId={market.id} />
       <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
       {symbol ? (
-        <HeaderStat heading={t('Settlement asset')}>
-          <div data-testid="trading-mode">
+        <HeaderStat
+          heading={t('Settlement asset')}
+          testId="market-settlement-asset"
+        >
+          <div>
             <ButtonLink
               onClick={(e) => {
                 openAssetDetailsDialog(symbol, e.target as HTMLElement);
