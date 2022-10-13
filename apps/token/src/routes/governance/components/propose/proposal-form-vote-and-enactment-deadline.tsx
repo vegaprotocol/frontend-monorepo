@@ -13,7 +13,6 @@ import {
 } from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import type { UseFormSetValue } from 'react-hook-form';
 
 interface DeadlineProps {
   vote: number;
@@ -191,8 +190,13 @@ const EnactmentForm = ({
   );
 };
 
-export interface ProposalFormVoteAndEnactmentDeadlineProps<T> {
-  setValue: UseFormSetValue<T>;
+type SharedFields =
+  | 'proposalVoteDeadline'
+  | 'proposalEnactmentDeadline'
+  | 'proposalValidationDeadline';
+
+export interface ProposalFormVoteAndEnactmentDeadlineProps {
+  onUseMinMax: (field: SharedFields, value: string) => void;
   voteRegister: UseFormRegisterReturn<'proposalVoteDeadline'>;
   voteErrorMessage: string | undefined;
   voteMinClose: string;
@@ -207,8 +211,8 @@ export interface ProposalFormVoteAndEnactmentDeadlineProps<T> {
   validationErrorMessage?: string;
 }
 
-export function ProposalFormVoteAndEnactmentDeadline<TFormFields>({
-  setValue,
+export function ProposalFormVoteAndEnactmentDeadline({
+  onUseMinMax,
   voteRegister,
   voteErrorMessage,
   voteMinClose,
@@ -220,7 +224,7 @@ export function ProposalFormVoteAndEnactmentDeadline<TFormFields>({
   validationRequired,
   validationRegister,
   validationErrorMessage,
-}: ProposalFormVoteAndEnactmentDeadlineProps<TFormFields>) {
+}: ProposalFormVoteAndEnactmentDeadlineProps) {
   const {
     minVoteSeconds,
     maxVoteSeconds,
@@ -388,7 +392,7 @@ export function ProposalFormVoteAndEnactmentDeadline<TFormFields>({
             <ButtonLink
               data-testid="min-vote"
               onClick={() => {
-                setValue('test', minVoteHours);
+                onUseMinMax('proposalVoteDeadline', minVoteHours.toString());
                 updateVoteDeadlineAndDate(minVoteHours);
               }}
             >
@@ -397,7 +401,7 @@ export function ProposalFormVoteAndEnactmentDeadline<TFormFields>({
             <ButtonLink
               data-testid="max-vote"
               onClick={() => {
-                setValue('proposalVoteDeadline', maxVoteHours);
+                onUseMinMax('proposalVoteDeadline', maxVoteHours.toString());
                 updateVoteDeadlineAndDate(maxVoteHours);
               }}
             >
