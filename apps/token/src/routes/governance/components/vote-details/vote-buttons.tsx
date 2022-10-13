@@ -108,7 +108,14 @@ export const VoteButtons = ({
     }
 
     return false;
-  }, [t, pubKey, currentStakeAvailable, proposalState, appDispatch, updateDialogOpen]);
+  }, [
+    t,
+    pubKey,
+    currentStakeAvailable,
+    proposalState,
+    appDispatch,
+    updateDialogOpen,
+  ]);
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);
