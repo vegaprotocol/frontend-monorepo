@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import SimpleMarketExpires from './simple-market-expires';
 import type { Market } from '@vegaprotocol/market-list';
+import { SimpleMarketExpires } from '@vegaprotocol/market-info';
 
 interface Props {
   market: Market;

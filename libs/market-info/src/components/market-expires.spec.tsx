@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SimpleMarketExpires from './simple-market-expires';
+import { SimpleMarketExpires } from './market-expires';
 
 describe('SimpleMarketExpires', () => {
   describe('should properly parse different tags', () => {
