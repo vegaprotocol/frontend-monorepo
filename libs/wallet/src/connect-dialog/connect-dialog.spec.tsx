@@ -20,6 +20,12 @@ import { EnvironmentProvider } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
+const mockUpdateDialogOpen = jest.fn();
+jest.mock('zustand', () => () => () => ({
+  updateDialogOpen: mockUpdateDialogOpen,
+  dialogOpen: true,
+}));
+
 let defaultProps: VegaConnectDialogProps;
 
 const rest = new RestConnector();
@@ -29,10 +35,9 @@ const connectors = {
   jsonRpc,
 };
 beforeEach(() => {
+  jest.clearAllMocks();
   defaultProps = {
     connectors,
-    dialogOpen: true,
-    setDialogOpen: jest.fn(),
   };
 });
 
@@ -122,7 +127,7 @@ describe('VegaConnectDialog', () => {
 
       expect(spy).toHaveBeenCalledWith(fields);
 
-      expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
+      expect(mockUpdateDialogOpen).toHaveBeenCalledWith(false);
     });
 
     it('handles failed connection', async () => {
@@ -149,7 +154,7 @@ describe('VegaConnectDialog', () => {
       expect(spy).toHaveBeenCalledWith(fields);
 
       expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
-      expect(defaultProps.setDialogOpen).not.toHaveBeenCalled();
+      expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
 
       // Fetch failed due to wallet not running
       spy = jest
@@ -249,9 +254,7 @@ describe('VegaConnectDialog', () => {
     });
 
     it('connects with permission update', async () => {
-      const mockSetDialog = jest.fn();
-
-      render(generateJSX({ setDialogOpen: mockSetDialog }));
+      render(generateJSX());
       await selectJsonRpc();
 
       // Wallet version check
@@ -299,7 +302,7 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         jest.advanceTimersByTime(CLOSE_DELAY);
       });
-      expect(mockSetDialog).toHaveBeenCalledWith(false);
+      expect(mockUpdateDialogOpen).toHaveBeenCalledWith(false);
     });
 
     it('handles incompatible wallet', async () => {

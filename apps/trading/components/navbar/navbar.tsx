@@ -15,9 +15,8 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
-  const { marketId, update } = useGlobalStore((store) => ({
+  const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
-    update: store.update,
   }));
   const [tradingPath, setTradingPath] = useState('/markets');
   useEffect(() => {
