@@ -1,4 +1,5 @@
 import groupBy from 'lodash/groupBy';
+import uniqBy from 'lodash/uniqBy';
 import { VolumeType } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
@@ -264,7 +265,7 @@ export const updateCompactedRows = (
 ) => {
   let sellModifiedIndex = -1;
   let data = [...rows];
-  sell?.forEach((delta) => {
+  uniqBy(sell?.reverse(), 'price')?.forEach((delta) => {
     [sellModifiedIndex, data] = partiallyUpdateCompactedRows(
       VolumeType.ask,
       data,
@@ -274,7 +275,7 @@ export const updateCompactedRows = (
     );
   });
   let buyModifiedIndex = data.length;
-  buy?.forEach((delta) => {
+  uniqBy(buy?.reverse(), 'price')?.forEach((delta) => {
     [buyModifiedIndex, data] = partiallyUpdateCompactedRows(
       VolumeType.bid,
       data,

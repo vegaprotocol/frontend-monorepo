@@ -47,17 +47,17 @@ export const OrderbookRow = React.memo(
           relativeValue={relativeBid}
           type={VolumeType.bid}
         />
-        <PriceCell
-          testId={`price-${price}`}
-          value={BigInt(price)}
-          valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}
-        />
         <Vol
           testId={`ask-vol-${price}`}
           value={ask}
           valueFormatted={addDecimal(ask, positionDecimalPlaces)}
           relativeValue={relativeAsk}
           type={VolumeType.ask}
+        />
+        <PriceCell
+          testId={`price-${price}`}
+          value={BigInt(price)}
+          valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}
         />
         <CumulativeVol
           testId={`cumulative-vol-${price}`}
