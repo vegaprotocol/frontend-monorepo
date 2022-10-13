@@ -1,4 +1,4 @@
-import { totalFees } from '@vegaprotocol/market-list';
+import { FeesBreakdown } from '@vegaprotocol/market-info';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -68,7 +68,7 @@ export const useFeeDealTicketDetails = (
     {
       label: t('Fees'),
       value: fees,
-      labelDescription: totalFees(market.fees.factors),
+      labelDescription: <FeesBreakdown feeFactors={market.fees.factors} />,
       quoteName,
     },
     {
