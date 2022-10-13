@@ -18,7 +18,6 @@ import DialogsContainer from './dialogs-container';
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
 const Title = () => {
-  console.log('titleupdate');
   const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
