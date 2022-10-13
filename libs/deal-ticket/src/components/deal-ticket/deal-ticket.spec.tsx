@@ -32,6 +32,13 @@ const market: DealTicketMarketFragment = {
       },
     },
   },
+  fees: {
+    factors: {
+      makerFee: '0.001',
+      infrastructureFee: '0.002',
+      liquidityFee: '0.003',
+    },
+  },
   depth: {
     __typename: 'MarketDepth',
     lastTrade: {
@@ -58,7 +65,7 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
 }
 
 describe('DealTicket', () => {
-  it('Displays ticket defaults', () => {
+  it('should display ticket defaults', () => {
     render(generateJsx());
 
     // Assert defaults are used
@@ -87,7 +94,7 @@ describe('DealTicket', () => {
     );
   });
 
-  it('Can edit deal ticket', async () => {
+  it('can edit deal ticket', async () => {
     render(generateJsx());
 
     // BUY is selected by default
@@ -119,7 +126,7 @@ describe('DealTicket', () => {
     );
   });
 
-  it('Handles TIF select box dependent on order type', () => {
+  it('handles TIF select box dependent on order type', () => {
     render(generateJsx());
 
     // Check only IOC and
