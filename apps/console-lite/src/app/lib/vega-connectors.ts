@@ -1,4 +1,4 @@
-import { RestConnector, JsonRpcConnector } from '@vegaprotocol/wallet';
+import { RestConnector } from '@vegaprotocol/wallet';
 
 export const rest = new RestConnector();
 
