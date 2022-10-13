@@ -1,6 +1,5 @@
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
@@ -39,6 +38,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
     NetworkParams.governance_proposal_updateAsset_minVoterBalance,
     NetworkParams.governance_proposal_updateNetParam_minVoterBalance,
     NetworkParams.governance_proposal_freeform_minVoterBalance,
+    NetworkParams.spam_protection_voting_min_tokens,
   ]);
 
   if (params) {
@@ -160,6 +160,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             voteDatetime={voteDatetime}
             proposalState={proposal.state}
             minVoterBalance={minVoterBalance}
+            spamProtectionMinTokens={params.spam_protection_voting_min_tokens}
             className="flex"
           />
         </>

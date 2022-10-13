@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: VoteButtons
+// GraphQL query operation: VoteButtonsQuery
 // ====================================================
 
-export interface VoteButtons_party_stake {
+export interface VoteButtonsQuery_party_stake {
   __typename: "PartyStake";
   /**
    * The stake currently available for the party
@@ -19,7 +19,7 @@ export interface VoteButtons_party_stake {
   currentStakeAvailableFormatted: string;
 }
 
-export interface VoteButtons_party {
+export interface VoteButtonsQuery_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -28,16 +28,16 @@ export interface VoteButtons_party {
   /**
    * The staking information for this Party
    */
-  stake: VoteButtons_party_stake;
+  stake: VoteButtonsQuery_party_stake;
 }
 
-export interface VoteButtons {
+export interface VoteButtonsQuery {
   /**
    * An entity that is trading on the Vega network
    */
-  party: VoteButtons_party | null;
+  party: VoteButtonsQuery_party | null;
 }
 
-export interface VoteButtonsVariables {
+export interface VoteButtonsQueryVariables {
   partyId: string;
 }

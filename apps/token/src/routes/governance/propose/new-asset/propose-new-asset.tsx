@@ -9,7 +9,6 @@ import {
 import { useEnvironment } from '@vegaprotocol/environment';
 import { validateJson } from '@vegaprotocol/react-helpers';
 import {
-  ProposalFormMinRequirements,
   ProposalFormTitle,
   ProposalFormDescription,
   ProposalFormTerms,
@@ -18,6 +17,7 @@ import {
   ProposalFormSubheader,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
@@ -90,11 +90,12 @@ export const ProposeNewAsset = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_asset_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction="create"
             />
 
             {VEGA_DOCS_URL && (

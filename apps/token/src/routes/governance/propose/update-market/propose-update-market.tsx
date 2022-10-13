@@ -11,7 +11,6 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { validateJson } from '@vegaprotocol/react-helpers';
 import {
   ProposalFormSubheader,
-  ProposalFormMinRequirements,
   ProposalFormTitle,
   ProposalFormDescription,
   ProposalFormTerms,
@@ -19,6 +18,7 @@ import {
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
   FormGroup,
@@ -148,11 +148,12 @@ export const ProposeUpdateMarket = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateMarket_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction="create"
             />
 
             {VEGA_DOCS_URL && (

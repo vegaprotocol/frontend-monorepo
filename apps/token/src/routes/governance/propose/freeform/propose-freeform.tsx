@@ -7,13 +7,13 @@ import {
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormSubheader,
-  ProposalFormMinRequirements,
   ProposalFormTitle,
   ProposalFormDescription,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
@@ -65,11 +65,12 @@ export const ProposeFreeform = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_freeform_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction="create"
             />
 
             {VEGA_DOCS_URL && (

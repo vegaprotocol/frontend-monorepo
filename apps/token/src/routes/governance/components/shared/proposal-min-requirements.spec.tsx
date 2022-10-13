@@ -1,12 +1,13 @@
 import { render } from '@testing-library/react';
-import { ProposalFormMinRequirements } from './proposal-form-min-requirements';
+import { ProposalMinRequirements } from './proposal-min-requirements';
 
 describe('ProposalFormMinRequirements', () => {
   it('should render successfully with spam protection value, if larger', () => {
     const { baseElement } = render(
-      <ProposalFormMinRequirements
-        minProposerBalance="1000000000000000000"
+      <ProposalMinRequirements
+        minProposalBalance="1000000000000000000"
         spamProtectionMin="2000000000000000000"
+        userAction="create"
       />
     );
     expect(baseElement).toBeTruthy();
@@ -18,9 +19,10 @@ describe('ProposalFormMinRequirements', () => {
 
   it('should render successfully with min proposer value, if larger', () => {
     const { baseElement } = render(
-      <ProposalFormMinRequirements
-        minProposerBalance="3000000000000000000"
+      <ProposalMinRequirements
+        minProposalBalance="3000000000000000000"
         spamProtectionMin="1000000000000000000"
+        userAction="create"
       />
     );
     expect(baseElement).toBeTruthy();

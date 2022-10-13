@@ -13,13 +13,13 @@ import {
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProposalFormSubheader,
-  ProposalFormMinRequirements,
   ProposalFormTitle,
   ProposalFormDescription,
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
   FormGroup,
@@ -130,11 +130,12 @@ export const ProposeNetworkParameter = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateNetParam_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction="create"
             />
 
             {VEGA_DOCS_URL && (
