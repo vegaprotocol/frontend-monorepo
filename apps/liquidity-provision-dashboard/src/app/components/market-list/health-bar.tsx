@@ -77,7 +77,7 @@ const Target = ({
   );
 };
 
-const Bar = ({
+const Level = ({
   children,
   commitmentAmount,
   total,
@@ -111,6 +111,10 @@ const Bar = ({
     </div>
   );
 };
+
+const Full = () => (
+  <div className="bg-neutral-100 w-full h-[inherit] absolute bottom-0 left-0"></div>
+);
 
 interface Levels {
   fee: string;
@@ -148,7 +152,8 @@ export const HealthBar = ({
   return (
     <div className="w-full">
       <div
-        className={classNames('health-wrapper relative py-2', {
+        className={classNames('health-wrapper relative', {
+          'py-2': !isLarge,
           'py-5': isLarge,
         })}
       >
@@ -158,14 +163,14 @@ export const HealthBar = ({
             'h-8': isLarge,
           })}
         >
-          <div className="health-full bg-[#f5f5f5] w-full h-[inherit] absolute bottom-0 left-0"></div>
+          <Full />
 
           <div className="health-bars h-[inherit] flex w-full">
             {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
 
               return (
-                <Bar
+                <Level
                   status={status}
                   commitmentAmount={commitmentAmount}
                   index={index}
@@ -179,7 +184,7 @@ export const HealthBar = ({
                       {addDecimalsFormatNumber(commitmentAmount, decimals)}
                     </span>
                   </Tooltip>
-                </Bar>
+                </Level>
               );
             })}
           </div>
