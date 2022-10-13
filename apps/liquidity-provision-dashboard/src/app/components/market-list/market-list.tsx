@@ -53,6 +53,10 @@ const agGridVariables = `
     border-bottom: 1px solid #BFCCD6;
     font-size: 12px;
   }
+
+  .ag-theme-alpine .ag-root-wrapper-body.ag-layout-normal {
+    height: auto;
+  }
 `;
 
 const displayValue = (value: string) => {
@@ -109,7 +113,7 @@ export const MarketList = ({ data }: { data: Markets }) => {
       <div
         className="px-6 py-6 grow"
         data-testid="market-list"
-        style={{ height: 500, overflow: 'hidden', flexGrow: 1 }}
+        style={{ minHeight: 500, overflow: 'hidden' }}
       >
         <AgGridReact
           rowData={localData}

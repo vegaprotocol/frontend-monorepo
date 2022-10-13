@@ -11,7 +11,7 @@ export function App() {
   if (error) return <p>Error :( </p>;
 
   return (
-    <div className="max-h-full min-h-full bg-white flex flex-col">
+    <div className="max-h-full min-h-full bg-white">
       <Header />
       <Intro />
       {data && <MarketList data={data} />}
