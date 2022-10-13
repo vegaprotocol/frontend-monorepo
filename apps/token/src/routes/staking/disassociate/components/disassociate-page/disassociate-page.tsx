@@ -1,19 +1,19 @@
-import { DisassociateTransaction } from './disassociate-transaction';
-import { formatNumber } from '../../../lib/format-number';
+import { DisassociateTransaction } from '../disassociate-transaction';
+import { formatNumber } from '../../../../../lib/format-number';
 import { remove0x, toBigNum } from '@vegaprotocol/react-helpers';
 import { Select } from '@vegaprotocol/ui-toolkit';
-import { StakingMethod } from '../../../components/staking-method-radio';
-import { TokenInput } from '../../../components/token-input';
-import { TxState } from '../../../hooks/transaction-reducer';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { useRefreshAssociatedBalances } from '../../../hooks/use-refresh-associated-balances';
-import { useRemoveStake } from './hooks';
-import type { RemoveStakePayload } from './hooks';
+import { StakingMethod } from '../../../../../components/staking-method-radio';
+import { TokenInput } from '../../../../../components/token-input';
+import { TxState } from '../../../../../hooks/transaction-reducer';
+import { useAppState } from '../../../../../contexts/app-state/app-state-context';
+import { useRefreshAssociatedBalances } from '../../../../../hooks/use-refresh-associated-balances';
+import { useRemoveStake } from '../../hooks';
+import type { RemoveStakePayload } from '../../hooks';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { BigNumber } from '../../../lib/bignumber';
-import { truncateMiddle } from '../../../lib/truncate-middle';
+import type { BigNumber } from '../../../../../lib/bignumber';
+import { truncateMiddle } from '../../../../../lib/truncate-middle';
 
 type Association = {
   /**
@@ -68,7 +68,7 @@ export const DisassociatePage = ({
         ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
       ].map((a) => ({
         ...a,
-        label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)} 
+        label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)}
                 (${formatNumber(a.amount, 18)} ${t('tokens')})`,
       })),
     [stakingAssociations, vestingAssociations, t]
