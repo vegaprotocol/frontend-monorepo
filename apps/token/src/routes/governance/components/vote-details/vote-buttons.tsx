@@ -14,7 +14,7 @@ import type {
   VoteButtonsVariables,
 } from './__generated__/VoteButtons';
 import { VoteState } from './use-user-vote';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
@@ -74,6 +74,9 @@ export const VoteButtons = ({
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
+  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
+    updateDialogOpen: store.updateDialogOpen,
+  }));
   const [changeVote, setChangeVote] = React.useState(false);
 
   const cantVoteUI = React.useMemo(() => {
@@ -85,12 +88,13 @@ export const VoteButtons = ({
       return (
         <>
           <ButtonLink
-            onClick={() =>
+            onClick={() => {
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
                 isOpen: true,
-              })
-            }
+              });
+              updateDialogOpen(true);
+            }}
           >
             {t('connectVegaWallet')}
           </ButtonLink>{' '}

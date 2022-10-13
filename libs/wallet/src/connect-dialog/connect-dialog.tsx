@@ -29,11 +29,7 @@ type WalletType = 'gui' | 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-}
-
-interface VegaWalletDialogStore {
-  dialogOpen: boolean;
-  updateDialogOpen: (open: boolean) => void;
+  onChangeOpen?: (open: boolean) => void;
 }
 
 export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
@@ -43,11 +39,24 @@ export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
   })
 );
 
-export const VegaConnectDialog = ({ connectors }: VegaConnectDialogProps) => {
+interface VegaWalletDialogStore {
+  dialogOpen: boolean;
+  updateDialogOpen: (open: boolean) => void;
+}
+
+export const VegaConnectDialog = ({
+  connectors,
+  onChangeOpen,
+}: VegaConnectDialogProps) => {
   const { dialogOpen, updateDialogOpen } = useVegaWalletDialogStore(
     (store) => ({
       dialogOpen: store.dialogOpen,
-      updateDialogOpen: store.updateDialogOpen,
+      updateDialogOpen: onChangeOpen
+        ? (open: boolean) => {
+            store.updateDialogOpen(open);
+            onChangeOpen(open);
+          }
+        : store.updateDialogOpen,
     })
   );
 

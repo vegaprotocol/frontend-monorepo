@@ -11,8 +11,7 @@ export const VegaWalletDialogs = () => {
     <>
       <VegaConnectDialog
         connectors={Connectors}
-        dialogOpen={appState.vegaWalletOverlay}
-        setDialogOpen={(open) =>
+        onChangeOpen={(open) =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
             isOpen: open,

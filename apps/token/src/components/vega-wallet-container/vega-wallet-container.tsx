@@ -1,5 +1,5 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,18 +16,22 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
+  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
+    updateDialogOpen: store.updateDialogOpen,
+  }));
 
   if (!pubKey) {
     return (
       <p>
         <Button
           data-testid="connect-to-vega-wallet-btn"
-          onClick={() =>
+          onClick={() => {
             appDispatch({
               type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
               isOpen: true,
-            })
-          }
+            });
+            updateDialogOpen(true);
+          }}
         >
           {t('connectVegaWallet')}
         </Button>
