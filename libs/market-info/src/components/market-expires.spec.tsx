@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { SimpleMarketExpires } from './market-expires';
+import { MarketExpires } from './market-expires';
 
-describe('SimpleMarketExpires', () => {
+describe('MarketExpires', () => {
   describe('should properly parse different tags', () => {
     it('settlement:date', () => {
       const tags = [
@@ -12,7 +12,7 @@ describe('SimpleMarketExpires', () => {
         'settlement:notadate',
         'settlement:20220525T1200',
       ];
-      render(<SimpleMarketExpires tags={tags} />);
+      render(<MarketExpires tags={tags} />);
       expect(screen.getByText('May 25')).toBeInTheDocument();
     });
 
@@ -22,7 +22,7 @@ describe('SimpleMarketExpires', () => {
         'settlement:20220525T1200',
         'settlement-date:2022-04-25T1200',
       ];
-      render(<SimpleMarketExpires tags={tags} />);
+      render(<MarketExpires tags={tags} />);
       expect(screen.getByText('Apr 25')).toBeInTheDocument();
     });
 
@@ -32,7 +32,7 @@ describe('SimpleMarketExpires', () => {
         'settlement-date:20220525T1200',
         'settlement-expiry-date:2022-03-25T12:00:00',
       ];
-      render(<SimpleMarketExpires tags={tags} />);
+      render(<MarketExpires tags={tags} />);
       expect(screen.getByText('Mar 25')).toBeInTheDocument();
     });
 
@@ -42,7 +42,7 @@ describe('SimpleMarketExpires', () => {
         'settlemenz:20220525T1200',
         'settlemenx-date:20220425T1200',
       ];
-      const { container } = render(<SimpleMarketExpires tags={tags} />);
+      const { container } = render(<MarketExpires tags={tags} />);
       expect(container.firstChild).toBeNull();
     });
   });

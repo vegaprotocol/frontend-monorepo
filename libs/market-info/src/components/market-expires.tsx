@@ -34,7 +34,7 @@ export const getMarketExpiryDateFormatted = (
   return null;
 };
 
-export const SimpleMarketExpires = ({
+export const MarketExpires = ({
   tags,
 }: {
   tags?: ReadonlyArray<string> | null;

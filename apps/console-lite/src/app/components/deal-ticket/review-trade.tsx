@@ -16,7 +16,7 @@ import type {
 } from './__generated__/MarketTags';
 import { DealTicketEstimates } from './deal-ticket-estimates';
 import { Side } from '@vegaprotocol/types';
-import { SimpleMarketExpires } from '@vegaprotocol/market-info';
+import { MarketExpires } from '@vegaprotocol/market-info';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -86,7 +86,7 @@ export default ({
             <div>
               {tagsData?.market?.tradableInstrument.instrument.metadata
                 .tags && (
-                <SimpleMarketExpires
+                <MarketExpires
                   tags={
                     tagsData?.market.tradableInstrument.instrument.metadata.tags
                   }
