@@ -7,7 +7,7 @@ import type { OrderEvent } from './';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderWithMarket } from '../components';
+import type { Order } from '../components';
 import { generateOrder } from '../components';
 import {
   OrderStatus,
@@ -27,10 +27,7 @@ const defaultWalletContext = {
   connector: null,
 };
 
-function setup(
-  order: OrderWithMarket,
-  context?: Partial<VegaWalletContextShape>
-) {
+function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
   const mocks: MockedResponse<OrderEvent> = {
     request: {
       query: ORDER_EVENT_SUB,
