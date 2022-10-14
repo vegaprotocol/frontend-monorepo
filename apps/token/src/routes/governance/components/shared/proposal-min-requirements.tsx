@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 interface ProposalFormMinRequirementsProps {
   minProposalBalance: string;
   spamProtectionMin: string;
-  userAction: 'create' | 'vote';
+  userAction: ProposalUserAction.CREATE | ProposalUserAction.VOTE;
 }
 
 // Returns the larger, formatted value of the two token amounts
@@ -29,9 +30,9 @@ export const ProposalMinRequirements = ({
 
   return (
     <div className="mb-4" data-testid="min-proposal-requirements">
-      {userAction === 'create' &&
+      {userAction === ProposalUserAction.CREATE &&
         t('MinProposalRequirements', { value: Number(larger) })}
-      {userAction === 'vote' &&
+      {userAction === ProposalUserAction.VOTE &&
         t('MinProposalVoteRequirements', { value: Number(larger) })}
     </div>
   );

@@ -15,7 +15,11 @@ import type {
 } from './__generated__/VoteButtonsQuery';
 import { VoteState } from './use-user-vote';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ProposalState, VoteValue } from '@vegaprotocol/types';
+import {
+  ProposalState,
+  ProposalUserAction,
+  VoteValue,
+} from '@vegaprotocol/types';
 import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalMinRequirements } from '../shared';
 import { addDecimal } from '@vegaprotocol/react-helpers';
@@ -125,7 +129,7 @@ export const VoteButtons = ({
           <ProposalMinRequirements
             minProposalBalance={minVoterBalance}
             spamProtectionMin={spamProtectionMinTokens}
-            userAction="vote"
+            userAction={ProposalUserAction.VOTE}
           />
         );
       }

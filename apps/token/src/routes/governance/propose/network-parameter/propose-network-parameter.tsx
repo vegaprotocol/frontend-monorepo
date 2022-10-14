@@ -6,16 +6,16 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  useProposalSubmit,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormSubheader,
-  ProposalFormTitle,
   ProposalFormDescription,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
@@ -32,6 +32,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -135,7 +136,7 @@ export const ProposeNetworkParameter = () => {
                 params.governance_proposal_updateNetParam_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
-              userAction="create"
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
