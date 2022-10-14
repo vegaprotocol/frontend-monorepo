@@ -42,6 +42,8 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
+const minProposerBalance = '1';
+
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
   NEW_MARKET: 'New market',
@@ -61,7 +63,8 @@ context(
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
-          network_parameters['governance.proposal.freeform.minProposerBalance']
+          network_parameters['spam.protection.voting.min.tokens'] /
+            1000000000000000000
         ).as('minProposerBalance');
         cy.wrap(
           network_parameters['governance.proposal.freeform.minVoterBalance']
@@ -112,11 +115,6 @@ context(
             parseInt(this.minProposerBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minProposerBalance'
-          );
-          assert.isAtLeast(
-            parseInt(this.minVoterBalance),
-            0.00001,
-            'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
           );
           assert.isAtLeast(
             parseFloat(this.requiredParticipation),
