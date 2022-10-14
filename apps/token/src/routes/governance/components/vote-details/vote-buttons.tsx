@@ -148,7 +148,7 @@ export const VoteButtons = ({
     appDispatch,
     minVoterBalance,
     spamProtectionMinTokens,
-    openVegaWalletDialog
+    openVegaWalletDialog,
   ]);
 
   function submitVote(vote: VoteValue) {
