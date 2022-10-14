@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EthConnectPrompt } from '../../../../../components/eth-connect-prompt';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ConnectToVega } from '../../../../../components/connect-vega-wallet/connect-to-vega';
+import { ConnectToVega } from '../../../../../components/connect-to-vega/connect-to-vega';
 
 export const StakingWalletsContainer = ({
   children,

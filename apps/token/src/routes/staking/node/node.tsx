@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import type { Staking as StakingQueryResult } from '../__generated__/Staking';
-import { ConnectToVega } from '../../../components/connect-vega-wallet/connect-to-vega';
+import { ConnectToVega } from '../../../components/connect-to-vega/connect-to-vega';
 import { StakingForm } from './staking-form';
-import { ValidatorTable } from '../validator-table';
-import { YourStake } from '../your-stake';
+import { ValidatorTable } from './validator-table';
+import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 

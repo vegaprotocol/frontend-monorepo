@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { BigNumber } from '../../lib/bignumber';
-import { formatNumber } from '../../lib/format-number';
-import type { Staking_nodes } from './__generated__/Staking';
+import { BigNumber } from '../../../lib/bignumber';
+import { formatNumber } from '../../../lib/format-number';
+import type { Staking_nodes } from '../__generated__/Staking';
 
 const ValidatorTableCell = ({
   children,
