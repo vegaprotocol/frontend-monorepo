@@ -17,7 +17,7 @@ export const VegaLogo = () => {
   );
 };
 
-export const VLogo = ({ className }: { className: string }) => {
+export const VLogo = ({ className }: { className?: string }) => {
   return (
     <svg
       aria-label={t('Vega logo')}
