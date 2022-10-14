@@ -43,26 +43,23 @@ describe('positions', { tags: '@smoke' }, () => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
 
-      cy.get('[col-id="averageEntryPrice"]')
+      cy.get('[col-id="liquidationPrice"]')
         .should('contain.text', '85,093.38') // entry price
         .should('contain.text', '0.00'); // liquidation price
 
       cy.get('[col-id="currentLeverage"]').should('contain.text', '0.8');
 
-      cy.get('[col-id="capitalUtilisation"]') // margin allocated
-        .should('contain.text', '0.00%')
-        .should('contain.text', '1,000.01000');
+      cy.get('[col-id="marginAccountBalance"]') // margin allocated
+        .should('contain.text', '1,000.00000');
 
       cy.get('[col-id="unrealisedPNL"]').each(($unrealisedPnl) => {
         cy.wrap($unrealisedPnl).invoke('text').should('not.be.empty');
       });
 
-      cy.getByTestId('flash-cell').should('contain.text', '276,761.40348'); // Total tDAI position
-      cy.getByTestId('flash-cell').should('contain.text', '0.00000'); // Total Realised PNL
+      cy.get('[col-id="notional"]').should('contain.text', '276,761.40348'); // Total tDAI position
+      cy.get('[col-id="realisedPNL"]').should('contain.text', '0.00100'); // Total Realised PNL
       cy.get('[col-id="unrealisedPNL"]').should('contain.text', '8.95000'); // Total Unrealised PNL
     });
-
-    cy.getByTestId('balance').eq(1).should('have.text', '1,000.01000'); // Asset balance
 
     cy.getByTestId('close-position').should('be.visible').and('have.length', 3);
   }

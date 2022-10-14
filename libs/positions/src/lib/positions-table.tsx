@@ -270,7 +270,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={t('Liquidation price (est)')}
-          field="averageEntryPrice"
+          field="liquidationPrice"
           flex={2}
           headerTooltip={t(
             'Liquidation prices are based on the amount of collateral you have available, the risk of your position and the liquidity on the order book. They can change rapidly based on the profit and loss of your positions and any changes to collateral from opening/closing other positions and making deposits/withdrawals.'
