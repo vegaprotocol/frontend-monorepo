@@ -100,7 +100,8 @@ context(
       );
     });
 
-    // 3003-PMAN-001
+    // Skipping because unclear what the required json is yet for new market proposal, will update once docs have been updated
+    // 3003-todo-PMAN-001
     it.skip('Able to submit valid new market proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
@@ -161,7 +162,6 @@ context(
       cy.wait_for_proposal_submitted();
     });
 
-    // Skipping because new asset proposal disabled on capsule
     // 3001-VOTE-026 3001-VOTE-027  3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001
     it('Able to submit new asset proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_ASSET);
