@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import type { useWeb3React } from '@web3-react/core';
 import { StakingWalletsContainer } from './staking-wallets-container';
 
-jest.mock('../../connect-to-vega', () => ({
+jest.mock('../../../../../components/connect-to-vega', () => ({
   ConnectToVega: () => <div data-testid="connect-to-vega" />,
 }));
 
