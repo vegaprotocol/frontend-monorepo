@@ -77,6 +77,13 @@
           "nx build console-lite"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/console-lite/tsconfig.spec.json"
+      }
     }
   },
   "tags": []
