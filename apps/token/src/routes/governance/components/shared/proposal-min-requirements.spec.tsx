@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { ProposalMinRequirements } from './proposal-min-requirements';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 describe('ProposalFormMinRequirements', () => {
   it('should render successfully with spam protection value, if larger', () => {
@@ -7,7 +8,7 @@ describe('ProposalFormMinRequirements', () => {
       <ProposalMinRequirements
         minProposalBalance="1000000000000000000"
         spamProtectionMin="2000000000000000000"
-        userAction="create"
+        userAction={ProposalUserAction.CREATE}
       />
     );
     expect(baseElement).toBeTruthy();
@@ -22,7 +23,7 @@ describe('ProposalFormMinRequirements', () => {
       <ProposalMinRequirements
         minProposalBalance="3000000000000000000"
         spamProtectionMin="1000000000000000000"
-        userAction="create"
+        userAction={ProposalUserAction.CREATE}
       />
     );
     expect(baseElement).toBeTruthy();
