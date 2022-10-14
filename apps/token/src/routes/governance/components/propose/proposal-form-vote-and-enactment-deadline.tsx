@@ -27,12 +27,11 @@ interface DeadlineDatesProps {
 }
 
 interface ValidationFormProps {
-  onValidationMinMax:
-    | ((field: 'proposalValidationDeadline', value: string) => void)
-    | undefined;
-  validationRegister:
-    | UseFormRegisterReturn<'proposalValidationDeadline'>
-    | undefined;
+  onValidationMinMax: (
+    field: 'proposalValidationDeadline',
+    value: string
+  ) => void;
+  validationRegister: UseFormRegisterReturn<'proposalValidationDeadline'>;
   deadlines: DeadlineProps;
   deadlineDates: DeadlineDatesProps;
   updateValidationDeadlineAndDate: (hours: number) => void;
@@ -126,12 +125,8 @@ const ValidationForm = ({
 };
 
 interface EnactmentFormProps {
-  onEnactMinMax:
-    | ((field: 'proposalEnactmentDeadline', value: string) => void)
-    | undefined;
-  enactmentRegister:
-    | UseFormRegisterReturn<'proposalEnactmentDeadline'>
-    | undefined;
+  onEnactMinMax: (field: 'proposalEnactmentDeadline', value: string) => void;
+  enactmentRegister: UseFormRegisterReturn<'proposalEnactmentDeadline'>;
   deadlines: DeadlineProps;
   deadlineDates: DeadlineDatesProps;
   updateEnactmentDeadlineAndDate: (hours: number) => void;
@@ -468,7 +463,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
         )}
       </FormGroup>
 
-      {validationRequired && (
+      {validationRequired && onValidationMinMax && validationRegister && (
         <ValidationForm
           onValidationMinMax={onValidationMinMax}
           validationRegister={validationRegister}
@@ -479,18 +474,21 @@ export function ProposalFormVoteAndEnactmentDeadline({
         />
       )}
 
-      {minEnactmentHours && maxEnactmentHours && (
-        <EnactmentForm
-          onEnactMinMax={onEnactMinMax}
-          enactmentRegister={enactmentRegister}
-          deadlines={deadlines}
-          deadlineDates={deadlineDates}
-          updateEnactmentDeadlineAndDate={updateEnactmentDeadlineAndDate}
-          enactmentErrorMessage={enactmentErrorMessage}
-          minEnactmentHours={minEnactmentHours}
-          maxEnactmentHours={maxEnactmentHours}
-        />
-      )}
+      {minEnactmentHours &&
+        maxEnactmentHours &&
+        onEnactMinMax &&
+        enactmentRegister && (
+          <EnactmentForm
+            onEnactMinMax={onEnactMinMax}
+            enactmentRegister={enactmentRegister}
+            deadlines={deadlines}
+            deadlineDates={deadlineDates}
+            updateEnactmentDeadlineAndDate={updateEnactmentDeadlineAndDate}
+            enactmentErrorMessage={enactmentErrorMessage}
+            minEnactmentHours={minEnactmentHours}
+            maxEnactmentHours={maxEnactmentHours}
+          />
+        )}
     </>
   );
 }
