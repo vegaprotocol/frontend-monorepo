@@ -20,7 +20,7 @@ const renderComponent = () => {
   const setValue = jest.fn();
   render(
     <ProposalFormVoteAndEnactmentDeadline
-      onVoteMinMax={(field, value) => setValue(field, value)}
+      onVoteMinMax={setValue)}
       voteRegister={register('proposalVoteDeadline')}
       voteErrorMessage={undefined}
       voteMinClose={minVoteDeadline}
