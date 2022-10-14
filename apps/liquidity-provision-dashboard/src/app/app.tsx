@@ -1,21 +1,24 @@
-import { useMarketsLiquidity } from '@vegaprotocol/liquidity';
+import { ThemeContext } from '@vegaprotocol/react-helpers';
+import { useRoutes } from 'react-router-dom';
+import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import { createClient } from './lib/apollo-client';
 import '../styles.scss';
-import { Header } from './components/header';
-import { Intro } from './components/intro';
-import { MarketList } from './components/market-list';
+
+import { routerConfig } from './routes/router-config';
+
+const AppRouter = () => useRoutes(routerConfig);
 
 export function App() {
-  const { data, error, loading } = useMarketsLiquidity();
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :( </p>;
-
   return (
-    <div className="max-h-full min-h-full bg-white">
-      <Header />
-      <Intro />
-      {data && <MarketList data={data} />}
-    </div>
+    <EnvironmentProvider>
+      <ThemeContext.Provider value="light">
+        <NetworkLoader createClient={createClient}>
+          <div className="max-h-full min-h-full bg-white">
+            <AppRouter />
+          </div>
+        </NetworkLoader>
+      </ThemeContext.Provider>
+    </EnvironmentProvider>
   );
 }
 
