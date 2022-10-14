@@ -10,24 +10,32 @@ import {
 import { BigNumber } from '../../../../lib/bignumber';
 import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
 import type {
-  VoteButtons as VoteButtonsQueryResult,
-  VoteButtonsVariables,
-} from './__generated__/VoteButtons';
+  VoteButtonsQuery as VoteButtonsQueryResult,
+  VoteButtonsQueryVariables,
+} from './__generated__/VoteButtonsQuery';
 import { VoteState } from './use-user-vote';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ProposalState, VoteValue } from '@vegaprotocol/types';
-import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  ProposalState,
+  ProposalUserAction,
+  VoteValue,
+} from '@vegaprotocol/types';
+import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { ProposalMinRequirements } from '../shared';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
   castVote: (vote: VoteValue) => void;
   voteDatetime: Date | null;
   proposalState: ProposalState;
+  minVoterBalance: string | null;
+  spamProtectionMinTokens: string | null;
   className?: string;
 }
 
-const VOTE_BUTTONS_QUERY = gql`
-  query VoteButtons($partyId: ID!) {
+export const VOTE_BUTTONS_QUERY = gql`
+  query VoteButtonsQuery($partyId: ID!) {
     party(id: $partyId) {
       id
       stake {
@@ -40,23 +48,23 @@ const VOTE_BUTTONS_QUERY = gql`
 
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   const { pubKey } = useVegaWallet();
-  const { data, loading } = useQuery<
+  const { data, loading, error } = useQuery<
     VoteButtonsQueryResult,
-    VoteButtonsVariables
+    VoteButtonsQueryVariables
   >(VOTE_BUTTONS_QUERY, {
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
 
-  if (loading) return null;
-
   return (
-    <VoteButtons
-      {...props}
-      currentStakeAvailable={
-        new BigNumber(data?.party?.stake.currentStakeAvailableFormatted || 0)
-      }
-    />
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      <VoteButtons
+        {...props}
+        currentStakeAvailable={
+          new BigNumber(data?.party?.stake.currentStakeAvailableFormatted || 0)
+        }
+      />
+    </AsyncRenderer>
   );
 };
 
@@ -70,6 +78,8 @@ export const VoteButtons = ({
   voteDatetime,
   proposalState,
   currentStakeAvailable,
+  minVoterBalance,
+  spamProtectionMinTokens,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
@@ -83,7 +93,7 @@ export const VoteButtons = ({
 
     if (!pubKey) {
       return (
-        <>
+        <div data-testid="connect-wallet">
           <ButtonLink
             onClick={() =>
               appDispatch({
@@ -95,7 +105,7 @@ export const VoteButtons = ({
             {t('connectVegaWallet')}
           </ButtonLink>{' '}
           {t('toVote')}
-        </>
+        </div>
       );
     }
 
@@ -103,8 +113,38 @@ export const VoteButtons = ({
       return t('noGovernanceTokens');
     }
 
+    if (minVoterBalance && spamProtectionMinTokens) {
+      const formattedMinVoterBalance = new BigNumber(
+        addDecimal(minVoterBalance, 18)
+      );
+      const formattedSpamProtectionMinTokens = new BigNumber(
+        addDecimal(spamProtectionMinTokens, 18)
+      );
+
+      if (
+        currentStakeAvailable.isLessThan(formattedMinVoterBalance) ||
+        currentStakeAvailable.isLessThan(formattedSpamProtectionMinTokens)
+      ) {
+        return (
+          <ProposalMinRequirements
+            minProposalBalance={minVoterBalance}
+            spamProtectionMin={spamProtectionMinTokens}
+            userAction={ProposalUserAction.VOTE}
+          />
+        );
+      }
+    }
+
     return false;
-  }, [t, pubKey, currentStakeAvailable, proposalState, appDispatch]);
+  }, [
+    t,
+    pubKey,
+    currentStakeAvailable,
+    proposalState,
+    appDispatch,
+    minVoterBalance,
+    spamProtectionMinTokens,
+  ]);
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);
@@ -118,15 +158,15 @@ export const VoteButtons = ({
   }
 
   if (cantVoteUI) {
-    return <p>{cantVoteUI}</p>;
+    return <div>{cantVoteUI}</div>;
   }
 
   if (voteState === VoteState.Requested) {
-    return <p>{t('voteRequested')}...</p>;
+    return <p data-testid="vote-requested">{t('voteRequested')}...</p>;
   }
 
   if (voteState === VoteState.Pending) {
-    return <p>{t('votePending')}...</p>;
+    return <p data-testid="vote-pending">{t('votePending')}...</p>;
   }
 
   // If voted show current vote info`
@@ -137,7 +177,7 @@ export const VoteButtons = ({
     const className =
       voteState === VoteState.Yes ? 'text-success' : 'text-danger';
     return (
-      <p>
+      <p data-testid="you-voted">
         <span>{t('youVoted')}:</span>{' '}
         <span className={className}>{t(`voteState_${voteState}`)}</span>{' '}
         {voteDatetime ? (
@@ -158,18 +198,24 @@ export const VoteButtons = ({
   }
 
   if (!changeVote && voteState === VoteState.Failed) {
-    return <p>{t('voteError')}</p>;
+    return <p data-testid="vote-failure">{t('voteError')}</p>;
   }
 
   return (
     <div className="flex gap-4" data-testid="vote-buttons">
       <div className="flex-1">
-        <Button onClick={() => submitVote(VoteValue.VALUE_YES)}>
+        <Button
+          data-testid="vote-for"
+          onClick={() => submitVote(VoteValue.VALUE_YES)}
+        >
           {t('voteFor')}
         </Button>
       </div>
       <div className="flex-1">
-        <Button onClick={() => submitVote(VoteValue.VALUE_NO)}>
+        <Button
+          data-testid="vote-against"
+          onClick={() => submitVote(VoteValue.VALUE_NO)}
+        >
           {t('voteAgainst')}
         </Button>
       </div>
