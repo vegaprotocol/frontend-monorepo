@@ -10,16 +10,16 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
-import { useGlobalStore } from '../../stores';
+import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from './accounts-container';
 
 const Portfolio = () => {
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
+  const { updateTitle } = usePageTitleStore((store) => ({
+    updateTitle: store.updateTitle,
   }));
   useEffect(() => {
-    update({ pageTitle: titlefy([t('Portfolio')]) });
-  }, [update]);
+    updateTitle(titlefy([t('Portfolio')]));
+  }, [updateTitle]);
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (

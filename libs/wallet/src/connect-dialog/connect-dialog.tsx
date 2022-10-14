@@ -1,3 +1,4 @@
+import create from 'zustand';
 import {
   Button,
   Dialog,
@@ -28,15 +29,50 @@ type WalletType = 'gui' | 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-  dialogOpen: boolean;
-  setDialogOpen: (isOpen: boolean) => void;
+  onChangeOpen?: (open: boolean) => void;
+}
+
+export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
+  (set) => ({
+    vegaWalletDialogOpen: false,
+    updateVegaWalletDialog: (open: boolean) =>
+      set({ vegaWalletDialogOpen: open }),
+    openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
+    closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
+  })
+);
+
+interface VegaWalletDialogStore {
+  vegaWalletDialogOpen: boolean;
+  updateVegaWalletDialog: (open: boolean) => void;
+  openVegaWalletDialog: () => void;
+  closeVegaWalletDialog: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
-  dialogOpen,
-  setDialogOpen,
+  onChangeOpen,
 }: VegaConnectDialogProps) => {
+  const {
+    vegaWalletDialogOpen,
+    closeVegaWalletDialog,
+    updateVegaWalletDialog,
+  } = useVegaWalletDialogStore((store) => ({
+    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
+    updateVegaWalletDialog: onChangeOpen
+      ? (open: boolean) => {
+          store.updateVegaWalletDialog(open);
+          onChangeOpen(open);
+        }
+      : store.updateVegaWalletDialog,
+    closeVegaWalletDialog: onChangeOpen
+      ? () => {
+          store.closeVegaWalletDialog();
+          onChangeOpen(false);
+        }
+      : store.closeVegaWalletDialog,
+  }));
+
   const { data, error, loading } = useChainIdQuery();
 
   const renderContent = () => {
@@ -66,14 +102,18 @@ export const VegaConnectDialog = ({
     return (
       <ConnectDialogContainer
         connectors={connectors}
-        closeDialog={() => setDialogOpen(false)}
+        closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
       />
     );
   };
 
   return (
-    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+    <Dialog
+      open={vegaWalletDialogOpen}
+      size="small"
+      onChange={updateVegaWalletDialog}
+    >
       {renderContent()}
     </Dialog>
   );

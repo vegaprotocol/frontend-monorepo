@@ -8,12 +8,11 @@ import {
 import type { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { EpochCountdown } from '../../components/epoch-countdown';
-import { BigNumber } from '../../lib/bignumber';
+import { EpochCountdown } from '../../../components/epoch-countdown';
+import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 import { ValidatorStatus } from '@vegaprotocol/types';
 import type { Nodes } from './__generated__/Nodes';
-import type { Staking_epoch } from './__generated__/Staking';
 import type { ColDef } from 'ag-grid-community';
 
 const VALIDATOR = 'validator';
@@ -29,6 +28,14 @@ const VOTING_POWER = 'votingPower';
 
 export const NODES_QUERY = gql`
   query Nodes {
+    epoch {
+      id
+      timestamps {
+        start
+        end
+        expiry
+      }
+    }
     nodes {
       avatarUrl
       id
@@ -52,10 +59,6 @@ export const NODES_QUERY = gql`
     }
   }
 `;
-
-interface NodeListProps {
-  epoch: Staking_epoch | undefined;
-}
 
 interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
@@ -103,7 +106,7 @@ const nodeListGridStyles = `
   }
 `;
 
-export const NodeList = ({ epoch }: NodeListProps) => {
+export const NodeList = () => {
   const { t } = useTranslation();
   // errorPolicy due to vegaprotocol/vega issue 5898
   const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY, {
@@ -114,9 +117,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
-      if (!epoch?.timestamps.expiry) return;
+      if (!data?.epoch.timestamps.expiry) return;
       const now = Date.now();
-      const expiry = new Date(epoch.timestamps.expiry).getTime();
+      const expiry = new Date(data.epoch.timestamps.expiry).getTime();
 
       if (now > expiry) {
         refetch();
@@ -127,7 +130,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     return () => {
       clearInterval(epochInterval);
     };
-  }, [epoch?.timestamps.expiry, refetch]);
+  }, [data?.epoch.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
@@ -344,15 +347,17 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={nodes}>
-      {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
-        <div className="mb-8">
-          <EpochCountdown
-            id={epoch.id}
-            startDate={new Date(epoch.timestamps.start)}
-            endDate={new Date(epoch.timestamps.expiry)}
-          />
-        </div>
-      )}
+      {data?.epoch &&
+        data.epoch.timestamps.start &&
+        data?.epoch.timestamps.expiry && (
+          <div className="mb-8">
+            <EpochCountdown
+              id={data.epoch.id}
+              startDate={new Date(data.epoch.timestamps.start)}
+              endDate={new Date(data.epoch.timestamps.expiry)}
+            />
+          </div>
+        )}
       <NodeListTable ref={gridRef} />
     </AsyncRenderer>
   );
