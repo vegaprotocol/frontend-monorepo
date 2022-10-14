@@ -21,9 +21,11 @@ import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
 
 const mockUpdateDialogOpen = jest.fn();
+const mockCloseVegaDialog = jest.fn();
 jest.mock('zustand', () => () => () => ({
-  updateDialogOpen: mockUpdateDialogOpen,
-  dialogOpen: true,
+  updateVegaWalletDialog: mockUpdateDialogOpen,
+  closeVegaWalletDialog: mockCloseVegaDialog,
+  vegaWalletDialogOpen: true,
 }));
 
 let defaultProps: VegaConnectDialogProps;
@@ -127,7 +129,7 @@ describe('VegaConnectDialog', () => {
 
       expect(spy).toHaveBeenCalledWith(fields);
 
-      expect(mockUpdateDialogOpen).toHaveBeenCalledWith(false);
+      expect(mockCloseVegaDialog).toHaveBeenCalled();
     });
 
     it('handles failed connection', async () => {
@@ -302,7 +304,7 @@ describe('VegaConnectDialog', () => {
       await act(async () => {
         jest.advanceTimersByTime(CLOSE_DELAY);
       });
-      expect(mockUpdateDialogOpen).toHaveBeenCalledWith(false);
+      expect(mockCloseVegaDialog).toHaveBeenCalledWith();
     });
 
     it('handles incompatible wallet', async () => {

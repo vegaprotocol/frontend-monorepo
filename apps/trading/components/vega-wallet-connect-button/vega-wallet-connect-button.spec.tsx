@@ -8,7 +8,7 @@ const mockUpdateDialogOpen = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWalletDialogStore: () => ({
-    updateVegaWalletDialog: mockUpdateDialogOpen,
+    openVegaWalletDialog: mockUpdateDialogOpen,
   }),
 }));
 
@@ -30,7 +30,7 @@ it('Not connected', () => {
   const button = screen.getByRole('button');
   expect(button).toHaveTextContent('Connect Vega wallet');
   fireEvent.click(button);
-  expect(mockUpdateDialogOpen).toHaveBeenCalledWith(true);
+  expect(mockUpdateDialogOpen).toHaveBeenCalled();
 });
 
 it('Connected', () => {
