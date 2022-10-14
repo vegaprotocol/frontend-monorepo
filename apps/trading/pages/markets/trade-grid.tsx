@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoContainer } from '@vegaprotocol/market-info';
+import { MarketInfoContainer, getExpiryDate } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -20,7 +20,7 @@ import {
   ButtonLink,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import { getDateFormat, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Header, HeaderStat } from '../../components/header';
@@ -56,15 +56,7 @@ type ExpiryLabelProps = {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  let content = null;
-  if (market.marketTimestamps.close === null) {
-    content = t('Not time-based');
-  } else {
-    const closeDate = new Date(market.marketTimestamps.close as string);
-    const isExpired = Date.now() - closeDate.valueOf() > 0;
-    const expiryDate = getDateFormat().format(closeDate);
-    content = `${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`;
-  }
+  const content = getExpiryDate(market);
   return <div data-testid="trading-expiry">{content}</div>;
 };
 

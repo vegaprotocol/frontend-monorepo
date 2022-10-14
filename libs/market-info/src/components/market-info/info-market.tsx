@@ -24,6 +24,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
+import { getMarketExpiryDateFormatted } from '../market-expires';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -224,6 +225,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            expiryDate: getMarketExpiryDateFormatted(
+              market.tradableInstrument.instrument.metadata.tags
+            ),
             ...market.tradableInstrument.instrument.metadata.tags
               ?.map((tag) => {
                 const [key, value] = tag.split(':');
