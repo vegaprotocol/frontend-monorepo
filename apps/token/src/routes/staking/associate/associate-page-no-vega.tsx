@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ConnectToVega } from '../connect-to-vega';
+import { ConnectToVega } from '../../../components/connect-vega-wallet/connect-to-vega';
 
 export const AssociatePageNoVega = () => {
   const { t } = useTranslation();

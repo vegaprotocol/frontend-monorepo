@@ -2,7 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import { formatNumber } from '../../../../lib/format-number';
-import { ConnectToVega } from '../../../staking/connect-to-vega';
+import { ConnectToVega } from '../../../../components/connect-vega-wallet/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { useUserVote } from './use-user-vote';

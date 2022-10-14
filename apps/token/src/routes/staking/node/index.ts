@@ -1,2 +1,1 @@
-import { Node } from './node';
-export default Node;
+export { Node as default } from './node';

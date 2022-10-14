@@ -77,7 +77,7 @@ const LazyStakingDisassociate = React.lazy(
 const LazyStakingIndex = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/staking'
+      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/home'
     )
 );
 

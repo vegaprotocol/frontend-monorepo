@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Links } from '../../config';
+import { Links } from '../../../config';
 import { NodeList } from './node-list';
 
 export const Staking = () => {
@@ -48,5 +48,3 @@ export const Staking = () => {
     </>
   );
 };
-
-export default Staking;

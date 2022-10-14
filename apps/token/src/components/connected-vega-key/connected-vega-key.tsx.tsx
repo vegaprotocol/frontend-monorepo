@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { ConnectToVega } from '../../routes/staking/connect-to-vega';
+import { ConnectToVega } from '../connect-vega-wallet/connect-to-vega';
 
 export const ConnectedVegaKey = ({ pubKey }: { pubKey: string | null }) => {
   const { t } = useTranslation();

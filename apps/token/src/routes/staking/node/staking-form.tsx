@@ -4,15 +4,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { TokenInput } from '../../components/token-input';
-import { useAppState } from '../../contexts/app-state/app-state-context';
-import { useSearchParams } from '../../hooks/use-search-params';
-import { BigNumber } from '../../lib/bignumber';
-import { addDecimal, removeDecimal } from '../../lib/decimals';
+import { TokenInput } from '../../../components/token-input';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { useSearchParams } from '../../../hooks/use-search-params';
+import { BigNumber } from '../../../lib/bignumber';
+import { addDecimal, removeDecimal } from '../../../lib/decimals';
 import type {
   PartyDelegations,
   PartyDelegationsVariables,
-} from './__generated__/PartyDelegations';
+} from '../__generated__/PartyDelegations';
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';

@@ -4,7 +4,7 @@ import { NodeList, NODES_QUERY } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import type { Nodes_nodes } from './__generated__/Nodes';
+import type { Nodes_nodes } from '../__generated__/Nodes';
 import type { PartialDeep } from 'type-fest';
 import { ValidatorStatus } from '@vegaprotocol/types';
 
