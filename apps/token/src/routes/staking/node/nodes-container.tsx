@@ -4,9 +4,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SplashLoader } from '../../components/splash-loader';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
+import { SplashLoader } from '../../../components/splash-loader';
+import type { Staking as StakingQueryResult } from '../__generated__/Staking';
 
+// TODO should only request a single node. When migrating from deprecated APIs we should address this.
 export const STAKING_QUERY = gql`
   query Staking($partyId: ID!) {
     party(id: $partyId) {
@@ -74,7 +75,7 @@ export const STAKING_QUERY = gql`
 
 const RPC_ERROR = 'rpc error: code = NotFound desc = NotFound error';
 
-export const StakingNodesContainer = ({
+export const NodeContainer = ({
   children,
 }: {
   children: ({ data }: { data?: StakingQueryResult }) => React.ReactElement;
@@ -128,4 +129,4 @@ export const StakingNodesContainer = ({
   return children({ data });
 };
 
-export default StakingNodesContainer;
+export default NodeContainer;

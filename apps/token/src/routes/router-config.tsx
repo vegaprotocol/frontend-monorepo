@@ -84,14 +84,7 @@ const LazyStakingIndex = React.lazy(
 const LazyStakingNode = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/staking-node'
-    )
-);
-
-const LazyStakingNodes = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-staking-nodes", webpackPrefetch: true */ './staking/staking-nodes-container'
+      /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/node'
     )
 );
 
@@ -227,11 +220,7 @@ const routerConfig = [
       { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
-        element: (
-          <LazyStakingNodes>
-            {({ data }) => <LazyStakingIndex data={data} />}
-          </LazyStakingNodes>
-        ),
+        element: <LazyStakingIndex />,
       },
     ],
   },

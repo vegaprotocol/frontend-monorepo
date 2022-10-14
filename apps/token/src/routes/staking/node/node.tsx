@@ -2,23 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { EpochCountdown } from '../../components/epoch-countdown';
-import { BigNumber } from '../../lib/bignumber';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
-import { ConnectToVega } from './connect-to-vega';
-import { StakingForm } from './staking-form';
-import { ValidatorTable } from './validator-table';
-import { YourStake } from './your-stake';
-import StakingNodesContainer from './staking-nodes-container';
+import { EpochCountdown } from '../../../components/epoch-countdown';
+import { BigNumber } from '../../../lib/bignumber';
+import type { Staking as StakingQueryResult } from '../__generated__/Staking';
+import { ConnectToVega } from '../connect-to-vega';
+import { StakingForm } from '../staking-form';
+import { ValidatorTable } from '../validator-table';
+import { YourStake } from '../your-stake';
+import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-
-export const StakingNodeContainer = () => {
-  return (
-    <StakingNodesContainer>
-      {({ data }) => <StakingNode data={data} />}
-    </StakingNodesContainer>
-  );
-};
 
 interface StakingNodeProps {
   data?: StakingQueryResult;
@@ -28,7 +20,6 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   const { pubKey: vegaKey } = useVegaWallet();
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
-
   const nodeInfo = React.useMemo(() => {
     return data?.nodes?.find(({ id }) => id === node);
   }, [node, data]);
@@ -137,4 +128,8 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   );
 };
 
-export default StakingNodeContainer;
+export const Node = () => {
+  return (
+    <NodeContainer>{({ data }) => <StakingNode data={data} />}</NodeContainer>
+  );
+};

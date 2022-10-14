@@ -8,9 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Links } from '../../config';
 import { NodeList } from './node-list';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
-export const Staking = ({ data }: { data?: StakingQueryResult }) => {
+export const Staking = () => {
   const { t } = useTranslation();
 
   return (
@@ -44,7 +43,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
       </section>
       <section>
         <h2 className="text-2xl uppercase">{t('Validator nodes')}</h2>
-        <NodeList data-testid="node-list" epoch={data?.epoch} />
+        <NodeList data-testid="node-list" />
       </section>
     </>
   );
