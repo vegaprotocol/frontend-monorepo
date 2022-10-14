@@ -2,6 +2,7 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
   '[data-testid="proposal-validation-deadline"]';
+const proposalEnactmentDeadline = '[data-testid="proposal-enactment-deadline"]';
 const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
 const proposalMarketSelect = '[data-testid="proposal-market-select"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -13,6 +14,7 @@ const newProposedParameterValue =
   '[data-testid="selected-proposal-param-new-value"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
+const feedbackError = '[data-testid="Error"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
@@ -21,6 +23,7 @@ const governanceProposalType = {
   NEW_MARKET: 'New market',
   UPDATE_MARKET: 'Update market',
   NEW_ASSET: 'New asset',
+  UPDATE_ASSET: 'Update asset',
   FREEFORM: 'Freeform',
   RAW: 'raw proposal',
 };
@@ -97,8 +100,9 @@ context(
       );
     });
 
-    // 3003-PMAN-001
-    it('Able to submit valid new market proposal', function () {
+    // Skipping because unclear what the required json is yet for new market proposal, will update once docs have been updated
+    // 3003-todo-PMAN-001
+    it.skip('Able to submit valid new market proposal', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalTitle).type('Test new market proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -117,9 +121,24 @@ context(
       cy.go_to_make_new_proposal(governanceProposalType.NEW_MARKET);
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
+      cy.get(newProposalTitle).type('Test new market proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/new-market').then((newMarketProposal) => {
+        let newMarketPayload = JSON.stringify(newMarketProposal);
+        cy.get(newProposalTerms).type(newMarketPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Transaction failed', proposalTimeout).should('be.visible');
+      cy.get(feedbackError).should(
+        'have.text',
+        '*: unknown field "settlementPriceProperty" in vega.OracleSpecToFutureBinding'
+      );
     });
 
-    // skipped because of bug #1605
+    // skipped because no markets available to select in capsule
     it.skip('Able to submit update market proposal', function () {
       const marketId =
         '315a8e48db0a292c92b617264728048c82c20efc922c75fd292fc54e5c727c81';
@@ -163,6 +182,15 @@ context(
         'be.visible'
       );
       cy.get(dialogCloseButton).click();
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      // cannot submit a proposal with ERC20 address already in use
+      cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
+      cy.getByTestId('dialog-content').within(() => {
+        cy.get('p').should(
+          'have.text',
+          'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE'
+        );
+      });
     });
 
     it('Unable to submit new asset proposal with missing/invalid fields', function () {
@@ -176,6 +204,29 @@ context(
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'not.exist'
       );
+    });
+
+    it('Able to submit update asset proposal', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
+      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/update-asset').then((newAssetProposal) => {
+        let newAssetPayload = JSON.stringify(newAssetProposal);
+        cy.get(newProposalTerms).type(newAssetPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.get(proposalVoteDeadline).clear().click().type('50');
+      cy.get(proposalEnactmentDeadline).clear().click().type('50');
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
+
+    it('Unable to submit edit asset proposal with missing/invalid fields', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.get(inputError).should('have.length', 3);
     });
   }
 );
