@@ -1,26 +1,30 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  useProposalSubmit,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { validateJson } from '@vegaprotocol/react-helpers';
 import {
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
+  NetworkParams,
+  useNetworkParams,
+  validateJson,
+} from '@vegaprotocol/react-helpers';
+import {
   ProposalFormDescription,
-  ProposalFormTerms,
-  ProposalFormSubmit,
-  ProposalFormTransactionDialog,
   ProposalFormSubheader,
+  ProposalFormSubmit,
+  ProposalFormTerms,
+  ProposalFormTitle,
+  ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 export interface UpdateAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -85,11 +89,12 @@ export const ProposeUpdateAsset = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateAsset_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
