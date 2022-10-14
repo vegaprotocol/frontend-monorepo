@@ -7,12 +7,9 @@ describe('local values hook', () => {
     const { result } = renderHook(() => useLocalValues('light', setTheme));
     expect(result.current.vegaWalletDialog).toBeDefined();
     expect(result.current.vegaWalletDialog.manage).toBe(false);
-    expect(result.current.vegaWalletDialog.connect).toBe(false);
     act(() => {
-      result.current.vegaWalletDialog.setConnect(true);
       result.current.vegaWalletDialog.setManage(true);
     });
     expect(result.current.vegaWalletDialog.manage).toBe(true);
-    expect(result.current.vegaWalletDialog.connect).toBe(true);
   });
 });

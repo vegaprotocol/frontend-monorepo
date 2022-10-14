@@ -1,9 +1,7 @@
 import { createContext } from 'react';
 
 export interface VegaWalletDialogState {
-  connect: boolean;
   manage: boolean;
-  setConnect: (isOpen: boolean) => void;
   setManage: (isOpen: boolean) => void;
 }
 

@@ -22,7 +22,7 @@ import {
 } from '../wallet-card';
 import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
@@ -69,16 +69,19 @@ export const VegaWallet = () => {
 const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   return (
     <>
       <Button
-        onClick={() =>
+        onClick={() => {
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
             isOpen: true,
-          })
-        }
+          });
+          openVegaWalletDialog();
+        }}
         fill={true}
         data-testid="connect-vega"
       >
