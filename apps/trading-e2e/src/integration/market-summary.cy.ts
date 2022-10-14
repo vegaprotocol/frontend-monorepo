@@ -146,10 +146,7 @@ describe('Market trading page', () => {
         .within(() => {
           cy.getByTestId('external-link')
             .should('have.attr', 'href')
-            .and(
-              'include',
-              'https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring'
-            );
+            .and('include', Cypress.env('TRADING_MODE_LINK'));
 
           for (let i = 0; i < 6; i++) {
             cy.getByTestId(toolTipLabel)
