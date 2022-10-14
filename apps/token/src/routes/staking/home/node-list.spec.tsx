@@ -8,7 +8,7 @@ import type { Nodes_nodes } from './__generated__/Nodes';
 import type { PartialDeep } from 'type-fest';
 import { ValidatorStatus } from '@vegaprotocol/types';
 
-jest.mock('../../components/epoch-countdown', () => ({
+jest.mock('../../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
 }));
 
@@ -87,6 +87,16 @@ const MOCK_NODES = {
     uptime: 1560.266845703125,
     __typename: 'NodeData',
   },
+  epoch: {
+    __typename: 'Epoch',
+    id: '1',
+    timestamps: {
+      __typename: 'EpochTimestamps',
+      start: new Date(0).toISOString(),
+      end: '',
+      expiry: new Date(1000 * 60 * 60 * 24).toISOString(),
+    },
+  },
 };
 
 const renderNodeList = (data = MOCK_NODES) => {
@@ -100,18 +110,7 @@ const renderNodeList = (data = MOCK_NODES) => {
           },
         ]}
       >
-        <NodeList
-          epoch={{
-            __typename: 'Epoch',
-            id: '1',
-            timestamps: {
-              __typename: 'EpochTimestamps',
-              start: new Date(0).toISOString(),
-              end: '',
-              expiry: new Date(1000 * 60 * 60 * 24).toISOString(),
-            },
-          }}
-        />
+        <NodeList />
       </MockedProvider>
     </MemoryRouter>
   );
@@ -185,6 +184,16 @@ describe('Nodes list', () => {
         validatingNodes: 1,
         uptime: 1560.266845703125,
         __typename: 'NodeData',
+      },
+      epoch: {
+        __typename: 'Epoch',
+        id: '1',
+        timestamps: {
+          __typename: 'EpochTimestamps',
+          start: new Date(0).toISOString(),
+          end: '',
+          expiry: new Date(1000 * 60 * 60 * 24).toISOString(),
+        },
       },
     };
 
