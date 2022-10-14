@@ -69,8 +69,8 @@ export const VegaWallet = () => {
 const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   return (
     <>
@@ -80,7 +80,7 @@ const VegaWalletNotConnected = () => {
             type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
             isOpen: true,
           });
-          updateDialogOpen(true);
+          openVegaWalletDialog();
         }}
         fill={true}
         data-testid="connect-vega"

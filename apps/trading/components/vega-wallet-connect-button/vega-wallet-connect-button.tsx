@@ -16,8 +16,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 
 export const VegaWalletConnectButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
@@ -61,7 +61,7 @@ export const VegaWalletConnectButton = () => {
   return (
     <Button
       data-testid="connect-vega-wallet"
-      onClick={() => updateDialogOpen(true)}
+      onClick={openVegaWalletDialog}
       size="sm"
     >
       <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>

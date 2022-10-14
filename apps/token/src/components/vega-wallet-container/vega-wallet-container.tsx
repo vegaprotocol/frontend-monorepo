@@ -16,8 +16,8 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
 
   if (!pubKey) {
@@ -30,7 +30,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
               type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
               isOpen: true,
             });
-            updateDialogOpen(true);
+            openVegaWalletDialog();
           }}
         >
           {t('connectVegaWallet')}

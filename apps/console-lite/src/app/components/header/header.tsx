@@ -6,8 +6,8 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import LocalContext from '../../context/local-context';
 
 const Header = () => {
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { updateVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    updateVegaWalletDialog: store.updateVegaWalletDialog,
   }));
   const {
     vegaWalletDialog: { setManage },
@@ -22,7 +22,7 @@ const Header = () => {
       <Logo />
       <div className="flex items-center gap-2 ml-auto relative z-10">
         <VegaWalletConnectButton
-          setConnectDialog={updateDialogOpen}
+          setConnectDialog={updateVegaWalletDialog}
           setManageDialog={setManage}
         />
         <ThemeSwitcher theme={theme} onToggle={toggleTheme} className="-my-4" />

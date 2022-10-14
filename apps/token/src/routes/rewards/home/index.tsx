@@ -67,8 +67,8 @@ export const REWARDS_QUERY = gql`
 export const RewardsIndex = () => {
   const { t } = useTranslation();
   const { pubKey, pubKeys } = useVegaWallet();
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const { appDispatch } = useAppState();
   const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
@@ -155,7 +155,7 @@ export const RewardsIndex = () => {
                   type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
                   isOpen: true,
                 });
-                updateDialogOpen(true);
+                openVegaWalletDialog();
               }}
             >
               {t('connectVegaWallet')}

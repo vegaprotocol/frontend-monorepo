@@ -74,8 +74,8 @@ export const VoteButtons = ({
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const [changeVote, setChangeVote] = React.useState(false);
 
@@ -93,7 +93,7 @@ export const VoteButtons = ({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
                 isOpen: true,
               });
-              updateDialogOpen(true);
+              openVegaWalletDialog();
             }}
           >
             {t('connectVegaWallet')}
@@ -114,7 +114,7 @@ export const VoteButtons = ({
     currentStakeAvailable,
     proposalState,
     appDispatch,
-    updateDialogOpen,
+    openVegaWalletDialog,
   ]);
 
   function submitVote(vote: VoteValue) {

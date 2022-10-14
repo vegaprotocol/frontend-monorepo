@@ -4,8 +4,8 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import * as React from 'react';
 
 const ConnectWallet = () => {
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   return (
     <section
@@ -16,11 +16,7 @@ const ConnectWallet = () => {
         {t('Please connect your Vega wallet to make a trade')}
       </h3>
       <div className="mb-4">
-        <Button
-          variant="primary"
-          onClick={() => updateDialogOpen(true)}
-          size="lg"
-        >
+        <Button variant="primary" onClick={openVegaWalletDialog} size="lg">
           {t('Connect Vega wallet')}
         </Button>
       </div>

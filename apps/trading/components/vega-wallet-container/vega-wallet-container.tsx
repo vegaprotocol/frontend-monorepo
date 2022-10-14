@@ -8,8 +8,8 @@ interface VegaWalletContainerProps {
 }
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const { pubKey } = useVegaWallet();
 
@@ -21,7 +21,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
             {t('Connect your Vega wallet')}
           </p>
           <Button
-            onClick={() => updateDialogOpen(true)}
+            onClick={openVegaWalletDialog}
             data-testid="vega-wallet-connect"
           >
             {t('Connect')}

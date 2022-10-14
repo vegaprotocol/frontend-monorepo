@@ -7,7 +7,9 @@ import { truncateByChars } from '@vegaprotocol/react-helpers';
 const mockUpdateDialogOpen = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
-  useVegaWalletDialogStore: () => ({ updateDialogOpen: mockUpdateDialogOpen }),
+  useVegaWalletDialogStore: () => ({
+    updateVegaWalletDialog: mockUpdateDialogOpen,
+  }),
 }));
 
 beforeEach(() => {

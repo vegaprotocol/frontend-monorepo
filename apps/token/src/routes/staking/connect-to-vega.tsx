@@ -10,8 +10,8 @@ import {
 export const ConnectToVega = () => {
   const { appDispatch } = useAppState();
   const { t } = useTranslation();
-  const { updateDialogOpen } = useVegaWalletDialogStore((store) => ({
-    updateDialogOpen: store.updateDialogOpen,
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   return (
     <Button
@@ -20,7 +20,7 @@ export const ConnectToVega = () => {
           type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
           isOpen: true,
         });
-        updateDialogOpen(true);
+        openVegaWalletDialog();
       }}
       data-testid="connect-to-vega-wallet-btn"
     >
