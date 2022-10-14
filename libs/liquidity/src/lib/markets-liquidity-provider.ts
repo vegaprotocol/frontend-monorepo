@@ -28,6 +28,7 @@ import {
   getLiquidityForMarket,
   sumLiquidityCommitted,
   getFeeLevels,
+  getTargetStake,
 } from './utils/liquidity-utils';
 import type { Provider, LiquidityProvisionMarket } from './utils';
 
@@ -37,7 +38,7 @@ interface FeeLevels {
 }
 
 export type Market = MarketWithData &
-  MarketWithCandles & { feeLevels?: FeeLevels[] };
+  MarketWithCandles & { feeLevels: FeeLevels[]; target: string };
 
 export interface Markets {
   markets: Market[];
@@ -74,7 +75,8 @@ export const addData = (
       dayVolume,
       volumeChange,
       liquidityCommitted: sumLiquidityCommitted(liquidityProviders),
-      feeLevels: getFeeLevels(liquidityProviders),
+      feeLevels: getFeeLevels(liquidityProviders) || [],
+      target: getTargetStake(market.id, marketsLiquidity),
     };
   });
 };

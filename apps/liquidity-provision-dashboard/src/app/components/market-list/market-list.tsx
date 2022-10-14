@@ -63,9 +63,13 @@ const displayValue = (value: string) => {
   return parseFloat(value) > 0 ? `+${value}` : value;
 };
 
-const marketNameCellRenderer = (props: GroupCellRendererParams) => {
-  const { value, data } = props;
-
+const marketNameCellRenderer = ({
+  value,
+  data,
+}: {
+  value: string;
+  data: Market;
+}) => {
   return (
     <>
       <span style={{ lineHeight: '12px' }}>{value}</span>
@@ -76,12 +80,18 @@ const marketNameCellRenderer = (props: GroupCellRendererParams) => {
   );
 };
 
-const healthCellRenderer = ({ value, data }: GroupCellRendererParams) => {
+const healthCellRenderer = ({
+  value,
+  data,
+}: {
+  value: MarketTradingMode;
+  data: Market;
+}) => {
   return (
     <div>
       <HealthBar
         status={value}
-        target={data.data.targetStake}
+        target={data.target}
         decimals={
           data.tradableInstrument.instrument.product.settlementAsset.decimals
         }

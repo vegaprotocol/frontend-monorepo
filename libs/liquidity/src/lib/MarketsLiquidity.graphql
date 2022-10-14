@@ -11,6 +11,9 @@ query LiquidityProvisionMarkets {
             }
           }
         }
+        data {
+          targetStake
+        }
       }
     }
   }

@@ -29,6 +29,14 @@ export interface LiquidityProvisionMarkets_marketsConnection_edges_node_liquidit
   edges: (LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection_edges | null)[] | null;
 }
 
+export interface LiquidityProvisionMarkets_marketsConnection_edges_node_data {
+  __typename: "MarketData";
+  /**
+   * The amount of stake targeted for this market
+   */
+  targetStake: string | null;
+}
+
 export interface LiquidityProvisionMarkets_marketsConnection_edges_node {
   __typename: "Market";
   /**
@@ -39,6 +47,10 @@ export interface LiquidityProvisionMarkets_marketsConnection_edges_node {
    * The list of the liquidity provision commitments for this market
    */
   liquidityProvisionsConnection: LiquidityProvisionMarkets_marketsConnection_edges_node_liquidityProvisionsConnection | null;
+  /**
+   * marketData for the given market
+   */
+  data: LiquidityProvisionMarkets_marketsConnection_edges_node_data | null;
 }
 
 export interface LiquidityProvisionMarkets_marketsConnection_edges {
