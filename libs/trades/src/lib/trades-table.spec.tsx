@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { DOWN_CLASS, TradesTable, UP_CLASS } from './trades-table';
-import type { TradeFields } from './__generated__/TradeFields';
+import type { Trade } from './trades-data-provider';
 
-const trade: TradeFields = {
+const trade: Trade = {
   __typename: 'Trade',
   id: 'trade-id',
   price: '111122200',
@@ -14,7 +14,7 @@ const trade: TradeFields = {
     id: 'market-id',
     decimalPlaces: 2,
     positionDecimalPlaces: 2,
-  },
+  } as Trade['market'],
 };
 
 it('Correct columns are rendered', async () => {
