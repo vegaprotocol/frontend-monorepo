@@ -276,7 +276,7 @@ export const ProposeUpdateMarket = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={(field, value) => setValue(field, value)}
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
@@ -287,7 +287,7 @@ export const ProposeUpdateMarket = () => {
                   voteMaxClose={
                     params.governance_proposal_updateMarket_maxClose
                   }
-                  onEnactMinMax={(field, value) => setValue(field, value)}
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}

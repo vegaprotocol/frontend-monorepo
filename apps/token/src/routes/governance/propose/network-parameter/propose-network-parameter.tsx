@@ -254,7 +254,7 @@ export const ProposeNetworkParameter = () => {
                 )}
 
                 <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={(field, value) => setValue(field, value)}
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
@@ -265,7 +265,7 @@ export const ProposeNetworkParameter = () => {
                   voteMaxClose={
                     params.governance_proposal_updateNetParam_maxClose
                   }
-                  onEnactMinMax={(field, value) => setValue(field, value)}
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}

@@ -162,14 +162,14 @@ export const ProposeNewAsset = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
-                  onVoteMinMax={(field, value) => setValue(field, value)}
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
                   voteMinClose={params.governance_proposal_asset_minClose}
                   voteMaxClose={params.governance_proposal_asset_maxClose}
-                  onEnactMinMax={(field, value) => setValue(field, value)}
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
@@ -179,7 +179,7 @@ export const ProposeNewAsset = () => {
                   enactmentMinClose={params.governance_proposal_asset_minEnact}
                   enactmentMaxClose={params.governance_proposal_asset_maxEnact}
                   validationRequired={true}
-                  onValidationMinMax={(field, value) => setValue(field, value)}
+                  onValidationMinMax={setValue}
                   validationRegister={register('proposalValidationDeadline', {
                     required: t('Required'),
                   })}

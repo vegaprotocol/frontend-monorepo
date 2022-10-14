@@ -25,12 +25,12 @@ const renderComponent = () => {
       voteErrorMessage={undefined}
       voteMinClose={minVoteDeadline}
       voteMaxClose={maxVoteDeadline}
-      onEnactMinMax={(field, value) => setValue(field, value)}
+      onEnactMinMax={setValue}
       enactmentRegister={register('proposalEnactmentDeadline')}
       enactmentErrorMessage={undefined}
       enactmentMinClose={minEnactDeadline}
       enactmentMaxClose={maxEnactDeadline}
-      onValidationMinMax={(field, value) => setValue(field, value)}
+      onValidationMinMax={setValue}
       validationRequired={true}
       validationRegister={register('proposalValidationDeadline')}
       validationErrorMessage={undefined}
