@@ -5,7 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
-import type { Staking as StakingQueryResult } from '../__generated__/Staking';
+import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 export const STAKING_QUERY = gql`

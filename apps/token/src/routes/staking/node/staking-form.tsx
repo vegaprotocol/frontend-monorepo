@@ -12,7 +12,7 @@ import { addDecimal, removeDecimal } from '../../../lib/decimals';
 import type {
   PartyDelegations,
   PartyDelegationsVariables,
-} from '../__generated__/PartyDelegations';
+} from './__generated__/PartyDelegations';
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';

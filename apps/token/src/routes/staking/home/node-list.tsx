@@ -12,8 +12,7 @@ import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 import { ValidatorStatus } from '@vegaprotocol/types';
-import type { Nodes } from '../__generated__/Nodes';
-import type { Staking_epoch } from '../__generated__/Staking';
+import type { Nodes } from './__generated__/Nodes';
 import type { ColDef } from 'ag-grid-community';
 
 const VALIDATOR = 'validator';
