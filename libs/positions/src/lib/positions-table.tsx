@@ -3,7 +3,6 @@ import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
 import type {
   ValueFormatterParams,
-  ValueGetterParams,
   ICellRendererParams,
   CellRendererSelectorResult,
 } from 'ag-grid-community';
@@ -151,7 +150,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           resizable: true,
           tooltipComponent: TooltipCellComponent,
         }}
-        components={{ PriceFlashCell, ProgressBarCell }}
+        components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
         {...props}
       >
         <AgGridColumn
@@ -175,33 +174,40 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Size')}
-          field="openVolume"
-          valueGetter={({ node, data }: ValueGetterParams) => {
-            return node?.rowPinned ? data?.notional : data?.openVolume;
-          }}
+          headerName={t('Notional size')}
+          field="notional"
           type="rightAligned"
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
-            return {
-              component: params.node.rowPinned ? PriceFlashCell : AmountCell,
-            };
-          }}
+          cellClass="font-mono text-right"
           valueFormatter={({
             value,
             data,
-            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['notional'];
+          }): string => {
+            if (!value || !data) {
+              return '';
+            }
+            return addDecimalsFormatNumber(value, data.decimals);
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Open volume')}
+          field="openVolume"
+          type="rightAligned"
+          cellClass="font-mono text-right"
+          cellClassRules={signedNumberCssClassRules}
+          valueFormatter={({
+            value,
+            data,
           }: PositionsTableValueFormatterParams & {
             value: Position['openVolume'];
-          }): AmountCellProps['valueFormatted'] | string => {
+          }): string | undefined => {
             if (!value || !data) {
               return undefined;
             }
-            if (node?.rowPinned) {
-              return addDecimalsFormatNumber(value, data.decimals);
-            }
-            return data;
+            return volumePrefix(
+              addDecimalsFormatNumber(value, data.positionDecimalPlaces)
+            );
           }}
         />
         <AgGridColumn
@@ -237,16 +243,34 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             );
           }}
         />
+        <AgGridColumn headerName={t('Settlement asset')} field="assetSymbol" />
         <AgGridColumn
           headerName={t('Entry price')}
           field="averageEntryPrice"
-          headerComponentParams={{
-            template:
-              '<div class="ag-cell-label-container" role="presentation">' +
-              `  <span>${t('Liquidation price (est)')}</span>` +
-              '  <span ref="eText" class="ag-header-cell-text"></span>' +
-              '</div>',
+          type="rightAligned"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+            };
           }}
+          valueFormatter={({
+            data,
+            value,
+            node,
+          }: PositionsTableValueFormatterParams & {
+            value: Position['averageEntryPrice'];
+          }): string | undefined => {
+            if (!data || node?.rowPinned) {
+              return undefined;
+            }
+            return addDecimalsFormatNumber(value, data.marketDecimalPlaces);
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Liquidation price (est)')}
+          field="averageEntryPrice"
           flex={2}
           headerTooltip={t(
             'Liquidation prices are based on the amount of collateral you have available, the risk of your position and the liquidity on the order book. They can change rapidly based on the profit and loss of your positions and any changes to collateral from opening/closing other positions and making deposits/withdrawals.'
@@ -273,7 +297,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             value,
-            node,
           }: PositionsTableValueFormatterParams & {
             value: Position['currentLeverage'];
           }) =>
@@ -282,15 +305,13 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={t('Margin allocated')}
-          field="capitalUtilisation"
+          field="marginAccountBalance"
           type="rightAligned"
-          flex={2}
-          cellRenderer="ProgressBarCell"
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
             return {
-              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
             };
           }}
           valueFormatter={({
@@ -298,16 +319,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             value,
             node,
           }: PositionsTableValueFormatterParams & {
-            value: Position['capitalUtilisation'];
-          }): PriceCellProps['valueFormatted'] | undefined => {
+            value: Position['marginAccountBalance'];
+          }): string | undefined => {
             if (!data || node?.rowPinned) {
               return undefined;
             }
-            return {
-              low: `${formatNumber(value, 2)}%`,
-              high: addDecimalsFormatNumber(data.totalBalance, data.decimals),
-              value: Number(value),
-            };
+            return formatNumber(value, data.decimals);
           }}
         />
         <AgGridColumn
