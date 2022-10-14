@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -6,13 +6,40 @@ import { ProposalState } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
 import type { ProposalFields } from '../../__generated__/ProposalFields';
 
-export const StatusPass = ({ children }: { children: React.ReactNode }) => (
+export const StatusPass = ({ children }: { children: ReactNode }) => (
   <span className="text-vega-green">{children}</span>
 );
 
-export const StatusFail = ({ children }: { children: React.ReactNode }) => (
+export const StatusFail = ({ children }: { children: ReactNode }) => (
   <span className="text-danger">{children}</span>
 );
+
+const WillPass = ({
+  willPass,
+  children,
+}: {
+  willPass: boolean;
+  children?: ReactNode;
+}) => {
+  const { t } = useTranslation();
+  if (willPass) {
+    return (
+      <>
+        {children}
+        {t('currentlySetTo')}
+        <StatusPass>{t('pass')}</StatusPass>
+      </>
+    );
+  } else {
+    return (
+      <>
+        {children}
+        {t('currentlySetTo')}
+        <StatusFail>{t('fail')}</StatusFail>
+      </>
+    );
+  }
+};
 
 export const CurrentProposalStatus = ({
   proposal,
@@ -36,21 +63,7 @@ export const CurrentProposalStatus = ({
     });
 
   if (proposal.state === ProposalState.STATE_OPEN) {
-    if (willPass) {
-      return (
-        <>
-          {t('currentlySetTo')}
-          <StatusPass>{t('pass')}</StatusPass>
-        </>
-      );
-    } else {
-      return (
-        <>
-          {t('currentlySetTo')}
-          <StatusFail>{t('fail')}</StatusFail>
-        </>
-      );
-    }
+    return <WillPass willPass={willPass} />;
   }
 
   if (
@@ -105,9 +118,7 @@ export const CurrentProposalStatus = ({
   }
 
   if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
-    return (
-      <span>{t('subjectToFurtherActions', { daysAgo: daysClosedAgo })}</span>
-    );
+    return <WillPass willPass={willPass}>{t('WaitingForNodeVote')}</WillPass>;
   }
 
   return null;

@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { format } from 'date-fns';
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -88,10 +88,18 @@ export const VoteButtons = ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const [changeVote, setChangeVote] = React.useState(false);
+  const proposalVotable = useMemo(
+    () =>
+      [
+        ProposalState.STATE_OPEN,
+        ProposalState.STATE_WAITING_FOR_NODE_VOTE,
+      ].includes(proposalState),
+    [proposalState]
+  );
 
   const cantVoteUI = React.useMemo(() => {
-    if (proposalState !== ProposalState.STATE_OPEN) {
-      return t('youDidNotVote');
+    if (!proposalVotable) {
+      return t('votingEnded');
     }
 
     if (!pubKey) {
@@ -188,7 +196,7 @@ export const VoteButtons = ({
         {voteDatetime ? (
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
-        {proposalState === ProposalState.STATE_OPEN ? (
+        {proposalVotable ? (
           <ButtonLink
             data-testid="change-vote-button"
             onClick={() => {
