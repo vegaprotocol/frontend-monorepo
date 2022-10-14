@@ -27,7 +27,6 @@ const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
 const rawProposalData = '[data-testid="proposal-data"]';
-const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const minVoteButton = '[data-testid="min-vote"]';
 const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
