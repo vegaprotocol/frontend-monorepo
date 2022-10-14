@@ -9,6 +9,34 @@ import { ValidatorStatus } from "@vegaprotocol/types";
 // GraphQL query operation: Nodes
 // ====================================================
 
+export interface Nodes_epoch_timestamps {
+  __typename: "EpochTimestamps";
+  /**
+   * RFC3339 timestamp - Vega time of epoch start, null if not started
+   */
+  start: string | null;
+  /**
+   * RFC3339 timestamp - Vega time of epoch end, null if not ended
+   */
+  end: string | null;
+  /**
+   * RFC3339 timestamp - Vega time of epoch expiry
+   */
+  expiry: string | null;
+}
+
+export interface Nodes_epoch {
+  __typename: "Epoch";
+  /**
+   * Numeric sequence number used to identify the epoch
+   */
+  id: string;
+  /**
+   * Timestamps for start and end of epochs
+   */
+  timestamps: Nodes_epoch_timestamps;
+}
+
 export interface Nodes_nodes_rankingScore {
   __typename: "RankingScore";
   /**
@@ -80,6 +108,10 @@ export interface Nodes_nodeData {
 }
 
 export interface Nodes {
+  /**
+   * Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   */
+  epoch: Nodes_epoch;
   /**
    * All known network nodes
    */
