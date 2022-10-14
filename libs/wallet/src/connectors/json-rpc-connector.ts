@@ -254,7 +254,7 @@ export class JsonRpcConnector implements VegaConnector {
     } else {
       // In the case of sending a tx, return null instead of throwing
       // this indicates to the app that the user rejected the tx rather
-      // than it being a true erroor
+      // than it being a true error
       if ('error' in result && result.error.code === 3001) {
         return null;
       }

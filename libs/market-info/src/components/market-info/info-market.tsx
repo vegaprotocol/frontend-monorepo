@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { marketInfoDataProvider } from './market-info-data-provider';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import type { MarketInfoQuery } from './__generated___/MarketInfo';
+import { getMarketExpiryDateFormatted } from '../market-expires';
 
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
@@ -218,6 +219,9 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            expiryDate: getMarketExpiryDateFormatted(
+              market.tradableInstrument.instrument.metadata.tags
+            ),
             ...market.tradableInstrument.instrument.metadata.tags
               ?.map((tag) => {
                 const [key, value] = tag.split(':');

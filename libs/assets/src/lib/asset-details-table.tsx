@@ -103,7 +103,7 @@ export const rows: Rows = [
     key: AssetDetail.WITHDRAWAL_THRESHOLD,
     label: t('Withdrawal threshold'),
     tooltip: t(
-      'The maximum allowed per withdrawal. Note: this is a temporary measure for restricted mainnet'
+      'The maximum you can withdraw instantly. There’s no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them'
     ),
     value: (asset) =>
       num(asset, (asset.source as Schema.ERC20).withdrawThreshold),
@@ -112,7 +112,7 @@ export const rows: Rows = [
     key: AssetDetail.LIFETIME_LIMIT,
     label: t('Lifetime limit'),
     tooltip: t(
-      'The lifetime deposit limit per address. Note: this is a temporary measure for restricted mainnet'
+      'The lifetime deposit limit per address. Note: this is a temporary measure that can be changed or removed through governance'
     ),
     value: (asset) => num(asset, (asset.source as Schema.ERC20).lifetimeLimit),
   },

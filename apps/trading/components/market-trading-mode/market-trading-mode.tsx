@@ -75,8 +75,9 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
           />
         )
       }
+      testId="market-trading-mode"
     >
-      <div data-testid="trading-mode">
+      <div>
         {tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         trigger &&
         trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED

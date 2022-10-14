@@ -1,12 +1,16 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import type { MarketState } from '@vegaprotocol/types';
+import type {
+  MarketState,
+  MarketTradingMode,
+  AuctionTrigger,
+} from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
 import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
-import { generateMarket } from './mocks/generate-market';
+import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import {
@@ -20,7 +24,9 @@ import { generateTrades } from './mocks/generate-trades';
 
 export const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
-  state: MarketState
+  state: MarketState,
+  tradingMode?: MarketTradingMode,
+  trigger?: AuctionTrigger
 ) => {
   aliasQuery(
     req,
@@ -37,6 +43,14 @@ export const mockTradingPage = (
     })
   );
   aliasQuery(req, 'Markets', generateMarkets());
+  aliasQuery(
+    req,
+    'MarketData',
+    generateMarketData({
+      trigger: trigger,
+      marketTradingMode: tradingMode,
+    })
+  );
   aliasQuery(req, 'MarketsData', generateMarketsData());
   aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
 
@@ -45,14 +59,34 @@ export const mockTradingPage = (
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
   aliasQuery(req, 'Margins', generateMargins());
-  aliasQuery(req, 'DealTicket', generateDealTicketQuery({ market: { state } }));
+  aliasQuery(
+    req,
+    'DealTicket',
+    generateDealTicketQuery({
+      market: {
+        state,
+        tradingMode: tradingMode,
+        data: {
+          trigger: trigger,
+        },
+      },
+    })
+  );
   aliasQuery(req, 'Assets', generateAssets());
   aliasQuery(req, 'Asset', generateAsset());
 
   aliasQuery(
     req,
     'MarketInfoQuery',
-    generateMarketInfoQuery({ market: { state } })
+    generateMarketInfoQuery({
+      market: {
+        state,
+        tradingMode: tradingMode,
+        data: {
+          trigger: trigger,
+        },
+      },
+    })
   );
   aliasQuery(req, 'Trades', generateTrades());
   aliasQuery(req, 'Chart', generateChart());

@@ -156,45 +156,11 @@ const ConnectorList = ({
   setWalletUrl: (value: string) => void;
   isMainnet: boolean;
 }) => {
-  const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return (
     <>
       <ConnectDialogContent>
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-        {urlInputExpanded ? (
-          <>
-            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-              {t('Custom wallet location')}
-            </p>
-            <FormGroup
-              labelFor="wallet-url"
-              label={t('Custom wallet location')}
-              hideLabel={true}
-            >
-              <Input
-                value={walletUrl}
-                onChange={(e) => setWalletUrl(e.target.value)}
-                name="wallet-url"
-              />
-            </FormGroup>
-            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-              {t('Choose wallet app to connect')}
-            </p>
-          </>
-        ) : (
-          <p className="mb-6 text-neutral-600 dark:text-neutral-400">
-            {t(
-              'Choose wallet app to connect, or to change port or server URL enter a '
-            )}
-            <button
-              className="underline"
-              onClick={() => setUrlInputExpanded(true)}
-            >
-              {t('custom wallet location')}
-            </button>{' '}
-            {t(' first')}
-          </p>
-        )}
+        <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
           <li className="mb-4">
             <ConnectionOption
@@ -320,5 +286,46 @@ const ConnectionOption = ({
         <Icon name="chevron-right" />
       </span>
     </Button>
+  );
+};
+
+const CustomUrlInput = ({
+  walletUrl,
+  setWalletUrl,
+}: {
+  walletUrl: string;
+  setWalletUrl: (url: string) => void;
+}) => {
+  const [urlInputExpanded, setUrlInputExpanded] = useState(false);
+  return urlInputExpanded ? (
+    <>
+      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+        {t('Custom wallet location')}
+      </p>
+      <FormGroup
+        labelFor="wallet-url"
+        label={t('Custom wallet location')}
+        hideLabel={true}
+      >
+        <Input
+          value={walletUrl}
+          onChange={(e) => setWalletUrl(e.target.value)}
+          name="wallet-url"
+        />
+      </FormGroup>
+      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+        {t('Choose wallet app to connect')}
+      </p>
+    </>
+  ) : (
+    <p className="mb-6 text-neutral-600 dark:text-neutral-400">
+      {t(
+        'Choose wallet app to connect, or to change port or server URL enter a '
+      )}
+      <button className="underline" onClick={() => setUrlInputExpanded(true)}>
+        {t('custom wallet location')}
+      </button>{' '}
+      {t(' first')}
+    </p>
   );
 };

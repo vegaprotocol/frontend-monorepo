@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { WithdrawalDialogs } from '@vegaprotocol/withdraws';
 import { Web3Container } from '@vegaprotocol/web3';
-import { DepositContainer } from '@vegaprotocol/deposits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountManager } from '@vegaprotocol/accounts';
+import { DepositDialog } from './deposits-container';
 
 export const AccountsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -23,12 +23,17 @@ export const AccountsContainer = () => {
 
   return (
     <Web3Container>
-      <div className="h-full">
+      <div className="h-full relative grid grid-rows-[1fr,min-content]">
         <AssetAccountTable partyId={pubKey} />
         <DepositDialog
           depositDialog={depositDialog}
           setDepositDialog={setDepositDialog}
         />
+        <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
+          <Button size="sm" onClick={() => setDepositDialog(true)}>
+            Deposit
+          </Button>
+        </div>
       </div>
     </Web3Container>
   );
@@ -66,24 +71,5 @@ export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
         setDepositDialog={setDepositDialog}
       />
     </>
-  );
-};
-
-export interface DepositDialogProps {
-  assetId?: string;
-  depositDialog: boolean;
-  setDepositDialog: (open: boolean) => void;
-}
-
-export const DepositDialog = ({
-  assetId,
-  depositDialog,
-  setDepositDialog,
-}: DepositDialogProps) => {
-  return (
-    <Dialog open={depositDialog} onChange={setDepositDialog}>
-      <h1 className="text-2xl mb-4">{t('Deposit')}</h1>
-      <DepositContainer assetId={assetId} />
-    </Dialog>
   );
 };

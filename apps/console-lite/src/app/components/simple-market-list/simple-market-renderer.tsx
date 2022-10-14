@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import SimpleMarketExpires from './simple-market-expires';
 import type { Market } from '@vegaprotocol/market-list';
+import { MarketExpires } from '@vegaprotocol/market-info';
 
 interface Props {
   market: Market;
@@ -19,7 +19,7 @@ const MarketNameRenderer = ({ market, isMobile }: Props) => {
         {isMobile
           ? market.tradableInstrument.instrument.code
           : market.tradableInstrument.instrument.name}{' '}
-        <SimpleMarketExpires
+        <MarketExpires
           tags={market.tradableInstrument.instrument.metadata.tags}
         />
       </div>
