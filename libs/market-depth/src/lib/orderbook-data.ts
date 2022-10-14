@@ -384,8 +384,9 @@ export const updateLevels = (
 export interface MockDataGeneratorParams {
   numberOfSellRows: number;
   numberOfBuyRows: number;
+  step: number;
+  middle?: number;
   overlap: number;
-  midPrice: number;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
   indicativePrice?: number;
@@ -396,7 +397,8 @@ export interface MockDataGeneratorParams {
 export const generateMockData = ({
   numberOfSellRows,
   numberOfBuyRows,
-  midPrice,
+  step,
+  middle,
   overlap,
   bestStaticBidPrice,
   bestStaticOfferPrice,
@@ -405,7 +407,12 @@ export const generateMockData = ({
   resolution,
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
-  let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
+  middle =
+    middle ||
+    Math.round(
+      bestStaticOfferPrice + (bestStaticBidPrice - bestStaticOfferPrice) / 2
+    );
+  let price = middle + (numberOfSellRows - Math.ceil(overlap / 2) + 1) * step;
   const sell: Omit<MarketDepth_market_depth_sell, '__typename'>[] = matrix.map(
     (row, i) => ({
       price: (price -= 1).toString(),

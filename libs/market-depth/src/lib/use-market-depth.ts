@@ -9,20 +9,19 @@ interface Props {
   throttleMilliseconds?: number;
 }
 
-export const useOrderBookData = ({
+export const useMarketDepth = ({
   variables,
   throttleMilliseconds = 1000,
 }: Props) => {
-  const [orderbookData, setOrderbookData] = useState<MarketDepth_market | null>(
-    null
-  );
+  const [marketDepthData, setMarketDepthData] =
+    useState<MarketDepth_market | null>(null);
   const dataRef = useRef<MarketDepth_market | null>(null);
-  const updateOrderbookData = useRef(
+  const updateMarketDepthData = useRef(
     throttle(() => {
       if (!dataRef.current) {
         return;
       }
-      setOrderbookData(dataRef.current);
+      setMarketDepthData(dataRef.current);
     }, throttleMilliseconds)
   );
 
@@ -32,7 +31,7 @@ export const useOrderBookData = ({
         return false;
       }
       dataRef.current = data;
-      updateOrderbookData.current();
+      updateMarketDepthData.current();
       return true;
     },
     []
@@ -45,16 +44,16 @@ export const useOrderBookData = ({
   });
 
   useEffect(() => {
-    const throttleRunnner = updateOrderbookData.current;
+    const throttleRunnner = updateMarketDepthData.current;
     if (!data) {
       dataRef.current = null;
-      setOrderbookData(dataRef.current);
+      setMarketDepthData(dataRef.current);
       return;
     }
     dataRef.current = {
       ...data,
     };
-    setOrderbookData(dataRef.current);
+    setMarketDepthData(dataRef.current);
     return () => {
       throttleRunnner.cancel();
     };
@@ -63,6 +62,6 @@ export const useOrderBookData = ({
   return {
     loading,
     error,
-    data: orderbookData,
+    data: marketDepthData,
   };
 };

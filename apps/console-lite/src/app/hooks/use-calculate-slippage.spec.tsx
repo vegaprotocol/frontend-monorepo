@@ -2,12 +2,15 @@ import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { MarketDepth_market } from '@vegaprotocol/market-depth';
 import useCalculateSlippage from './use-calculate-slippage';
 
-const mockData = {
-  decimalPlaces: 0,
-  positionDecimalPlaces: 0,
+const mockData: MarketDepth_market = {
+  __typename: 'Market',
+  id: 'marketId',
   depth: {
+    __typename: 'MarketDepth',
+    sequenceNumber: '1',
     buy: [
       {
         price: '5',
@@ -29,7 +32,7 @@ const mockData = {
         price: '1',
         volume: '1',
       },
-    ],
+    ].map((d) => ({ __typename: 'PriceLevel', numberOfOrders: '1', ...d })),
     sell: [
       {
         price: '6',
@@ -51,17 +54,17 @@ const mockData = {
         price: '10',
         volume: '2',
       },
-    ],
+    ].map((d) => ({ __typename: 'PriceLevel', numberOfOrders: '1', ...d })),
   },
 };
 
-let mockOrderBookData = {
+let mockMarketDepthData = {
   data: mockData,
 };
 
 jest.mock('@vegaprotocol/market-depth', () => ({
   ...jest.requireActual('@vegaprotocol/market-depth'),
-  useOrderBookData: jest.fn(() => mockOrderBookData),
+  useMarketDepth: jest.fn(() => mockMarketDepthData),
 }));
 
 jest.mock('@vegaprotocol/react-helpers', () => ({
@@ -114,7 +117,7 @@ describe('useCalculateSlippage Hook', () => {
     });
 
     it('when no order book result should be null', () => {
-      mockOrderBookData = {
+      mockMarketDepthData = {
         data: {
           ...mockData,
           depth: {
