@@ -48,7 +48,7 @@ export const DealTicketContainer = () => {
         return (
           <DealTicketManager market={data.market}>
             {loading ? loader : balance}
-            <DealTicketSteps market={data.market} partyData={partyData} />
+            <DealTicketSteps market={data.market} />
           </DealTicketManager>
         );
       }}

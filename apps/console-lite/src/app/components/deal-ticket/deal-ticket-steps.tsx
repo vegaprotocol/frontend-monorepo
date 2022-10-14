@@ -1,15 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
-import type {
-  DealTicketMarketFragment,
-  PartyBalanceQuery,
-} from '@vegaprotocol/deal-ticket';
-import {
-  useMaximumPositionSize,
-  useOrderCloseOut,
-} from '@vegaprotocol/deal-ticket';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import { useFeeDealTicketDetails } from '@vegaprotocol/deal-ticket';
 import {
   getDefaultOrder,
   useOrderValidation,
@@ -19,13 +13,8 @@ import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
-import {
-  t,
-  addDecimalsFormatNumber,
-  toDecimal,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { t, toDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
   getOrderDialogTitle,
@@ -39,18 +28,12 @@ import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import { Side, OrderType } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
-import useCalculateSlippage from '../../hooks/use-calculate-slippage';
-import useOrderMargin from '../../hooks/use-order-margin';
 
 interface DealTicketMarketProps {
   market: DealTicketMarketFragment;
-  partyData?: PartyBalanceQuery;
 }
 
-export const DealTicketSteps = ({
-  market,
-  partyData,
-}: DealTicketMarketProps) => {
+export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
     (marketId: string) => {
@@ -84,82 +67,23 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
-  const { pubKey } = useVegaWallet();
-  const estMargin = useOrderMargin({
-    order,
-    market,
-    partyId: pubKey || '',
-  });
 
-  const maxTrade = useMaximumPositionSize({
-    partyId: pubKey || '',
-    accounts: partyData?.party?.accounts || [],
-    marketId: market.id,
-    settlementAssetId:
-      market.tradableInstrument.instrument.product.settlementAsset.id,
-    price: market?.depth?.lastTrade?.price,
-    order,
-  });
+  const {
+    fees,
+    notionalSize,
+    estMargin,
+    estCloseOut,
+    formattedPrice,
+    slippageValue,
+    setSlippageValue,
+    max,
+  } = useFeeDealTicketDetails(order, market);
 
-  const estCloseOut = useOrderCloseOut({ order, market, partyData });
-  const slippage = useCalculateSlippage({ marketId: market.id, order });
-  const [slippageValue, setSlippageValue] = useState(
-    slippage ? parseFloat(slippage) : 0
-  );
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
     transaction.status === VegaTxStatus.Pending
       ? 'pending'
       : 'default';
-
-  useEffect(() => {
-    setSlippageValue(slippage ? parseFloat(slippage) : 0);
-  }, [slippage]);
-
-  const price = useMemo(() => {
-    if (slippage && market?.depth?.lastTrade?.price) {
-      const isLong = order.side === Side.SIDE_BUY;
-      const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-        parseFloat(slippage) / 100
-      );
-      return new BigNumber(market?.depth?.lastTrade?.price)
-        .multipliedBy(multiplier)
-        .toNumber();
-    }
-    return null;
-  }, [market?.depth?.lastTrade?.price, order.side, slippage]);
-
-  const formattedPrice =
-    price && addDecimalsFormatNumber(price, market.decimalPlaces);
-
-  const notionalSize = useMemo(() => {
-    if (price) {
-      const size = new BigNumber(price).multipliedBy(orderSize).toNumber();
-
-      return addDecimalsFormatNumber(size, market.decimalPlaces);
-    }
-    return null;
-  }, [market.decimalPlaces, orderSize, price]);
-
-  const fees = useMemo(() => {
-    if (estMargin?.fees && notionalSize) {
-      const percentage = new BigNumber(estMargin?.fees)
-        .dividedBy(notionalSize)
-        .multipliedBy(100)
-        .decimalPlaces(2)
-        .toString();
-
-      return `${estMargin.fees} (${percentage}%)`;
-    }
-
-    return null;
-  }, [estMargin?.fees, notionalSize]);
-
-  const max = useMemo(() => {
-    return new BigNumber(maxTrade)
-      .decimalPlaces(market.positionDecimalPlaces)
-      .toNumber();
-  }, [market.positionDecimalPlaces, maxTrade]);
 
   const onSizeChange = useCallback(
     (value: number) => {
@@ -204,6 +128,7 @@ export const DealTicketSteps = ({
       market?.depth?.lastTrade?.price,
       order.side,
       orderType,
+      setSlippageValue,
       setValue,
     ]
   );

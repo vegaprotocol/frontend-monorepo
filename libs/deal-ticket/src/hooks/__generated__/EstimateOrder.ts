@@ -15,7 +15,7 @@ export type EstimateOrderQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string } } };
+export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __typename?: 'OrderEstimate', totalFeeAmount: string, fee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, marginLevels: { __typename?: 'MarginLevels', initialLevel: string } } };
 
 
 export const EstimateOrderDocument = gql`
@@ -38,6 +38,7 @@ export const EstimateOrderDocument = gql`
     marginLevels {
       initialLevel
     }
+    totalFeeAmount
   }
 }
     `;

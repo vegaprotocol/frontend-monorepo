@@ -20,7 +20,10 @@ import {
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
-import { useFeeDealTicketDetails } from '../../hooks/use-fee-deal-ticket-details';
+import {
+  getFeeDetailLabelValues,
+  useFeeDealTicketDetails,
+} from '../../hooks/use-fee-deal-ticket-details';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -50,6 +53,7 @@ export const DealTicket = ({
 
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
+  const orderPrice = watch('price');
   const order = watch();
   const { message, isDisabled: disabled } = useOrderValidation({
     market,
@@ -92,7 +96,8 @@ export const DealTicket = ({
     return market.depth.lastTrade?.price;
   };
   const price = getPrice();
-  const details = useFeeDealTicketDetails(order, market);
+  const feeDetails = useFeeDealTicketDetails(order, market, orderPrice);
+  const details = getFeeDetailLabelValues(feeDetails);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>

@@ -1,10 +1,13 @@
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { MockedResponse } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing';
+import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
+import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
 
 const market: DealTicketMarketFragment = {
   __typename: 'Market',
@@ -50,17 +53,32 @@ const market: DealTicketMarketFragment = {
 const submit = jest.fn();
 const transactionStatus = 'default';
 
+const mockChainId = 'chain-id';
+
 function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
+  const chainIdMock: MockedResponse<ChainIdQuery> = {
+    request: {
+      query: ChainIdDocument,
+    },
+    result: {
+      data: {
+        statistics: {
+          chainId: mockChainId,
+        },
+      },
+    },
+  };
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <VegaWalletContext.Provider value={{} as any}>
-      <DealTicket
-        defaultOrder={order}
-        market={market}
-        submit={submit}
-        transactionStatus={transactionStatus}
-      />
-    </VegaWalletContext.Provider>
+    <MockedProvider mocks={[chainIdMock]}>
+      <VegaWalletContext.Provider value={{} as any}>
+        <DealTicket
+          defaultOrder={order}
+          market={market}
+          submit={submit}
+          transactionStatus={transactionStatus}
+        />
+      </VegaWalletContext.Provider>
+    </MockedProvider>
   );
 }
 
