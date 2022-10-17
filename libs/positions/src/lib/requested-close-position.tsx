@@ -78,7 +78,7 @@ const ClosingOrder = ({
   );
 
   return (
-    <div className="mb-4">
+    <>
       <h2 className="font-bold">{t('Position to be closed')}</h2>
       <BasicTable
         headers={[t('Market'), t('Amount'), t('Est price')]}
@@ -90,7 +90,7 @@ const ClosingOrder = ({
           ],
         ]}
       />
-    </div>
+    </>
   );
 };
 
@@ -127,12 +127,12 @@ const ActiveOrders = ({
     return <div>{t(`Could not fetch order data: ${error.message}`)}</div>;
   }
 
-  if (loading) {
+  if (loading || !ordersForPosition.length) {
     return null;
   }
 
   return (
-    <>
+    <div className="mt-4">
       <h2 className="font-bold">{t('Orders to be closed')}</h2>
       <BasicTable
         headers={[t('Amount'), t('Target price'), t('Time in force')]}
@@ -150,7 +150,7 @@ const ActiveOrders = ({
           ];
         })}
       />
-    </>
+    </div>
   );
 };
 
@@ -175,7 +175,7 @@ const BasicTable = ({ headers, rows }: BasicTableProps) => {
         {rows.map((cells, i) => (
           <tr key={i}>
             {cells.map((c) => (
-              <td className="w-1/3">{c}</td>
+              <td className="w-1/3 align-top">{c}</td>
             ))}
           </tr>
         ))}
