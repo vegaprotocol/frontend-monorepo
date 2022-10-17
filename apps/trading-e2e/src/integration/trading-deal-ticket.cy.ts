@@ -116,7 +116,7 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
   );
   cy.getByTestId(orderTransactionHash)
     .invoke('attr', 'href')
-    .should('include', 'https://explorer.fairground.wtf/txs/0xtest-tx-hash');
+    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
   cy.getByTestId('dialog-close').click();
 };
 
