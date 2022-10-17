@@ -1,10 +1,20 @@
-import { marketProvider } from '@vegaprotocol/market-list';
+import type {
+  MarketDataFieldsFragment,
+  SingleMarketFieldsFragment,
+} from '@vegaprotocol/market-list';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  Size,
+  t,
+  useDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaDialog } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
+import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { ClosingOrder } from './use-close-position';
 
@@ -37,66 +47,107 @@ const ClosePositionContainer = ({
   order?: ClosingOrder;
   partyId: string;
 }) => {
-  // Show default tx UI unles requested state then show custom UI
-  if (
-    transaction.status === VegaTxStatus.Pending ||
-    transaction.status === VegaTxStatus.Error ||
-    transaction.status === VegaTxStatus.Complete
-  ) {
-    return <VegaDialog transaction={transaction} />;
-  }
-
-  if (!order) {
-    return <div>Could not create closing order</div>;
-  }
-
-  return (
-    <div>
-      <h1 className="text-xl mb-4">Confirm transaction in your Vega wallet</h1>
-      <ClosingOrder order={order} />
-      <ActiveOrders marketId={order.marketId} partyId={partyId} />
-    </div>
-  );
-};
-
-const ClosingOrder = ({ order }: { order: ClosingOrder }) => {
   const marketVariables = useMemo(
     () => ({ marketId: order?.marketId }),
     [order]
   );
-  const { data } = useDataProvider({
+  const { data: market } = useDataProvider({
     dataProvider: marketProvider,
     variables: marketVariables,
     skip: !order?.marketId,
   });
+  const { data: marketData } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: marketVariables,
+  });
+
+  const showDefaultUI =
+    transaction.status === VegaTxStatus.Pending ||
+    transaction.status === VegaTxStatus.Error ||
+    transaction.status === VegaTxStatus.Complete;
+
+  if (!market || !marketData) {
+    return <div>{t('Loading market data')}</div>;
+  }
+
+  if (!order) {
+    return (
+      <div className="text-vega-red">{t('Could not create closing order')}</div>
+    );
+  }
 
   return (
-    <div className="flex gap-4">
-      {data && (
-        <div>
-          <div>Market</div>
-          <div>{data.tradableInstrument.instrument.name}</div>
-        </div>
+    <div>
+      <h1 className="text-xl mb-4">
+        {t('Confirm transaction in your Vega wallet')}
+      </h1>
+      {showDefaultUI ? (
+        <VegaDialog transaction={transaction} />
+      ) : (
+        <>
+          <div className="mb-4">
+            <ClosingOrder
+              order={order}
+              market={market}
+              marketData={marketData}
+            />
+          </div>
+          <ActiveOrders market={market} partyId={partyId} />
+        </>
       )}
-      <div>
-        <div>Type</div>
-        <div>{order.type}</div>
-      </div>
-      <div>
-        <div>Amount</div>
-        <div>{order.size}</div>
-      </div>
     </div>
+  );
+};
+
+const ClosingOrder = ({
+  order,
+  market,
+  marketData,
+}: {
+  order: ClosingOrder;
+  market: SingleMarketFieldsFragment;
+  marketData: MarketDataFieldsFragment;
+}) => {
+  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+  const estimatedPrice =
+    marketData && market
+      ? addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
+      : '-';
+  const size = market ? (
+    <Size
+      value={order.size}
+      side={order.side}
+      positionDecimalPlaces={market.positionDecimalPlaces}
+    />
+  ) : (
+    '-'
+  );
+
+  return (
+    <>
+      <h2 className="font-bold">{t('Position to be closed')}</h2>
+      <BasicTable
+        headers={[t('Market'), t('Amount'), t('Est price')]}
+        rows={[
+          [
+            market.tradableInstrument.instrument.name,
+            size,
+            `~${estimatedPrice} ${asset?.symbol}`,
+          ],
+        ]}
+      />
+    </>
   );
 };
 
 const ActiveOrders = ({
   partyId,
-  marketId,
+  market,
 }: {
   partyId: string;
-  marketId: string;
+  market: SingleMarketFieldsFragment;
 }) => {
+  const asset = market.tradableInstrument.instrument.product.settlementAsset;
   const { data, error, loading } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables: { partyId },
@@ -106,7 +157,7 @@ const ActiveOrders = ({
     if (!data) return [];
     return data.filter((o) => {
       // Filter out orders not on market for position
-      if (!o.node.market || o.node.market.id !== marketId) {
+      if (!o.node.market || o.node.market.id !== market.id) {
         return false;
       }
 
@@ -116,10 +167,10 @@ const ActiveOrders = ({
 
       return true;
     });
-  }, [data, marketId]);
+  }, [data, market.id]);
 
   if (error) {
-    return <div>Could not fetch order data: {error.message}</div>;
+    return <div>{t(`Could not fetch order data: ${error.message}`)}</div>;
   }
 
   if (loading) {
@@ -127,17 +178,54 @@ const ActiveOrders = ({
   }
 
   return (
-    <ul>
-      {ordersForPosition.map((o) => (
-        <li key={o.node.id}>
-          <p>Type: {o.node.type}</p>
-          <p>Size: {o.node.size}</p>
-          <p>Price: {o.node.price ? o.node.price : '-'}</p>
-          <p>TIF: {o.node.timeInForce}</p>
-          <p>Expiry: {o.node.expiresAt ? o.node.expiresAt : '-'}</p>
-          <p>Expiry: {o.node.remaining}</p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2 className="font-bold">{t('Orders to be closed')}</h2>
+      <BasicTable
+        headers={[t('Time in force'), t('Amount'), t('Target price')]}
+        rows={ordersForPosition.map((o) => {
+          return [
+            o.node.timeInForce,
+            <Size
+              value={o.node.size}
+              side={o.node.side}
+              positionDecimalPlaces={market.positionDecimalPlaces}
+            />,
+            `${addDecimalsFormatNumber(o.node.price, market.decimalPlaces)} ${
+              asset.symbol
+            }`,
+          ];
+        })}
+      />
+    </>
+  );
+};
+
+interface BasicTableProps {
+  headers: ReactNode[];
+  rows: ReactNode[][];
+}
+
+const BasicTable = ({ headers, rows }: BasicTableProps) => {
+  return (
+    <table className="w-full">
+      <thead>
+        <tr>
+          {headers.map((h, i) => (
+            <th key={i} className="text-left font-medium w-1/3">
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((cells, i) => (
+          <tr key={i}>
+            {cells.map((c) => (
+              <td className="w-1/3">{c}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
