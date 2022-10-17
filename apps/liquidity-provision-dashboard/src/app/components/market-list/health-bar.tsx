@@ -4,7 +4,7 @@ import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { BigNumber } from 'bignumber.js';
 import type { ReactNode } from 'react';
 
-const marketTradingModeClassname = {
+const marketTradingModeStyle = {
   [MarketTradingMode.TRADING_MODE_CONTINUOUS]: '#00a88a',
   [MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: '#fb8e7f',
   [MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: '#68e2e4',
@@ -90,7 +90,10 @@ const Level = ({
   commitmentAmount: number;
   total: number;
 }) => {
-  const width = new BigNumber(commitmentAmount).div(total).toNumber() * 100;
+  const width = new BigNumber(commitmentAmount)
+    .div(total)
+    .multipliedBy(100)
+    .toNumber();
 
   return (
     <div
@@ -104,7 +107,7 @@ const Level = ({
         className="relative w-full h-[inherit]"
         style={{
           opacity: 1 - 0.1 * index,
-          backgroundColor: marketTradingModeClassname[status],
+          backgroundColor: marketTradingModeStyle[status],
         }}
       ></div>
       {children}
