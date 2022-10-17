@@ -26,7 +26,6 @@ const WillPass = ({
     return (
       <>
         {children}
-        {t('currentlySetTo')}
         <StatusPass>{t('pass')}</StatusPass>
       </>
     );
@@ -34,7 +33,6 @@ const WillPass = ({
     return (
       <>
         {children}
-        {t('currentlySetTo')}
         <StatusFail>{t('fail')}</StatusFail>
       </>
     );
@@ -63,7 +61,7 @@ export const CurrentProposalStatus = ({
     });
 
   if (proposal.state === ProposalState.STATE_OPEN) {
-    return <WillPass willPass={willPass} />;
+    return <WillPass willPass={willPass}>{t('currentlySetTo')}</WillPass>;
   }
 
   if (
@@ -118,7 +116,12 @@ export const CurrentProposalStatus = ({
   }
 
   if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
-    return <WillPass willPass={willPass}>{t('WaitingForNodeVote')}</WillPass>;
+    return (
+      <WillPass willPass={willPass}>
+        <span>{t('WaitingForNodeVote')}</span>{' '}
+        <span>{t('currentlySetTo')}</span>
+      </WillPass>
+    );
   }
 
   return null;
