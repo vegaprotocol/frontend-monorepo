@@ -111,11 +111,33 @@ export const useWithdrawals = () => {
     );
   }, [data]);
 
+  /**
+   * withdrawals that have to be completed by a user.
+   */
+  const pending = useMemo(() => {
+    return withdrawals.filter((w) => !w.txHash);
+  }, [withdrawals]);
+
+  /**
+   * withdrawals that are completed or being completed
+   */
+  const completed = useMemo(() => {
+    return withdrawals
+      .filter((w) => w.txHash)
+      .sort((a, b) =>
+        (b.withdrawnTimestamp || b.createdTimestamp).localeCompare(
+          a.withdrawnTimestamp || a.createdTimestamp
+        )
+      );
+  }, [withdrawals]);
+
   return {
     data,
     loading,
     error,
     withdrawals,
+    pending,
+    completed,
   };
 };
 

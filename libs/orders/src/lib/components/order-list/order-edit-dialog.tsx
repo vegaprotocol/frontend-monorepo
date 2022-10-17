@@ -40,7 +40,14 @@ export const OrderEditDialog = ({
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      entryPrice: addDecimalsFormatNumber(
+        order.price,
+        order.market?.decimalPlaces ?? 0
+      ),
+    },
+  });
 
   const step = toDecimal(order.market?.decimalPlaces ?? 0);
 
@@ -92,7 +99,7 @@ export const OrderEditDialog = ({
         data-testid="edit-order"
         className="w-1/2 mt-4"
       >
-        <FormGroup label={t('Entry price')} labelFor="entryPrice">
+        <FormGroup label={t('Price')} labelFor="entryPrice">
           <Input
             type="number"
             step={step}

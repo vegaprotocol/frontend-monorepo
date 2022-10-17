@@ -12,6 +12,7 @@ import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-re
 import { addVegaWalletImport } from './lib/commands/vega-wallet-import';
 import { addContainsExactly } from './lib/commands/contains-exactly';
 import { addRestartVegacapsuleNetwork } from './lib/commands/restart-vegacapsule-network';
+import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -25,6 +26,7 @@ addGetAssetInformation();
 addVegaWalletImport();
 addContainsExactly();
 addRestartVegacapsuleNetwork();
+addGetNetworkParameters();
 
 export * from './lib/graphql-test-utils';
 export type { onMessage } from './lib/commands/mock-gql';

@@ -22,15 +22,9 @@ const AccountsManager = () => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
-      if (dataRef.current?.length) {
-        dataRef.current = data;
-        gridRef.current.api.refreshInfiniteCache();
-        return true;
-      }
-      return false;
+      dataRef.current = data;
+      gridRef.current?.api.refreshInfiniteCache();
+      return true;
     },
     [gridRef]
   );
@@ -39,7 +33,9 @@ const AccountsManager = () => {
     update,
     variables,
   });
-  dataRef.current = data;
+  if (!dataRef.current && data) {
+    dataRef.current = data;
+  }
   const getRows = async ({
     successCallback,
     startRow,

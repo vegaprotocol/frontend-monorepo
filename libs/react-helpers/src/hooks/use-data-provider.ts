@@ -26,11 +26,12 @@ export function useDataProvider<Data, Delta>({
   update,
   insert,
   variables,
+  updateOnInit,
   noUpdate,
   skip,
 }: {
   dataProvider: Subscribe<Data, Delta>;
-  update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
+  update?: ({ delta, data }: { delta?: Delta; data: Data }) => boolean;
   insert?: ({
     insertionData,
     data,
@@ -41,6 +42,7 @@ export function useDataProvider<Data, Delta>({
     totalCount?: number;
   }) => boolean;
   variables?: OperationVariables;
+  updateOnInit?: boolean;
   noUpdate?: boolean;
   skip?: boolean;
 }) {
@@ -103,12 +105,15 @@ export function useDataProvider<Data, Delta>({
             return;
           }
         }
-        initialized.current = true;
         setTotalCount(totalCount);
         setData(data);
+        if (updateOnInit && !initialized.current && update && data) {
+          update({ data });
+        }
+        initialized.current = true;
       }
     },
-    [update, insert, noUpdate]
+    [update, insert, noUpdate, updateOnInit]
   );
   useEffect(() => {
     if (skip) {
@@ -122,6 +127,7 @@ export function useDataProvider<Data, Delta>({
     flushRef.current = flush;
     reloadRef.current = reload;
     loadRef.current = load;
+    initialized.current = false;
     return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables, skip]);
   return { data, loading, error, flush, reload, load, totalCount };

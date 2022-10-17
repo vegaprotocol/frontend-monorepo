@@ -44,11 +44,8 @@ export const usePositionsData = (
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
-      }
       dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
-      gridRef.current.api.refreshInfiniteCache();
+      gridRef.current?.api.refreshInfiniteCache();
       return true;
     },
     [assetSymbol, gridRef]
@@ -58,7 +55,9 @@ export const usePositionsData = (
     update,
     variables,
   });
-  dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
+  if (!dataRef.current && data) {
+    dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
+  }
   const getRows = useCallback(
     async ({ successCallback, startRow, endRow }: GetRowsParams) => {
       const rowsThisBlock = dataRef.current

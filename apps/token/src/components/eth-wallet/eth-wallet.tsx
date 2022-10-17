@@ -202,7 +202,7 @@ export const EthWallet = () => {
               {pendingTxs && (
                 <div>
                   <button
-                    className="flex items-center gap-4 p-4 border whitespace-nowrap"
+                    className="flex items-center gap-1 p-1 border whitespace-nowrap"
                     data-testid="pending-transactions-btn"
                     onClick={() =>
                       appDispatch({

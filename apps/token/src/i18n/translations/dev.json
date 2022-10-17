@@ -640,6 +640,7 @@
   "NewFreeformProposal": "New freeform proposal",
   "NewRawProposal": "New raw proposal",
   "MinProposalRequirements": "You must have at least {{value}} VEGA associated to make a proposal",
+  "MinProposalVoteRequirements": "You must have at least {{value}} VEGA associated to vote on this proposal",
   "totalSupply": "Total Supply",
   "viaWallet": "via wallet",
   "viaContract": "via vesting",

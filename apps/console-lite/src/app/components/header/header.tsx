@@ -1,12 +1,16 @@
 import React, { useContext } from 'react';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import Logo from './logo';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import LocalContext from '../../context/local-context';
 
 const Header = () => {
+  const { updateVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    updateVegaWalletDialog: store.updateVegaWalletDialog,
+  }));
   const {
-    vegaWalletDialog: { setConnect, setManage },
+    vegaWalletDialog: { setManage },
     theme,
     toggleTheme,
   } = useContext(LocalContext);
@@ -18,7 +22,7 @@ const Header = () => {
       <Logo />
       <div className="flex items-center gap-2 ml-auto relative z-10">
         <VegaWalletConnectButton
-          setConnectDialog={setConnect}
+          setConnectDialog={updateVegaWalletDialog}
           setManageDialog={setManage}
         />
         <ThemeSwitcher theme={theme} onToggle={toggleTheme} className="-my-4" />

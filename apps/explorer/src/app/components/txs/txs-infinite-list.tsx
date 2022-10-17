@@ -3,19 +3,19 @@ import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
-import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
   areTxsLoading: boolean | undefined;
-  txs: ChainExplorerTxResponse[] | undefined;
+  txs: BlockExplorerTransactionResult[] | undefined;
   loadMoreTxs: () => void;
   error: Error | undefined;
   className?: string;
 }
 
 interface ItemProps {
-  index: ChainExplorerTxResponse;
+  index: BlockExplorerTransactionResult;
   style: React.CSSProperties;
   isLoading: boolean;
   error: Error | undefined;
@@ -27,19 +27,19 @@ const NOOP = () => {};
 const Item = ({ index, style, isLoading, error }: ItemProps) => {
   let content;
   if (error) {
-    content = t(`${error}`);
+    content = t(`Cannot fetch transaction: ${error}`);
   } else if (isLoading) {
     content = t('Loading...');
   } else {
-    const { TxHash, PubKey, Type, Command, Sig, Nonce } = index;
+    const { hash, submitter, type, command, block, index: blockIndex } = index;
     content = (
       <TxsInfiniteListItem
-        Type={Type}
-        Command={Command}
-        Sig={Sig}
-        PubKey={PubKey}
-        Nonce={Nonce}
-        TxHash={TxHash}
+        type={type}
+        command={command}
+        submitter={submitter}
+        hash={hash}
+        block={block}
+        index={blockIndex}
       />
     );
   }
@@ -71,10 +71,11 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full mb-8">
-        <div className="text-lg font-bold">Txn hash</div>
-        <div className="text-lg font-bold">Party</div>
+      <div className="grid grid-flow-col auto-cols-auto w-full mb-8">
         <div className="text-lg font-bold pl-2">Type</div>
+        <div className="text-lg font-bold">Submitted By</div>
+        <div className="text-lg font-bold">Transaction ID</div>
+        <div className="text-lg font-bold">Block</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader

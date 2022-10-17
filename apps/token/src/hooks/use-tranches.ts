@@ -9,6 +9,7 @@ import { BigNumber } from '../lib/bignumber';
 const TRANCHES_URLS: { [N in Networks]: string } = {
   MAINNET: 'https://static.vega.xyz/assets/mainnet-tranches.json',
   TESTNET: 'https://static.vega.xyz/assets/testnet-tranches.json',
+  STAGNET1: 'https://static.vega.xyz/assets/stagnet1-tranches.json',
   STAGNET3: 'https://static.vega.xyz/assets/stagnet3-tranches.json',
   DEVNET: 'https://static.vega.xyz/assets/devnet-tranches.json',
   CUSTOM: 'https://static.vega.xyz/assets/testnet-tranches.json',

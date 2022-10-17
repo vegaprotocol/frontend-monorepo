@@ -91,7 +91,7 @@ const ValidationForm = ({
             {t('ThisWillSetValidationDeadlineTo')}
           </span>
           <span data-testid="validation-date" className="pl-2">
-            {deadlineDates.validation?.toLocaleString()}
+            {deadlineDates.validation.toLocaleString()}
           </span>
           {deadlines.validation === 0 && (
             <span
@@ -179,7 +179,7 @@ const EnactmentForm = ({
             {t('ThisWillSetEnactmentDeadlineTo')}
           </span>
           <span data-testid="enactment-date" className="pl-2">
-            {deadlineDates.enactment?.toLocaleString()}
+            {deadlineDates.enactment.toLocaleString()}
           </span>
         </p>
       )}
@@ -406,7 +406,7 @@ export const ProposalFormVoteAndEnactmentDeadline = ({
               {t('ThisWillSetVotingDeadlineTo')}
             </span>
             <span data-testid="voting-date" className="pl-2">
-              {deadlineDates.vote?.toLocaleString()}
+              {deadlineDates.vote.toLocaleString()}
             </span>
             {deadlines.vote === minVoteHours && (
               <span

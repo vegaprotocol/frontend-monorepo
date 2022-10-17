@@ -1,5 +1,6 @@
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import {
+  PendingWithdrawalsTable,
   useWithdrawals,
   WithdrawalDialogs,
   WithdrawalsTable,
@@ -10,33 +11,42 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { Web3Container } from '@vegaprotocol/web3';
 
 export const WithdrawalsContainer = () => {
-  const { withdrawals, loading, error } = useWithdrawals();
+  const { pending, completed, loading, error } = useWithdrawals();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
   return (
     <Web3Container>
       <VegaWalletContainer>
-        <div className="h-full grid grid-rows-[min-content_1fr]">
-          <header className="flex justify-between items-center p-4">
-            <h4 className="text-lg text-black dark:text-white">
-              {t('Withdrawals')}
-            </h4>
+        <div className="h-full relative grid grid-rows-[1fr,min-content]">
+          <div className="h-full">
+            <AsyncRenderer
+              data={{ pending, completed }}
+              loading={loading}
+              error={error}
+              render={({ pending, completed }) => (
+                <>
+                  {pending && pending.length > 0 && (
+                    <>
+                      <h4 className="pt-3 pb-1">{t('Pending withdrawals')}</h4>
+                      <PendingWithdrawalsTable rowData={pending} />
+                    </>
+                  )}
+                  {completed && completed.length > 0 && (
+                    <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
+                  )}
+                  <WithdrawalsTable rowData={completed} />
+                </>
+              )}
+            />
+          </div>
+          <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
             <Button
+              size="sm"
               onClick={() => setWithdrawDialog(true)}
               data-testid="withdraw-dialog-button"
             >
-              {t('Withdraw')}
+              {t('Make withdrawal')}
             </Button>
-          </header>
-          <div>
-            <AsyncRenderer
-              data={withdrawals}
-              loading={loading}
-              error={error}
-              render={(data) => {
-                return <WithdrawalsTable withdrawals={data} />;
-              }}
-            />
           </div>
         </div>
         <WithdrawalDialogs

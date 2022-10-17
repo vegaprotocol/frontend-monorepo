@@ -1,6 +1,6 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import {
   OrderRejectionReasonMapping,
@@ -33,7 +33,7 @@ const defaultProps: OrderListTableProps = {
 
 const generateJsx = (
   props: Partial<OrderListTableProps> = defaultProps,
-  context: PartialDeep<VegaWalletContextShape> = { keypair: { pub: '0x123' } }
+  context: PartialDeep<VegaWalletContextShape> = { pubKey: '0x123' }
 ) => {
   return (
     <MockedProvider>
@@ -108,7 +108,7 @@ describe('OrderListTable', () => {
       OrderTypeMapping[limitOrder.type || OrderType.TYPE_LIMIT],
       OrderStatusMapping[limitOrder.status],
       '5',
-      addDecimal(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
+      '-',
       `${
         OrderTimeInForceMapping[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
@@ -166,7 +166,7 @@ describe('OrderListTable', () => {
       expect(mockCancel).toHaveBeenCalledWith(order);
     });
 
-    it('doesnt show buttons for liquidity provision orders', async () => {
+    it('shows if an order is a liquidity provision order and does not show order actions', async () => {
       const order = generateOrder({
         type: OrderType.TYPE_LIMIT,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -178,10 +178,12 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
+      const typeCell = screen.getAllByRole('gridcell')[2];
+      expect(typeCell).toHaveTextContent('Liquidity provision');
       expect(amendCell.queryAllByRole('button')).toHaveLength(0);
     });
 
-    it('doesnt show buttons for pegged orders', async () => {
+    it('shows if an order is a pegged order and does not show order actions', async () => {
       const order = generateOrder({
         type: OrderType.TYPE_LIMIT,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -195,6 +197,8 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
+      const typeCell = screen.getAllByRole('gridcell')[2];
+      expect(typeCell).toHaveTextContent('Pegged');
       expect(amendCell.queryAllByRole('button')).toHaveLength(0);
     });
 
@@ -221,7 +225,7 @@ describe('OrderListTable', () => {
       OrderStatus.STATUS_FILLED,
       OrderStatus.STATUS_REJECTED,
       OrderStatus.STATUS_STOPPED,
-    ])('doesnt show buttons for %s orders', async (status) => {
+    ])('does not show buttons for %s orders', async (status) => {
       const order = generateOrder({
         type: OrderType.TYPE_LIMIT,
         status,
