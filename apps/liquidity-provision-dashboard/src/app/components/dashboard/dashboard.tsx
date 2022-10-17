@@ -5,12 +5,13 @@ import { MarketList } from './market-list';
 
 export function Dashboard() {
   return (
-    <>
-      <div className="flex items-stretch px-6 py-6">
-        <h1 className="text-3xl">{t('Top liquidity opportunities')}</h1>
-      </div>
+    <div className="px-16 py-20">
+      <h1 className="font-alpha text-5xl mb-8">
+        {t('Top liquidity opportunities')}
+      </h1>
+
       <Intro />
       <MarketList />
-    </>
+    </div>
   );
 }
