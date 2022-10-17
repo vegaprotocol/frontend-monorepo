@@ -71,7 +71,7 @@ export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
   });
 
   return (
-    <HeaderStat heading={t('Change (24h)')}>
+    <HeaderStat heading={t('Change (24h)')} testId="market-change">
       {!error && data?.decimalPlaces ? (
         <PriceCellChange
           candles={candlesClose}

@@ -3,7 +3,7 @@ name: Generate queries
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   master:

@@ -54,6 +54,8 @@ module.exports = defineConfig({
     TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
+    TRADING_MODE_LINK:
+      'https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring',
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,

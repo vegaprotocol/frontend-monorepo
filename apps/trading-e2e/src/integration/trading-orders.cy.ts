@@ -153,11 +153,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Active');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Active'
+    );
   });
 
   it('must see an expired order', () => {
@@ -166,11 +165,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_EXPIRED,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Expired');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Expired'
+    );
   });
 
   it('must see a cancelled order', () => {
@@ -180,11 +178,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_CANCELLED,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Cancelled');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Cancelled'
+    );
   });
 
   it('must see a stopped order', () => {
@@ -194,11 +191,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_STOPPED,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Stopped');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Stopped'
+    );
   });
 
   it('must see a partially filled order', () => {
@@ -209,15 +205,14 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       size: '5',
       remaining: '1',
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should(
-          'have.text',
-          'PartiallyFilled'
-        );
-        cy.get(`[col-id=${orderRemaining}]`).should('have.text', '4/5');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'PartiallyFilled'
+    );
+    cy.get(`[row-id=${orderId}] [col-id=${orderRemaining}]`).should(
+      'have.text',
+      '4/5'
+    );
   });
 
   it('must see a filled order', () => {
@@ -227,11 +222,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_FILLED,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Filled');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Filled'
+    );
   });
 
   it('must see a rejected order', () => {
@@ -241,14 +235,10 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: OrderStatus.STATUS_REJECTED,
       rejectionReason: OrderRejectionReason.ORDER_ERROR_INTERNAL_ERROR,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should(
-          'have.text',
-          'Rejected: Internal error'
-        );
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Rejected: Internal error'
+    );
   });
 
   it('must see a parked order', () => {
@@ -258,10 +248,9 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: OrderStatus.STATUS_PARKED,
     });
-    cy.get(`[row-id=${orderId}]`)
-      .should('be.visible')
-      .within(() => {
-        cy.get(`[col-id=${orderStatus}]`).should('have.text', 'Parked');
-      });
+    cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
+      'have.text',
+      'Parked'
+    );
   });
 });

@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useGlobalStore } from '../../stores';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
 interface VegaWalletContainerProps {
   children: ReactNode;
 }
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
-  const { update } = useGlobalStore((store) => ({ update: store.update }));
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   const { pubKey } = useVegaWallet();
 
   if (!pubKey) {
@@ -20,7 +21,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
             {t('Connect your Vega wallet')}
           </p>
           <Button
-            onClick={() => update({ connectDialog: true })}
+            onClick={openVegaWalletDialog}
             data-testid="vega-wallet-connect"
           >
             {t('Connect')}

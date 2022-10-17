@@ -34,21 +34,29 @@ export const HeaderStat = ({
   heading,
   id,
   description,
+  testId,
 }: {
   children: ReactNode;
   heading: string;
   id?: string;
   description?: string | ReactNode;
+  testId?: string;
 }) => {
   const itemClass =
     'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default';
   const itemHeading = 'text-neutral-500 dark:text-neutral-400';
 
   return (
-    <div className={itemClass}>
-      <div id={id}>{heading}</div>
+    <div data-testid={testId} className={itemClass}>
+      <div data-testid="item-header" id={id}>
+        {heading}
+      </div>
       <Tooltip description={description}>
-        <div aria-labelledby={id} className={itemHeading}>
+        <div
+          data-testid="item-value"
+          aria-labelledby={id}
+          className={itemHeading}
+        >
           {children}
         </div>
       </Tooltip>

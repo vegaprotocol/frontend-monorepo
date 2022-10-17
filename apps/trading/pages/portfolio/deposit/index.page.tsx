@@ -1,16 +1,17 @@
 import { t, titlefy } from '@vegaprotocol/react-helpers';
 import { Web3Container } from '@vegaprotocol/web3';
 import { useEffect } from 'react';
-import { useGlobalStore } from '../../../stores';
+import { usePageTitleStore } from '../../../stores';
 import { DepositContainer } from './deposit-container';
 
 const Deposit = () => {
-  const { update } = useGlobalStore((store) => ({
-    update: store.update,
+  const { updateTitle } = usePageTitleStore((store) => ({
+    updateTitle: store.updateTitle,
   }));
+
   useEffect(() => {
-    update({ pageTitle: titlefy([t('Deposits')]) });
-  }, [update]);
+    updateTitle(titlefy([t('Deposits')]));
+  }, [updateTitle]);
 
   return (
     <Web3Container>

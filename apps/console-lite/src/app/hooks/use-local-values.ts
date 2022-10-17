@@ -2,17 +2,16 @@ import { useMemo, useState } from 'react';
 import type { LocalValues } from '../context/local-context';
 
 const useLocalValues = (theme: 'light' | 'dark', toggleTheme: () => void) => {
-  const [connect, setConnect] = useState<boolean>(false);
   const [manage, setManage] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState(false);
   return useMemo<LocalValues>(
     () => ({
-      vegaWalletDialog: { connect, manage, setConnect, setManage },
+      vegaWalletDialog: { manage, setManage },
       menu: { menuOpen, setMenuOpen, onToggle: () => setMenuOpen(!menuOpen) },
       theme,
       toggleTheme,
     }),
-    [connect, manage, theme, toggleTheme, menuOpen]
+    [manage, theme, toggleTheme, menuOpen]
   );
 };
 

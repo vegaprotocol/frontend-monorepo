@@ -1,5 +1,5 @@
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { StakingWalletsContainer } from '../staking-wallets-container';
+import { StakingWalletsContainer } from './components/staking-wallets-container/staking-wallets-container';
 import { AssociatePage } from './associate-page';
 import { AssociatePageNoVega } from './associate-page-no-vega';
 

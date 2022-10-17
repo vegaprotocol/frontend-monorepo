@@ -10,7 +10,7 @@ import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
 import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
-import { generateMarket } from './mocks/generate-market';
+import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import {
@@ -39,11 +39,18 @@ export const mockTradingPage = (
           },
         },
         state: state,
-        tradingMode: tradingMode,
       },
     })
   );
   aliasQuery(req, 'Markets', generateMarkets());
+  aliasQuery(
+    req,
+    'MarketData',
+    generateMarketData({
+      trigger: trigger,
+      marketTradingMode: tradingMode,
+    })
+  );
   aliasQuery(req, 'MarketsData', generateMarketsData());
   aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
 

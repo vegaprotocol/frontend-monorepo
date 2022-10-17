@@ -32,12 +32,12 @@ runs:
     - name: Import fairground network
       shell: bash
       if: ${{ inputs.capsule==false }}
-      run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/fairground/vegawallet-fairground.toml" --force --home ~/.vegacapsule/testnet/wallet
+      run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
 
     - name: Start service using fairground network
       shell: bash
       if: ${{ inputs.capsule==false }}
-      run: vegawallet service run --network fairground --automatic-consent --no-version-check --home ~/.vegacapsule/testnet/wallet &
+      run: vegawallet service run --network stagnet3 --automatic-consent --no-version-check --home ~/.vegacapsule/testnet/wallet &
 
     - name: Start service using capsule network
       shell: bash
