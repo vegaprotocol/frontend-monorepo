@@ -10,40 +10,14 @@ import {
   t,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
-import type { VegaTxState } from '@vegaprotocol/wallet';
-import { VegaDialog } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { ClosingOrder } from './use-close-position';
 
-export const ClosePositionDialog = ({
-  transaction,
+export const RequestedClosePosition = ({
   order,
   partyId,
 }: {
-  transaction: VegaTxState;
-  order?: ClosingOrder;
-  partyId: string;
-}) => {
-  return (
-    <Dialog open={transaction.dialogOpen}>
-      <ClosePositionContainer
-        transaction={transaction}
-        order={order}
-        partyId={partyId}
-      />
-    </Dialog>
-  );
-};
-
-const ClosePositionContainer = ({
-  transaction,
-  order,
-  partyId,
-}: {
-  transaction: VegaTxState;
   order?: ClosingOrder;
   partyId: string;
 }) => {
@@ -61,11 +35,6 @@ const ClosePositionContainer = ({
     variables: marketVariables,
   });
 
-  const showDefaultUI =
-    transaction.status === VegaTxStatus.Pending ||
-    transaction.status === VegaTxStatus.Error ||
-    transaction.status === VegaTxStatus.Complete;
-
   if (!market || !marketData) {
     return <div>{t('Loading market data')}</div>;
   }
@@ -77,25 +46,10 @@ const ClosePositionContainer = ({
   }
 
   return (
-    <div>
-      <h1 className="text-xl mb-4">
-        {t('Confirm transaction in your Vega wallet')}
-      </h1>
-      {showDefaultUI ? (
-        <VegaDialog transaction={transaction} />
-      ) : (
-        <>
-          <div className="mb-4">
-            <ClosingOrder
-              order={order}
-              market={market}
-              marketData={marketData}
-            />
-          </div>
-          <ActiveOrders market={market} partyId={partyId} />
-        </>
-      )}
-    </div>
+    <>
+      <ClosingOrder order={order} market={market} marketData={marketData} />
+      <ActiveOrders market={market} partyId={partyId} />
+    </>
   );
 };
 
@@ -124,7 +78,7 @@ const ClosingOrder = ({
   );
 
   return (
-    <>
+    <div className="mb-4">
       <h2 className="font-bold">{t('Position to be closed')}</h2>
       <BasicTable
         headers={[t('Market'), t('Amount'), t('Est price')]}
@@ -136,7 +90,7 @@ const ClosingOrder = ({
           ],
         ]}
       />
-    </>
+    </div>
   );
 };
 
@@ -181,10 +135,9 @@ const ActiveOrders = ({
     <>
       <h2 className="font-bold">{t('Orders to be closed')}</h2>
       <BasicTable
-        headers={[t('Time in force'), t('Amount'), t('Target price')]}
+        headers={[t('Amount'), t('Target price'), t('Time in force')]}
         rows={ordersForPosition.map((o) => {
           return [
-            o.node.timeInForce,
             <Size
               value={o.node.size}
               side={o.node.side}
@@ -193,6 +146,7 @@ const ActiveOrders = ({
             `${addDecimalsFormatNumber(o.node.price, market.decimalPlaces)} ${
               asset.symbol
             }`,
+            o.node.timeInForce,
           ];
         })}
       />

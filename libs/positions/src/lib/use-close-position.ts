@@ -15,7 +15,7 @@ export interface ClosingOrder {
 
 export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
-  const { send, transaction, setComplete } = useVegaTransaction();
+  const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
   const waitForTransactionResult = usePositionEvent();
 
@@ -81,5 +81,6 @@ export const useClosePosition = () => {
     transaction,
     submit,
     closingOrder,
+    Dialog,
   };
 };

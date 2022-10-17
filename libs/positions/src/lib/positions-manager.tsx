@@ -3,15 +3,15 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Position } from './positions-data-providers';
 import { PositionsTable, useClosePosition, usePositionsData } from '../';
 import type { AgGridReact } from 'ag-grid-react';
-import { ClosePositionDialog } from './close-position-dialog';
+import { RequestedClosePosition } from './requested-close-position';
 
 interface PositionsManagerProps {
   partyId: string;
 }
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
-  const { submit, transaction, closingOrder } = useClosePosition();
   const [positionToClose, setPositionToClose] = useState<Position>();
+  const { submit, closingOrder, Dialog } = useClosePosition();
 
   const onClose = useCallback(
     (position: Position) => {
@@ -36,10 +36,12 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           onClose={onClose}
         />
       </AsyncRenderer>
-      <ClosePositionDialog
-        partyId={partyId}
-        transaction={transaction}
-        order={closingOrder}
+      <Dialog
+        content={{
+          Requested: (
+            <RequestedClosePosition partyId={partyId} order={closingOrder} />
+          ),
+        }}
       />
     </>
   );
