@@ -126,11 +126,8 @@ export const useVoteInformation = ({
   }, [requiredParticipation, totalTokensVoted, totalSupply]);
 
   const majorityMet = React.useMemo(() => {
-    return (
-      yesPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage) ||
-      noPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage)
-    );
-  }, [yesPercentage, noPercentage, requiredMajorityPercentage]);
+    return yesPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage);
+  }, [yesPercentage, requiredMajorityPercentage]);
 
   const totalTokensPercentage = React.useMemo(() => {
     return totalTokensVoted.multipliedBy(100).dividedBy(totalSupply);
@@ -144,7 +141,6 @@ export const useVoteInformation = ({
       ),
     [participationMet, requiredMajorityPercentage, yesPercentage]
   );
-
   return {
     willPass,
     totalTokensPercentage,

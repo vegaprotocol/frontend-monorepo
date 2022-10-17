@@ -207,7 +207,7 @@ it('Proposal failed - renders rejection reason there are no error details', asyn
   expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
 });
 
-it('Proposal failed - renders state', async () => {
+it('Proposal failed - renders unknown reason if there are no error details or rejection reason', async () => {
   const proposal = generateProposal();
 
   renderComponent({
@@ -224,5 +224,75 @@ it('Proposal failed - renders state', async () => {
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();
   expect(await screen.findByText('unknown reason')).toBeInTheDocument();
+  expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
+});
+
+it('Proposal failed - renders participation not met if participation is not met', async () => {
+  const proposal = generateProposal();
+
+  renderComponent({
+    proposal: {
+      ...proposal,
+      state: ProposalState.STATE_FAILED,
+      terms: {
+        ...proposal.terms,
+        closingDatetime: new Date(0).toISOString(),
+      },
+      votes: {
+        __typename: 'ProposalVotes',
+        yes: {
+          __typename: 'ProposalVoteSide',
+          totalNumber: '0',
+          totalTokens: '0',
+          votes: null,
+        },
+        no: {
+          __typename: 'ProposalVoteSide',
+          totalNumber: '0',
+          totalTokens: '0',
+          votes: null,
+        },
+      },
+    },
+  });
+  expect(
+    await screen.findByText('Vote closed. Failed due to:')
+  ).toBeInTheDocument();
+  expect(await screen.findByText('Participation not met')).toBeInTheDocument();
+  expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
+});
+
+it('Proposal failed - renders majority not met if majority is not met', async () => {
+  const proposal = generateProposal();
+
+  renderComponent({
+    proposal: {
+      ...proposal,
+      state: ProposalState.STATE_FAILED,
+      terms: {
+        ...proposal.terms,
+        closingDatetime: new Date(0).toISOString(),
+      },
+      votes: {
+        __typename: 'ProposalVotes',
+        yes: {
+          __typename: 'ProposalVoteSide',
+          totalNumber: '0',
+          totalTokens: '0',
+          votes: null,
+        },
+        no: {
+          __typename: 'ProposalVoteSide',
+          totalNumber: '1',
+          totalTokens: '25242474195500835440000',
+          votes: null,
+        },
+      },
+    },
+  });
+  expect(
+    await screen.findByText('Vote closed. Failed due to:')
+  ).toBeInTheDocument();
+  expect(await screen.findByText('Majority not met')).toBeInTheDocument();
   expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
 });
