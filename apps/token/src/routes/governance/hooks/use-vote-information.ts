@@ -3,12 +3,7 @@ import React from 'react';
 
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
-import { addDecimal } from '../../../lib/decimals';
-import type {
-  ProposalFields,
-  ProposalFields_votes_no_votes,
-  ProposalFields_votes_yes_votes,
-} from '../__generated__/ProposalFields';
+import type { ProposalFields } from '../__generated__/ProposalFields';
 
 const useProposalNetworkParams = ({
   proposal,
@@ -100,34 +95,12 @@ export const useVoteInformation = ({
   );
 
   const noTokens = React.useMemo(() => {
-    if (!proposal.votes.no.votes) {
-      return new BigNumber(0);
-    }
-    const totalNoVotes = proposal.votes.no.votes.reduce(
-      (prevValue: BigNumber, newValue: ProposalFields_votes_no_votes) => {
-        return new BigNumber(
-          newValue.party.stakingSummary.currentStakeAvailable
-        ).plus(prevValue);
-      },
-      new BigNumber(0)
-    );
-    return new BigNumber(addDecimal(totalNoVotes, 18));
-  }, [proposal.votes.no.votes]);
+    return new BigNumber(proposal.votes.no.totalTokens);
+  }, [proposal.votes.no.totalTokens]);
 
   const yesTokens = React.useMemo(() => {
-    if (!proposal.votes.yes.votes) {
-      return new BigNumber(0);
-    }
-    const totalYesVotes = proposal.votes.yes.votes.reduce(
-      (prevValue: BigNumber, newValue: ProposalFields_votes_yes_votes) => {
-        return new BigNumber(
-          newValue.party.stakingSummary.currentStakeAvailable
-        ).plus(prevValue);
-      },
-      new BigNumber(0)
-    );
-    return new BigNumber(addDecimal(totalYesVotes, 18));
-  }, [proposal.votes.yes.votes]);
+    return new BigNumber(proposal.votes.yes.totalTokens);
+  }, [proposal.votes.yes.totalTokens]);
 
   const totalTokensVoted = React.useMemo(
     () => yesTokens.plus(noTokens),
@@ -153,11 +126,8 @@ export const useVoteInformation = ({
   }, [requiredParticipation, totalTokensVoted, totalSupply]);
 
   const majorityMet = React.useMemo(() => {
-    return (
-      yesPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage) ||
-      noPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage)
-    );
-  }, [yesPercentage, noPercentage, requiredMajorityPercentage]);
+    return yesPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage);
+  }, [yesPercentage, requiredMajorityPercentage]);
 
   const totalTokensPercentage = React.useMemo(() => {
     return totalTokensVoted.multipliedBy(100).dividedBy(totalSupply);
@@ -171,7 +141,6 @@ export const useVoteInformation = ({
       ),
     [participationMet, requiredMajorityPercentage, yesPercentage]
   );
-
   return {
     willPass,
     totalTokensPercentage,
