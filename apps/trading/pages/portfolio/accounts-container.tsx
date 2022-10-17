@@ -11,7 +11,10 @@ import { DepositDialog } from './deposits-container';
 
 export const AccountsContainer = () => {
   const { pubKey } = useVegaWallet();
+  const [withdrawDialog, setWithdrawDialog] = useState(false);
   const [depositDialog, setDepositDialog] = useState(false);
+  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const [assetId, setAssetId] = useState<string>();
 
   if (!pubKey) {
     return (
@@ -24,42 +27,34 @@ export const AccountsContainer = () => {
   return (
     <Web3Container>
       <div className="h-full relative grid grid-rows-[1fr,min-content]">
-        <AssetAccountTable partyId={pubKey} />
-        <DepositDialog
-          depositDialog={depositDialog}
-          setDepositDialog={setDepositDialog}
-        />
-        <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
-          <Button size="sm" onClick={() => setDepositDialog(true)}>
-            Deposit
+        <div>
+          <AccountManager
+            partyId={pubKey}
+            onClickAsset={(value) => {
+              value && openAssetDetailsDialog(value);
+            }}
+            onClickWithdraw={(assetId) => {
+              setWithdrawDialog(true);
+              setAssetId(assetId);
+            }}
+            onClickDeposit={(assetId) => {
+              setDepositDialog(true);
+              setAssetId(assetId);
+            }}
+          />
+        </div>
+        <div className="flex justify-end p-2 px-[11px]">
+          <Button
+            size="sm"
+            onClick={() => {
+              setAssetId(undefined);
+              setDepositDialog(true);
+            }}
+          >
+            {t('Deposit')}
           </Button>
         </div>
       </div>
-    </Web3Container>
-  );
-};
-
-export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
-  const [depositDialog, setDepositDialog] = useState(false);
-  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const [assetId, setAssetId] = useState<string>();
-  return (
-    <>
-      <AccountManager
-        partyId={partyId}
-        onClickAsset={(value) => {
-          value && openAssetDetailsDialog(value);
-        }}
-        onClickWithdraw={(assetId) => {
-          setWithdrawDialog(true);
-          setAssetId(assetId);
-        }}
-        onClickDeposit={(assetId) => {
-          setDepositDialog(true);
-          setAssetId(assetId);
-        }}
-      />
       <WithdrawalDialogs
         assetId={assetId}
         withdrawDialog={withdrawDialog}
@@ -70,6 +65,6 @@ export const AssetAccountTable = ({ partyId }: { partyId: string }) => {
         depositDialog={depositDialog}
         setDepositDialog={setDepositDialog}
       />
-    </>
+    </Web3Container>
   );
 };
