@@ -92,7 +92,11 @@ export const CurrentProposalStatus = ({
     return (
       <>
         <span>{t('voteFailedReason')}</span>
-        <StatusFail>{proposal.state}</StatusFail>
+        <StatusFail>
+          {proposal.errorDetails ||
+            proposal.rejectionReason ||
+            t('unknownReason')}
+        </StatusFail>
         <span>&nbsp;{daysClosedAgo}</span>
       </>
     );

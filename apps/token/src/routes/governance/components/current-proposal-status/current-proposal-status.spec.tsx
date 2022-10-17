@@ -2,7 +2,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
-import { ProposalState } from '@vegaprotocol/types';
+import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { generateProposal } from '../../test-helpers/generate-proposals';
@@ -160,4 +160,69 @@ it('Proposal waiting for node vote - will fail - renders if the vote will pass a
   ).toBeInTheDocument();
   expect(await screen.findByText('Vote currently set to')).toBeInTheDocument();
   expect(await screen.findByText('pass')).toBeInTheDocument();
+});
+
+it('Proposal failed - renders vote failed reason and vote closed ago', async () => {
+  const proposal = generateProposal();
+
+  renderComponent({
+    proposal: {
+      ...proposal,
+      state: ProposalState.STATE_FAILED,
+      errorDetails: 'foo',
+      terms: {
+        ...proposal.terms,
+        closingDatetime: new Date(0).toISOString(),
+      },
+    },
+  });
+  expect(
+    await screen.findByText('Vote closed. Failed due to:')
+  ).toBeInTheDocument();
+  expect(await screen.findByText('foo')).toBeInTheDocument();
+  expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
+});
+
+it('Proposal failed - renders rejection reason there are no error details', async () => {
+  const proposal = generateProposal();
+
+  renderComponent({
+    proposal: {
+      ...proposal,
+      state: ProposalState.STATE_FAILED,
+      rejectionReason:
+        ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+      terms: {
+        ...proposal.terms,
+        closingDatetime: new Date(0).toISOString(),
+      },
+    },
+  });
+  expect(
+    await screen.findByText('Vote closed. Failed due to:')
+  ).toBeInTheDocument();
+  expect(
+    await screen.findByText('PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE')
+  ).toBeInTheDocument();
+  expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
+});
+
+it('Proposal failed - renders state', async () => {
+  const proposal = generateProposal();
+
+  renderComponent({
+    proposal: {
+      ...proposal,
+      state: ProposalState.STATE_FAILED,
+      terms: {
+        ...proposal.terms,
+        closingDatetime: new Date(0).toISOString(),
+      },
+    },
+  });
+  expect(
+    await screen.findByText('Vote closed. Failed due to:')
+  ).toBeInTheDocument();
+  expect(await screen.findByText('unknown reason')).toBeInTheDocument();
+  expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
 });
