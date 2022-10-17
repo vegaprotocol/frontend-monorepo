@@ -149,13 +149,13 @@ export const VoteButtons = ({
 
     return false;
   }, [
-    t,
+    proposalVotable,
     pubKey,
     currentStakeAvailable,
-    proposalState,
-    appDispatch,
     minVoterBalance,
     spamProtectionMinTokens,
+    t,
+    appDispatch,
     openVegaWalletDialog,
   ]);
 

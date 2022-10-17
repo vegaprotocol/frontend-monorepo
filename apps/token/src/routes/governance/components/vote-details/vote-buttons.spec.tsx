@@ -43,7 +43,7 @@ describe('Vote buttons', () => {
         </VegaWalletContext.Provider>
       </AppStateProvider>
     );
-    expect(screen.getByText('Voting has ended. You did not vote')).toBeTruthy();
+    expect(screen.getByText('Voting has ended.')).toBeTruthy();
   });
 
   it('should provide a connect wallet prompt if no pubkey', () => {
