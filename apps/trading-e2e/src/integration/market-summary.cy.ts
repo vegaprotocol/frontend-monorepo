@@ -113,7 +113,7 @@ describe('Market trading page', () => {
         .within(() => {
           cy.getByTestId('link')
             .should('have.attr', 'href')
-            .and('include', 'https://explorer.fairground.wtf/');
+            .and('include', Cypress.env('EXPLORER_URL'));
         });
     });
 
