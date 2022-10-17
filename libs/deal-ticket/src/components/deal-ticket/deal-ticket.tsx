@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   t,
@@ -50,15 +50,11 @@ export const DealTicket = ({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
-
-  const orderType = watch('type');
-  const orderTimeInForce = watch('timeInForce');
-  const orderPrice = watch('price');
   const order = watch();
   const { message, isDisabled: disabled } = useOrderValidation({
     market,
-    orderType,
-    orderTimeInForce,
+    orderType: order.type,
+    orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
   });
   const isDisabled = transactionStatus === 'pending' || disabled;
@@ -81,7 +77,7 @@ export const DealTicket = ({
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  const getPrice = () => {
+  const getEstimatedMarketPrice = useCallback(() => {
     if (isMarketInAuction(market)) {
       // 0 can never be a valid uncrossing price
       // as it would require there being orders on the book at that price.
@@ -91,12 +87,21 @@ export const DealTicket = ({
       ) {
         return market.data.indicativePrice;
       }
-      return '-';
     }
     return market.depth.lastTrade?.price;
-  };
-  const price = getPrice();
-  const feeDetails = useFeeDealTicketDetails(order, market, orderPrice);
+  }, [market]);
+
+  useEffect(() => {
+    const marketPrice = getEstimatedMarketPrice();
+    if (marketPrice) {
+      setValue(
+        'price',
+        addDecimalsFormatNumber(marketPrice, market.decimalPlaces)
+      );
+    }
+  }, [getEstimatedMarketPrice, market.decimalPlaces, setValue]);
+
+  const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailLabelValues(feeDetails);
 
   return (
@@ -111,7 +116,20 @@ export const DealTicket = ({
               if (type === OrderType.TYPE_LIMIT) {
                 setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
               } else {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
+                if (
+                  order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_IOC &&
+                  order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_FOK
+                ) {
+                  setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
+                }
+                const marketPrice = getEstimatedMarketPrice();
+                if (marketPrice) {
+                  setValue(
+                    'price',
+                    marketPrice &&
+                      addDecimalsFormatNumber(marketPrice, market.decimalPlaces)
+                  );
+                }
               }
               field.onChange(type);
             }}
@@ -126,14 +144,10 @@ export const DealTicket = ({
         )}
       />
       <DealTicketAmount
-        orderType={orderType}
+        orderType={order.type}
         market={market}
         register={register}
-        price={
-          price
-            ? addDecimalsFormatNumber(price, market.decimalPlaces)
-            : undefined
-        }
+        price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
       />
       <Controller
@@ -142,13 +156,13 @@ export const DealTicket = ({
         render={({ field }) => (
           <TimeInForceSelector
             value={field.value}
-            orderType={orderType}
+            orderType={order.type}
             onSelect={field.onChange}
           />
         )}
       />
-      {orderType === OrderType.TYPE_LIMIT &&
-        orderTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      {order.type === OrderType.TYPE_LIMIT &&
+        order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
             control={control}

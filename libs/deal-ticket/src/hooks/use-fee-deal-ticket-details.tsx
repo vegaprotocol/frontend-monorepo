@@ -1,5 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  removeDecimal,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -19,8 +23,7 @@ import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
-  market: DealTicketMarketFragment,
-  orderPrice = market.depth.lastTrade?.price
+  market: DealTicketMarketFragment
 ) => {
   const { pubKey } = useVegaWallet();
 
@@ -44,8 +47,10 @@ export const useFeeDealTicketDetails = (
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
   const notionalSize = useMemo(() => {
-    if (order.price) {
-      const size = new BigNumber(order.price ?? 0)
+    const price =
+      order.price && removeDecimal(order.price, market.decimalPlaces);
+    if (price) {
+      const size = new BigNumber(price ?? 0)
         .multipliedBy(order.size)
         .toNumber();
       return addDecimalsFormatNumber(size, market.decimalPlaces);
@@ -55,15 +60,18 @@ export const useFeeDealTicketDetails = (
 
   const fees = useMemo(() => {
     if (estMargin?.fees && notionalSize) {
-      const percentage = new BigNumber(estMargin?.fees)
+      const percentage = new BigNumber(estMargin?.fees ?? 0)
         .dividedBy(notionalSize)
         .multipliedBy(100)
         .decimalPlaces(2)
-        .toString();
-      return `${estMargin.fees} (${percentage}%)`;
+        .toNumber();
+      return !isNaN(percentage)
+        ? `${estMargin.fees} (${percentage}%)`
+        : `${estMargin.fees}`;
     }
     return null;
   }, [estMargin?.fees, notionalSize]);
+
   const [slippageValue, setSlippageValue] = useState(
     slippage ? parseFloat(slippage) : 0
   );
@@ -78,22 +86,22 @@ export const useFeeDealTicketDetails = (
     marketId: market.id,
     settlementAssetId:
       market.tradableInstrument.instrument.product.settlementAsset.id,
-    price: orderPrice,
+    price: order.price,
     order,
   });
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   const price = useMemo(() => {
-    if (slippage && orderPrice) {
+    if (slippage && order.price) {
       const isLong = order.side === Side.SIDE_BUY;
       const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
         parseFloat(slippage) / 100
       );
-      return new BigNumber(orderPrice).multipliedBy(multiplier).toNumber();
+      return new BigNumber(order.price).multipliedBy(multiplier).toNumber();
     }
     return null;
-  }, [orderPrice, order.side, slippage]);
+  }, [order.price, order.side, slippage]);
 
   const formattedPrice =
     price && addDecimalsFormatNumber(price, market.decimalPlaces);
@@ -129,6 +137,8 @@ export interface FeeDetails {
   estMargin: OrderMargin | null;
   estCloseOut: string;
   slippageValue: number;
+  slippage: string | null;
+  price?: number | null;
 }
 
 export const getFeeDetailLabelValues = ({
@@ -138,9 +148,15 @@ export const getFeeDetailLabelValues = ({
   notionalSize,
   estMargin,
   estCloseOut,
-  slippageValue,
+  slippage,
+  price,
 }: FeeDetails) => {
   const details = [
+    {
+      label: t('Price'),
+      value: price,
+      quoteName,
+    },
     {
       label: t('Fees'),
       value: fees,
@@ -154,7 +170,7 @@ export const getFeeDetailLabelValues = ({
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
-      label: t('Margin required'),
+      label: t('Est. margin required'),
       value: estMargin?.margin,
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
@@ -167,7 +183,7 @@ export const getFeeDetailLabelValues = ({
     },
     {
       label: t('Slippage (estimated)'),
-      value: slippageValue,
+      value: slippage || '-',
       quoteName,
       labelDescription: EST_SLIPPAGE,
     },

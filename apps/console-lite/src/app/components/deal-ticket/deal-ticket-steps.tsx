@@ -55,15 +55,11 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const emptyString = ' - ';
   const step = toDecimal(market.positionDecimalPlaces);
-  const orderType = watch('type');
-  const orderTimeInForce = watch('timeInForce');
-  const orderSide = watch('side');
-  const orderSize = watch('size');
   const order = watch();
   const { message: invalidText, isDisabled } = useOrderValidation({
     market,
-    orderType,
-    orderTimeInForce,
+    orderType: order.type,
+    orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
@@ -113,7 +109,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
           setValue('price', bestAskPrice);
 
-          if (orderType === OrderType.TYPE_MARKET) {
+          if (order.type === OrderType.TYPE_MARKET) {
             setValue('type', OrderType.TYPE_LIMIT);
           }
         } else {
@@ -127,7 +123,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       market.decimalPlaces,
       market?.depth?.lastTrade?.price,
       order.side,
-      orderType,
+      order.type,
       setSlippageValue,
       setValue,
     ]
@@ -175,7 +171,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
           )}
         />
       ),
-      value: SIDE_NAMES[orderSide] || '',
+      value: SIDE_NAMES[order.side] || '',
     },
     {
       label: t('Choose Position Size'),
@@ -187,7 +183,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
               min={step}
               max={max}
               onSizeChange={onSizeChange}
-              size={new BigNumber(orderSize).toNumber()}
+              size={new BigNumber(order.size).toNumber()}
               name="size"
               price={formattedPrice || emptyString}
               positionDecimalPlaces={market.positionDecimalPlaces}
@@ -208,7 +204,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
         ) : (
           'loading...'
         ),
-      value: orderSize,
+      value: order.size,
     },
     {
       label: t('Review Trade'),
