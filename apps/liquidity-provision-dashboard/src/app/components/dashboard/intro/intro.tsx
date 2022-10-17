@@ -29,7 +29,7 @@ type Network = 'testnet' | 'mainnet';
 
 export const Intro = ({ network = 'testnet' }: { network?: Network }) => {
   return (
-    <div className="mx-6 my-6 px-6 py-6 bg-neutral-100" data-testid="intro">
+    <div className="mb-6 px-6 py-6 bg-neutral-100" data-testid="intro">
       <h2 className="text-xl font-medium mb-1">
         {t('Become a liquidity provider')}
       </h2>
