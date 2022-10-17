@@ -274,7 +274,7 @@ context(
         cy.get(dialog).within(() => {
           cy.get(copyPublicKeyBtn)
             .should('be.visible')
-            .and('have.text', 'Copy');
+            .and('contain.text', 'Copy');
         });
       });
 

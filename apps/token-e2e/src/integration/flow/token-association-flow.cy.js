@@ -294,7 +294,7 @@ context(
         );
 
         cy.get('[data-testid="manage-vega-wallet"]').click();
-        cy.get('[data-testid="select-keypair-button"]').click();
+        cy.get('[data-testid="select-keypair-button"]').eq(0).click();
         cy.get(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey2')
