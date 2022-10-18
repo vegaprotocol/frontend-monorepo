@@ -16,7 +16,6 @@ const defaultMockMarketPositions = {
   balance: new BigNumber(100000),
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
 const mockAccount: Account = {

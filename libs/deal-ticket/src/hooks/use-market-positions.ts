@@ -26,11 +26,13 @@ export const useMarketPositions = ({
   );
 
   if (account) {
-    const balance = new BigNumber(account.balance || 0);
-    const openVolume = new BigNumber(
+    const positionConnectionNode =
       data?.party?.positionsConnection?.edges?.find(
         (nodes) => nodes.node.market.id === marketId
-      )?.node.openVolume || 0
+      );
+    const balance = new BigNumber(account.balance || 0);
+    const openVolume = new BigNumber(
+      positionConnectionNode?.node.openVolume || 0
     );
     if (!balance.isZero() && !openVolume.isZero()) {
       return {
