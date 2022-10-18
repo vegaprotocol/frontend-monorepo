@@ -4,10 +4,6 @@ module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
-    setupNodeEvents(on, config) {
-      require('cypress-grep/src/plugin')(config);
-      return config;
-    },
     baseUrl: 'http://localhost:4200',
     fileServerFolder: '.',
     fixturesFolder: false,

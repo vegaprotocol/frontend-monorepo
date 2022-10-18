@@ -17,5 +17,3 @@ import '@vegaprotocol/cypress';
 import 'cypress-real-events/support';
 // Import commands.js using ES2015 syntax:
 import './commands';
-import registerCypressGrep from 'cypress-grep';
-registerCypressGrep();
