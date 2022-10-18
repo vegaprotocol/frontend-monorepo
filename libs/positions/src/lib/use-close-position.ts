@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import { usePositionEvent } from '../';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 
 export interface ClosingOrder {
@@ -17,7 +16,7 @@ export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
-  const waitForTransactionResult = usePositionEvent();
+  const waitForTransactionResult = useTransactionResult();
 
   const submit = useCallback(
     async ({

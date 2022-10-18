@@ -11,7 +11,7 @@ import { TransactionEventDocument } from './__generated___/TransactionResult';
  * Returns a function that can be called to subscribe to a transaction
  * result event and resolves when an event with a matching txhash is seen
  */
-export const usePositionEvent = () => {
+export const useTransactionResult = () => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -27,7 +27,6 @@ export const usePositionEvent = () => {
             variables: { partyId },
           })
           .subscribe(({ data }) => {
-            console.log(txHash, data);
             if (!data?.busEvents?.length) {
               return;
             }
