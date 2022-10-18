@@ -214,8 +214,14 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 
   it('must not place an order if wallet is not connected', () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
-    cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).contains('No public key selected');
+    cy.getByTestId('order-connect-wallet').should('exist');
+    cy.getByTestId(placeOrderBtn).should('not.exist');
+    cy.getByTestId(errorMessage).should('not.exist');
+    cy.getByTestId('order-get-vega-wallet').should(
+      'have.attr',
+      'href',
+      'https://github.com/vegaprotocol/vega/releases'
+    );
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -230,6 +236,25 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     //7002-SORD-007
     cy.getByTestId(toggleLimit).click().children('input').should('be.checked');
     cy.getByTestId(toggleMarket).click().children('input').should('be.checked');
+  });
+
+  it('order connect vega wallet button should connect', () => {
+    cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderPriceField).type('101');
+    cy.getByTestId('order-connect-wallet').click();
+    cy.getByTestId('dialog-content').should('be.visible');
+    cy.getByTestId('connectors-list')
+      .find('[data-testid="connector-gui"]')
+      .click();
+    const form = 'rest-connector-form';
+    const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
+    const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
+    cy.getByTestId(form).find('#wallet').click().type(walletName);
+    cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
+    cy.getByTestId(form).find('button[type=submit]').click();
+    cy.getByTestId(placeOrderBtn).should('be.visible');
+    cy.getByTestId(toggleLimit).children('input').should('be.checked');
+    cy.getByTestId(orderPriceField).should('have.value', '101');
   });
 });
 
