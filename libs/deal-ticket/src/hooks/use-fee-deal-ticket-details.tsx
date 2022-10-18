@@ -41,8 +41,8 @@ export const useFeeDealTicketDetails = (
       }
       return order.price;
     }
-    return market?.depth?.lastTrade?.price ?? null;
-  }, [market?.depth?.lastTrade?.price, order.price, order.side, slippage]);
+    return null;
+  }, [order.price, order.side, slippage]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,
