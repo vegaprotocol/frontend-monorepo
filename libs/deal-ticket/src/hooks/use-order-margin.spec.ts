@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { PositionMargin } from './use-market-positions';
-import useOrderMargin from './use-order-margin';
+import { useOrderMargin } from './use-order-margin';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
 
 let mockEstimateData = {
