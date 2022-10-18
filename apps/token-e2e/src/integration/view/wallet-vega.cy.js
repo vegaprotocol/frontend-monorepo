@@ -30,7 +30,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Vega Wallet - verify elements on widget',
-  { tags: '@smoke' },
+  { tags: '@regression' },
   function () {
     before('visit token home page', function () {
       cy.visit('/');
