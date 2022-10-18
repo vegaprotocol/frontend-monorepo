@@ -68,7 +68,6 @@ export const useClosePosition = () => {
 
         return res;
       } catch (e) {
-        console.log(e);
         Sentry.captureException(e);
         return;
       }
