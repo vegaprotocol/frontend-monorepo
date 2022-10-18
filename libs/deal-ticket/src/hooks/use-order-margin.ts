@@ -33,7 +33,7 @@ export interface OrderMargin {
   };
 }
 
-const useOrderMargin = ({
+export const useOrderMargin = ({
   order,
   market,
   partyId,
@@ -48,9 +48,9 @@ const useOrderMargin = ({
       size: removeDecimal(
         BigNumber.maximum(
           0,
-          new BigNumber(marketPositions?.openVolume || 0)[
-            order.side === Side.SIDE_BUY ? 'plus' : 'minus'
-          ](order.size)
+          new BigNumber(marketPositions?.openVolume || 0)
+            [order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size)
+            .absoluteValue()
         ).toString(),
         market.positionDecimalPlaces
       ),
@@ -98,5 +98,3 @@ const useOrderMargin = ({
   }
   return null;
 };
-
-export default useOrderMargin;

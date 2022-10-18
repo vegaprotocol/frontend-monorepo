@@ -19,7 +19,7 @@ import useCalculateSlippage from './use-calculate-slippage';
 import { useMaximumPositionSize } from './use-maximum-position-size';
 import { useOrderCloseOut } from './use-order-closeout';
 import type { OrderMargin } from './use-order-margin';
-import useOrderMargin from './use-order-margin';
+import { useOrderMargin } from './use-order-margin';
 import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 
 export const useFeeDealTicketDetails = (
@@ -27,6 +27,22 @@ export const useFeeDealTicketDetails = (
   market: DealTicketMarketFragment
 ) => {
   const { pubKey } = useVegaWallet();
+
+  const slippage = useCalculateSlippage({ marketId: market.id, order });
+
+  const price = useMemo(() => {
+    if (order.price) {
+      if (slippage && parseFloat(slippage) !== 0) {
+        const isLong = order.side === Side.SIDE_BUY;
+        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
+          parseFloat(slippage) / 100
+        );
+        return new BigNumber(order.price).multipliedBy(multiplier).toNumber();
+      }
+      return order.price;
+    }
+    return market?.depth?.lastTrade?.price ?? null;
+  }, [market?.depth?.lastTrade?.price, order.price, order.side, slippage]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,
@@ -44,8 +60,6 @@ export const useFeeDealTicketDetails = (
     market,
     partyData: partyBalance,
   });
-
-  const slippage = useCalculateSlippage({ marketId: market.id, order });
 
   const notionalSize = useMemo(() => {
     if (order.price) {
@@ -87,20 +101,6 @@ export const useFeeDealTicketDetails = (
   });
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
-
-  const price = useMemo(() => {
-    if (order.price) {
-      if (slippage && parseFloat(slippage) !== 0) {
-        const isLong = order.side === Side.SIDE_BUY;
-        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-          parseFloat(slippage) / 100
-        );
-        return new BigNumber(order.price).multipliedBy(multiplier).toNumber();
-      }
-      return order.price;
-    }
-    return null;
-  }, [order.price, order.side, slippage]);
 
   const formattedPrice =
     price && addDecimalsFormatNumber(price, market.decimalPlaces);
