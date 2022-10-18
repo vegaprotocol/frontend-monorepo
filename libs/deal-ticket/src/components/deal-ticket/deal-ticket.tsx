@@ -1,10 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  t,
-  addDecimalsFormatNumber,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { t, removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -21,8 +17,8 @@ import {
 } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import {
-  getFeeDetailLabelValues,
   useFeeDealTicketDetails,
+  getFeeDetailLabelValues,
 } from '../../hooks/use-fee-deal-ticket-details';
 
 export type TransactionStatus = 'default' | 'pending';
@@ -87,12 +83,13 @@ export const DealTicket = ({
       ) {
         return market.data.indicativePrice;
       }
+      return undefined;
     }
     return market.depth.lastTrade?.price;
   };
   const marketPrice = getEstimatedMarketPrice();
   const marketPriceFormatted =
-    marketPrice && addDecimalsFormatNumber(marketPrice, market.decimalPlaces);
+    marketPrice && addDecimal(marketPrice, market.decimalPlaces);
   useEffect(() => {
     if (marketPriceFormatted) {
       setValue('price', marketPriceFormatted);

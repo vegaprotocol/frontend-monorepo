@@ -58,7 +58,7 @@ describe('useOrderCloseOut Hook', () => {
         ),
       }
     );
-    expect(result.current).toEqual(' - ');
+    expect(result.current).toEqual('-');
   });
 
   it('return proper sell value', () => {

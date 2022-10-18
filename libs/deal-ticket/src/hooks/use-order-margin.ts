@@ -1,7 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Side } from '@vegaprotocol/types';
-import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  removeDecimal,
+} from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketData } from './use-market-data';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -22,7 +25,12 @@ const addFees = (feeObj: EstimateOrderQuery['estimateOrder']['fee']) => {
 
 export interface OrderMargin {
   margin: string;
-  fees: string | null;
+  totalFees: string | null;
+  fees: {
+    makerFee: string;
+    liquidityFee: string;
+    infrastructureFee: string;
+  };
 }
 
 const useOrderMargin = ({
@@ -60,17 +68,32 @@ const useOrderMargin = ({
   if (data?.estimateOrder.marginLevels.initialLevel) {
     const fees =
       data?.estimateOrder?.fee && addFees(data.estimateOrder.fee).toString();
+    const margin = BigNumber.maximum(
+      0,
+      new BigNumber(data.estimateOrder.marginLevels.initialLevel).minus(
+        marketPositions?.balance || 0
+      )
+    ).toString();
+    const { makerFee, liquidityFee, infrastructureFee } =
+      data.estimateOrder.fee;
     return {
-      margin: addDecimal(
-        BigNumber.maximum(
-          0,
-          new BigNumber(data.estimateOrder.marginLevels.initialLevel).minus(
-            marketPositions?.balance || 0
-          )
-        ).toString(),
-        market.decimalPlaces
-      ),
-      fees: addDecimal(fees, market.decimalPlaces),
+      margin: margin
+        ? addDecimalsFormatNumber(margin, market.decimalPlaces)
+        : '-',
+      totalFees: fees
+        ? addDecimalsFormatNumber(fees, market.decimalPlaces)
+        : '-',
+      fees: {
+        makerFee: makerFee
+          ? addDecimalsFormatNumber(makerFee, market.decimalPlaces)
+          : '-',
+        liquidityFee: liquidityFee
+          ? addDecimalsFormatNumber(liquidityFee, market.decimalPlaces)
+          : '-',
+        infrastructureFee: infrastructureFee
+          ? addDecimalsFormatNumber(infrastructureFee, market.decimalPlaces)
+          : '-',
+      },
     };
   }
   return null;

@@ -1,7 +1,7 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
-  removeDecimal,
+  formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
@@ -10,10 +10,11 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 import type { DealTicketMarketFragment } from '../components';
-import { EST_SLIPPAGE } from '../components';
-import { EST_CLOSEOUT_TOOLTIP_TEXT } from '../components';
-import { EST_MARGIN_TOOLTIP_TEXT } from '../components';
-import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../components';
+import {
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
+  EST_MARGIN_TOOLTIP_TEXT,
+  EST_CLOSEOUT_TOOLTIP_TEXT,
+} from '../components/constants';
 import useCalculateSlippage from './use-calculate-slippage';
 import { useMaximumPositionSize } from './use-maximum-position-size';
 import { useOrderCloseOut } from './use-order-closeout';
@@ -47,30 +48,25 @@ export const useFeeDealTicketDetails = (
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
   const notionalSize = useMemo(() => {
-    const price =
-      order.price && removeDecimal(order.price, market.decimalPlaces);
-    if (price) {
-      const size = new BigNumber(price ?? 0)
-        .multipliedBy(order.size)
-        .toNumber();
-      return addDecimalsFormatNumber(size, market.decimalPlaces);
+    if (order.price) {
+      return new BigNumber(order.size).multipliedBy(order.price).toString();
     }
     return null;
-  }, [market.decimalPlaces, order.price, order.size]);
+  }, [order.price, order.size]);
 
   const fees = useMemo(() => {
-    if (estMargin?.fees && notionalSize) {
-      const percentage = new BigNumber(estMargin?.fees ?? 0)
+    if (estMargin?.totalFees && notionalSize) {
+      const percentage = new BigNumber(estMargin?.totalFees ?? 0)
         .dividedBy(notionalSize)
         .multipliedBy(100)
         .decimalPlaces(2)
         .toNumber();
       return !isNaN(percentage)
-        ? `${estMargin.fees} (${percentage}%)`
-        : `${estMargin.fees}`;
+        ? `${estMargin.totalFees} (${percentage}%)`
+        : `${estMargin.totalFees}`;
     }
     return null;
-  }, [estMargin?.fees, notionalSize]);
+  }, [estMargin?.totalFees, notionalSize]);
 
   const [slippageValue, setSlippageValue] = useState(
     slippage ? parseFloat(slippage) : 0
@@ -93,12 +89,15 @@ export const useFeeDealTicketDetails = (
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   const price = useMemo(() => {
-    if (slippage && order.price) {
-      const isLong = order.side === Side.SIDE_BUY;
-      const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-        parseFloat(slippage) / 100
-      );
-      return new BigNumber(order.price).multipliedBy(multiplier).toNumber();
+    if (order.price) {
+      if (slippage && parseFloat(slippage) !== 0) {
+        const isLong = order.side === Side.SIDE_BUY;
+        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
+          parseFloat(slippage) / 100
+        );
+        return new BigNumber(order.price).multipliedBy(multiplier).toNumber();
+      }
+      return order.price;
     }
     return null;
   }, [order.price, order.side, slippage]);
@@ -138,40 +137,41 @@ export interface FeeDetails {
   estCloseOut: string;
   slippageValue: number;
   slippage: string | null;
-  price?: number | null;
+  price?: string | number | null;
 }
 
 export const getFeeDetailLabelValues = ({
-  fees,
-  market,
   quoteName,
   notionalSize,
   estMargin,
   estCloseOut,
-  slippage,
   price,
+  market,
 }: FeeDetails) => {
   const details = [
     {
-      label: t('Price'),
-      value: price,
+      label: t('Est. price'),
+      value: price ? formatNumber(price, market.decimalPlaces) : '-',
       quoteName,
     },
     {
-      label: t('Fees'),
-      value: fees,
-      labelDescription: <FeesBreakdown feeFactors={market.fees.factors} />,
+      label: t('Est. fees'),
+      value: estMargin?.totalFees ?? '-',
+      labelDescription: <FeesBreakdown fees={estMargin?.fees} />,
       quoteName,
     },
     {
       label: t('Notional size'),
-      value: notionalSize,
+      value:
+        notionalSize && notionalSize !== 'NaN'
+          ? formatNumber(notionalSize, market.decimalPlaces)
+          : '-',
       quoteName,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
       label: t('Est. margin required'),
-      value: estMargin?.margin,
+      value: estMargin?.margin ?? '-',
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
@@ -180,12 +180,6 @@ export const getFeeDetailLabelValues = ({
       value: estCloseOut,
       quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
-    },
-    {
-      label: t('Slippage (estimated)'),
-      value: slippage || '-',
-      quoteName,
-      labelDescription: EST_SLIPPAGE,
     },
   ];
   return details;

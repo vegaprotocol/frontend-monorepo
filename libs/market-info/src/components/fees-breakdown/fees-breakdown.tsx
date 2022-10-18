@@ -1,5 +1,5 @@
 import type { Market } from '@vegaprotocol/market-list';
-import { totalFees } from '@vegaprotocol/market-list';
+import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import { t, formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
@@ -9,12 +9,12 @@ export const FeesCell = ({
 }: {
   feeFactors: Market['fees']['factors'];
 }) => (
-  <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
-    <span>{totalFees(feeFactors) ?? '-'}</span>
+  <Tooltip description={<FeesBreakdownPercentage feeFactors={feeFactors} />}>
+    <span>{totalFeesPercentage(feeFactors) ?? '-'}</span>
   </Tooltip>
 );
 
-export const FeesBreakdown = ({
+export const FeesBreakdownPercentage = ({
   feeFactors,
 }: {
   feeFactors?: Market['fees']['factors'];
@@ -39,7 +39,35 @@ export const FeesBreakdown = ({
         {formatNumberPercentage(new BigNumber(feeFactors.makerFee).times(100))}
       </dd>
       <dt>{t('Total fees')}</dt>
-      <dd className="text-right">{totalFees(feeFactors)}</dd>
+      <dd className="text-right">{totalFeesPercentage(feeFactors)}</dd>
+    </dl>
+  );
+};
+
+export const FeesBreakdown = ({
+  fees,
+}: {
+  fees?: {
+    infrastructureFee: string;
+    liquidityFee: string;
+    makerFee: string;
+  };
+}) => {
+  if (!fees) return null;
+  const totalFees = new BigNumber(fees.makerFee)
+    .plus(fees.infrastructureFee)
+    .plus(fees.liquidityFee)
+    .toString();
+  return (
+    <dl className="grid grid-cols-2 gap-x-2">
+      <dt>{t('Infrastructure fee')}</dt>
+      <dd className="text-right">{fees.infrastructureFee}</dd>
+      <dt>{t('Liquidity fee')}</dt>
+      <dd className="text-right">{fees.liquidityFee}</dd>
+      <dt>{t('Maker fee')}</dt>
+      <dd className="text-right">{fees.makerFee}</dd>
+      <dt>{t('Total fees')}</dt>
+      <dd className="text-right">{totalFees}</dd>
     </dl>
   );
 };

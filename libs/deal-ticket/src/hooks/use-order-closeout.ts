@@ -78,5 +78,5 @@ export const useOrderCloseOut = ({
   if (closeOut.isPositive()) {
     return formatNumber(closeOut, market.decimalPlaces);
   }
-  return ' - ';
+  return '-';
 };
