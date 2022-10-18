@@ -5,40 +5,9 @@ import type {
 import type { Order } from '@vegaprotocol/orders';
 import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
-import type { ClosingOrder as IClosingOrder } from './use-close-position';
-import { useRequestClosePositionData } from './use-request-close-position-data';
+import type { ClosingOrder as IClosingOrder } from '../use-close-position';
 
-export const RequestedClosePosition = ({
-  order,
-  partyId,
-}: {
-  order?: IClosingOrder;
-  partyId: string;
-}) => {
-  const { market, marketData, orders } = useRequestClosePositionData(
-    order?.marketId,
-    partyId
-  );
-
-  if (!market || !marketData || !orders) {
-    return <div>{t('Loading...')}</div>;
-  }
-
-  if (!order) {
-    return (
-      <div className="text-vega-red">{t('Could not create closing order')}</div>
-    );
-  }
-
-  return (
-    <>
-      <ClosingOrder order={order} market={market} marketData={marketData} />
-      <ActiveOrders market={market} orders={orders} />
-    </>
-  );
-};
-
-const ClosingOrder = ({
+export const ClosingOrder = ({
   order,
   market,
   marketData,
@@ -63,23 +32,20 @@ const ClosingOrder = ({
   );
 
   return (
-    <>
-      <h2 className="font-bold">{t('Position to be closed')}</h2>
-      <BasicTable
-        headers={[t('Market'), t('Amount'), t('Est price')]}
-        rows={[
-          [
-            market.tradableInstrument.instrument.name,
-            size,
-            `~${estimatedPrice} ${asset?.symbol}`,
-          ],
-        ]}
-      />
-    </>
+    <BasicTable
+      headers={[t('Market'), t('Amount'), t('Est price')]}
+      rows={[
+        [
+          market.tradableInstrument.instrument.name,
+          size,
+          `~${estimatedPrice} ${asset?.symbol}`,
+        ],
+      ]}
+    />
   );
 };
 
-const ActiveOrders = ({
+export const ActiveOrders = ({
   market,
   orders,
 }: {

@@ -1,11 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
-import { RequestedClosePosition } from './requested-close-position';
-import * as dataHook from './use-request-close-position-data';
+import * as dataHook from '../use-request-close-position-data';
+import { Requested } from './requested';
 
 jest.mock('./use-request-close-position-data');
 
-describe('RequestClosePosition', () => {
+describe('Close position dialog - Request', () => {
   const props = {
     partyId: 'party-id',
     order: {
@@ -23,7 +23,7 @@ describe('RequestClosePosition', () => {
       marketData: null,
       orders: [],
     });
-    render(<RequestedClosePosition {...props} />);
+    render(<Requested {...props} />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
@@ -65,7 +65,7 @@ describe('RequestClosePosition', () => {
       // @ts-ignore avoid all fields
       orders,
     });
-    render(<RequestedClosePosition {...props} />);
+    render(<Requested {...props} />);
 
     // closing order
     const closingOrderHeader = screen.getByText('Position to be closed');

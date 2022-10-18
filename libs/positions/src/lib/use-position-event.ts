@@ -27,6 +27,7 @@ export const usePositionEvent = () => {
             variables: { partyId },
           })
           .subscribe(({ data }) => {
+            console.log(txHash, data);
             if (!data?.busEvents?.length) {
               return;
             }
@@ -36,7 +37,7 @@ export const usePositionEvent = () => {
                 return false;
               }
 
-              return e.event.hash === txHash;
+              return e.event.hash.toLocaleLowerCase() === txHash.toLowerCase();
             });
 
             if (

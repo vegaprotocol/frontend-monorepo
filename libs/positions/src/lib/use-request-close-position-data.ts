@@ -7,18 +7,20 @@ export const useRequestClosePositionData = (
   marketId?: string,
   partyId?: string
 ) => {
+  const marketVariables = useMemo(() => ({ marketId }), [marketId]);
+  const orderVariables = useMemo(() => ({ partyId }), [partyId]);
   const { data: market } = useDataProvider({
     dataProvider: marketProvider,
-    variables: { marketId },
+    variables: marketVariables,
     skip: !marketId,
   });
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
-    variables: { marketId },
+    variables: marketVariables,
   });
   const { data: orderData } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
-    variables: { partyId },
+    variables: orderVariables,
   });
 
   const orders = useMemo(() => {

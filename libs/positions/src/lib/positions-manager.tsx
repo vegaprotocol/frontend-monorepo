@@ -1,28 +1,27 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { Position } from './positions-data-providers';
-import { PositionsTable, useClosePosition, usePositionsData } from '../';
+import type { Position } from '../';
+import { useClosePosition, usePositionsData, PositionsTable } from '../';
+import { Requested } from './close-position-dialog/requested';
+import { Complete } from './close-position-dialog/complete';
 import type { AgGridReact } from 'ag-grid-react';
-import { RequestedClosePosition } from './requested-close-position';
 
 interface PositionsManagerProps {
   partyId: string;
 }
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
-  const [positionToClose, setPositionToClose] = useState<Position>();
-  const { submit, closingOrder, Dialog } = useClosePosition();
+  const gridRef = useRef<AgGridReact | null>(null);
+  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
+  const { submit, closingOrder, transaction, Dialog } = useClosePosition();
 
   const onClose = useCallback(
     (position: Position) => {
-      setPositionToClose(position);
       submit(position);
     },
     [submit]
   );
 
-  const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   return (
     <>
       <AsyncRenderer loading={loading} error={error} data={data}>
@@ -38,8 +37,13 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
       </AsyncRenderer>
       <Dialog
         content={{
-          Requested: (
-            <RequestedClosePosition partyId={partyId} order={closingOrder} />
+          Requested: <Requested partyId={partyId} order={closingOrder} />,
+          Complete: (
+            <Complete
+              partyId={partyId}
+              order={closingOrder}
+              transaction={transaction}
+            />
           ),
         }}
       />
