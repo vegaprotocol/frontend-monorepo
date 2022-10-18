@@ -54,8 +54,7 @@ interface TxsStatsInfoProps {
 }
 
 export const TxsStatsInfo = ({ className }: TxsStatsInfoProps) => {
-  const { data, error, startPolling, stopPolling } =
-    useQuery<TxsStats>(STATS_QUERY);
+  const { data, startPolling, stopPolling } = useQuery<TxsStats>(STATS_QUERY);
 
   useEffect(() => {
     startPolling(1000);
