@@ -3,6 +3,7 @@ import type {
   SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
 import type { Order } from '@vegaprotocol/orders';
+import { timeInForceLabel } from '@vegaprotocol/orders';
 import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
@@ -73,7 +74,7 @@ export const ActiveOrders = ({
             `${addDecimalsFormatNumber(o.price, market.decimalPlaces)} ${
               asset.symbol
             }`,
-            o.timeInForce,
+            timeInForceLabel(o.timeInForce),
           ];
         })}
       />
@@ -92,7 +93,7 @@ const BasicTable = ({ headers, rows }: BasicTableProps) => {
       <thead>
         <tr>
           {headers.map((h, i) => (
-            <th key={i} className="text-left font-medium w-1/3">
+            <th key={i} className="text-left font-medium">
               {h}
             </th>
           ))}
@@ -102,7 +103,7 @@ const BasicTable = ({ headers, rows }: BasicTableProps) => {
         {rows.map((cells, i) => (
           <tr key={i}>
             {cells.map((c, i) => (
-              <td key={i} className="w-1/3 align-top">
+              <td key={i} className="align-top">
                 {c}
               </td>
             ))}
