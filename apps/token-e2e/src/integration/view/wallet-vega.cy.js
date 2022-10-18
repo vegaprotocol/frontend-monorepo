@@ -30,7 +30,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Vega Wallet - verify elements on widget',
-  { tags: '@regression' },
+  { tags: '@smoke' },
   function () {
     before('visit token home page', function () {
       cy.visit('/');
@@ -154,15 +154,7 @@ context(
           // using gui option to connect using wallet service V1
           cy.getByTestId('connector-gui').click();
         });
-        //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
-        // then code below can be removed
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
-          cy.get('#passphrase')
-            .click()
-            .type(Cypress.env('vegaWalletPassphrase'));
-          cy.get('button').contains('Connect').click();
-        });
+        cy.vega_wallet_connect();
       });
 
       it('should have VEGA WALLET header visible', function () {
@@ -305,6 +297,7 @@ context(
     // 2002-SINC-016
     describe('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
+        cy.vega_wallet_import();
         cy.vega_wallet_receive_fauceted_asset(
           'USDC (fake)',
           '10',
@@ -325,23 +318,7 @@ context(
           '2',
           vegaWalletPublicKey
         );
-        //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
-        // then code below can be removed
-        cy.get(walletContainer).within(() => {
-          cy.get('button')
-            .contains('Connect Vega wallet to use associated $VEGA')
-            .should('be.enabled')
-            .and('be.visible')
-            .click({ force: true });
-        });
-        cy.getByTestId('connector-gui').click();
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
-          cy.get('#passphrase')
-            .click()
-            .type(Cypress.env('vegaWalletPassphrase'));
-          cy.get('button').contains('Connect').click();
-        });
+        cy.vega_wallet_connect();
         cy.ethereum_wallet_connect();
       });
 

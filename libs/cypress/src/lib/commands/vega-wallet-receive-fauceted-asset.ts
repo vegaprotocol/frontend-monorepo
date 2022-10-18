@@ -1,5 +1,3 @@
-import { addGetAssetInformation } from './get-asset-information';
-addGetAssetInformation();
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
