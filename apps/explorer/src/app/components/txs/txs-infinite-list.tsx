@@ -1,7 +1,7 @@
 import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
@@ -55,6 +55,9 @@ export const TxsInfiniteList = ({
   error,
   className,
 }: TxsInfiniteListProps) => {
+  const { screenSize } = useScreenDimensions();
+  const stack = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+
   if (!txs) {
     return <div>No items</div>;
   }
@@ -71,11 +74,15 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="grid grid-flow-col auto-cols-auto w-full mb-8">
-        <div className="text-lg font-bold pl-2">Type</div>
-        <div className="text-lg font-bold">Submitted By</div>
-        <div className="text-lg font-bold">Transaction ID</div>
-        <div className="text-lg font-bold">Block</div>
+      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-zinc-500 uppercase">
+        <div className="col-span-3">
+          <span className="hidden xl:inline">Transaction &nbsp;</span>
+          <span>ID</span>
+        </div>
+        <div className="col-span-3">Submitted By</div>
+        <div className="col-span-2">Type</div>
+        <div className="col-span-1">Block</div>
+        <div className="col-span-1">Index</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader
@@ -88,7 +95,7 @@ export const TxsInfiniteList = ({
               className="List"
               height={595}
               itemCount={itemCount}
-              itemSize={41}
+              itemSize={stack ? 134 : 72}
               onItemsRendered={onItemsRendered}
               ref={ref}
               width={'100%'}
