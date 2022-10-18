@@ -73,6 +73,7 @@ describe('useClosePosition', () => {
     expect(result.current).toEqual({
       submit: expect.any(Function),
       transaction: initialState,
+      Dialog: expect.any(Function),
     });
     result.current.submit({ marketId: 'test-market', openVolume: '0' });
     expect(mockSend).not.toBeCalled();
@@ -100,7 +101,7 @@ describe('useClosePosition', () => {
     });
 
     expect(mockSend).toBeCalledWith(defaultWalletContext.pubKey, {
-      batchMarketInstruction: {
+      batchMarketInstructions: {
         cancellations: [
           {
             marketId,
@@ -147,7 +148,7 @@ describe('useClosePosition', () => {
     });
 
     expect(mockSend).toBeCalledWith(defaultWalletContext.pubKey, {
-      batchMarketInstruction: {
+      batchMarketInstructions: {
         cancellations: [
           {
             marketId,

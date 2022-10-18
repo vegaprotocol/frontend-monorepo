@@ -2,41 +2,26 @@ import type {
   MarketDataFieldsFragment,
   SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
-import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
-import {
-  addDecimalsFormatNumber,
-  Size,
-  t,
-  useDataProvider,
-} from '@vegaprotocol/react-helpers';
+import type { Order } from '@vegaprotocol/orders';
+import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
-import { ClosingOrder } from './use-close-position';
+import type { ClosingOrder as IClosingOrder } from './use-close-position';
+import { useRequestClosePositionData } from './use-request-close-position-data';
 
 export const RequestedClosePosition = ({
   order,
   partyId,
 }: {
-  order?: ClosingOrder;
+  order?: IClosingOrder;
   partyId: string;
 }) => {
-  const marketVariables = useMemo(
-    () => ({ marketId: order?.marketId }),
-    [order]
+  const { market, marketData, orders } = useRequestClosePositionData(
+    order?.marketId,
+    partyId
   );
-  const { data: market } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: marketVariables,
-    skip: !order?.marketId,
-  });
-  const { data: marketData } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: marketVariables,
-  });
 
-  if (!market || !marketData) {
-    return <div>{t('Loading market data')}</div>;
+  if (!market || !marketData || !orders) {
+    return <div>{t('Loading...')}</div>;
   }
 
   if (!order) {
@@ -48,7 +33,7 @@ export const RequestedClosePosition = ({
   return (
     <>
       <ClosingOrder order={order} market={market} marketData={marketData} />
-      <ActiveOrders market={market} partyId={partyId} />
+      <ActiveOrders market={market} orders={orders} />
     </>
   );
 };
@@ -58,7 +43,7 @@ const ClosingOrder = ({
   market,
   marketData,
 }: {
-  order: ClosingOrder;
+  order: IClosingOrder;
   market: SingleMarketFieldsFragment;
   marketData: MarketDataFieldsFragment;
 }) => {
@@ -95,39 +80,15 @@ const ClosingOrder = ({
 };
 
 const ActiveOrders = ({
-  partyId,
   market,
+  orders,
 }: {
-  partyId: string;
   market: SingleMarketFieldsFragment;
+  orders: Order[];
 }) => {
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
-  const { data, error, loading } = useDataProvider({
-    dataProvider: ordersWithMarketProvider,
-    variables: { partyId },
-  });
 
-  const ordersForPosition = useMemo(() => {
-    if (!data) return [];
-    return data.filter((o) => {
-      // Filter out orders not on market for position
-      if (!o.node.market || o.node.market.id !== market.id) {
-        return false;
-      }
-
-      if (!isOrderActive(o.node.status)) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [data, market.id]);
-
-  if (error) {
-    return <div>{t(`Could not fetch order data: ${error.message}`)}</div>;
-  }
-
-  if (loading || !ordersForPosition.length) {
+  if (!orders.length) {
     return null;
   }
 
@@ -136,17 +97,17 @@ const ActiveOrders = ({
       <h2 className="font-bold">{t('Orders to be closed')}</h2>
       <BasicTable
         headers={[t('Amount'), t('Target price'), t('Time in force')]}
-        rows={ordersForPosition.map((o) => {
+        rows={orders.map((o) => {
           return [
             <Size
-              value={o.node.size}
-              side={o.node.side}
+              value={o.size}
+              side={o.side}
               positionDecimalPlaces={market.positionDecimalPlaces}
             />,
-            `${addDecimalsFormatNumber(o.node.price, market.decimalPlaces)} ${
+            `${addDecimalsFormatNumber(o.price, market.decimalPlaces)} ${
               asset.symbol
             }`,
-            o.node.timeInForce,
+            o.timeInForce,
           ];
         })}
       />
@@ -174,8 +135,10 @@ const BasicTable = ({ headers, rows }: BasicTableProps) => {
       <tbody>
         {rows.map((cells, i) => (
           <tr key={i}>
-            {cells.map((c) => (
-              <td className="w-1/3 align-top">{c}</td>
+            {cells.map((c, i) => (
+              <td key={i} className="w-1/3 align-top">
+                {c}
+              </td>
             ))}
           </tr>
         ))}

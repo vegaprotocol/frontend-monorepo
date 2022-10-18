@@ -58,7 +58,6 @@ export const useClosePosition = () => {
             submissions: [closingOrder],
           },
         };
-        console.log(command);
 
         const res = await send(pubKey, command);
 
