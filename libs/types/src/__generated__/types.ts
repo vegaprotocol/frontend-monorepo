@@ -342,6 +342,8 @@ export enum BusEventType {
   TimeUpdate = 'TimeUpdate',
   /** A trade has been created */
   Trade = 'Trade',
+  /** The results from processing at transaction */
+  TransactionResult = 'TransactionResult',
   /** A balance has been transferred between accounts */
   TransferResponses = 'TransferResponses',
   /** A vote has been placed on a governance proposal */
@@ -809,7 +811,7 @@ export type EthereumKeyRotationsConnection = {
 };
 
 /** Union type for wrapped events in stream PROPOSAL is mapped to governance data, something to keep in mind */
-export type Event = Account | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransferResponses | Vote | Withdrawal;
+export type Event = Account | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
 
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
@@ -847,10 +849,10 @@ export type Filter = {
 /** A Future product */
 export type Future = {
   __typename?: 'Future';
-  /** The binding between the oracle spec and the settlement price */
+  /** The binding between the oracle spec and the settlement data */
   oracleSpecBinding: OracleSpecToFutureBinding;
-  /** The oracle spec describing the oracle data of interest for settlement price. */
-  oracleSpecForSettlementPrice: OracleSpec;
+  /** The oracle spec describing the oracle data of interest for settlement. */
+  oracleSpecForSettlementData: OracleSpec;
   /** The oracle spec describing the oracle data of interest for trading termination. */
   oracleSpecForTradingTermination: OracleSpec;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
@@ -865,11 +867,11 @@ export type FutureProduct = {
   __typename?: 'FutureProduct';
   /**
    * OracleSpecToFutureBinding tells on which property oracle data should be
-   * used as settlement price.
+   * used as settlement data.
    */
   oracleSpecBinding: OracleSpecToFutureBinding;
-  /** Describes the oracle data that an instrument wants to get from the oracle engine for settlement price. */
-  oracleSpecForSettlementPrice: OracleSpecConfiguration;
+  /** Describes the oracle data that an instrument wants to get from the oracle engine for settlement data. */
+  oracleSpecForSettlementData: OracleSpecConfiguration;
   /** Describes the oracle data that an instrument wants to get from the oracle engine for trading termination. */
   oracleSpecForTradingTermination: OracleSpecConfiguration;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
@@ -2073,11 +2075,11 @@ export enum OracleSpecStatus {
 
 /**
  * OracleSpecToFutureBinding tells on which property oracle data should be
- * used as settlement price and trading termination.
+ * used as settlement data and trading termination.
  */
 export type OracleSpecToFutureBinding = {
   __typename?: 'OracleSpecToFutureBinding';
-  settlementPriceProperty: Scalars['String'];
+  settlementDataProperty: Scalars['String'];
   tradingTerminationProperty: Scalars['String'];
 };
 
@@ -2722,7 +2724,7 @@ export type Position = {
   marginsConnection?: Maybe<MarginConnection>;
   /** Market relating to this position */
   market: Market;
-  /** Open volume (uint64) */
+  /** Open volume (int64) */
   openVolume: Scalars['String'];
   /** The party holding this position */
   party: Party;
@@ -2787,7 +2789,7 @@ export type PositionUpdate = {
   averageEntryPrice: Scalars['String'];
   /** Market relating to this position */
   marketId: Scalars['ID'];
-  /** Open volume (uint64) */
+  /** Open volume (int64) */
   openVolume: Scalars['String'];
   /** The party holding this position */
   partyId: Scalars['ID'];
@@ -4327,6 +4329,19 @@ export type TradeUpdate = {
   type: TradeType;
 };
 
+/** The result from processing a transaction */
+export type TransactionResult = {
+  __typename?: 'TransactionResult';
+  /** The error emitted by the transaction, will be null if the transaction succeeded */
+  error?: Maybe<Scalars['String']>;
+  /** The hash of the transaction */
+  hash: Scalars['String'];
+  /** The party which submitted this transaction */
+  partyId: Scalars['String'];
+  /** Was the transaction successful or not? */
+  status: Scalars['Boolean'];
+};
+
 export type TransactionSubmitted = {
   __typename?: 'TransactionSubmitted';
   success: Scalars['Boolean'];
@@ -4453,7 +4468,7 @@ export type UpdateERC20 = {
 export type UpdateFutureProduct = {
   __typename?: 'UpdateFutureProduct';
   oracleSpecBinding: OracleSpecToFutureBinding;
-  oracleSpecForSettlementPrice: OracleSpecConfiguration;
+  oracleSpecForSettlementData: OracleSpecConfiguration;
   oracleSpecForTradingTermination: OracleSpecConfiguration;
   quoteName: Scalars['String'];
 };

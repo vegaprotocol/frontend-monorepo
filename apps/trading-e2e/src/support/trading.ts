@@ -77,7 +77,7 @@ export const mockTradingPage = (
 
   aliasQuery(
     req,
-    'MarketInfoQuery',
+    'MarketInfo',
     generateMarketInfoQuery({
       market: {
         state,

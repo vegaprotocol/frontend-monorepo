@@ -17,6 +17,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
+    cy.wait('@MarketInfo');
   });
 
   it('current fees displayed', () => {
@@ -162,7 +163,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
-    validateMarketDataRow(0, 'Settlement Price Property', 'prices.BTC.value');
+    validateMarketDataRow(0, 'Settlement Data Property', 'prices.BTC.value');
     validateMarketDataRow(
       1,
       'Trading Termination Property',
@@ -174,10 +175,11 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', '/oracles');
   });
 
-  it('proposal displayed', () => {
+  it.only('proposal displayed', () => {
     cy.getByTestId(marketTitle).contains('Proposal').click();
 
     cy.getByTestId(externalLink)
+      .first()
       .should('have.text', 'View governance proposal')
       .and('have.attr', 'href')
       .and('contain', '/governance/market-0');
