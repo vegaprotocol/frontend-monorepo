@@ -191,6 +191,7 @@ export const DealTicket = ({
             {t('Connect your Vega wallet to trade')}
           </Button>
           <Link
+            data-testid="order-get-vega-wallet"
             className="block w-full text-center mt-2 text-neutral-500 dark:text-neutral-400"
             href={VEGA_WALLET_RELEASE_URL}
           >
