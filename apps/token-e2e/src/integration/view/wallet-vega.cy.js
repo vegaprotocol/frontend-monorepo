@@ -147,13 +147,6 @@ context(
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
         cy.visit('/');
-        cy.get(walletContainer).within(() => {
-          cy.get(connectButton).click();
-        });
-        cy.get(connectorsList).within(() => {
-          // using gui option to connect using wallet service V1
-          cy.getByTestId('connector-gui').click();
-        });
         cy.vega_wallet_connect();
       });
 
