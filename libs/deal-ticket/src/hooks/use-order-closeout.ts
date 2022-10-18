@@ -58,14 +58,12 @@ export const useOrderCloseOut = ({
   const generalAccountBalance = new BigNumber(
     addDecimal(account?.balance || 0, account?.asset.decimals || 0)
   );
-  const volume = marketPositions?.openVolume
-    ? new BigNumber(
-        addDecimal(
-          marketPositions?.openVolume.toString(),
-          market.positionDecimalPlaces
-        )
-      )[order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size)
-    : null;
+  const volume = new BigNumber(
+    addDecimal(
+      marketPositions?.openVolume.toString() || '0',
+      market.positionDecimalPlaces
+    )
+  )[order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
   const markPrice = new BigNumber(
     addDecimal(
       markPriceData?.market?.data?.markPrice || 0,
@@ -76,8 +74,8 @@ export const useOrderCloseOut = ({
   const marginDifference = marginMaintenanceLevel
     .minus(positionAccountBalance)
     .minus(generalAccountBalance);
-  const closeOut = volume && marginDifference.div(volume).plus(markPrice);
-  if (closeOut && closeOut.isPositive()) {
+  const closeOut = marginDifference.div(volume).plus(markPrice);
+  if (closeOut.isPositive()) {
     return formatNumber(closeOut, market.decimalPlaces);
   }
   return null;
