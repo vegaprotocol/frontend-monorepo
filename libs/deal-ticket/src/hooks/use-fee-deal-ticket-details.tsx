@@ -124,7 +124,7 @@ export interface FeeDetails {
   quoteName: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
-  estCloseOut: string;
+  estCloseOut: string | null;
   slippageValue: number;
   slippage: string | null;
   price?: string | number | null;
@@ -139,7 +139,9 @@ export const getFeeDetailsValues = ({
   market,
 }: FeeDetails) => {
   const formatValue = (value: string | number | null | undefined): string => {
-    return value ? formatNumber(value, market.decimalPlaces) : '-';
+    return value && !isNaN(Number(value))
+      ? formatNumber(value, market.decimalPlaces)
+      : '-';
   };
   return [
     {
@@ -156,7 +158,12 @@ export const getFeeDetailsValues = ({
     {
       label: t('Est. fees'),
       value: formatValue(estMargin?.totalFees),
-      labelDescription: <FeesBreakdown fees={estMargin?.fees} />,
+      labelDescription: (
+        <FeesBreakdown
+          fees={estMargin?.fees}
+          feeFactors={market.fees.factors}
+        />
+      ),
       quoteName,
     },
     {
