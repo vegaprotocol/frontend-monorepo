@@ -1,0 +1,5 @@
+{
+  "hosts": [
+    "https://api.n01.sandbox.vega.xyz/graphql"
+  ]
+}
