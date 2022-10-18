@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   t,
@@ -77,7 +77,7 @@ export const DealTicket = ({
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  const getEstimatedMarketPrice = useCallback(() => {
+  const getEstimatedMarketPrice = () => {
     if (isMarketInAuction(market)) {
       // 0 can never be a valid uncrossing price
       // as it would require there being orders on the book at that price.
@@ -89,17 +89,15 @@ export const DealTicket = ({
       }
     }
     return market.depth.lastTrade?.price;
-  }, [market]);
-
+  };
+  const marketPrice = getEstimatedMarketPrice();
+  const marketPriceFormatted =
+    marketPrice && addDecimalsFormatNumber(marketPrice, market.decimalPlaces);
   useEffect(() => {
-    const marketPrice = getEstimatedMarketPrice();
-    if (marketPrice) {
-      setValue(
-        'price',
-        addDecimalsFormatNumber(marketPrice, market.decimalPlaces)
-      );
+    if (marketPriceFormatted) {
+      setValue('price', marketPriceFormatted);
     }
-  }, [getEstimatedMarketPrice, market.decimalPlaces, setValue]);
+  }, [marketPriceFormatted, setValue]);
 
   const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailLabelValues(feeDetails);
@@ -122,13 +120,8 @@ export const DealTicket = ({
                 ) {
                   setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
                 }
-                const marketPrice = getEstimatedMarketPrice();
-                if (marketPrice) {
-                  setValue(
-                    'price',
-                    marketPrice &&
-                      addDecimalsFormatNumber(marketPrice, market.decimalPlaces)
-                  );
+                if (marketPriceFormatted) {
+                  setValue('price', marketPriceFormatted);
                 }
               }
               field.onChange(type);
