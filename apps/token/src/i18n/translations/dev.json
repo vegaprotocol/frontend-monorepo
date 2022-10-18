@@ -505,7 +505,7 @@
   "voteFailedReason": "Vote closed. Failed due to: ",
   "Passed": "Passed",
   "votePassed": "Vote passed.",
-  "subjectToFurtherActions": "Vote passed {{daysAgo}} subject to further actions.",
+  "WaitingForNodeVote": "Waiting for nodes to validate asset. ",
   "transactionHashPrompt": "Transaction hash will appear here once the transaction is approved in your Ethereum wallet",
   "newWalletVersionAvailable": "A new Vega wallet is available 🎉. ",
   "downloadNewWallet": "Download {{newVersionAvailable}}",
@@ -564,7 +564,7 @@
   "yesPercentage": "Yes percentage",
   "noPercentage": "No percentage",
   "proposalTerms": "Proposal terms",
-  "currentlySetTo": "Currently set to ",
+  "currentlySetTo": "Vote currently set to ",
   "rankingScore": "Ranking score",
   "stakeScore": "Stake score",
   "performanceScore": "Performance",
@@ -640,6 +640,7 @@
   "NewFreeformProposal": "New freeform proposal",
   "NewRawProposal": "New raw proposal",
   "MinProposalRequirements": "You must have at least {{value}} VEGA associated to make a proposal",
+  "MinProposalVoteRequirements": "You must have at least {{value}} VEGA associated to vote on this proposal",
   "totalSupply": "Total Supply",
   "viaWallet": "via wallet",
   "viaContract": "via vesting",
@@ -690,5 +691,7 @@
   "MoreAssetsInfo": "To see Explorer data on existing assets visit",
   "ProposalNotFound": "Proposal not found",
   "ProposalNotFoundDetails": "The proposal you are looking for is not here, it may have been enacted before the last chain restore. You could check the Vega forums/discord instead for information about it.",
-  "FreeformProposal": "Freeform proposal"
+  "FreeformProposal": "Freeform proposal",
+  "unknownReason": "unknown reason",
+  "votingEnded": "Voting has ended."
 }

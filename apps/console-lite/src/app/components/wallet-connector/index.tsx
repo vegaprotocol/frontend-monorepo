@@ -1,13 +1,12 @@
+import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import * as React from 'react';
-import { useContext } from 'react';
-import LocalContext from '../../context/local-context';
 
 const ConnectWallet = () => {
-  const {
-    vegaWalletDialog: { setConnect },
-  } = useContext(LocalContext);
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   return (
     <section
       className="p-8 bg-white-normal dark:bg-offBlack"
@@ -17,7 +16,7 @@ const ConnectWallet = () => {
         {t('Please connect your Vega wallet to make a trade')}
       </h3>
       <div className="mb-4">
-        <Button variant="primary" onClick={() => setConnect(true)} size="lg">
+        <Button variant="primary" onClick={openVegaWalletDialog} size="lg">
           {t('Connect Vega wallet')}
         </Button>
       </div>

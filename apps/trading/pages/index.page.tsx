@@ -7,7 +7,7 @@ import {
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useGlobalStore } from '../stores';
+import { useGlobalStore, usePageTitleStore } from '../stores';
 
 export function Index() {
   const { replace } = useRouter();
@@ -19,6 +19,11 @@ export function Index() {
   const { riskNoticeDialog, update } = useGlobalStore((store) => ({
     riskNoticeDialog: store.riskNoticeDialog,
     update: store.update,
+  }));
+
+  const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
+    pageTitle: store.pageTitle,
+    updateTitle: store.updateTitle,
   }));
 
   useEffect(() => {
@@ -33,18 +38,21 @@ export function Index() {
             data[0]?.decimalPlaces
           )
         : null;
-      const pageTitle = titlefy([marketName, marketPrice]);
+      const newPageTitle = titlefy([marketName, marketPrice]);
 
       if (marketId) {
         replace(`/markets/${marketId}`);
-        update({ marketId, pageTitle });
+        update({ marketId });
+        if (pageTitle !== newPageTitle) {
+          updateTitle(newPageTitle);
+        }
       }
       // Fallback to the markets list page
       else {
         replace('/markets');
       }
     }
-  }, [data, replace, riskNoticeDialog, update]);
+  }, [data, replace, riskNoticeDialog, update, pageTitle, updateTitle]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

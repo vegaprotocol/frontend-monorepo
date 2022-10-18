@@ -1,5 +1,4 @@
 export * from './proposal-form-subheader';
-export * from './proposal-form-min-requirements';
 export * from './proposal-form-title';
 export * from './proposal-form-description';
 export * from './proposal-form-terms';

@@ -1,0 +1,20 @@
+query LiquidityProvisionMarkets {
+  marketsConnection {
+    edges {
+      node {
+        id
+        liquidityProvisionsConnection {
+          edges {
+            node {
+              commitmentAmount
+              fee
+            }
+          }
+        }
+        data {
+          targetStake
+        }
+      }
+    }
+  }
+}

@@ -1,49 +1,49 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import type { VegaWalletConnectButtonProps } from './vega-wallet-connect-button';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/react-helpers';
 
-let props: VegaWalletConnectButtonProps;
+const mockUpdateDialogOpen = jest.fn();
+jest.mock('@vegaprotocol/wallet', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet'),
+  useVegaWalletDialogStore: () => ({
+    openVegaWalletDialog: mockUpdateDialogOpen,
+  }),
+}));
 
 beforeEach(() => {
-  props = {
-    setConnectDialog: jest.fn(),
-  };
+  jest.clearAllMocks();
 });
 
-const generateJsx = (
-  context: VegaWalletContextShape,
-  props: VegaWalletConnectButtonProps
-) => {
+const generateJsx = (context: VegaWalletContextShape) => {
   return (
     <VegaWalletContext.Provider value={context}>
-      <VegaWalletConnectButton {...props} />
+      <VegaWalletConnectButton />
     </VegaWalletContext.Provider>
   );
 };
 
 it('Not connected', () => {
-  render(generateJsx({ pubKey: null } as VegaWalletContextShape, props));
+  render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
   const button = screen.getByRole('button');
   expect(button).toHaveTextContent('Connect Vega wallet');
   fireEvent.click(button);
-  expect(props.setConnectDialog).toHaveBeenCalledWith(true);
+  expect(mockUpdateDialogOpen).toHaveBeenCalled();
 });
 
 it('Connected', () => {
   const pubKey = { publicKey: '123456__123456', name: 'test' };
   render(
-    generateJsx(
-      { pubKey: pubKey.publicKey, pubKeys: [pubKey] } as VegaWalletContextShape,
-      props
-    )
+    generateJsx({
+      pubKey: pubKey.publicKey,
+      pubKeys: [pubKey],
+    } as VegaWalletContextShape)
   );
 
   const button = screen.getByRole('button');
   expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
   fireEvent.click(button);
-  expect(props.setConnectDialog).not.toHaveBeenCalled();
+  expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
 });

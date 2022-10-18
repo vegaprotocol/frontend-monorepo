@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoContainer } from '@vegaprotocol/market-info';
+import { MarketInfoContainer, getExpiryDate } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -20,7 +20,7 @@ import {
   ButtonLink,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import { getDateFormat, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Header, HeaderStat } from '../../components/header';
@@ -56,15 +56,7 @@ type ExpiryLabelProps = {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  let content = null;
-  if (market.marketTimestamps.close === null) {
-    content = t('Not time-based');
-  } else {
-    const closeDate = new Date(market.marketTimestamps.close as string);
-    const isExpired = Date.now() - closeDate.valueOf() > 0;
-    const expiryDate = getDateFormat().format(closeDate);
-    content = `${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`;
-  }
+  const content = getExpiryDate(market);
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
@@ -83,8 +75,8 @@ const ExpiryTooltipContent = ({
         .oracleSpecForTradingTermination?.id;
 
     return (
-      <>
-        <p data-testid="expiry-tool-tip" className="mb-2">
+      <section data-testid="expiry-tool-tip">
+        <p className="mb-2">
           {t(
             'This market expires when triggered by its oracle, not on a set date.'
           )}
@@ -94,7 +86,7 @@ const ExpiryTooltipContent = ({
             {t('View oracle specification')}
           </Link>
         )}
-      </>
+      </section>
     );
   }
 
@@ -140,6 +132,7 @@ export const TradeMarketHeader = ({
             explorerUrl={VEGA_EXPLORER_URL}
           />
         }
+        testId="market-expiry"
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
@@ -148,8 +141,11 @@ export const TradeMarketHeader = ({
       <MarketVolume marketId={market.id} />
       <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
       {symbol ? (
-        <HeaderStat heading={t('Settlement asset')}>
-          <div data-testid="trading-mode">
+        <HeaderStat
+          heading={t('Settlement asset')}
+          testId="market-settlement-asset"
+        >
+          <div>
             <ButtonLink
               onClick={(e) => {
                 openAssetDetailsDialog(symbol, e.target as HTMLElement);

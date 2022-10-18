@@ -1,3 +1,4 @@
+import create from 'zustand';
 import {
   Button,
   Dialog,
@@ -28,15 +29,50 @@ type WalletType = 'gui' | 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-  dialogOpen: boolean;
-  setDialogOpen: (isOpen: boolean) => void;
+  onChangeOpen?: (open: boolean) => void;
+}
+
+export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
+  (set) => ({
+    vegaWalletDialogOpen: false,
+    updateVegaWalletDialog: (open: boolean) =>
+      set({ vegaWalletDialogOpen: open }),
+    openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
+    closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
+  })
+);
+
+interface VegaWalletDialogStore {
+  vegaWalletDialogOpen: boolean;
+  updateVegaWalletDialog: (open: boolean) => void;
+  openVegaWalletDialog: () => void;
+  closeVegaWalletDialog: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
-  dialogOpen,
-  setDialogOpen,
+  onChangeOpen,
 }: VegaConnectDialogProps) => {
+  const {
+    vegaWalletDialogOpen,
+    closeVegaWalletDialog,
+    updateVegaWalletDialog,
+  } = useVegaWalletDialogStore((store) => ({
+    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
+    updateVegaWalletDialog: onChangeOpen
+      ? (open: boolean) => {
+          store.updateVegaWalletDialog(open);
+          onChangeOpen(open);
+        }
+      : store.updateVegaWalletDialog,
+    closeVegaWalletDialog: onChangeOpen
+      ? () => {
+          store.closeVegaWalletDialog();
+          onChangeOpen(false);
+        }
+      : store.closeVegaWalletDialog,
+  }));
+
   const { data, error, loading } = useChainIdQuery();
 
   const renderContent = () => {
@@ -66,14 +102,18 @@ export const VegaConnectDialog = ({
     return (
       <ConnectDialogContainer
         connectors={connectors}
-        closeDialog={() => setDialogOpen(false)}
+        closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
       />
     );
   };
 
   return (
-    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+    <Dialog
+      open={vegaWalletDialogOpen}
+      size="small"
+      onChange={updateVegaWalletDialog}
+    >
       {renderContent()}
     </Dialog>
   );
@@ -156,45 +196,11 @@ const ConnectorList = ({
   setWalletUrl: (value: string) => void;
   isMainnet: boolean;
 }) => {
-  const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return (
     <>
       <ConnectDialogContent>
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-        {urlInputExpanded ? (
-          <>
-            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-              {t('Custom wallet location')}
-            </p>
-            <FormGroup
-              labelFor="wallet-url"
-              label={t('Custom wallet location')}
-              hideLabel={true}
-            >
-              <Input
-                value={walletUrl}
-                onChange={(e) => setWalletUrl(e.target.value)}
-                name="wallet-url"
-              />
-            </FormGroup>
-            <p className="mb-2 text-neutral-600 dark:text-neutral-400">
-              {t('Choose wallet app to connect')}
-            </p>
-          </>
-        ) : (
-          <p className="mb-6 text-neutral-600 dark:text-neutral-400">
-            {t(
-              'Choose wallet app to connect, or to change port or server URL enter a '
-            )}
-            <button
-              className="underline"
-              onClick={() => setUrlInputExpanded(true)}
-            >
-              {t('custom wallet location')}
-            </button>{' '}
-            {t(' first')}
-          </p>
-        )}
+        <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
           <li className="mb-4">
             <ConnectionOption
@@ -320,5 +326,46 @@ const ConnectionOption = ({
         <Icon name="chevron-right" />
       </span>
     </Button>
+  );
+};
+
+const CustomUrlInput = ({
+  walletUrl,
+  setWalletUrl,
+}: {
+  walletUrl: string;
+  setWalletUrl: (url: string) => void;
+}) => {
+  const [urlInputExpanded, setUrlInputExpanded] = useState(false);
+  return urlInputExpanded ? (
+    <>
+      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+        {t('Custom wallet location')}
+      </p>
+      <FormGroup
+        labelFor="wallet-url"
+        label={t('Custom wallet location')}
+        hideLabel={true}
+      >
+        <Input
+          value={walletUrl}
+          onChange={(e) => setWalletUrl(e.target.value)}
+          name="wallet-url"
+        />
+      </FormGroup>
+      <p className="mb-2 text-neutral-600 dark:text-neutral-400">
+        {t('Choose wallet app to connect')}
+      </p>
+    </>
+  ) : (
+    <p className="mb-6 text-neutral-600 dark:text-neutral-400">
+      {t(
+        'Choose wallet app to connect, or to change port or server URL enter a '
+      )}
+      <button className="underline" onClick={() => setUrlInputExpanded(true)}>
+        {t('custom wallet location')}
+      </button>{' '}
+      {t(' first')}
+    </p>
   );
 };
