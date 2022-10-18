@@ -68,6 +68,7 @@ export enum BusEventType {
   SettlePosition = 'SettlePosition',
   TimeUpdate = 'TimeUpdate',
   Trade = 'Trade',
+  TransactionResult = "TransactionResult",
   TransferResponses = 'TransferResponses',
   Vote = 'Vote',
   Withdrawal = 'Withdrawal',

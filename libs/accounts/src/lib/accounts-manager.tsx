@@ -21,6 +21,7 @@ export const AccountManager = ({
   onClickDeposit,
   partyId,
 }: AccountManagerProps) => {
+  const partyIdRef = useRef<string>(partyId);
   const gridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -32,11 +33,19 @@ export const AccountManager = ({
     },
     [gridRef]
   );
-  const { data, loading, error } = useDataProvider<AccountFields[], never>({
+
+  const { data, loading, error, reload } = useDataProvider<
+    AccountFields[],
+    never
+  >({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
   });
+  if (partyId !== partyIdRef.current) {
+    reload(true);
+    partyIdRef.current = partyId;
+  }
   if (!dataRef.current && data) {
     dataRef.current = data;
   }
