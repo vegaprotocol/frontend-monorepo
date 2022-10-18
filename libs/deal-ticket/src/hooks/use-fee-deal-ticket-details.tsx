@@ -1,9 +1,5 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -62,7 +58,7 @@ export const useFeeDealTicketDetails = (
   });
 
   const notionalSize = useMemo(() => {
-    if (order.price) {
+    if (order.price && order.size) {
       return new BigNumber(order.size).multipliedBy(order.price).toString();
     }
     return null;
@@ -75,9 +71,7 @@ export const useFeeDealTicketDetails = (
         .multipliedBy(100)
         .decimalPlaces(2)
         .toNumber();
-      return !isNaN(percentage)
-        ? `${estMargin.totalFees} (${percentage}%)`
-        : `${estMargin.totalFees}`;
+      return `${estMargin.totalFees} (${percentage}%)`;
     }
     return null;
   }, [estMargin?.totalFees, notionalSize]);
@@ -102,9 +96,6 @@ export const useFeeDealTicketDetails = (
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
-  const formattedPrice =
-    price && addDecimalsFormatNumber(price, market.decimalPlaces);
-
   const max = useMemo(() => {
     return new BigNumber(maxTrade)
       .decimalPlaces(market.positionDecimalPlaces)
@@ -123,7 +114,6 @@ export const useFeeDealTicketDetails = (
     slippageValue,
     setSlippageValue,
     price,
-    formattedPrice,
     max,
   };
 };
@@ -140,7 +130,7 @@ export interface FeeDetails {
   price?: string | number | null;
 }
 
-export const getFeeDetailLabelValues = ({
+export const getFeeDetailsValues = ({
   quoteName,
   notionalSize,
   estMargin,
@@ -148,39 +138,38 @@ export const getFeeDetailLabelValues = ({
   price,
   market,
 }: FeeDetails) => {
-  const details = [
+  const formatValue = (value: string | number | null | undefined): string => {
+    return value ? formatNumber(value, market.decimalPlaces) : '-';
+  };
+  return [
     {
       label: t('Est. price'),
-      value: price ? formatNumber(price, market.decimalPlaces) : '-',
-      quoteName,
-    },
-    {
-      label: t('Est. fees'),
-      value: estMargin?.totalFees ?? '-',
-      labelDescription: <FeesBreakdown fees={estMargin?.fees} />,
+      value: formatValue(price),
       quoteName,
     },
     {
       label: t('Notional size'),
-      value:
-        notionalSize && notionalSize !== 'NaN'
-          ? formatNumber(notionalSize, market.decimalPlaces)
-          : '-',
+      value: formatValue(notionalSize),
       quoteName,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
+      label: t('Est. fees'),
+      value: formatValue(estMargin?.totalFees),
+      labelDescription: <FeesBreakdown fees={estMargin?.fees} />,
+      quoteName,
+    },
+    {
       label: t('Est. margin required'),
-      value: estMargin?.margin ?? '-',
+      value: formatValue(estMargin?.margin),
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
     {
       label: t('Est. close out'),
-      value: estCloseOut,
+      value: formatValue(estCloseOut),
       quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },
   ];
-  return details;
 };

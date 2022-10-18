@@ -38,7 +38,7 @@ jest.mock('./use-market-positions', () => ({
   }) => mockMarketPositions,
 }));
 
-describe('useOrderMargin Hook', () => {
+describe('useOrderMargin', () => {
   const order = {
     size: '2',
     side: 'SIDE_BUY',
@@ -59,7 +59,7 @@ describe('useOrderMargin Hook', () => {
     jest.clearAllMocks();
   });
 
-  it('margin should be properly calculated', () => {
+  it('should calculate margin correctly', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as OrderSubmissionBody['orderSubmission'],
@@ -67,7 +67,7 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('100,000');
+    expect(result.current?.margin).toEqual('100000');
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
@@ -77,7 +77,7 @@ describe('useOrderMargin Hook', () => {
     );
   });
 
-  it('fees should be properly calculated', () => {
+  it('should calculate fees correctly', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as OrderSubmissionBody['orderSubmission'],
@@ -85,10 +85,10 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current?.totalFees).toEqual('300,000');
+    expect(result.current?.totalFees).toEqual('300000');
   });
 
-  it('if there is no positions initialMargin should not be subtracted', () => {
+  it('should not subtract initialMargin if there is no position', () => {
     mockMarketPositions = null;
     const { result } = renderHook(() =>
       useOrderMargin({
@@ -97,14 +97,14 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('200,000');
+    expect(result.current?.margin).toEqual('200000');
 
     expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       order.size
     );
   });
 
-  it('if api fails, should return empty value', () => {
+  it('should return empty value if API fails', () => {
     mockEstimateData = {
       estimateOrder: {
         fee: {

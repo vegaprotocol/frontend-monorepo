@@ -14,7 +14,12 @@ import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import { t, toDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  toDecimal,
+  removeDecimal,
+  addDecimalsFormatNumber,
+} from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
   getOrderDialogTitle,
@@ -69,11 +74,14 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     notionalSize,
     estMargin,
     estCloseOut,
-    formattedPrice,
     slippageValue,
     setSlippageValue,
+    price,
     max,
   } = useFeeDealTicketDetails(order, market);
+
+  const formattedPrice =
+    price && addDecimalsFormatNumber(price, market.decimalPlaces);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||

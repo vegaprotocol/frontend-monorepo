@@ -1,10 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Side } from '@vegaprotocol/types';
-import {
-  addDecimalsFormatNumber,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketData } from './use-market-data';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -44,7 +41,9 @@ export const useOrderMargin = ({
     variables: {
       marketId: market.id,
       partyId,
-      price: markPriceData?.market?.data?.markPrice || '',
+      price: order.price
+        ? removeDecimal(order.price, market.decimalPlaces)
+        : markPriceData?.market?.data?.markPrice || '',
       size: removeDecimal(
         BigNumber.maximum(
           0,
@@ -77,22 +76,12 @@ export const useOrderMargin = ({
     const { makerFee, liquidityFee, infrastructureFee } =
       data.estimateOrder.fee;
     return {
-      margin: margin
-        ? addDecimalsFormatNumber(margin, market.decimalPlaces)
-        : '-',
-      totalFees: fees
-        ? addDecimalsFormatNumber(fees, market.decimalPlaces)
-        : '-',
+      margin: addDecimal(margin, market.decimalPlaces),
+      totalFees: addDecimal(fees, market.decimalPlaces),
       fees: {
-        makerFee: makerFee
-          ? addDecimalsFormatNumber(makerFee, market.decimalPlaces)
-          : '-',
-        liquidityFee: liquidityFee
-          ? addDecimalsFormatNumber(liquidityFee, market.decimalPlaces)
-          : '-',
-        infrastructureFee: infrastructureFee
-          ? addDecimalsFormatNumber(infrastructureFee, market.decimalPlaces)
-          : '-',
+        makerFee: addDecimal(makerFee, market.decimalPlaces),
+        liquidityFee: addDecimal(liquidityFee, market.decimalPlaces),
+        infrastructureFee: addDecimal(infrastructureFee, market.decimalPlaces),
       },
     };
   }

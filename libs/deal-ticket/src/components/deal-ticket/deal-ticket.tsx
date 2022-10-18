@@ -20,7 +20,7 @@ import {
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import {
   useFeeDealTicketDetails,
-  getFeeDetailLabelValues,
+  getFeeDetailsValues,
 } from '../../hooks/use-fee-deal-ticket-details';
 import { VEGA_WALLET_RELEASE_URL } from '@vegaprotocol/wallet';
 
@@ -104,7 +104,7 @@ export const DealTicket = ({
   }, [marketPriceFormatted, setValue]);
 
   const feeDetails = useFeeDealTicketDetails(order, market);
-  const details = getFeeDetailLabelValues(feeDetails);
+  const details = getFeeDetailsValues(feeDetails);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
@@ -117,7 +117,8 @@ export const DealTicket = ({
             onSelect={(type) => {
               if (type === OrderType.TYPE_LIMIT) {
                 setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
-              } else {
+                setValue('price', undefined);
+              } else if (type === OrderType.TYPE_MARKET) {
                 if (
                   order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_IOC &&
                   order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_FOK
