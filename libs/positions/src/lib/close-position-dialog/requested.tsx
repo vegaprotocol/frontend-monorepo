@@ -10,12 +10,12 @@ export const Requested = ({
   order?: IClosingOrder;
   partyId: string;
 }) => {
-  const { market, marketData, orders } = useRequestClosePositionData(
+  const { market, marketData, orders, loading } = useRequestClosePositionData(
     order?.marketId,
     partyId
   );
 
-  if (!market || !marketData || !orders) {
+  if (loading || !market || !marketData || !orders) {
     return <div>{t('Loading...')}</div>;
   }
 

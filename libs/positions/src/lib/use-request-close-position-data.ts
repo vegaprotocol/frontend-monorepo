@@ -9,16 +9,16 @@ export const useRequestClosePositionData = (
 ) => {
   const marketVariables = useMemo(() => ({ marketId }), [marketId]);
   const orderVariables = useMemo(() => ({ partyId }), [partyId]);
-  const { data: market } = useDataProvider({
+  const { data: market, loading: marketLoading } = useDataProvider({
     dataProvider: marketProvider,
     variables: marketVariables,
     skip: !marketId,
   });
-  const { data: marketData } = useDataProvider({
+  const { data: marketData, loading: marketDataLoading } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: marketVariables,
   });
-  const { data: orderData } = useDataProvider({
+  const { data: orderData, loading: orderDataLoading } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables: orderVariables,
   });
@@ -41,5 +41,10 @@ export const useRequestClosePositionData = (
       .map((o) => o.node);
   }, [orderData, market]);
 
-  return { market, marketData, orders };
+  return {
+    market,
+    marketData,
+    orders,
+    loading: marketLoading || marketDataLoading || orderDataLoading,
+  };
 };
