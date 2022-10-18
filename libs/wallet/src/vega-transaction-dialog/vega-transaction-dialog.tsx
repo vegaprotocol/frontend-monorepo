@@ -10,7 +10,6 @@ export type VegaTransactionContentMap = {
 };
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
-  onChange: (isOpen: boolean) => void;
   transaction: VegaTxState;
   intent?: Intent;
   title?: string;
@@ -20,7 +19,6 @@ export interface VegaTransactionDialogProps {
 
 export const VegaTransactionDialog = ({
   isOpen,
-  onChange,
   transaction,
   intent,
   title,
@@ -34,7 +32,6 @@ export const VegaTransactionDialog = ({
   return (
     <Dialog
       open={isOpen}
-      onChange={onChange}
       intent={computedIntent}
       title={computedTitle}
       icon={computedIcon}

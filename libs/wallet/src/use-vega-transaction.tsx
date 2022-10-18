@@ -104,14 +104,10 @@ export const useVegaTransaction = () => {
       <VegaTransactionDialog
         {...props}
         isOpen={transaction.dialogOpen}
-        onChange={(isOpen) => {
-          if (!isOpen) reset();
-          setTransaction({ dialogOpen: isOpen });
-        }}
         transaction={transaction}
       />
     );
-  }, [transaction, setTransaction, reset]);
+  }, [transaction]);
 
   return {
     send,
