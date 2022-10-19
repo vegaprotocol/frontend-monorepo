@@ -63,7 +63,6 @@ export const FeesBreakdown = ({
   return (
     <dl className="grid grid-cols-3 gap-x-3">
       <dt>{t('Infrastructure fee')}</dt>
-      <dd className="text-right">{fees.infrastructureFee}</dd>
       {feeFactors && (
         <dd className="text-right">
           {formatNumberPercentage(
@@ -71,8 +70,8 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
+      <dd className="text-right">{fees.infrastructureFee}</dd>
       <dt>{t('Liquidity fee')}</dt>
-      <dd className="text-right">{fees.liquidityFee}</dd>
       {feeFactors && (
         <dd className="text-right">
           {formatNumberPercentage(
@@ -80,8 +79,8 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
+      <dd className="text-right">{fees.liquidityFee}</dd>
       <dt>{t('Maker fee')}</dt>
-      <dd className="text-right">{fees.makerFee}</dd>
       {feeFactors && (
         <dd className="text-right">
           {formatNumberPercentage(
@@ -89,11 +88,12 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
+      <dd className="text-right">{fees.makerFee}</dd>
       <dt>{t('Total fees')}</dt>
-      <dd className="text-right">{totalFees}</dd>
       {feeFactors && (
         <dd className="text-right">{totalFeesPercentage(feeFactors)}</dd>
       )}
+      <dd className="text-right">{totalFees}</dd>
     </dl>
   );
 };

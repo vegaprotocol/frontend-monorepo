@@ -159,10 +159,17 @@ export const getFeeDetailsValues = ({
       label: t('Est. fees'),
       value: formatValue(estMargin?.totalFees),
       labelDescription: (
-        <FeesBreakdown
-          fees={estMargin?.fees}
-          feeFactors={market.fees.factors}
-        />
+        <>
+          <span>
+            {t(
+              'The most you’d be expected to pay in fees, the actual amount may vary.'
+            )}
+          </span>
+          <FeesBreakdown
+            fees={estMargin?.fees}
+            feeFactors={market.fees.factors}
+          />
+        </>
       ),
       quoteName,
     },
