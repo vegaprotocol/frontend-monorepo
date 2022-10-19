@@ -83,8 +83,7 @@ describe('Txs infinite list item', () => {
     expect(screen.getByTestId('tx-hash')).toHaveTextContent('testTxHash');
     expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
     expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
-    expect(screen.getByTestId('tx-block')).toHaveTextContent(
-      'Block 1 (index 1)'
-    );
+    expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
+    expect(screen.getByTestId('tx-index')).toHaveTextContent('1');
   });
 });

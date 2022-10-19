@@ -27,20 +27,13 @@ export const TxsInfiniteListItem = ({
   return (
     <div
       data-testid="transaction-row"
-      className="grid grid-flow-col auto-cols-auto border-t border-neutral-600 dark:border-neutral-800 py-2 txs-infinite-list-item"
+      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-2"
     >
-      <div className="whitespace-nowrap" data-testid="tx-type">
-        <TxOrderType orderType={type} />
-      </div>
-      <div className="whitespace-nowrap" data-testid="pub-key">
-        <TruncatedLink
-          to={`/${Routes.PARTIES}/${submitter}`}
-          text={submitter}
-          startChars={TRUNCATE_LENGTH}
-          endChars={TRUNCATE_LENGTH}
-        />
-      </div>
-      <div className="whitespace-nowrap" data-testid="tx-hash">
+      <div
+        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        data-testid="tx-hash"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">ID:&nbsp;</span>
         <TruncatedLink
           to={`/${Routes.TX}/${toHex(hash)}`}
           text={hash}
@@ -48,13 +41,39 @@ export const TxsInfiniteListItem = ({
           endChars={TRUNCATE_LENGTH}
         />
       </div>
-      <div className="whitespace-nowrap" data-testid="tx-block">
+      <div
+        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        data-testid="pub-key"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">By:&nbsp;</span>
         <TruncatedLink
-          to={`/${Routes.BLOCKS}/${block}`}
-          text={`Block ${block} (index ${index})`}
+          to={`/${Routes.PARTIES}/${submitter}`}
+          text={submitter}
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
+      </div>
+      <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
+        <TxOrderType orderType={type} />
+      </div>
+      <div
+        className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"
+        data-testid="tx-block"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">Block:&nbsp;</span>
+        <TruncatedLink
+          to={`/${Routes.BLOCKS}/${block}`}
+          text={block}
+          startChars={TRUNCATE_LENGTH}
+          endChars={TRUNCATE_LENGTH}
+        />
+      </div>
+      <div
+        className="text-sm col-span-2 xl:col-span-1 leading-none flex items-center"
+        data-testid="tx-index"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">Index:&nbsp;</span>
+        {index}
       </div>
     </div>
   );

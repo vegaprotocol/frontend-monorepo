@@ -3,7 +3,6 @@ import {
   MarketTradingMode,
   AuctionTrigger,
 } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 const orderSizeField = 'order-size';
@@ -123,9 +122,7 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
 describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
@@ -205,9 +202,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
 
 describe('deal ticket validation', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
   });
@@ -260,9 +255,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
@@ -289,9 +282,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleLimit).click();
@@ -345,9 +336,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
 
 describe('market order validations', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleMarket).click();
@@ -398,14 +387,11 @@ describe('market order validations', { tags: '@smoke' }, () => {
 
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(
-        req,
-        MarketState.STATE_SUSPENDED,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-      );
-    });
+    cy.mockTradingPage(
+      MarketState.STATE_SUSPENDED,
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+    );
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
