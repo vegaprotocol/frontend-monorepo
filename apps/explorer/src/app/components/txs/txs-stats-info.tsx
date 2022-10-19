@@ -27,7 +27,7 @@ export const TXS_STATS_MAP: StatsMap[] = [
     field: 'averageOrdersPerBlock',
     label: t('Orders per block'),
     info: t(
-      'Number of new orders processed in the last block. All pegged orders and liquidity provisions count as a single order'
+      'Number of new orders processed in the last block. All orders derived from pegged orders and liquidity commitments count as a single order'
     ),
   },
   {
@@ -44,7 +44,7 @@ export const TXS_STATS_MAP: StatsMap[] = [
     field: 'ordersPerSecond',
     label: t('Order per second'),
     info: t(
-      'Number of orders processed in the last second. All pegged orders and liquidity provisions count as a single order'
+      'Number of orders processed in the last second. All orders  derived from pegged orders and liquidity commitments count as a single order'
     ),
   },
 ];
