@@ -38,8 +38,7 @@ const getSummaryRow = (positions: Position[]) => {
 export const usePositionsData = (
   partyId: string,
   gridRef: RefObject<AgGridReact>,
-  assetSymbol?: string,
-  withSummaryRow?: boolean
+  assetSymbol?: string
 ) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const dataRef = useRef<Position[] | null>(null);
@@ -66,13 +65,13 @@ export const usePositionsData = (
         : [];
       const lastRow = dataRef.current?.length ?? -1;
       successCallback(rowsThisBlock, lastRow);
-      if (withSummaryRow && gridRef.current?.api) {
+      if (gridRef.current?.api) {
         gridRef.current.api.setPinnedBottomRowData([
           getSummaryRow(rowsThisBlock),
         ]);
       }
     },
-    [gridRef, withSummaryRow]
+    [gridRef]
   );
   return {
     data,
