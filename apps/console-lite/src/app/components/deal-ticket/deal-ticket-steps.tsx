@@ -199,8 +199,16 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
                 market.tradableInstrument.instrument.product.settlementAsset
                   .symbol
               }
-              notionalSize={notionalSize || emptyString}
-              estCloseOut={estCloseOut || emptyString}
+              notionalSize={
+                notionalSize
+                  ? addDecimalsFormatNumber(notionalSize, market.decimalPlaces)
+                  : emptyString
+              }
+              estCloseOut={
+                estCloseOut
+                  ? addDecimalsFormatNumber(estCloseOut, market.decimalPlaces)
+                  : emptyString
+              }
               fees={fees || emptyString}
               estMargin={estMargin?.margin || emptyString}
             />
