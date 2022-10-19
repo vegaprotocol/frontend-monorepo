@@ -160,7 +160,7 @@ describe('DealTicket', () => {
     // Change back to limit and check we are still on FOK
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
   });
 });

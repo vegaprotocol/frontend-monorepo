@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
@@ -41,7 +42,16 @@ export const TimeInForceSelector = ({
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
         );
-
+  useEffect(() => {
+    const foundIndex = options.findIndex((option) => value === option[0]);
+    const defaultOrderTimeInForce =
+      orderType === Schema.OrderType.TYPE_LIMIT
+        ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+        : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC;
+    if (foundIndex === -1) {
+      onSelect(defaultOrderTimeInForce);
+    }
+  }, [orderType, options, onSelect, value]);
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
