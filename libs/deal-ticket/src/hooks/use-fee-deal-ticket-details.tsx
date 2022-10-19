@@ -1,5 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -71,10 +75,13 @@ export const useFeeDealTicketDetails = (
         .multipliedBy(100)
         .decimalPlaces(2)
         .toNumber();
-      return `${estMargin.totalFees} (${percentage}%)`;
+      return `${addDecimalsFormatNumber(
+        estMargin.totalFees,
+        market.decimalPlaces
+      )} (${percentage}%)`;
     }
     return null;
-  }, [estMargin?.totalFees, notionalSize]);
+  }, [estMargin?.totalFees, market.decimalPlaces, notionalSize]);
 
   const [slippageValue, setSlippageValue] = useState(
     slippage ? parseFloat(slippage) : 0
