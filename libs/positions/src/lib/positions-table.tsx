@@ -2,11 +2,13 @@ import classNames from 'classnames';
 import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
 import type {
-  ValueFormatterParams,
   ICellRendererParams,
   CellRendererSelectorResult,
 } from 'ag-grid-community';
-import type { ValueProps as PriceCellProps } from '@vegaprotocol/ui-toolkit';
+import type {
+  ValueProps as PriceCellProps,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
 import { EmptyCell, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
   PriceFlashCell,
@@ -42,12 +44,12 @@ interface Props extends AgGridReactProps {
   style?: CSSProperties;
 }
 
-export type PositionsTableValueFormatterParams = Omit<
-  ValueFormatterParams,
-  'data' | 'value'
-> & {
-  data: Position;
-};
+// export type PositionsTableValueFormatterParams = Omit<
+//   ValueFormatterParams,
+//   'data' | 'value'
+// > & {
+//   data: Position;
+// };
 
 export interface MarketNameCellProps {
   valueFormatted?: [string, string];
@@ -117,7 +119,7 @@ const ButtonCell = ({
 const progressBarValueFormatter = ({
   data,
   node,
-}: PositionsTableValueFormatterParams):
+}: VegaValueFormatterParams<Position, 'liquidationPrice'>):
   | PriceCellProps['valueFormatted']
   | undefined => {
   if (!data || node?.rowPinned) {
@@ -159,9 +161,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           cellRenderer={MarketNameCell}
           valueFormatter={({
             value,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['marketName'];
-          }) => {
+          }: VegaValueFormatterParams<Position, 'marketName'>) => {
             if (!value) {
               return undefined;
             }
@@ -181,9 +181,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
             data,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['notional'];
-          }): string => {
+          }: VegaValueFormatterParams<Position, 'notional'>): string => {
             if (!value || !data) {
               return '';
             }
@@ -199,9 +197,9 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
             data,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['openVolume'];
-          }): string | undefined => {
+          }: VegaValueFormatterParams<Position, 'openVolume'>):
+            | string
+            | undefined => {
             if (!value || !data) {
               return undefined;
             }
@@ -225,9 +223,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             value,
             data,
             node,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['markPrice'];
-          }) => {
+          }: VegaValueFormatterParams<Position, 'markPrice'>) => {
             if (!data || !value || node?.rowPinned) {
               return undefined;
             }
@@ -259,10 +255,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
             value,
             node,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['averageEntryPrice'];
-          }): string | undefined => {
-            if (!data || node?.rowPinned) {
+          }: VegaValueFormatterParams<Position, 'averageEntryPrice'>):
+            | string
+            | undefined => {
+            if (!data || node?.rowPinned || !value) {
               return undefined;
             }
             return addDecimalsFormatNumber(value, data.marketDecimalPlaces);
@@ -297,9 +293,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
           valueFormatter={({
             value,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['currentLeverage'];
-          }) =>
+          }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
             value === undefined ? undefined : formatNumber(value.toString(), 1)
           }
         />
@@ -318,10 +312,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
             value,
             node,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['marginAccountBalance'];
-          }): string | undefined => {
-            if (!data || node?.rowPinned) {
+          }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
+            | string
+            | undefined => {
+            if (!data || node?.rowPinned || !value) {
               return undefined;
             }
             return formatNumber(value, data.decimals);
@@ -335,10 +329,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
             data,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['realisedPNL'];
-          }) =>
-            value === undefined
+          }: VegaValueFormatterParams<Position, 'realisedPNL'>) =>
+            value === undefined || data === undefined
               ? undefined
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
@@ -355,10 +347,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueFormatter={({
             value,
             data,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['unrealisedPNL'];
-          }) =>
-            value === undefined
+          }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
+            value === undefined || data === undefined
               ? undefined
               : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
@@ -373,9 +363,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           valueFormatter={({
             value,
-          }: PositionsTableValueFormatterParams & {
-            value: Position['updatedAt'];
-          }) => {
+          }: VegaValueFormatterParams<Position, 'updatedAt'>) => {
             if (!value) {
               return value;
             }
