@@ -153,26 +153,6 @@ context(
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
-        // cy.vega_wallet_receive_fauceted_asset(
-        //   'USDC (fake)',
-        //   '10',
-        //   vegaWalletPublicKey
-        // );
-        // cy.vega_wallet_receive_fauceted_asset(
-        //   'BTC (fake)',
-        //   '6',
-        //   vegaWalletPublicKey
-        // );
-        // cy.vega_wallet_receive_fauceted_asset(
-        //   'EURO (fake)',
-        //   '8',
-        //   vegaWalletPublicKey
-        // );
-        // cy.vega_wallet_receive_fauceted_asset(
-        //   'DAI (fake)',
-        //   '2',
-        //   vegaWalletPublicKey
-        // );
         cy.visit('/');
         cy.vega_wallet_connect();
       });
