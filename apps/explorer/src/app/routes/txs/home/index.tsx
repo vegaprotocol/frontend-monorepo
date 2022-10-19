@@ -1,73 +1,19 @@
-import { DATA_SOURCES } from '../../../config';
-import { useCallback, useEffect, useState } from 'react';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
-import { TxsInfiniteList } from '../../../components/txs';
-import type {
-  BlockExplorerTransactionResult,
-  BlockExplorerTransactions,
-} from '../../../routes/types/block-explorer-response';
-
-interface TxsStateProps {
-  txsData: BlockExplorerTransactionResult[];
-  hasMoreTxs: boolean;
-  lastCursor: string;
-}
+import { TxsInfiniteList, TxsStatsInfo } from '../../../components/txs';
+import { useTxsData } from '../../../hooks/use-txs-data';
 
 const BE_TXS_PER_REQUEST = 100;
 
 export const TxsList = () => {
-  const [{ txsData, hasMoreTxs, lastCursor }, setTxsState] =
-    useState<TxsStateProps>({
-      txsData: [],
-      hasMoreTxs: true,
-      lastCursor: '',
-    });
-
-  const {
-    state: { data, error, loading },
-    refetch,
-  } = useFetch<BlockExplorerTransactions>(
-    `${DATA_SOURCES.blockExplorerUrl}/transactions?` +
-      new URLSearchParams({
-        limit: BE_TXS_PER_REQUEST.toString(10),
-      }),
-    {},
-    false
-  );
-
-  useEffect(() => {
-    if (data?.transactions?.length) {
-      setTxsState((prev) => ({
-        txsData: [...prev.txsData, ...data.transactions],
-        hasMoreTxs: true,
-        lastCursor:
-          data.transactions[data.transactions.length - 1].cursor || '',
-      }));
-    }
-  }, [data?.transactions]);
-
-  const loadTxs = useCallback(() => {
-    return refetch({
-      limit: BE_TXS_PER_REQUEST,
-      before: lastCursor,
-    });
-  }, [lastCursor, refetch]);
-
-  const refreshTxs = useCallback(async () => {
-    setTxsState((prev) => ({
-      ...prev,
-      lastCursor: '',
-      hasMoreTxs: true,
-      txsData: [],
-    }));
-  }, [setTxsState]);
-
+  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
+    useTxsData({ limit: BE_TXS_PER_REQUEST });
   return (
-    <section>
+    <section className="md:p-2 lg:p-4 xl:p-6">
       <RouteTitle>{t('Transactions')}</RouteTitle>
       <BlocksRefetch refetch={refreshTxs} />
+      <TxsStatsInfo className="my-8 py-8" />
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
