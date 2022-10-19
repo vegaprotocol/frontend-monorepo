@@ -28,6 +28,13 @@ const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const txTimeout = Cypress.env('txTimeout');
 
+const faucetAssets = {
+  BTCFake: 'fBTC',
+  DAIFake: 'fDAI',
+  EUROFake: 'fEURO',
+  USDCFake: 'fUSDC',
+};
+
 context(
   'Vega Wallet - verify elements on widget',
   { tags: '@regression' },
@@ -146,26 +153,26 @@ context(
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
-        cy.vega_wallet_receive_fauceted_asset(
-          'USDC (fake)',
-          '10',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_receive_fauceted_asset(
-          'BTC (fake)',
-          '6',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_receive_fauceted_asset(
-          'EURO (fake)',
-          '8',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_receive_fauceted_asset(
-          'DAI (fake)',
-          '2',
-          vegaWalletPublicKey
-        );
+        // cy.vega_wallet_receive_fauceted_asset(
+        //   'USDC (fake)',
+        //   '10',
+        //   vegaWalletPublicKey
+        // );
+        // cy.vega_wallet_receive_fauceted_asset(
+        //   'BTC (fake)',
+        //   '6',
+        //   vegaWalletPublicKey
+        // );
+        // cy.vega_wallet_receive_fauceted_asset(
+        //   'EURO (fake)',
+        //   '8',
+        //   vegaWalletPublicKey
+        // );
+        // cy.vega_wallet_receive_fauceted_asset(
+        //   'DAI (fake)',
+        //   '2',
+        //   vegaWalletPublicKey
+        // );
         cy.visit('/');
         cy.vega_wallet_connect();
       });
@@ -310,12 +317,32 @@ context(
     // 2002-SINC-016
     describe('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.USDCFake,
+          '1000000',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.BTCFake,
+          '600000',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.EUROFake,
+          '800000',
+          vegaWalletPublicKey
+        );
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.DAIFake,
+          '200000',
+          vegaWalletPublicKey
+        );
         cy.vega_wallet_connect();
         cy.ethereum_wallet_connect();
       });
 
       it('should see fUSDC assets - within vega wallet', function () {
-        let currency = { id: 'fUSDC', name: 'USDC (fake)' };
+        let currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -335,7 +362,7 @@ context(
       });
 
       it('should see fBTC assets - within vega wallet', function () {
-        let currency = { id: 'fBTC', name: 'BTC (fake)' };
+        let currency = { id: faucetAssets.BTCFake, name: 'BTC (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -355,7 +382,7 @@ context(
       });
 
       it('should see fEURO assets - within vega wallet', function () {
-        let currency = { id: 'fEURO', name: 'EURO (fake)' };
+        let currency = { id: faucetAssets.EUROFake, name: 'EURO (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -375,7 +402,7 @@ context(
       });
 
       it('should see fDAI assets - within vega wallet', function () {
-        let currency = { id: 'fDAI', name: 'DAI (fake)' };
+        let currency = { id: faucetAssets.DAIFake, name: 'DAI (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
