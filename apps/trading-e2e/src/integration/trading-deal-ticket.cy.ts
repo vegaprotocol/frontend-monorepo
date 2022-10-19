@@ -310,7 +310,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
       //7002-SORD-031
       cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
         'have.text',
-        TIFlist.filter((item) => item.code === 'IOC')[0].text
+        TIFlist.filter((item) => item.code === 'GTC')[0].text
       );
     });
 
@@ -330,6 +330,26 @@ describe('limit order validations', { tags: '@smoke' }, () => {
           tif.text
         );
       });
+    });
+
+    it('selections should be remembered', () => {
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTT');
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'IOC')[0].text
+      );
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_FOK');
+      cy.getByTestId(toggleLimit).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'GTT')[0].text
+      );
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'FOK')[0].text
+      );
     });
   });
 });
