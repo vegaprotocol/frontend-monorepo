@@ -24,6 +24,7 @@ export function addGetAssetInformation() {
         query: mutation,
       },
       headers: { 'content-type': 'application/json' },
+      retryOnStatusCodeFailure: true,
     })
       .its(`body.data.assets`)
       .then(function (response) {
