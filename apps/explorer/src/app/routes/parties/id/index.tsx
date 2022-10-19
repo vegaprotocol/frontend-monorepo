@@ -10,7 +10,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { RouteTitle } from '../../../components/route-title';
 import { SubHeading } from '../../../components/sub-heading';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
@@ -19,7 +19,9 @@ import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
 } from './__generated__/PartyAssetsQuery';
-import type { BlockExplorerTransactions } from '../../../routes/types/block-explorer-response';
+import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
+import { useTxsData } from '../../../hooks/use-txs-data';
+import { TxsInfiniteList } from '../../../components/txs';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -59,11 +61,16 @@ const PARTY_ASSETS_QUERY = gql`
 const Party = () => {
   const { party } = useParams<{ party: string }>();
   const partyId = party ? toNonHex(party) : '';
+  const filters = `filters[tx.submitter]=${partyId}`;
+  const { hasMoreTxs, loadTxs, error, txsData, loading } = useTxsData({
+    limit: 10,
+    filters,
+  });
 
   const {
     state: { data: partyData },
-  } = useFetch<BlockExplorerTransactions>(
-    `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=1&filters[tx.submitter]=${partyId}`
+  } = useFetch<TendermintSearchTransactionResponse>(
+    `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${partyId}'"`
   );
 
   const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
@@ -149,6 +156,21 @@ const Party = () => {
           {accounts}
           <SubHeading>{t('Staking')}</SubHeading>
           {staking}
+          <SubHeading>{t('Transactions')}</SubHeading>
+          <AsyncRenderer
+            loading={loading as boolean}
+            error={error}
+            data={txsData}
+          >
+            <TxsInfiniteList
+              hasMoreTxs={hasMoreTxs}
+              areTxsLoading={loading}
+              txs={txsData}
+              loadMoreTxs={loadTxs}
+              error={error}
+              className="mb-28"
+            />
+          </AsyncRenderer>
           <SubHeading>{t('JSON')}</SubHeading>
           <SyntaxHighlighter data={data} />
         </>
