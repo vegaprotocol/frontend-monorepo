@@ -56,7 +56,7 @@ export const TxsInfiniteList = ({
   className,
 }: TxsInfiniteListProps) => {
   const { screenSize } = useScreenDimensions();
-  const stack = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+  const isStacked = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
 
   if (!txs) {
     return <div>No items</div>;
@@ -95,7 +95,7 @@ export const TxsInfiniteList = ({
               className="List"
               height={595}
               itemCount={itemCount}
-              itemSize={stack ? 134 : 72}
+              itemSize={isStacked ? 134 : 72}
               onItemsRendered={onItemsRendered}
               ref={ref}
               width={'100%'}

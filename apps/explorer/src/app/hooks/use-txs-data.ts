@@ -17,6 +17,16 @@ export interface IUseTxsData {
   filters?: string;
 }
 
+export const getTxsDataUrl = ({ limit = 10, filters = '' }) => {
+  let url = `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=${limit}`;
+
+  if (filters) {
+    url = `${url}&${filters}`;
+  }
+
+  return url;
+};
+
 export const useTxsData = ({ limit = 10, filters }: IUseTxsData) => {
   const [{ txsData, hasMoreTxs, lastCursor }, setTxsState] =
     useState<TxsStateProps>({
@@ -25,13 +35,7 @@ export const useTxsData = ({ limit = 10, filters }: IUseTxsData) => {
       lastCursor: '',
     });
 
-  let url = `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=${limit}`;
-
-  if (filters) {
-    url = `${url}&${filters}`;
-  }
-
-  console.log(url);
+  const url = getTxsDataUrl({ limit, filters });
 
   const {
     state: { data, error, loading },
@@ -47,7 +51,7 @@ export const useTxsData = ({ limit = 10, filters }: IUseTxsData) => {
           data.transactions[data.transactions.length - 1].cursor || '',
       }));
     }
-  }, [data?.transactions]);
+  }, [setTxsState, data?.transactions]);
 
   const loadTxs = useCallback(() => {
     return refetch({
