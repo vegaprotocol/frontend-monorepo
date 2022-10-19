@@ -1,5 +1,4 @@
 import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
@@ -219,9 +218,7 @@ describe('market states', { tags: '@smoke' }, function () {
   states.forEach((marketState) => {
     describe(marketState, function () {
       before(function () {
-        cy.mockGQL((req) => {
-          mockTradingPage(req, marketState);
-        });
+        cy.mockTradingPage(marketState);
         cy.mockGQLSubscription();
         cy.visit('/markets/market-0');
         cy.wait('@Market');

@@ -23,7 +23,7 @@ import { generateStatistics } from './mocks/generate-statistics';
 import { generateTrades } from './mocks/generate-trades';
 import { generateWithdrawals } from './mocks/generate-withdrawals';
 
-export const mockTradingPage = (
+const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
   state: MarketState = MarketState.STATE_ACTIVE,
   tradingMode?: MarketTradingMode,

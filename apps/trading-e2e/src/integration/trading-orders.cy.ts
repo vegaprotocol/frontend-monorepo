@@ -1,9 +1,4 @@
-import {
-  MarketState,
-  OrderRejectionReason,
-  OrderStatus,
-} from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
+import { OrderRejectionReason, OrderStatus } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 import {
   updateOrder,
