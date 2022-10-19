@@ -25,20 +25,28 @@ export const useRequestClosePositionData = (
 
   const orders = useMemo(() => {
     if (!orderData || !market) return [];
-    return orderData
-      .filter((o) => {
-        // Filter out orders not on market for position
-        if (!o.node.market || o.node.market.id !== market.id) {
-          return false;
-        }
+    return (
+      orderData
+        .filter((o) => {
+          // Filter out orders not on market for position
+          if (
+            !o ||
+            !o.node ||
+            !o.node.market ||
+            o.node.market.id !== market.id
+          ) {
+            return false;
+          }
 
-        if (!isOrderActive(o.node.status)) {
-          return false;
-        }
+          if (!isOrderActive(o.node.status)) {
+            return false;
+          }
 
-        return true;
-      })
-      .map((o) => o.node);
+          return true;
+        })
+        // @ts-ignore o is never null as its been filtered out above
+        .map((o) => o.node)
+    );
   }, [orderData, market]);
 
   return {
