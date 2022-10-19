@@ -13,10 +13,7 @@ pipeline {
       steps {
         sh 'printenv'
         checkout scm
-        script {
-          commitHash = getCommitHash()
-        }
-        runApprobation ignoreFailure: false, frontendBranch: commitHash, type: 'frontend'
+        runApprobation ignoreFailure: false, frontendBranch: env.BRANCH_NAME, type: 'frontend'
       }
     }
   }
