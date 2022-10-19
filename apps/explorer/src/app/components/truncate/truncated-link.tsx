@@ -20,7 +20,7 @@ export const TruncatedLink = ({
         text={text}
         startChars={startChars}
         endChars={endChars}
-        className="font-mono font-bold underline"
+        className="underline uppercase underline-offset-2"
       />
     </Link>
   );
