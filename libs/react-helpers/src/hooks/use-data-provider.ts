@@ -31,7 +31,15 @@ export function useDataProvider<Data, Delta>({
   skip,
 }: {
   dataProvider: Subscribe<Data, Delta>;
-  update?: ({ delta, data }: { delta?: Delta; data: Data }) => boolean;
+  update?: ({
+    delta,
+    data,
+    variables,
+  }: {
+    delta?: Delta;
+    data: Data;
+    variables?: OperationVariables;
+  }) => boolean;
   insert?: ({
     insertionData,
     data,
@@ -93,7 +101,7 @@ export function useDataProvider<Data, Delta>({
             !noUpdate &&
             update &&
             hasDelta<Delta>(arg) &&
-            update({ delta: arg.delta, data })
+            update({ delta: arg.delta, data, variables })
           ) {
             return;
           }
@@ -113,7 +121,7 @@ export function useDataProvider<Data, Delta>({
         initialized.current = true;
       }
     },
-    [update, insert, noUpdate, updateOnInit]
+    [update, insert, noUpdate, updateOnInit, variables]
   );
   useEffect(() => {
     if (skip) {

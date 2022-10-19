@@ -104,7 +104,13 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
       <AgGrid
         ref={ref}
         overlayNoRowsTemplate="No orders"
-        defaultColDef={{ flex: 1, resizable: true }}
+        defaultColDef={{
+          flex: 1,
+          resizable: true,
+          sortable: true,
+          filter: true,
+          filterParams: { buttons: ['reset'] },
+        }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
         rowHeight={34}
@@ -117,6 +123,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="size"
+          filter="agNumberColumnFilter"
           cellClass="font-mono text-right"
           type="rightAligned"
           cellClassRules={{
@@ -144,6 +151,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="type"
+          filter={false}
+          sortable={false}
           valueFormatter={({
             data: order,
             value,
@@ -156,6 +165,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="status"
+          filter={false}
+          sortable={false}
           valueFormatter={({
             value,
             data,
@@ -172,6 +183,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Filled')}
           field="remaining"
+          filter="agNumberColumnFilter"
           cellClass="font-mono text-right"
           type="rightAligned"
           valueFormatter={({
@@ -193,6 +205,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="price"
+          filter="agNumberColumnFilter"
           type="rightAligned"
           cellClass="font-mono text-right"
           valueFormatter={({
@@ -211,6 +224,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="timeInForce"
+          filter="agDateColumnFilter"
           valueFormatter={({
             value,
             data,

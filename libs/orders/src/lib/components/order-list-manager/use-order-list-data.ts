@@ -8,14 +8,25 @@ import {
 import { ordersWithMarketProvider } from '../';
 import type { OrderEdge, Order } from '../';
 
+export interface Sort {
+  colId: string;
+  sort: string;
+}
+export interface Filter {
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
 interface Props {
   partyId: string;
+  filter?: Filter;
+  sort?: Sort[];
   gridRef: RefObject<AgGridReact>;
   scrolledToTop: RefObject<boolean>;
 }
 
 export const useOrderListData = ({
   partyId,
+  sort,
+  filter,
   gridRef,
   scrolledToTop,
 }: Props) => {
@@ -23,7 +34,10 @@ export const useOrderListData = ({
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
-  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const variables = useMemo(
+    () => ({ partyId, sort, filter }),
+    [partyId, sort, filter]
+  );
 
   const addNewRows = useCallback(() => {
     if (newRows.current === 0) {

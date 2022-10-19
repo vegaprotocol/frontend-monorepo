@@ -62,7 +62,12 @@ export interface Subscribe<Data, Delta> {
 export type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 export interface Update<Data, Delta> {
-  (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
+  (
+    data: Data,
+    delta: Delta,
+    reload: (forceReset?: boolean) => void,
+    variables?: OperationVariables
+  ): Data;
 }
 
 export interface Append<Data> {
@@ -302,7 +307,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
         while (updateQueue.length) {
           const delta = updateQueue.shift();
           if (delta) {
-            data = update(data, delta, reload);
+            data = update(data, delta, reload, variables);
           }
         }
       }
@@ -365,7 +370,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
             if (loading || !data) {
               updateQueue.push(delta);
             } else {
-              const updatedData = update(data, delta, reload);
+              const updatedData = update(data, delta, reload, variables);
               if (updatedData === data) {
                 return;
               }

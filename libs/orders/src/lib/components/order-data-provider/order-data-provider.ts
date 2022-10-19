@@ -2,6 +2,7 @@ import produce from 'immer';
 import { gql } from '@apollo/client';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
+import type { OperationVariables } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -87,7 +88,8 @@ export const ORDERS_SUB = gql`
 
 export const update = (
   data: Orders_party_ordersConnection_edges[],
-  delta: OrderSub_orders[]
+  delta: OrderSub_orders[],
+  variables: OperationVariables
 ) => {
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
