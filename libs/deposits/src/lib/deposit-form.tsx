@@ -220,7 +220,12 @@ export const DepositForm = ({
       </FormGroup>
       {selectedAsset && max && deposited && (
         <div className="mb-6">
-          <DepositLimits max={max} deposited={deposited} balance={balance} />
+          <DepositLimits
+            max={max}
+            deposited={deposited}
+            balance={balance}
+            asset={selectedAsset}
+          />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount">

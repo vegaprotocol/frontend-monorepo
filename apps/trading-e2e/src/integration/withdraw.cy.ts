@@ -77,18 +77,24 @@ describe('withdraw', { tags: '@smoke' }, () => {
       },
     });
     selectAsset(asset1Name);
-    cy.getByTestId('balance-available')
-      .should('contain.text', 'Balance available')
-      .find('td')
-      .should('have.text', '1,000.00000');
-    cy.getByTestId('withdrawal-threshold')
-      .should('contain.text', 'Delayed withdrawal threshold')
-      .find('td')
-      .should('contain.text', '1m+');
-    cy.getByTestId('delay-time')
-      .should('contain.text', 'Delay time')
-      .find('td')
-      .should('have.text', 'None');
+    cy.getByTestId('BALANCE_AVAILABLE_label').should(
+      'contain.text',
+      'Balance available'
+    );
+    cy.getByTestId('BALANCE_AVAILABLE_value').should(
+      'have.text',
+      '1,000.00000'
+    );
+    cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
+      'contain.text',
+      'Delayed withdrawal threshold'
+    );
+    cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
+      'contain.text',
+      '100.00000'
+    );
+    cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
+    cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(submitWithdrawBtn).click();
     cy.getByTestId('dialog-title').should(
