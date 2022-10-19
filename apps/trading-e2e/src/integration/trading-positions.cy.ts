@@ -1,11 +1,8 @@
-import { MarketState } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 beforeEach(() => {
-  cy.mockGQL((req) => {
-    mockTradingPage(req, MarketState.STATE_ACTIVE);
-  });
+  cy.mockTradingPage();
+
   cy.mockGQLSubscription();
 });
 
