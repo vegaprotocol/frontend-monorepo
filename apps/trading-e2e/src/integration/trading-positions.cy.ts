@@ -34,9 +34,11 @@ describe('positions', { tags: '@smoke' }, () => {
           cy.wrap($marketSymbol).invoke('text').should('not.be.empty');
         });
 
-      cy.get('[col-id="openVolume"]').each(($openVolume) => {
-        cy.wrap($openVolume).invoke('text').should('not.be.empty');
-      });
+      cy.get('.ag-center-cols-container [col-id="openVolume"]').each(
+        ($openVolume) => {
+          cy.wrap($openVolume).invoke('text').should('not.be.empty');
+        }
+      );
 
       // includes average entry price, mark price, realised PNL & leverage
       cy.getByTestId('flash-cell').each(($prices) => {
