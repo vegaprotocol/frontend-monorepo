@@ -3,18 +3,14 @@ import {
   MarketState,
   MarketTradingMode,
 } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(
-        req,
-        MarketState.STATE_ACTIVE,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-      );
-    });
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+    );
     cy.mockGQLSubscription();
     cy.visit('/');
     cy.wait('@Market');

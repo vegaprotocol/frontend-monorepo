@@ -1,10 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { generateChainId } from '../support/mocks/generate-chain-id';
-import { generateAccounts } from '../support/mocks/generate-accounts';
-import { generateAssets } from '../support/mocks/generate-assets';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 describe('withdraw', { tags: '@smoke' }, () => {
@@ -20,13 +14,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
 
   beforeEach(() => {
     cy.mockWeb3Provider();
-    cy.mockGQL((req) => {
-      aliasQuery(req, 'ChainId', generateChainId());
-      aliasQuery(req, 'Withdrawals', generateWithdrawals());
-      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'Assets', generateAssets());
-      aliasQuery(req, 'Accounts', generateAccounts());
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
 
     cy.visit('/portfolio');

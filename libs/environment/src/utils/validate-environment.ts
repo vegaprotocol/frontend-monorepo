@@ -5,6 +5,7 @@ import { compileErrors } from './compile-errors';
 
 export enum Networks {
   CUSTOM = 'CUSTOM',
+  SANDBOX = 'SANDBOX',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
   STAGNET3 = 'STAGNET3',

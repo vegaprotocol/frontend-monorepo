@@ -1,13 +1,6 @@
 import '@vegaprotocol/cypress';
 import 'cypress-real-events/support';
 import registerCypressGrep from 'cypress-grep';
-import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateChainId } from './mocks/generate-chain-id';
+import { addMockTradingPage } from './trading';
 registerCypressGrep();
-
-before(() => {
-  // Mock chainId fetch which happens on every page wallet connection
-  cy.mockGQL((req) => {
-    aliasQuery(req, 'ChainId', generateChainId());
-  });
-});
+addMockTradingPage();
