@@ -169,12 +169,13 @@ export const getFeeDetailsValues = ({
         <>
           <span>
             {t(
-              'The most you’d be expected to pay in fees, the actual amount may vary.'
+              'The most you would be expected to pay in fees, the actual amount may vary.'
             )}
           </span>
           <FeesBreakdown
             fees={estMargin?.fees}
             feeFactors={market.fees.factors}
+            quoteName={quoteName}
           />
         </>
       ),

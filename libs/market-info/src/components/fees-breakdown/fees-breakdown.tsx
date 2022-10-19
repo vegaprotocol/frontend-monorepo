@@ -47,6 +47,7 @@ export const FeesBreakdownPercentage = ({
 export const FeesBreakdown = ({
   fees,
   feeFactors,
+  quoteName,
 }: {
   fees?: {
     infrastructureFee: string;
@@ -54,6 +55,7 @@ export const FeesBreakdown = ({
     makerFee: string;
   };
   feeFactors?: Market['fees']['factors'];
+  quoteName?: string;
 }) => {
   if (!fees) return null;
   const totalFees = new BigNumber(fees.makerFee)
@@ -70,7 +72,9 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right">{fees.infrastructureFee}</dd>
+      <dd className="text-right">
+        {fees.infrastructureFee} {quoteName || ''}
+      </dd>
       <dt>{t('Liquidity fee')}</dt>
       {feeFactors && (
         <dd className="text-right">
@@ -79,7 +83,9 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right">{fees.liquidityFee}</dd>
+      <dd className="text-right">
+        {fees.liquidityFee} {quoteName || ''}
+      </dd>
       <dt>{t('Maker fee')}</dt>
       {feeFactors && (
         <dd className="text-right">
@@ -88,12 +94,16 @@ export const FeesBreakdown = ({
           )}
         </dd>
       )}
-      <dd className="text-right">{fees.makerFee}</dd>
+      <dd className="text-right">
+        {fees.makerFee} {quoteName || ''}
+      </dd>
       <dt>{t('Total fees')}</dt>
       {feeFactors && (
         <dd className="text-right">{totalFeesPercentage(feeFactors)}</dd>
       )}
-      <dd className="text-right">{totalFees}</dd>
+      <dd className="text-right">
+        {totalFees} {quoteName || ''}
+      </dd>
     </dl>
   );
 };
