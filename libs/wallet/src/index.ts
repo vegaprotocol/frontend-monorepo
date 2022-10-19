@@ -10,3 +10,4 @@ export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
 export * from './constants';
+export * from './__generated___/TransactionResult';

@@ -12,8 +12,8 @@ import { useClosePosition } from './use-close-position';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { initialState } from '@vegaprotocol/wallet';
-import type { TransactionEventSubscription } from './__generated___/TransactionResult';
-import { TransactionEventDocument } from './__generated___/TransactionResult';
+import type { TransactionEventSubscription } from '@vegaprotocol/wallet';
+import { TransactionEventDocument } from '@vegaprotocol/wallet';
 import { act } from 'react-dom/test-utils';
 
 const pubKey = 'test-pubkey';
