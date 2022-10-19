@@ -123,9 +123,7 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
 describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');

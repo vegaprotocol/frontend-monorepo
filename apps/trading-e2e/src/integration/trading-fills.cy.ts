@@ -6,8 +6,8 @@ import { mockTradingPage } from '../support/trading';
 
 describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
+    cy.mockTradingPage();
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'Fills', generateFills());
     });
     cy.mockGQLSubscription();
