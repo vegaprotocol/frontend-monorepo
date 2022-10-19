@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import throttle from 'lodash/throttle';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
 import type {
@@ -14,22 +15,7 @@ function hasDelta<T>(
   return !!updateData.isUpdate;
 }
 
-/**
- *
- * @param dataProvider subscribe function created by makeDataProvider
- * @param update optional function called on each delta received in subscription, if returns true updated data will be not passed from hook (component handles updates internally)
- * @param variables optional
- * @returns state: data, loading, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
- */
-export function useDataProvider<Data, Delta>({
-  dataProvider,
-  update,
-  insert,
-  variables,
-  updateOnInit,
-  noUpdate,
-  skip,
-}: {
+interface useDataProviderParams<Data, Delta> {
   dataProvider: Subscribe<Data, Delta>;
   update?: ({ delta, data }: { delta?: Delta; data: Data }) => boolean;
   insert?: ({
@@ -45,7 +31,24 @@ export function useDataProvider<Data, Delta>({
   updateOnInit?: boolean;
   noUpdate?: boolean;
   skip?: boolean;
-}) {
+}
+
+/**
+ *
+ * @param dataProvider subscribe function created by makeDataProvider
+ * @param update optional function called on each delta received in subscription, if returns true updated data will be not passed from hook (component handles updates internally)
+ * @param variables optional
+ * @returns state: data, loading, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
+ */
+export const useDataProvider = <Data, Delta>({
+  dataProvider,
+  update,
+  insert,
+  variables,
+  updateOnInit,
+  noUpdate,
+  skip,
+}: useDataProviderParams<Data, Delta>) => {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
   const [totalCount, setTotalCount] = useState<number>();
@@ -131,4 +134,47 @@ export function useDataProvider<Data, Delta>({
     return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables, skip]);
   return { data, loading, error, flush, reload, load, totalCount };
-}
+};
+
+export const useThrottledDataProvider = <Data, Delta>(
+  params: Omit<useDataProviderParams<Data, Delta>, 'update'>,
+  wait?: number
+) => {
+  const [data, setData] = useState<Data | null>(null);
+  const dataRef = useRef<Data | null>(null);
+  const updateData = useRef(
+    throttle(() => {
+      if (!dataRef.current) {
+        return;
+      }
+      setData(dataRef.current);
+    }, wait)
+  );
+
+  const update = useCallback(({ data }: { data: Data | null }) => {
+    if (!data) {
+      return false;
+    }
+    dataRef.current = data;
+    updateData.current();
+    return true;
+  }, []);
+
+  const returnValues = useDataProvider({ ...params, update });
+
+  useEffect(() => {
+    const throttledUpdate = updateData.current;
+    if (!returnValues.data) {
+      dataRef.current = null;
+      setData(dataRef.current);
+      return;
+    }
+    dataRef.current = returnValues.data;
+    setData(dataRef.current);
+    return () => {
+      throttledUpdate.cancel();
+    };
+  }, [returnValues.data]);
+
+  return { ...returnValues, data };
+};

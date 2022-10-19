@@ -8,4 +8,3 @@ export * from './orderbook-manager';
 export * from './orderbook-row';
 export * from './orderbook.stories';
 export * from './orderbook';
-export * from './use-orderbook-data';

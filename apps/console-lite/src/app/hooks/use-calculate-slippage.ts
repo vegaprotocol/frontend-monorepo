@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Side } from '@vegaprotocol/types';
-import { useOrderBookData } from '@vegaprotocol/market-depth';
+import { marketDepthProvider } from '@vegaprotocol/market-depth';
 import { marketProvider } from '@vegaprotocol/market-list';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
@@ -9,6 +9,7 @@ import {
   formatNumber,
   toBigNum,
   useDataProvider,
+  useThrottledDataProvider,
 } from '@vegaprotocol/react-helpers';
 
 interface Props {
@@ -18,10 +19,13 @@ interface Props {
 
 const useCalculateSlippage = ({ marketId, order }: Props) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
-  const { data } = useOrderBookData({
-    variables,
-    throttleMilliseconds: 5000,
-  });
+  const { data } = useThrottledDataProvider(
+    {
+      dataProvider: marketDepthProvider,
+      variables,
+    },
+    5000
+  );
   const { data: market } = useDataProvider<SingleMarketFieldsFragment, never>({
     dataProvider: marketProvider,
     noUpdate: true,
