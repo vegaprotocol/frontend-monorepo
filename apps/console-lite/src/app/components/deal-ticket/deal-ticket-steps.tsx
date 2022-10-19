@@ -200,7 +200,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
                   .symbol
               }
               notionalSize={notionalSize || emptyString}
-              estCloseOut={estCloseOut || '-'}
+              estCloseOut={estCloseOut || emptyString}
               fees={fees || emptyString}
               estMargin={estMargin?.margin || emptyString}
             />
@@ -230,7 +230,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
             isDisabled={isDisabled}
             transactionStatus={transactionStatus}
             order={order}
-            estCloseOut={estCloseOut || '-'}
+            estCloseOut={estCloseOut || emptyString}
             estMargin={estMargin?.margin || emptyString}
             price={formattedPrice || emptyString}
             quoteName={
