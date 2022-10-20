@@ -5,7 +5,7 @@ import {
   addDecimalsFormatNumber,
   removeDecimal,
 } from '@vegaprotocol/react-helpers';
-import { Button, InputError, Link } from '@vegaprotocol/ui-toolkit';
+import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
