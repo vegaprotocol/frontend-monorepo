@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import type { TransactionResult } from '@vegaprotocol/wallet';
 import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
@@ -16,6 +17,8 @@ export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
+  const [transactionResult, setTransactionResult] =
+    useState<TransactionResult>();
   const waitForTransactionResult = useTransactionResult();
 
   const submit = useCallback(
@@ -29,6 +32,8 @@ export const useClosePosition = () => {
       if (!pubKey || openVolume === '0') {
         return;
       }
+
+      setTransactionResult(undefined);
 
       try {
         // figure out if opsition is long or short and make side the opposite
@@ -61,8 +66,12 @@ export const useClosePosition = () => {
         const res = await send(pubKey, command);
 
         if (res) {
-          await waitForTransactionResult(res?.transactionHash, pubKey);
+          const txResult = await waitForTransactionResult(
+            res?.transactionHash,
+            pubKey
+          );
           setComplete();
+          setTransactionResult(txResult);
         }
 
         return res;
@@ -76,6 +85,7 @@ export const useClosePosition = () => {
 
   return {
     transaction,
+    transactionResult,
     submit,
     closingOrder,
     Dialog,

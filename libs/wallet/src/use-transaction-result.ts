@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/client';
+import { BusEventType } from '@vegaprotocol/types';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
 import type {
@@ -6,6 +7,16 @@ import type {
   TransactionEventSubscriptionVariables,
 } from './__generated___/TransactionResult';
 import { TransactionEventDocument } from './__generated___/TransactionResult';
+
+export interface TransactionResult {
+  partyId: string;
+  hash: string;
+  status: boolean;
+  error?: string | null;
+  __typename: 'TransactionResult';
+}
+
+type WaitFunc = (txHash: string, partyId: string) => Promise<TransactionResult>;
 
 /**
  * Returns a function that can be called to subscribe to a transaction
@@ -15,7 +26,7 @@ export const useTransactionResult = () => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
-  const waitForTransactionResult = useCallback(
+  const waitForTransactionResult = useCallback<WaitFunc>(
     (txHash: string, partyId: string) => {
       return new Promise((resolve) => {
         subRef.current = client
@@ -32,7 +43,7 @@ export const useTransactionResult = () => {
             }
 
             const matchingTransaction = data.busEvents.find((e) => {
-              if (e.event.__typename !== 'TransactionResult') {
+              if (e.event.__typename !== BusEventType.TransactionResult) {
                 return false;
               }
 
@@ -41,9 +52,10 @@ export const useTransactionResult = () => {
 
             if (
               matchingTransaction &&
-              matchingTransaction.event.__typename === 'TransactionResult'
+              matchingTransaction.event.__typename ===
+                BusEventType.TransactionResult
             ) {
-              resolve(matchingTransaction.event);
+              resolve(matchingTransaction.event as TransactionResult);
               subRef.current?.unsubscribe();
             }
           });
