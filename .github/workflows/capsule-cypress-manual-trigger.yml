@@ -15,6 +15,7 @@ on:
           - stats-e2e
           - token-e2e
           - trading-e2e
+          - all projects
       smokeOnly:
         description: 'Run only smoke tests?'
         required: true
@@ -49,7 +50,7 @@ jobs:
 
       # See if we capsule is needed for this project
       - name: Set capsule flag
-        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
+        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' || github.event.inputs.project == 'all projects'}}
         run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       #######
@@ -135,7 +136,19 @@ jobs:
         run: yarn cypress install
         working-directory: frontend-monorepo
 
+      - name: Run all Cypress tests
+        if: github.event.inputs.project == 'all projects'
+        run: yarn nx run-many --skip-nx-cache --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome --parallel=1
+        working-directory: frontend-monorepo
+        env:
+          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_NIGHTLY_RUN: true
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
+
       - name: Run Cypress tests
+        if: github.event.inputs.project != 'run all tests'
         run: yarn nx run ${{ github.event.inputs.project }}:e2e ${{ env.SKIP_NX_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
         working-directory: frontend-monorepo
         env:
