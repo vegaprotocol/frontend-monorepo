@@ -34,6 +34,7 @@ export const useClosePosition = () => {
       }
 
       setTransactionResult(undefined);
+      setClosingOrder(undefined);
 
       try {
         // figure out if opsition is long or short and make side the opposite
@@ -50,7 +51,9 @@ export const useClosePosition = () => {
           side,
           size,
         };
+
         setClosingOrder(closingOrder);
+
         const command = {
           batchMarketInstructions: {
             cancellations: [

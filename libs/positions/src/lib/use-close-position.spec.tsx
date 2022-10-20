@@ -26,6 +26,13 @@ const defaultWalletContext = {
   selectPubKey: jest.fn(),
   connector: null,
 };
+const txResult = {
+  __typename: 'TransactionResult',
+  partyId: pubKey,
+  hash: '0x123',
+  status: true,
+  error: null,
+};
 
 function setup(context?: Partial<VegaWalletContextShape>) {
   const mock: MockedResponse<TransactionEventSubscription> = {
@@ -40,13 +47,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
         busEvents: [
           {
             type: Types.BusEventType.TransactionResult,
-            event: {
-              __typename: 'TransactionResult',
-              partyId: context?.pubKey,
-              hash: '0x123',
-              status: true,
-              error: null,
-            },
+            event: txResult,
             __typename: 'BusEvent',
           },
         ] as TransactionEventSubscription['busEvents'],
@@ -77,6 +78,7 @@ describe('useClosePosition', () => {
     });
     result.current.submit({ marketId: 'test-market', openVolume: '0' });
     expect(mockSend).not.toBeCalled();
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   });
 
   it('doesnt send the tx if there is no pubkey', () => {
@@ -84,6 +86,7 @@ describe('useClosePosition', () => {
     const { result } = setup({ sendTx: mockSend, pubKey: null });
     result.current.submit({ marketId: 'test-market', openVolume: '1000' });
     expect(mockSend).not.toBeCalled();
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   });
 
   it('closes long positions', async () => {
@@ -130,6 +133,7 @@ describe('useClosePosition', () => {
         dialogOpen: true,
         error: null,
       });
+      expect(result.current.transactionResult).toEqual(txResult);
     });
   });
 
@@ -177,6 +181,7 @@ describe('useClosePosition', () => {
         dialogOpen: true,
         error: null,
       });
+      expect(result.current.transactionResult).toEqual(txResult);
     });
   });
 });
