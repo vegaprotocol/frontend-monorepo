@@ -123,22 +123,26 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
 
 export const lpAggregatedDataProvider = makeDerivedDataProvider(
   [
-    liquidityProvisionsDataProvider,
+    (callback, client, variables) =>
+      liquidityProvisionsDataProvider(callback, client, {
+        marketId: variables?.marketId,
+      }),
+    (callback, client, variables) =>
+      accountsDataProvider(callback, client, { partyId: variables?.partyId }),
     marketLiquidityDataProvider,
     liquidityFeeShareDataProvider,
-    accountsDataProvider,
   ],
   ([
     liquidityProvisions,
+    accounts,
     marketLiquidity,
     liquidityFeeShare,
-    accounts,
   ]): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
+      accounts,
       marketLiquidity,
-      liquidityFeeShare,
-      accounts
+      liquidityFeeShare
     );
   }
 );

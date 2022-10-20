@@ -62,7 +62,10 @@ const LiquidityPage = ({ id }: { id?: string }) => {
   } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update, // TODO only accounts should use LP party ID
-    variables: useMemo(() => ({ marketId }), [marketId]),
+    variables: useMemo(
+      () => ({ marketId, partyId: pubKey }),
+      [marketId, pubKey]
+    ),
   });
   console.log({ liquidityProviders }); // TODO: Remove this
 
