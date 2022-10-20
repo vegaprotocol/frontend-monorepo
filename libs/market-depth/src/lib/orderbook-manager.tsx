@@ -63,12 +63,12 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta: MarketDepthSubscription_marketsDepthUpdate[];
+      delta?: MarketDepthSubscription_marketsDepthUpdate[];
     }) => {
       if (!dataRef.current.rows) {
         return false;
       }
-      for (const delta of deltas) {
+      for (const delta of deltas || []) {
         if (delta.marketId !== marketId) {
           continue;
         }

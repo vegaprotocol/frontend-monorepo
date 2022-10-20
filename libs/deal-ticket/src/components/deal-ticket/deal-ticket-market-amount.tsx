@@ -17,7 +17,7 @@ export const DealTicketMarketAmount = ({
 }: DealTicketMarketAmountProps) => {
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 relative">
       <div className="flex-1">
         <FormGroup label={t('Size')} labelFor="input-order-size-market">
           <Input
@@ -44,12 +44,12 @@ export const DealTicketMarketAmount = ({
               'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
             )}
           >
-            <span className={'block mb-2 text-sm text-left'}>
+            <div className="absolute top-0 right-0 text-sm">
               {t(`Estimated uncrossing price`)}
-            </span>
+            </div>
           </Tooltip>
         )}
-        <span className="text-sm">
+        <div className="text-sm text-right">
           {price && quoteName ? (
             <>
               ~{price} {quoteName}
@@ -57,7 +57,7 @@ export const DealTicketMarketAmount = ({
           ) : (
             '-'
           )}
-        </span>
+        </div>
       </div>
     </div>
   );

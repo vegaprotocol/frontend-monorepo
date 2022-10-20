@@ -4,183 +4,113 @@ import {
   t,
   truncateByChars,
   addDecimalsFormatNumber,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
+  TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  Dialog,
-  Link,
-  AgGridDynamic as AgGrid,
-  Intent,
-  Loader,
-  Icon,
-} from '@vegaprotocol/ui-toolkit';
+import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
-import type { VerifyState } from './use-verify-withdrawal';
-import { ApprovalStatus, useVerifyWithdrawal } from './use-verify-withdrawal';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
-export interface WithdrawalsTableProps {
-  withdrawals: WithdrawalFields[];
-}
-
-export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
+export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const {
-    submit,
-    reset: resetTx,
-    Dialog: EthereumTransactionDialog,
-  } = useCompleteWithdraw();
-  const {
-    verify,
-    state: verifyState,
-    reset: resetVerification,
-  } = useVerifyWithdrawal();
 
   return (
-    <>
-      <AgGrid
-        rowData={withdrawals}
-        overlayNoRowsTemplate={t('No withdrawals')}
-        defaultColDef={{ flex: 1, resizable: true }}
-        style={{ width: '100%', height: '100%' }}
-        components={{ StatusCell, RecipientCell }}
-        suppressCellFocus={true}
-      >
-        <AgGridColumn headerName="Asset" field="asset.symbol" />
-        <AgGridColumn
-          headerName={t('Amount')}
-          field="amount"
-          valueFormatter={({
-            value,
-            data,
-          }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
-            return addDecimalsFormatNumber(value, data.asset.decimals);
-          }}
-        />
-        <AgGridColumn
-          headerName={t('Recipient')}
-          field="details.receiverAddress"
-          cellRenderer="RecipientCell"
-          cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            WithdrawalFields,
-            'details.receiverAddress'
-          >) => {
-            if (!value) return '-';
-            return truncateByChars(value);
-          }}
-        />
-        <AgGridColumn
-          headerName={t('Created at')}
-          field="createdTimestamp"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            WithdrawalFields,
-            'createdTimestamp'
-          >) => {
-            return getDateTimeFormat().format(new Date(value));
-          }}
-        />
-        <AgGridColumn
-          headerName={t('TX hash')}
-          field="txHash"
-          cellRenderer={({
-            value,
-          }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
-            if (!value) return '-';
-            return (
-              <Link
-                title={t('View transaction on Etherscan')}
-                href={`${ETHERSCAN_URL}/tx/${value}`}
-                data-testid="etherscan-link"
-                target="_blank"
-              >
-                {truncateByChars(value)}
-              </Link>
-            );
-          }}
-        />
-        <AgGridColumn
-          headerName={t('Status')}
-          field="status"
-          cellRenderer="StatusCell"
-          cellRendererParams={{
-            complete: async (withdrawal: WithdrawalFields) => {
-              const verified = await verify(withdrawal);
-
-              if (!verified) {
-                return;
-              }
-
-              submit(withdrawal.id);
-            },
-            ethUrl: ETHERSCAN_URL,
-          }}
-        />
-      </AgGrid>
-      <Dialog
-        title={t('Withdrawal verification')}
-        onChange={(isOpen) => {
-          if (!isOpen) {
-            resetTx();
-            resetVerification();
-          }
+    <AgGrid
+      overlayNoRowsTemplate={t('No withdrawals')}
+      defaultColDef={{ flex: 1, resizable: true }}
+      style={{ width: '100%' }}
+      components={{ RecipientCell, StatusCell }}
+      suppressCellFocus={true}
+      domLayout="autoHeight"
+      rowHeight={30}
+      {...props}
+    >
+      <AgGridColumn headerName="Asset" field="asset.symbol" />
+      <AgGridColumn
+        headerName={t('Amount')}
+        field="amount"
+        valueFormatter={({
+          value,
+          data,
+        }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
+          return isNumeric(value) && data?.asset
+            ? addDecimalsFormatNumber(value, data.asset.decimals)
+            : '';
         }}
-        open={verifyState.dialogOpen}
-        size="small"
-        {...getVerifyDialogProps(verifyState.status)}
-      >
-        <VerificationStatus state={verifyState} />
-      </Dialog>
-      <EthereumTransactionDialog />
-    </>
+      />
+      <AgGridColumn
+        headerName={t('Recipient')}
+        field="details.receiverAddress"
+        cellRenderer="RecipientCell"
+        cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
+        valueFormatter={({
+          value,
+        }: VegaValueFormatterParams<
+          WithdrawalFields,
+          'details.receiverAddress'
+        >) => {
+          if (!value) return '-';
+          return truncateByChars(value);
+        }}
+      />
+      <AgGridColumn
+        headerName={t('Completed')}
+        field="withdrawnTimestamp"
+        valueFormatter={({
+          data,
+        }: VegaValueFormatterParams<
+          WithdrawalFields,
+          'withdrawnTimestamp'
+        >) => {
+          const ts = data?.withdrawnTimestamp;
+          if (!ts) return '-';
+          return getDateTimeFormat().format(new Date(ts));
+        }}
+      />
+      <AgGridColumn
+        headerName={t('Status')}
+        field="status"
+        cellRenderer="StatusCell"
+      />
+      <AgGridColumn
+        headerName={t('Transaction')}
+        field="txHash"
+        cellRenderer={({
+          value,
+        }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
+          if (!value) return '-';
+          return (
+            <Link
+              title={t('View transaction on Etherscan')}
+              href={`${ETHERSCAN_URL}/tx/${value}`}
+              data-testid="etherscan-link"
+              target="_blank"
+            >
+              {truncateByChars(value)}
+            </Link>
+          );
+        }}
+      />
+    </AgGrid>
   );
 };
 
-export interface StatusCellProps
-  extends VegaICellRendererParams<WithdrawalFields, 'status'> {
-  ethUrl: string;
-  complete: (withdrawal: WithdrawalFields) => void;
-}
-
-export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
-  if (data.pendingOnForeignChain) {
-    return (
-      <div className="flex justify-between gap-8">
-        {t('Pending')}
-        {data.txHash && (
-          <Link
-            title={t('View transaction on Etherscan')}
-            href={`${ethUrl}/tx/${data.txHash}`}
-            data-testid="etherscan-link"
-            target="_blank"
-          >
-            {t('View on Etherscan')}
-          </Link>
-        )}
-      </div>
-    );
+export const StatusCell = ({ data }: { data: WithdrawalFields }) => {
+  if (data.pendingOnForeignChain || !data.txHash) {
+    return <span>{t('Pending')}</span>;
   }
-
-  if (!data.txHash) {
-    return (
-      <div className="flex justify-between gap-8">
-        {t('Open')}
-        <button className="underline" onClick={() => complete(data)}>
-          {t('Complete')}
-        </button>
-      </div>
-    );
+  if (data.status === WithdrawalStatus.STATUS_FINALIZED) {
+    return <span>{t('Completed')}</span>;
   }
-
-  return <span>{t('Finalized')}</span>;
+  if (data.status === WithdrawalStatus.STATUS_REJECTED) {
+    return <span>{t('Rejected')}</span>;
+  }
+  return <span>{t('Failed')}</span>;
 };
 
 export interface RecipientCellProps
@@ -203,49 +133,4 @@ const RecipientCell = ({
       {valueFormatted}
     </Link>
   );
-};
-
-const getVerifyDialogProps = (status: ApprovalStatus) => {
-  if (status === ApprovalStatus.Error) {
-    return {
-      intent: Intent.Danger,
-      icon: <Icon name="warning-sign" />,
-    };
-  }
-
-  if (status === ApprovalStatus.Pending) {
-    return { intent: Intent.None, icon: <Loader size="small" /> };
-  }
-
-  if (status === ApprovalStatus.Delayed) {
-    return { intent: Intent.Warning, icon: <Icon name="time" /> };
-  }
-
-  return { intent: Intent.None };
-};
-
-const VerificationStatus = ({ state }: { state: VerifyState }) => {
-  if (state.status === ApprovalStatus.Error) {
-    return <p>{t('Something went wrong')}</p>;
-  }
-
-  if (state.status === ApprovalStatus.Pending) {
-    return <p>{t('Verifying...')}</p>;
-  }
-
-  if (state.status === ApprovalStatus.Delayed && state.completeTimestamp) {
-    const formattedTime = getDateTimeFormat().format(
-      new Date(state.completeTimestamp)
-    );
-    return (
-      <>
-        <p className="mb-2">
-          {t("The amount you're withdrawing has triggered a time delay")}
-        </p>
-        <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
-      </>
-    );
-  }
-
-  return null;
 };

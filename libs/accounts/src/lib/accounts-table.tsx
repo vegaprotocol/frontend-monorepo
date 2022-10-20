@@ -1,7 +1,11 @@
 import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/assets';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  isNumeric,
+  t,
+} from '@vegaprotocol/react-helpers';
 import type {
   ValueProps,
   VegaICellRendererParams,
@@ -95,7 +99,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               value,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
-              return (
+              return value ? (
                 <ButtonLink
                   data-testid="deposit"
                   onClick={() => {
@@ -104,19 +108,23 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 >
                   {value}
                 </ButtonLink>
-              );
+              ) : null;
             }}
             maxWidth={300}
           />
           <AgGridColumn
-            headerName={t('Deposited')}
+            headerName={t('Total')}
             field="deposited"
+            headerTooltip={t(
+              'This is the total amount of collateral used plus the amount available in your general account.'
+            )}
             valueFormatter={({
               value,
               data,
             }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
               data &&
               data.asset &&
+              isNumeric(value) &&
               addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}
@@ -125,6 +133,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             headerName={t('Used')}
             field="used"
             flex={2}
+            minWidth={150}
             maxWidth={500}
             headerComponentParams={progressBarHeaderComponentParams}
             cellRendererSelector={progressBarCellRendererSelector}
@@ -133,7 +142,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName=""
             field="breakdown"
-            maxWidth={150}
+            minWidth={150}
             cellRenderer={({
               value,
             }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
@@ -145,7 +154,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     setBreakdown(value || null);
                   }}
                 >
-                  {t('Collateral breakdown')}
+                  {t('Breakdown')}
                 </ButtonLink>
               );
             }}
@@ -158,7 +167,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             cellRenderer={({
               data,
             }: VegaICellRendererParams<AccountFields>) => {
-              return (
+              return data ? (
                 <div className="flex gap-2 justify-end">
                   <Button
                     size="xs"
@@ -180,7 +189,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                     {t('Withdraw')}
                   </Button>
                 </div>
-              );
+              ) : null;
             }}
           />
         </AgGrid>

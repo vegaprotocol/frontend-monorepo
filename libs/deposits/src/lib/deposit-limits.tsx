@@ -1,60 +1,65 @@
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import type { Asset } from '@vegaprotocol/assets';
+import { compactNumber, t } from '@vegaprotocol/react-helpers';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
+
+// Note: all of the values here are with correct asset's decimals
+// See `libs/deposits/src/lib/use-deposit-balances.ts`
 
 interface DepositLimitsProps {
   max: BigNumber;
   deposited: BigNumber;
+  asset: Asset;
   balance?: BigNumber;
 }
 
 export const DepositLimits = ({
   max,
   deposited,
+  asset,
   balance,
 }: DepositLimitsProps) => {
-  let maxLimit = '';
-  if (max.isEqualTo(Infinity)) {
-    maxLimit = t('No limit');
-  } else if (max.isGreaterThan(1_000_000)) {
-    maxLimit = t('1m+');
-  } else {
-    maxLimit = max.toString();
-  }
-
-  let remaining = '';
-  if (deposited.isEqualTo(0)) {
-    remaining = maxLimit;
-  } else {
-    const amountRemaining = max.minus(deposited);
-    remaining = amountRemaining.isGreaterThan(1_000_000)
-      ? t('1m+')
-      : amountRemaining.toString();
-  }
+  const limits = [
+    {
+      key: 'BALANCE_AVAILABLE',
+      label: t('Balance available'),
+      rawValue: balance,
+      value: balance ? compactNumber(balance, asset.decimals) : '-',
+    },
+    {
+      key: 'MAX_LIMIT',
+      label: t('Maximum total deposit amount'),
+      rawValue: max,
+      value: compactNumber(max, asset.decimals),
+    },
+    {
+      key: 'DEPOSITED',
+      label: t('Deposited'),
+      rawValue: deposited,
+      value: compactNumber(deposited, asset.decimals),
+    },
+    {
+      key: 'REMAINING',
+      label: t('Remaining'),
+      rawValue: max.minus(deposited),
+      value: compactNumber(max.minus(deposited), asset.decimals),
+    },
+  ];
 
   return (
-    <table className="w-full text-sm">
-      <tbody>
-        <tr>
-          <th className="text-left font-normal">{t('Balance available')}</th>
-          <td className="text-right">
-            {balance ? formatNumber(balance) : '-'}
-          </td>
-        </tr>
-        <tr>
-          <th className="text-left font-normal">
-            {t('Maximum total deposit amount')}
-          </th>
-          <td className="text-right">{maxLimit}</td>
-        </tr>
-        <tr>
-          <th className="text-left font-normal">{t('Deposited')}</th>
-          <td className="text-right">{formatNumber(deposited)}</td>
-        </tr>
-        <tr>
-          <th className="text-left font-normal">{t('Remaining')}</th>
-          <td className="text-right">{remaining}</td>
-        </tr>
-      </tbody>
-    </table>
+    <KeyValueTable>
+      {limits.map(({ key, label, rawValue, value }) => (
+        <KeyValueTableRow>
+          <div data-testid={`${key}_label`}>{label}</div>
+          <div
+            data-testid={`${key}_value`}
+            className="truncate"
+            title={rawValue?.toString()}
+          >
+            {value}
+          </div>
+        </KeyValueTableRow>
+      ))}
+    </KeyValueTable>
   );
 };

@@ -6,18 +6,19 @@ import {
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormSubheader,
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
   ProposalFormDescription,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
@@ -27,7 +28,7 @@ export interface FreeformProposalFormFields {
   proposalReference: string;
 }
 
-const docsLink = 'freeform-proposal';
+const DOCS_LINK = 'freeform-proposal';
 
 export const ProposeFreeform = () => {
   const { params, loading, error } = useNetworkParams([
@@ -65,20 +66,21 @@ export const ProposeFreeform = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_freeform_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <Link
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals/${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals/${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals/${DOCS_LINK}`}</Link>
               </p>
             )}
 

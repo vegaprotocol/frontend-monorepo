@@ -22,13 +22,14 @@ context(
       });
 
       it('should be able to see a working link for - find out more about Vega governance', function () {
-        // 1004-VOTE-001
+        // 3001-VOTE-001
         cy.get(proposalDocumentationLink)
           .should('be.visible')
           .and('have.text', 'Find out more about Vega governance')
           .and('have.attr', 'href')
           .and('equal', governanceDocsUrl);
 
+        // 3002-PROP-001
         cy.request(governanceDocsUrl)
           .its('body')
           .then((body) => {
@@ -43,7 +44,7 @@ context(
       });
 
       it('should be able to see button for - new proposal', function () {
-        // 1004-VOTE-002
+        // 3001-VOTE-002
         cy.get(newProposalLink)
           .should('be.visible')
           .and('have.text', 'New proposal')

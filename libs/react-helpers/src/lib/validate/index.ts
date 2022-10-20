@@ -45,3 +45,12 @@ export const suitableForSyntaxHighlighter = (str: string) => {
     return false;
   }
 };
+
+export const validateJson = (value: string) => {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (e) {
+    return t('Must be valid JSON');
+  }
+};

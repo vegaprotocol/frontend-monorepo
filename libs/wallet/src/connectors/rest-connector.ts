@@ -162,42 +162,37 @@ export class RestConnector implements VegaConnector {
   }
 
   async sendTx(pubKey: string, transaction: Transaction) {
-    try {
-      const body = {
-        pubKey,
-        propagate: true,
-        ...transaction,
-      };
-      const res = await this.request(Endpoints.Command, {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: {
-          authorization: `Bearer ${this.token}`,
-        },
-      });
+    const body = {
+      pubKey,
+      propagate: true,
+      ...transaction,
+    };
+    const res = await this.request(Endpoints.Command, {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: {
+        authorization: `Bearer ${this.token}`,
+      },
+    });
 
-      // User rejected
-      if (res.status === 401) {
-        return null;
-      }
-
-      if (res.error) {
-        throw new WalletError(res.error, 1, res.details);
-      }
-
-      const data = TransactionResponseSchema.parse(res.data);
-
-      // Make return value match that of v2 service
-      return {
-        transactionHash: data.txHash,
-        signature: data.tx.signature.value,
-        receivedAt: data.receivedAt,
-        sentAt: data.sentAt,
-      };
-    } catch (err) {
-      Sentry.captureException(err);
+    // User rejected
+    if (res.status === 401) {
       return null;
     }
+
+    if (res.error) {
+      throw new WalletError(res.error, 1, res.details);
+    }
+
+    const data = TransactionResponseSchema.parse(res.data);
+
+    // Make return value match that of v2 service
+    return {
+      transactionHash: data.txHash,
+      signature: data.tx.signature.value,
+      receivedAt: data.receivedAt,
+      sentAt: data.sentAt,
+    };
   }
 
   /** Parse more complex error object into a single string */
@@ -283,7 +278,7 @@ export class RestConnector implements VegaConnector {
       }
     } catch (err) {
       return {
-        error: 'Failed to fetch',
+        error: 'No wallet detected',
       };
     }
   }

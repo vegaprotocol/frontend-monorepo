@@ -7,10 +7,7 @@ import {
   signedNumberCssClassRules,
   t,
 } from '@vegaprotocol/react-helpers';
-import type {
-  PositionsTableValueFormatterParams,
-  Position,
-} from '@vegaprotocol/positions';
+import type { Position } from '@vegaprotocol/positions';
 import { AmountCell } from '@vegaprotocol/positions';
 import type {
   CellRendererSelectorResult,
@@ -20,6 +17,7 @@ import type {
   ColDef,
 } from 'ag-grid-community';
 import { MarketTradingMode } from '@vegaprotocol/types';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { Intent, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 
 const EmptyCell = () => '';
@@ -77,9 +75,7 @@ const useColumnDefinitions = () => {
           value,
           data,
           node,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['openVolume'];
-        }) => {
+        }: VegaValueFormatterParams<Position, 'openVolume'>) => {
           let ret;
           if (value && data) {
             ret = node?.rowPinned
@@ -107,9 +103,7 @@ const useColumnDefinitions = () => {
           value,
           data,
           node,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['markPrice'];
-        }) => {
+        }: VegaValueFormatterParams<Position, 'markPrice'>) => {
           if (
             data &&
             value &&
@@ -186,9 +180,8 @@ const useColumnDefinitions = () => {
         valueFormatter: ({
           value,
           node,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['currentLeverage'];
-        }) => (value === undefined ? '' : formatNumber(value.toString(), 1)),
+        }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
+          value === undefined ? '' : formatNumber(value.toString(), 1),
       },
       {
         colId: 'marginallocated',
@@ -229,10 +222,8 @@ const useColumnDefinitions = () => {
         valueFormatter: ({
           value,
           data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['realisedPNL'];
-        }) =>
-          value === undefined
+        }: VegaValueFormatterParams<Position, 'realisedPNL'>) =>
+          value === undefined || data === undefined
             ? ''
             : addDecimalsFormatNumber(value.toString(), data.decimals),
         cellRenderer: 'PriceFlashCell',
@@ -249,10 +240,8 @@ const useColumnDefinitions = () => {
         valueFormatter: ({
           value,
           data,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['unrealisedPNL'];
-        }) =>
-          value === undefined
+        }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
+          value === undefined || data === undefined
             ? ''
             : addDecimalsFormatNumber(value.toString(), data.decimals),
         cellRenderer: 'PriceFlashCell',
@@ -266,9 +255,7 @@ const useColumnDefinitions = () => {
         type: 'rightAligned',
         valueFormatter: ({
           value,
-        }: PositionsTableValueFormatterParams & {
-          value: Position['updatedAt'];
-        }) => {
+        }: VegaValueFormatterParams<Position, 'updatedAt'>) => {
           if (!value) {
             return '';
           }

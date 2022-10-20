@@ -25,12 +25,16 @@ export const NetworkParams = {
   reward_asset: 'reward_asset',
   reward_staking_delegation_payoutDelay:
     'reward_staking_delegation_payoutDelay',
-  governance_proposal_updateMarket_requiredMajority:
-    'governance_proposal_updateMarket_requiredMajority',
+  governance_proposal_market_minVoterBalance:
+    'governance_proposal_market_minVoterBalance',
   governance_proposal_market_minClose: 'governance_proposal_market_minClose',
   governance_proposal_market_maxClose: 'governance_proposal_market_maxClose',
   governance_proposal_market_minEnact: 'governance_proposal_market_minEnact',
   governance_proposal_market_maxEnact: 'governance_proposal_market_maxEnact',
+  governance_proposal_updateMarket_minVoterBalance:
+    'governance_proposal_updateMarket_minVoterBalance',
+  governance_proposal_updateMarket_requiredMajority:
+    'governance_proposal_updateMarket_requiredMajority',
   governance_proposal_updateMarket_minClose:
     'governance_proposal_updateMarket_minClose',
   governance_proposal_updateMarket_maxClose:
@@ -39,18 +43,34 @@ export const NetworkParams = {
     'governance_proposal_updateMarket_minEnact',
   governance_proposal_updateMarket_maxEnact:
     'governance_proposal_updateMarket_maxEnact',
+  governance_proposal_asset_minVoterBalance:
+    'governance_proposal_asset_minVoterBalance',
   governance_proposal_asset_minClose: 'governance_proposal_asset_minClose',
   governance_proposal_asset_maxClose: 'governance_proposal_asset_maxClose',
   governance_proposal_asset_minEnact: 'governance_proposal_asset_minEnact',
   governance_proposal_asset_maxEnact: 'governance_proposal_asset_maxEnact',
+  governance_proposal_updateAsset_minVoterBalance:
+    'governance_proposal_updateAsset_minVoterBalance',
+  governance_proposal_updateAsset_minClose:
+    'governance_proposal_updateAsset_minClose',
+  governance_proposal_updateAsset_maxClose:
+    'governance_proposal_updateAsset_maxClose',
+  governance_proposal_updateAsset_minEnact:
+    'governance_proposal_updateAsset_minEnact',
+  governance_proposal_updateAsset_maxEnact:
+    'governance_proposal_updateAsset_maxEnact',
   governance_proposal_updateNetParam_minClose:
     'governance_proposal_updateNetParam_minClose',
+  governance_proposal_updateNetParam_minVoterBalance:
+    'governance_proposal_updateNetParam_minVoterBalance',
   governance_proposal_updateNetParam_maxClose:
     'governance_proposal_updateNetParam_maxClose',
   governance_proposal_updateNetParam_minEnact:
     'governance_proposal_updateNetParam_minEnact',
   governance_proposal_updateNetParam_maxEnact:
     'governance_proposal_updateNetParam_maxEnact',
+  governance_proposal_freeform_minVoterBalance:
+    'governance_proposal_freeform_minVoterBalance',
   governance_proposal_freeform_minClose:
     'governance_proposal_freeform_minClose',
   governance_proposal_freeform_maxClose:
@@ -71,6 +91,8 @@ export const NetworkParams = {
     'governance_proposal_asset_requiredParticipation',
   governance_proposal_asset_minProposerBalance:
     'governance_proposal_asset_minProposerBalance',
+  governance_proposal_updateAsset_minProposerBalance:
+    'governance_proposal_updateAsset_minProposerBalance',
   governance_proposal_updateNetParam_requiredMajority:
     'governance_proposal_updateNetParam_requiredMajority',
   governance_proposal_updateNetParam_requiredParticipation:
@@ -84,6 +106,7 @@ export const NetworkParams = {
   governance_proposal_freeform_minProposerBalance:
     'governance_proposal_freeform_minProposerBalance',
   validators_delegation_minAmount: 'validators_delegation_minAmount',
+  spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
   market_liquidity_stakeToCcySiskas: 'market_liquidity_stakeToCcySiskas',
 } as const;

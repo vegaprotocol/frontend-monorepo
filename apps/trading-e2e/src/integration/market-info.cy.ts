@@ -1,5 +1,5 @@
 import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
+import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -9,13 +9,12 @@ const externalLink = 'external-link';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
+    cy.wait('@MarketInfo');
   });
 
   it('current fees displayed', () => {
@@ -71,10 +70,20 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
   it('settlement asset displayed', () => {
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
-
-    validateMarketDataRow(0, 'Name', 'tBTC TEST');
-    validateMarketDataRow(1, 'Symbol', 'tBTC');
-    validateMarketDataRow(2, 'Asset ID', 'market-0');
+    validateMarketDataRow(0, 'ID', 'asset-id');
+    validateMarketDataRow(1, 'Type', 'ERC20');
+    validateMarketDataRow(2, 'Name', 'Euro');
+    validateMarketDataRow(3, 'Symbol', 'tEURO');
+    validateMarketDataRow(4, 'Decimals', '5');
+    validateMarketDataRow(5, 'Quantum', '1');
+    validateMarketDataRow(6, 'Status', 'Enabled');
+    validateMarketDataRow(
+      7,
+      'Contract address',
+      '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
+    );
+    validateMarketDataRow(8, 'Withdrawal threshold', '0.00050');
+    validateMarketDataRow(9, 'Lifetime limit', '1,230.00000');
   });
 
   it('metadata displayed', () => {
@@ -151,7 +160,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   it('oracle displayed', () => {
     cy.getByTestId(marketTitle).contains('Oracle').click();
 
-    validateMarketDataRow(0, 'Settlement Price Property', 'prices.BTC.value');
+    validateMarketDataRow(0, 'Settlement Data Property', 'prices.BTC.value');
     validateMarketDataRow(
       1,
       'Trading Termination Property',
@@ -163,17 +172,20 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', '/oracles');
   });
 
-  it('proposal displayed', () => {
+  it.only('proposal displayed', () => {
     cy.getByTestId(marketTitle).contains('Proposal').click();
 
     cy.getByTestId(externalLink)
+      .first()
       .should('have.text', 'View governance proposal')
       .and('have.attr', 'href')
       .and('contain', '/governance/market-0');
   });
 
   afterEach('close toggle', () => {
-    cy.get('[data-state="open"]').find('button').click();
+    cy.get('[data-state="open"]').then((tab) => {
+      if (tab) tab.find('button').trigger('click');
+    });
   });
 
   function validateMarketDataRow(
@@ -188,4 +200,44 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
         cy.get('dd').should('contain.text', value);
       });
   }
+});
+
+describe('market states', { tags: '@smoke' }, function () {
+  //7002-SORD-062
+  //7002-SORD-063
+  //7002-SORD-066
+
+  const states = [
+    MarketState.STATE_REJECTED,
+    MarketState.STATE_CANCELLED,
+    MarketState.STATE_CLOSED,
+    MarketState.STATE_SETTLED,
+    MarketState.STATE_TRADING_TERMINATED,
+  ];
+
+  states.forEach((marketState) => {
+    describe(marketState, function () {
+      before(function () {
+        cy.mockTradingPage(marketState);
+        cy.mockGQLSubscription();
+        cy.visit('/markets/market-0');
+        cy.wait('@Market');
+        connectVegaWallet();
+      });
+      it.skip('must display correct market state');
+      //7002-/SORD-/061 no state displayed
+      it('must display that market is not accepting orders', function () {
+        cy.getByTestId('dealticket-error-message').should(
+          'have.text',
+          `This market is ${marketState
+            .split('_')
+            .pop()
+            ?.toLowerCase()} and not accepting orders`
+        );
+      });
+      it('must have place order button disabled', function () {
+        cy.getByTestId('place-order').should('be.disabled');
+      });
+    });
+  });
 });

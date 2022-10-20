@@ -14,9 +14,11 @@ const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const ethWalletDissociateButton = '[href="/staking/disassociate"]';
 const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
 const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
+const connectedVegaKey = '[data-testid="connected-vega-key"]';
 const associatedKey = '[data-test-id="associated-key"]';
 const associatedAmount = '[data-test-id="associated-amount"]';
-const disassocitiationWarning = '[data-testid="disassociation-warning"]';
+const associateCompleteText = '[data-testid="transaction-complete-body"]';
+const disassociationWarning = '[data-testid="disassociation-warning"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
 
 context(
@@ -47,7 +49,8 @@ context(
       );
 
       it('Able to associate tokens - from wallet', function () {
-        //1004-ASSO-008
+        //1004-ASSO-003
+        //1004-ASSO-005
         //1004-ASSO-009
         //1004-ASSO-030
         //1004-ASSO-012
@@ -162,7 +165,7 @@ context(
         cy.get('button').contains('Select a validator to nominate').click();
 
         cy.get(ethWalletDissociateButton).click();
-        cy.get(disassocitiationWarning).should('contain', warningText);
+        cy.get(disassociationWarning).should('contain', warningText);
 
         cy.staking_page_disassociate_all_tokens();
 
@@ -185,6 +188,8 @@ context(
 
       it('Able to associate and disassociate vesting contract tokens', function () {
         // 1004-ASSO-006
+        // 1004-ASSO-007
+        // 1004-ASSO-018
         // 1004-ASSO-024
         // 1004-ASSO-023
 
@@ -268,19 +273,48 @@ context(
       });
 
       it('Not able to associate more tokens than owned', function () {
+        // 1004-ASSO-008
         // 1004-ASSO-010
         // No warning visible as described in AC, but the button is disabled
 
         cy.get(ethWalletAssociateButton).first().click();
         cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
+        cy.get(tokenSubmitButton, txTimeout).should('be.disabled'); // button disabled with no input
         cy.get(tokenAmountInputBox, { timeout: 10000 }).type(6500000);
         cy.get(tokenSubmitButton, txTimeout).should('be.disabled');
+      });
+
+      // 1004-ASSO-004
+      it('Able to associate tokens to different public key of connected vega wallet', function () {
+        cy.get(ethWalletAssociateButton).first().click();
+        cy.get(associateWalletRadioButton).click();
+        cy.get(connectedVegaKey).should(
+          'have.text',
+          Cypress.env('vegaWalletPublicKey')
+        );
+
+        cy.get('[data-testid="manage-vega-wallet"]').click();
+        cy.get('[data-testid="select-keypair-button"]').eq(0).click();
+        cy.get(connectedVegaKey).should(
+          'have.text',
+          Cypress.env('vegaWalletPublicKey2')
+        );
+        cy.staking_page_associate_tokens('2');
+        cy.get(vegaWallet).within(() => {
+          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+        });
+        cy.get(associateCompleteText).should(
+          'have.text',
+          `Vega key ${Cypress.env(
+            'vegaWalletPublicKey2Short'
+          )} can now participate in governance and nominate a validator with your associated $VEGA.`
+        );
       });
 
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restart_vegacapsule_network();
           }
         }

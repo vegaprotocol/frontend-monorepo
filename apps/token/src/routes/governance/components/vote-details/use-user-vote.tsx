@@ -92,17 +92,21 @@ export function useUserVote(
    */
   async function castVote(value: VoteValue) {
     if (!proposalId || !pubKey) return;
-
+    const previousVoteState = voteState;
     setVoteState(VoteState.Requested);
 
     try {
-      await sendTx(pubKey, {
+      const res = await sendTx(pubKey, {
         voteSubmission: {
           value: value,
           proposalId,
         },
       });
-      setVoteState(VoteState.Pending);
+      if (res === null) {
+        setVoteState(previousVoteState);
+      } else {
+        setVoteState(VoteState.Pending);
+      }
 
       // Now await vote via poll in parent component
     } catch (err) {

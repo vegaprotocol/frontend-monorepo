@@ -1,86 +1,19 @@
-import { DATA_SOURCES } from '../../../config';
-import { useCallback, useState, useMemo } from 'react';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
-import { JumpToBlock } from '../../../components/jump-to-block';
-import { TxsInfiniteList } from '../../../components/txs';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
-import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
+import { TxsInfiniteList, TxsStatsInfo } from '../../../components/txs';
+import { useTxsData } from '../../../hooks/use-txs-data';
 
-interface TxsProps {
-  latestBlockHeight: string;
-}
+const BE_TXS_PER_REQUEST = 100;
 
-interface TxsStateProps {
-  txsData: ChainExplorerTxResponse[];
-  hasMoreTxs: boolean;
-  nextPage: number;
-}
-
-const Txs = ({ latestBlockHeight }: TxsProps) => {
-  const [{ txsData, hasMoreTxs, nextPage }, setTxsState] =
-    useState<TxsStateProps>({
-      txsData: [],
-      hasMoreTxs: true,
-      nextPage: 1,
-    });
-
-  const reusedBodyParams = useMemo(
-    () => ({
-      node_url: DATA_SOURCES.tendermintUrl,
-      transaction_height: parseInt(latestBlockHeight),
-      page_size: 30,
-    }),
-    [latestBlockHeight]
-  );
-
-  const {
-    state: { error, loading },
-    refetch,
-  } = useFetch(
-    DATA_SOURCES.chainExplorerUrl,
-    {
-      method: 'POST',
-      body: JSON.stringify(reusedBodyParams),
-    },
-    false
-  );
-
-  const loadTxs = useCallback(async () => {
-    const data = await refetch(
-      undefined,
-      JSON.stringify({
-        ...reusedBodyParams,
-        page_number: nextPage,
-      })
-    );
-
-    if (data) {
-      setTxsState((prev) => ({
-        ...prev,
-        nextPage: prev.nextPage + 1,
-        hasMoreTxs: true,
-        txsData: [...prev.txsData, ...(data as ChainExplorerTxResponse[])],
-      }));
-    }
-  }, [nextPage, refetch, reusedBodyParams]);
-
+export const TxsList = () => {
+  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
+    useTxsData({ limit: BE_TXS_PER_REQUEST });
   return (
-    <section>
+    <section className="md:p-2 lg:p-4 xl:p-6">
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <BlocksRefetch
-        refetch={() =>
-          refetch(
-            undefined,
-            JSON.stringify({
-              ...reusedBodyParams,
-              page_number: 1,
-            })
-          )
-        }
-      />
+      <BlocksRefetch refetch={refreshTxs} />
+      <TxsStatsInfo className="!my-12 py-8" />
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
@@ -89,42 +22,6 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
         error={error}
         className="mb-28"
       />
-      <JumpToBlock />
     </section>
   );
 };
-
-export const TxsHome = () => {
-  const {
-    state: { data, error, loading },
-  } = useFetch<TendermintBlockchainResponse>(
-    `${DATA_SOURCES.tendermintUrl}/blockchain`
-  );
-
-  return (
-    <AsyncRenderer
-      loading={!!loading}
-      loadingMessage={t('Getting latest block height...')}
-      error={error}
-      data={data}
-      noDataMessage={t('Could not get latest block height')}
-      render={(data) => (
-        <Txs
-          latestBlockHeight={
-            data?.result?.block_metas?.[0]?.header?.height || ''
-          }
-        />
-      )}
-    />
-  );
-};
-
-export const TxsHomeFallback = () => (
-  <>
-    <RouteTitle>{t('Transactions')}</RouteTitle>
-    <div>
-      The transactions list is currently disabled. Please use the search bar to
-      discover transaction data
-    </div>
-  </>
-);

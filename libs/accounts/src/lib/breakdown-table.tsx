@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import {
   addDecimalsFormatNumber,
+  isNumeric,
   PriceCell,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -48,7 +49,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<AccountFields, 'type'>) =>
-            AccountTypeMapping[value]
+            value ? AccountTypeMapping[value] : ''
           }
         />
         <AgGridColumn
@@ -74,21 +75,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           cellRendererSelector={progressBarCellRendererSelector}
           valueFormatter={progressBarValueFormatter}
         />
-
-        <AgGridColumn
-          headerName={t('Deposited')}
-          field="deposited"
-          valueFormatter={({
-            value,
-            data,
-          }: VegaValueFormatterParams<AccountFields, 'deposited'>) => {
-            if (data && data.asset) {
-              return addDecimalsFormatNumber(value, data.asset.decimals);
-            }
-            return '-';
-          }}
-          maxWidth={300}
-        />
         <AgGridColumn
           headerName={t('Balance')}
           field="balance"
@@ -96,7 +82,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<AccountFields, 'balance'>) => {
-            if (data && data.asset) {
+            if (data && data.asset && isNumeric(value)) {
               return addDecimalsFormatNumber(value, data.asset.decimals);
             }
             return '-';

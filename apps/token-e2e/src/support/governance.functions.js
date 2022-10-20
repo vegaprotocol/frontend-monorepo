@@ -2,11 +2,15 @@ const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
+const rawProposalData = '[data-testid="proposal-data"]';
 const proposalResponseProposalIdPath =
   'response.body.data.busEvents.0.event.id';
 const voteButtons = '[data-testid="vote-buttons"]';
 const txTimeout = Cypress.env('txTimeout');
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const dialogCloseButton = '[data-testid="dialog-close"]';
+const epochTimeout = Cypress.env('epochTimeout');
+const proposalTimeout = { timeout: 14000 };
 
 Cypress.Commands.add(
   'convert_unix_timestamp_to_governance_data_table_date_format',
@@ -47,44 +51,26 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
-  cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
-    freeformProposal.terms.closingTimestamp = timestamp;
-    freeformProposal.rationale.title += timestamp;
-    let proposalPayload = JSON.stringify(freeformProposal);
+Cypress.Commands.add('enter_raw_proposal_body', (timestamp) => {
+  cy.fixture('/proposals/raw.json').then((rawProposal) => {
+    rawProposal.terms.closingTimestamp = timestamp;
+    rawProposal.rationale.title += timestamp;
+    let proposalPayload = JSON.stringify(rawProposal);
 
-    cy.get(newProposalTitle).type(freeformProposal.rationale.title);
-
-    cy.get(newProposalDescription).type(proposalPayload, {
+    cy.get(rawProposalData).type(proposalPayload, {
       parseSpecialCharSequences: false,
       delay: 2,
     });
-
-    cy.get(proposalVoteDeadline).clear().click().type(timestamp);
-
-    cy.wrap(freeformProposal);
+    cy.wrap(rawProposal);
   });
 });
 
-Cypress.Commands.add('get_network_parameters', () => {
-  let mutation = '{networkParameters {key value}}';
-  cy.request({
-    method: 'POST',
-    url: `http://localhost:3028/query`,
-    body: {
-      query: mutation,
-    },
-    headers: { 'content-type': 'application/json' },
-  })
-    .its(`body.data.networkParameters`)
-    .then(function (response) {
-      let object = response.reduce(function (r, e) {
-        r[e.key] = e.value;
-        return r;
-      }, {});
-
-      return object;
-    });
+Cypress.Commands.add('enter_unique_freeform_proposal_body', (timestamp) => {
+  cy.get(newProposalTitle).type(`${timestamp} test freeform proposal`);
+  cy.get(newProposalDescription).type(
+    'this is a e2e freeform proposal description'
+  );
+  cy.get(proposalVoteDeadline).clear().click().type(timestamp);
 });
 
 Cypress.Commands.add('get_submitted_proposal_from_proposal_list', () => {
@@ -165,6 +151,15 @@ Cypress.Commands.add('get_sort_order_of_supplied_array', (suppliedArray) => {
 });
 
 Cypress.Commands.add('go_to_make_new_proposal', (proposalType) => {
+  cy.navigate_to_page_if_not_already_loaded('governance');
   cy.get(newProposalButton).should('be.visible').click();
   cy.get('li').contains(proposalType).click();
+});
+
+Cypress.Commands.add('wait_for_proposal_submitted', () => {
+  cy.contains('Awaiting network confirmation', epochTimeout).should(
+    'be.visible'
+  );
+  cy.contains('Proposal submitted', proposalTimeout).should('be.visible');
+  cy.get(dialogCloseButton).click();
 });

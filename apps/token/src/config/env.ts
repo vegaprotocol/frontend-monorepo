@@ -25,10 +25,18 @@ export const ContractAddresses: {
     lockedAddress: customLockedAddress ?? '0x0',
   },
   DEVNET: {
-    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994',
-    lockedAddress: '0x0',
+    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
+    lockedAddress: '0x0', // TODO not deployed to this env
+  },
+  STAGNET1: {
+    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
+    lockedAddress: '0x0', // TODO not deployed to this env
   },
   STAGNET3: {
+    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
+    lockedAddress: '0x0', // TODO not deployed to this env
+  },
+  SANDBOX: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
   },

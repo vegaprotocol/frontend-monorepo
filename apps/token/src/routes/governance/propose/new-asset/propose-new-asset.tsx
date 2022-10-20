@@ -1,26 +1,31 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
   getValidationTimestamp,
+  useProposalSubmit,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
+  NetworkParams,
+  useNetworkParams,
+  validateJson,
+} from '@vegaprotocol/react-helpers';
+import {
   ProposalFormDescription,
-  ProposalFormTerms,
-  ProposalFormSubmit,
-  ProposalFormTransactionDialog,
   ProposalFormSubheader,
+  ProposalFormSubmit,
+  ProposalFormTerms,
+  ProposalFormTitle,
+  ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 export interface NewAssetProposalFormFields {
   proposalVoteDeadline: string;
@@ -32,7 +37,7 @@ export interface NewAssetProposalFormFields {
   proposalReference: string;
 }
 
-const docsLink = '/new-asset-proposal';
+const DOCS_LINK = '/new-asset-proposal';
 
 export const ProposeNewAsset = () => {
   const {
@@ -89,20 +94,21 @@ export const ProposeNewAsset = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_asset_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <Link
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</Link>
               </p>
             )}
 
@@ -141,20 +147,11 @@ export const ProposeNewAsset = () => {
                 <ProposalFormTerms
                   registerField={register('proposalTerms', {
                     required: t('Required'),
-                    validate: {
-                      validateJson: (value) => {
-                        try {
-                          JSON.parse(value);
-                          return true;
-                        } catch (e) {
-                          return t('Must be valid JSON');
-                        }
-                      },
-                    },
+                    validate: (value) => validateJson(value),
                   })}
                   labelOverride={'Terms.newAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={docsLink}
+                  customDocLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline

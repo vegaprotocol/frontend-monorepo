@@ -1,7 +1,3 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateAssets } from '../support/mocks/generate-accounts';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
@@ -12,10 +8,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQLSubscription();
-    cy.mockGQL((req) => {
-      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'Assets', generateAssets());
-    });
+    cy.mockTradingPage();
     cy.visit('/portfolio/deposit');
 
     // Deposit page requires connection Ethereum wallet first

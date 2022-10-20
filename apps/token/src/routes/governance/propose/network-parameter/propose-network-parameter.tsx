@@ -6,20 +6,20 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  useProposalSubmit,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormSubheader,
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
   ProposalFormDescription,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
   FormGroup,
@@ -32,6 +32,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -69,7 +70,7 @@ export interface NetworkParameterProposalFormFields {
   proposalReference: string;
 }
 
-const docsLink = '/network-parameter-proposal';
+const DOCS_LINK = '/network-parameter-proposal';
 
 export const ProposeNetworkParameter = () => {
   const [selectedNetworkParam, setSelectedNetworkParam] = useState<
@@ -130,20 +131,21 @@ export const ProposeNetworkParameter = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateNetParam_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <Link
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</Link>
               </p>
             )}
 

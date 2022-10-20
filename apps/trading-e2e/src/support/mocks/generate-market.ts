@@ -5,36 +5,22 @@ import {
   MarketTradingMode,
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import type { Market } from '../../../../trading/pages/markets/__generated__/Market';
+import type {
+  MarketData,
+  MarketQuery,
+  MarketsDataQuery,
+} from '@vegaprotocol/market-list';
 
-export const generateMarket = (override?: PartialDeep<Market>): Market => {
-  const defaultResult: Market = {
+export const generateMarket = (
+  override?: PartialDeep<MarketQuery>
+): MarketQuery => {
+  const defaultResult: MarketQuery = {
     market: {
       id: 'market-0',
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       state: MarketState.STATE_ACTIVE,
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      data: {
-        market: {
-          id: 'market-0',
-          __typename: 'Market',
-        },
-        auctionStart: '2022-08-12T11:13:47.611014117Z',
-        auctionEnd: '2022-08-16T09:08:23.611014117Z',
-        markPrice: '13739109',
-        indicativeVolume: '2316',
-        indicativePrice: '88470230',
-        suppliedStake: '79481836527',
-        targetStake: '97284519014',
-        bestBidVolume: '244',
-        bestOfferVolume: '100',
-        bestStaticBidVolume: '482',
-        bestStaticOfferVolume: '2188',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
-        __typename: 'MarketData',
-      },
       tradableInstrument: {
         instrument: {
           id: 'BTCUSD.MF21',
@@ -75,39 +61,65 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
         close: null,
         __typename: 'MarketTimestamps',
       },
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: {
-          __typename: 'Trade',
-          price: '88470230',
+      fees: {
+        __typename: 'Fees',
+        factors: {
+          __typename: 'FeeFactors',
+          makerFee: '',
+          infrastructureFee: '',
+          liquidityFee: '',
         },
-      },
-      candlesConnection: {
-        __typename: 'CandleDataConnection',
-        edges: [
-          {
-            __typename: 'CandleEdge',
-            node: {
-              open: '2095312844',
-              close: '2090090607',
-              volume: '4847',
-              __typename: 'Candle',
-            },
-          },
-          {
-            __typename: 'CandleEdge',
-            node: {
-              open: '2090090000',
-              close: '2090090607',
-              volume: '4847',
-              __typename: 'Candle',
-            },
-          },
-        ],
       },
       __typename: 'Market',
     },
   };
 
   return merge(defaultResult, override);
+};
+
+export const generateMarketData = (
+  override?: PartialDeep<MarketData>
+): MarketsDataQuery => {
+  const defaultMarket: MarketData = {
+    __typename: 'MarketData',
+    market: {
+      id: 'market-0',
+      __typename: 'Market',
+    },
+    auctionStart: '2022-06-21T17:18:43.484055236Z',
+    auctionEnd: '2022-06-21T17:18:43.484055236Z',
+    targetStake: '1000000',
+    suppliedStake: '1000',
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    staticMidPrice: '0',
+    indicativePrice: '0',
+    bestStaticBidPrice: '0',
+    bestStaticOfferPrice: '0',
+    indicativeVolume: '0',
+    bestBidPrice: '0',
+    bestOfferPrice: '0',
+    markPrice: '4612690058',
+    trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+  };
+
+  const marketsConnectionWrapper = (
+    marketData: MarketData
+  ): MarketsDataQuery => {
+    return {
+      marketsConnection: {
+        __typename: 'MarketConnection',
+        edges: [
+          {
+            __typename: 'MarketEdge',
+            node: {
+              __typename: 'Market',
+              data: marketData,
+            },
+          },
+        ],
+      },
+    };
+  };
+
+  return marketsConnectionWrapper(merge(defaultMarket, override));
 };

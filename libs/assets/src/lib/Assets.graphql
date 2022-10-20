@@ -1,22 +1,8 @@
-fragment AssetsFields on Asset {
-  id
-  name
-  symbol
-  decimals
-  quantum
-  status
-  source {
-    ... on ERC20 {
-      contractAddress
-    }
-  }
-}
-
 query Assets {
   assetsConnection {
     edges {
       node {
-        ...AssetsFields
+        ...AssetFields
       }
     }
   }

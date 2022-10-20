@@ -178,17 +178,17 @@ describe('Propose Update Market', () => {
 
   it('should render the select element with no initial value', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByText('Update market proposal')).toBeInTheDocument()
-    );
+    expect(
+      await screen.findByText('Update market proposal')
+    ).toBeInTheDocument();
     expect(screen.getByTestId('proposal-market-select')).toHaveValue('');
   });
 
   it('should render the correct market details when the market select is used', async () => {
     renderComponent();
-    await waitFor(() =>
-      expect(screen.getByText('Update market proposal')).toBeInTheDocument()
-    );
+    expect(
+      await screen.findByText('Update market proposal')
+    ).toBeInTheDocument();
     fireEvent.change(screen.getByTestId('proposal-market-select'), {
       target: {
         value:

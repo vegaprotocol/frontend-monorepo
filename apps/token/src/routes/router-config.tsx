@@ -70,28 +70,21 @@ const LazyStakingAssociate = React.lazy(
 const LazyStakingDisassociate = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-disassociate", webpackPrefetch: true */ './staking/disassociate/disassociate-page-container'
+      /* webpackChunkName: "route-staking-disassociate", webpackPrefetch: true */ './staking/disassociate'
     )
 );
 
 const LazyStakingIndex = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/staking'
+      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/home'
     )
 );
 
 const LazyStakingNode = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/staking-node'
-    )
-);
-
-const LazyStakingNodes = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-staking-nodes", webpackPrefetch: true */ './staking/staking-nodes-container'
+      /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/node'
     )
 );
 
@@ -158,6 +151,13 @@ const LazyGovernanceProposeNewAsset = React.lazy(
     )
 );
 
+const LazyGovernanceProposeUpdateAsset = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose-update-asset", webpackPrefetch: true */ './governance/propose/update-asset'
+    )
+);
+
 const LazyGovernanceProposeFreeform = React.lazy(
   () =>
     import(
@@ -220,11 +220,7 @@ const routerConfig = [
       { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
-        element: (
-          <LazyStakingNodes>
-            {({ data }) => <LazyStakingIndex data={data} />}
-          </LazyStakingNodes>
-        ),
+        element: <LazyStakingIndex />,
       },
     ],
   },
@@ -273,6 +269,10 @@ const routerConfig = [
             element: <LazyGovernanceProposeUpdateMarket />,
           },
           { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
+          {
+            path: 'update-asset',
+            element: <LazyGovernanceProposeUpdateAsset />,
+          },
           { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
           { path: 'raw', element: <LazyGovernanceProposeRaw /> },
         ],

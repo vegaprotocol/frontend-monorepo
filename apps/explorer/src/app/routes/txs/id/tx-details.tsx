@@ -1,18 +1,18 @@
 import { Routes } from '../../route-names';
-import { ButtonLink, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
+import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
 import {
   TableWithTbody,
   TableCell,
   TableHeader,
   TableRow,
 } from '../../../components/table';
-import { TruncateInline } from '../../../components/truncate/truncate';
 import { t } from '@vegaprotocol/react-helpers';
 import { HighlightedLink } from '../../../components/highlighted-link';
-import type { Result } from '../tendermint-transaction-response.d';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
+import React from 'react';
 
 interface TxDetailsProps {
-  txData: Result | undefined;
+  txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   className?: string;
 }
@@ -21,7 +21,7 @@ export const txDetailsTruncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
-    return <>{t('Awaiting Tendermint transaction details')}</>;
+    return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
   return (
@@ -30,6 +30,15 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
         <TableCell>{t('Hash')}</TableCell>
         <TableCell modifier="bordered" data-testid="hash">
           {txData.hash}
+          <CopyWithTooltip text={txData.hash}>
+            <button
+              title={t('Copy tx to clipboard')}
+              data-testid="copy-tx-to-clipboard"
+              className="underline"
+            >
+              <Icon name="duplicate" className="ml-2" />
+            </button>
+          </CopyWithTooltip>
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -44,29 +53,9 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
         <TableCell>{t('Block')}</TableCell>
         <TableCell modifier="bordered" data-testid="block">
           <HighlightedLink
-            to={`/${Routes.BLOCKS}/${txData.height}`}
-            text={txData.height}
+            to={`/${Routes.BLOCKS}/${txData.block}`}
+            text={txData.block}
           />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Encoded txn')}</TableCell>
-        <TableCell
-          modifier="bordered"
-          data-testid="encoded-tnx"
-          className="flex justify-between"
-        >
-          <TruncateInline
-            text={txData.tx}
-            startChars={txDetailsTruncateLength}
-            endChars={txDetailsTruncateLength}
-          />
-          <CopyWithTooltip text={txData.tx}>
-            <ButtonLink
-              title={t('Copy tx to clipboard')}
-              data-testid="copy-tx-to-clipboard"
-            />
-          </CopyWithTooltip>
         </TableCell>
       </TableRow>
     </TableWithTbody>
