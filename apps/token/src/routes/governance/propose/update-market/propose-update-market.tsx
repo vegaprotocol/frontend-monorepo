@@ -3,23 +3,27 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  useProposalSubmit,
   deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { validateJson } from '@vegaprotocol/react-helpers';
 import {
-  ProposalFormSubheader,
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
+  NetworkParams,
+  useNetworkParams,
+  validateJson,
+} from '@vegaprotocol/react-helpers';
+import {
   ProposalFormDescription,
-  ProposalFormTerms,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTerms,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
   FormGroup,
@@ -32,7 +36,7 @@ import {
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 export const MARKETS_QUERY = gql`
   query ProposalMarketsQuery {
@@ -160,11 +164,12 @@ export const ProposeUpdateMarket = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateMarket_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (

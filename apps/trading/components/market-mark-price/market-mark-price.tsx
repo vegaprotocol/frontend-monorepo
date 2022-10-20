@@ -53,8 +53,8 @@ export const MarketMarkPrice = ({ marketId }: { marketId: string }) => {
   });
 
   return (
-    <HeaderStat heading={t('Price')}>
-      <div data-testid="mark-price">{marketPrice}</div>
+    <HeaderStat heading={t('Price')} testId="market-price">
+      <div>{marketPrice}</div>
     </HeaderStat>
   );
 };

@@ -1,5 +1,6 @@
 import type { IGetRowsParams } from 'ag-grid-community';
-import type { Load } from './generic-data-provider';
+import type { Load, DerivedPart } from './generic-data-provider';
+import type { Node, Edge } from './generic-data-provider';
 import type { MutableRefObject } from 'react';
 
 const getLastRow = (
@@ -49,12 +50,47 @@ export const makeInfiniteScrollGetRows =
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
-      successCallback(
-        rowsThisBlock,
+      const lastRow =
         getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
-          newRows.current
-      );
+        newRows.current;
+      successCallback(rowsThisBlock, lastRow);
     } catch (e) {
       failCallback();
     }
   };
+
+export const paginatedCombineDelta = <
+  DataNode extends Node,
+  DeltaNode extends Node
+>(
+  data: (Edge<DataNode> | null)[],
+  parts: DerivedPart[]
+): DataNode[] | undefined => {
+  if (!parts[0].isUpdate) {
+    return;
+  }
+  const updatedIds = (parts[0].delta as DeltaNode[]).map((node) => node.id);
+  return data
+    .filter<Edge<DataNode>>(
+      (edge): edge is Edge<DataNode> =>
+        edge !== null && updatedIds.includes(edge.node.id)
+    )
+    .map((edge) => edge.node);
+};
+
+export const paginatedCombineInsertionData = <DataNode extends Node>(
+  data: (Edge<DataNode> | null)[],
+  parts: DerivedPart[]
+): Edge<DataNode>[] | undefined => {
+  if (!parts[0].isInsert) {
+    return;
+  }
+  const insertedIds = (parts[0].insertionData as DataNode[]).map(
+    (node) => node.id
+  );
+  // get updated orders
+  return data.filter<Edge<DataNode>>(
+    (edge): edge is Edge<DataNode> =>
+      edge !== null && insertedIds.includes(edge.node.id)
+  );
+};

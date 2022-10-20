@@ -14,6 +14,7 @@ import { ClientErrors } from '../connectors';
 import type { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
+import { VEGA_WALLET_CONCEPTS_URL } from '../constants';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -185,7 +186,7 @@ const Error = ({
         <>
           {capitalize(error.data)}
           {'. '}
-          <Link href="https://docs.vega.xyz/docs/mainnet/concepts/vega-wallet">
+          <Link href={VEGA_WALLET_CONCEPTS_URL}>
             {t('Read the docs to troubleshoot')}
           </Link>
         </>

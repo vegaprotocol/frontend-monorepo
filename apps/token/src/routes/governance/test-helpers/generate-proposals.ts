@@ -1,4 +1,5 @@
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 import * as faker from 'faker';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
@@ -7,7 +8,9 @@ import type { DeepPartial } from '../../../lib/type-helpers';
 import type {
   ProposalFields,
   ProposalFields_votes_no,
+  ProposalFields_votes_no_votes,
   ProposalFields_votes_yes,
+  ProposalFields_votes_yes_votes,
 } from '../__generated__/ProposalFields';
 
 export function generateProposal(
@@ -76,34 +79,39 @@ export const generateYesVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number
 ): ProposalFields_votes_yes => {
+  const votes = Array.from(Array(numberOfVotes)).map(() => {
+    const vote: ProposalFields_votes_yes_votes = {
+      __typename: 'Vote',
+      value: VoteValue.VALUE_YES,
+      party: {
+        __typename: 'Party',
+        id: faker.datatype.uuid(),
+        stakingSummary: {
+          __typename: 'StakingSummary',
+          currentStakeAvailable: fixedTokenValue
+            ? fixedTokenValue.toString()
+            : faker.datatype
+                .number({
+                  min: 1000000000000000000,
+                  max: 10000000000000000000000,
+                })
+                .toString(),
+        },
+      },
+      datetime: faker.date.past().toISOString(),
+    };
+
+    return vote;
+  });
   return {
     __typename: 'ProposalVoteSide',
-    totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
-    totalTokens: faker.datatype
-      .number({ min: 1, max: 10000000000000000000000 })
+    totalNumber: votes.length.toString(),
+    totalTokens: votes
+      .reduce((acc, cur) => {
+        return acc.plus(cur.party.stakingSummary.currentStakeAvailable);
+      }, new BigNumber(0))
       .toString(),
-    votes: Array.from(Array(numberOfVotes)).map(() => {
-      return {
-        __typename: 'Vote',
-        value: VoteValue.VALUE_YES,
-        party: {
-          id: faker.datatype.uuid(),
-          __typename: 'Party',
-          stakingSummary: {
-            __typename: 'StakingSummary',
-            currentStakeAvailable: fixedTokenValue
-              ? fixedTokenValue.toString()
-              : faker.datatype
-                  .number({
-                    min: 1000000000000000000,
-                    max: 10000000000000000000000,
-                  })
-                  .toString(),
-          },
-        },
-        datetime: faker.date.past().toISOString(),
-      };
-    }),
+    votes,
   };
 };
 
@@ -111,33 +119,37 @@ export const generateNoVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number
 ): ProposalFields_votes_no => {
+  const votes = Array.from(Array(numberOfVotes)).map(() => {
+    const vote: ProposalFields_votes_no_votes = {
+      __typename: 'Vote',
+      value: VoteValue.VALUE_NO,
+      party: {
+        id: faker.datatype.uuid(),
+        __typename: 'Party',
+        stakingSummary: {
+          __typename: 'StakingSummary',
+          currentStakeAvailable: fixedTokenValue
+            ? fixedTokenValue.toString()
+            : faker.datatype
+                .number({
+                  min: 1000000000000000000,
+                  max: 10000000000000000000000,
+                })
+                .toString(),
+        },
+      },
+      datetime: faker.date.past().toISOString(),
+    };
+    return vote;
+  });
   return {
     __typename: 'ProposalVoteSide',
-    totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
-    totalTokens: faker.datatype
-      .number({ min: 1000000000000000000, max: 10000000000000000000000 })
+    totalNumber: votes.length.toString(),
+    totalTokens: votes
+      .reduce((acc, cur) => {
+        return acc.plus(cur.party.stakingSummary.currentStakeAvailable);
+      }, new BigNumber(0))
       .toString(),
-    votes: Array.from(Array(numberOfVotes)).map(() => {
-      return {
-        __typename: 'Vote',
-        value: VoteValue.VALUE_NO,
-        party: {
-          id: faker.datatype.uuid(),
-          __typename: 'Party',
-          stakingSummary: {
-            __typename: 'StakingSummary',
-            currentStakeAvailable: fixedTokenValue
-              ? fixedTokenValue.toString()
-              : faker.datatype
-                  .number({
-                    min: 1000000000000000000,
-                    max: 10000000000000000000000,
-                  })
-                  .toString(),
-          },
-        },
-        datetime: faker.date.past().toISOString(),
-      };
-    }),
+    votes,
   };
 };

@@ -65,7 +65,7 @@ describe('Txs infinite list', () => {
   it('item renders data of n length into list of n length', () => {
     // Provided the number of items doesn't exceed the 30 it initially
     // desires, all txs will initially render
-    const txs = generateTxs(10);
+    const txs = generateTxs(7);
     render(
       <MemoryRouter>
         <TxsInfiniteList
@@ -82,7 +82,7 @@ describe('Txs infinite list', () => {
       screen
         .getByTestId('infinite-scroll-wrapper')
         .querySelectorAll('.txs-infinite-list-item')
-    ).toHaveLength(10);
+    ).toHaveLength(7);
   });
 
   it('tries to load more items when required to initially fill the list', () => {
@@ -126,7 +126,7 @@ describe('Txs infinite list', () => {
   });
 
   it('loads more items is called when scrolled', () => {
-    const txs = generateTxs(20);
+    const txs = generateTxs(14);
     const callback = jest.fn();
 
     render(
@@ -143,7 +143,7 @@ describe('Txs infinite list', () => {
 
     act(() => {
       fireEvent.scroll(screen.getByTestId('infinite-scroll-wrapper'), {
-        target: { scrollY: 600 },
+        target: { scrollY: 2000 },
       });
     });
 

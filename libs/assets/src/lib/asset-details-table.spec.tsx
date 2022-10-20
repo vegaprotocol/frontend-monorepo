@@ -33,8 +33,11 @@ describe('AssetDetailsTable', () => {
           key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
           value: '0.002',
         },
-        { key: AssetDetail.TAKER_FEE_REWARD_ACCOUNT_BALANCE, value: '0.003' },
-        { key: AssetDetail.MAKER_FEE_REWARD_ACCOUNT_BALANCE, value: '0.004' },
+        { key: AssetDetail.MAKER_PAID_FEES_ACCOUNT_BALANCE, value: '0.003' },
+        {
+          key: AssetDetail.MAKER_RECEIVED_FEES_ACCOUNT_BALANCE,
+          value: '0.004',
+        },
         { key: AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE, value: '0.005' },
         {
           key: AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,

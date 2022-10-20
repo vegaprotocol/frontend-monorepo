@@ -6,6 +6,7 @@ import {
 import type {
   CombineDerivedData,
   CombineDerivedDelta,
+  CombineInsertionData,
   Query,
   UpdateCallback,
   Update,
@@ -65,34 +66,20 @@ const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
   getDelta: (r) => r.data,
 });
 
-const secondSubscribe = makeDataProvider<
-  QueryData,
-  Data,
-  SubscriptionData,
-  Delta
->({
-  query,
-  subscriptionQuery,
-  update,
-  getData: (r) => r.data,
-  getDelta: (r) => r.data,
-});
-
 const combineData = jest.fn<
   ReturnType<CombineDerivedData<CombinedData>>,
   Parameters<CombineDerivedData<CombinedData>>
 >();
 
 const combineDelta = jest.fn<
-  ReturnType<CombineDerivedDelta<never>>,
-  Parameters<CombineDerivedDelta<never>>
+  ReturnType<CombineDerivedDelta<CombinedData, CombinedData>>,
+  Parameters<CombineDerivedDelta<CombinedData, CombinedData>>
 >();
 
-const derivedSubscribe = makeDerivedDataProvider(
-  [subscribe, secondSubscribe],
-  combineData,
-  combineDelta
-);
+const combineInsertionData = jest.fn<
+  ReturnType<CombineInsertionData<CombinedData>>,
+  Parameters<CombineInsertionData<CombinedData>>
+>();
 
 const first = 100;
 const paginatedSubscribe = makeDataProvider<
@@ -113,6 +100,13 @@ const paginatedSubscribe = makeDataProvider<
     getTotalCount: (r) => r?.totalCount,
   },
 });
+
+const derivedSubscribe = makeDerivedDataProvider(
+  [paginatedSubscribe, subscribe],
+  combineData,
+  combineDelta,
+  combineInsertionData
+);
 
 const generateData = (start = 0, size = first) => {
   return new Array(size).fill(null).map((v, i) => ({
@@ -514,22 +508,30 @@ describe('derived data provider', () => {
 
   it('calls callback on each meaningful update, uses combineData function', async () => {
     clearPendingQueries();
-    const part1: Item[] = [];
+    const totalCount = 1000;
+    const part1 = {
+      data: generateData(),
+      totalCount,
+      pageInfo: {
+        hasNextPage: true,
+        endCursor: '100',
+      },
+    };
     const part2: Item[] = [];
     const callback = jest.fn<
-      ReturnType<UpdateCallback<CombinedData, never>>,
-      Parameters<UpdateCallback<CombinedData, never>>
+      ReturnType<UpdateCallback<CombinedData, CombinedData>>,
+      Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
     const subscription = derivedSubscribe(callback, client);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
     expect(callback.mock.calls.length).toBe(0);
-    await resolveQuery({ data: part1 });
+    await resolveQuery(part1);
     expect(combineData.mock.calls.length).toBe(0);
     expect(callback.mock.calls.length).toBe(0);
     await resolveQuery({ data: part2 });
     expect(combineData.mock.calls.length).toBe(1);
-    expect(combineData.mock.calls[0][0][0]).toBe(part1);
+    expect(combineData.mock.calls[0][0][0]).toBe(part1.data);
     expect(combineData.mock.calls[0][0][1]).toBe(part2);
     expect(callback.mock.calls.length).toBe(1);
     expect(callback.mock.calls[0][0].data).toBe(data);
@@ -538,13 +540,15 @@ describe('derived data provider', () => {
   });
 
   it('callback with error if any dependency has error, reloads all dependencies on reload', async () => {
+    clearPendingQueries();
     combineData.mockClear();
     const part1: Item[] = [];
     const part2: Item[] = [];
     const callback = jest.fn<
-      ReturnType<UpdateCallback<CombinedData, never>>,
-      Parameters<UpdateCallback<CombinedData, never>>
+      ReturnType<UpdateCallback<CombinedData, CombinedData>>,
+      Parameters<UpdateCallback<CombinedData, CombinedData>>
     >();
+    expect(callback.mock.calls.length).toBe(0);
     const subscription = derivedSubscribe(callback, client);
     const data = { totalCount: 0 };
     combineData.mockReturnValueOnce(data);
@@ -568,6 +572,86 @@ describe('derived data provider', () => {
     expect(callback.mock.calls[2][0].data).toStrictEqual(data);
     expect(callback.mock.calls[2][0].loading).toBe(false);
     expect(callback.mock.calls[2][0].error).toBeUndefined();
+    subscription.unsubscribe();
+  });
+
+  it('pass isUpdate on any dependency isUpdate, uses result of combineDelta as delta in next callback', async () => {
+    clearPendingQueries();
+    combineData.mockClear();
+    const part1: Item[] = [];
+    const part2: Item[] = [];
+    const callback = jest.fn<
+      ReturnType<UpdateCallback<CombinedData, CombinedData>>,
+      Parameters<UpdateCallback<CombinedData, CombinedData>>
+    >();
+    const subscription = derivedSubscribe(callback, client);
+    const data = { totalCount: 0 };
+    combineData.mockReturnValueOnce(data);
+    await resolveQuery({ data: part1 });
+    await resolveQuery({ data: part2 });
+    expect(combineData).toBeCalledTimes(1);
+    expect(callback).toBeCalledTimes(1);
+    update.mockImplementation((data, delta) => [...data, ...delta]);
+    combineData.mockReturnValueOnce({ ...data });
+    const combinedDelta = {};
+    combineDelta.mockReturnValueOnce(combinedDelta);
+    // calling onNext from client.subscribe({ query }).subscribe(onNext)
+    const delta: Item[] = [];
+    await clientSubscribeSubscribe.mock.calls[
+      clientSubscribeSubscribe.mock.calls.length - 1
+    ][0]({ data: { data: delta } });
+    expect(combineDelta).toBeCalledTimes(1);
+    expect(combineData).toBeCalledTimes(2);
+    expect(callback).toBeCalledTimes(2);
+    expect(callback.mock.calls[1][0].isUpdate).toBe(true);
+    expect(callback.mock.calls[1][0].delta).toBe(combinedDelta);
+    subscription.unsubscribe();
+  });
+
+  it('pass isInsert on any dependency isInsert, uses result of combineInsertionData as insertionData in next callback', async () => {
+    clearPendingQueries();
+    combineData.mockClear();
+    combineDelta.mockClear();
+    const callback = jest.fn<
+      ReturnType<UpdateCallback<CombinedData, CombinedData>>,
+      Parameters<UpdateCallback<CombinedData, CombinedData>>
+    >();
+    const subscription = derivedSubscribe(callback, client);
+    const data = { totalCount: 0 };
+    combineData.mockReturnValueOnce(data);
+    await resolveQuery({
+      data: generateData(),
+      pageInfo: {
+        hasNextPage: true,
+        endCursor: '100',
+      },
+    });
+    await resolveQuery({ data: [] });
+    expect(combineData).toBeCalledTimes(1);
+    expect(callback).toBeCalledTimes(1);
+    update.mockImplementation((data, delta) => [...data, ...delta]);
+    combineData.mockReturnValueOnce({ ...data });
+    const combinedInsertionData = {};
+    combineInsertionData.mockReturnValueOnce(combinedInsertionData);
+    subscription.load && subscription.load();
+    const lastQueryArgs =
+      clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
+    expect(lastQueryArgs?.variables?.pagination).toEqual({
+      after: '100',
+      first,
+    });
+    await resolveQuery({
+      data: generateData(100),
+      pageInfo: {
+        hasNextPage: true,
+        endCursor: '200',
+      },
+    });
+    expect(combineInsertionData).toBeCalledTimes(1);
+    expect(combineData).toBeCalledTimes(2);
+    expect(callback).toBeCalledTimes(2);
+    expect(callback.mock.calls[1][0].isInsert).toBe(true);
+    expect(callback.mock.calls[1][0].insertionData).toBe(combinedInsertionData);
     subscription.unsubscribe();
   });
 });
