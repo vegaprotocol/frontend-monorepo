@@ -42,8 +42,6 @@ const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
 
-const minProposerBalance = '1';
-
 const governanceProposalType = {
   NETWORK_PARAMETER: 'Network parameter',
   NEW_MARKET: 'New market',
