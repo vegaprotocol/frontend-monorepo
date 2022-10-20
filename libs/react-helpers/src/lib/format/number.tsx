@@ -5,6 +5,8 @@ import memoize from 'lodash/memoize';
 import React from 'react';
 import { getUserLocale } from './utils';
 
+const MAX_FRACTION_DIGITS = 20;
+
 export function toDecimal(numberOfDecimals: number) {
   return 1 / Math.pow(10, numberOfDecimals);
 }
@@ -41,8 +43,8 @@ export const getNumberFormat = memoize((digits: number) => {
     return new Intl.NumberFormat(getUserLocale());
   }
   return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: Math.max(0, digits),
-    maximumFractionDigits: Math.max(0, digits),
+    minimumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
+    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
   });
 });
 
