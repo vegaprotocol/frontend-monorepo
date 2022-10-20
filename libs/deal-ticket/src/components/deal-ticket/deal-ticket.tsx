@@ -5,7 +5,7 @@ import {
   addDecimalsFormatNumber,
   removeDecimal,
 } from '@vegaprotocol/react-helpers';
-import { Button, InputError, Link } from '@vegaprotocol/ui-toolkit';
+import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
@@ -13,11 +13,7 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import {
-  useVegaWallet,
-  useVegaWalletDialogStore,
-  VEGA_WALLET_RELEASE_URL,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
@@ -179,25 +175,15 @@ export const DealTicket = ({
           )}
         </>
       ) : (
-        <>
-          <Button
-            variant="default"
-            fill
-            type="button"
-            data-testid="order-connect-wallet"
-            onClick={openVegaWalletDialog}
-            className="!text-sm !px-1 !py-1"
-          >
-            {t('Connect your Vega wallet to trade')}
-          </Button>
-          <Link
-            data-testid="order-get-vega-wallet"
-            className="block w-full text-center mt-2 text-neutral-500 dark:text-neutral-400"
-            href={VEGA_WALLET_RELEASE_URL}
-          >
-            {t('Get a Vega Wallet')}
-          </Link>
-        </>
+        <Button
+          variant="default"
+          fill
+          type="button"
+          data-testid="order-connect-wallet"
+          onClick={openVegaWalletDialog}
+        >
+          {t('Connect wallet')}
+        </Button>
       )}
     </form>
   );
