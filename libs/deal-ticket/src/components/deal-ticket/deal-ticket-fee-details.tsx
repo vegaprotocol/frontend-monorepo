@@ -27,7 +27,9 @@ export const DealTicketFeeDetails = ({
               <div>{label}</div>
             </Tooltip>
           </div>
-          <div>{`${value ?? '-'} ${quoteName || ''}`}</div>
+          <div className="text-neutral-500 dark:text-neutral-300">{`${
+            value ?? '-'
+          } ${quoteName || ''}`}</div>
         </div>
       ))}
     </div>

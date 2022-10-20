@@ -96,10 +96,10 @@ export const DealTicket = ({
   const marketPriceFormatted =
     marketPrice && addDecimal(marketPrice, market.decimalPlaces);
   useEffect(() => {
-    if (marketPriceFormatted) {
+    if (marketPriceFormatted && order.type === OrderType.TYPE_MARKET) {
       setValue('price', marketPriceFormatted);
     }
-  }, [marketPriceFormatted, setValue]);
+  }, [marketPriceFormatted, order.type, setValue]);
 
   const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailsValues(feeDetails);
@@ -110,26 +110,6 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          // <TypeSelector
-          //   value={field.value}
-          //   onSelect={(type) => {
-          //     if (type === OrderType.TYPE_LIMIT) {
-          //       setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
-          //       setValue('price', undefined);
-          //     } else if (type === OrderType.TYPE_MARKET) {
-          //       if (
-          //         order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_IOC &&
-          //         order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_FOK
-          //       ) {
-          //         setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
-          //       }
-          //       if (marketPriceFormatted) {
-          //         setValue('price', marketPriceFormatted);
-          //       }
-          //     }
-          //     field.onChange(type);
-          //   }}
-          // />
           <TypeSelector value={field.value} onSelect={field.onChange} />
         )}
       />

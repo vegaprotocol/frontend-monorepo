@@ -3,7 +3,7 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
-import { useMarketData } from './use-market-data';
+import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
 import { Side } from '@vegaprotocol/types';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
@@ -32,7 +32,7 @@ export const useOrderCloseOut = ({
     skip: !pubKey,
   });
 
-  const markPriceData = useMarketData(market.id);
+  const markPriceData = useMarketDataMarkPrice(market.id);
   const marketPositions = useMarketPositions({
     marketId: market.id,
     partyId: pubKey || '',

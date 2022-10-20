@@ -3,7 +3,7 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Side } from '@vegaprotocol/types';
 import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
-import { useMarketData } from './use-market-data';
+import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
@@ -36,7 +36,7 @@ export const useOrderMargin = ({
   partyId,
 }: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
-  const markPriceData = useMarketData(market.id);
+  const markPriceData = useMarketDataMarkPrice(market.id);
   const { data } = useEstimateOrderQuery({
     variables: {
       marketId: market.id,

@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import type { MarketMarkPriceQuery } from './__generated__/MarketMarkPrice';
 import { useMarketMarkPriceQuery } from './__generated__/MarketMarkPrice';
 
-export const useMarketData = (marketId: string) => {
+export const useMarketDataMarkPrice = (marketId: string) => {
   const memoRef = useRef<MarketMarkPriceQuery | null>(null);
   const { data } = useMarketMarkPriceQuery({
     pollInterval: 5000,

@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import { useMaximumPositionSize } from '@vegaprotocol/deal-ticket';
 import { useFeeDealTicketDetails } from '@vegaprotocol/deal-ticket';
 import {
   getDefaultOrder,
@@ -13,6 +14,7 @@ import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import {
   t,
@@ -69,16 +71,40 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
-  const {
-    fees,
-    notionalSize,
-    estMargin,
-    estCloseOut,
-    slippageValue,
-    setSlippageValue,
-    price,
-    max,
-  } = useFeeDealTicketDetails(order, market);
+  const { pubKey } = useVegaWallet();
+
+  const { notionalSize, estMargin, estCloseOut, slippage, price, partyData } =
+    useFeeDealTicketDetails(order, market);
+
+  const maxTrade = useMaximumPositionSize({
+    partyId: pubKey || '',
+    accounts: partyData?.party?.accounts || [],
+    marketId: market.id,
+    settlementAssetId:
+      market.tradableInstrument.instrument.product.settlementAsset.id,
+    price: market?.depth?.lastTrade?.price,
+    order,
+  });
+
+  const max = useMemo(() => {
+    return new BigNumber(maxTrade)
+      .decimalPlaces(market.positionDecimalPlaces)
+      .toNumber();
+  }, [market.positionDecimalPlaces, maxTrade]);
+
+  const fees = useMemo(() => {
+    if (estMargin?.totalFees && notionalSize) {
+      const percentage = new BigNumber(estMargin?.totalFees)
+        .dividedBy(notionalSize)
+        .multipliedBy(100)
+        .decimalPlaces(2)
+        .toString();
+
+      return `${estMargin.totalFees} (${percentage}%)`;
+    }
+
+    return null;
+  }, [estMargin?.totalFees, notionalSize]);
 
   const formattedPrice =
     price && addDecimalsFormatNumber(price, market.decimalPlaces);
@@ -88,6 +114,14 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     transaction.status === VegaTxStatus.Pending
       ? 'pending'
       : 'default';
+
+  const [slippageValue, setSlippageValue] = useState(
+    slippage ? parseFloat(slippage) : 0
+  );
+
+  useEffect(() => {
+    setSlippageValue(slippage ? parseFloat(slippage) : 0);
+  }, [slippage]);
 
   const onSizeChange = useCallback(
     (value: number) => {
@@ -218,7 +252,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
             />
           </>
         ) : (
-          'loading...'
+          t('Loading...')
         ),
       value: order.size,
     },
