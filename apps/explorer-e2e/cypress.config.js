@@ -27,7 +27,6 @@ module.exports = defineConfig({
     networkQueryUrl: 'http://localhost:3028/query',
     ethUrl: 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     commitHash: 'dev',
-    CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true,
     tsConfig: 'tsconfig.json',
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
