@@ -231,6 +231,10 @@ export interface ProposalFields_votes_yes {
    */
   totalNumber: string;
   /**
+   * Total equity like share weight for this side (only for UpdateMarket Proposals)
+   */
+  totalEquityLikeShareWeight: string;
+  /**
    * All votes cast for this side
    */
   votes: ProposalFields_votes_yes_votes[] | null;
@@ -282,6 +286,10 @@ export interface ProposalFields_votes_no {
    * Total number of votes cast for this side
    */
   totalNumber: string;
+  /**
+   * Total equity like share weight for this side (only for UpdateMarket Proposals)
+   */
+  totalEquityLikeShareWeight: string;
   /**
    * All votes cast for this side
    */

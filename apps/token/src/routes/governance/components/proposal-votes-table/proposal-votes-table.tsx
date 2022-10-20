@@ -7,10 +7,10 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 interface ProposalVotesTableProps {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }
 
 export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {

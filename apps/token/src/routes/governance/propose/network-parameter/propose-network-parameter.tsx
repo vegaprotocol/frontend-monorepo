@@ -32,7 +32,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { ProposalUserAction } from '@vegaprotocol/types';
+import { ProposalUserAction } from '../../components/shared';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;

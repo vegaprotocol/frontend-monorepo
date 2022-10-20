@@ -1,9 +1,9 @@
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 interface ProposalsListItemProps {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {

@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { CurrentProposalState } from '../current-proposal-state';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 interface ProposalChangeTableProps {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }
 
 export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {

@@ -6,17 +6,17 @@ import mergeWith from 'lodash/mergeWith';
 
 import type { DeepPartial } from '../../../lib/type-helpers';
 import type {
-  ProposalFields,
-  ProposalFields_votes_no,
-  ProposalFields_votes_no_votes,
-  ProposalFields_votes_yes,
-  ProposalFields_votes_yes_votes,
-} from '../__generated__/ProposalFields';
+  Proposal_proposal,
+  Proposal_proposal_votes_yes,
+  Proposal_proposal_votes_yes_votes,
+  Proposal_proposal_votes_no,
+  Proposal_proposal_votes_no_votes,
+} from '../proposal/__generated__/Proposal';
 
 export function generateProposal(
-  override: DeepPartial<ProposalFields> = {}
-): ProposalFields {
-  const defaultProposal: ProposalFields = {
+  override: DeepPartial<Proposal_proposal> = {}
+): Proposal_proposal {
+  const defaultProposal: Proposal_proposal = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
     rationale: {
@@ -63,7 +63,7 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<ProposalFields, DeepPartial<ProposalFields>>(
+  return mergeWith<Proposal_proposal, DeepPartial<Proposal_proposal>>(
     defaultProposal,
     override,
     (objValue, srcValue) => {
@@ -78,9 +78,9 @@ export function generateProposal(
 export const generateYesVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number
-): ProposalFields_votes_yes => {
+): Proposal_proposal_votes_yes => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
-    const vote: ProposalFields_votes_yes_votes = {
+    const vote: Proposal_proposal_votes_yes_votes = {
       __typename: 'Vote',
       value: VoteValue.VALUE_YES,
       party: {
@@ -112,15 +112,16 @@ export const generateYesVotes = (
       }, new BigNumber(0))
       .toString(),
     votes,
+    totalEquityLikeShareWeight: '0',
   };
 };
 
 export const generateNoVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number
-): ProposalFields_votes_no => {
+): Proposal_proposal_votes_no => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
-    const vote: ProposalFields_votes_no_votes = {
+    const vote: Proposal_proposal_votes_no_votes = {
       __typename: 'Vote',
       value: VoteValue.VALUE_NO,
       party: {
@@ -151,5 +152,6 @@ export const generateNoVotes = (
       }, new BigNumber(0))
       .toString(),
     votes,
+    totalEquityLikeShareWeight: '0',
   };
 };

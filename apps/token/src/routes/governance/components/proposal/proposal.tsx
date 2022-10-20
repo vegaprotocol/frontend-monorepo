@@ -6,7 +6,15 @@ import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalTermsJson } from '../proposal-terms-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
-import { ProposalType } from '@vegaprotocol/types';
+
+export enum ProposalType {
+  PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
+  PROPOSAL_UPDATE_MARKET = 'PROPOSAL_UPDATE_MARKET',
+  PROPOSAL_NEW_ASSET = 'PROPOSAL_NEW_ASSET',
+  PROPOSAL_UPDATE_ASSET = 'PROPOSAL_UPDATE_ASSET',
+  PROPOSAL_NETWORK_PARAMETER = 'PROPOSAL_NETWORK_PARAMETER',
+  PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
+}
 
 interface ProposalProps {
   proposal: Proposal_proposal;

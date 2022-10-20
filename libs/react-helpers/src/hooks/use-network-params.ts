@@ -35,6 +35,8 @@ export const NetworkParams = {
     'governance_proposal_updateMarket_minVoterBalance',
   governance_proposal_updateMarket_requiredMajority:
     'governance_proposal_updateMarket_requiredMajority',
+  governance_proposal_updateMarket_requiredMajorityLP:
+    'governance_proposal_updateMarket_requiredMajorityLP',
   governance_proposal_updateMarket_minClose:
     'governance_proposal_updateMarket_minClose',
   governance_proposal_updateMarket_maxClose:
@@ -77,6 +79,8 @@ export const NetworkParams = {
     'governance_proposal_freeform_maxClose',
   governance_proposal_updateMarket_requiredParticipation:
     'governance_proposal_updateMarket_requiredParticipation',
+  governance_proposal_updateMarket_requiredParticipationLP:
+    'governance_proposal_updateMarket_requiredParticipationLP',
   governance_proposal_updateMarket_minProposerBalance:
     'governance_proposal_updateMarket_minProposerBalance',
   governance_proposal_market_requiredMajority:

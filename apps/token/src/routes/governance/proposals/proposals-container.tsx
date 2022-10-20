@@ -76,6 +76,7 @@ export const PROPOSAL_FRAGMENT = gql`
       yes {
         totalTokens
         totalNumber
+        totalEquityLikeShareWeight
         votes {
           value
           party {
@@ -90,6 +91,7 @@ export const PROPOSAL_FRAGMENT = gql`
       no {
         totalTokens
         totalNumber
+        totalEquityLikeShareWeight
         votes {
           value
           party {
