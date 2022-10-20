@@ -35,8 +35,8 @@ export function removeDecimal(value: string, decimals: number): string {
 export const getNumberFormat = memoize(
   (digits: number) =>
     new Intl.NumberFormat(getUserLocale(), {
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
+      minimumFractionDigits: Math.min(digits, 20),
+      maximumFractionDigits: Math.min(digits, 20),
     })
 );
 
