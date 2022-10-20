@@ -164,16 +164,13 @@ export const useThrottledDataProvider = <Data, Delta>(
 
   useEffect(() => {
     const throttledUpdate = updateData.current;
-    if (!returnValues.data) {
-      dataRef.current = null;
-      setData(dataRef.current);
-      return;
-    }
-    dataRef.current = returnValues.data;
-    setData(dataRef.current);
     return () => {
       throttledUpdate.cancel();
     };
+  }, []);
+
+  useEffect(() => {
+    setData(returnValues.data);
   }, [returnValues.data]);
 
   return { ...returnValues, data };
