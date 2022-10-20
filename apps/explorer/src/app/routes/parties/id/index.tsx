@@ -13,7 +13,7 @@ import {
   CopyWithTooltip,
   Icon,
   SyntaxHighlighter,
-  AsyncRenderer
+  AsyncRenderer,
 } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
@@ -171,12 +171,16 @@ const Party = () => {
           {accounts}
           <SubHeading>{t('Staking')}</SubHeading>
           {staking}
-          <SubHeading>{t('Transactions')}</SubHeading>
+          <SubHeading>{t('JSON')}</SubHeading>
+          <section data-testid="parties-json">
+            <SyntaxHighlighter data={data} />
+          </section>
           <AsyncRenderer
             loading={loading as boolean}
             error={error}
             data={txsData}
           >
+            <SubHeading>{t('Transactions')}</SubHeading>
             <TxsInfiniteList
               hasMoreTxs={hasMoreTxs}
               areTxsLoading={loading}
@@ -186,10 +190,6 @@ const Party = () => {
               className="mb-28"
             />
           </AsyncRenderer>
-          <SubHeading>{t('JSON')}</SubHeading>
-          <section data-testid="parties-json">
-            <SyntaxHighlighter data={data} />
-          </section>
         </>
       ) : null}
 
