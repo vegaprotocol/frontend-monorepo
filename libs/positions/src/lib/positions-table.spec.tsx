@@ -3,28 +3,31 @@ import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
+import React from 'react';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
-  averageEntryPrice: '133', // 13.3
-  capitalUtilisation: 11, // 11.00%
+  averageEntryPrice: '133',
+  capitalUtilisation: 11,
   currentLeverage: 1.1,
   marketDecimalPlaces: 1,
   positionDecimalPlaces: 0,
   decimals: 2,
   totalBalance: '123456',
   assetSymbol: 'BTC',
-  liquidationPrice: '83', // 8.3
+  liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
   marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  markPrice: '123', // 12.3
-  notional: '12300', // 1230.0
-  openVolume: '100', // 100
-  realisedPNL: '123', // 1.23
-  unrealisedPNL: '456', // 4.56
+  markPrice: '123',
+  notional: '12300',
+  openVolume: '100',
+  realisedPNL: '123',
+  unrealisedPNL: '456',
   searchPrice: '0',
   updatedAt: '2022-07-27T15:02:58.400Z',
+  marginAccountBalance: new BigNumber(123456),
 };
 
 const singleRowData = [singleRow];
@@ -42,14 +45,17 @@ it('Render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(9);
+  expect(headers).toHaveLength(12);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
     'Market',
-    'Size',
+    'Notional size',
+    'Open volume',
     'Mark price',
+    'Settlement asset',
     'Entry price',
+    'Liquidation price (est)',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -84,22 +90,21 @@ it('add color and sign to amount, displays positive notional value', async () =>
     result = render(<PositionsTable rowData={singleRowData} />);
   });
   let cells = screen.getAllByRole('gridcell');
-  let values = cells[1].querySelectorAll('.text-right');
-  expect(values[0].classList.contains('text-vega-green-dark')).toBeTruthy();
-  expect(values[0].classList.contains('text-vega-red-dark')).toBeFalsy();
-  expect(values[0].textContent).toEqual('+100');
-  expect(values[1].textContent).toEqual('1,230.0');
+
+  expect(cells[2].classList.contains('text-vega-green-dark')).toBeTruthy();
+  expect(cells[2].classList.contains('text-vega-red-dark')).toBeFalsy();
+  expect(cells[2].textContent).toEqual('+100');
+  expect(cells[1].textContent).toEqual('123.00');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
     );
   });
   cells = screen.getAllByRole('gridcell');
-  values = cells[1].querySelectorAll('.text-right');
-  expect(values[0].classList.contains('text-vega-green-dark')).toBeFalsy();
-  expect(values[0].classList.contains('text-vega-red-dark')).toBeTruthy();
-  expect(values[0].textContent?.startsWith('-100')).toBeTruthy();
-  expect(values[1].textContent).toEqual('1,230.0');
+  expect(cells[2].classList.contains('text-vega-green-dark')).toBeFalsy();
+  expect(cells[2].classList.contains('text-vega-red-dark')).toBeTruthy();
+  expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
+  expect(cells[1].textContent).toEqual('123.00');
 });
 
 it('displays mark price', async () => {
@@ -109,7 +114,7 @@ it('displays mark price', async () => {
   });
 
   let cells = screen.getAllByRole('gridcell');
-  expect(cells[2].textContent).toEqual('12.3');
+  expect(cells[3].textContent).toEqual('12.3');
 
   await act(async () => {
     result.rerender(
@@ -125,7 +130,7 @@ it('displays mark price', async () => {
   });
 
   cells = screen.getAllByRole('gridcell');
-  expect(cells[2].textContent).toEqual('-');
+  expect(cells[3].textContent).toEqual('-');
 });
 
 it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
@@ -134,11 +139,10 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
     result = render(<PositionsTable rowData={singleRowData} />);
   });
   let cells = screen.getAllByRole('gridcell');
-  let cell = cells[3];
-  const entryPrice = cell.firstElementChild?.firstElementChild?.textContent;
+  const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
   const liquidationPrice =
-    cell.firstElementChild?.lastElementChild?.textContent;
-  const progressBarTrack = cell.lastElementChild;
+    cells[6].firstElementChild?.lastElementChild?.textContent;
+  const progressBarTrack = cells[6].lastElementChild;
   let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
   const progressBarWidth = progressBar?.style?.width;
   expect(entryPrice).toEqual('13.3');
@@ -151,8 +155,7 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
     );
   });
   cells = screen.getAllByRole('gridcell');
-  cell = cells[3];
-  progressBar = cell.lastElementChild?.firstElementChild as HTMLElement;
+  progressBar = cells[6].lastElementChild?.firstElementChild as HTMLElement;
   expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
 });
 
@@ -161,24 +164,16 @@ it('displays leverage', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[4].textContent).toEqual('1.1');
+  expect(cells[7].textContent).toEqual('1.1');
 });
 
-it('displays allocated margin and margin bar', async () => {
+it('displays allocated margin', async () => {
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[5];
-  const capitalUtilisation =
-    cell.firstElementChild?.firstElementChild?.textContent;
-  const totalBalance = cell.firstElementChild?.lastElementChild?.textContent;
-  const progressBarTrack = cell.lastElementChild;
-  const progressBar = progressBarTrack?.firstElementChild as HTMLElement;
-  const progressBarWidth = progressBar?.style?.width;
-  expect(capitalUtilisation).toEqual('11.00%');
-  expect(totalBalance).toEqual('1,234.56');
-  expect(progressBarWidth).toEqual('11%');
+  const cell = cells[8];
+  expect(cell.textContent).toEqual('123,456.00');
 });
 
 it('displays realised and unrealised PNL', async () => {
@@ -186,6 +181,6 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[6].textContent).toEqual('1.23');
-  expect(cells[7].textContent).toEqual('4.56');
+  expect(cells[9].textContent).toEqual('1.23');
+  expect(cells[10].textContent).toEqual('4.56');
 });

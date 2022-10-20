@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { t, removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
-import { Link } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
@@ -22,7 +21,6 @@ import {
   useFeeDealTicketDetails,
   getFeeDetailsValues,
 } from '../../hooks/use-fee-deal-ticket-details';
-import { VEGA_WALLET_RELEASE_URL } from '@vegaprotocol/wallet';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -47,8 +45,8 @@ export const DealTicket = ({
     control,
     handleSubmit,
     watch,
-    formState: { errors },
     setValue,
+    formState: { errors },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -112,26 +110,27 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector
-            value={field.value}
-            onSelect={(type) => {
-              if (type === OrderType.TYPE_LIMIT) {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
-                setValue('price', undefined);
-              } else if (type === OrderType.TYPE_MARKET) {
-                if (
-                  order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_IOC &&
-                  order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_FOK
-                ) {
-                  setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
-                }
-                if (marketPriceFormatted) {
-                  setValue('price', marketPriceFormatted);
-                }
-              }
-              field.onChange(type);
-            }}
-          />
+          // <TypeSelector
+          //   value={field.value}
+          //   onSelect={(type) => {
+          //     if (type === OrderType.TYPE_LIMIT) {
+          //       setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
+          //       setValue('price', undefined);
+          //     } else if (type === OrderType.TYPE_MARKET) {
+          //       if (
+          //         order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_IOC &&
+          //         order.timeInForce !== OrderTimeInForce.TIME_IN_FORCE_FOK
+          //       ) {
+          //         setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
+          //       }
+          //       if (marketPriceFormatted) {
+          //         setValue('price', marketPriceFormatted);
+          //       }
+          //     }
+          //     field.onChange(type);
+          //   }}
+          // />
+          <TypeSelector value={field.value} onSelect={field.onChange} />
         )}
       />
       <Controller
@@ -192,25 +191,15 @@ export const DealTicket = ({
           )}
         </>
       ) : (
-        <>
-          <Button
-            variant="default"
-            fill
-            type="button"
-            data-testid="order-connect-wallet"
-            onClick={openVegaWalletDialog}
-            className="!text-sm !px-1 !py-1"
-          >
-            {t('Connect your Vega wallet to trade')}
-          </Button>
-          <Link
-            data-testid="order-get-vega-wallet"
-            className="block w-full text-center mt-2 text-neutral-500 dark:text-neutral-400"
-            href={VEGA_WALLET_RELEASE_URL}
-          >
-            {t('Get a Vega Wallet')}
-          </Link>
-        </>
+        <Button
+          variant="default"
+          fill
+          type="button"
+          data-testid="order-connect-wallet"
+          onClick={openVegaWalletDialog}
+        >
+          {t('Connect wallet')}
+        </Button>
       )}
       <DealTicketFeeDetails details={details} />
     </form>

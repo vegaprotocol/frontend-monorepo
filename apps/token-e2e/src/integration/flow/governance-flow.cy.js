@@ -416,7 +416,7 @@ context(
         cy.get_submitted_proposal_from_proposal_list().within(() =>
           cy.get(viewProposalButton).click()
         );
-        cy.contains('Currently set to fail').should('be.visible');
+        cy.contains('currently set to fail').should('be.visible');
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
