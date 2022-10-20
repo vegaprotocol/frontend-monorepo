@@ -10,7 +10,7 @@ import { BusEventType, OrderType, OrderStatus, OrderRejectionReason, OrderTimeIn
 // ====================================================
 
 export interface OrderEvent_busEvents_event_TimeUpdate {
-  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "Withdrawal" | "OracleSpec" | "LiquidityProvision";
+  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "Withdrawal" | "OracleSpec" | "LiquidityProvision" | "TransactionResult";
 }
 
 export interface OrderEvent_busEvents_event_Order_market_tradableInstrument_instrument {

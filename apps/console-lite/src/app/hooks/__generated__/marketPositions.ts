@@ -56,7 +56,7 @@ export interface MarketPositions_party_positionsConnection_edges_node_market {
 export interface MarketPositions_party_positionsConnection_edges_node {
   __typename: "Position";
   /**
-   * Open volume (uint64)
+   * Open volume (int64)
    */
   openVolume: string;
   /**

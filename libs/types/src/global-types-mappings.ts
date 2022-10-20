@@ -221,6 +221,7 @@ export enum ProposalRejectionReasonMapping {
   PROPOSAL_ERROR_UNKNOWN_TYPE = 'Unknown type',
   PROPOSAL_ERROR_UNSUPPORTED_PRODUCT = 'Unsupported product',
   PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE = 'Unsupported trading mode',
+  PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'ERC20 address already in use by an existing asset',
 }
 
 /**
@@ -275,4 +276,21 @@ export enum WithdrawalStatusMapping {
   STATUS_FINALIZED = 'Finalized',
   STATUS_OPEN = 'Open',
   STATUS_REJECTED = 'Rejected',
+}
+
+/**
+ * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
+ */
+export enum Interval {
+  INTERVAL_I15M = 'INTERVAL_I15M',
+  INTERVAL_I1D = 'INTERVAL_I1D',
+  INTERVAL_I1H = 'INTERVAL_I1H',
+  INTERVAL_I1M = 'INTERVAL_I1M',
+  INTERVAL_I5M = 'INTERVAL_I5M',
+  INTERVAL_I6H = 'INTERVAL_I6H',
+}
+
+export enum ProposalUserAction {
+  CREATE = 'CREATE',
+  VOTE = 'VOTE',
 }
