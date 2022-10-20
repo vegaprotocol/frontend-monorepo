@@ -45,7 +45,6 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     formState: { errors },
-    setValue,
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -100,17 +99,7 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector
-            value={field.value}
-            onSelect={(type) => {
-              if (type === OrderType.TYPE_LIMIT) {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
-              } else {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
-              }
-              field.onChange(type);
-            }}
-          />
+          <TypeSelector value={field.value} onSelect={field.onChange} />
         )}
       />
       <Controller
