@@ -148,7 +148,7 @@ jobs:
           CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
 
       - name: Run Cypress tests
-        if: github.event.inputs.project != 'run all tests'
+        if: github.event.inputs.project != 'all projects'
         run: yarn nx run ${{ github.event.inputs.project }}:e2e ${{ env.SKIP_NX_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
         working-directory: frontend-monorepo
         env:
