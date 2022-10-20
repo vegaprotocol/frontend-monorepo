@@ -1,10 +1,9 @@
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { Position } from '../';
 import { useClosePosition, usePositionsData, PositionsTable } from '../';
+import type { AgGridReact } from 'ag-grid-react';
 import { Requested } from './close-position-dialog/requested';
 import { Complete } from './close-position-dialog/complete';
-import type { AgGridReact } from 'ag-grid-react';
 
 interface PositionsManagerProps {
   partyId: string;
@@ -14,13 +13,6 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
   const { submit, closingOrder, transaction, Dialog } = useClosePosition();
-
-  const onClose = useCallback(
-    (position: Position) => {
-      submit(position);
-    },
-    [submit]
-  );
 
   return (
     <>
@@ -32,7 +24,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           rowModelType={data?.length ? 'infinite' : 'clientSide'}
           rowData={data?.length ? undefined : []}
           datasource={{ getRows }}
-          onClose={onClose}
+          onClose={(position) => submit(position)}
         />
       </AsyncRenderer>
       <Dialog
