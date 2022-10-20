@@ -212,11 +212,6 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('order-connect-wallet').should('exist');
     cy.getByTestId(placeOrderBtn).should('not.exist');
     cy.getByTestId(errorMessage).should('not.exist');
-    cy.getByTestId('order-get-vega-wallet').should(
-      'have.attr',
-      'href',
-      'https://github.com/vegaprotocol/vega/releases'
-    );
   });
 
   it('must be able to select order direction - long/short', function () {
