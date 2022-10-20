@@ -6,15 +6,15 @@ import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
 export type LiquidityProvisionMarket = MarketNodeFragment;
 
 export interface Provider {
-  commitmentAmount: string;
-  fee: string;
+  commitmentAmount: string | undefined;
+  fee: string | undefined;
 }
 
 export const sumLiquidityCommitted = (
-  providers: Array<{ commitmentAmount: string }>
+  providers: Array<{ commitmentAmount: string | undefined }>
 ) => {
   return providers
-    ? providers.reduce((total: number, { commitmentAmount }) => {
+    ? providers.reduce((total: number, { commitmentAmount = '0' }) => {
         return total + parseInt(commitmentAmount, 10);
       }, 0)
     : 0;
@@ -23,15 +23,14 @@ export const sumLiquidityCommitted = (
 export const formatWithAsset = (
   value: string,
   settlementAsset: {
-    decimals: number;
-    symbol: string;
+    decimals?: number;
+    symbol?: string;
   }
 ) => {
-  const formattedValue = addDecimalsFormatNumber(
-    value,
-    settlementAsset.decimals
-  );
-  const symbol = settlementAsset.symbol;
+  const { decimals, symbol } = settlementAsset;
+  const formattedValue = decimals
+    ? addDecimalsFormatNumber(value, decimals)
+    : value;
   return `${formattedValue} ${symbol}`;
 };
 
@@ -81,7 +80,7 @@ export const calcDayVolume = (candles: Array<{ volume: string }> = []) => {
 
 export const getFeeLevels = (providers: Provider[]) => {
   const lp = providers.reduce((total: { [x: string]: number }, current) => {
-    const { fee, commitmentAmount } = current;
+    const { fee = '0', commitmentAmount = '0' } = current;
     const ca = parseInt(commitmentAmount, 10);
 
     return {

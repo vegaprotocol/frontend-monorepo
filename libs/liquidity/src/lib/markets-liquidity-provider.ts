@@ -32,7 +32,7 @@ import {
 } from './utils/liquidity-utils';
 import type { Provider, LiquidityProvisionMarket } from './utils';
 
-interface FeeLevels {
+export interface FeeLevels {
   commitmentAmount: number;
   fee: string;
 }
