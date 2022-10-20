@@ -5,20 +5,16 @@ import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 const LINKS = {
   testnet: [
     {
-      label: 'Understand how liquidity fees are calculated',
+      label: 'Learn about liquidity fees',
       url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#resources',
     },
     {
-      label: 'How to provide liquidity',
+      label: 'Provide liquidity',
       url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#overview',
     },
     {
-      label: 'How to view existing liquidity provisions',
+      label: 'View your liquidity provisions',
       url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#viewing-existing-liquidity-provisions',
-    },
-    {
-      label: 'How to amend or remove liquidity',
-      url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#amending-a-liquidity-commitment',
     },
   ],
   mainnet: [],
@@ -29,12 +25,11 @@ type Network = 'testnet' | 'mainnet';
 
 export const Intro = ({ network = 'testnet' }: { network?: Network }) => {
   return (
-    <div className="mb-6 px-6 py-6 bg-neutral-100" data-testid="intro">
-      <h2 className="text-xl font-medium mb-1">
-        {t('Become a liquidity provider')}
-      </h2>
-      <p className="text-base mb-2">
-        {t('Earn a cut of the fees paid by price takers during trading.')}
+    <div className="mb-6 px-6 py-6 border rounded-2xl" data-testid="intro">
+      <p className="font-alpha text-2xl font-medium mb-2">
+        {t(
+          'Become a liquidity provider and earn a cut of the fees paid during trading.'
+        )}
       </p>
       <div>
         <ul className="flex flex-wrap">

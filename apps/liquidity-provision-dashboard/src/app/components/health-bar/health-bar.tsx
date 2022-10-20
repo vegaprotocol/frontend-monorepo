@@ -126,7 +126,7 @@ interface Levels {
 
 export const HealthBar = ({
   status,
-  target,
+  target = '0',
   decimals,
   levels,
   size = 'small',

@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
-import { HealthBar } from './health-bar';
+import { HealthBar } from '../health-bar';
 
 interface HealthDialogProps {
   isOpen: boolean;
