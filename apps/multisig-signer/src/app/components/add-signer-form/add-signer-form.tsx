@@ -55,8 +55,8 @@ export const AddSignerForm = () => {
         variables: { nodeId: address },
       });
 
-      const bundle = await result.data?.erc20MultiSigSignerAddedBundles
-        ?.edges?.[0]?.node;
+      const bundle =
+        result.data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
 
       if (!bundle) {
         if (!error) {
