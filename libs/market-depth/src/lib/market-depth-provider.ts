@@ -1,6 +1,7 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
+import { captureException } from '@sentry/react';
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,
@@ -10,7 +11,7 @@ import type {
   MarketDepthUpdateSubscription,
 } from './__generated___/MarketDepth';
 
-const sequenceNumbers: Record<string, number> = {};
+const sequenceNumbers: Record<string, string> = {};
 
 const update: Update<
   ReturnType<typeof getData>,
@@ -23,18 +24,17 @@ const update: Update<
     if (delta.marketId !== data.id) {
       continue;
     }
-    /*
-    const sequenceNumber = Number(delta.sequenceNumber);
-    if (sequenceNumber <= sequenceNumbers[delta.marketId]) {
-      return data;
-    }
-    if (sequenceNumber - 1 !== sequenceNumbers[delta.marketId]) {
-      sequenceNumbers[delta.marketId] = 0;
+    if (delta.previousSequenceNumber !== sequenceNumbers[delta.marketId]) {
+      captureException(
+        new Error(
+          `Sequence number gap in marketsDepthUpdate for {data.id}, {sequenceNumbers[delta.marketId]} - {delta.previousSequenceNumber}`
+        )
+      );
+      delete sequenceNumbers[delta.marketId];
       reload();
       return;
     }
-    sequenceNumbers[delta.marketId] = sequenceNumber;
-    */
+    sequenceNumbers[delta.marketId] = delta.sequenceNumber;
     const updatedData = {
       ...data,
       depth: { ...data.depth },
@@ -52,9 +52,8 @@ const update: Update<
 
 const getData = (responseData: MarketDepthQuery) => {
   if (responseData.market?.id) {
-    sequenceNumbers[responseData.market.id] = Number(
-      responseData.market.depth.sequenceNumber
-    );
+    sequenceNumbers[responseData.market.id] =
+      responseData.market.depth.sequenceNumber;
   }
   return responseData.market;
 };
