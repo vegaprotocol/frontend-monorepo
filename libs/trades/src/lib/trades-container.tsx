@@ -35,7 +35,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       totalCountRef.current += newRows.current;
     }
     newRows.current = 0;
-    gridRef.current?.api.refreshInfiniteCache();
+    gridRef.current?.api?.refreshInfiniteCache();
   }, []);
 
   const update = useCallback(
@@ -56,7 +56,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
           }
         }
         dataRef.current = data;
-        gridRef.current?.api.refreshInfiniteCache();
+        gridRef.current?.api?.refreshInfiniteCache();
         return true;
       }
       dataRef.current = data;
