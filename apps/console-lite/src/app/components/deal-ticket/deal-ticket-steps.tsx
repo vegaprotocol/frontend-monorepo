@@ -3,8 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import { useMaximumPositionSize } from '@vegaprotocol/deal-ticket';
-import { useFeeDealTicketDetails } from '@vegaprotocol/deal-ticket';
+import {
+  useOrderCloseOut,
+  useOrderMargin,
+  usePartyBalanceQuery,
+  useMaximumPositionSize,
+  useCalculateSlippage,
+} from '@vegaprotocol/deal-ticket';
 import {
   getDefaultOrder,
   useOrderValidation,
@@ -70,15 +75,21 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     fieldErrors: errors,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
-
   const { pubKey } = useVegaWallet();
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: pubKey || '',
+  });
 
-  const { notionalSize, estMargin, estCloseOut, slippage, price, partyData } =
-    useFeeDealTicketDetails(order, market);
+  const { data: partyBalance } = usePartyBalanceQuery({
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
 
   const maxTrade = useMaximumPositionSize({
     partyId: pubKey || '',
-    accounts: partyData?.party?.accounts || [],
+    accounts: partyBalance?.party?.accounts || [],
     marketId: market.id,
     settlementAssetId:
       market.tradableInstrument.instrument.product.settlementAsset.id,
@@ -86,11 +97,49 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     order,
   });
 
-  const max = useMemo(() => {
-    return new BigNumber(maxTrade)
-      .decimalPlaces(market.positionDecimalPlaces)
-      .toNumber();
-  }, [market.positionDecimalPlaces, maxTrade]);
+  const estCloseOut = useOrderCloseOut({
+    order,
+    market,
+    partyData: partyBalance,
+  });
+  const slippage = useCalculateSlippage({ marketId: market.id, order });
+  const [slippageValue, setSlippageValue] = useState(
+    slippage ? parseFloat(slippage) : 0
+  );
+  const transactionStatus =
+    transaction.status === VegaTxStatus.Requested ||
+    transaction.status === VegaTxStatus.Pending
+      ? 'pending'
+      : 'default';
+
+  useEffect(() => {
+    setSlippageValue(slippage ? parseFloat(slippage) : 0);
+  }, [slippage]);
+
+  const price = useMemo(() => {
+    if (slippage && market?.depth?.lastTrade?.price) {
+      const isLong = order.side === Side.SIDE_BUY;
+      const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
+        parseFloat(slippage) / 100
+      );
+      return new BigNumber(market?.depth?.lastTrade?.price)
+        .multipliedBy(multiplier)
+        .toNumber();
+    }
+    return null;
+  }, [market?.depth?.lastTrade?.price, order.side, slippage]);
+
+  const formattedPrice =
+    price && addDecimalsFormatNumber(price, market.decimalPlaces);
+
+  const notionalSize = useMemo(() => {
+    if (price) {
+      const size = new BigNumber(price).multipliedBy(order.size).toNumber();
+
+      return addDecimalsFormatNumber(size, market.decimalPlaces);
+    }
+    return null;
+  }, [market.decimalPlaces, order.size, price]);
 
   const fees = useMemo(() => {
     if (estMargin?.totalFees && notionalSize) {
@@ -106,18 +155,11 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     return null;
   }, [estMargin?.totalFees, notionalSize]);
 
-  const formattedPrice =
-    price && addDecimalsFormatNumber(price, market.decimalPlaces);
-
-  const transactionStatus =
-    transaction.status === VegaTxStatus.Requested ||
-    transaction.status === VegaTxStatus.Pending
-      ? 'pending'
-      : 'default';
-
-  const [slippageValue, setSlippageValue] = useState(
-    slippage ? parseFloat(slippage) : 0
-  );
+  const max = useMemo(() => {
+    return new BigNumber(maxTrade)
+      .decimalPlaces(market.positionDecimalPlaces)
+      .toNumber();
+  }, [market.positionDecimalPlaces, maxTrade]);
 
   useEffect(() => {
     setSlippageValue(slippage ? parseFloat(slippage) : 0);
@@ -233,16 +275,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
                 market.tradableInstrument.instrument.product.settlementAsset
                   .symbol
               }
-              notionalSize={
-                notionalSize
-                  ? addDecimalsFormatNumber(notionalSize, market.decimalPlaces)
-                  : emptyString
-              }
-              estCloseOut={
-                estCloseOut
-                  ? addDecimalsFormatNumber(estCloseOut, market.decimalPlaces)
-                  : emptyString
-              }
+              notionalSize={notionalSize || emptyString}
+              estCloseOut={estCloseOut || emptyString}
               fees={fees || emptyString}
               estMargin={estMargin?.margin || emptyString}
             />

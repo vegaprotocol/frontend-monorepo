@@ -11,7 +11,7 @@ import {
   EST_MARGIN_TOOLTIP_TEXT,
   EST_CLOSEOUT_TOOLTIP_TEXT,
 } from '../components/constants';
-import useCalculateSlippage from './use-calculate-slippage';
+import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import type { OrderMargin } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
