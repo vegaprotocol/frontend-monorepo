@@ -46,10 +46,9 @@ export const useOrderCancel = () => {
           },
         });
 
-        waitForOrderEvent(args.orderId, pubKey, (cancelledOrder) => {
-          setCancelledOrder(cancelledOrder);
-          setComplete();
-        });
+        const cancelledOrder = await waitForOrderEvent(args.orderId, pubKey);
+        setCancelledOrder(cancelledOrder);
+        setComplete();
       } catch (e) {
         Sentry.captureException(e);
         return;

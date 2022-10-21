@@ -14,8 +14,14 @@ interface PositionsManagerProps {
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
-  const { submit, closingOrder, transaction, transactionResult, Dialog } =
-    useClosePosition();
+  const {
+    submit,
+    closingOrder,
+    closingOrderResult,
+    transaction,
+    transactionResult,
+    Dialog,
+  } = useClosePosition();
 
   return (
     <>
@@ -39,7 +45,8 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           Complete: (
             <Complete
               partyId={partyId}
-              order={closingOrder}
+              closingOrder={closingOrder}
+              closingOrderResult={closingOrderResult}
               transaction={transaction}
               transactionResult={transactionResult}
             />

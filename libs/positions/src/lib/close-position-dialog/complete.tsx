@@ -1,5 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
+import type { OrderEvent_busEvents_event_Order } from '@vegaprotocol/orders';
 import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import { OrderRejectionReasonMapping, OrderStatus } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { TransactionResult, VegaTxState } from '@vegaprotocol/wallet';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
@@ -10,25 +12,31 @@ interface CompleteProps {
   partyId: string;
   transaction: VegaTxState;
   transactionResult?: TransactionResult;
-  order?: IClosingOrder;
+  closingOrder?: IClosingOrder;
+  closingOrderResult?: OrderEvent_busEvents_event_Order;
 }
 
 export const Complete = ({
   partyId,
   transaction,
   transactionResult,
-  order,
+  closingOrder,
+  closingOrderResult,
 }: CompleteProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
 
-  if (!transactionResult) return null;
+  if (!transactionResult || !closingOrderResult) return null;
 
   return (
     <>
-      {transactionResult.status ? (
-        <Success partyId={partyId} order={order} />
+      {closingOrderResult.status === OrderStatus.STATUS_FILLED &&
+      transactionResult.status ? (
+        <Success partyId={partyId} order={closingOrder} />
       ) : (
-        <Error transactionResult={transactionResult} />
+        <Error
+          transactionResult={transactionResult}
+          closingOrderResult={closingOrderResult}
+        />
       )}
       {transaction.txHash && (
         <>
@@ -78,8 +86,23 @@ const Success = ({
 
 const Error = ({
   transactionResult,
+  closingOrderResult,
 }: {
   transactionResult: TransactionResult;
+  closingOrderResult: OrderEvent_busEvents_event_Order;
 }) => {
-  return <div className="text-vega-red">{transactionResult.error}</div>;
+  const reason =
+    closingOrderResult.rejectionReason &&
+    OrderRejectionReasonMapping[closingOrderResult.rejectionReason];
+  return (
+    <div className="text-vega-red">
+      {reason ? (
+        <p>{reason}</p>
+      ) : (
+        <p>
+          {t('Something went wrong')}: {transactionResult.error}
+        </p>
+      )}
+    </div>
+  );
 };

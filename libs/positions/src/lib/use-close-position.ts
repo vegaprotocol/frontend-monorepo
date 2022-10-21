@@ -1,9 +1,12 @@
 import { useCallback, useState } from 'react';
 import type { TransactionResult } from '@vegaprotocol/wallet';
+import { determineId } from '@vegaprotocol/wallet';
 import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { useOrderEvent } from '@vegaprotocol/orders';
+import type { OrderEvent_busEvents_event_Order } from '@vegaprotocol/orders';
 
 export interface ClosingOrder {
   marketId: string;
@@ -17,9 +20,12 @@ export const useClosePosition = () => {
   const { pubKey } = useVegaWallet();
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
+  const [closingOrderResult, setClosingOrderResult] =
+    useState<OrderEvent_busEvents_event_Order>();
   const [transactionResult, setTransactionResult] =
     useState<TransactionResult>();
   const waitForTransactionResult = useTransactionResult();
+  const waitForOrder = useOrderEvent(transaction);
 
   const submit = useCallback(
     async ({
@@ -69,12 +75,14 @@ export const useClosePosition = () => {
         const res = await send(pubKey, command);
 
         if (res) {
-          const txResult = await waitForTransactionResult(
-            res?.transactionHash,
-            pubKey
-          );
-          setComplete();
+          const orderId = determineId(res.signature);
+          const [txResult, orderResult] = await Promise.all([
+            waitForTransactionResult(res.transactionHash, pubKey),
+            waitForOrder(orderId, pubKey),
+          ]);
           setTransactionResult(txResult);
+          setClosingOrderResult(orderResult);
+          setComplete();
         }
 
         return res;
@@ -83,7 +91,7 @@ export const useClosePosition = () => {
         return;
       }
     },
-    [pubKey, send, setComplete, waitForTransactionResult]
+    [pubKey, send, setComplete, waitForTransactionResult, waitForOrder]
   );
 
   return {
@@ -91,6 +99,7 @@ export const useClosePosition = () => {
     transactionResult,
     submit,
     closingOrder,
+    closingOrderResult,
     Dialog,
   };
 };

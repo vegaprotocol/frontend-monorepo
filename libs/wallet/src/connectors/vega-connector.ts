@@ -261,6 +261,8 @@ export interface BatchMarketInstructionSubmissionBody {
     // restricted by the net param spam.protection.max.batchSize
     cancellations?: OrderCancellation[];
     amendments?: OrderAmendment[];
+    // Note: If multiple orders are submitted the first order ID is determined by hashing the signature of the transaction
+    // (see determineId function). For each subsequent order's ID, a hash of the previous orders ID is used
     submissions?: OrderSubmission[];
   };
 }

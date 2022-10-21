@@ -3,6 +3,8 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import {
+  BusEventType,
+  OrderStatus,
   OrderTimeInForce,
   OrderType,
   Schema as Types,
@@ -15,6 +17,8 @@ import { initialState } from '@vegaprotocol/wallet';
 import type { TransactionEventSubscription } from '@vegaprotocol/wallet';
 import { TransactionEventDocument } from '@vegaprotocol/wallet';
 import { act } from 'react-dom/test-utils';
+import type { OrderEvent } from '@vegaprotocol/orders';
+import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
 
 const pubKey = 'test-pubkey';
 const defaultWalletContext = {
@@ -35,7 +39,7 @@ const txResult = {
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {
-  const mock: MockedResponse<TransactionEventSubscription> = {
+  const mockTransactionResult: MockedResponse<TransactionEventSubscription> = {
     request: {
       query: TransactionEventDocument,
       variables: {
@@ -54,9 +58,53 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       },
     },
   };
+  const mockOrderResult: MockedResponse<OrderEvent> = {
+    request: {
+      query: ORDER_EVENT_SUB,
+      variables: {
+        partyId: context?.pubKey || '',
+      },
+    },
+    result: {
+      data: {
+        busEvents: [
+          {
+            type: BusEventType.Order,
+            event: {
+              type: OrderType.TYPE_LIMIT,
+              id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
+              status: OrderStatus.STATUS_ACTIVE,
+              rejectionReason: null,
+              createdAt: '2022-07-05T14:25:47.815283706Z',
+              expiresAt: '2022-07-05T14:25:47.815283706Z',
+              size: '10',
+              price: '300000',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Side.SIDE_BUY,
+              market: {
+                id: 'market-id',
+                decimalPlaces: 5,
+                positionDecimalPlaces: 0,
+                tradableInstrument: {
+                  __typename: 'TradableInstrument',
+                  instrument: {
+                    name: 'UNIDAI Monthly (30 Jun 2022)',
+                    __typename: 'Instrument',
+                  },
+                },
+                __typename: 'Market',
+              },
+              __typename: 'Order',
+            },
+            __typename: 'BusEvent',
+          },
+        ],
+      },
+    },
+  };
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={[mock]}>
+    <MockedProvider mocks={[mockTransactionResult, mockOrderResult]}>
       <VegaWalletContext.Provider
         value={{ ...defaultWalletContext, ...context }}
       >
@@ -68,6 +116,12 @@ function setup(context?: Partial<VegaWalletContextShape>) {
 }
 
 describe('useClosePosition', () => {
+  const txResponse = {
+    signature:
+      'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
+    transactionHash: '0x123',
+  };
+
   it('doesnt send the tx if there is no open volume', () => {
     const mockSend = jest.fn();
     const { result } = setup({ sendTx: mockSend });
@@ -92,10 +146,6 @@ describe('useClosePosition', () => {
   it('closes long positions', async () => {
     const marketId = 'test-market';
     const openVolume = '1000';
-    const txResponse = {
-      signature: '12345',
-      transactionHash: '0x123',
-    };
     const mockSend = jest.fn().mockResolvedValue(txResponse);
     const { result } = setup({ sendTx: mockSend, pubKey });
 
@@ -140,10 +190,6 @@ describe('useClosePosition', () => {
   it('closes short positions', async () => {
     const marketId = 'test-market';
     const openVolume = '-1000';
-    const txResponse = {
-      signature: '12345',
-      transactionHash: '0x123',
-    };
     const mockSend = jest.fn().mockResolvedValue(txResponse);
     const { result } = setup({ sendTx: mockSend, pubKey });
 
