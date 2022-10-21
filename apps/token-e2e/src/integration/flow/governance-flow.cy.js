@@ -717,9 +717,8 @@ context(
         );
       });
 
-      // Have to skip because #1326 bug doesn't handle below scenario
-      // 1005-todo-PROP-009
-      it.skip('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+      // 1005-PROP-009
+      it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
@@ -741,8 +740,11 @@ context(
           .as('submittedProposal')
           .within(() => cy.get(viewProposalButton).click());
         cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
-        cy.get(voteButtons).contains('for').should('not.exist');
-        cy.get(voteButtons).contains('against').should('not.exist');
+        cy.get(voteButtons).should('not.exist');
+        cy.getByTestId('min-proposal-requirements').should(
+          'have.text',
+          'You must have at least 1 VEGA associated to vote on this proposal'
+        );
       });
 
       it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
