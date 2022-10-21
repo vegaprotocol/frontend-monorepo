@@ -1,13 +1,27 @@
 import { useState } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  useDataProvider,
+  useYesterday,
+  makeDerivedDataProvider,
+  formatNumber,
+} from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
-import { formatWithAsset } from '@vegaprotocol/liquidity';
+import {
+  formatWithAsset,
+  calcDayVolume,
+  getChange,
+  displayChange,
+} from '@vegaprotocol/liquidity';
+
 import {
   MarketTradingModeMapping,
   MarketTradingMode,
   AuctionTrigger,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
+import { marketCandlesProvider } from '@vegaprotocol/market-list';
+import { Interval } from '@vegaprotocol/types';
 import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 
@@ -21,7 +35,42 @@ interface settlementAsset {
   decimals?: number;
 }
 
+const candlesProvider = makeDerivedDataProvider(
+  [
+    marketCandlesProvider,
+    (callback, client, variables) =>
+      marketCandlesProvider(callback, client, {
+        ...variables,
+        interval: Interval.INTERVAL_I1D,
+      }),
+  ],
+  (parts) => {
+    return { candles: parts[0], candles24hAgo: parts[1] };
+  }
+);
+
+const useGetCandles = (marketId: string) => {
+  const yesterday = useYesterday();
+
+  const { data } = useDataProvider({
+    dataProvider: candlesProvider,
+    variables: {
+      marketId,
+      interval: Interval.INTERVAL_I1H,
+      since: new Date(yesterday).toISOString(),
+    },
+    noUpdate: true,
+  });
+
+  const dayVolume = calcDayVolume(data?.candles || []);
+  const candle24hAgo = data?.candles24hAgo?.[0];
+  const volumeChange = getChange(data?.candles || [], candle24hAgo?.close);
+
+  return { dayVolume, volumeChange };
+};
+
 export const Market = ({
+  marketId,
   feeLevels,
   comittedLiquidity,
   settlementAsset,
@@ -29,6 +78,7 @@ export const Market = ({
   tradingMode,
   trigger,
 }: {
+  marketId: string;
   feeLevels: Levels[];
   comittedLiquidity: number;
   targetStake: string;
@@ -37,6 +87,7 @@ export const Market = ({
   trigger?: AuctionTrigger;
 }) => {
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
+  const { dayVolume, volumeChange } = useGetCandles(marketId);
 
   const getStatus = () => {
     if (!tradingMode) return '';
@@ -75,7 +126,11 @@ export const Market = ({
           </thead>
           <tbody>
             <tr>
-              <td className="px-4"></td>
+              <td className="px-4">
+                <div>
+                  {formatNumber(dayVolume)} ({displayChange(volumeChange)})
+                </div>
+              </td>
               <td className="px-4">
                 {comittedLiquidity && settlementAsset
                   ? formatWithAsset(`${comittedLiquidity}`, settlementAsset)

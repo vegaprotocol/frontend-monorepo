@@ -47,6 +47,10 @@ export const getCandle24hAgo = (
   return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
 };
 
+export const displayChange = (value: string) => {
+  return parseFloat(value) > 0 ? `+${value}` : value;
+};
+
 export const EMPTY_VALUE = ' - ';
 export const getChange = (candles: (Candle | null)[], lastClose?: string) => {
   const firstCandle = candles.find((item) => item?.open);
