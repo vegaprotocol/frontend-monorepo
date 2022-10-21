@@ -13,6 +13,7 @@ afterEach(() => {
 describe('getEnactmentTimestamp', () => {
   it('should return the correct timestamp', () => {
     const proposalVoteDeadline = '2';
+    const isMinimumVoteDeadlineSelected = false;
     const enactmentDeadline = '1';
     const expected = Math.floor(
       getTime(
@@ -24,7 +25,8 @@ describe('getEnactmentTimestamp', () => {
     );
     const actual = getEnactmentTimestamp(
       proposalVoteDeadline,
-      enactmentDeadline
+      enactmentDeadline,
+      isMinimumVoteDeadlineSelected
     );
     expect(actual).toEqual(expected);
   });
