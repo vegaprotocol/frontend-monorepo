@@ -5,6 +5,7 @@ import type { GetRowIdParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/react-helpers';
 
 import type { LiquidityProvision } from '@vegaprotocol/liquidity';
+import { formatWithAsset } from '@vegaprotocol/liquidity';
 
 import { Grid } from '../../grid';
 
@@ -21,8 +22,13 @@ const formatToHours = ({ value }: { value?: string | null }) => {
 
 export const Providers = ({
   liquidityProviders,
+  settlementAsset,
 }: {
   liquidityProviders: LiquidityProvision[];
+  settlementAsset: {
+    decimals?: number;
+    symbol?: string;
+  };
 }) => {
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.party, []);
 
@@ -53,10 +59,17 @@ export const Providers = ({
       <AgGridColumn
         headerName={t('committed bond/stake')}
         field="commitmentAmount"
+        valueFormatter={({ value }: { value?: string | null }) =>
+          value ? formatWithAsset(value, settlementAsset) : '0'
+        }
       />
       <AgGridColumn headerName={t('Margin Req.')} field="margin" />
       <AgGridColumn headerName={t('24h Fees')} field="fees" />
-      <AgGridColumn headerName={t('Fee level')} field="fee" />
+      <AgGridColumn
+        headerName={t('Fee level')}
+        valueFormatter={({ value }: { value?: string | null }) => `${value}%`}
+        field="fee"
+      />
 
       <AgGridColumn headerName={t('APY')} field="apy" />
     </Grid>
