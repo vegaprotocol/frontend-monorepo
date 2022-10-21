@@ -86,7 +86,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
           />
         </div>
         <div className="mb-8">
-          <ProposalVotesTable proposal={proposal} />
+          <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
         </div>
         <ProposalTermsJson terms={proposal.terms} />
       </section>
