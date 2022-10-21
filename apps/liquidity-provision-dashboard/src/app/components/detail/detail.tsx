@@ -21,6 +21,10 @@ const useMarketDetails = (marketId: string | undefined) => {
       targetStake: data.targetStake || '0',
       feeLevels: getFeeLevels(data.liquidityProviders) || [],
       comittedLiquidity: sumLiquidityCommitted(data.liquidityProviders) || 0,
+      settlementAsset: {
+        symbol: data.symbol,
+        decimals: data.decimalPlaces,
+      },
     },
     error,
     loading: loading,
@@ -41,10 +45,7 @@ export const Detail = () => {
             marketId={marketId}
             feeLevels={data.feeLevels}
             comittedLiquidity={data.comittedLiquidity}
-            settlementAsset={{
-              symbol: data.symbol,
-              decimals: data.decimalPlaces,
-            }}
+            settlementAsset={data.settlementAsset}
             targetStake={data.targetStake}
             tradingMode={data.tradingMode}
           />
@@ -53,7 +54,10 @@ export const Detail = () => {
         <h2 className="font-alpha text-2xl mb-4">
           {t('Current Liquidity Provision')}
         </h2>
-        <Providers liquidityProviders={data.liquidityProviders} />
+        <Providers
+          liquidityProviders={data.liquidityProviders}
+          settlementAsset={data.settlementAsset}
+        />
       </div>
     </AsyncRenderer>
   );
