@@ -11,7 +11,11 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { Icon, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/liquidity';
-import { useMarketsLiquidity, formatWithAsset } from '@vegaprotocol/liquidity';
+import {
+  useMarketsLiquidity,
+  formatWithAsset,
+  displayChange,
+} from '@vegaprotocol/liquidity';
 import {
   MarketTradingModeMapping,
   MarketTradingMode,
@@ -22,10 +26,6 @@ import {
 import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
 import { HealthDialog } from '../../health-dialog';
-
-const displayValue = (value: string) => {
-  return parseFloat(value) > 0 ? `+${value}` : value;
-};
 
 const marketNameCellRenderer = ({
   value,
@@ -113,7 +113,7 @@ export const MarketList = () => {
             cellRenderer={({ value, data }: GroupCellRendererParams) => {
               return (
                 <div>
-                  {formatNumber(value)} ({displayValue(data.volumeChange)})
+                  {formatNumber(value)} ({displayChange(data.volumeChange)})
                 </div>
               );
             }}
