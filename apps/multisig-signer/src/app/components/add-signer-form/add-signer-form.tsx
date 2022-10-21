@@ -10,7 +10,6 @@ import {
   InputError,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
-import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { useContracts } from '../../config/contracts/contracts-context';
 import type { FormEvent } from 'react';
 import type {
@@ -37,7 +36,7 @@ export const AddSignerForm = () => {
   const { multisig } = useContracts();
   const [address, setAddress] = useState('');
   const [bundleNotFound, setBundleNotFound] = useState(false);
-  const [runQuery, { data, error, loading }] = useLazyQuery<
+  const [runQuery, { error, loading }] = useLazyQuery<
     AddSignerBundle,
     AddSignerBundleVariables
   >(ADD_SIGNER_QUERY);
@@ -52,10 +51,12 @@ export const AddSignerForm = () => {
       if (address === '') {
         return;
       }
-      await runQuery({
+      const result = await runQuery({
         variables: { nodeId: address },
       });
-      const bundle = data?.erc20MultiSigSignerAddedBundles?.edges?.[0]?.node;
+
+      const bundle = await result.data?.erc20MultiSigSignerAddedBundles
+        ?.edges?.[0]?.node;
 
       if (!bundle) {
         if (!error) {
@@ -64,13 +65,7 @@ export const AddSignerForm = () => {
         return;
       }
 
-      await perform(
-        bundle.newSigner,
-        bundle.nonce.startsWith('0x') ? bundle.nonce : prepend0x(bundle.nonce),
-        bundle.signatures.startsWith('0x')
-          ? bundle.signatures
-          : prepend0x(bundle.signatures)
-      );
+      await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
     } catch (err: unknown) {
       captureException(err);
     }
