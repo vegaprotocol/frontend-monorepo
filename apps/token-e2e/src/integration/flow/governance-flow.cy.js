@@ -61,7 +61,7 @@ context(
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
-          network_parameters['spam.protection.voting.min.tokens'] /
+          network_parameters['spam.protection.proposal.min.tokens'] /
             1000000000000000000
         ).as('minProposerBalance');
         cy.wrap(
@@ -114,6 +114,11 @@ context(
             parseInt(this.minProposerBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minProposerBalance'
+          );
+          assert.isAtLeast(
+            parseInt(this.minVoterBalance),
+            0.00001,
+            'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
           );
           assert.isAtLeast(
             parseFloat(this.requiredParticipation),
@@ -227,6 +232,7 @@ context(
                 // 3001-VOTE-008
                 // 3001-VOTE-034
                 cy.get(`#${proposalId}`)
+                  // 3001-VOTE-097
                   .should('contain', rawProposal.rationale.title)
                   .and('be.visible');
                 cy.get(`#${proposalId}`)
@@ -363,6 +369,14 @@ context(
                 .should('contain', rawProposal.rationale.description)
                 .and('be.visible');
             });
+            // 3001-VOTE-052
+            cy.get('code.language-json')
+              .should('exist')
+              .within(() => {
+                cy.get('.hljs-string')
+                  .eq(0)
+                  .should('have.text', '"ProposalTerms"');
+              });
           });
       });
 
