@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import type { PubKey } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useEffect, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -45,8 +46,8 @@ export const VegaWalletConnectButton = () => {
                 selectPubKey(value);
               }}
             >
-              {pubKeys.map((k) => (
-                <KeypairItem key={k.publicKey} kp={k.publicKey} />
+              {pubKeys.map((pk) => (
+                <KeypairItem key={pk.publicKey} pk={pk} />
               ))}
             </DropdownMenuRadioGroup>
             <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
@@ -69,7 +70,7 @@ export const VegaWalletConnectButton = () => {
   );
 };
 
-const KeypairItem = ({ kp }: { kp: string }) => {
+const KeypairItem = ({ pk }: { pk: PubKey }) => {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line
@@ -87,13 +88,16 @@ const KeypairItem = ({ kp }: { kp: string }) => {
   }, [copied]);
 
   return (
-    <DropdownMenuRadioItem key={kp} value={kp}>
-      <div className="flex-1 mr-2" data-testid={`key-${kp}`}>
+    <DropdownMenuRadioItem value={pk.publicKey}>
+      <div className="flex-1 mr-2" data-testid={`key-${pk.publicKey}`}>
         <span className="mr-2">
-          <span>{truncateByChars(kp)}</span>
+          <span>
+            <span className="uppercase">{pk.name}</span>:{' '}
+            {truncateByChars(pk.publicKey)}
+          </span>
         </span>
         <span>
-          <CopyToClipboard text={kp} onCopy={() => setCopied(true)}>
+          <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
             <button
               data-testid="copy-vega-public-key"
               onClick={(e) => e.stopPropagation()}
