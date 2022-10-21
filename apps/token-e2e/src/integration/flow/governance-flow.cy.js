@@ -61,7 +61,7 @@ context(
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
-          network_parameters['spam.protection.proposal.min.tokens'] /
+          network_parameters['spam.protection.voting.min.tokens'] /
             1000000000000000000
         ).as('minProposerBalance');
         cy.wrap(
@@ -114,11 +114,6 @@ context(
             parseInt(this.minProposerBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minProposerBalance'
-          );
-          assert.isAtLeast(
-            parseInt(this.minVoterBalance),
-            0.00001,
-            'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
           );
           assert.isAtLeast(
             parseFloat(this.requiredParticipation),
@@ -416,7 +411,7 @@ context(
         cy.get_submitted_proposal_from_proposal_list().within(() =>
           cy.get(viewProposalButton).click()
         );
-        cy.contains('Currently set to fail').should('be.visible');
+        cy.contains('currently set to fail').should('be.visible');
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
@@ -812,7 +807,7 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restart_vegacapsule_network();
           }
         }

@@ -1,9 +1,4 @@
-import {
-  MarketState,
-  OrderRejectionReason,
-  OrderStatus,
-} from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
+import { OrderRejectionReason, OrderStatus } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 import {
   updateOrder,
@@ -25,9 +20,7 @@ describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrderSub');
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
     cy.visit('/markets/market-0');
     cy.getByTestId('Orders').click();
@@ -132,9 +125,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrderSub');
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
     cy.visit('/markets/market-0');
     cy.getByTestId('Orders').click();

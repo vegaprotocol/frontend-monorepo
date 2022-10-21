@@ -22,6 +22,7 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
+import * as constants from '../constants';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -264,14 +265,14 @@ const SelectedForm = ({
             <p className="text-center">
               {t('For demo purposes get a ')}
               <Link
-                href="https://vega-hosted-wallet.on.fleek.co/"
+                href={constants.VEGA_WALLET_HOSTED_URL}
                 target="_blank"
                 rel="noreferrer"
               >
                 {t('hosted wallet')}
               </Link>
               {t(', or for the real experience create a wallet in the ')}
-              <Link href="https://github.com/vegaprotocol/vega/releases">
+              <Link href={constants.VEGA_WALLET_RELEASE_URL}>
                 {t('Vega wallet app')}
               </Link>
             </p>

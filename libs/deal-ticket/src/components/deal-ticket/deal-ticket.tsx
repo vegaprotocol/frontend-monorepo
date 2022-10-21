@@ -13,6 +13,7 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
@@ -34,13 +35,16 @@ export const DealTicket = ({
   submit,
   transactionStatus,
 }: DealTicketProps) => {
+  const { pubKey } = useVegaWallet();
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   const {
     register,
     control,
     handleSubmit,
     watch,
     formState: { errors },
-    setValue,
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -95,17 +99,7 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector
-            value={field.value}
-            onSelect={(type) => {
-              if (type === OrderType.TYPE_LIMIT) {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
-              } else {
-                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
-              }
-              field.onChange(type);
-            }}
-          />
+          <TypeSelector value={field.value} onSelect={field.onChange} />
         )}
       />
       <Controller
@@ -147,22 +141,38 @@ export const DealTicket = ({
             )}
           />
         )}
-      <Button
-        variant="primary"
-        fill={true}
-        type="submit"
-        disabled={isDisabled}
-        data-testid="place-order"
-      >
-        {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
-      </Button>
-      {message && (
-        <InputError
-          intent={isDisabled ? 'danger' : 'warning'}
-          data-testid="dealticket-error-message"
+      {pubKey ? (
+        <>
+          <Button
+            variant="primary"
+            fill={true}
+            type="submit"
+            disabled={isDisabled}
+            data-testid="place-order"
+          >
+            {transactionStatus === 'pending'
+              ? t('Pending...')
+              : t('Place order')}
+          </Button>
+          {message && (
+            <InputError
+              intent={isDisabled ? 'danger' : 'warning'}
+              data-testid="dealticket-error-message"
+            >
+              {message}
+            </InputError>
+          )}
+        </>
+      ) : (
+        <Button
+          variant="default"
+          fill
+          type="button"
+          data-testid="order-connect-wallet"
+          onClick={openVegaWalletDialog}
         >
-          {message}
-        </InputError>
+          {t('Connect wallet')}
+        </Button>
       )}
     </form>
   );

@@ -2,8 +2,10 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
+  paginatedCombineDelta as combineDelta,
+  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/react-helpers';
-import type { PageInfo } from '@vegaprotocol/react-helpers';
+import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type {
@@ -63,10 +65,7 @@ const update = (
 };
 
 export type Trade = Omit<TradeFieldsFragment, 'market'> & { market?: Market };
-export type TradeEdge = {
-  cursor: string;
-  node: Trade;
-};
+export type TradeEdge = Edge<Trade>;
 
 const getPageInfo = (responseData: TradesQuery): PageInfo | null =>
   responseData.market?.tradesConnection?.pageInfo || null;
@@ -108,20 +107,6 @@ export const tradesWithMarketProvider = makeDerivedDataProvider<
       };
     });
   },
-  (parts): Trade[] | undefined => {
-    if (!parts[0].isUpdate) {
-      return;
-    }
-    // map FillsSub_trades[] from subscription to updated Trade[]
-    return (parts[0].delta as ReturnType<typeof getDelta>).map(
-      (deltaTrade) => ({
-        ...((parts[0].data as ReturnType<typeof getData>)?.find(
-          (edge) => edge?.node.id === deltaTrade.id
-        )?.node as Trade),
-        market: (parts[1].data as Market[]).find(
-          (market) => market.id === deltaTrade.marketId
-        ),
-      })
-    );
-  }
+  combineDelta<Trade, ReturnType<typeof getDelta>['0']>,
+  combineInsertionData<Trade>
 );
