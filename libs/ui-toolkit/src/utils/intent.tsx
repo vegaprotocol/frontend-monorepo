@@ -35,6 +35,15 @@ export const getIntentText = (intent?: Intent) => {
   };
 };
 
+export const getIntentTopLabel = (intent?: Intent) => {
+  return {
+    'text-danger': intent === Intent.Danger,
+    'text-warning': intent === Intent.Warning,
+    'text-neutral-500': intent === Intent.None || intent === Intent.Primary,
+    'text-success': intent === Intent.Success,
+  };
+};
+
 export const getIntentTextAndBackground = (intent?: Intent) => {
   return { ...getIntentText(intent), ...getIntentBackground(intent) };
 };

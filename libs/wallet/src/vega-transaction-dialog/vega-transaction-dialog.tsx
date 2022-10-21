@@ -1,9 +1,21 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
+
+const getNetworkLabel = (environment: string) => {
+  if (environment !== Networks.MAINNET) {
+    const template = t('[This is %s network only]');
+    return (
+      <div className="-mt-2 text-sm text-center center">
+        {template.replace('%s', environment)}
+      </div>
+    );
+  }
+  return undefined;
+};
 
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
@@ -36,6 +48,8 @@ export const VegaTransactionDialog = ({
     ) : (
       <VegaDialog transaction={transaction} />
     );
+  const { VEGA_ENV } = useEnvironment();
+  const networkLabel = getNetworkLabel(VEGA_ENV);
   return (
     <Dialog
       open={isOpen}
@@ -44,6 +58,7 @@ export const VegaTransactionDialog = ({
       title={computedTitle}
       icon={computedIcon}
       size="small"
+      topLabel={networkLabel}
     >
       {content}
     </Dialog>
