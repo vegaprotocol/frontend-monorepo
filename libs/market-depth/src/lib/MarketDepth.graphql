@@ -1,50 +1,32 @@
+fragment PriceLevelFields on PriceLevel {
+  price
+  volume
+  numberOfOrders
+}
+
 query MarketDepth($marketId: ID!) {
   market(id: $marketId) {
     id
-    decimalPlaces
-    positionDecimalPlaces
-    data {
-      staticMidPrice
-      marketTradingMode
-      indicativeVolume
-      indicativePrice
-      bestStaticBidPrice
-      bestStaticOfferPrice
-      market {
-        id
-      }
-    }
     depth {
-      lastTrade {
-        price
-      }
       sell {
-        price
-        volume
-        numberOfOrders
+        ...PriceLevelFields
       }
       buy {
-        price
-        volume
-        numberOfOrders
+        ...PriceLevelFields
       }
       sequenceNumber
     }
   }
 }
 
-subscription MarketDepthSubscription($marketIds: [ID!]!) {
-  marketsDepthUpdate(marketIds: $marketIds) {
+subscription MarketDepthUpdate($marketId: ID!) {
+  marketsDepthUpdate(marketIds: [$marketId]) {
     marketId
-    buy {
-      price
-      volume
-      numberOfOrders
-    }
     sell {
-      price
-      volume
-      numberOfOrders
+      ...PriceLevelFields
+    }
+    buy {
+      ...PriceLevelFields
     }
     sequenceNumber
     previousSequenceNumber

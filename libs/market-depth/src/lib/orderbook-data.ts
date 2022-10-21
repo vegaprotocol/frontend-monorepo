@@ -3,15 +3,7 @@ import uniqBy from 'lodash/uniqBy';
 import { VolumeType } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
-import type {
-  MarketDepth_market_depth_sell,
-  MarketDepth_market_depth_buy,
-} from './__generated__/MarketDepth';
-import type {
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
-
+import type { PriceLevelFieldsFragment } from './__generated___/MarketDepth';
 export interface CumulativeVol {
   bid: number;
   relativeBid?: number;
@@ -104,35 +96,15 @@ export const createRow = (
 
 const mapRawData =
   (dataType: VolumeType.ask | VolumeType.bid) =>
-  (
-    data: Omit<
-      | MarketDepth_market_depth_sell
-      | MarketDepthSubscription_marketsDepthUpdate_sell
-      | MarketDepth_market_depth_buy
-      | MarketDepthSubscription_marketsDepthUpdate_buy,
-      '__typename'
-    >
-  ): PartialOrderbookRowData =>
+  (data: PriceLevelFieldsFragment): PartialOrderbookRowData =>
     createPartialRow(data.price, Number(data.volume), dataType);
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
 export const compactRows = (
-  sell:
-    | Omit<
-        | MarketDepth_market_depth_sell
-        | MarketDepthSubscription_marketsDepthUpdate_sell,
-        '__typename'
-      >[]
-    | null,
-  buy:
-    | Omit<
-        | MarketDepth_market_depth_buy
-        | MarketDepthSubscription_marketsDepthUpdate_buy,
-        '__typename'
-      >[]
-    | null,
+  sell: PriceLevelFieldsFragment[] | null | undefined,
+  buy: PriceLevelFieldsFragment[] | null | undefined,
   resolution: number
 ) => {
   // map raw sell data to OrderbookData
@@ -202,9 +174,7 @@ export const compactRows = (
 const partiallyUpdateCompactedRows = (
   dataType: VolumeType,
   data: OrderbookRowData[],
-  delta:
-    | MarketDepthSubscription_marketsDepthUpdate_sell
-    | MarketDepthSubscription_marketsDepthUpdate_buy,
+  delta: PriceLevelFieldsFragment,
   resolution: number,
   modifiedIndex: number
 ): [number, OrderbookRowData[]] => {
@@ -259,8 +229,8 @@ const partiallyUpdateCompactedRows = (
  */
 export const updateCompactedRows = (
   rows: OrderbookRowData[],
-  sell: MarketDepthSubscription_marketsDepthUpdate_sell[] | null,
-  buy: MarketDepthSubscription_marketsDepthUpdate_buy[] | null,
+  sell: PriceLevelFieldsFragment[] | null,
+  buy: PriceLevelFieldsFragment[] | null,
   resolution: number
 ) => {
   let sellModifiedIndex = -1;
@@ -352,11 +322,8 @@ export const mapMarketData = (
  * @returns
  */
 export const updateLevels = (
-  draft: (MarketDepth_market_depth_buy | MarketDepth_market_depth_sell)[],
-  updates: (
-    | MarketDepthSubscription_marketsDepthUpdate_buy
-    | MarketDepthSubscription_marketsDepthUpdate_sell
-  )[]
+  draft: PriceLevelFieldsFragment[],
+  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[]
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
@@ -406,22 +373,18 @@ export const generateMockData = ({
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
-  const sell: Omit<MarketDepth_market_depth_sell, '__typename'>[] = matrix.map(
-    (row, i) => ({
-      price: (price -= 1).toString(),
-      volume: (numberOfSellRows - i + 1).toString(),
-      numberOfOrders: '',
-    })
-  );
+  const sell: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
+    price: (price -= 1).toString(),
+    volume: (numberOfSellRows - i + 1).toString(),
+    numberOfOrders: '',
+  }));
   price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
-  const buy: Omit<MarketDepth_market_depth_buy, '__typename'>[] = matrix.map(
-    (row, i) => ({
-      price: (price -= 1).toString(),
-      volume: (i + 2).toString(),
-      numberOfOrders: '',
-    })
-  );
+  const buy: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
+    price: (price -= 1).toString(),
+    volume: (i + 2).toString(),
+    numberOfOrders: '',
+  }));
   const rows = compactRows(sell, buy, resolution);
   return {
     rows,
