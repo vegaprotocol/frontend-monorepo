@@ -10,6 +10,14 @@ interface TimeInForceSelectorProps {
   onSelect: (tif: Schema.OrderTimeInForce) => void;
 }
 
+type PossibleOrderKeys = Exclude<
+  Schema.OrderType,
+  Schema.OrderType.TYPE_NETWORK
+>;
+type PrevSelectedValue = {
+  [key in PossibleOrderKeys]: Schema.OrderTimeInForce;
+};
+
 export const TimeInForceSelector = ({
   value,
   orderType,
