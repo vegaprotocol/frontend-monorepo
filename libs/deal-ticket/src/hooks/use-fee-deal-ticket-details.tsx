@@ -109,7 +109,7 @@ export const getFeeDetailsValues = ({
     },
     {
       label: t('Fees'),
-      value: `~${formatValue(estMargin?.totalFees)}`,
+      value: estMargin?.totalFees && `~${formatValue(estMargin?.totalFees)}`,
       labelDescription: (
         <>
           <span>
@@ -128,7 +128,7 @@ export const getFeeDetailsValues = ({
     },
     {
       label: t('Margin required'),
-      value: `~${formatValue(estMargin?.margin)}`,
+      value: estMargin?.margin && `~${formatValue(estMargin?.margin)}`,
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
