@@ -90,7 +90,7 @@ const OrdersManager = () => {
           order={editOrder}
           onSubmit={(fields) => {
             setEditOrder(null);
-            orderEdit.edit({ price: fields.entryPrice });
+            orderEdit.edit({ price: fields.limitPrice });
           }}
         />
       )}
