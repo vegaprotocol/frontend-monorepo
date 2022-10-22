@@ -67,8 +67,6 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       [marketId, pubKey]
     ),
   });
-  console.log({ liquidityProviders }); // TODO: Remove this
-
   const targetStake = marketProvision?.market?.data?.targetStake;
   const suppliedStake = marketProvision?.market?.data?.suppliedStake;
   const assetDecimalPlaces =
