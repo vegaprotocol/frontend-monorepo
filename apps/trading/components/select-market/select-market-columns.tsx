@@ -18,6 +18,7 @@ import Link from 'next/link';
 import {
   calcCandleHigh,
   calcCandleLow,
+  calcCandleVolume,
   totalFees,
 } from '@vegaprotocol/market-list';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -119,14 +120,14 @@ const headers: Column[] = [
     onlyOnDetailed: true,
   },
   {
-    kind: ColumnKind.TradingMode,
-    value: t('Trading mode'),
+    kind: ColumnKind.Volume,
+    value: t('24h Volume'),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
-    kind: ColumnKind.Volume,
-    value: t('Volume'),
+    kind: ColumnKind.TradingMode,
+    value: t('Trading mode'),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
@@ -174,6 +175,7 @@ export const columns = (
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
+  const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -279,6 +281,19 @@ export const columns = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Volume,
+      value: candleVolume
+        ? addDecimalsFormatNumber(
+            candleVolume.toString(),
+            market.positionDecimalPlaces,
+            2
+          )
+        : '-',
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
+      onlyOnDetailed: true,
+      dataTestId: 'market-volume',
+    },
+    {
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
@@ -291,19 +306,6 @@ export const columns = (
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
-    },
-    {
-      kind: ColumnKind.Volume,
-      value:
-        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
-          ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
-              market.positionDecimalPlaces
-            )
-          : '-',
-      className: `${cellClassNames} hidden lg:table-cell font-mono`,
-      onlyOnDetailed: true,
-      dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.Fee,
@@ -342,6 +344,7 @@ export const columnsPositionMarkets = (
       return onSelect(id);
     }
   };
+  const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -475,15 +478,16 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.Volume,
-      value:
-        market.data && market.data.indicativeVolume !== '0'
-          ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
-              market.positionDecimalPlaces
-            )
-          : '-',
+      value: candleVolume
+        ? addDecimalsFormatNumber(
+            candleVolume.toString(),
+            market.positionDecimalPlaces,
+            2
+          )
+        : '-',
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
       onlyOnDetailed: true,
+      dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.Fee,

@@ -87,7 +87,7 @@ export const DealTicket = ({
       ) {
         return market.data.indicativePrice;
       }
-      return '-';
+      return undefined;
     }
     return market.depth.lastTrade?.price;
   };
