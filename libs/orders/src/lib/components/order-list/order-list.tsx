@@ -20,6 +20,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -113,6 +114,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<
+            Order,
+            'market.tradableInstrument.instrument.code'
+          >) =>
+            data?.market?.id ? (
+              <Link href={`/markets/${data?.market?.id}`} target="_blank">
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Size')}
