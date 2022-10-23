@@ -1,12 +1,12 @@
-import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import type { AccountType } from '@vegaprotocol/types';
 import { useMemo } from 'react';
+import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 export const useSettlementAccount = (
   settlementAssetId: string,
-  accounts: PartyBalanceQuery_party_accounts[],
+  accounts: Account[],
   type?: AccountType
-): PartyBalanceQuery_party_accounts | null => {
+): Account | null => {
   const callback = () =>
     accounts.find((account) => {
       if (type) {
@@ -16,5 +16,5 @@ export const useSettlementAccount = (
       return account.asset.id === settlementAssetId;
     });
   const account = useMemo(callback, [accounts, settlementAssetId, type]);
-  return account as PartyBalanceQuery_party_accounts;
+  return account || null;
 };

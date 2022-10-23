@@ -1,49 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
-import { useSettlementAccount } from './use-settlement-account';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
-import { gql, useQuery } from '@apollo/client';
-import useMarketPositions from './use-market-positions';
-import useMarketData from './use-market-data';
-import type {
-  PartyMarketData,
-  PartyMarketDataVariables,
-} from './__generated__/PartyMarketData';
+import { useMarketPositions } from './use-market-positions';
+import { useMarketDataMarkPrice } from './use-market-data-mark-price';
+import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
 import { Side } from '@vegaprotocol/types';
-
-const CLOSEOUT_PRICE_QUERY = gql`
-  query PartyMarketData($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      accounts {
-        type
-        balance
-        asset {
-          id
-          decimals
-        }
-        market {
-          id
-        }
-      }
-      marginsConnection {
-        edges {
-          node {
-            market {
-              id
-            }
-            initialLevel
-            maintenanceLevel
-            searchLevel
-          }
-        }
-      }
-    }
-  }
-`;
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
+import type { PartyBalanceQuery } from './__generated__/PartyBalance';
+import { useSettlementAccount } from './use-settlement-account';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];
@@ -51,22 +16,23 @@ interface Props {
   partyData?: PartyBalanceQuery;
 }
 
-const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
+export const useOrderCloseOut = ({
+  order,
+  market,
+  partyData,
+}: Props): string | null => {
   const { pubKey } = useVegaWallet();
   const account = useSettlementAccount(
     market.tradableInstrument.instrument.product.settlementAsset.id,
     partyData?.party?.accounts || []
   );
-  const { data } = useQuery<PartyMarketData, PartyMarketDataVariables>(
-    CLOSEOUT_PRICE_QUERY,
-    {
-      pollInterval: 5000,
-      variables: { partyId: pubKey || '' },
-      skip: !pubKey,
-    }
-  );
+  const { data } = usePartyMarketDataQuery({
+    pollInterval: 5000,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
 
-  const markPriceData = useMarketData(market.id);
+  const markPriceData = useMarketDataMarkPrice(market.id);
   const marketPositions = useMarketPositions({
     marketId: market.id,
     partyId: pubKey || '',
@@ -94,7 +60,7 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
   );
   const volume = new BigNumber(
     addDecimal(
-      marketPositions?.openVolume.toNumber() || 0,
+      marketPositions?.openVolume.toString() || '0',
       market.positionDecimalPlaces
     )
   )[order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
@@ -112,7 +78,5 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
   if (closeOut.isPositive()) {
     return formatNumber(closeOut, market.decimalPlaces);
   }
-  return ' - ';
+  return null;
 };
-
-export default useOrderCloseOut;

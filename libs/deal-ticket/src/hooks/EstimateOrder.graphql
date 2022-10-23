@@ -26,5 +26,6 @@ query EstimateOrder(
     marginLevels {
       initialLevel
     }
+    totalFeeAmount
   }
 }

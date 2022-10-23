@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
@@ -14,11 +14,11 @@ import {
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { MarketState } from '@vegaprotocol/types';
-import useMarketFiltersData from '../../hooks/use-markets-filter';
 import type { Market } from '@vegaprotocol/market-list';
 import { HorizontalMenu } from '../horizontal-menu';
 import type { HorizontalMenuItem } from '../horizontal-menu';
 import * as constants from './constants';
+import { useMarketFilters } from '../../hooks/use-markets-filter';
 
 interface Props {
   data: Market[];
@@ -27,7 +27,7 @@ interface Props {
 const SimpleMarketToolbar = ({ data }: Props) => {
   const navigate = useNavigate();
   const params = useParams();
-  const { products, assetsPerProduct } = useMarketFiltersData(data);
+  const { products, assetsPerProduct } = useMarketFilters(data);
   const [isOpen, setOpen] = useState(false);
 
   const onStateChange = useCallback(
