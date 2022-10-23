@@ -1,13 +1,13 @@
-import useMarketPositions from './use-market-positions';
+import { useMarketPositions } from './use-market-positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
 import { AccountType, Side } from '@vegaprotocol/types';
 import { BigNumber } from 'bignumber.js';
+import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 interface Props {
   partyId: string;
-  accounts: PartyBalanceQuery_party_accounts[];
+  accounts: Account[];
   marketId: string;
   price?: string;
   settlementAssetId: string;
@@ -17,7 +17,7 @@ interface Props {
 const getSize = (balance: string, price: string) =>
   new BigNumber(balance).dividedBy(new BigNumber(price));
 
-export default ({
+export const useMaximumPositionSize = ({
   marketId,
   accounts,
   partyId,

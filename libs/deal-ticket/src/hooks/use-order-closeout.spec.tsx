@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import useOrderCloseOut from './use-order-closeout';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
+import type { PartyBalanceQuery } from './__generated__/PartyBalance';
+import { useOrderCloseOut } from './use-order-closeout';
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
 
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: jest.fn().mockReturnValue('wallet-pub-key'),
 }));
 
-describe('useOrderCloseOut Hook', () => {
+describe('useOrderCloseOut', () => {
   const order = { size: '2', side: 'SIDE_BUY' };
   const market = {
     decimalPlaces: 5,
@@ -44,7 +44,7 @@ describe('useOrderCloseOut Hook', () => {
     },
   };
 
-  it('return proper buy value', () => {
+  it('should return proper null value', () => {
     const { result } = renderHook(
       () =>
         useOrderCloseOut({
@@ -58,10 +58,10 @@ describe('useOrderCloseOut Hook', () => {
         ),
       }
     );
-    expect(result.current).toEqual(' - ');
+    expect(result.current).toEqual(null);
   });
 
-  it('return proper sell value', () => {
+  it('should return proper sell value', () => {
     const { result } = renderHook(
       () =>
         useOrderCloseOut({
@@ -81,7 +81,7 @@ describe('useOrderCloseOut Hook', () => {
     expect(result.current).toEqual('1.00000');
   });
 
-  it('return proper empty value', () => {
+  it('should return proper empty value', () => {
     const { result } = renderHook(
       () =>
         useOrderCloseOut({

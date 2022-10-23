@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react';
 import { useSettlementAccount } from './use-settlement-account';
-import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { AccountType } from '@vegaprotocol/types';
+import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 describe('useSettlementAccount Hook', () => {
   it('should filter accounts by settlementAssetId', () => {
-    const accounts: PartyBalanceQuery_party_accounts[] = [
+    const accounts: Account[] = [
       {
         __typename: 'Account',
         type: AccountType.ACCOUNT_TYPE_GENERAL,
@@ -75,12 +75,12 @@ describe('useSettlementAccount Hook', () => {
   });
 
   it('should return null if no accounts', () => {
-    const accounts: PartyBalanceQuery_party_accounts[] = [];
+    const accounts: Account[] = [];
     const settlementAssetId =
       '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61';
     const { result } = renderHook(() =>
       useSettlementAccount(settlementAssetId, accounts)
     );
-    expect(result.current).toBe(undefined);
+    expect(result.current).toBe(null);
   });
 });

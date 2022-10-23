@@ -1,14 +1,15 @@
-import * as React from 'react';
 import classNames from 'classnames';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import type { PartyBalanceQuery_party_accounts } from './__generated__/PartyBalanceQuery';
-import { useSettlementAccount } from '../../hooks/use-settlement-account';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
+import type {
+  AccountFragment,
+  DealTicketMarketFragment,
+} from '@vegaprotocol/deal-ticket';
+import { useSettlementAccount } from '@vegaprotocol/deal-ticket';
 
 interface DealTicketBalanceProps {
   settlementAsset: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
-  accounts: PartyBalanceQuery_party_accounts[];
+  accounts: AccountFragment[];
   isWalletConnected: boolean;
   className?: string;
 }
@@ -26,7 +27,7 @@ export const DealTicketBalance = ({
     accounts,
     AccountType.ACCOUNT_TYPE_GENERAL
   );
-  const formatedNumber =
+  const formattedNumber =
     settlementAccount?.balance &&
     settlementAccount.asset.decimals &&
     addDecimalsFormatNumber(
@@ -37,7 +38,7 @@ export const DealTicketBalance = ({
   const balance = (
     <p className="text-blue text-lg font-semibold">
       {settlementAccount
-        ? t(`${formatedNumber}`)
+        ? t(`${formattedNumber}`)
         : `No ${settlementAssetSymbol} left to trade`}
     </p>
   );
