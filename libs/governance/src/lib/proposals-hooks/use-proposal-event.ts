@@ -1,8 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import {
-  ProposalEventDocument,
-} from './__generated__/Proposal';
+import { ProposalEventDocument } from './__generated__/Proposal';
 import type {
   ProposalEventSubscriptionVariables,
   ProposalEventSubscription,
@@ -22,7 +20,10 @@ export const useProposalEvent = (transaction: VegaTxState) => {
       callback: (proposal: ProposalEventFieldsFragment) => void
     ) => {
       subRef.current = client
-        .subscribe<ProposalEventSubscription, ProposalEventSubscriptionVariables>({
+        .subscribe<
+          ProposalEventSubscription,
+          ProposalEventSubscriptionVariables
+        >({
           query: ProposalEventDocument,
           variables: { partyId },
         })
