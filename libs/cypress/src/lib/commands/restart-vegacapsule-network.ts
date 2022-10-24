@@ -15,12 +15,14 @@ export function addRestartVegacapsuleNetwork() {
       // This stops those errors from preventing the teardown
       return false;
     });
+    cy.log('Destroying capsule network');
     // We stop the network twice - since it does not always shutdown correctly on first attempt
     cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
     cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false })
       .its('stderr')
       .should('contain', 'Network has been successfully cleaned up');
 
+    cy.log('Bootstrapping network');
     cy.exec(
       'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
       { failOnNonZeroExit: false, timeout: 100000 }
@@ -28,7 +30,10 @@ export function addRestartVegacapsuleNetwork() {
       .its('stderr')
       .then((response) => {
         if (!response.includes('Network successfully started')) {
-          cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false });
+          cy.log('Bootstrapping network second time');
+          cy.exec('vegacapsule network destroy', { failOnNonZeroExit: false })
+            .its('stderr')
+            .should('contain', 'Network has been successfully cleaned up');
           cy.exec(
             'vegacapsule network bootstrap --config-path=../../vegacapsule/config.hcl --force',
             { failOnNonZeroExit: false, timeout: 100000 }

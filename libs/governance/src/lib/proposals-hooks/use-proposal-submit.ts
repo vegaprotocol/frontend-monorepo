@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/wallet';
 import { useProposalEvent } from './use-proposal-event';
 import type { ProposalSubmission } from '@vegaprotocol/wallet';
-import type { ProposalEvent_busEvents_event_Proposal } from './__generated__/ProposalEvent';
+import type { ProposalEventFieldsFragment } from './__generated__/Proposal';
 
 export const useProposalSubmit = () => {
   const { pubKey } = useVegaWallet();
@@ -16,7 +16,7 @@ export const useProposalSubmit = () => {
   const waitForProposalEvent = useProposalEvent(transaction);
 
   const [finalizedProposal, setFinalizedProposal] =
-    useState<ProposalEvent_busEvents_event_Proposal | null>(null);
+    useState<ProposalEventFieldsFragment | null>(null);
 
   const submit = useCallback(
     async (proposal: ProposalSubmission) => {

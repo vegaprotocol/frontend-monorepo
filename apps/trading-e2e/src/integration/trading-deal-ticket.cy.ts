@@ -212,11 +212,6 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('order-connect-wallet').should('exist');
     cy.getByTestId(placeOrderBtn).should('not.exist');
     cy.getByTestId(errorMessage).should('not.exist');
-    cy.getByTestId('order-get-vega-wallet').should(
-      'have.attr',
-      'href',
-      'https://github.com/vegaprotocol/vega/releases'
-    );
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -235,7 +230,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 
   it('order connect vega wallet button should connect', () => {
     cy.getByTestId(toggleLimit).click();
-    cy.getByTestId(orderPriceField).type('101');
+    cy.getByTestId(orderPriceField).clear().type('101');
     cy.getByTestId('order-connect-wallet').click();
     cy.getByTestId('dialog-content').should('be.visible');
     cy.getByTestId('connectors-list')
@@ -330,6 +325,26 @@ describe('limit order validations', { tags: '@smoke' }, () => {
           tif.text
         );
       });
+    });
+
+    it('selections should be remembered', () => {
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTT');
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'IOC')[0].text
+      );
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_FOK');
+      cy.getByTestId(toggleLimit).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'GTT')[0].text
+      );
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'FOK')[0].text
+      );
     });
   });
 });

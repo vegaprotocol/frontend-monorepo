@@ -2,8 +2,8 @@ import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { InfoBlock } from '../../components/info-block';
+import { Panel } from '../../components/panel';
 import type { TxsStats, TxsStats_statistics } from './__generated__/TxsStats';
-import classNames from 'classnames';
 
 const STATS_QUERY = gql`
   query TxsStats {
@@ -63,17 +63,18 @@ export const TxsStatsInfo = ({ className }: TxsStatsInfoProps) => {
 
   const gridStyles =
     'grid grid-rows-2 gap-4 grid-cols-2 xl:gap-8 xl:grid-rows-1 xl:grid-cols-4';
-  const containerStyles = 'p-5 border rounded-lg border-zinc-500';
 
   return (
-    <aside className={classNames(gridStyles, containerStyles, className)}>
-      {TXS_STATS_MAP.map((field) => (
-        <InfoBlock
-          subtitle={field.label}
-          tooltipInfo={field.info}
-          title={data?.statistics[field.field] || ''}
-        />
-      ))}
-    </aside>
+    <Panel className={className}>
+      <section className={gridStyles}>
+        {TXS_STATS_MAP.map((field) => (
+          <InfoBlock
+            subtitle={field.label}
+            tooltipInfo={field.info}
+            title={data?.statistics[field.field] || ''}
+          />
+        ))}
+      </section>
+    </Panel>
   );
 };

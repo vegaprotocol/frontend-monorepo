@@ -33,7 +33,7 @@ export const useOrderListData = ({
       totalCountRef.current += newRows.current;
     }
     newRows.current = 0;
-    gridRef.current?.api.refreshInfiniteCache();
+    gridRef.current?.api?.refreshInfiniteCache();
   }, [gridRef]);
 
   const update = useCallback(
@@ -48,7 +48,7 @@ export const useOrderListData = ({
           }
         }
         dataRef.current = data;
-        gridRef.current?.api.refreshInfiniteCache();
+        gridRef.current?.api?.refreshInfiniteCache();
         return true;
       }
       dataRef.current = data;
