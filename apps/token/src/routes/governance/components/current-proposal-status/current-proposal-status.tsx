@@ -44,9 +44,10 @@ export const CurrentProposalStatus = ({
 }: {
   proposal: Proposal_proposal;
 }) => {
-  const { willPass, majorityMet, participationMet } = useVoteInformation({
-    proposal,
-  });
+  const { willPassByTokenVote, majorityMet, participationMet } =
+    useVoteInformation({
+      proposal,
+    });
   const { t } = useTranslation();
 
   const daysClosedAgo = formatDistanceToNow(
@@ -61,7 +62,9 @@ export const CurrentProposalStatus = ({
     });
 
   if (proposal.state === ProposalState.STATE_OPEN) {
-    return <WillPass willPass={willPass}>{t('currentlySetTo')}</WillPass>;
+    return (
+      <WillPass willPass={willPassByTokenVote}>{t('currentlySetTo')}</WillPass>
+    );
   }
 
   if (
@@ -126,7 +129,7 @@ export const CurrentProposalStatus = ({
 
   if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
     return (
-      <WillPass willPass={willPass}>
+      <WillPass willPass={willPassByTokenVote}>
         <span>{t('WaitingForNodeVote')}</span>{' '}
         <span>{t('currentlySetTo')}</span>
       </WillPass>

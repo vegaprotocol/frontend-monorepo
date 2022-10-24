@@ -40,9 +40,10 @@ export const ProposalsListItemDetails = ({
   proposal: Proposal_proposal;
 }) => {
   const { state } = proposal;
-  const { willPass, majorityMet, participationMet } = useVoteInformation({
-    proposal,
-  });
+  const { willPassByTokenVote, majorityMet, participationMet } =
+    useVoteInformation({
+      proposal,
+    });
   const { t } = useTranslation();
   const { voteState } = useUserVote(
     proposal.id,
@@ -133,7 +134,7 @@ export const ProposalsListItemDetails = ({
       voteStatus =
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />) ||
-        (willPass ? (
+        (willPassByTokenVote ? (
           <>
             {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
           </>

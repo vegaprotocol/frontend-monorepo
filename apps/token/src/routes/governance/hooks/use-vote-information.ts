@@ -211,7 +211,7 @@ export const useVoteInformation = ({
     return totalLPTokensVoted.multipliedBy(100).dividedBy(totalSupply);
   }, [totalLPTokensVoted, totalSupply]);
 
-  const willPass = React.useMemo(
+  const willPassByTokenVote = React.useMemo(
     () =>
       participationMet &&
       new BigNumber(yesPercentage).isGreaterThanOrEqualTo(
@@ -230,7 +230,7 @@ export const useVoteInformation = ({
   );
 
   return {
-    willPass,
+    willPassByTokenVote,
     willPassLP,
     totalTokensPercentage,
     totalLPTokensPercentage,

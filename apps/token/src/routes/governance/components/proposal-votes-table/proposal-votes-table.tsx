@@ -24,38 +24,31 @@ export const ProposalVotesTable = ({
     appState: { totalSupply },
   } = useAppState();
   const {
-    willPass,
+    willPassByTokenVote,
     willPassLP,
     totalTokensPercentage,
-    totalLPTokensPercentage,
     participationMet,
     participationLPMet,
     totalTokensVoted,
-    totalLPTokensVoted,
     noPercentage,
-    noLPPercentage,
     yesPercentage,
-    yesLPPercentage,
     noTokens,
-    noLPTokens,
     yesTokens,
     yesLPTokens,
     yesVotes,
     noVotes,
     totalVotes,
     requiredMajorityPercentage,
-    requiredMajorityLPPercentage,
     requiredParticipation,
-    requiredParticipationLP,
     majorityMet,
     majorityLPMet,
   } = useVoteInformation({ proposal });
 
   const isUpdateMarket = proposalType === ProposalType.PROPOSAL_UPDATE_MARKET;
-  const updateMarketWillPass = willPass || willPassLP;
+  const updateMarketWillPass = willPassByTokenVote || willPassLP;
   const updateMarketVotePassMethod =
     updateMarketWillPass &&
-    (willPass ? t('byTokenVote') : t('byLiquidityVote'));
+    (willPassByTokenVote ? t('byTokenVote') : t('byLiquidityVote'));
 
   return (
     <KeyValueTable
@@ -70,7 +63,7 @@ export const ProposalVotesTable = ({
           ? updateMarketWillPass
             ? `👍 ${updateMarketVotePassMethod}`
             : '👎'
-          : willPass
+          : willPassByTokenVote
           ? '👍'
           : '👎'}
       </KeyValueTableRow>
@@ -120,7 +113,7 @@ export const ProposalVotesTable = ({
         {t('majorityRequired')}
         {formatNumberPercentage(requiredMajorityPercentage)}
       </KeyValueTableRow>
-      {isUpdateMarket && (
+      {!isUpdateMarket && (
         <>
           <KeyValueTableRow>
             {t('numberOfVotingParties')}

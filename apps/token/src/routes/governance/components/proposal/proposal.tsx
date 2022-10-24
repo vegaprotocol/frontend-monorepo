@@ -82,7 +82,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             proposal={proposal}
             proposalType={proposalType}
             minVoterBalance={minVoterBalance}
-            spamProtectionMinTokens={params.spam_protection_voting_min_tokens}
+            spamProtectionMinTokens={params?.spam_protection_voting_min_tokens}
           />
         </div>
         <div className="mb-8">

@@ -77,7 +77,8 @@ export function generateProposal(
 
 export const generateYesVotes = (
   numberOfVotes = 5,
-  fixedTokenValue?: number
+  fixedTokenValue?: number,
+  totalEquityLikeShareWeight?: string
 ): Proposal_proposal_votes_yes => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
     const vote: Proposal_proposal_votes_yes_votes = {
@@ -112,13 +113,14 @@ export const generateYesVotes = (
       }, new BigNumber(0))
       .toString(),
     votes,
-    totalEquityLikeShareWeight: '0',
+    totalEquityLikeShareWeight: totalEquityLikeShareWeight || '0',
   };
 };
 
 export const generateNoVotes = (
   numberOfVotes = 5,
-  fixedTokenValue?: number
+  fixedTokenValue?: number,
+  totalEquityLikeShareWeight?: string
 ): Proposal_proposal_votes_no => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
     const vote: Proposal_proposal_votes_no_votes = {
@@ -152,6 +154,6 @@ export const generateNoVotes = (
       }, new BigNumber(0))
       .toString(),
     votes,
-    totalEquityLikeShareWeight: '0',
+    totalEquityLikeShareWeight: totalEquityLikeShareWeight || '0',
   };
 };
