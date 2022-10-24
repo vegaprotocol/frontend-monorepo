@@ -54,7 +54,9 @@ const WithdrawPendingContainer = () => {
     <>
       <header className="flex items-start justify-between">
         <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
-        <Button onClick={() => setWithdrawDialog(true)}>Withdraw</Button>
+        <Button data-testid="withdraw" onClick={() => setWithdrawDialog(true)}>
+          Withdraw
+        </Button>
       </header>
       <p>{t('withdrawalsText')}</p>
       <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
