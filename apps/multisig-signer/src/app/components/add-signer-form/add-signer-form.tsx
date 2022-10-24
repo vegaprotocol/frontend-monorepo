@@ -76,7 +76,9 @@ export const AddSignerForm = () => {
       <FormGroup
         label={t('Add signer')}
         labelFor="add-signer-input"
-        labelDescription={t('Node ID of the signer to add to the multisig control')}
+        labelDescription={t(
+          'Node ID of the signer to add to the multisig control'
+        )}
         className="max-w-xl"
       >
         <div className="grid grid-cols-[1fr,auto] gap-2">
