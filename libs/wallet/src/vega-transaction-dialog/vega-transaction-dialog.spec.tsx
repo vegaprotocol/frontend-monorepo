@@ -10,7 +10,7 @@ jest.mock('@vegaprotocol/environment', () => ({
     VEGA_ENV: 'TESTNET',
   }),
   Networks: {
-    MAINNET: 'MAINET',
+    MAINNET: 'MAINNET',
     TESTNET: 'TESTNET',
   },
 }));
