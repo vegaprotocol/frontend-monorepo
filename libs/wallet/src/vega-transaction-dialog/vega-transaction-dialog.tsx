@@ -70,7 +70,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
           )}
         </p>
         {VEGA_ENV !== Networks.MAINNET && (
-          <p>{t('[This is %s transaction]').replace('%s', VEGA_ENV)}</p>
+          <p data-testid="testnet-transaction-info">
+            {t('[This is %s transaction]').replace('%s', VEGA_ENV)}
+          </p>
         )}
       </>
     );
