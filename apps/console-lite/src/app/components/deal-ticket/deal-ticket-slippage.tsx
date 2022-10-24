@@ -1,11 +1,19 @@
 import React, { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import * as constants from './constants';
-import { TrafficLight } from '../traffic-light';
-import { Dialog, Icon, Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Dialog,
+  Icon,
+  Intent,
+  Tooltip,
+  TrafficLight,
+} from '@vegaprotocol/ui-toolkit';
 import { InputSetter } from '../../components/input-setter';
 import { IconNames } from '@blueprintjs/icons';
-import { DataTitle, ValueTooltipRow } from './deal-ticket-estimates';
+import {
+  DataTitle,
+  EST_SLIPPAGE,
+  ValueTooltipRow,
+} from '@vegaprotocol/deal-ticket';
 
 interface DealTicketSlippageProps {
   step?: number;
@@ -40,12 +48,12 @@ export const DealTicketSlippage = ({
   const formLabel = (
     <label className="flex items-center mb-1">
       <span className="mr-1">{t('Adjust slippage tolerance')}</span>
-      <Tooltip align="center" description={constants.EST_SLIPPAGE}>
+      <Tooltip align="center" description={EST_SLIPPAGE}>
         <div className="cursor-help" tabIndex={-1}>
           <Icon
             name={IconNames.ISSUE}
             className="block rotate-180"
-            ariaLabel={constants.EST_SLIPPAGE}
+            ariaLabel={EST_SLIPPAGE}
           />
         </div>
       </Tooltip>
@@ -83,7 +91,7 @@ export const DealTicketSlippage = ({
           <DataTitle>{t('Est. Price Impact / Slippage')}</DataTitle>
           <div className="flex">
             <div className="mr-1">
-              <ValueTooltipRow description={constants.EST_SLIPPAGE}>
+              <ValueTooltipRow description={EST_SLIPPAGE}>
                 <TrafficLight value={value} q1={1} q2={5}>
                   {value}%
                 </TrafficLight>
