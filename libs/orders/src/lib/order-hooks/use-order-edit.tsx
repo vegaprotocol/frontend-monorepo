@@ -54,10 +54,9 @@ export const useOrderEdit = (order: Order | null) => {
           },
         });
 
-        waitForOrderEvent(order.id, pubKey, (updatedOrder) => {
-          setUpdatedOrder(updatedOrder);
-          setComplete();
-        });
+        const updatedOrder = await waitForOrderEvent(order.id, pubKey);
+        setUpdatedOrder(updatedOrder);
+        setComplete();
       } catch (e) {
         Sentry.captureException(e);
         return;

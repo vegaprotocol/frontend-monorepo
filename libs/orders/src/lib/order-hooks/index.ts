@@ -3,3 +3,4 @@ export * from './order-event-query';
 export * from './use-order-cancel';
 export * from './use-order-submit';
 export * from './use-order-edit';
+export * from './use-order-event';

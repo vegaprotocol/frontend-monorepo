@@ -96,25 +96,30 @@ describe('VegaTransactionDialog', () => {
     testBlockExplorerLink('tx-hash');
   });
 
-  it('custom complete', () => {
-    render(
-      <VegaTransactionDialog
-        {...props}
-        transaction={{
-          ...props.transaction,
-          txHash: 'tx-hash',
-          status: VegaTxStatus.Complete,
-        }}
-        title="Custom title"
-      >
-        <div>Custom content</div>
-      </VegaTransactionDialog>
-    );
-    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-      'Custom title'
-    );
-    expect(screen.getByText('Custom content')).toBeInTheDocument();
-  });
+  it.each(Object.keys(VegaTxStatus))(
+    'renders custom content for %s',
+    (status) => {
+      const title = `${status} title`;
+      const text = `${status} content`;
+      const content = {
+        [status]: <div>{text}</div>,
+      };
+      render(
+        <VegaTransactionDialog
+          {...props}
+          transaction={{
+            ...props.transaction,
+            txHash: 'tx-hash',
+            status: status as VegaTxStatus,
+          }}
+          title={title}
+          content={content}
+        />
+      );
+      expect(screen.getByTestId('dialog-title')).toHaveTextContent(title);
+      expect(screen.getByText(text)).toBeInTheDocument();
+    }
+  );
 
   function testBlockExplorerLink(txHash: string) {
     expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(

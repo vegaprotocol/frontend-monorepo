@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useVegaWallet } from './use-vega-wallet';
+import type { VegaTransactionContentMap } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
@@ -8,10 +9,10 @@ import { ClientErrors } from './connectors';
 import { WalletError } from './connectors';
 
 export interface DialogProps {
-  children?: JSX.Element;
   intent?: Intent;
   title?: string;
   icon?: ReactNode;
+  content?: VegaTransactionContentMap;
 }
 
 export enum VegaTxStatus {

@@ -321,9 +321,15 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
             title={getOrderDialogTitle(finalizedOrder?.status)}
             intent={getOrderDialogIntent(finalizedOrder?.status)}
             icon={getOrderDialogIcon(finalizedOrder?.status)}
-          >
-            <OrderFeedback transaction={transaction} order={finalizedOrder} />
-          </Dialog>
+            content={{
+              Complete: (
+                <OrderFeedback
+                  transaction={transaction}
+                  order={finalizedOrder}
+                />
+              ),
+            }}
+          />
         </div>
       ),
       disabled: true,

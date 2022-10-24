@@ -5,37 +5,32 @@ import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 
+export type VegaTransactionContentMap = {
+  [C in VegaTxStatus]?: JSX.Element;
+};
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
   transaction: VegaTxState;
-  children?: ReactNode;
   intent?: Intent;
   title?: string;
   icon?: ReactNode;
+  content?: VegaTransactionContentMap;
 }
 
 export const VegaTransactionDialog = ({
   isOpen,
   onChange,
   transaction,
-  children,
   intent,
   title,
   icon,
+  content,
 }: VegaTransactionDialogProps) => {
   const computedIntent = intent ? intent : getIntent(transaction);
   const computedTitle = title ? title : getTitle(transaction);
   const computedIcon = icon ? icon : getIcon(transaction);
-  // Each dialog can specify custom dialog content using data returned via
-  // the subscription that confirms the transaction. So if we get a success state
-  // and this custom content is provided, render it
-  const content =
-    transaction.status === VegaTxStatus.Complete && children ? (
-      children
-    ) : (
-      <VegaDialog transaction={transaction} />
-    );
+
   return (
     <Dialog
       open={isOpen}
@@ -45,9 +40,41 @@ export const VegaTransactionDialog = ({
       icon={computedIcon}
       size="small"
     >
-      {content}
+      <Content transaction={transaction} content={content} />
     </Dialog>
   );
+};
+interface ContentProps {
+  transaction: VegaTxState;
+  content?: VegaTransactionContentMap;
+}
+
+const Content = ({ transaction, content }: ContentProps) => {
+  if (!content) {
+    return <VegaDialog transaction={transaction} />;
+  }
+
+  if (transaction.status === VegaTxStatus.Default && content.Default) {
+    return content.Default;
+  }
+
+  if (transaction.status === VegaTxStatus.Requested && content.Requested) {
+    return content.Requested;
+  }
+
+  if (transaction.status === VegaTxStatus.Pending && content.Pending) {
+    return content.Pending;
+  }
+
+  if (transaction.status === VegaTxStatus.Error && content.Error) {
+    return content.Error;
+  }
+
+  if (transaction.status === VegaTxStatus.Complete && content.Complete) {
+    return content.Complete;
+  }
+
+  return <VegaDialog transaction={transaction} />;
 };
 
 interface VegaDialogProps {
