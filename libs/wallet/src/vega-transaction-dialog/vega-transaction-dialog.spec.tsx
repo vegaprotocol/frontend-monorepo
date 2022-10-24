@@ -39,7 +39,7 @@ describe('VegaTransactionDialog', () => {
       /please open your wallet/i
     );
     expect(screen.getByTestId('testnet-transaction-info')).toHaveTextContent(
-      /\[This is TESTNET transaction\]/
+      /^\[This is TESTNET transaction only\]$/
     );
   });
 
