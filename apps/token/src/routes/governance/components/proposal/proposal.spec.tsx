@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 jest.mock('../proposal-detail-header/proposal-header', () => ({
   ProposalHeader: () => <div data-testid="proposal-header"></div>,
@@ -20,13 +21,13 @@ jest.mock('../vote-details', () => ({
 
 it('Renders with data-testid', () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal} />);
+  render(<Proposal proposal={proposal as Proposal_proposal} />);
   expect(screen.getByTestId('proposal')).toBeInTheDocument();
 });
 
 it('renders each section', () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal} />);
+  render(<Proposal proposal={proposal as Proposal_proposal} />);
   expect(screen.getByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-terms-json')).toBeInTheDocument();
