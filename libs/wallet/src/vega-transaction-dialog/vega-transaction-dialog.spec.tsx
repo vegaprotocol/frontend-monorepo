@@ -3,7 +3,6 @@ import { WalletError } from '../connectors';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
-import { Networks } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
