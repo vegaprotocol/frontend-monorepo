@@ -55,11 +55,11 @@ export const Market = ({
 
   return (
     <div>
-      <div className="pt-12 pb-14">
+      <div className="border border-[#d2d2d2] rounded-2xl px-2 py-6">
         <table className="w-full">
           <thead>
             <tr
-              className="uppercase font-[15px] text-[#626262] text-left font-alpha"
+              className="font-[15px] text-[#626262] text-left font-alpha"
               style={{ fontFeatureSettings: "'liga' off, 'calt' off" }}
             >
               <th className="font-medium px-4">{t('Volume (24h)')}</th>
@@ -91,9 +91,11 @@ export const Market = ({
                 </div>
               </td>
               <td className="px-4">
-                {comittedLiquidity && settlementAsset
-                  ? formatWithAsset(`${comittedLiquidity}`, settlementAsset)
-                  : '0'}
+                <span className="text-3xl">
+                  {comittedLiquidity && settlementAsset
+                    ? formatWithAsset(`${comittedLiquidity}`, settlementAsset)
+                    : '0'}
+                </span>
               </td>
               <td className="px-4">{getStatus()}</td>
               <td className="px-4">
@@ -106,7 +108,9 @@ export const Market = ({
                   />
                 )}
               </td>
-              <td className="px-4"></td>
+              <td className="px-4">
+                <span className="text-3xl"></span>
+              </td>
             </tr>
           </tbody>
         </table>
