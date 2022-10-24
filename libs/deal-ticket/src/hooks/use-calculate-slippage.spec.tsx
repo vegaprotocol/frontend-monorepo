@@ -59,11 +59,6 @@ let mockOrderBookData = {
   data: mockData,
 };
 
-jest.mock('@vegaprotocol/market-depth', () => ({
-  ...jest.requireActual('@vegaprotocol/market-depth'),
-  useOrderBookData: jest.fn(() => mockOrderBookData),
-}));
-
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
   useDataProvider: jest.fn(() => ({
@@ -71,6 +66,7 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
       marketsConnection: [],
     },
   })),
+  useThrottledDataProvider: jest.fn(() => mockOrderBookData),
 }));
 
 describe('useCalculateSlippage Hook', () => {

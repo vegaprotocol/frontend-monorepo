@@ -7,7 +7,7 @@ import {
   ThemeContext,
   getNumberFormat,
 } from '@vegaprotocol/react-helpers';
-import dataProvider from './market-depth-provider';
+import { marketDepthProvider } from './market-depth-provider';
 import {
   useCallback,
   useEffect,
@@ -115,7 +115,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   );
 
   const { data, error, loading } = useDataProvider({
-    dataProvider,
+    dataProvider: marketDepthProvider,
     update,
     variables,
   });

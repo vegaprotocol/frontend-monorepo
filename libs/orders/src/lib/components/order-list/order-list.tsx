@@ -62,20 +62,26 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderCancel.transaction}
-            order={orderCancel.cancelledOrder}
-          />
-        </orderCancel.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderCancel.transaction}
+                order={orderCancel.cancelledOrder}
+              />
+            ),
+          }}
+        />
         <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderEdit.transaction}
-            order={orderEdit.updatedOrder}
-          />
-        </orderEdit.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderEdit.transaction}
+                order={orderEdit.updatedOrder}
+              />
+            ),
+          }}
+        />
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}

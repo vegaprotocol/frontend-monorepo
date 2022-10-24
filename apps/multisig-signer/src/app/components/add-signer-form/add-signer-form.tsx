@@ -76,7 +76,9 @@ export const AddSignerForm = () => {
       <FormGroup
         label={t('Add signer')}
         labelFor="add-signer-input"
-        labelDescription={t('Public key of the signer to add')}
+        labelDescription={t(
+          'Node ID of the signer to add to the multisig control'
+        )}
         className="max-w-xl"
       >
         <div className="grid grid-cols-[1fr,auto] gap-2">
@@ -97,7 +99,7 @@ export const AddSignerForm = () => {
           {error && (
             <InputError intent="danger">
               {error?.message.includes('InvalidArgument')
-                ? t('Invalid node id')
+                ? t('Invalid node ID')
                 : error?.message}
             </InputError>
           )}
