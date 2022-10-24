@@ -1,6 +1,4 @@
 import { renderHook } from '@testing-library/react';
-import useMaximumPositionSize from './use-maximum-position-size';
-import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import {
   AccountType,
   OrderTimeInForce,
@@ -9,6 +7,9 @@ import {
 } from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
 import { BigNumber } from 'bignumber.js';
+import { useMaximumPositionSize } from './use-maximum-position-size';
+import type { AccountFragment as Account } from './__generated__/PartyBalance';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 const defaultMockMarketPositions = {
   openVolume: new BigNumber(1),
@@ -17,7 +18,7 @@ const defaultMockMarketPositions = {
 
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
-const mockAccount: PartyBalanceQuery_party_accounts = {
+const mockAccount: Account = {
   __typename: 'Account',
   type: AccountType.ACCOUNT_TYPE_GENERAL,
   balance: '200000',
@@ -30,11 +31,12 @@ const mockAccount: PartyBalanceQuery_party_accounts = {
   },
 };
 
-const mockOrder = {
+const mockOrder: OrderSubmissionBody['orderSubmission'] = {
   type: OrderType.TYPE_MARKET,
   size: '1',
   side: Side.SIDE_BUY,
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+  marketId: 'market-id',
 };
 
 jest.mock('./use-settlement-account', () => {
@@ -42,9 +44,18 @@ jest.mock('./use-settlement-account', () => {
     useSettlementAccount: jest.fn(() => mockAccount),
   };
 });
-jest.mock('./use-market-positions', () => jest.fn(() => mockMarketPositions));
 
-describe('useMaximumPositionSize Hook', () => {
+jest.mock('./use-market-positions', () => ({
+  useMarketPositions: ({
+    marketId,
+    partyId,
+  }: {
+    marketId: string;
+    partyId: string;
+  }) => mockMarketPositions,
+}));
+
+describe('useMaximumPositionSize', () => {
   it('should return correct size when no open positions', () => {
     mockMarketPositions = null;
     const price = '50';

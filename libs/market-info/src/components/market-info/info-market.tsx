@@ -8,7 +8,7 @@ import {
 import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
-import { totalFees } from '@vegaprotocol/market-list';
+import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   AccountType,
   Interval,
@@ -101,7 +101,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           <MarketInfoTable
             data={{
               ...market.fees.factors,
-              totalFees: totalFees(market.fees.factors),
+              totalFees: totalFeesPercentage(market.fees.factors),
             }}
             asPercentage={true}
           />

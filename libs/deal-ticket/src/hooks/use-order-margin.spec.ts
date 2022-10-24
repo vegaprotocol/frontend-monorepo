@@ -2,9 +2,9 @@ import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import type { PositionMargin } from './use-market-positions';
-import useOrderMargin from './use-order-margin';
+import { useOrderMargin } from './use-order-margin';
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
 
 let mockEstimateData = {
   estimateOrder: {
@@ -27,9 +27,18 @@ let mockMarketPositions: PositionMargin = {
   openVolume: new BigNumber(1),
   balance: new BigNumber(100000),
 };
-jest.mock('./use-market-positions', () => jest.fn(() => mockMarketPositions));
 
-describe('useOrderMargin Hook', () => {
+jest.mock('./use-market-positions', () => ({
+  useMarketPositions: ({
+    marketId,
+    partyId,
+  }: {
+    marketId: string;
+    partyId: string;
+  }) => mockMarketPositions,
+}));
+
+describe('useOrderMargin', () => {
   const order = {
     size: '2',
     side: 'SIDE_BUY',
@@ -50,7 +59,7 @@ describe('useOrderMargin Hook', () => {
     jest.clearAllMocks();
   });
 
-  it('margin should be properly calculated', () => {
+  it('should calculate margin correctly', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as OrderSubmissionBody['orderSubmission'],
@@ -68,7 +77,7 @@ describe('useOrderMargin Hook', () => {
     );
   });
 
-  it('fees should be properly calculated', () => {
+  it('should calculate fees correctly', () => {
     const { result } = renderHook(() =>
       useOrderMargin({
         order: order as OrderSubmissionBody['orderSubmission'],
@@ -76,10 +85,10 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current?.fees).toEqual('300000');
+    expect(result.current?.totalFees).toEqual('300000');
   });
 
-  it('if there is no positions initialMargin should not be subtracted', () => {
+  it('should not subtract initialMargin if there is no position', () => {
     mockMarketPositions = null;
     const { result } = renderHook(() =>
       useOrderMargin({
@@ -95,7 +104,7 @@ describe('useOrderMargin Hook', () => {
     );
   });
 
-  it('if api fails, should return empty value', () => {
+  it('should return empty value if API fails', () => {
     mockEstimateData = {
       estimateOrder: {
         fee: {

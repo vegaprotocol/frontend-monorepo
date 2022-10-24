@@ -2,6 +2,7 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
 import { captureException } from '@sentry/react';
+
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,

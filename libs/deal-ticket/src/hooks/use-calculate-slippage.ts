@@ -16,7 +16,7 @@ interface Props {
   order: OrderSubmissionBody['orderSubmission'];
 }
 
-const useCalculateSlippage = ({ marketId, order }: Props) => {
+export const useCalculateSlippage = ({ marketId, order }: Props) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const { data } = useOrderBookData({
     variables,
@@ -69,5 +69,3 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
   }
   return null;
 };
-
-export default useCalculateSlippage;

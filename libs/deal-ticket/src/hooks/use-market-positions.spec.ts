@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import useMarketPositions from './use-market-positions';
+import { useMarketPositions } from './use-market-positions';
 
 let mockNotEmptyData = {
   party: {

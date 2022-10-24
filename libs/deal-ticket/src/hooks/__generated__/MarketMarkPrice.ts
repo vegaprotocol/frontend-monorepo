@@ -8,7 +8,7 @@ export type MarketMarkPriceQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketMarkPriceQuery = { __typename?: 'Query', market?: { __typename?: 'Market', decimalPlaces: number, data?: { __typename?: 'MarketData', markPrice: string } | null } | null };
+export type MarketMarkPriceQuery = { __typename?: 'Query', market?: { __typename?: 'Market', decimalPlaces: number, data?: { __typename?: 'MarketData', markPrice: string, market: { __typename?: 'Market', id: string } } | null } | null };
 
 
 export const MarketMarkPriceDocument = gql`
@@ -17,6 +17,9 @@ export const MarketMarkPriceDocument = gql`
     decimalPlaces
     data {
       markPrice
+      market {
+        id
+      }
     }
   }
 }

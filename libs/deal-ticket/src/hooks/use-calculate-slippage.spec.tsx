@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import useCalculateSlippage from './use-calculate-slippage';
+import { useCalculateSlippage } from './use-calculate-slippage';
 
 const mockData = {
   decimalPlaces: 0,

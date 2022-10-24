@@ -23,16 +23,20 @@ const expectedDate = (expected: string) => new Date(expected).toLocaleString();
 
 const renderComponent = () => {
   const register = jest.fn();
+  const setValue = jest.fn();
   render(
     <ProposalFormVoteAndEnactmentDeadline
+      onVoteMinMax={setValue}
       voteRegister={register('proposalVoteDeadline')}
       voteErrorMessage={undefined}
       voteMinClose={minVoteDeadline}
       voteMaxClose={maxVoteDeadline}
+      onEnactMinMax={setValue}
       enactmentRegister={register('proposalEnactmentDeadline')}
       enactmentErrorMessage={undefined}
       enactmentMinClose={minEnactDeadline}
       enactmentMaxClose={maxEnactDeadline}
+      onValidationMinMax={setValue}
       validationRequired={true}
       validationRegister={register('proposalValidationDeadline')}
       validationErrorMessage={undefined}
