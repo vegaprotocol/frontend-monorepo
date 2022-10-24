@@ -40,7 +40,6 @@ export const Continuous = Template.bind({});
 Continuous.args = {
   numberOfSellRows: 100,
   numberOfBuyRows: 100,
-  middle: 1000,
   bestStaticBidPrice: 1000,
   bestStaticOfferPrice: 1000,
   decimalPlaces: 3,
@@ -51,7 +50,6 @@ export const Auction = Template.bind({});
 Auction.args = {
   numberOfSellRows: 100,
   numberOfBuyRows: 100,
-  middle: 122900,
   bestStaticBidPrice: 122905,
   bestStaticOfferPrice: 122895,
   decimalPlaces: 3,
@@ -64,7 +62,6 @@ export const Empty = Template.bind({});
 Empty.args = {
   numberOfSellRows: 0,
   numberOfBuyRows: 0,
-  middle: 0,
   bestStaticBidPrice: 0,
   bestStaticOfferPrice: 0,
   decimalPlaces: 3,
