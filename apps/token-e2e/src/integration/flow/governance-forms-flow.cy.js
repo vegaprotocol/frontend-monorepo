@@ -2,7 +2,6 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
   '[data-testid="proposal-validation-deadline"]';
-const proposalEnactmentDeadline = '[data-testid="proposal-enactment-deadline"]';
 const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
 const proposalMarketSelect = '[data-testid="proposal-market-select"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -15,7 +14,6 @@ const newProposedParameterValue =
 const minVoteDeadline = '[data-testid="min-vote"]';
 const maxVoteDeadline = '[data-testid="max-vote"]';
 const minValidationDeadline = '[data-testid="min-validation"]';
-const maxValidationDeadline = '[data-testid="max-validation"]';
 const minEnactDeadline = '[data-testid="min-enactment"]';
 const maxEnactDeadline = '[data-testid="max-enactment"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
@@ -180,7 +178,7 @@ context(
           delay: 2,
         });
       });
-      cy.get(minVoteDeadline).click()
+      cy.get(minVoteDeadline).click();
       cy.get(minValidationDeadline).click();
       cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
@@ -217,18 +215,18 @@ context(
 
     it('Able to submit update asset proposal using min deadline', function () {
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
-      enterUpdateAssetProposalDetails()
-      cy.get(minVoteDeadline).click()
+      enterUpdateAssetProposalDetails();
+      cy.get(minVoteDeadline).click();
       cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
     });
 
-    // Not working because of bug
+    // Skipping until #1837 is fixed
     it.skip('Able to submit update asset proposal using max deadline', function () {
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
-      enterUpdateAssetProposalDetails()
-      cy.get(maxVoteDeadline).click()
+      enterUpdateAssetProposalDetails();
+      cy.get(maxVoteDeadline).click();
       cy.get(maxEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
