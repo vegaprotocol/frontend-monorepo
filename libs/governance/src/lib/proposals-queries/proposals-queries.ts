@@ -2,12 +2,12 @@ import compact from 'lodash/compact';
 import filter from 'lodash/filter';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
-import { ProposalState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 type Proposal = {
   __typename: 'Proposal';
   id: string | null;
-  state: ProposalState;
+  state: Schema.ProposalState;
   terms: {
     enactmentDatetime: string | null;
     closingDatetime: string;
@@ -46,7 +46,7 @@ export const getNotRejectedProposals = (data?: ProposalsConnection) => {
   return flow([
     compact,
     (arr: Proposal[]) =>
-      filter(arr, ({ state }) => state !== ProposalState.STATE_REJECTED),
+      filter(arr, ({ state }) => state !== Schema.ProposalState.STATE_REJECTED),
     orderByDate,
   ])(proposals);
 };
@@ -56,7 +56,7 @@ export const getRejectedProposals = (data?: ProposalsConnection) => {
   return flow([
     compact,
     (arr: Proposal[]) =>
-      filter(arr, ({ state }) => state === ProposalState.STATE_REJECTED),
+      filter(arr, ({ state }) => state === Schema.ProposalState.STATE_REJECTED),
     orderByDate,
   ])(proposals);
 };

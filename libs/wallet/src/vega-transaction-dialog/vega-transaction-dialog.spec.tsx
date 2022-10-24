@@ -7,7 +7,12 @@ import { VegaTransactionDialog } from './vega-transaction-dialog';
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
     VEGA_EXPLORER_URL: 'https://test.explorer.vega.network',
+    VEGA_ENV: 'TESTNET',
   }),
+  Networks: {
+    MAINNET: 'MAINNET',
+    TESTNET: 'TESTNET',
+  },
 }));
 
 describe('VegaTransactionDialog', () => {
@@ -32,6 +37,9 @@ describe('VegaTransactionDialog', () => {
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/confirm/i);
     expect(screen.getByTestId(VegaTxStatus.Requested)).toHaveTextContent(
       /please open your wallet/i
+    );
+    expect(screen.getByTestId('testnet-transaction-info')).toHaveTextContent(
+      /^\[This is TESTNET transaction only\]$/
     );
   });
 

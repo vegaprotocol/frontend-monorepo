@@ -6,6 +6,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
   useProposalSubmit,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -117,10 +118,17 @@ export const ProposeUpdateMarket = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<UpdateMarketProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: UpdateMarketProposalFormFields) => {
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_updateMarket_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -133,10 +141,14 @@ export const ProposeUpdateMarket = () => {
             ...JSON.parse(fields.proposalTerms),
           },
         },
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
-          fields.proposalEnactmentDeadline
+          fields.proposalEnactmentDeadline,
+          isVoteDeadlineAtMinimum
         ),
       },
     });
@@ -269,6 +281,7 @@ export const ProposeUpdateMarket = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
@@ -279,6 +292,7 @@ export const ProposeUpdateMarket = () => {
                   voteMaxClose={
                     params.governance_proposal_updateMarket_maxClose
                   }
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}

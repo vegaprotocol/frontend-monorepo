@@ -38,7 +38,7 @@ const STATS_QUERY = gql`
       appVersion
       chainVersion
       chainId
-      upTime
+      genesisTime
     }
   }
 `;

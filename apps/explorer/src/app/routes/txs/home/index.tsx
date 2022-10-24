@@ -13,7 +13,7 @@ export const TxsList = () => {
     <section className="md:p-2 lg:p-4 xl:p-6">
       <RouteTitle>{t('Transactions')}</RouteTitle>
       <BlocksRefetch refetch={refreshTxs} />
-      <TxsStatsInfo className="my-8 py-8" />
+      <TxsStatsInfo className="!my-12 py-8" />
       <TxsInfiniteList
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}

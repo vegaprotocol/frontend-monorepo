@@ -1,4 +1,4 @@
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
@@ -85,16 +85,23 @@ interface VegaDialogProps {
  * Default dialog content
  */
 export const VegaDialog = ({ transaction }: VegaDialogProps) => {
-  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const { VEGA_EXPLORER_URL, VEGA_ENV } = useEnvironment();
 
   let content = null;
   if (transaction.status === VegaTxStatus.Requested) {
     content = (
-      <p data-testid={transaction.status}>
-        {t(
-          'Please open your wallet application and confirm or reject the transaction'
+      <>
+        <p data-testid={transaction.status}>
+          {t(
+            'Please open your wallet application and confirm or reject the transaction'
+          )}
+        </p>
+        {VEGA_ENV !== Networks.MAINNET && (
+          <p data-testid="testnet-transaction-info">
+            {t('[This is %s transaction only]').replace('%s', VEGA_ENV)}
+          </p>
         )}
-      </p>
+      </>
     );
   }
 
