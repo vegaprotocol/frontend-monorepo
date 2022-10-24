@@ -12,7 +12,7 @@ import type {
   MarketDepthUpdateSubscription,
 } from './__generated___/MarketDepth';
 
-const sequenceNumbers: Record<string, string> = {};
+const sequenceNumbers: Record<string, number> = {};
 
 const update: Update<
   ReturnType<typeof getData>,
@@ -25,7 +25,14 @@ const update: Update<
     if (delta.marketId !== data.id) {
       continue;
     }
-    if (delta.previousSequenceNumber !== sequenceNumbers[delta.marketId]) {
+    const currentSequenceNumber = Number(delta.sequenceNumber);
+    if (currentSequenceNumber <= sequenceNumbers[delta.marketId]) {
+      return data;
+    }
+    if (
+      delta.previousSequenceNumber !==
+      sequenceNumbers[delta.marketId].toString()
+    ) {
       captureException(
         new Error(
           `Sequence number gap in marketsDepthUpdate for {data.id}, {sequenceNumbers[delta.marketId]} - {delta.previousSequenceNumber}`
@@ -35,7 +42,7 @@ const update: Update<
       reload();
       return;
     }
-    sequenceNumbers[delta.marketId] = delta.sequenceNumber;
+    sequenceNumbers[delta.marketId] = Number(currentSequenceNumber);
     const updatedData = {
       ...data,
       depth: { ...data.depth },
@@ -53,8 +60,9 @@ const update: Update<
 
 const getData = (responseData: MarketDepthQuery) => {
   if (responseData.market?.id) {
-    sequenceNumbers[responseData.market.id] =
-      responseData.market.depth.sequenceNumber;
+    sequenceNumbers[responseData.market.id] = Number(
+      responseData.market.depth.sequenceNumber
+    );
   }
   return responseData.market;
 };
