@@ -230,7 +230,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 
   it('order connect vega wallet button should connect', () => {
     cy.getByTestId(toggleLimit).click();
-    cy.getByTestId(orderPriceField).type('101');
+    cy.getByTestId(orderPriceField).clear().type('101');
     cy.getByTestId('order-connect-wallet').click();
     cy.getByTestId('dialog-content').should('be.visible');
     cy.getByTestId('connectors-list')

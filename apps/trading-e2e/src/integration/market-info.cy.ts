@@ -172,7 +172,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', '/oracles');
   });
 
-  it.only('proposal displayed', () => {
+  it('proposal displayed', () => {
     cy.getByTestId(marketTitle).contains('Proposal').click();
 
     cy.getByTestId(externalLink)

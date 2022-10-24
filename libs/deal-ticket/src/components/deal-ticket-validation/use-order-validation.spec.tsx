@@ -12,7 +12,7 @@ import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 
 jest.mock('@vegaprotocol/wallet');
 

@@ -11,14 +11,14 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
-import { PROPOSAL_EVENT_SUB } from '@vegaprotocol/governance';
-import type { ProposalEvent } from '@vegaprotocol/governance';
+import { ProposalEventDocument } from '@vegaprotocol/governance';
+import type { ProposalEventSubscription } from '@vegaprotocol/governance';
 
 describe('Raw proposal form', () => {
   const pubKey = '0x123';
-  const mockProposalEvent: MockedResponse<ProposalEvent> = {
+  const mockProposalEvent: MockedResponse<ProposalEventSubscription> = {
     request: {
-      query: PROPOSAL_EVENT_SUB,
+      query: ProposalEventDocument,
       variables: {
         partyId: pubKey,
       },
