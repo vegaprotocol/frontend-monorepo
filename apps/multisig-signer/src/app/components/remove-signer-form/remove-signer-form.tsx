@@ -76,7 +76,7 @@ export const RemoveSignerForm = () => {
       <FormGroup
         label={t('Remove signer')}
         labelFor="remove-signer-input"
-        labelDescription={t('Public key of the signer to remove')}
+        labelDescription={t('Node ID of the signer to remove from the multisig control')}
         className="max-w-xl"
       >
         <div className="grid grid-cols-[1fr,auto] gap-2">
@@ -104,7 +104,7 @@ export const RemoveSignerForm = () => {
           {bundleNotFound && !error && (
             <InputError intent="danger">
               {t(
-                'Bundle was not found, are you sure this validator needs to be removed?'
+                'Bundle was not found, confirm the node ID is correct'
               )}
             </InputError>
           )}
