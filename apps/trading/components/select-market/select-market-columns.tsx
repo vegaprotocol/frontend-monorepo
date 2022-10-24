@@ -107,13 +107,13 @@ const headers: Column[] = [
   },
   {
     kind: ColumnKind.High24,
-    value: t('24h high'),
+    value: t('24h High'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     kind: ColumnKind.Low24,
-    value: t('24h low'),
+    value: t('24h Low'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
@@ -461,6 +461,19 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Volume,
+      value: candleVolume
+        ? addDecimalsFormatNumber(
+            candleVolume.toString(),
+            market.positionDecimalPlaces,
+            2
+          )
+        : '-',
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
+      onlyOnDetailed: true,
+      dataTestId: 'market-volume',
+    },
+    {
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
@@ -473,19 +486,6 @@ export const columnsPositionMarkets = (
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
-    },
-    {
-      kind: ColumnKind.Volume,
-      value: candleVolume
-        ? addDecimalsFormatNumber(
-            candleVolume.toString(),
-            market.positionDecimalPlaces,
-            2
-          )
-        : '-',
-      className: `${cellClassNames} hidden lg:table-cell font-mono`,
-      onlyOnDetailed: true,
-      dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.Fee,
