@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -18,7 +18,7 @@ import {
   marketListProvider,
 } from '@vegaprotocol/market-list';
 
-import type { LiquidityProvisionMarkets } from './__generated__';
+import type { LiquidityProvisionMarkets } from './__generated__/LiquidityProvisionMarkets';
 import { LiquidityProvisionMarketsDocument } from './__generated___/MarketsLiquidity';
 
 import {
@@ -97,7 +97,7 @@ const liquidityProvisionProvider = makeDerivedDataProvider<Markets, never>(
     (callback, client, variables) =>
       marketsCandlesProvider(callback, client, {
         ...variables,
-        interval: Interval.INTERVAL_I1D,
+        interval: Schema.Interval.INTERVAL_I1D,
       }),
     liquidityMarketsProvider,
   ],
@@ -116,7 +116,7 @@ export const useMarketsLiquidity = () => {
   const variables = useMemo(() => {
     return {
       since: new Date(yesterday).toISOString(),
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
     };
   }, [yesterday]);
 
