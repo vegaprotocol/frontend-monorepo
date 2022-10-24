@@ -19,8 +19,8 @@ export const Header = ({
           </span>
         </Link>
       </div>
-      <h1 className="font-alpha text-5xl mb-8">{name}</h1>
-      <p className="font-alpha text-4xl mb-12">{symbol}</p>
+      <h1 className="font-alpha text-5xl mb-6">{name}</h1>
+      <p className="font-alpha text-4xl">{symbol}</p>
     </div>
   );
 };

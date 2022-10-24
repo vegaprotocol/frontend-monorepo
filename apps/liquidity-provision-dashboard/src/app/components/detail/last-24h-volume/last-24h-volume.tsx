@@ -97,10 +97,14 @@ export const Last24hVolume = ({
 
   return (
     <div>
-      {!error && candleVolume
-        ? addDecimalsFormatNumber(candleVolume, decimals)
-        : '0'}{' '}
-      ({displayChange(volumeChange)})
+      <span className="text-3xl">
+        {!error && candleVolume
+          ? addDecimalsFormatNumber(candleVolume, decimals)
+          : '0'}{' '}
+      </span>
+      <span className="text-lg text-[#626262]">
+        ({displayChange(volumeChange)})
+      </span>
     </div>
   );
 };
