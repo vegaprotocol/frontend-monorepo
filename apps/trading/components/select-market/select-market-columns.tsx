@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDecimalsFormatNumber,
-  formatNumberPercentage,
   PriceCell,
   signedNumberCssClass,
   t,
@@ -13,19 +12,15 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
-import BigNumber from 'bignumber.js';
 import Link from 'next/link';
-import {
-  calcCandleHigh,
-  calcCandleLow,
-  totalFees,
-} from '@vegaprotocol/market-list';
+import { calcCandleHigh, calcCandleLow } from '@vegaprotocol/market-list';
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   MarketWithData,
   MarketWithCandles,
 } from '@vegaprotocol/market-list';
 import isNil from 'lodash/isNil';
+import { FeesCell } from '@vegaprotocol/market-info';
 
 type Market = MarketWithData & MarketWithCandles;
 
@@ -501,44 +496,4 @@ export const columnsPositionMarkets = (
     },
   ];
   return selectMarketColumns;
-};
-
-const FeesCell = ({
-  feeFactors,
-}: {
-  feeFactors: Market['fees']['factors'];
-}) => (
-  <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
-    <span>{totalFees(feeFactors) ?? '-'}</span>
-  </Tooltip>
-);
-
-export const FeesBreakdown = ({
-  feeFactors,
-}: {
-  feeFactors?: Market['fees']['factors'];
-}) => {
-  if (!feeFactors) return null;
-  return (
-    <dl className="grid grid-cols-2 gap-x-2">
-      <dt>{t('Infrastructure fee')}</dt>
-      <dd className="text-right">
-        {formatNumberPercentage(
-          new BigNumber(feeFactors.infrastructureFee).times(100)
-        )}
-      </dd>
-      <dt>{t('Liquidity fee')}</dt>
-      <dd className="text-right">
-        {formatNumberPercentage(
-          new BigNumber(feeFactors.liquidityFee).times(100)
-        )}
-      </dd>
-      <dt>{t('Maker fee')}</dt>
-      <dd className="text-right">
-        {formatNumberPercentage(new BigNumber(feeFactors.makerFee).times(100))}
-      </dd>
-      <dt>{t('Total fees')}</dt>
-      <dd className="text-right">{totalFees(feeFactors)}</dd>
-    </dl>
-  );
 };

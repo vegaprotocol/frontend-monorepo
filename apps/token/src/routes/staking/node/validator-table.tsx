@@ -64,6 +64,10 @@ export const ValidatorTable = ({
         </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
+        <span>{t('STATUS')}</span>
+        <span>{node.status}</span>
+      </KeyValueTableRow>
+      <KeyValueTableRow>
         <span>{t('IP ADDRESS')}</span>
         <span>{node.location}</span>
       </KeyValueTableRow>

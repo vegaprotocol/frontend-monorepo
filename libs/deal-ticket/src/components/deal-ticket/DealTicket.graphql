@@ -16,6 +16,13 @@ fragment DealTicketMarket on Market {
     auctionEnd
     trigger
   }
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+  }
   tradableInstrument {
     instrument {
       id

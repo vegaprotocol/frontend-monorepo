@@ -1,7 +1,7 @@
 import type { Market } from '@vegaprotocol/market-list';
 import { useEffect, useState } from 'react';
 
-const useMarketFilters = (data: Market[]) => {
+export const useMarketFilters = (data: Market[]) => {
   const [products, setProducts] = useState<string[]>([]);
   const [assetsPerProduct, setAssetsPerProduct] = useState<
     Record<string, string[]>
@@ -36,5 +36,3 @@ const useMarketFilters = (data: Market[]) => {
   }, [data]);
   return { products, assetsPerProduct };
 };
-
-export default useMarketFilters;
