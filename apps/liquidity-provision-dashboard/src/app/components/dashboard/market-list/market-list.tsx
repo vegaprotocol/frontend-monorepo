@@ -16,16 +16,12 @@ import {
   formatWithAsset,
   displayChange,
 } from '@vegaprotocol/liquidity';
-import {
-  MarketTradingModeMapping,
-  MarketTradingMode,
-  AuctionTrigger,
-  AuctionTriggerMapping,
-} from '@vegaprotocol/types';
+import type { MarketTradingMode } from '@vegaprotocol/types';
 
 import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
 import { HealthDialog } from '../../health-dialog';
+import { Status } from '../../status';
 
 const marketNameCellRenderer = ({
   value,
@@ -133,20 +129,16 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Status')}
             field="tradingMode"
-            valueFormatter={({
+            cellRenderer={({
               value,
               data,
             }: {
               value: MarketTradingMode;
               data: Market;
             }) => {
-              return value ===
-                MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-                data.data?.trigger &&
-                data.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-                ? `${MarketTradingModeMapping[value]}
-                     - ${AuctionTriggerMapping[data.data.trigger]}`
-                : MarketTradingModeMapping[value];
+              return (
+                <Status trigger={data.data?.trigger} tradingMode={value} />
+              );
             }}
           />
 

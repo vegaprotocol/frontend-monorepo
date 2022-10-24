@@ -3,16 +3,11 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
-import {
-  MarketTradingModeMapping,
-  MarketTradingMode,
-  AuctionTrigger,
-  AuctionTriggerMapping,
-} from '@vegaprotocol/types';
+import type { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
-
 import { Last24hVolume } from '../last-24h-volume';
+import { Status } from '../../status';
 
 interface Levels {
   fee: string;
@@ -42,16 +37,6 @@ export const Market = ({
   trigger?: AuctionTrigger;
 }) => {
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
-
-  const getStatus = () => {
-    if (!tradingMode) return '';
-    if (tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION) {
-      if (trigger && trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED) {
-        return `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`;
-      }
-    }
-    return MarketTradingModeMapping[tradingMode];
-  };
 
   return (
     <div>
@@ -97,7 +82,13 @@ export const Market = ({
                     : '0'}
                 </span>
               </td>
-              <td className="px-4">{getStatus()}</td>
+              <td className="px-4">
+                <Status
+                  trigger={trigger}
+                  tradingMode={tradingMode}
+                  size="large"
+                />
+              </td>
               <td className="px-4">
                 {tradingMode && settlementAsset?.decimals && feeLevels && (
                   <HealthBar
