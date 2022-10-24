@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
-import { getIntentBorder, getIntentTopLabel } from '../../utils/intent';
+import { getIntentBorder } from '../../utils/intent';
 import { Icon } from '../icon';
 
 import type { ReactNode } from 'react';
@@ -16,7 +16,6 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   size?: 'small' | 'medium';
-  topLabel?: string | ReactNode;
 }
 
 export function Dialog({
@@ -28,7 +27,6 @@ export function Dialog({
   icon,
   intent,
   size = 'small',
-  topLabel,
 }: DialogProps) {
   const contentClasses = classNames(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-scroll',
@@ -68,16 +66,6 @@ export function Dialog({
           onCloseAutoFocus={onCloseAutoFocus}
         >
           <div className={wrapperClasses}>
-            {topLabel && (
-              <div
-                className={classNames(
-                  'absolute w-full top-0 md:top-2 left-0',
-                  getIntentTopLabel(intent)
-                )}
-              >
-                {topLabel}
-              </div>
-            )}
             {onChange && (
               <DialogPrimitives.Close
                 className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
