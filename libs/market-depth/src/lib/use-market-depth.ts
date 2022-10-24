@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import dataProvider from './market-depth-provider';
+import { marketDepthProvider } from './market-depth-provider';
 import type { MarketDepthQuery } from './__generated___/MarketDepth';
 
 interface Props {
@@ -39,7 +39,7 @@ export const useOrderBookData = ({
   );
 
   const { data, error, loading } = useDataProvider({
-    dataProvider,
+    dataProvider: marketDepthProvider,
     update,
     variables,
   });
