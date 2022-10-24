@@ -1,5 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import throttle from 'lodash/throttle';
+import {
+  calcCandleVolume,
+  marketCandlesProvider,
+  marketProvider,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   t,
@@ -7,18 +10,16 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
+import throttle from 'lodash/throttle';
+import { useCallback, useMemo, useRef, useState } from 'react';
+
+import * as constants from '../constants';
+import { HeaderStat } from '../header';
+
 import type {
   SingleMarketFieldsFragment,
   Candle,
 } from '@vegaprotocol/market-list';
-import { calcCandleVolume } from '@vegaprotocol/market-list';
-import {
-  marketCandlesProvider,
-  marketProvider,
-} from '@vegaprotocol/market-list';
-import { HeaderStat } from '../header';
-import * as constants from '../constants';
-
 export const Last24hVolume = ({ marketId }: { marketId: string }) => {
   const [candleVolume, setCandleVolume] = useState<string>();
   const yesterday = useYesterday();
@@ -72,7 +73,15 @@ export const Last24hVolume = ({ marketId }: { marketId: string }) => {
   });
 
   return (
-    <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
+    <HeaderStat
+      heading={t('Volume (24h)')}
+      testId="market-volume"
+      description={
+        error && candleVolume && data?.positionDecimalPlaces
+          ? t('The total amount of assets traded in the last 24 hours.')
+          : null
+      }
+    >
       {!error && candleVolume && data?.positionDecimalPlaces
         ? addDecimalsFormatNumber(candleVolume, data.positionDecimalPlaces)
         : '-'}
