@@ -1,15 +1,20 @@
+import { accountsDataProvider } from '@vegaprotocol/accounts';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import produce from 'immer';
-import { AccountType } from '@vegaprotocol/types';
-import { LiquidityProviderFeeShareUpdateDocument } from './__generated___/MarketLiquidity';
+
 import {
   LiquidityProviderFeeShareDocument,
+  LiquidityProviderFeeShareUpdateDocument,
+  LiquidityProvisionsDocument,
+  LiquidityProvisionsUpdateDocument,
   MarketLpDocument,
 } from './__generated___/MarketLiquidity';
+
 import type {
   MarketLpQuery,
   LiquidityProviderFeeShareFieldsFragment,
@@ -19,11 +24,7 @@ import type {
   LiquidityProvisionsQuery,
   LiquidityProvisionsUpdateSubscription,
 } from './__generated___/MarketLiquidity';
-import { LiquidityProvisionsUpdateDocument } from './__generated___/MarketLiquidity';
-import { LiquidityProvisionsDocument } from './__generated___/MarketLiquidity';
 import type { Account } from '@vegaprotocol/accounts';
-import { accountsDataProvider } from '@vegaprotocol/accounts';
-
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
   LiquidityProvisionFieldsFragment[],
@@ -70,8 +71,9 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   },
   getDelta: (
     subscriptionData: LiquidityProvisionsUpdateSubscription
-  ): LiquidityProvisionsUpdateSubscription['liquidityProvisions'] =>
-    subscriptionData.liquidityProvisions,
+  ): LiquidityProvisionsUpdateSubscription['liquidityProvisions'] => {
+    return subscriptionData.liquidityProvisions;
+  },
 });
 
 export const marketLiquidityDataProvider = makeDataProvider<
@@ -81,7 +83,9 @@ export const marketLiquidityDataProvider = makeDataProvider<
   never
 >({
   query: MarketLpDocument,
-  getData: (responseData: MarketLpQuery) => responseData,
+  getData: (responseData: MarketLpQuery) => {
+    return responseData;
+  },
 });
 
 export const liquidityFeeShareDataProvider = makeDataProvider<
@@ -116,9 +120,12 @@ export const liquidityFeeShareDataProvider = makeDataProvider<
       });
     });
   },
-  getData: (data) => data.market?.data?.liquidityProviderFeeShare || [],
-  getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) =>
-    subscriptionData.marketsData[0].liquidityProviderFeeShare,
+  getData: (data) => {
+    return data.market?.data?.liquidityProviderFeeShare || [];
+  },
+  getDelta: (subscriptionData: LiquidityProviderFeeShareUpdateSubscription) => {
+    return subscriptionData.marketsData[0].liquidityProviderFeeShare;
+  },
 });
 
 export const lpAggregatedDataProvider = makeDerivedDataProvider(
@@ -128,7 +135,9 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
         marketId: variables?.marketId,
       }),
     (callback, client, variables) =>
-      accountsDataProvider(callback, client, { partyId: variables?.partyId }),
+      accountsDataProvider(callback, client, {
+        partyId: variables?.partyId || '', // party Id can not be null
+      }),
     marketLiquidityDataProvider,
     liquidityFeeShareDataProvider,
   ],
@@ -149,14 +158,10 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider(
 
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
+  accounts: Account[],
   marketLiquidity: MarketLpQuery,
-  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
-  accounts: Account[]
+  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[]
 ): LiquidityProvisionData[] => {
-  // liquidityProvisions and liquidityFeeShare are two arrays that need to be merged based on the party id
-  // liquidityProvisions comes from a subscription or a query
-  // liquidityFeeShare comes from a query
-  // accounts come from subscription or query
   return liquidityProvisions.map((lp) => {
     const market = marketLiquidity?.market;
     const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
@@ -169,10 +174,7 @@ export const getLiquidityProvision = (
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
       balance:
         accounts
-          ?.filter(
-            (a) => a?.type === AccountType.ACCOUNT_TYPE_BOND
-            // && a?.party.id === lp.party.id
-          )
+          ?.filter((a) => a?.type === AccountType.ACCOUNT_TYPE_BOND)
           ?.reduce(
             (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)

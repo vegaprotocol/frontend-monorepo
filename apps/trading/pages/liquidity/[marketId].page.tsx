@@ -1,6 +1,10 @@
-import { lpAggregatedDataProvider } from '@vegaprotocol/liquidity';
-import { marketLiquidityDataProvider } from '@vegaprotocol/liquidity';
-import { LiquidityTable } from '@vegaprotocol/liquidity';
+import {
+  liquidityProvisionsDataProvider,
+  LiquidityTable,
+  lpAggregatedDataProvider,
+  marketLiquidityDataProvider,
+} from '@vegaprotocol/liquidity';
+import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
   addDecimalsFormatNumber,
   NetworkParams,
@@ -8,20 +12,21 @@ import {
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
+import { Schema } from '@vegaprotocol/types';
 import {
   AsyncRenderer,
+  Link as UiToolkitLink,
   Tab,
   Tabs,
-  Link as UiToolkitLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { AgGridReact } from 'ag-grid-react';
-import { Header, HeaderStat } from '../../components/header';
-import { useRouter } from 'next/router';
-import { useRef, useMemo, useCallback } from 'react';
-import { tooltipMapping } from '@vegaprotocol/market-info';
 import Link from 'next/link';
-import { Schema } from '@vegaprotocol/types';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+
+import { Header, HeaderStat } from '../../components/header';
+
+import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 
 const LiquidityPage = ({ id }: { id?: string }) => {
@@ -39,6 +44,11 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);
+
+  const { reload } = useDataProvider({
+    dataProvider: liquidityProvisionsDataProvider,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
 
   const update = useCallback(
     ({ data }: { data: LiquidityProvisionData[] }) => {
@@ -61,12 +71,19 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     error,
   } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
-    update, // TODO only accounts should use LP party ID
+    update,
     variables: useMemo(
       () => ({ marketId, partyId: pubKey }),
       [marketId, pubKey]
     ),
   });
+
+  // To be removed when liquidityProvision subscriptions are working
+  useEffect(() => {
+    const interval = setInterval(reload, 10000);
+    return () => clearInterval(interval);
+  }, [reload]);
+
   const targetStake = marketProvision?.market?.data?.targetStake;
   const suppliedStake = marketProvision?.market?.data?.suppliedStake;
   const assetDecimalPlaces =

@@ -1,23 +1,24 @@
-import produce from 'immer';
-import type { IterableElement } from 'type-fest';
-import {
-  AccountsDocument,
-  AccountEventsDocument,
-} from './__generated___/Accounts';
-import type {
-  AccountFieldsFragment,
-  AccountsQuery,
-  AccountEventsSubscription,
-} from './__generated___/Accounts';
+import { assetsProvider } from '@vegaprotocol/assets';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
-import type { Market } from '@vegaprotocol/market-list';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import produce from 'immer';
 
-import { assetsProvider } from '@vegaprotocol/assets';
+import {
+  AccountEventsDocument,
+  AccountsDocument,
+} from './__generated___/Accounts';
+
+import type { IterableElement } from 'type-fest';
+import type {
+  AccountFieldsFragment,
+  AccountsQuery,
+  AccountEventsSubscription,
+} from './__generated___/Accounts';
+import type { Market } from '@vegaprotocol/market-list';
 import type { Asset } from '@vegaprotocol/assets';
 
 function isAccount(
@@ -76,7 +77,9 @@ const getData = (
 
 const getDelta = (
   subscriptionData: AccountEventsSubscription
-): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
+): AccountEventsSubscription['accounts'] => {
+  return subscriptionData.accounts;
+};
 
 export const accountsOnlyDataProvider = makeDataProvider<
   AccountsQuery,
