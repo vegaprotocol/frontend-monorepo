@@ -97,7 +97,7 @@ export const RemoveSignerForm = () => {
           {error && (
             <InputError intent="danger">
               {error?.message.includes('InvalidArgument')
-                ? t('Invalid node id')
+                ? t('Invalid node ID')
                 : error?.message}
             </InputError>
           )}
