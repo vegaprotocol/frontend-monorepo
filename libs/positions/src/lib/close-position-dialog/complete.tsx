@@ -100,7 +100,7 @@ const Error = ({
         <p>{reason}</p>
       ) : (
         <p>
-          {t('Something went wrong')}: {transactionResult.error}
+          {t('Transaction failed')}: {transactionResult.error}
         </p>
       )}
     </div>
