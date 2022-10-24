@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FeesCell } from '@vegaprotocol/market-info';
+import {
+  calcCandleHigh,
+  calcCandleLow,
+  calcCandleVolume,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   PriceCell,
@@ -12,21 +18,14 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
+import isNil from 'lodash/isNil';
 import Link from 'next/link';
-import {
-  calcCandleHigh,
-  calcCandleLow,
-  calcCandleVolume,
-  totalFees,
-} from '@vegaprotocol/market-list';
+
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   MarketWithData,
   MarketWithCandles,
 } from '@vegaprotocol/market-list';
-import isNil from 'lodash/isNil';
-import { FeesCell } from '@vegaprotocol/market-info';
-
 type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
