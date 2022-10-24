@@ -16,7 +16,7 @@ import {
 } from '../../../contexts/app-state/app-state-context';
 import type { Rewards } from './__generated__/Rewards';
 import { RewardInfo } from './reward-info';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
 
 export const REWARDS_QUERY = gql`
@@ -67,6 +67,9 @@ export const REWARDS_QUERY = gql`
 export const RewardsIndex = () => {
   const { t } = useTranslation();
   const { pubKey, pubKeys } = useVegaWallet();
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   const { appDispatch } = useAppState();
   const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
     variables: { partyId: pubKey },
@@ -147,12 +150,13 @@ export const RewardsIndex = () => {
           <div>
             <Button
               data-testid="connect-to-vega-wallet-btn"
-              onClick={() =>
+              onClick={() => {
                 appDispatch({
                   type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
                   isOpen: true,
-                })
-              }
+                });
+                openVegaWalletDialog();
+              }}
             >
               {t('connectVegaWallet')}
             </Button>

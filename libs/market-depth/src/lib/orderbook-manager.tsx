@@ -7,10 +7,9 @@ import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
-  MarketDepthSubscription_marketsDepthUpdate,
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
+  MarketDepthUpdateSubscription,
+  PriceLevelFieldsFragment,
+} from './__generated___/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,
@@ -32,8 +31,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const dataRef = useRef<OrderbookData>({ rows: null });
   const marketDataRef = useRef<MarketData | null>(null);
   const deltaRef = useRef<{
-    sell: MarketDepthSubscription_marketsDepthUpdate_sell[];
-    buy: MarketDepthSubscription_marketsDepthUpdate_buy[];
+    sell: PriceLevelFieldsFragment[];
+    buy: PriceLevelFieldsFragment[];
   }>({
     sell: [],
     buy: [],
@@ -63,7 +62,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta?: MarketDepthSubscription_marketsDepthUpdate[];
+      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'];
     }) => {
       if (!dataRef.current.rows) {
         return false;

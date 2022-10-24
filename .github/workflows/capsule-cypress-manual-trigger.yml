@@ -33,7 +33,7 @@ jobs:
     env:
       GO111MODULE: 'on'
       GOBIN: /home/runner/go/bin
-      VEGA_VERSION: 'v0.57.0'
+      VEGA_VERSION: 'v0.58.0'
     steps:
       #######
       ## Setup flags
@@ -49,7 +49,7 @@ jobs:
 
       # See if we capsule is needed for this project
       - name: Set capsule flag
-        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e' }}
+        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e'}}
         run: echo RUN_CAPSULE=true >> $GITHUB_ENV
 
       #######
@@ -142,7 +142,7 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: true
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
 
       ######
       ## Upload logs

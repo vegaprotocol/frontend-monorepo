@@ -236,20 +236,12 @@ describe('Deposit form', () => {
     );
 
     // Check deposit limit is displayed
-    expect(
-      screen.getByText('Balance available', { selector: 'th' })
-        .nextElementSibling
-    ).toHaveTextContent(balance.toString());
-    expect(
-      screen.getByText('Maximum total deposit amount', { selector: 'th' })
-        .nextElementSibling
-    ).toHaveTextContent(max.toString());
-    expect(
-      screen.getByText('Deposited', { selector: 'th' }).nextElementSibling
-    ).toHaveTextContent(deposited.toString());
-    expect(
-      screen.getByText('Remaining', { selector: 'th' }).nextElementSibling
-    ).toHaveTextContent(max.minus(deposited).toString());
+    expect(screen.getByTestId('BALANCE_AVAILABLE_value')).toHaveTextContent(
+      '50'
+    );
+    expect(screen.getByTestId('MAX_LIMIT_value')).toHaveTextContent('20');
+    expect(screen.getByTestId('DEPOSITED_value')).toHaveTextContent('10');
+    expect(screen.getByTestId('REMAINING_value')).toHaveTextContent('10');
 
     fireEvent.change(screen.getByLabelText('Amount'), {
       target: { value: '8' },

@@ -1,5 +1,4 @@
-export * from './__generated__/MarketDepth';
-export * from './__generated__/MarketDepthSubscription';
+export * from './__generated___/MarketDepth';
 export * from './depth-chart';
 export * from './market-depth-provider';
 export * from './orderbook-container';

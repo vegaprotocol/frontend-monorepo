@@ -3,21 +3,23 @@ import { useTranslation } from 'react-i18next';
 import {
   getClosingTimestamp,
   useProposalSubmit,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormSubheader,
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
   ProposalFormDescription,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { useNetworkParams, NetworkParams } from '@vegaprotocol/react-helpers';
+import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
@@ -43,10 +45,17 @@ export const ProposeFreeform = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<FreeformProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: FreeformProposalFormFields) => {
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_freeform_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -54,7 +63,10 @@ export const ProposeFreeform = () => {
       },
       terms: {
         newFreeform: {},
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
       },
     });
   };
@@ -65,11 +77,12 @@ export const ProposeFreeform = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_freeform_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
@@ -112,6 +125,7 @@ export const ProposeFreeform = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}

@@ -3,7 +3,6 @@ import {
   MarketTradingMode,
   AuctionTrigger,
 } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 const orderSizeField = 'order-size';
@@ -116,16 +115,14 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
   );
   cy.getByTestId(orderTransactionHash)
     .invoke('attr', 'href')
-    .should('include', 'https://explorer.fairground.wtf/txs/0xtest-tx-hash');
+    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
   cy.getByTestId('dialog-close').click();
 };
 
 describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
@@ -205,17 +202,16 @@ describe('must submit order', { tags: '@smoke' }, () => {
 
 describe('deal ticket validation', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
   });
 
   it('must not place an order if wallet is not connected', () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
-    cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).contains('No public key selected');
+    cy.getByTestId('order-connect-wallet').should('exist');
+    cy.getByTestId(placeOrderBtn).should('not.exist');
+    cy.getByTestId(errorMessage).should('not.exist');
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -231,13 +227,30 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId(toggleLimit).click().children('input').should('be.checked');
     cy.getByTestId(toggleMarket).click().children('input').should('be.checked');
   });
+
+  it('order connect vega wallet button should connect', () => {
+    cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderPriceField).clear().type('101');
+    cy.getByTestId('order-connect-wallet').click();
+    cy.getByTestId('dialog-content').should('be.visible');
+    cy.getByTestId('connectors-list')
+      .find('[data-testid="connector-gui"]')
+      .click();
+    const form = 'rest-connector-form';
+    const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
+    const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
+    cy.getByTestId(form).find('#wallet').click().type(walletName);
+    cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
+    cy.getByTestId(form).find('button[type=submit]').click();
+    cy.getByTestId(placeOrderBtn).should('be.visible');
+    cy.getByTestId(toggleLimit).children('input').should('be.checked');
+    cy.getByTestId(orderPriceField).should('have.value', '101');
+  });
 });
 
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
@@ -264,9 +277,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleLimit).click();
@@ -315,14 +326,32 @@ describe('limit order validations', { tags: '@smoke' }, () => {
         );
       });
     });
+
+    it('selections should be remembered', () => {
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTT');
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'IOC')[0].text
+      );
+      cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_FOK');
+      cy.getByTestId(toggleLimit).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'GTT')[0].text
+      );
+      cy.getByTestId(toggleMarket).click();
+      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+        'have.text',
+        TIFlist.filter((item) => item.code === 'FOK')[0].text
+      );
+    });
   });
 });
 
 describe('market order validations', { tags: '@smoke' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleMarket).click();
@@ -373,14 +402,11 @@ describe('market order validations', { tags: '@smoke' }, () => {
 
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(
-        req,
-        MarketState.STATE_SUSPENDED,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-      );
-    });
+    cy.mockTradingPage(
+      MarketState.STATE_SUSPENDED,
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+    );
     cy.visit('/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();

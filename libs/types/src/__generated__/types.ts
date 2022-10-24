@@ -165,6 +165,36 @@ export type AggregatedBalanceEdge = {
   node: AggregatedBalance;
 };
 
+export type AggregatedLedgerEntries = {
+  __typename?: 'AggregatedLedgerEntries';
+  /** Account type, if query was grouped by account type - else null */
+  accountType?: Maybe<AccountType>;
+  /** Asset identifier, if query was grouped by asset - else null */
+  assetId?: Maybe<Scalars['ID']>;
+  id?: Maybe<Scalars['ID']>;
+  /** Market identifier, if query was grouped by market - else null */
+  marketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by party - else null */
+  partyId?: Maybe<Scalars['ID']>;
+  /** Net amount of ledger entries for the accounts specified in the filter at this time */
+  quantity: Scalars['String'];
+  transferType?: Maybe<Scalars['String']>;
+  /** RFC3339Nano time from at which this ledger entries records were relevant */
+  vegaTime: Scalars['String'];
+};
+
+export type AggregatedLedgerEntriesConnection = {
+  __typename?: 'AggregatedLedgerEntriesConnection';
+  edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
+  pageInfo: PageInfo;
+};
+
+export type AggregatedLedgerEntriesEdge = {
+  __typename?: 'AggregatedLedgerEntriesEdge';
+  cursor: Scalars['String'];
+  node: AggregatedLedgerEntries;
+};
+
 /** Represents an asset in Vega */
 export type Asset = {
   __typename?: 'Asset';
@@ -342,6 +372,8 @@ export enum BusEventType {
   TimeUpdate = 'TimeUpdate',
   /** A trade has been created */
   Trade = 'Trade',
+  /** The results from processing at transaction */
+  TransactionResult = 'TransactionResult',
   /** A balance has been transferred between accounts */
   TransferResponses = 'TransferResponses',
   /** A vote has been placed on a governance proposal */
@@ -809,7 +841,7 @@ export type EthereumKeyRotationsConnection = {
 };
 
 /** Union type for wrapped events in stream PROPOSAL is mapped to governance data, something to keep in mind */
-export type Event = Account | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransferResponses | Vote | Withdrawal;
+export type Event = Account | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
 
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
@@ -847,10 +879,10 @@ export type Filter = {
 /** A Future product */
 export type Future = {
   __typename?: 'Future';
-  /** The binding between the oracle spec and the settlement price */
+  /** The binding between the oracle spec and the settlement data */
   oracleSpecBinding: OracleSpecToFutureBinding;
-  /** The oracle spec describing the oracle data of interest for settlement price. */
-  oracleSpecForSettlementPrice: OracleSpec;
+  /** The oracle spec describing the oracle data of interest for settlement. */
+  oracleSpecForSettlementData: OracleSpec;
   /** The oracle spec describing the oracle data of interest for trading termination. */
   oracleSpecForTradingTermination: OracleSpec;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
@@ -865,11 +897,11 @@ export type FutureProduct = {
   __typename?: 'FutureProduct';
   /**
    * OracleSpecToFutureBinding tells on which property oracle data should be
-   * used as settlement price.
+   * used as settlement data.
    */
   oracleSpecBinding: OracleSpecToFutureBinding;
-  /** Describes the oracle data that an instrument wants to get from the oracle engine for settlement price. */
-  oracleSpecForSettlementPrice: OracleSpecConfiguration;
+  /** Describes the oracle data that an instrument wants to get from the oracle engine for settlement data. */
+  oracleSpecForSettlementData: OracleSpecConfiguration;
   /** Describes the oracle data that an instrument wants to get from the oracle engine for trading termination. */
   oracleSpecForTradingTermination: OracleSpecConfiguration;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
@@ -878,6 +910,11 @@ export type FutureProduct = {
   settlementAsset: Asset;
   /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
   settlementDataDecimals: Scalars['Int'];
+};
+
+export type GroupOptions = {
+  ByAccountField?: InputMaybe<Array<InputMaybe<AccountField>>>;
+  ByLedgerEntryField?: InputMaybe<Array<InputMaybe<LedgerEntryField>>>;
 };
 
 /** Describes something that can be traded on Vega */
@@ -961,16 +998,28 @@ export type KeyRotationEdge = {
 
 export type LedgerEntry = {
   __typename?: 'LedgerEntry';
+  /** Account from which the asset was taken */
+  accountFromId: AccountDetails;
+  /** Account to which the balance was transferred */
+  accountToId: AccountDetails;
   /** The amount transferred */
   amount: Scalars['String'];
-  /** Account from which the asset was taken */
-  fromAccount: AccountDetails;
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['String'];
-  /** Account to which the balance was transferred */
-  toAccount: AccountDetails;
   /** Type of ledger entry */
   type: Scalars['String'];
+};
+
+export enum LedgerEntryField {
+  TransferType = 'TransferType'
+}
+
+/** Filter for historical entry ledger queries */
+export type LedgerEntryFilter = {
+  AccountFromFilters?: InputMaybe<Array<InputMaybe<AccountFilter>>>;
+  AccountToFilters?: InputMaybe<Array<InputMaybe<AccountFilter>>>;
+  CloseOnAccountFilters?: InputMaybe<Scalars['Boolean']>;
+  TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
 
 /** Configuration of a market liquidity monitoring parameters */
@@ -2073,11 +2122,11 @@ export enum OracleSpecStatus {
 
 /**
  * OracleSpecToFutureBinding tells on which property oracle data should be
- * used as settlement price and trading termination.
+ * used as settlement data and trading termination.
  */
 export type OracleSpecToFutureBinding = {
   __typename?: 'OracleSpecToFutureBinding';
-  settlementPriceProperty: Scalars['String'];
+  settlementDataProperty: Scalars['String'];
   tradingTerminationProperty: Scalars['String'];
 };
 
@@ -2722,7 +2771,7 @@ export type Position = {
   marginsConnection?: Maybe<MarginConnection>;
   /** Market relating to this position */
   market: Market;
-  /** Open volume (uint64) */
+  /** Open volume (int64) */
   openVolume: Scalars['String'];
   /** The party holding this position */
   party: Party;
@@ -2787,7 +2836,7 @@ export type PositionUpdate = {
   averageEntryPrice: Scalars['String'];
   /** Market relating to this position */
   marketId: Scalars['ID'];
-  /** Open volume (uint64) */
+  /** Open volume (int64) */
   openVolume: Scalars['String'];
   /** The party holding this position */
   partyId: Scalars['ID'];
@@ -2962,6 +3011,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_ENACT_TIME_TOO_LATE = 'PROPOSAL_ERROR_ENACT_TIME_TOO_LATE',
   /** The specified enactment time is too early based on network parameters */
   PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = 'PROPOSAL_ERROR_ENACT_TIME_TOO_SOON',
+  /** The erc20 address specified by this proposal is alread in use by another asset */
+  PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
   /** The proposal is rejected because the party does not have enough equity like share in the market */
@@ -3166,7 +3217,7 @@ export type Query = {
   /** Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch */
   epoch: Epoch;
   /** Get the signatures bundle to allowlist an ERC20 token in the collateral bridge */
-  erc20ListAssetBundle: Erc20ListAssetBundle;
+  erc20ListAssetBundle?: Maybe<Erc20ListAssetBundle>;
   /** Get the signature bundle to add a particular validator to the signer list of the multisig contract */
   erc20MultiSigSignerAddedBundles: ERC20MultiSigSignerAddedConnection;
   /** Get the signatures bundle to remove a particular validator from signer list of the multisig contract */
@@ -3197,6 +3248,8 @@ export type Query = {
   keyRotationsConnection: KeyRotationConnection;
   /** The last block process by the blockchain */
   lastBlockHeight: Scalars['String'];
+  /** Get ledger entries by asset, market, party, account type, transfer type within the given date range. */
+  ledgerEntries: AggregatedLedgerEntriesConnection;
   /** An instrument that is trading on the Vega network */
   market?: Maybe<Market>;
   /**
@@ -3453,6 +3506,15 @@ export type QuerykeyRotationsArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerykeyRotationsConnectionArgs = {
   id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryledgerEntriesArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<LedgerEntryFilter>;
+  groupOptions?: InputMaybe<GroupOptions>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4327,6 +4389,19 @@ export type TradeUpdate = {
   type: TradeType;
 };
 
+/** The result from processing a transaction */
+export type TransactionResult = {
+  __typename?: 'TransactionResult';
+  /** The error emitted by the transaction, will be null if the transaction succeeded */
+  error?: Maybe<Scalars['String']>;
+  /** The hash of the transaction */
+  hash: Scalars['String'];
+  /** The party which submitted this transaction */
+  partyId: Scalars['String'];
+  /** Was the transaction successful or not? */
+  status: Scalars['Boolean'];
+};
+
 export type TransactionSubmitted = {
   __typename?: 'TransactionSubmitted';
   success: Scalars['Boolean'];
@@ -4421,6 +4496,34 @@ export enum TransferStatus {
   STATUS_STOPPED = 'STATUS_STOPPED'
 }
 
+export enum TransferType {
+  TRANSFER_TYPE_BOND_HIGH = 'TRANSFER_TYPE_BOND_HIGH',
+  TRANSFER_TYPE_BOND_LOW = 'TRANSFER_TYPE_BOND_LOW',
+  TRANSFER_TYPE_BOND_SLASHING = 'TRANSFER_TYPE_BOND_SLASHING',
+  TRANSFER_TYPE_CLEAR_ACCOUNT = 'TRANSFER_TYPE_CLEAR_ACCOUNT',
+  TRANSFER_TYPE_CLOSE = 'TRANSFER_TYPE_CLOSE',
+  TRANSFER_TYPE_DEPOSIT = 'TRANSFER_TYPE_DEPOSIT',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE = 'TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE',
+  TRANSFER_TYPE_LIQUIDITY_FEE_PAY = 'TRANSFER_TYPE_LIQUIDITY_FEE_PAY',
+  TRANSFER_TYPE_LOSS = 'TRANSFER_TYPE_LOSS',
+  TRANSFER_TYPE_MAKER_FEE_PAY = 'TRANSFER_TYPE_MAKER_FEE_PAY',
+  TRANSFER_TYPE_MAKER_FEE_RECEIVE = 'TRANSFER_TYPE_MAKER_FEE_RECEIVE',
+  TRANSFER_TYPE_MARGIN_CONFISCATED = 'TRANSFER_TYPE_MARGIN_CONFISCATED',
+  TRANSFER_TYPE_MARGIN_HIGH = 'TRANSFER_TYPE_MARGIN_HIGH',
+  TRANSFER_TYPE_MARGIN_LOW = 'TRANSFER_TYPE_MARGIN_LOW',
+  TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
+  TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
+  TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
+  TRANSFER_TYPE_TRANSFER_FUNDS_SEND = 'TRANSFER_TYPE_TRANSFER_FUNDS_SEND',
+  TRANSFER_TYPE_UNSPECIFIED = 'TRANSFER_TYPE_UNSPECIFIED',
+  TRANSFER_TYPE_WIN = 'TRANSFER_TYPE_WIN',
+  TRANSFER_TYPE_WITHDRAW = 'TRANSFER_TYPE_WITHDRAW',
+  TRANSFER_TYPE_WITHDRAW_LOCK = 'TRANSFER_TYPE_WITHDRAW_LOCK'
+}
+
 /** A proposal to update an asset's details */
 export type UpdateAsset = {
   __typename?: 'UpdateAsset';
@@ -4453,7 +4556,7 @@ export type UpdateERC20 = {
 export type UpdateFutureProduct = {
   __typename?: 'UpdateFutureProduct';
   oracleSpecBinding: OracleSpecToFutureBinding;
-  oracleSpecForSettlementPrice: OracleSpecConfiguration;
+  oracleSpecForSettlementData: OracleSpecConfiguration;
   oracleSpecForTradingTermination: OracleSpecConfiguration;
   quoteName: Scalars['String'];
 };

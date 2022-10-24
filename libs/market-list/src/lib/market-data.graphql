@@ -32,6 +32,10 @@ fragment MarketDataFields on MarketData {
   indicativePrice
   bestStaticBidPrice
   bestStaticOfferPrice
+  targetStake
+  suppliedStake
+  auctionStart
+  auctionEnd
 }
 
 query MarketData($marketId: ID!) {

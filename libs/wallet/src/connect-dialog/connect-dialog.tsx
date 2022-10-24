@@ -1,3 +1,4 @@
+import create from 'zustand';
 import {
   Button,
   Dialog,
@@ -21,6 +22,7 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
+import * as constants from '../constants';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -28,15 +30,50 @@ type WalletType = 'gui' | 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
-  dialogOpen: boolean;
-  setDialogOpen: (isOpen: boolean) => void;
+  onChangeOpen?: (open: boolean) => void;
+}
+
+export const useVegaWalletDialogStore = create<VegaWalletDialogStore>(
+  (set) => ({
+    vegaWalletDialogOpen: false,
+    updateVegaWalletDialog: (open: boolean) =>
+      set({ vegaWalletDialogOpen: open }),
+    openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
+    closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
+  })
+);
+
+interface VegaWalletDialogStore {
+  vegaWalletDialogOpen: boolean;
+  updateVegaWalletDialog: (open: boolean) => void;
+  openVegaWalletDialog: () => void;
+  closeVegaWalletDialog: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
-  dialogOpen,
-  setDialogOpen,
+  onChangeOpen,
 }: VegaConnectDialogProps) => {
+  const {
+    vegaWalletDialogOpen,
+    closeVegaWalletDialog,
+    updateVegaWalletDialog,
+  } = useVegaWalletDialogStore((store) => ({
+    vegaWalletDialogOpen: store.vegaWalletDialogOpen,
+    updateVegaWalletDialog: onChangeOpen
+      ? (open: boolean) => {
+          store.updateVegaWalletDialog(open);
+          onChangeOpen(open);
+        }
+      : store.updateVegaWalletDialog,
+    closeVegaWalletDialog: onChangeOpen
+      ? () => {
+          store.closeVegaWalletDialog();
+          onChangeOpen(false);
+        }
+      : store.closeVegaWalletDialog,
+  }));
+
   const { data, error, loading } = useChainIdQuery();
 
   const renderContent = () => {
@@ -66,14 +103,18 @@ export const VegaConnectDialog = ({
     return (
       <ConnectDialogContainer
         connectors={connectors}
-        closeDialog={() => setDialogOpen(false)}
+        closeDialog={closeVegaWalletDialog}
         appChainId={data.statistics.chainId}
       />
     );
   };
 
   return (
-    <Dialog open={dialogOpen} size="small" onChange={setDialogOpen}>
+    <Dialog
+      open={vegaWalletDialogOpen}
+      size="small"
+      onChange={updateVegaWalletDialog}
+    >
       {renderContent()}
     </Dialog>
   );
@@ -224,14 +265,14 @@ const SelectedForm = ({
             <p className="text-center">
               {t('For demo purposes get a ')}
               <Link
-                href="https://vega-hosted-wallet.on.fleek.co/"
+                href={constants.VEGA_WALLET_HOSTED_URL}
                 target="_blank"
                 rel="noreferrer"
               >
                 {t('hosted wallet')}
               </Link>
               {t(', or for the real experience create a wallet in the ')}
-              <Link href="https://github.com/vegaprotocol/vega/releases">
+              <Link href={constants.VEGA_WALLET_RELEASE_URL}>
                 {t('Vega wallet app')}
               </Link>
             </p>

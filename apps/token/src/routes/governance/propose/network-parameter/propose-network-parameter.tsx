@@ -6,20 +6,21 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/react-helpers';
 import {
-  useProposalSubmit,
   getClosingTimestamp,
   getEnactmentTimestamp,
+  useProposalSubmit,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
-  ProposalFormSubheader,
-  ProposalFormMinRequirements,
-  ProposalFormTitle,
   ProposalFormDescription,
+  ProposalFormSubheader,
   ProposalFormSubmit,
+  ProposalFormTitle,
   ProposalFormTransactionDialog,
   ProposalFormVoteAndEnactmentDeadline,
 } from '../../components/propose';
+import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
   FormGroup,
@@ -32,6 +33,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
+import { ProposalUserAction } from '@vegaprotocol/types';
 
 interface SelectedNetworkParamCurrentValueProps {
   value: string;
@@ -88,6 +90,7 @@ export const ProposeNetworkParameter = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<NetworkParameterProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
@@ -99,6 +102,13 @@ export const ProposeNetworkParameter = () => {
     const acutalNetworkParamKey = fields.proposalNetworkParameterKey
       .split('_')
       .join('.');
+
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_updateNetParam_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -111,10 +121,14 @@ export const ProposeNetworkParameter = () => {
             value: fields.proposalNetworkParameterValue,
           },
         },
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
-          fields.proposalEnactmentDeadline
+          fields.proposalEnactmentDeadline,
+          isVoteDeadlineAtMinimum
         ),
       },
     });
@@ -130,11 +144,12 @@ export const ProposeNetworkParameter = () => {
       <VegaWalletContainer>
         {() => (
           <>
-            <ProposalFormMinRequirements
-              minProposerBalance={
+            <ProposalMinRequirements
+              minProposalBalance={
                 params.governance_proposal_updateNetParam_minProposerBalance
               }
               spamProtectionMin={params.spam_protection_proposal_min_tokens}
+              userAction={ProposalUserAction.CREATE}
             />
 
             {VEGA_DOCS_URL && (
@@ -241,6 +256,7 @@ export const ProposeNetworkParameter = () => {
                 )}
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
@@ -251,6 +267,7 @@ export const ProposeNetworkParameter = () => {
                   voteMaxClose={
                     params.governance_proposal_updateNetParam_maxClose
                   }
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}

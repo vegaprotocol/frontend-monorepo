@@ -28,6 +28,13 @@ const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const txTimeout = Cypress.env('txTimeout');
 
+const faucetAssets = {
+  BTCFake: 'fBTC',
+  DAIFake: 'fDAI',
+  EUROFake: 'fEURO',
+  USDCFake: 'fUSDC',
+};
+
 context(
   'Vega Wallet - verify elements on widget',
   { tags: '@regression' },
@@ -138,31 +145,16 @@ context(
         });
       });
 
-      // after('close dialog', function () {
-      //   cy.get(dialogCloseBtn).click().should('not.exist');
-      // }); - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
+      after('close dialog', function () {
+        cy.get(dialogCloseBtn).click().should('not.exist');
+      });
     });
 
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.vega_wallet_import();
         cy.visit('/');
-        cy.get(walletContainer).within(() => {
-          cy.get(connectButton).click();
-        });
-        cy.get(connectorsList).within(() => {
-          // using gui option to connect using wallet service V1
-          cy.getByTestId('connector-gui').click();
-        });
-        //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
-        // then code below can be removed
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
-          cy.get('#passphrase')
-            .click()
-            .type(Cypress.env('vegaWalletPassphrase'));
-          cy.get('button').contains('Connect').click();
-        });
+        cy.vega_wallet_connect();
       });
 
       it('should have VEGA WALLET header visible', function () {
@@ -274,7 +266,7 @@ context(
         cy.get(dialog).within(() => {
           cy.get(copyPublicKeyBtn)
             .should('be.visible')
-            .and('have.text', 'Copy');
+            .and('contain.text', 'Copy');
         });
       });
 
@@ -305,48 +297,32 @@ context(
     // 2002-SINC-016
     describe('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
-        cy.vega_wallet_receive_fauceted_asset(
-          'USDC (fake)',
-          '10',
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.USDCFake,
+          '1000000',
           vegaWalletPublicKey
         );
-        cy.vega_wallet_receive_fauceted_asset(
-          'BTC (fake)',
-          '6',
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.BTCFake,
+          '600000',
           vegaWalletPublicKey
         );
-        cy.vega_wallet_receive_fauceted_asset(
-          'EURO (fake)',
-          '8',
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.EUROFake,
+          '800000',
           vegaWalletPublicKey
         );
-        cy.vega_wallet_receive_fauceted_asset(
-          'DAI (fake)',
-          '2',
+        cy.vega_wallet_faucet_assets_without_check(
+          faucetAssets.DAIFake,
+          '200000',
           vegaWalletPublicKey
         );
-        //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
-        // then code below can be removed
-        cy.get(walletContainer).within(() => {
-          cy.get('button')
-            .contains('Connect Vega wallet to use associated $VEGA')
-            .should('be.enabled')
-            .and('be.visible')
-            .click({ force: true });
-        });
-        cy.getByTestId('connector-gui').click();
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(Cypress.env('vegaWalletName'));
-          cy.get('#passphrase')
-            .click()
-            .type(Cypress.env('vegaWalletPassphrase'));
-          cy.get('button').contains('Connect').click();
-        });
+        cy.vega_wallet_connect();
         cy.ethereum_wallet_connect();
       });
 
       it('should see fUSDC assets - within vega wallet', function () {
-        let currency = { id: 'fUSDC', name: 'USDC (fake)' };
+        let currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -366,7 +342,7 @@ context(
       });
 
       it('should see fBTC assets - within vega wallet', function () {
-        let currency = { id: 'fBTC', name: 'BTC (fake)' };
+        let currency = { id: faucetAssets.BTCFake, name: 'BTC (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -386,7 +362,7 @@ context(
       });
 
       it('should see fEURO assets - within vega wallet', function () {
-        let currency = { id: 'fEURO', name: 'EURO (fake)' };
+        let currency = { id: faucetAssets.EUROFake, name: 'EURO (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -406,7 +382,7 @@ context(
       });
 
       it('should see fDAI assets - within vega wallet', function () {
-        let currency = { id: 'fDAI', name: 'DAI (fake)' };
+        let currency = { id: faucetAssets.DAIFake, name: 'DAI (fake)' };
         cy.get(walletContainer).within(() => {
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id, txTimeout)
@@ -428,7 +404,7 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restart_vegacapsule_network();
           }
         }

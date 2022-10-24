@@ -10,18 +10,16 @@ import {
   DropdownMenuTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import type { PubKey } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useEffect, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-export interface VegaWalletConnectButtonProps {
-  setConnectDialog: (isOpen: boolean) => void;
-}
-
-export const VegaWalletConnectButton = ({
-  setConnectDialog,
-}: VegaWalletConnectButtonProps) => {
+export const VegaWalletConnectButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const isConnected = pubKey !== null;
 
@@ -48,8 +46,8 @@ export const VegaWalletConnectButton = ({
                 selectPubKey(value);
               }}
             >
-              {pubKeys.map((k) => (
-                <KeypairItem key={k.publicKey} kp={k.publicKey} />
+              {pubKeys.map((pk) => (
+                <KeypairItem key={pk.publicKey} pk={pk} />
               ))}
             </DropdownMenuRadioGroup>
             <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
@@ -64,7 +62,7 @@ export const VegaWalletConnectButton = ({
   return (
     <Button
       data-testid="connect-vega-wallet"
-      onClick={() => setConnectDialog(true)}
+      onClick={openVegaWalletDialog}
       size="sm"
     >
       <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>
@@ -72,7 +70,7 @@ export const VegaWalletConnectButton = ({
   );
 };
 
-const KeypairItem = ({ kp }: { kp: string }) => {
+const KeypairItem = ({ pk }: { pk: PubKey }) => {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     // eslint-disable-next-line
@@ -90,13 +88,16 @@ const KeypairItem = ({ kp }: { kp: string }) => {
   }, [copied]);
 
   return (
-    <DropdownMenuRadioItem key={kp} value={kp}>
-      <div className="flex-1 mr-2" data-testid={`key-${kp}`}>
+    <DropdownMenuRadioItem value={pk.publicKey}>
+      <div className="flex-1 mr-2" data-testid={`key-${pk.publicKey}`}>
         <span className="mr-2">
-          <span>{truncateByChars(kp)}</span>
+          <span>
+            <span className="uppercase">{pk.name}</span>:{' '}
+            {truncateByChars(pk.publicKey)}
+          </span>
         </span>
         <span>
-          <CopyToClipboard text={kp} onCopy={() => setCopied(true)}>
+          <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
             <button
               data-testid="copy-vega-public-key"
               onClick={(e) => e.stopPropagation()}

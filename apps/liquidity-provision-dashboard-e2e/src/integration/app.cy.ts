@@ -1,10 +1,11 @@
-import { getGreeting } from '../support/app.po';
-
-describe('liquidity-provision-dashboard', { tags: '@smoke' }, () => {
+describe('liquidity-provision-dashboard', () => {
   beforeEach(() => cy.visit('/'));
 
+  it('render', () => {
+    cy.get('#root').should('exist');
+  });
+
   it('should display welcome message', () => {
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Top liquidity opportunities');
+    cy.get('h1').contains('Top liquidity opportunities');
   });
 });

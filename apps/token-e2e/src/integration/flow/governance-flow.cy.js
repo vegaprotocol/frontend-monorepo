@@ -26,7 +26,7 @@ const proposalVoteProgressAgainstTokens =
 const changeVoteButton = '[data-testid="change-vote-button"]';
 const proposalDetailsTitle = '[data-testid="proposal-title"]';
 const proposalDetailsDescription = '[data-testid="proposal-description"]';
-const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
+const rawProposalData = '[data-testid="proposal-data"]';
 const minVoteButton = '[data-testid="min-vote"]';
 const maxVoteButton = '[data-testid="max-vote"]';
 const voteButtons = '[data-testid="vote-buttons"]';
@@ -61,10 +61,12 @@ context(
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
-          network_parameters['governance.proposal.freeform.minProposerBalance']
+          network_parameters['spam.protection.voting.min.tokens'] /
+            1000000000000000000
         ).as('minProposerBalance');
         cy.wrap(
-          network_parameters['governance.proposal.freeform.minVoterBalance']
+          network_parameters['spam.protection.voting.min.tokens'] /
+            1000000000000000000
         ).as('minVoterBalance');
         cy.wrap(
           network_parameters['governance.proposal.freeform.requiredMajority'] *
@@ -112,11 +114,6 @@ context(
             parseInt(this.minProposerBalance),
             0.00001,
             'Asserting that value is at least 0.00001 for network parameter minProposerBalance'
-          );
-          assert.isAtLeast(
-            parseInt(this.minVoterBalance),
-            0.00001,
-            'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
           );
           assert.isAtLeast(
             parseFloat(this.requiredParticipation),
@@ -191,23 +188,15 @@ context(
       );
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
+        cy.ensure_specified_unstaked_tokens_are_associated('2');
         cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          this.minProposerBalance
-        );
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
         cy.navigate_to('staking');
         cy.wait_for_spinner();
         cy.click_on_validator_from_list(0);
-        cy.staking_validator_page_add_stake(this.minProposerBalance);
+        cy.staking_validator_page_add_stake('2');
 
-        cy.get(vegaWalletStakedBalances, txTimeout).should(
-          'contain',
-          this.minProposerBalance
-        );
+        cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
 
         cy.navigate_to('governance');
         cy.wait_for_spinner();
@@ -355,8 +344,7 @@ context(
           });
       });
 
-      // Skipping test due to bug - should be solved when #1223 released
-      it.skip('Newly created freeform proposal details - shows proposal title and full description', function () {
+      it('Newly created raw proposal details - shows proposal title and full description', function () {
         createRawProposal(this.minProposerBalance);
         cy.wait('@proposalSubmissionCompletion')
           .its(proposalResponseProposalIdPath)
@@ -366,38 +354,13 @@ context(
                 cy.get(viewProposalButton).should('be.visible').click();
               });
             });
-            cy.get('@rawProposal').then((freeformProposal) => {
+            cy.get('@rawProposal').then((rawProposal) => {
               // 3001-VOTE-054
               cy.get(proposalDetailsTitle)
-                .should('contain', freeformProposal.rationale.title)
+                .should('contain', rawProposal.rationale.title)
                 .and('be.visible');
               cy.get(proposalDetailsDescription)
-                .should('contain', freeformProposal.rationale.description)
-                .and('be.visible');
-            });
-          });
-      });
-
-      // 1005-todo-PROP-019
-      // Skipping test due to bug - should be solved when #1223 released
-      it.skip('Newly created raw proposal details - shows full link included in description', function () {
-        createRawProposal(this.minProposerBalance);
-        cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseProposalIdPath)
-          .then((proposalId) => {
-            cy.get(openProposals).within(() => {
-              cy.get(`#${proposalId}`).within(() => {
-                cy.get(viewProposalButton).should('be.visible').click();
-              });
-            });
-            cy.get('@rawProposal').then(() => {
-              // 3001-VOTE-055
-              cy.get(proposalDetailsDescription)
-                .should('have.attr', 'href')
-                .and(
-                  'equal',
-                  'https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si'
-                )
+                .should('contain', rawProposal.rationale.description)
                 .and('be.visible');
             });
           });
@@ -448,7 +411,7 @@ context(
         cy.get_submitted_proposal_from_proposal_list().within(() =>
           cy.get(viewProposalButton).click()
         );
-        cy.contains('Currently set to fail').should('be.visible');
+        cy.contains('currently set to fail').should('be.visible');
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
@@ -623,13 +586,16 @@ context(
         );
       });
 
-      // No longer able to submit a rejected freeform proposal
-      it.skip('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
+      it('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('500000000');
+        cy.go_to_make_new_proposal(governanceProposalType.RAW);
+        cy.create_ten_digit_unix_timestamp_for_specified_days('1000').then(
+          (closingDateTimestamp) => {
+            cy.enter_raw_proposal_body(closingDateTimestamp).as('rawProposal');
+          }
+        );
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'be.visible'
@@ -663,14 +629,17 @@ context(
           txTimeout
         );
         cy.go_to_make_new_proposal(governanceProposalType.RAW);
-        createRawProposal();
-
+        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+          (closingDateTimestamp) => {
+            cy.enter_raw_proposal_body(closingDateTimestamp).as;
+          }
+        );
+        cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-        cy.get(feedbackError)
-          .contains(
-            'Party has insufficient associated governance tokens in their staking account to submit proposal request'
-          )
-          .should('be.visible');
+        cy.get(feedbackError).should(
+          'have.text',
+          'party has insufficient associated governance tokens in their staking account to submit proposal request'
+        );
       });
 
       it('Unable to create a proposal - when some but not enough tokens are associated', function () {
@@ -678,78 +647,74 @@ context(
           this.minProposerBalance - 0.000001
         );
         cy.go_to_make_new_proposal(governanceProposalType.RAW);
-        createRawProposal(this.minProposerBalance);
-
+        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
+          (closingDateTimestamp) => {
+            cy.enter_raw_proposal_body(closingDateTimestamp);
+          }
+        );
+        cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-        cy.get(feedbackError)
-          .contains(
-            'Party has insufficient associated governance tokens in their staking account to submit proposal request'
-          )
-          .should('be.visible');
+        cy.get(feedbackError).should(
+          'have.text',
+          'party has insufficient associated governance tokens in their staking account to submit proposal request'
+        );
       });
 
-      // Json containing unexpected field no longer fails submission
-      it.skip('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
+      it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
         // 3001-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+        cy.go_to_make_new_proposal(governanceProposalType.RAW);
+        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
-            cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
+            cy.fixture('/proposals/raw.json').then((freeformProposal) => {
               freeformProposal.terms.closingTimestamp = closingDateTimestamp;
               freeformProposal.unexpected = `i shouldn't be here`;
               let proposalPayload = JSON.stringify(freeformProposal);
-
-              cy.get(proposalDetailsTitle).type(
-                freeformProposal.rationale.title
-              );
-              cy.get(proposalDetailsDescription).type(proposalPayload, {
+              cy.get(rawProposalData).type(proposalPayload, {
                 parseSpecialCharSequences: false,
                 delay: 2,
               });
-              cy.get(proposalVoteDeadline).clear().click().type('50');
             });
           }
         );
         cy.get(newProposalSubmitButton).should('be.visible').click();
 
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-        cy.get(feedbackError)
-          .contains('Unknown field unexpected in vega proposal terms')
-          .should('be.visible');
+        cy.get(feedbackError).should(
+          'have.text',
+          '*: unknown field "unexpected" in vega.commands.v1.ProposalSubmission'
+        );
       });
 
-      // Json containing unexpected field no longer fails submission
-      it.skip('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
+      it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
         // 3001-VOTE-038
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
         cy.go_to_make_new_proposal(governanceProposalType.RAW);
-        cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+        cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.fixture('/proposals/raw.json').then((rawProposal) => {
               rawProposal.terms.closingTimestamp = closingDateTimestamp;
               rawProposal.terms.unexpectedField = `i shouldn't be here`;
               let proposalPayload = JSON.stringify(rawProposal);
 
-              cy.get(proposalDetailsTitle).type(rawProposal.rationale.title);
-              cy.get(proposalDetailsDescription).type(proposalPayload, {
+              cy.get(rawProposalData).type(proposalPayload, {
                 parseSpecialCharSequences: false,
                 delay: 2,
               });
-              cy.get(proposalVoteDeadline).clear().click().type('50');
             });
           }
         );
         cy.get(newProposalSubmitButton).should('be.visible').click();
 
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-        cy.get(feedbackError)
-          .contains('Unknown field unexpected in vega proposal terms')
-          .should('be.visible');
+        cy.get(feedbackError).should(
+          'have.text',
+          '*: unknown field "unexpectedField" in vega.ProposalTerms'
+        );
       });
 
       // Have to skip because #1326 bug doesn't handle below scenario
@@ -815,7 +780,7 @@ context(
       function createRawProposal(proposerBalance) {
         if (proposerBalance)
           cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
-        cy.go_to_make_new_proposal('raw proposal');
+        cy.go_to_make_new_proposal(governanceProposalType.RAW);
         cy.create_ten_digit_unix_timestamp_for_specified_days('8').then(
           (closingDateTimestamp) => {
             cy.enter_raw_proposal_body(closingDateTimestamp).as('rawProposal');
@@ -842,7 +807,7 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restart_vegacapsule_network();
           }
         }

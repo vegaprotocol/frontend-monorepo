@@ -42,6 +42,7 @@ interface PositionRejoined {
 export interface Position {
   marketName: string;
   averageEntryPrice: string;
+  marginAccountBalance: BigNumber;
   capitalUtilisation: number;
   currentLeverage: number;
   decimals: number;
@@ -151,6 +152,7 @@ export const getMetrics = (
     metrics.push({
       marketName: market.tradableInstrument.instrument.name,
       averageEntryPrice: position.averageEntryPrice,
+      marginAccountBalance,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,

@@ -1,5 +1,4 @@
-import React from 'react';
-import { DealTicketEstimates } from './deal-ticket-estimates';
+import { DealTicketEstimates } from '@vegaprotocol/deal-ticket';
 import { DealTicketSizeInput } from './deal-ticket-size-input';
 
 interface DealTicketSizeProps {

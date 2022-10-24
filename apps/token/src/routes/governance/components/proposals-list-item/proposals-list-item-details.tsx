@@ -133,12 +133,11 @@ export const ProposalsListItemDetails = ({
       voteStatus =
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />) ||
-        (willPass && (
+        (willPass ? (
           <>
             {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
           </>
-        )) ||
-        (!willPass && (
+        ) : (
           <>
             {t('Set to')} <StatusFail>{t('fail')}</StatusFail>
           </>

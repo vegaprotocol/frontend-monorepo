@@ -306,7 +306,7 @@ export const Orderbook = ({
   const minPriceLevel = (
     fillGaps
       ? BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution))
-      : BigInt(rows?.[rows.length - 1].price ?? '0')
+      : BigInt(rows?.[rows.length - 1]?.price ?? '0')
   ).toString();
   const [debug, setDebug] = useState(false);
   const updateScrollOffset = useCallback(

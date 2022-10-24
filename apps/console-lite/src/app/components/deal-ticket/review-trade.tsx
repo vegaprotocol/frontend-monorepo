@@ -4,19 +4,18 @@ import {
   KeyValueTable,
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
-import * as React from 'react';
 import classNames from 'classnames';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import { DealTicketEstimates } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { SIDE_NAMES } from './side-selector';
-import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
 import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import { DealTicketEstimates } from './deal-ticket-estimates';
 import { Side } from '@vegaprotocol/types';
+import { MarketExpires } from '@vegaprotocol/market-info';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -86,7 +85,7 @@ export default ({
             <div>
               {tagsData?.market?.tradableInstrument.instrument.metadata
                 .tags && (
-                <SimpleMarketExpires
+                <MarketExpires
                   tags={
                     tagsData?.market.tradableInstrument.instrument.metadata.tags
                   }

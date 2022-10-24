@@ -57,8 +57,8 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
   });
 
   return (
-    <HeaderStat heading={t('Volume')}>
-      <div data-testid="trading-volume">{marketVolume}</div>
+    <HeaderStat heading={t('Volume')} testId="market-volume">
+      <div>{marketVolume}</div>
     </HeaderStat>
   );
 };

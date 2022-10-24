@@ -4,16 +4,12 @@ import {
   updateCompactedRows,
 } from './orderbook-data';
 import type { OrderbookRowData } from './orderbook-data';
-import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
-import type {
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
+import type { PriceLevelFieldsFragment } from './__generated___/MarketDepth';
 
 describe('compactRows', () => {
   const numberOfRows = 100;
   const middle = 1000;
-  const sell: MarketDepth_market_depth_sell[] = new Array(numberOfRows)
+  const sell: PriceLevelFieldsFragment[] = new Array(numberOfRows)
     .fill(null)
     .map((n, i) => ({
       __typename: 'PriceLevel',
@@ -21,7 +17,7 @@ describe('compactRows', () => {
       price: (middle + numberOfRows - i).toString(),
       numberOfOrders: i.toString(),
     }));
-  const buy: MarketDepth_market_depth_sell[] = new Array(numberOfRows)
+  const buy: PriceLevelFieldsFragment[] = new Array(numberOfRows)
     .fill(null)
     .map((n, i) => ({
       __typename: 'PriceLevel',
@@ -79,7 +75,7 @@ describe('compactRows', () => {
 });
 
 describe('updateLevels', () => {
-  let levels: MarketDepth_market_depth_sell[] = new Array(10)
+  let levels: PriceLevelFieldsFragment[] = new Array(10)
     .fill(null)
     .map((n, i) => ({
       __typename: 'PriceLevel',
@@ -88,7 +84,7 @@ describe('updateLevels', () => {
       numberOfOrders: ((i + 1) * 10).toString(),
     }));
   it('updates, removes and adds new items', () => {
-    const removeFirstRow: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const removeFirstRow: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '10',
       volume: '0',
@@ -99,7 +95,7 @@ describe('updateLevels', () => {
     levels = updateLevels(levels, [removeFirstRow]);
     expect(levels[0].price).toEqual('20');
     expect(updateLevels([], [removeFirstRow])).toEqual([]);
-    const addFirstRow: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const addFirstRow: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '10',
       volume: '10',
@@ -107,7 +103,7 @@ describe('updateLevels', () => {
     };
     levels = updateLevels(levels, [addFirstRow]);
     expect(levels[0].price).toEqual('10');
-    const addBeforeLastRow: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const addBeforeLastRow: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '95',
       volume: '95',
@@ -115,7 +111,7 @@ describe('updateLevels', () => {
     };
     levels = updateLevels(levels, [addBeforeLastRow]);
     expect(levels[levels.length - 2].price).toEqual('95');
-    const addAtTheEnd: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const addAtTheEnd: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '115',
       volume: '115',
@@ -123,7 +119,7 @@ describe('updateLevels', () => {
     };
     levels = updateLevels(levels, [addAtTheEnd]);
     expect(levels[levels.length - 1].price).toEqual('115');
-    const updateLastRow: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const updateLastRow: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '115',
       volume: '116',
@@ -196,13 +192,13 @@ describe('updateCompactedRows', () => {
   const resolution = 10;
 
   it('update volume', () => {
-    const sell: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const sell: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '120',
       volume: '10',
       numberOfOrders: '10',
     };
-    const buy: MarketDepthSubscription_marketsDepthUpdate_buy = {
+    const buy: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '80',
       volume: '10',
@@ -223,13 +219,13 @@ describe('updateCompactedRows', () => {
   });
 
   it('remove row', () => {
-    const sell: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const sell: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '121',
       volume: '0',
       numberOfOrders: '0',
     };
-    const buy: MarketDepthSubscription_marketsDepthUpdate_buy = {
+    const buy: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '79',
       volume: '0',
@@ -245,13 +241,13 @@ describe('updateCompactedRows', () => {
   });
 
   it('add new row at the end', () => {
-    const sell: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const sell: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '131',
       volume: '5',
       numberOfOrders: '5',
     };
-    const buy: MarketDepthSubscription_marketsDepthUpdate_buy = {
+    const buy: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '59',
       volume: '5',
@@ -271,13 +267,13 @@ describe('updateCompactedRows', () => {
   });
 
   it('add new row in the middle', () => {
-    const sell: MarketDepthSubscription_marketsDepthUpdate_sell = {
+    const sell: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '111',
       volume: '5',
       numberOfOrders: '5',
     };
-    const buy: MarketDepthSubscription_marketsDepthUpdate_buy = {
+    const buy: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '91',
       volume: '5',

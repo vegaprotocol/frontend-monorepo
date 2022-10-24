@@ -21,22 +21,31 @@ export const AccountManager = ({
   onClickDeposit,
   partyId,
 }: AccountManagerProps) => {
+  const partyIdRef = useRef<string>(partyId);
   const gridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
       dataRef.current = data;
-      gridRef.current?.api.refreshInfiniteCache();
+      gridRef.current?.api?.refreshInfiniteCache();
       return true;
     },
     [gridRef]
   );
-  const { data, loading, error } = useDataProvider<AccountFields[], never>({
+
+  const { data, loading, error, reload } = useDataProvider<
+    AccountFields[],
+    never
+  >({
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
   });
+  if (partyId !== partyIdRef.current) {
+    reload(true);
+    partyIdRef.current = partyId;
+  }
   if (!dataRef.current && data) {
     dataRef.current = data;
   }

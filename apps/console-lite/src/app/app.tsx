@@ -40,11 +40,7 @@ function App() {
                 <div className="max-h-full min-h-full dark:bg-lite-black dark:text-neutral-200 bg-white text-neutral-800 grid grid-rows-[min-content,1fr]">
                   <Header />
                   <Main />
-                  <VegaConnectDialog
-                    connectors={Connectors}
-                    dialogOpen={vegaWalletDialog.connect}
-                    setDialogOpen={vegaWalletDialog.setConnect}
-                  />
+                  <VegaConnectDialog connectors={Connectors} />
                   <VegaManageDialog
                     dialogOpen={vegaWalletDialog.manage}
                     setDialogOpen={vegaWalletDialog.setManage}

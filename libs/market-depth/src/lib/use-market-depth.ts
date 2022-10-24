@@ -2,36 +2,37 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-provider';
-import type { MarketDepth_market } from './__generated__/MarketDepth';
+import type { MarketDepthQuery } from './__generated___/MarketDepth';
 
 interface Props {
   variables: { marketId: string };
   throttleMilliseconds?: number;
 }
 
-export const useMarketDepth = ({
+export const useOrderBookData = ({
   variables,
   throttleMilliseconds = 1000,
 }: Props) => {
-  const [marketDepthData, setMarketDepthData] =
-    useState<MarketDepth_market | null>(null);
-  const dataRef = useRef<MarketDepth_market | null>(null);
-  const updateMarketDepthData = useRef(
+  const [orderbookData, setOrderbookData] = useState<
+    MarketDepthQuery['market'] | null
+  >(null);
+  const dataRef = useRef<MarketDepthQuery['market'] | null>(null);
+  const updateOrderbookData = useRef(
     throttle(() => {
       if (!dataRef.current) {
         return;
       }
-      setMarketDepthData(dataRef.current);
+      setOrderbookData(dataRef.current);
     }, throttleMilliseconds)
   );
 
   const update = useCallback(
-    ({ data }: { data: MarketDepth_market | null }) => {
+    ({ data }: { data: MarketDepthQuery['market'] | null }) => {
       if (!data) {
         return false;
       }
       dataRef.current = data;
-      updateMarketDepthData.current();
+      updateOrderbookData.current();
       return true;
     },
     []
@@ -44,16 +45,16 @@ export const useMarketDepth = ({
   });
 
   useEffect(() => {
-    const throttleRunnner = updateMarketDepthData.current;
+    const throttleRunnner = updateOrderbookData.current;
     if (!data) {
       dataRef.current = null;
-      setMarketDepthData(dataRef.current);
+      setOrderbookData(dataRef.current);
       return;
     }
     dataRef.current = {
       ...data,
     };
-    setMarketDepthData(dataRef.current);
+    setOrderbookData(dataRef.current);
     return () => {
       throttleRunnner.cancel();
     };
@@ -62,6 +63,6 @@ export const useMarketDepth = ({
   return {
     loading,
     error,
-    data: marketDepthData,
+    data: orderbookData,
   };
 };

@@ -1,15 +1,8 @@
-import { MarketState } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
-import { aliasQuery } from '@vegaprotocol/cypress';
 
 beforeEach(() => {
-  cy.mockGQL((req) => {
-    mockTradingPage(req, MarketState.STATE_ACTIVE);
-    aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-  });
+  cy.mockTradingPage();
   cy.mockWeb3Provider();
   cy.mockGQLSubscription();
   cy.visit('/markets/market-0');
