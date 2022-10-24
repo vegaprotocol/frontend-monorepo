@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { BusEventType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
 import type {
@@ -43,7 +43,9 @@ export const useTransactionResult = () => {
             }
 
             const matchingTransaction = data.busEvents.find((e) => {
-              if (e.event.__typename !== BusEventType.TransactionResult) {
+              if (
+                e.event.__typename !== Schema.BusEventType.TransactionResult
+              ) {
                 return false;
               }
 
@@ -53,7 +55,7 @@ export const useTransactionResult = () => {
             if (
               matchingTransaction &&
               matchingTransaction.event.__typename ===
-                BusEventType.TransactionResult
+                Schema.BusEventType.TransactionResult
             ) {
               resolve(matchingTransaction.event as TransactionResult);
               subRef.current?.unsubscribe();

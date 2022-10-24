@@ -2,16 +2,16 @@ import React from 'react';
 import classNames from 'classnames';
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 interface SideSelectorProps {
-  value: Side;
-  onSelect: (side: Side) => void;
+  value: Schema.Side;
+  onSelect: (side: Schema.Side) => void;
 }
 
-export const SIDE_NAMES: Record<Side, string> = {
-  [Side.SIDE_BUY]: t('Long'),
-  [Side.SIDE_SELL]: t('Short'),
+export const SIDE_NAMES: Record<Schema.Side, string> = {
+  [Schema.Side.SIDE_BUY]: t('Long'),
+  [Schema.Side.SIDE_SELL]: t('Short'),
 };
 
 export default ({ value, onSelect }: SideSelectorProps) => {
@@ -31,9 +31,9 @@ export default ({ value, onSelect }: SideSelectorProps) => {
           className={classNames(
             'px-8 py-2',
             'buyButton hover:buyButton dark:buyButtonDark dark:hover:buyButtonDark',
-            { selected: value === Side.SIDE_BUY }
+            { selected: value === Schema.Side.SIDE_BUY }
           )}
-          onClick={() => onSelect(Side.SIDE_BUY)}
+          onClick={() => onSelect(Schema.Side.SIDE_BUY)}
         >
           {t('Long')}
         </button>
@@ -43,9 +43,9 @@ export default ({ value, onSelect }: SideSelectorProps) => {
           className={classNames(
             'px-8 py-2',
             'sellButton hover:sellButton dark:sellButtonDark dark:hover:sellButtonDark',
-            { selected: value === Side.SIDE_SELL }
+            { selected: value === Schema.Side.SIDE_SELL }
           )}
-          onClick={() => onSelect(Side.SIDE_SELL)}
+          onClick={() => onSelect(Schema.Side.SIDE_SELL)}
         >
           {t('Short')}
         </button>

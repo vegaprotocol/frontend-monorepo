@@ -1,5 +1,5 @@
 import type { FillsQuery, FillFieldsFragment } from '@vegaprotocol/fills';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -17,7 +17,7 @@ export const generateFills = (
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       buyerFee: {
         infrastructureFee: '5000',
       },
@@ -30,11 +30,11 @@ export const generateFills = (
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.SIDE_BUY,
+      aggressor: Schema.Side.SIDE_BUY,
     }),
     generateFill({
       id: '3',
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       market: {
         id: 'market-2',
       },
@@ -80,7 +80,7 @@ export const generateFill = (override?: PartialDeep<FillFieldsFragment>) => {
     size: '50000',
     buyOrder: 'buy-order',
     sellOrder: 'sell-order',
-    aggressor: Side.SIDE_BUY,
+    aggressor: Schema.Side.SIDE_BUY,
     buyer: {
       __typename: 'Party',
       id: 'buyer-id',

@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import { MarketState, MarketTradingMode, Side } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode, Schema } from '@vegaprotocol/types';
 import type { Trade } from './fills-data-provider';
 
 export const generateFill = (override?: PartialDeep<Trade>) => {
@@ -12,7 +12,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
     size: '50000',
     buyOrder: 'buy-order',
     sellOrder: 'sell-order',
-    aggressor: Side.SIDE_BUY,
+    aggressor: Schema.Side.SIDE_BUY,
     buyer: {
       __typename: 'Party',
       id: 'buyer-id',

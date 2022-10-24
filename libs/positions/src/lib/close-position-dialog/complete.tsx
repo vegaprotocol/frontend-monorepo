@@ -1,7 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { OrderEvent_busEvents_event_Order } from '@vegaprotocol/orders';
+import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
 import { t, truncateByChars } from '@vegaprotocol/react-helpers';
-import { OrderRejectionReasonMapping, OrderStatus } from '@vegaprotocol/types';
+import { OrderRejectionReasonMapping, Schema } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { TransactionResult, VegaTxState } from '@vegaprotocol/wallet';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
@@ -13,7 +13,7 @@ interface CompleteProps {
   transaction: VegaTxState;
   transactionResult?: TransactionResult;
   closingOrder?: IClosingOrder;
-  closingOrderResult?: OrderEvent_busEvents_event_Order;
+  closingOrderResult?: OrderEventFieldsFragment;
 }
 
 export const Complete = ({
@@ -29,7 +29,7 @@ export const Complete = ({
 
   return (
     <>
-      {closingOrderResult.status === OrderStatus.STATUS_FILLED &&
+      {closingOrderResult.status === Schema.OrderStatus.STATUS_FILLED &&
       transactionResult.status ? (
         <Success partyId={partyId} order={closingOrder} />
       ) : (
@@ -89,7 +89,7 @@ const Error = ({
   closingOrderResult,
 }: {
   transactionResult: TransactionResult;
-  closingOrderResult: OrderEvent_busEvents_event_Order;
+  closingOrderResult: OrderEventFieldsFragment;
 }) => {
   const reason =
     closingOrderResult.rejectionReason &&

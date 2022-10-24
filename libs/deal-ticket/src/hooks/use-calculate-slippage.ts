@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Side } from '@vegaprotocol/types';
 import { marketDepthProvider } from '@vegaprotocol/market-depth';
+import { Schema } from '@vegaprotocol/types';
 import { marketProvider } from '@vegaprotocol/market-list';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
@@ -32,7 +32,7 @@ export const useCalculateSlippage = ({ marketId, order }: Props) => {
     variables,
   });
   const volPriceArr =
-    data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
+    data?.depth[order.side === Schema.Side.SIDE_BUY ? 'sell' : 'buy'] || [];
   if (volPriceArr.length && market) {
     const decimals = market.decimalPlaces ?? 0;
     const positionDecimals = market.positionDecimalPlaces ?? 0;

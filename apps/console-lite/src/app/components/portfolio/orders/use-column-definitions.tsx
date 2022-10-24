@@ -12,19 +12,16 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import type {
-  Orders_party_ordersConnection_edges_node,
+  OrderFieldsFragment,
   Order,
   CancelOrderArgs,
 } from '@vegaprotocol/orders';
 import { isOrderActive } from '@vegaprotocol/orders';
 import {
   OrderRejectionReasonMapping,
-  OrderStatus,
-  OrderType,
   OrderStatusMapping,
   OrderTypeMapping,
-  Side,
-  OrderTimeInForce,
+  Schema,
   OrderTimeInForceMapping,
 } from '@vegaprotocol/types';
 
@@ -60,21 +57,15 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         cellClass: 'font-mono !flex h-full items-center',
         width: 80,
         cellClassRules: {
-          [positiveClassNames]: ({
-            data,
-          }: {
-            data: Orders_party_ordersConnection_edges_node;
-          }) => data?.side === Side.SIDE_BUY,
-          [negativeClassNames]: ({
-            data,
-          }: {
-            data: Orders_party_ordersConnection_edges_node;
-          }) => data?.side === Side.SIDE_SELL,
+          [positiveClassNames]: ({ data }: { data: OrderFieldsFragment }) =>
+            data?.side === Schema.Side.SIDE_BUY,
+          [negativeClassNames]: ({ data }: { data: OrderFieldsFragment }) =>
+            data?.side === Schema.Side.SIDE_SELL,
         },
         valueFormatter: ({ value, data }: ValueFormatterParams) => {
           if (value && data && data.market) {
             const prefix = data
-              ? data.side === Side.SIDE_BUY
+              ? data.side === Schema.Side.SIDE_BUY
                 ? '+'
                 : '-'
               : '';
@@ -92,8 +83,8 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         valueFormatter: ({
           value,
         }: ValueFormatterParams & {
-          value?: Orders_party_ordersConnection_edges_node['type'];
-        }) => OrderTypeMapping[value as OrderType],
+          value?: OrderFieldsFragment['type'];
+        }) => OrderTypeMapping[value as Schema.OrderType],
       },
       {
         colId: 'status',
@@ -106,7 +97,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
           value?: StatusKey;
         }) => {
           if (value && data && data.market) {
-            if (value === OrderStatus.STATUS_REJECTED) {
+            if (value === Schema.OrderStatus.STATUS_REJECTED) {
               return `${OrderStatusMapping[value as StatusKey]}: ${
                 data.rejectionReason &&
                 OrderRejectionReasonMapping[
@@ -130,7 +121,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
           data,
           value,
         }: ValueFormatterParams & {
-          value?: Orders_party_ordersConnection_edges_node['remaining'];
+          value?: OrderFieldsFragment['remaining'];
         }) => {
           if (value && data && data.market) {
             const dps = data.market.positionDecimalPlaces;
@@ -156,13 +147,13 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
           value,
           data,
         }: ValueFormatterParams & {
-          value?: Orders_party_ordersConnection_edges_node['price'];
+          value?: OrderFieldsFragment['price'];
         }) => {
           if (
             value === undefined ||
             !data ||
             !data.market ||
-            data.type === OrderType.TYPE_MARKET
+            data.type === Schema.OrderType.TYPE_MARKET
           ) {
             return '-';
           }
@@ -181,7 +172,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         }) => {
           if (value && data?.market) {
             if (
-              value === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+              value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
               data.expiresAt
             ) {
               const expiry = getDateTimeFormat().format(
@@ -203,7 +194,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         valueFormatter: ({
           value,
         }: ValueFormatterParams & {
-          value?: Orders_party_ordersConnection_edges_node['createdAt'];
+          value?: OrderFieldsFragment['createdAt'];
         }) => {
           return value ? getDateTimeFormat().format(new Date(value)) : value;
         },
@@ -215,7 +206,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         valueFormatter: ({
           value,
         }: ValueFormatterParams & {
-          value?: Orders_party_ordersConnection_edges_node['updatedAt'];
+          value?: OrderFieldsFragment['updatedAt'];
         }) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '-';
         },

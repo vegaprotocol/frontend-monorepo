@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
@@ -48,12 +48,15 @@ export const useOrderMargin = ({
         BigNumber.maximum(
           0,
           new BigNumber(marketPositions?.openVolume || 0)
-            [order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size)
+            [order.side === Schema.Side.SIDE_BUY ? 'plus' : 'minus'](order.size)
             .absoluteValue()
         ).toString(),
         market.positionDecimalPlaces
       ),
-      side: order.side === Side.SIDE_BUY ? Side.SIDE_BUY : Side.SIDE_SELL,
+      side:
+        order.side === Schema.Side.SIDE_BUY
+          ? Schema.Side.SIDE_BUY
+          : Schema.Side.SIDE_SELL,
       timeInForce: order.timeInForce,
       type: order.type,
     },

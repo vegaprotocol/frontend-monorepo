@@ -1,14 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import {
-  OrderRejectionReason,
   OrderRejectionReasonMapping,
-  OrderStatus,
   OrderStatusMapping,
-  OrderType,
-  Side,
+  Schema,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import type { OrderEvent_busEvents_event_Order } from '../../order-hooks';
+import type { OrderEventFieldsFragment } from '../../order-hooks';
 import { generateOrder } from '../mocks/generate-orders';
 import type { OrderFeedbackProps } from './order-feedback';
 import { OrderFeedback } from './order-feedback';
@@ -42,12 +39,10 @@ describe('OrderFeedback', () => {
 
   it('renders error reason', () => {
     const orderFields = {
-      status: OrderStatus.STATUS_REJECTED,
-      rejectionReason: OrderRejectionReason.ORDER_ERROR_AMEND_FAILURE,
+      status: Schema.OrderStatus.STATUS_REJECTED,
+      rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_AMEND_FAILURE,
     };
-    const order = generateOrder(
-      orderFields
-    ) as OrderEvent_busEvents_event_Order;
+    const order = generateOrder(orderFields) as OrderEventFieldsFragment;
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
       `${OrderRejectionReasonMapping[orderFields.rejectionReason]}`
@@ -56,15 +51,15 @@ describe('OrderFeedback', () => {
 
   it('should render order details when order is placed successfully', () => {
     const order = generateOrder({
-      type: OrderType.TYPE_LIMIT,
+      type: Schema.OrderType.TYPE_LIMIT,
       price: '100',
       size: '200',
-      side: Side.SIDE_BUY,
+      side: Schema.Side.SIDE_BUY,
       market: {
         decimalPlaces: 2,
         positionDecimalPlaces: 0,
       },
-    }) as OrderEvent_busEvents_event_Order;
+    }) as OrderEventFieldsFragment;
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('order-confirmed')).toBeInTheDocument();
     expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(

@@ -4,15 +4,15 @@ import { determineId } from '@vegaprotocol/wallet';
 import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { useOrderEvent } from '@vegaprotocol/orders';
-import type { OrderEvent_busEvents_event_Order } from '@vegaprotocol/orders';
+import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
 
 export interface ClosingOrder {
   marketId: string;
-  type: OrderType.TYPE_MARKET;
-  timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK;
-  side: Side;
+  type: Schema.OrderType.TYPE_MARKET;
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK;
+  side: Schema.Side;
   size: string;
 }
 
@@ -21,7 +21,7 @@ export const useClosePosition = () => {
   const { send, transaction, setComplete, Dialog } = useVegaTransaction();
   const [closingOrder, setClosingOrder] = useState<ClosingOrder>();
   const [closingOrderResult, setClosingOrderResult] =
-    useState<OrderEvent_busEvents_event_Order>();
+    useState<OrderEventFieldsFragment>();
   const [transactionResult, setTransactionResult] =
     useState<TransactionResult>();
   const waitForTransactionResult = useTransactionResult();
@@ -45,15 +45,15 @@ export const useClosePosition = () => {
       try {
         // figure out if opsition is long or short and make side the opposite
         const side = openVolume.startsWith('-')
-          ? Side.SIDE_BUY
-          : Side.SIDE_SELL;
+          ? Schema.Side.SIDE_BUY
+          : Schema.Side.SIDE_SELL;
 
         // volume could be prefixed with '-' if position is short, remove it
         const size = openVolume.replace('-', '');
         const closingOrder = {
           marketId: marketId,
-          type: OrderType.TYPE_MARKET as const,
-          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+          type: Schema.OrderType.TYPE_MARKET as const,
+          timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK as const,
           side,
           size,
         };

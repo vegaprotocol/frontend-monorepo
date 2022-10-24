@@ -5,7 +5,7 @@ import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useSettlementAccount } from './use-settlement-account';
@@ -63,7 +63,7 @@ export const useOrderCloseOut = ({
       marketPositions?.openVolume.toString() || '0',
       market.positionDecimalPlaces
     )
-  )[order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
+  )[order.side === Schema.Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
   const markPrice = new BigNumber(
     addDecimal(
       markPriceData?.market?.data?.markPrice || 0,

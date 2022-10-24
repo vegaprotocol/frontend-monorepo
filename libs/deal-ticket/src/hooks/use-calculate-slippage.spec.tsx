@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useCalculateSlippage } from './use-calculate-slippage';
 
@@ -82,7 +82,7 @@ describe('useCalculateSlippage Hook', () => {
             marketId: 'marketId',
             order: {
               size: '10',
-              side: Side.SIDE_BUY,
+              side: Schema.Side.SIDE_BUY,
             } as OrderSubmissionBody['orderSubmission'],
           }),
         {
@@ -99,7 +99,7 @@ describe('useCalculateSlippage Hook', () => {
             marketId: 'marketId',
             order: {
               size: '10',
-              side: Side.SIDE_SELL,
+              side: Schema.Side.SIDE_SELL,
             } as OrderSubmissionBody['orderSubmission'],
           }),
         {
@@ -125,7 +125,7 @@ describe('useCalculateSlippage Hook', () => {
             marketId: 'marketId',
             order: {
               size: '10',
-              side: Side.SIDE_SELL,
+              side: Schema.Side.SIDE_SELL,
             } as OrderSubmissionBody['orderSubmission'],
           }),
         {

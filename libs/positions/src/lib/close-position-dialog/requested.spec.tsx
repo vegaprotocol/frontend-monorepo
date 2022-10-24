@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import * as dataHook from '../use-request-close-position-data';
 import { Requested } from './requested';
 
@@ -10,19 +10,19 @@ describe('Close position dialog - Request', () => {
     partyId: 'party-id',
     order: {
       marketId: 'market-id',
-      type: OrderType.TYPE_MARKET as const,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK as const,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_MARKET as const,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK as const,
+      side: Schema.Side.SIDE_BUY,
       size: '10',
     },
   };
 
   it('loading state', async () => {
     jest.spyOn(dataHook, 'useRequestClosePositionData').mockReturnValue({
+      loading: false,
       market: null,
       marketData: null,
       orders: [],
-      loading: false,
     });
     render(<Requested {...props} />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -33,14 +33,14 @@ describe('Close position dialog - Request', () => {
       {
         size: '200',
         price: '999',
-        side: Side.SIDE_BUY,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       },
       {
         size: '300',
         price: '888',
-        side: Side.SIDE_SELL,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       },
     ];
     jest.spyOn(dataHook, 'useRequestClosePositionData').mockReturnValue({
