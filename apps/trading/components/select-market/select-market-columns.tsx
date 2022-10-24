@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FeesCell } from '@vegaprotocol/market-info';
+import {
+  calcCandleHigh,
+  calcCandleLow,
+  calcCandleVolume,
+} from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   PriceCell,
@@ -12,16 +18,14 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
+import isNil from 'lodash/isNil';
 import Link from 'next/link';
-import { calcCandleHigh, calcCandleLow } from '@vegaprotocol/market-list';
+
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   MarketWithData,
   MarketWithCandles,
 } from '@vegaprotocol/market-list';
-import isNil from 'lodash/isNil';
-import { FeesCell } from '@vegaprotocol/market-info';
-
 type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
@@ -103,25 +107,25 @@ const headers: Column[] = [
   },
   {
     kind: ColumnKind.High24,
-    value: t('24h high'),
+    value: t('24h High'),
     className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     kind: ColumnKind.Low24,
-    value: t('24h low'),
+    value: t('24h Low'),
     className: `${cellClassNames} hidden xl:table-cell`,
+    onlyOnDetailed: true,
+  },
+  {
+    kind: ColumnKind.Volume,
+    value: t('24h Volume'),
+    className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
     kind: ColumnKind.TradingMode,
     value: t('Trading mode'),
-    className: `${cellClassNames} hidden lg:table-cell`,
-    onlyOnDetailed: true,
-  },
-  {
-    kind: ColumnKind.Volume,
-    value: t('Volume'),
     className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
@@ -169,6 +173,7 @@ export const columns = (
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
+  const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -274,6 +279,19 @@ export const columns = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Volume,
+      value: candleVolume
+        ? addDecimalsFormatNumber(
+            candleVolume.toString(),
+            market.positionDecimalPlaces,
+            2
+          )
+        : '-',
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
+      onlyOnDetailed: true,
+      dataTestId: 'market-volume',
+    },
+    {
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
@@ -286,19 +304,6 @@ export const columns = (
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
-    },
-    {
-      kind: ColumnKind.Volume,
-      value:
-        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
-          ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
-              market.positionDecimalPlaces
-            )
-          : '-',
-      className: `${cellClassNames} hidden lg:table-cell font-mono`,
-      onlyOnDetailed: true,
-      dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.Fee,
@@ -337,6 +342,7 @@ export const columnsPositionMarkets = (
       return onSelect(id);
     }
   };
+  const candleVolume = market.candles && calcCandleVolume(market.candles);
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -455,6 +461,19 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
+      kind: ColumnKind.Volume,
+      value: candleVolume
+        ? addDecimalsFormatNumber(
+            candleVolume.toString(),
+            market.positionDecimalPlaces,
+            2
+          )
+        : '-',
+      className: `${cellClassNames} hidden lg:table-cell font-mono`,
+      onlyOnDetailed: true,
+      dataTestId: 'market-volume',
+    },
+    {
       kind: ColumnKind.TradingMode,
       value:
         market.tradingMode ===
@@ -467,18 +486,6 @@ export const columnsPositionMarkets = (
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
-    },
-    {
-      kind: ColumnKind.Volume,
-      value:
-        market.data && market.data.indicativeVolume !== '0'
-          ? addDecimalsFormatNumber(
-              market.data.indicativeVolume,
-              market.positionDecimalPlaces
-            )
-          : '-',
-      className: `${cellClassNames} hidden lg:table-cell font-mono`,
-      onlyOnDetailed: true,
     },
     {
       kind: ColumnKind.Fee,
