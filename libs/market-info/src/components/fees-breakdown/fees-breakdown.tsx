@@ -1,9 +1,9 @@
-import type { Market } from '@vegaprotocol/market-list';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
-import { t, formatNumberPercentage } from '@vegaprotocol/react-helpers';
+import { formatNumberPercentage, t } from '@vegaprotocol/react-helpers';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
+import type { Market } from '@vegaprotocol/market-list';
 export const FeesCell = ({
   feeFactors,
 }: {

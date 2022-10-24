@@ -67,7 +67,7 @@ describe('Market trading page', () => {
     it('must see market volume', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketVolume).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Volume');
+          cy.getByTestId(itemHeader).should('have.text', 'Volume (24h)');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
