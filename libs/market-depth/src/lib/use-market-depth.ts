@@ -9,7 +9,7 @@ interface Props {
   throttleMilliseconds?: number;
 }
 
-export const useOrderBookData = ({
+export const useMarketDepth = ({
   variables,
   throttleMilliseconds = 1000,
 }: Props) => {

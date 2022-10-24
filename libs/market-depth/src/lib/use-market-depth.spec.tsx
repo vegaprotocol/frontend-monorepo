@@ -1,13 +1,9 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, act } from '@testing-library/react';
-import type {
-  MarketDepth_market,
-  MarketDepth_market_depth_buy,
-  MarketDepth_market_depth_sell,
-} from './';
+import type { MarketDepthQuery } from './__generated___/MarketDepth';
 import { useMarketDepth } from './use-market-depth';
 
-const mockData: MarketDepth_market = {
+const mockData: MarketDepthQuery['market'] = {
   __typename: 'Market',
   id: 'marketId',
   depth: {
@@ -32,7 +28,7 @@ const mockData: MarketDepth_market = {
   },
 };
 
-let updateMock: ({ data }: { data: MarketDepth_market }) => boolean;
+let updateMock: ({ data }: { data: MarketDepthQuery['market'] }) => boolean;
 
 const mockUseDataProvider = ({ update }: { update: () => boolean }) => {
   updateMock = update;
@@ -45,9 +41,13 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 }));
 
 const modMock = (
-  sell: MarketDepth_market_depth_sell[] | null,
-  buy: MarketDepth_market_depth_buy[] | null
-): MarketDepth_market => {
+  sell:
+    | Pick<NonNullable<MarketDepthQuery['market']>, 'depth'>['depth']['sell']
+    | null,
+  buy:
+    | Pick<NonNullable<MarketDepthQuery['market']>, 'depth'>['depth']['buy']
+    | null
+): MarketDepthQuery['market'] => {
   return {
     ...mockData,
     depth: {

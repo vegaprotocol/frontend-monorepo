@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { Side } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useCalculateSlippage } from './use-calculate-slippage';
+import { useMarketDepth } from '@vegaprotocol/market-depth';
 
 const mockData = {
   decimalPlaces: 0,
@@ -61,7 +62,7 @@ let mockOrderBookData = {
 
 jest.mock('@vegaprotocol/market-depth', () => ({
   ...jest.requireActual('@vegaprotocol/market-depth'),
-  useOrderBookData: jest.fn(() => mockOrderBookData),
+  useMarketDepth: jest.fn(() => mockOrderBookData),
 }));
 
 jest.mock('@vegaprotocol/react-helpers', () => ({
