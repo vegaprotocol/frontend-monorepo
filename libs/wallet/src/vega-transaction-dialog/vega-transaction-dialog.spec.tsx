@@ -3,11 +3,17 @@ import { WalletError } from '../connectors';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
+import { Networks } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
     VEGA_EXPLORER_URL: 'https://test.explorer.vega.network',
+    VEGA_ENV: 'TESTNET',
   }),
+  Networks: {
+    MAINNET: 'MAINET',
+    TESTNET: 'TESTNET',
+  },
 }));
 
 describe('VegaTransactionDialog', () => {
@@ -32,6 +38,9 @@ describe('VegaTransactionDialog', () => {
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/confirm/i);
     expect(screen.getByTestId(VegaTxStatus.Requested)).toHaveTextContent(
       /please open your wallet/i
+    );
+    expect(screen.getByTestId('testnet-transaction-info')).toHaveTextContent(
+      /\[This is TESTNET transaction\]/
     );
   });
 
