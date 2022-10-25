@@ -1,9 +1,4 @@
-import type {
-  OrderTimeInForce,
-  OrderType,
-  Side,
-  VoteValue,
-} from '@vegaprotocol/types';
+import type { Schema, VoteValue } from '@vegaprotocol/types';
 
 export interface DelegateSubmissionBody {
   delegateSubmission: {
@@ -20,36 +15,41 @@ export interface UndelegateSubmissionBody {
   };
 }
 
+interface OrderSubmission {
+  marketId: string;
+  reference?: string;
+  type: Schema.OrderType;
+  side: Schema.Side;
+  timeInForce: Schema.OrderTimeInForce;
+  size: string;
+  price?: string;
+  expiresAt?: string;
+}
+
+interface OrderCancellation {
+  orderId: string;
+  marketId: string;
+}
+
+interface OrderAmendment {
+  marketId: string;
+  orderId: string;
+  reference?: string;
+  timeInForce: Schema.OrderTimeInForce;
+  sizeDelta?: number;
+  price?: string;
+  expiresAt?: string;
+}
 export interface OrderSubmissionBody {
-  orderSubmission: {
-    marketId: string;
-    reference?: string;
-    type: OrderType;
-    side: Side;
-    timeInForce: OrderTimeInForce;
-    size: string;
-    price?: string;
-    expiresAt?: string;
-  };
+  orderSubmission: OrderSubmission;
 }
 
 export interface OrderCancellationBody {
-  orderCancellation: {
-    orderId: string;
-    marketId: string;
-  };
+  orderCancellation: OrderCancellation;
 }
 
 export interface OrderAmendmentBody {
-  orderAmendment: {
-    marketId: string;
-    orderId: string;
-    reference?: string;
-    timeInForce: OrderTimeInForce;
-    sizeDelta?: number;
-    price?: string;
-    expiresAt?: string;
-  };
+  orderAmendment: OrderAmendment;
 }
 
 export interface VoteSubmissionBody {
@@ -250,6 +250,18 @@ export interface ProposalSubmissionBody {
   proposalSubmission: ProposalSubmission;
 }
 
+export interface BatchMarketInstructionSubmissionBody {
+  batchMarketInstructions: {
+    // Will be processed in this order and the total amount of instructions is
+    // restricted by the net param spam.protection.max.batchSize
+    cancellations?: OrderCancellation[];
+    amendments?: OrderAmendment[];
+    // Note: If multiple orders are submitted the first order ID is determined by hashing the signature of the transaction
+    // (see determineId function). For each subsequent order's ID, a hash of the previous orders ID is used
+    submissions?: OrderSubmission[];
+  };
+}
+
 export type Transaction =
   | OrderSubmissionBody
   | OrderCancellationBody
@@ -258,7 +270,8 @@ export type Transaction =
   | DelegateSubmissionBody
   | UndelegateSubmissionBody
   | OrderAmendmentBody
-  | ProposalSubmissionBody;
+  | ProposalSubmissionBody
+  | BatchMarketInstructionSubmissionBody;
 
 export interface TransactionResponse {
   transactionHash: string;

@@ -1,10 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  t,
-  addDecimalsFormatNumber,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { t, removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -14,12 +10,17 @@ import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import {
+  useFeeDealTicketDetails,
+  getFeeDetailsValues,
+} from '../../hooks/use-fee-deal-ticket-details';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -44,18 +45,17 @@ export const DealTicket = ({
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
-
-  const orderType = watch('type');
-  const orderTimeInForce = watch('timeInForce');
+  const order = watch();
   const { message, isDisabled: disabled } = useOrderValidation({
     market,
-    orderType,
-    orderTimeInForce,
+    orderType: order.type,
+    orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
   });
   const isDisabled = transactionStatus === 'pending' || disabled;
@@ -69,7 +69,7 @@ export const DealTicket = ({
             order.price && removeDecimal(order.price, market.decimalPlaces),
           size: removeDecimal(order.size, market.positionDecimalPlaces),
           expiresAt:
-            order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+            order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
               ? order.expiresAt
               : undefined,
         });
@@ -78,20 +78,31 @@ export const DealTicket = ({
     [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
-  const getPrice = () => {
+  const getEstimatedMarketPrice = () => {
     if (isMarketInAuction(market)) {
-      //  0 can never be a valid uncrossing price as it would require there being orders on the book at that price.
+      // 0 can never be a valid uncrossing price
+      // as it would require there being orders on the book at that price.
       if (
         market.data?.indicativePrice &&
         BigInt(market.data?.indicativePrice) !== BigInt(0)
       ) {
         return market.data.indicativePrice;
       }
-      return '-';
+      return undefined;
     }
     return market.depth.lastTrade?.price;
   };
-  const price = getPrice();
+  const marketPrice = getEstimatedMarketPrice();
+  const marketPriceFormatted =
+    marketPrice && addDecimal(marketPrice, market.decimalPlaces);
+  useEffect(() => {
+    if (marketPriceFormatted && order.type === Schema.OrderType.TYPE_MARKET) {
+      setValue('price', marketPriceFormatted);
+    }
+  }, [marketPriceFormatted, order.type, setValue]);
+
+  const feeDetails = useFeeDealTicketDetails(order, market);
+  const details = getFeeDetailsValues(feeDetails);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
@@ -110,14 +121,10 @@ export const DealTicket = ({
         )}
       />
       <DealTicketAmount
-        orderType={orderType}
+        orderType={order.type}
         market={market}
         register={register}
-        price={
-          price
-            ? addDecimalsFormatNumber(price, market.decimalPlaces)
-            : undefined
-        }
+        price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
       />
       <Controller
@@ -126,13 +133,13 @@ export const DealTicket = ({
         render={({ field }) => (
           <TimeInForceSelector
             value={field.value}
-            orderType={orderType}
+            orderType={order.type}
             onSelect={field.onChange}
           />
         )}
       />
-      {orderType === OrderType.TYPE_LIMIT &&
-        orderTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      {order.type === Schema.OrderType.TYPE_LIMIT &&
+        order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
             control={control}
@@ -174,6 +181,7 @@ export const DealTicket = ({
           {t('Connect wallet')}
         </Button>
       )}
+      <DealTicketFeeDetails details={details} />
     </form>
   );
 };

@@ -78,9 +78,9 @@ export interface NetworkStats_statistics {
    */
   chainId: string;
   /**
-   * RFC3339Nano uptime of the node
+   * RFC3339Nano genesis time of the chain
    */
-  upTime: string;
+  genesisTime: string;
 }
 
 export interface NetworkStats {

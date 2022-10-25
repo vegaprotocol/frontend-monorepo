@@ -88,6 +88,13 @@
           "nx build liquidity-provision-dashboard"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/liquidity-provision-dashboard/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

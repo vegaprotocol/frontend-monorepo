@@ -5,7 +5,7 @@ import {
   Size,
   getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
-import { OrderType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import {
   FormGroup,
   Input,
@@ -14,7 +14,6 @@ import {
   Dialog,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
 
@@ -26,7 +25,7 @@ interface OrderEditDialogProps {
 }
 
 interface FormFields {
-  entryPrice: string;
+  limitPrice: string;
 }
 
 export const OrderEditDialog = ({
@@ -42,7 +41,7 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      entryPrice: addDecimalsFormatNumber(
+      limitPrice: addDecimalsFormatNumber(
         order.price,
         order.market?.decimalPlaces ?? 0
       ),
@@ -65,7 +64,7 @@ export const OrderEditDialog = ({
             <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
-        {order.type === OrderType.TYPE_LIMIT && order.market && (
+        {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={headerClassName}>{t(`Current price`)}</p>
             <p>
@@ -86,7 +85,7 @@ export const OrderEditDialog = ({
           </p>
         </div>
       </div>
-      {order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+      {order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
         order.expiresAt && (
           <div>
             <p className={headerClassName}>{t(`Expires at`)}</p>
@@ -99,21 +98,21 @@ export const OrderEditDialog = ({
         data-testid="edit-order"
         className="w-1/2 mt-4"
       >
-        <FormGroup label={t('Price')} labelFor="entryPrice">
+        <FormGroup label={t('Price')} labelFor="limitPrice">
           <Input
             type="number"
             step={step}
-            {...register('entryPrice', {
+            {...register('limitPrice', {
               required: t('You need to provide a price'),
               validate: {
                 min: (value) =>
                   Number(value) > 0 ? true : t('The price cannot be negative'),
               },
             })}
-            id="entryPrice"
+            id="limitPrice"
           />
-          {errors.entryPrice?.message && (
-            <InputError intent="danger">{errors.entryPrice.message}</InputError>
+          {errors.limitPrice?.message && (
+            <InputError intent="danger">{errors.limitPrice.message}</InputError>
           )}
         </FormGroup>
         <Button variant="primary" size="md" type="submit">

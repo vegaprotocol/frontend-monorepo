@@ -7,7 +7,7 @@ import type {
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 export interface UpdateDelta<Delta> {
   delta?: Delta;
@@ -35,7 +35,7 @@ export interface Load<Data> {
   (start?: number, end?: number): Promise<Data | null>;
 }
 
-type Pagination = PaginationWithoutSkip & {
+type Pagination = Schema.Pagination & {
   skip?: number;
 };
 

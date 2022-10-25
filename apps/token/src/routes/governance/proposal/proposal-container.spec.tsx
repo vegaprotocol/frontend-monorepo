@@ -50,7 +50,7 @@ describe('Proposal container', () => {
 
   it('Renders proposal details if proposal is found', async () => {
     const proposal = generateProposal({ id: 'foo' });
-    render(renderComponent(proposal, 'foo'));
+    render(renderComponent(proposal as Proposal_proposal, 'foo'));
     await waitFor(() => {
       expect(screen.getByTestId('proposal')).toBeInTheDocument();
     });

@@ -17,6 +17,13 @@
         "jestConfig": "libs/cypress/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./libs/cypress/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

@@ -74,6 +74,13 @@
           "nx build multisig-signer"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/multisig-signer/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

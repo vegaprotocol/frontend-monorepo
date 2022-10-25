@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import type { Story, Meta } from '@storybook/react';
 import { PositionsTable } from './positions-table';
 import type { Position } from './positions-data-providers';
@@ -28,7 +29,7 @@ const longPosition: Position = {
   // leverageSearch: '0',
   liquidationPrice: '1129935',
   lowMarginLevel: false,
-  // marginAccountBalance: '0',
+  marginAccountBalance: new BigNumber('0'),
   // marginMaintenance: '0',
   // marginSearch: '0',
   // marginInitial: '0',
@@ -60,7 +61,7 @@ const shortPosition: Position = {
   // leverageSearch: '0',
   liquidationPrice: '23734',
   lowMarginLevel: false,
-  // marginAccountBalance: '0',
+  marginAccountBalance: new BigNumber('0'),
   // marginMaintenance: '0',
   // marginSearch: '0',
   // marginInitial: '0',

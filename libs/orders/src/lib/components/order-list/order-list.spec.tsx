@@ -1,16 +1,12 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import {
   OrderRejectionReasonMapping,
   OrderTimeInForceMapping,
-} from '@vegaprotocol/types';
-import {
-  OrderStatus,
-  OrderRejectionReason,
   OrderTypeMapping,
   OrderStatusMapping,
+  Schema,
 } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
@@ -82,7 +78,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[marketOrder.type as OrderType] || '',
+      OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       OrderStatusMapping[marketOrder.status],
       '5',
       '-',
@@ -105,7 +101,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[limitOrder.type || OrderType.TYPE_LIMIT],
+      OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       OrderStatusMapping[limitOrder.status],
       '5',
       '-',
@@ -124,9 +120,9 @@ describe('OrderListTable', () => {
   it('should apply correct formatting for a rejected order', async () => {
     const rejectedOrder = {
       ...marketOrder,
-      status: OrderStatus.STATUS_REJECTED,
+      status: Schema.OrderStatus.STATUS_REJECTED,
       rejectionReason:
-        OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
+        Schema.OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
     };
     await act(async () => {
       render(generateJsx({ rowData: [rejectedOrder] }));
@@ -144,8 +140,8 @@ describe('OrderListTable', () => {
       const mockEdit = jest.fn();
       const mockCancel = jest.fn();
       const order = generateOrder({
-        type: OrderType.TYPE_LIMIT,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        type: Schema.OrderType.TYPE_LIMIT,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         liquidityProvision: null,
         peggedOrder: null,
       });
@@ -168,8 +164,8 @@ describe('OrderListTable', () => {
 
     it('shows if an order is a liquidity provision order and does not show order actions', async () => {
       const order = generateOrder({
-        type: OrderType.TYPE_LIMIT,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        type: Schema.OrderType.TYPE_LIMIT,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         liquidityProvision: { __typename: 'LiquidityProvision' },
       });
 
@@ -185,8 +181,8 @@ describe('OrderListTable', () => {
 
     it('shows if an order is a pegged order and does not show order actions', async () => {
       const order = generateOrder({
-        type: OrderType.TYPE_LIMIT,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        type: Schema.OrderType.TYPE_LIMIT,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         peggedOrder: {
           __typename: 'PeggedOrder',
         },
@@ -202,32 +198,32 @@ describe('OrderListTable', () => {
       expect(amendCell.queryAllByRole('button')).toHaveLength(0);
     });
 
-    it.each([OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED])(
-      'shows buttons for %s orders',
-      async (status) => {
-        const order = generateOrder({
-          type: OrderType.TYPE_LIMIT,
-          status,
-        });
+    it.each([
+      Schema.OrderStatus.STATUS_ACTIVE,
+      Schema.OrderStatus.STATUS_PARKED,
+    ])('shows buttons for %s orders', async (status) => {
+      const order = generateOrder({
+        type: Schema.OrderType.TYPE_LIMIT,
+        status,
+      });
 
-        await act(async () => {
-          render(generateJsx({ rowData: [order] }));
-        });
+      await act(async () => {
+        render(generateJsx({ rowData: [order] }));
+      });
 
-        const amendCell = getAmendCell();
-        expect(amendCell.getAllByRole('button')).toHaveLength(2);
-      }
-    );
+      const amendCell = getAmendCell();
+      expect(amendCell.getAllByRole('button')).toHaveLength(2);
+    });
 
     it.each([
-      OrderStatus.STATUS_CANCELLED,
-      OrderStatus.STATUS_EXPIRED,
-      OrderStatus.STATUS_FILLED,
-      OrderStatus.STATUS_REJECTED,
-      OrderStatus.STATUS_STOPPED,
+      Schema.OrderStatus.STATUS_CANCELLED,
+      Schema.OrderStatus.STATUS_EXPIRED,
+      Schema.OrderStatus.STATUS_FILLED,
+      Schema.OrderStatus.STATUS_REJECTED,
+      Schema.OrderStatus.STATUS_STOPPED,
     ])('does not show buttons for %s orders', async (status) => {
       const order = generateOrder({
-        type: OrderType.TYPE_LIMIT,
+        type: Schema.OrderType.TYPE_LIMIT,
         status,
       });
 

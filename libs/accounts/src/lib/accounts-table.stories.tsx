@@ -16,7 +16,7 @@ export const Primary = Template.bind({});
 Primary.args = {
   data: getAccountData([
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_MARGIN,
       balance: '2781397',
       market: {
@@ -38,7 +38,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_MARGIN,
       balance: '406922',
       market: {
@@ -60,7 +60,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_GENERAL,
       balance: '10001000000',
       market: null,
@@ -72,7 +72,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_GENERAL,
       balance: '1990351587',
       market: null,
@@ -84,7 +84,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_GENERAL,
       balance: '2996218603',
       market: null,
@@ -96,7 +96,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_GENERAL,
       balance: '5000593078',
       market: null,
@@ -108,7 +108,7 @@ Primary.args = {
       },
     },
     {
-      __typename: 'Account',
+      __typename: 'AccountBalance',
       type: AccountType.ACCOUNT_TYPE_GENERAL,
       balance: '4000000000000001006031',
       market: null,

@@ -11,11 +11,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import type { LiquidityProvision } from './liquidity-data-provider';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
+import type { LiquidityProvisionData } from './liquidity-data-provider';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -30,22 +30,32 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
 };
 
 export interface LiquidityTableProps {
-  data: LiquidityProvision[];
+  data?: LiquidityProvisionData[];
   symbol?: string;
   assetDecimalPlaces?: number;
+  stakeToCcySiskas: string;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
-  ({ data, symbol = '', assetDecimalPlaces }, ref) => {
+  ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
+    const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
+      if (!value) return '-';
+      const newValue = new BigNumber(value)
+        .times(stakeToCcySiskas ?? 1)
+        .toString();
+      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
+    };
+
+    if (!data) return null;
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
-        getRowId={({ data }) => data.party}
+        getRowId={({ data }) => data.party.id}
         rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}
@@ -60,7 +70,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       >
         <AgGridColumn
           headerName={t('Party')}
-          field="party"
+          field="party.id"
           headerTooltip={t(
             'The public key of the party making this commitment.'
           )}
@@ -104,27 +114,31 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         />
         <AgGridColumn
           headerName={t('Obligation')}
-          field="obligation"
+          field="commitmentAmount"
           type="rightAligned"
           headerTooltip={t(
             'The liquidity provider’s obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={stakeToCcySiskasFormatter}
         />
         <AgGridColumn
           headerName={t('Supplied')}
           headerTooltip={t(
             'The amount of the settlement asset supplied for liquidity by this provider, calculated as the bond account balance multiplied by the value of the stake_to_ccy_siskas network parameter.'
           )}
-          field="supplied"
+          field="balance"
           type="rightAligned"
-          valueFormatter={assetDecimalsFormatter}
+          valueFormatter={stakeToCcySiskasFormatter}
         />
         <AgGridColumn
           headerName={t('Status')}
           headerTooltip={t('The current status of this liquidity provision.')}
           field="status"
-          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+          valueFormatter={({
+            value,
+          }: {
+            value: Schema.LiquidityProvisionStatus;
+          }) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

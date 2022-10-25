@@ -1,6 +1,9 @@
 import once from 'lodash/once';
 import { getUserLocale } from './utils';
 
+export const isValidDate = (date: Date) =>
+  date instanceof Date && !isNaN(date.getTime());
+
 export const getTimeFormat = once(
   () =>
     new Intl.DateTimeFormat(getUserLocale(), {

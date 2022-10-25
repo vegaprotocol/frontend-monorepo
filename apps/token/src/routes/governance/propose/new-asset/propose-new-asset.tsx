@@ -5,6 +5,7 @@ import {
   getEnactmentTimestamp,
   getValidationTimestamp,
   useProposalSubmit,
+  deadlineToRoundedHours,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -59,10 +60,17 @@ export const ProposeNewAsset = () => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<NewAssetProposalFormFields>();
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: NewAssetProposalFormFields) => {
+    const isVoteDeadlineAtMinimum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_asset_minClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -72,10 +80,14 @@ export const ProposeNewAsset = () => {
         newAsset: {
           ...JSON.parse(fields.proposalTerms),
         },
-        closingTimestamp: getClosingTimestamp(fields.proposalVoteDeadline),
+        closingTimestamp: getClosingTimestamp(
+          fields.proposalVoteDeadline,
+          isVoteDeadlineAtMinimum
+        ),
         enactmentTimestamp: getEnactmentTimestamp(
           fields.proposalVoteDeadline,
-          fields.proposalEnactmentDeadline
+          fields.proposalEnactmentDeadline,
+          isVoteDeadlineAtMinimum
         ),
         validationTimestamp: getValidationTimestamp(
           fields.proposalValidationDeadline
@@ -155,12 +167,14 @@ export const ProposeNewAsset = () => {
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
+                  onVoteMinMax={setValue}
                   voteRegister={register('proposalVoteDeadline', {
                     required: t('Required'),
                   })}
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
                   voteMinClose={params.governance_proposal_asset_minClose}
                   voteMaxClose={params.governance_proposal_asset_maxClose}
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
@@ -170,6 +184,7 @@ export const ProposeNewAsset = () => {
                   enactmentMinClose={params.governance_proposal_asset_minEnact}
                   enactmentMaxClose={params.governance_proposal_asset_maxEnact}
                   validationRequired={true}
+                  onValidationMinMax={setValue}
                   validationRegister={register('proposalValidationDeadline', {
                     required: t('Required'),
                   })}

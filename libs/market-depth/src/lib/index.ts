@@ -1,11 +1,9 @@
-export * from './__generated__/MarketDepth';
-export * from './__generated__/MarketDepthSubscription';
+export * from './__generated___/MarketDepth';
 export * from './depth-chart';
-export * from './market-depth-provider';
+export { marketDepthProvider } from './market-depth-provider';
 export * from './orderbook-container';
 export * from './orderbook-data';
 export * from './orderbook-manager';
 export * from './orderbook-row';
 export * from './orderbook.stories';
 export * from './orderbook';
-export * from './use-orderbook-data';

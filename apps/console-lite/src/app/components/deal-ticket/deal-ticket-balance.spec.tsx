@@ -1,23 +1,24 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import type {
-  PartyBalanceQuery_party_accounts,
-  PartyBalanceQuery_party_accounts_asset,
-} from './__generated__/PartyBalanceQuery';
+  AccountFragment,
+  DealTicketMarketFragment,
+} from '@vegaprotocol/deal-ticket';
 import { DealTicketBalance } from './deal-ticket-balance';
 import { AccountType } from '@vegaprotocol/types';
 
-const tDAI: PartyBalanceQuery_party_accounts_asset = {
-  __typename: 'Asset',
-  id: '1',
-  symbol: 'tDAI',
-  name: 'TDAI',
-  decimals: 2,
-};
-
-const accounts: PartyBalanceQuery_party_accounts[] = [
+const tDAI: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'] =
   {
-    __typename: 'Account',
+    __typename: 'Asset',
+    id: '1',
+    symbol: 'tDAI',
+    name: 'TDAI',
+    decimals: 2,
+  };
+
+const accounts: AccountFragment[] = [
+  {
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '1000000',
     asset: tDAI,

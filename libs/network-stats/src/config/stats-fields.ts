@@ -1,4 +1,10 @@
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+  getTimeFormat,
+  isValidDate,
+  t,
+} from '@vegaprotocol/react-helpers';
 import type { Stats, StatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
@@ -120,7 +126,16 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   vegaTime: [
     {
       title: t('Time'),
-      formatter: (time: Date) => new Date(time).toLocaleTimeString(),
+      formatter: (time: Date) => {
+        if (!time) {
+          return;
+        }
+        const date = new Date(time);
+        if (!isValidDate(date)) {
+          return;
+        }
+        return getTimeFormat().format(date);
+      },
       goodThreshold: (time: Date) => {
         const diff = new Date().getTime() - new Date(time).getTime();
         return diff > 0 && diff < 5000;
@@ -140,15 +155,18 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       description: t('Tendermint software version on this node'),
     },
   ],
-  upTime: [
+  genesisTime: [
     {
       title: t('Uptime'),
       formatter: (t: string) => {
         if (!t) {
           return;
         }
-        const secSinceStart =
-          (new Date().getTime() - new Date(t).getTime()) / 1000;
+        const date = new Date(t);
+        if (!isValidDate(date)) {
+          return;
+        }
+        const secSinceStart = (new Date().getTime() - date.getTime()) / 1000;
         const days = Math.floor(secSinceStart / 60 / 60 / 24);
         const hours = Math.floor((secSinceStart / 60 / 60) % 24);
         const mins = Math.floor((secSinceStart / 60) % 60);
@@ -164,7 +182,11 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
         if (!t) {
           return;
         }
-        return `${new Date(t).toLocaleString().replace(',', ' ')}`;
+        const date = new Date(t);
+        if (!isValidDate(date)) {
+          return;
+        }
+        return getDateTimeFormat().format(date);
       },
       description: t('Genesis'),
     },

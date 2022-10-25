@@ -35,17 +35,21 @@ export const WithdrawalDialogs = ({
           }}
         />
       </Dialog>
-      <createWithdraw.Dialog>
-        <WithdrawalFeedback
-          withdrawal={createWithdraw.withdrawal}
-          transaction={createWithdraw.transaction}
-          availableTimestamp={createWithdraw.availableTimestamp}
-          submitWithdraw={(id) => {
-            createWithdraw.reset();
-            completeWithdraw.submit(id);
-          }}
-        />
-      </createWithdraw.Dialog>
+      <createWithdraw.Dialog
+        content={{
+          Complete: (
+            <WithdrawalFeedback
+              withdrawal={createWithdraw.withdrawal}
+              transaction={createWithdraw.transaction}
+              availableTimestamp={createWithdraw.availableTimestamp}
+              submitWithdraw={(id) => {
+                createWithdraw.reset();
+                completeWithdraw.submit(id);
+              }}
+            />
+          ),
+        }}
+      />
       <completeWithdraw.Dialog />
     </>
   );

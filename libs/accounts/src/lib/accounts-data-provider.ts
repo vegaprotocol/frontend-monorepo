@@ -1,23 +1,24 @@
-import produce from 'immer';
-import type { IterableElement } from 'type-fest';
-import {
-  AccountsDocument,
-  AccountEventsDocument,
-} from './__generated___/Accounts';
-import type {
-  AccountFieldsFragment,
-  AccountsQuery,
-  AccountEventsSubscription,
-} from './__generated___/Accounts';
+import { assetsProvider } from '@vegaprotocol/assets';
+import { marketsProvider } from '@vegaprotocol/market-list';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
-import type { Market } from '@vegaprotocol/market-list';
-import { marketsProvider } from '@vegaprotocol/market-list';
+import produce from 'immer';
 
-import { assetsProvider } from '@vegaprotocol/assets';
+import {
+  AccountEventsDocument,
+  AccountsDocument,
+} from './__generated___/Accounts';
+
+import type { IterableElement } from 'type-fest';
+import type {
+  AccountFieldsFragment,
+  AccountsQuery,
+  AccountEventsSubscription,
+} from './__generated___/Accounts';
+import type { Market } from '@vegaprotocol/market-list';
 import type { Asset } from '@vegaprotocol/assets';
 
 function isAccount(
@@ -26,7 +27,7 @@ function isAccount(
     | IterableElement<AccountEventsSubscription['accounts']>
 ): account is AccountFieldsFragment {
   return (
-    (account as AccountFieldsFragment).__typename === 'Account' ||
+    (account as AccountFieldsFragment).__typename === 'AccountBalance' ||
     Boolean((account as AccountFieldsFragment).asset?.id)
   );
 }
@@ -37,7 +38,7 @@ export const getId = (
     | IterableElement<AccountEventsSubscription['accounts']>
 ) =>
   isAccount(account)
-    ? `${account.type}-${account.asset.id}-${account.market?.id ?? 'null'}`
+    ? `${account.type}-${account.asset.id}-${account.market?.id || 'null'}`
     : `${account.type}-${account.assetId}-${account.marketId || 'null'}`;
 
 export type Account = Omit<AccountFieldsFragment, 'market' | 'asset'> & {
@@ -57,7 +58,7 @@ const update = (
         draft[index].balance = delta.balance;
       } else {
         draft.unshift({
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: delta.type,
           balance: delta.balance,
           market: delta.marketId ? { id: delta.marketId } : null,
@@ -76,7 +77,9 @@ const getData = (
 
 const getDelta = (
   subscriptionData: AccountEventsSubscription
-): AccountEventsSubscription['accounts'] => subscriptionData.accounts;
+): AccountEventsSubscription['accounts'] => {
+  return subscriptionData.accounts;
+};
 
 export const accountsOnlyDataProvider = makeDataProvider<
   AccountsQuery,
@@ -127,6 +130,7 @@ const getAssetAccountAggregation = (
   accountList: Account[],
   assetId: string
 ): AccountFields => {
+  console.log(accountList);
   const accounts = accountList.filter((a) => a.asset.id === assetId);
   const available = getTotalBalance(
     accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)

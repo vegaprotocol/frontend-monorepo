@@ -45,7 +45,7 @@ export const usePositionsData = (
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
       dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
-      gridRef.current?.api.refreshInfiniteCache();
+      gridRef.current?.api?.refreshInfiniteCache();
       return true;
     },
     [assetSymbol, gridRef]

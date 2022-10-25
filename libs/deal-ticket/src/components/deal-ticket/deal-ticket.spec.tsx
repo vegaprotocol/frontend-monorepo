@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { MockedResponse } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing';
+import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
+import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
 
 const market: DealTicketMarketFragment = {
   __typename: 'Market',
@@ -32,6 +36,13 @@ const market: DealTicketMarketFragment = {
       },
     },
   },
+  fees: {
+    factors: {
+      makerFee: '0.001',
+      infrastructureFee: '0.002',
+      liquidityFee: '0.003',
+    },
+  },
   depth: {
     __typename: 'MarketDepth',
     lastTrade: {
@@ -43,22 +54,37 @@ const market: DealTicketMarketFragment = {
 const submit = jest.fn();
 const transactionStatus = 'default';
 
+const mockChainId = 'chain-id';
+
 function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
+  const chainIdMock: MockedResponse<ChainIdQuery> = {
+    request: {
+      query: ChainIdDocument,
+    },
+    result: {
+      data: {
+        statistics: {
+          chainId: mockChainId,
+        },
+      },
+    },
+  };
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <VegaWalletContext.Provider value={{} as any}>
-      <DealTicket
-        defaultOrder={order}
-        market={market}
-        submit={submit}
-        transactionStatus={transactionStatus}
-      />
-    </VegaWalletContext.Provider>
+    <MockedProvider mocks={[chainIdMock]}>
+      <VegaWalletContext.Provider value={{} as any}>
+        <DealTicket
+          defaultOrder={order}
+          market={market}
+          submit={submit}
+          transactionStatus={transactionStatus}
+        />
+      </VegaWalletContext.Provider>
+    </MockedProvider>
   );
 }
 
 describe('DealTicket', () => {
-  it('Displays ticket defaults', () => {
+  it('should display ticket defaults', () => {
     render(generateJsx());
 
     // Assert defaults are used
@@ -87,7 +113,7 @@ describe('DealTicket', () => {
     );
   });
 
-  it('Can edit deal ticket', async () => {
+  it('can edit deal ticket', async () => {
     render(generateJsx());
 
     // BUY is selected by default
@@ -119,7 +145,7 @@ describe('DealTicket', () => {
     );
   });
 
-  it('Handles TIF select box dependent on order type', () => {
+  it('handles TIF select box dependent on order type', () => {
     render(generateJsx());
 
     // Check only IOC and

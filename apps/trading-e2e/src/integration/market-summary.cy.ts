@@ -67,7 +67,7 @@ describe('Market trading page', () => {
     it('must see market volume', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketVolume).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Volume');
+          cy.getByTestId(itemHeader).should('have.text', 'Volume (24h)');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
@@ -118,11 +118,11 @@ describe('Market trading page', () => {
       const toolTipValue = 'tooltip-value';
       const auctionToolTipLabels = [
         'Auction start',
-        'Est auction end',
+        'Est. auction end',
         'Target liquidity',
         'Current liquidity',
-        'Est uncrossing price',
-        'Est uncrossing vol',
+        'Est. uncrossing price',
+        'Est. uncrossing vol',
       ];
 
       cy.getByTestId(marketSummaryBlock).within(() => {
