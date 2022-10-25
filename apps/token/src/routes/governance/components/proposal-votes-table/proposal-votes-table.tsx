@@ -25,7 +25,7 @@ export const ProposalVotesTable = ({
   } = useAppState();
   const {
     willPassByTokenVote,
-    willPassLP,
+    willPassByLPVote,
     totalTokensPercentage,
     participationMet,
     participationLPMet,
@@ -34,7 +34,7 @@ export const ProposalVotesTable = ({
     yesPercentage,
     noTokens,
     yesTokens,
-    yesLPTokens,
+    yesELSWeight,
     yesVotes,
     noVotes,
     totalVotes,
@@ -45,7 +45,7 @@ export const ProposalVotesTable = ({
   } = useVoteInformation({ proposal });
 
   const isUpdateMarket = proposalType === ProposalType.PROPOSAL_UPDATE_MARKET;
-  const updateMarketWillPass = willPassByTokenVote || willPassLP;
+  const updateMarketWillPass = willPassByTokenVote || willPassByLPVote;
   const updateMarketVotePassMethod =
     updateMarketWillPass &&
     (willPassByTokenVote ? t('byTokenVote') : t('byLiquidityVote'));
@@ -94,7 +94,7 @@ export const ProposalVotesTable = ({
       {isUpdateMarket && (
         <KeyValueTableRow>
           {t('tokenLPForProposal')}
-          {formatNumber(yesLPTokens, 2)}
+          {formatNumber(yesELSWeight, 2)}
         </KeyValueTableRow>
       )}
       <KeyValueTableRow>
