@@ -4,7 +4,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { GetRowIdParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/react-helpers';
 
-import type { LiquidityProvision } from '@vegaprotocol/liquidity';
+import type { LiquidityProvisionFieldsFragment } from '@vegaprotocol/liquidity';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
 import { Grid } from '../../grid';
@@ -24,13 +24,13 @@ export const Providers = ({
   liquidityProviders,
   settlementAsset,
 }: {
-  liquidityProviders: LiquidityProvision[];
+  liquidityProviders: LiquidityProvisionFieldsFragment[];
   settlementAsset: {
     decimals?: number;
     symbol?: string;
   };
 }) => {
-  const getRowId = useCallback(({ data }: GetRowIdParams) => data.party, []);
+  const getRowId = useCallback(({ data }: GetRowIdParams) => data.party.id, []);
 
   return (
     <Grid
@@ -46,7 +46,7 @@ export const Providers = ({
     >
       <AgGridColumn
         headerName={t('LPs')}
-        field="party"
+        field="party.id"
         flex="1"
         minWidth={100}
       />
