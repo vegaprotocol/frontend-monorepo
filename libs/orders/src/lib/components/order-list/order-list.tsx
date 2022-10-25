@@ -1,41 +1,42 @@
 import {
-  OrderTimeInForce,
-  OrderStatus,
-  Side,
-  OrderType,
-  OrderTypeMapping,
-  OrderStatusMapping,
-  OrderTimeInForceMapping,
-  OrderRejectionReasonMapping,
-} from '@vegaprotocol/types';
-import {
   addDecimal,
   getDateTimeFormat,
-  t,
-  positiveClassNames,
-  negativeClassNames,
   isNumeric,
+  negativeClassNames,
+  positiveClassNames,
+  t,
 } from '@vegaprotocol/react-helpers';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
+import {
+  OrderRejectionReasonMapping,
+  OrderStatus,
+  OrderStatusMapping,
+  OrderTimeInForce,
+  OrderTimeInForceMapping,
+  OrderType,
+  OrderTypeMapping,
+  Side,
+} from '@vegaprotocol/types';
 import {
   AgGridDynamic as AgGrid,
   Button,
   Intent,
+  Link,
 } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
+import { forwardRef, useState } from 'react';
 
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
-import { OrderEditDialog } from './order-edit-dialog';
-import type { Order } from '../';
 import { OrderFeedback } from '../order-feedback';
+import { OrderEditDialog } from './order-edit-dialog';
 
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
+import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
+import type { Order } from '../';
 type OrderListProps = AgGridReactProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
@@ -61,20 +62,26 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderCancel.transaction}
-            order={orderCancel.cancelledOrder}
-          />
-        </orderCancel.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderCancel.transaction}
+                order={orderCancel.cancelledOrder}
+              />
+            ),
+          }}
+        />
         <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderEdit.transaction}
-            order={orderEdit.updatedOrder}
-          />
-        </orderEdit.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderEdit.transaction}
+                order={orderEdit.updatedOrder}
+              />
+            ),
+          }}
+        />
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}
@@ -84,7 +91,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={editOrder}
             onSubmit={(fields) => {
               setEditOrder(null);
-              orderEdit.edit({ price: fields.entryPrice });
+              orderEdit.edit({ price: fields.limitPrice });
             }}
           />
         )}
@@ -113,6 +120,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<
+            Order,
+            'market.tradableInstrument.instrument.code'
+          >) =>
+            data?.market?.id ? (
+              <Link href={`/markets/${data?.market?.id}`} target="_blank">
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Size')}

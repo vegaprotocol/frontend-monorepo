@@ -1,6 +1,8 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
 import type { Update } from '@vegaprotocol/react-helpers';
+import { captureException } from '@sentry/react';
+
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,
@@ -10,34 +12,34 @@ import type {
   MarketDepthUpdateSubscription,
 } from './__generated___/MarketDepth';
 
-const sequenceNumbers: Record<string, number> = {};
-
-const update: Update<
+export const update: Update<
   ReturnType<typeof getData>,
   ReturnType<typeof getDelta>
 > = (data, deltas, reload) => {
   if (!data) {
-    return;
+    return data;
   }
   for (const delta of deltas) {
     if (delta.marketId !== data.id) {
       continue;
     }
-    /*
-    const sequenceNumber = Number(delta.sequenceNumber);
-    if (sequenceNumber <= sequenceNumbers[delta.marketId]) {
+    if (Number(delta.sequenceNumber) <= Number(data.depth.sequenceNumber)) {
       return data;
     }
-    if (sequenceNumber - 1 !== sequenceNumbers[delta.marketId]) {
-      sequenceNumbers[delta.marketId] = 0;
+    if (delta.previousSequenceNumber !== data.depth.sequenceNumber) {
+      captureException(
+        new Error(
+          `Sequence number gap in marketsDepthUpdate for {data.id}, {sequenceNumbers[delta.marketId]} - {delta.previousSequenceNumber}`
+        )
+      );
       reload();
-      return;
+      return data;
     }
-    sequenceNumbers[delta.marketId] = sequenceNumber;
-    */
     const updatedData = {
       ...data,
-      depth: { ...data.depth },
+      depth: {
+        ...data.depth,
+      },
     };
     if (delta.buy) {
       updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
@@ -45,19 +47,14 @@ const update: Update<
     if (delta.sell) {
       updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
     }
+    updatedData.depth.sequenceNumber = delta.sequenceNumber;
     return updatedData;
   }
   return data;
 };
 
-const getData = (responseData: MarketDepthQuery) => {
-  if (responseData.market?.id) {
-    sequenceNumbers[responseData.market.id] = Number(
-      responseData.market.depth.sequenceNumber
-    );
-  }
-  return responseData.market;
-};
+const getData = (responseData: MarketDepthQuery) => responseData.market;
+
 const getDelta = (subscriptionData: MarketDepthUpdateSubscription) =>
   subscriptionData.marketsDepthUpdate;
 
@@ -68,5 +65,3 @@ export const marketDepthProvider = makeDataProvider({
   getData,
   getDelta,
 });
-
-export default marketDepthProvider;

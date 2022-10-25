@@ -1,0 +1,13 @@
+subscription TransactionEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [TransactionResult]) {
+    type
+    event {
+      ... on TransactionResult {
+        partyId
+        hash
+        status
+        error
+      }
+    }
+  }
+}

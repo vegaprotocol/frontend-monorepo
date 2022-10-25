@@ -2,7 +2,7 @@ import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import marketDepthProvider from './market-depth-provider';
+import { marketDepthProvider } from './market-depth-provider';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

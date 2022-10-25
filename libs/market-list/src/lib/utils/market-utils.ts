@@ -5,15 +5,17 @@ import orderBy from 'lodash/orderBy';
 import type { Market, Candle } from '../';
 
 export const totalFees = (fees: Market['fees']['factors']) => {
-  if (!fees) {
-    return undefined;
-  }
-  return formatNumberPercentage(
-    new BigNumber(fees.makerFee)
-      .plus(fees.liquidityFee)
-      .plus(fees.infrastructureFee)
-      .times(100)
-  );
+  return fees
+    ? new BigNumber(fees.makerFee)
+        .plus(fees.liquidityFee)
+        .plus(fees.infrastructureFee)
+        .times(100)
+    : undefined;
+};
+
+export const totalFeesPercentage = (fees: Market['fees']['factors']) => {
+  const total = fees && totalFees(fees);
+  return total ? formatNumberPercentage(total) : undefined;
 };
 
 export const filterAndSortMarkets = (markets: Market[]) => {
@@ -67,3 +69,7 @@ export const calcCandleHigh = (candles: Candle[]): string | undefined => {
     }, new BigNumber(0))
     .toString();
 };
+
+export const calcCandleVolume = (candles: Candle[]): string | undefined =>
+  candles &&
+  candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');

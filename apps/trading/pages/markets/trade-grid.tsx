@@ -33,8 +33,8 @@ import type { OnCellClickHandler } from '../../components/select-market';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { MarketMarkPrice } from '../../components/market-mark-price';
-import { MarketVolume } from '../../components/market-volume';
 import { MarketTradingModeComponent } from '../../components/market-trading-mode';
+import { Last24hVolume } from '../../components/last-24h-volume';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -138,7 +138,7 @@ export const TradeMarketHeader = ({
       </HeaderStat>
       <MarketMarkPrice marketId={market.id} />
       <Last24hPriceChange marketId={market.id} />
-      <MarketVolume marketId={market.id} />
+      <Last24hVolume marketId={market.id} />
       <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
       {symbol ? (
         <HeaderStat
