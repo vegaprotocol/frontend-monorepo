@@ -9,7 +9,7 @@ import {
   t,
   isNumeric,
 } from '@vegaprotocol/react-helpers';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -165,13 +165,13 @@ const formatRole = (partyId: string) => {
     const taker = t('Taker');
     const maker = t('Maker');
     if (data?.buyer.id === partyId) {
-      if (value === Side.SIDE_BUY) {
+      if (value === Schema.Side.SIDE_BUY) {
         return taker;
       } else {
         return maker;
       }
     } else if (data?.seller.id === partyId) {
-      if (value === Side.SIDE_SELL) {
+      if (value === Schema.Side.SIDE_SELL) {
         return taker;
       } else {
         return maker;

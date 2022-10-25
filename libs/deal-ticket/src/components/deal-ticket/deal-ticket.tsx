@@ -10,7 +10,7 @@ import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
@@ -69,7 +69,7 @@ export const DealTicket = ({
             order.price && removeDecimal(order.price, market.decimalPlaces),
           size: removeDecimal(order.size, market.positionDecimalPlaces),
           expiresAt:
-            order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+            order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
               ? order.expiresAt
               : undefined,
         });
@@ -96,7 +96,7 @@ export const DealTicket = ({
   const marketPriceFormatted =
     marketPrice && addDecimal(marketPrice, market.decimalPlaces);
   useEffect(() => {
-    if (marketPriceFormatted && order.type === OrderType.TYPE_MARKET) {
+    if (marketPriceFormatted && order.type === Schema.OrderType.TYPE_MARKET) {
       setValue('price', marketPriceFormatted);
     }
   }, [marketPriceFormatted, order.type, setValue]);
@@ -138,8 +138,8 @@ export const DealTicket = ({
           />
         )}
       />
-      {order.type === OrderType.TYPE_LIMIT &&
-        order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      {order.type === Schema.OrderType.TYPE_LIMIT &&
+        order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
             control={control}

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
-import type { OrderEvent_busEvents_event_Order } from './';
+import type { OrderEventFieldsFragment } from './';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
 
@@ -13,7 +13,7 @@ export const useOrderCancel = () => {
   const { pubKey } = useVegaWallet();
 
   const [cancelledOrder, setCancelledOrder] =
-    useState<OrderEvent_busEvents_event_Order | null>(null);
+    useState<OrderEventFieldsFragment | null>(null);
 
   const {
     send,

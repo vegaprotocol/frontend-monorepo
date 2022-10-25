@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
 
@@ -74,7 +74,7 @@ describe('FillsTable', () => {
       buyer: {
         id: partyId,
       },
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       buyerFee: {
         makerFee: '2',
         infrastructureFee: '2',
@@ -111,7 +111,7 @@ describe('FillsTable', () => {
       seller: {
         id: partyId,
       },
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
       sellerFee: {
         makerFee: '1',
         infrastructureFee: '1',
@@ -147,7 +147,7 @@ describe('FillsTable', () => {
       seller: {
         id: partyId,
       },
-      aggressor: Side.SIDE_SELL,
+      aggressor: Schema.Side.SIDE_SELL,
     });
 
     const { rerender } = render(
@@ -166,7 +166,7 @@ describe('FillsTable', () => {
       seller: {
         id: partyId,
       },
-      aggressor: Side.SIDE_BUY,
+      aggressor: Schema.Side.SIDE_BUY,
     });
 
     rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);

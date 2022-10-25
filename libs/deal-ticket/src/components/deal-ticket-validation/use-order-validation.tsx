@@ -7,8 +7,7 @@ import {
   MarketState,
   MarketStateMapping,
   MarketTradingMode,
-  OrderTimeInForce,
-  OrderType,
+  Schema,
 } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -28,8 +27,8 @@ export const isMarketInAuction = (market: DealTicketMarketFragment) => {
 export type ValidationProps = {
   step?: number;
   market: DealTicketMarketFragment;
-  orderType: OrderType;
-  orderTimeInForce: OrderTimeInForce;
+  orderType: Schema.OrderType;
+  orderTimeInForce: Schema.OrderTimeInForce;
   fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
 };
 
@@ -94,7 +93,7 @@ export const useOrderValidation = ({
     }
 
     if (isMarketInAuction(market)) {
-      if (orderType === OrderType.TYPE_MARKET) {
+      if (orderType === Schema.OrderType.TYPE_MARKET) {
         if (
           market.tradingMode ===
             MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
@@ -149,11 +148,11 @@ export const useOrderValidation = ({
         };
       }
       if (
-        orderType === OrderType.TYPE_LIMIT &&
+        orderType === Schema.OrderType.TYPE_LIMIT &&
         [
-          OrderTimeInForce.TIME_IN_FORCE_FOK,
-          OrderTimeInForce.TIME_IN_FORCE_IOC,
-          OrderTimeInForce.TIME_IN_FORCE_GFN,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+          Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
         if (
@@ -231,7 +230,7 @@ export const useOrderValidation = ({
 
     if (
       fieldErrors?.price?.type === 'required' &&
-      orderType !== OrderType.TYPE_MARKET
+      orderType !== Schema.OrderType.TYPE_MARKET
     ) {
       return {
         isDisabled: true,
@@ -241,7 +240,7 @@ export const useOrderValidation = ({
 
     if (
       fieldErrors?.price?.type === 'min' &&
-      orderType !== OrderType.TYPE_MARKET
+      orderType !== Schema.OrderType.TYPE_MARKET
     ) {
       return {
         isDisabled: true,

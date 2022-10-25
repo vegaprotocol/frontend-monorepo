@@ -2,14 +2,15 @@ import type { AgGridReact } from 'ag-grid-react';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOrderListData } from './use-order-list-data';
-import type { Orders_party_ordersConnection_edges } from '../order-data-provider/__generated__/Orders';
+import type { Edge } from '@vegaprotocol/react-helpers';
+import type { OrderFieldsFragment } from '../order-data-provider/__generated___/orders';
 import type { IGetRowsParams } from 'ag-grid-community';
 
 const loadMock = jest.fn();
 
 let mockData = null;
 let mockDataProviderData = {
-  data: mockData as (Orders_party_ordersConnection_edges | null)[] | null,
+  data: mockData as (Edge<OrderFieldsFragment> | null)[] | null,
   error: undefined,
   loading: true,
   load: loadMock,
@@ -67,13 +68,13 @@ describe('useOrderListData Hook', () => {
           id: 'data_id_1',
           createdAt: 1,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
       {
         node: {
           id: 'data_id_2',
           createdAt: 2,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
     ];
     mockDataProviderData = {
       ...mockDataProviderData,
@@ -106,13 +107,13 @@ describe('useOrderListData Hook', () => {
           id: 'data_id_1',
           createdAt: 1,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
       {
         node: {
           id: 'data_id_2',
           createdAt: 2,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
     ];
     Object.assign(mockDataProviderData, {
       data: mockData,
@@ -124,13 +125,13 @@ describe('useOrderListData Hook', () => {
           id: 'data_id_3',
           createdAt: 3,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
       {
         node: {
           id: 'data_id_4',
           createdAt: 4,
         },
-      } as unknown as Orders_party_ordersConnection_edges,
+      } as unknown as Edge<OrderFieldsFragment>,
     ];
     const mockNextData = [...mockData, ...mockDelta];
     const { result } = renderHook(

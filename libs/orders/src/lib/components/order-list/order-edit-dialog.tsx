@@ -5,7 +5,7 @@ import {
   Size,
   getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
-import { OrderType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import {
   FormGroup,
   Input,
@@ -14,7 +14,6 @@ import {
   Dialog,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { OrderTimeInForce } from '@vegaprotocol/types';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
 
@@ -65,7 +64,7 @@ export const OrderEditDialog = ({
             <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
-        {order.type === OrderType.TYPE_LIMIT && order.market && (
+        {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={headerClassName}>{t(`Current price`)}</p>
             <p>
@@ -86,7 +85,7 @@ export const OrderEditDialog = ({
           </p>
         </div>
       </div>
-      {order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+      {order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
         order.expiresAt && (
           <div>
             <p className={headerClassName}>{t(`Expires at`)}</p>

@@ -1,6 +1,6 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
@@ -29,7 +29,7 @@ export const useFeeDealTicketDetails = (
     const estPrice = order.price || market.depth.lastTrade?.price;
     if (estPrice) {
       if (slippage && parseFloat(slippage) !== 0) {
-        const isLong = order.side === Side.SIDE_BUY;
+        const isLong = order.side === Schema.Side.SIDE_BUY;
         const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
           parseFloat(slippage) / 100
         );

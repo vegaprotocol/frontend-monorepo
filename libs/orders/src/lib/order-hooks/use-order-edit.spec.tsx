@@ -3,19 +3,13 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
-import type { OrderEvent } from './';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import type { OrderEventSubscription } from './__generated___/OrderEvent';
+import { OrderEventDocument } from './__generated___/OrderEvent';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Order } from '../components';
 import { generateOrder } from '../components';
-import {
-  OrderStatus,
-  OrderType,
-  OrderTimeInForce,
-  Side,
-  BusEventType,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const defaultWalletContext = {
   pubKey: null,
@@ -28,9 +22,9 @@ const defaultWalletContext = {
 };
 
 function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
-  const mocks: MockedResponse<OrderEvent> = {
+  const mocks: MockedResponse<OrderEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderEventDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
@@ -39,18 +33,18 @@ function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
                 id: 'market-id',
                 decimalPlaces: 5,
@@ -72,9 +66,9 @@ function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
       },
     },
   };
-  const filterMocks: MockedResponse<OrderEvent> = {
+  const filterMocks: MockedResponse<OrderEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderEventDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
@@ -83,18 +77,18 @@ function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
                 id: 'market-id',
                 decimalPlaces: 5,

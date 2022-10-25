@@ -6,7 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
-  BusEventType,
+  Schema,
   ProposalRejectionReason,
   ProposalState,
 } from '@vegaprotocol/types';
@@ -28,7 +28,7 @@ describe('Raw proposal form', () => {
         busEvents: [
           {
             __typename: 'BusEvent',
-            type: BusEventType.Proposal,
+            type: Schema.BusEventType.Proposal,
             event: {
               __typename: 'Proposal',
               id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',

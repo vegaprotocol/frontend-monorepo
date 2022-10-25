@@ -1,48 +1,50 @@
 import merge from 'lodash/merge';
 import type {
-  OrderSub as OrderSubData,
-  OrderSubVariables,
-  OrderSub_orders,
+  OrdersUpdateSubscription,
+  OrdersUpdateSubscriptionVariables,
+  OrderUpdateFieldsFragment,
 } from '@vegaprotocol/orders';
 
 import type { onMessage } from '@vegaprotocol/cypress';
-import {
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-let sendOrderUpdate: (data: OrderSubData) => void;
-const getOnOrderSub = () => {
-  const onOrderSub: onMessage<OrderSubData, OrderSubVariables> = (send) => {
+let sendOrderUpdate: (data: OrdersUpdateSubscription) => void;
+const getOnOrderUpdate = () => {
+  const onOrderUpdate: onMessage<
+    OrdersUpdateSubscription,
+    OrdersUpdateSubscriptionVariables
+  > = (send) => {
     sendOrderUpdate = send;
   };
-  return onOrderSub;
+  return onOrderUpdate;
 };
 
-export const getSubscriptionMocks = () => ({ OrderSub: getOnOrderSub() });
+export const getSubscriptionMocks = () => ({
+  OrdersUpdate: getOnOrderUpdate(),
+});
 
-export function updateOrder(override?: PartialDeep<OrderSub_orders>): void {
-  const order: OrderSub_orders = {
+export function updateOrder(
+  override?: PartialDeep<OrderUpdateFieldsFragment>
+): void {
+  const order: OrderUpdateFieldsFragment = {
     __typename: 'OrderUpdate',
     id: '1234567890',
     marketId: 'market-0',
     size: '10',
-    type: OrderType.TYPE_LIMIT,
-    status: OrderStatus.STATUS_FILLED,
+    type: Schema.OrderType.TYPE_LIMIT,
+    status: Schema.OrderStatus.STATUS_FILLED,
     rejectionReason: null,
-    side: Side.SIDE_BUY,
+    side: Schema.Side.SIDE_BUY,
     remaining: '0',
     price: '20000000',
-    timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+    timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     createdAt: new Date(2020, 1, 30).toISOString(),
     updatedAt: null,
     expiresAt: null,
     liquidityProvisionId: null,
     peggedOrder: null,
   };
-  const update: OrderSubData = {
+  const update: OrdersUpdateSubscription = {
     orders: [merge(order, override)],
   };
   if (!sendOrderUpdate) {
