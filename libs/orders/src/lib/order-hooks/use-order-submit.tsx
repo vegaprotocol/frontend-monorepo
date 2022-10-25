@@ -132,10 +132,9 @@ export const useOrderSubmit = () => {
         if (res) {
           const orderId = determineId(res.signature);
           if (orderId) {
-            waitForOrderEvent(orderId, pubKey, (order) => {
-              setFinalizedOrder(order);
-              setComplete();
-            });
+            const order = await waitForOrderEvent(orderId, pubKey);
+            setFinalizedOrder(order);
+            setComplete();
           }
         }
       } catch (e) {

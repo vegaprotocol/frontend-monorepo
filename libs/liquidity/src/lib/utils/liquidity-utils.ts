@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 
-import type { LiquidityProvisionMarkets_marketsConnection_edges_node } from './../__generated__';
+import type { LiquidityProvisionMarkets_marketsConnection_edges_node } from './../__generated__/LiquidityProvisionMarkets';
 
 export type LiquidityProvisionMarket =
   LiquidityProvisionMarkets_marketsConnection_edges_node;

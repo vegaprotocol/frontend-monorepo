@@ -44,7 +44,7 @@ export const compileGridData = (
     );
     grid.push({
       label: isLiquidityMonitoringAuction
-        ? t('Est auction end')
+        ? t('Est. auction end')
         : t('Auction end'),
       value: isLiquidityMonitoringAuction ? `~${endDate}` : endDate,
     });
@@ -69,28 +69,31 @@ export const compileGridData = (
       value: formatStake(market.data.suppliedStake),
     });
   }
-
   if (market.data?.indicativePrice) {
     grid.push({
-      label: t('Est uncrossing price'),
+      label: t('Est. uncrossing price'),
       value:
-        '~' +
-        addDecimalsFormatNumber(
-          market.data.indicativePrice,
-          market.decimalPlaces
-        ),
+        market.data.indicativePrice && market.data.indicativePrice !== '0'
+          ? `~
+            ${addDecimalsFormatNumber(
+              market.data.indicativePrice,
+              market.decimalPlaces
+            )}`
+          : '-',
     });
   }
 
   if (market.data?.indicativeVolume) {
     grid.push({
-      label: t('Est uncrossing vol'),
+      label: t('Est. uncrossing vol'),
       value:
-        '~' +
-        addDecimalsFormatNumber(
-          market.data.indicativeVolume,
-          market.positionDecimalPlaces
-        ),
+        market.data.indicativeVolume && market.data.indicativeVolume !== '0'
+          ? '~' +
+            addDecimalsFormatNumber(
+              market.data.indicativeVolume,
+              market.positionDecimalPlaces
+            )
+          : '-',
     });
   }
 

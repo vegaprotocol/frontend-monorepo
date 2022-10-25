@@ -136,7 +136,7 @@ const Connecting = ({
         </Center>
         <p className="text-center">
           {t(`${window.location.host} now has access to your Wallet, however you don't
-        have sufficient permissions to retrieve your public keys. Got to your wallet to approve new permissions.`)}
+        have sufficient permissions to retrieve your public keys. Go to your wallet to approve new permissions.`)}
         </p>
       </>
     );
