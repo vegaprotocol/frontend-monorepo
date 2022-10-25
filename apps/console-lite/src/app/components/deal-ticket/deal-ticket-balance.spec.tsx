@@ -18,7 +18,7 @@ const tDAI: DealTicketMarketFragment['tradableInstrument']['instrument']['produc
 
 const accounts: AccountFragment[] = [
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '1000000',
     asset: tDAI,

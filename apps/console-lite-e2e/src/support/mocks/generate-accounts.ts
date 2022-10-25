@@ -12,7 +12,7 @@ export const generateAccounts = (
       id: Cypress.env('VEGA_PUBLIC_KEY'),
       accounts: [
         {
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
@@ -22,7 +22,7 @@ export const generateAccounts = (
           },
         },
         {
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: {
@@ -35,7 +35,7 @@ export const generateAccounts = (
           },
         },
         {
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
@@ -48,7 +48,7 @@ export const generateAccounts = (
           },
         },
         {
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
@@ -61,7 +61,7 @@ export const generateAccounts = (
           },
         },
         {
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,

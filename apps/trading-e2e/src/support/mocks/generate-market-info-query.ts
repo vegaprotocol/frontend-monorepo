@@ -36,7 +36,7 @@ export const generateMarketInfoQuery = (
             __typename: 'Asset',
           },
           balance: '0',
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
         {
           type: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
@@ -45,7 +45,7 @@ export const generateMarketInfoQuery = (
             __typename: 'Asset',
           },
           balance: '0',
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
       ],
       fees: {

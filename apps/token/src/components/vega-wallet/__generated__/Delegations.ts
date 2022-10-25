@@ -97,7 +97,7 @@ export interface Delegations_party_accounts_asset {
 }
 
 export interface Delegations_party_accounts {
-  __typename: "Account";
+  __typename: "AccountBalance";
   /**
    * Asset, the 'currency'
    */
