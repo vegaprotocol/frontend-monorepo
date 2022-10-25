@@ -1,30 +1,65 @@
 import { useParams } from 'react-router-dom';
-import { t } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
+import {
+  t,
+  useDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 import {
-  useLiquidityProvision,
   getFeeLevels,
   sumLiquidityCommitted,
+  marketLiquidityDataProvider,
+  liquidityProvisionsDataProvider,
 } from '@vegaprotocol/liquidity';
+import type { MarketLpQuery } from '@vegaprotocol/liquidity';
 
 import { Market } from './Market';
 import { Header } from './header';
 import { Providers } from './providers';
 
+const formatMarket = (data: MarketLpQuery) => {
+  return {
+    name: data?.market?.tradableInstrument.instrument.name,
+    symbol:
+      data?.market?.tradableInstrument.instrument.product.settlementAsset
+        .symbol,
+    settlementAsset:
+      data?.market?.tradableInstrument.instrument.product.settlementAsset,
+    targetStake: data?.market?.data?.targetStake,
+    tradingMode: data?.market?.data?.marketTradingMode,
+    trigger: data?.market?.data?.trigger,
+  };
+};
+
+export const lpDataProvider = makeDerivedDataProvider(
+  [marketLiquidityDataProvider, liquidityProvisionsDataProvider],
+  ([market, providers]) => ({
+    market: { ...formatMarket(market) },
+    liquidityProviders: providers || [],
+  })
+);
+
 const useMarketDetails = (marketId: string | undefined) => {
-  const { data, error, loading } = useLiquidityProvision({ marketId });
+  const { data, loading, error } = useDataProvider({
+    dataProvider: lpDataProvider,
+    noUpdate: true,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+
+  const liquidityProviders = data?.liquidityProviders || [];
 
   return {
     data: {
-      ...data,
-      targetStake: data.targetStake || '0',
-      feeLevels: getFeeLevels(data.liquidityProviders) || [],
-      comittedLiquidity: sumLiquidityCommitted(data.liquidityProviders) || 0,
-      settlementAsset: {
-        symbol: data.symbol,
-        decimals: data.decimalPlaces,
-      },
+      name: data?.market?.name,
+      symbol: data?.market?.symbol,
+      liquidityProviders: liquidityProviders,
+      feeLevels: getFeeLevels(liquidityProviders),
+      comittedLiquidity: sumLiquidityCommitted(liquidityProviders) || 0,
+      settlementAsset: data?.market?.settlementAsset || {},
+      targetStake: data?.market?.targetStake || '0',
+      tradingMode: data?.market.tradingMode,
     },
     error,
     loading: loading,
