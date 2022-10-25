@@ -8,12 +8,12 @@ export type PartyBalanceQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyBalanceQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } }> | null } | null };
+export type PartyBalanceQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } }> | null } | null };
 
-export type AccountFragment = { __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } };
+export type AccountFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } };
 
 export const AccountFragmentDoc = gql`
-    fragment Account on Account {
+    fragment Account on AccountBalance {
   type
   balance
   asset {

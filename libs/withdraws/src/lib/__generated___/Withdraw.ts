@@ -8,7 +8,7 @@ export type WithdrawPageQueryQueryVariables = Types.Exact<{
 }>;
 
 
-export type WithdrawPageQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawals?: Array<{ __typename?: 'Withdrawal', id: string, txHash?: string | null }> | null, accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string } }> | null } | null, assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } } | null> | null } | null };
+export type WithdrawPageQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawals?: Array<{ __typename?: 'Withdrawal', id: string, txHash?: string | null }> | null, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string } }> | null } | null, assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } } | null> | null } | null };
 
 
 export const WithdrawPageQueryDocument = gql`

@@ -493,12 +493,13 @@ export interface Proposal_proposal_terms_change_NewAsset_source_ERC20 {
   contractAddress: string;
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for alpha mainnet
+   * Note: this is a temporary measure that can be changed by governance
    */
   lifetimeLimit: string;
   /**
-   * The maximum allowed per withdrawal
-   * Note: this is a temporary measure for alpha mainnet
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;
 }
@@ -550,12 +551,13 @@ export interface Proposal_proposal_terms_change_UpdateAsset_source {
   __typename: "UpdateERC20";
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for alpha mainnet
+   * Note: this is a temporary measure that can be changed by governance
    */
   lifetimeLimit: string;
   /**
-   * The maximum allowed per withdrawal
-   * Note: this is a temporary measure for alpha mainnet
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;
 }

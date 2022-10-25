@@ -6,7 +6,7 @@ query PartyBalance($partyId: ID!) {
   }
 }
 
-fragment Account on Account {
+fragment Account on AccountBalance {
   type
   balance
   asset {

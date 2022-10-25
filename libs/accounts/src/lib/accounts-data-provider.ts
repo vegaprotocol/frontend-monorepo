@@ -27,7 +27,7 @@ function isAccount(
     | IterableElement<AccountEventsSubscription['accounts']>
 ): account is AccountFieldsFragment {
   return (
-    (account as AccountFieldsFragment).__typename === 'Account' ||
+    (account as AccountFieldsFragment).__typename === 'AccountBalance' ||
     Boolean((account as AccountFieldsFragment).asset?.id)
   );
 }
@@ -58,7 +58,7 @@ const update = (
         draft[index].balance = delta.balance;
       } else {
         draft.unshift({
-          __typename: 'Account',
+          __typename: 'AccountBalance',
           type: delta.type,
           balance: delta.balance,
           market: delta.marketId ? { id: delta.marketId } : null,

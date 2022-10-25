@@ -19,7 +19,7 @@ export const generatePartyBalance = (
             decimals: 5,
             __typename: 'Asset',
           },
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
         {
           balance: '100000000',
@@ -31,7 +31,7 @@ export const generatePartyBalance = (
             decimals: 5,
             __typename: 'Asset',
           },
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
         {
           balance: '3412867',
@@ -43,7 +43,7 @@ export const generatePartyBalance = (
             decimals: 5,
             __typename: 'Asset',
           },
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
         {
           balance: '70007',
@@ -55,7 +55,7 @@ export const generatePartyBalance = (
             decimals: 5,
             __typename: 'Asset',
           },
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
       ],
       __typename: 'Party',

@@ -46,7 +46,7 @@ describe('getId', () => {
 
 const accounts = [
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
     balance: '2781397',
     market: {
@@ -68,7 +68,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
     balance: '406922',
     market: {
@@ -90,7 +90,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '10001000000',
     market: null,
@@ -102,7 +102,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '1990351587',
     market: null,
@@ -114,7 +114,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '2996218603',
     market: null,
@@ -126,7 +126,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '5000593078',
     market: null,
@@ -138,7 +138,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '4000000000000001006031',
     market: null,
@@ -177,7 +177,7 @@ const accountResult = [
     balance: '5000593078',
     breakdown: [
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         asset: {
           __typename: 'Asset',
           decimals: 5,
@@ -217,7 +217,7 @@ const accountResult = [
     balance: '2996218603',
     breakdown: [
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         asset: {
           __typename: 'Asset',
           decimals: 5,

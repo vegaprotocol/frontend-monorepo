@@ -16,27 +16,27 @@ export const generateERC20Asset = (i: number, status: AssetStatus): Asset => ({
   status: status,
   infrastructureFeeAccount: {
     balance: '1',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   globalRewardPoolAccount: {
     balance: '2',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   takerFeeRewardAccount: {
     balance: '3',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   makerFeeRewardAccount: {
     balance: '4',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   lpFeeRewardAccount: {
     balance: '5',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   marketProposerRewardAccount: {
     balance: '6',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   __typename: 'Asset',
 });
@@ -57,7 +57,7 @@ export const generateBuiltinAsset = (
   status: status,
   infrastructureFeeAccount: {
     balance: '0',
-    __typename: 'Account',
+    __typename: 'AccountBalance',
   },
   globalRewardPoolAccount: null,
   takerFeeRewardAccount: null,
