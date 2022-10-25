@@ -118,11 +118,11 @@ describe('Market trading page', () => {
       const toolTipValue = 'tooltip-value';
       const auctionToolTipLabels = [
         'Auction start',
-        'Est auction end',
+        'Est. auction end',
         'Target liquidity',
         'Current liquidity',
-        'Est uncrossing price',
-        'Est uncrossing vol',
+        'Est. uncrossing price',
+        'Est. uncrossing vol',
       ];
 
       cy.getByTestId(marketSummaryBlock).within(() => {
