@@ -8,7 +8,6 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import { useRouter } from 'next/router';
 import type {
   SingleMarketFieldsFragment,
   MarketData,
@@ -19,6 +18,7 @@ import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -38,7 +38,9 @@ const MarketPage = ({
   id?: string;
   marketId?: string;
 }) => {
-  const { query, push } = useRouter();
+  const params = useParams();
+  const navigate = useNavigate();
+  const marketId = params.marketId;
   const { w } = useWindowSize();
   const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
     (store) => ({
@@ -55,18 +57,14 @@ const MarketPage = ({
 
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  // Default to first marketId query item if found
-  const marketId =
-    id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
-
   const onSelect = useCallback(
     (id: string) => {
       if (id && id !== marketId) {
         update({ marketId: id });
-        push(`/markets/${id}`);
+        navigate(`/markets/${id}`);
       }
     },
-    [marketId, update, push]
+    [marketId, update, navigate]
   );
 
   const variables = useMemo(

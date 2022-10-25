@@ -3,12 +3,11 @@ import {
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
-import Link from 'next/link';
 import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import { Link } from 'react-router-dom';
 
 export const compileGridData = (
   market: Omit<DealTicketMarketFragment, 'depth'>,
@@ -60,10 +59,11 @@ export const compileGridData = (
   if (isLiquidityMonitoringAuction && market.data?.suppliedStake) {
     grid.push({
       label: (
-        <Link href={`/liquidity/${market.id}`} passHref={true}>
-          <UiToolkitLink onClick={() => onSelect && onSelect(market.id)}>
-            {t('Current liquidity')}
-          </UiToolkitLink>
+        <Link
+          to={`/liquidity/${market.id}`}
+          onClick={() => onSelect && onSelect(market.id)}
+        >
+          {t('Current liquidity')}
         </Link>
       ),
       value: formatStake(market.data.suppliedStake),

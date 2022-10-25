@@ -11,8 +11,8 @@ import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
-import { AccountsContainer } from './accounts-container';
 import { LedgerContainer } from '@vegaprotocol/ledger';
+import { AccountsContainer } from '../../components/accounts-container';
 
 const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({

@@ -24,7 +24,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Header, HeaderStat } from '../../components/header';
-import { AccountsContainer } from '../portfolio/accounts-container';
+import { AccountsContainer } from '../../components/accounts-container';
 import {
   ColumnKind,
   SelectMarketPopover,

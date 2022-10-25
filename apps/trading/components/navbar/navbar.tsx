@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
@@ -58,7 +58,7 @@ export const Navbar = ({
         }}
       >
         <div className="flex gap-4 items-center">
-          <Link href="/" passHref={true}>
+          <Link to="/">
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
               <Vega className="w-13" />
@@ -127,12 +127,14 @@ const NavLink = ({
     'bg-black': navbarTheme === 'yellow',
   });
   return (
-    <Link data-testid={testId} href={path} passHref={true}>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a className={linkClasses} target={target}>
-        {name}
-        {isActive && <span className={borderClasses} />}
-      </a>
+    <Link
+      data-testid={testId}
+      to={path}
+      className={linkClasses}
+      target={target}
+    >
+      {name}
+      {isActive && <span className={borderClasses} />}
     </Link>
   );
 };

@@ -6,20 +6,12 @@ import {
   SelectMarketLandingTable,
 } from './select-market';
 
-import type { ReactNode } from 'react';
 import type {
   MarketWithCandles,
   MarketWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
 type Market = MarketWithCandles & MarketWithData;
-
-jest.mock(
-  'next/link',
-  () =>
-    ({ children }: { children: ReactNode }) =>
-      children
-);
 
 type PartialMarket = Partial<
   Omit<Market, 'data'> & { data: Partial<MarketData> }

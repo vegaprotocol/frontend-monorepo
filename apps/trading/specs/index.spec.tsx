@@ -11,17 +11,6 @@ jest.mock('@vegaprotocol/ui-toolkit', () => {
   };
 });
 
-jest.mock('next/router', () => ({
-  useRouter() {
-    return {
-      route: '/',
-      pathname: '',
-      query: '',
-      asPath: '',
-    };
-  },
-}));
-
 describe('Index', () => {
   it('should render successfully', async () => {
     act(() => {

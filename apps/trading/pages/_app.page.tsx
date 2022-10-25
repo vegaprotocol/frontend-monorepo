@@ -13,8 +13,10 @@ import { AppLoader } from '../components/app-loader';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
+import { HashRouter } from 'react-router-dom';
+import { Router } from './router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -38,9 +40,17 @@ const Title = () => {
   );
 };
 
-function AppBody({ Component, pageProps }: AppProps) {
+function AppBody({ pageProps }: AppProps) {
   const { VEGA_ENV } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
@@ -55,7 +65,7 @@ function AppBody({ Component, pageProps }: AppProps) {
             navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
           />
           <main data-testid={pageProps.page}>
-            <Component {...pageProps} />
+            <Router />
           </main>
           <Footer />
           <DialogsContainer />
@@ -69,7 +79,9 @@ function VegaTradingApp(props: AppProps) {
   return (
     <EnvironmentProvider>
       <VegaWalletProvider>
-        <AppBody {...props} />
+        <HashRouter>
+          <AppBody {...props} />
+        </HashRouter>
       </VegaWalletProvider>
     </EnvironmentProvider>
   );
