@@ -22,6 +22,7 @@ describe('Close position dialog - Request', () => {
       market: null,
       marketData: null,
       orders: [],
+      loading: false,
     });
     render(<Requested {...props} />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
