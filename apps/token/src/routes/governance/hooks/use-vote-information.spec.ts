@@ -55,6 +55,8 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
       governance_proposal_market_requiredParticipation: '0.5',
       governance_proposal_asset_requiredMajority: '0.5',
       governance_proposal_asset_requiredParticipation: '0.5',
+      governance_proposal_updateAsset_requiredMajority: '0.5',
+      governance_proposal_updateAsset_requiredParticipation: '0.5',
       governance_proposal_updateNetParam_requiredMajority: '0.5',
       governance_proposal_updateNetParam_requiredParticipation: '0.5',
       governance_proposal_freeform_requiredMajority: '0.5',

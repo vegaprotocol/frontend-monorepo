@@ -14,6 +14,8 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_updateMarket_requiredParticipationLP,
     NetworkParams.governance_proposal_market_requiredMajority,
     NetworkParams.governance_proposal_market_requiredParticipation,
+    NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_updateAsset_requiredParticipation,
     NetworkParams.governance_proposal_asset_requiredMajority,
     NetworkParams.governance_proposal_asset_requiredParticipation,
     NetworkParams.governance_proposal_updateNetParam_requiredMajority,
@@ -58,6 +60,14 @@ export const useProposalNetworkParams = ({
         requiredMajority: params.governance_proposal_asset_requiredMajority,
         requiredParticipation: new BigNumber(
           params.governance_proposal_asset_requiredParticipation
+        ),
+      };
+    case 'UpdateAsset':
+      return {
+        requiredMajority:
+          params.governance_proposal_updateAsset_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_updateAsset_requiredParticipation
         ),
       };
     case 'NewMarket':

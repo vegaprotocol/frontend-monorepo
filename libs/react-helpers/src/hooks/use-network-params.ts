@@ -93,6 +93,10 @@ export const NetworkParams = {
     'governance_proposal_asset_requiredMajority',
   governance_proposal_asset_requiredParticipation:
     'governance_proposal_asset_requiredParticipation',
+  governance_proposal_updateAsset_requiredMajority:
+    'governance_proposal_updateAsset_requiredMajority',
+  governance_proposal_updateAsset_requiredParticipation:
+    'governance_proposal_updateAsset_requiredParticipation',
   governance_proposal_asset_minProposerBalance:
     'governance_proposal_asset_minProposerBalance',
   governance_proposal_updateAsset_minProposerBalance:
