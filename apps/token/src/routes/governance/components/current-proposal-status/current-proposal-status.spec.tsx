@@ -6,8 +6,8 @@ import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { generateProposal } from '../../test-helpers/generate-proposals';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
 import { CurrentProposalStatus } from './current-proposal-status';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -31,7 +31,7 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = ({ proposal }: { proposal: ProposalFields }) => {
+const renderComponent = ({ proposal }: { proposal: Proposal_proposal }) => {
   render(
     <AppStateProvider>
       <MockedProvider mocks={[networkParamsQueryMock]}>
@@ -52,7 +52,7 @@ afterEach(() => {
 
 it('Proposal open - renders will fail state if the proposal will fail', async () => {
   const proposal = generateProposal();
-  const failedProposal: ProposalFields = {
+  const failedProposal: Proposal_proposal = {
     ...proposal,
     votes: {
       __typename: 'ProposalVotes',
@@ -61,12 +61,14 @@ it('Proposal open - renders will fail state if the proposal will fail', async ()
         totalNumber: '0',
         totalTokens: '0',
         votes: null,
+        totalEquityLikeShareWeight: '0',
       },
       no: {
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
         votes: null,
+        totalEquityLikeShareWeight: '0',
       },
     },
   };
@@ -119,7 +121,7 @@ it('Proposal passed - renders vote passed and time since vote closed', async () 
 
 it('Proposal waiting for node vote - will pass  - renders if the vote will pass and status', async () => {
   const proposal = generateProposal();
-  const failedProposal: ProposalFields = {
+  const failedProposal: Proposal_proposal = {
     ...proposal,
     state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
     votes: {
@@ -129,12 +131,14 @@ it('Proposal waiting for node vote - will pass  - renders if the vote will pass 
         totalNumber: '0',
         totalTokens: '0',
         votes: null,
+        totalEquityLikeShareWeight: '0',
       },
       no: {
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
         votes: null,
+        totalEquityLikeShareWeight: '0',
       },
     },
   };
@@ -245,12 +249,14 @@ it('Proposal failed - renders participation not met if participation is not met'
           totalNumber: '0',
           totalTokens: '0',
           votes: null,
+          totalEquityLikeShareWeight: '0',
         },
         no: {
           __typename: 'ProposalVoteSide',
           totalNumber: '0',
           totalTokens: '0',
           votes: null,
+          totalEquityLikeShareWeight: '0',
         },
       },
     },
@@ -280,12 +286,14 @@ it('Proposal failed - renders majority not met if majority is not met', async ()
           totalNumber: '0',
           totalTokens: '0',
           votes: null,
+          totalEquityLikeShareWeight: '0',
         },
         no: {
           __typename: 'ProposalVoteSide',
           totalNumber: '1',
           totalTokens: '25242474195500835440000',
           votes: null,
+          totalEquityLikeShareWeight: '0',
         },
       },
     },
