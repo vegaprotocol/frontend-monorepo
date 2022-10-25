@@ -6,6 +6,7 @@ describe('ThemeSwitcher', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <ThemeSwitcher
+        theme="dark"
         onToggle={() => {
           return;
         }}

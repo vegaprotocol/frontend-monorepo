@@ -48,6 +48,15 @@ const market: DealTicketMarketFragment = {
       price: '100',
     },
   },
+  fees: {
+    __typename: 'Fees',
+    factors: {
+      __typename: 'FeeFactors',
+      makerFee: '1',
+      infrastructureFee: '2',
+      liquidityFee: '3',
+    },
+  },
 };
 
 const defaultWalletContext = {

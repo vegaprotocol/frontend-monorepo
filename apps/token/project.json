@@ -74,6 +74,13 @@
           "nx build token"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/token/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

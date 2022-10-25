@@ -38,6 +38,13 @@
         "jestConfig": "libs/liquidity/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./libs/liquidity/tsconfig.spec.json"
+      }
     }
   }
 }
