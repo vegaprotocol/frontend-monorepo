@@ -11,6 +11,17 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: 'class',
-  theme,
+  theme: {
+    ...theme,
+    colors: {
+      ...theme.colors,
+      greys: {
+        light: {
+          100: '#F0F0F0',
+          200: '#D2D2D2',
+        },
+      },
+    },
+  },
   plugins: [vegaCustomClasses, vegaCustomClassesLite],
 };

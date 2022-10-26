@@ -161,20 +161,7 @@ export const MarketList = () => {
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
           />
-          <AgGridColumn
-            headerName={t('Est. return / APY')}
-            field="apy"
-            cellRenderer={({ value }: GroupCellRendererParams) => {
-              return (
-                <div className="flex justify-between">
-                  <span></span>
-                  <div className="text-[#A7A7A7]">
-                    <Icon name="chevron-right" />
-                  </div>
-                </div>
-              );
-            }}
-          />
+          <AgGridColumn headerName={t('Est. return / APY')} field="apy" />
         </Grid>
 
         <HealthDialog
