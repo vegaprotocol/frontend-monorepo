@@ -1,5 +1,3 @@
-import { verify } from 'crypto';
-
 const withdraw = 'withdraw';
 const selectAsset = 'select-asset';
 const ethAddressInput = 'eth-address-input';
@@ -7,6 +5,7 @@ const amountInput = 'amount-input';
 const balanceAvailable = 'BALANCE_AVAILABLE_value';
 const withdrawalThreshold = 'WITHDRAWAL_THRESHOLD_value';
 const delayTime = 'DELAY_TIME_value';
+const useMaximum = 'use-maximum';
 const submitWithdrawalButton = 'submit-withdrawal';
 const dialogTitle = 'dialog-title';
 const dialogClose = 'dialog-close';
@@ -15,9 +14,11 @@ const withdrawalAssetSymbol = 'withdrawal-asset-symbol';
 const withdrawalAmount = 'withdrawal-amount';
 const withdrawalRecipient = 'withdrawal-recipient';
 const withdrawFundsButton = 'withdraw-funds';
+const completeWithdrawalButton = 'complete-withdrawal';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
+const formValidationError = 'input-error-text';
 const txTimeout = Cypress.env('txTimeout');
 
 context(
@@ -25,7 +26,7 @@ context(
   { tags: '@slow' },
   function () {
     before('visit withdrawals and connect vega wallet', function () {
-      // cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
+      cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
       cy.vega_wallet_import();
       cy.deposit_asset(usdcEthAddress);
     });
@@ -35,10 +36,10 @@ context(
       cy.navigate_to('withdrawals');
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
+      waitForAssetsDisplayed(usdtName);
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
-      waitForAssetsDisplayed(usdtName);
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset)
         .find('option')
@@ -47,8 +48,29 @@ context(
       cy.getByTestId(amountInput).should('be.visible');
     });
 
-    it.only('Able to withdraw asset', function () {
-      waitForAssetsDisplayed(usdtName);
+    it('Unable to submit withdrawal with invalid fields', function () {
+      cy.getByTestId(withdraw).should('be.visible').click();
+      cy.getByTestId(selectAsset).select('BTC (local)');
+      cy.getByTestId(balanceAvailable).should('have.text', '0.00000');
+      cy.getByTestId(submitWithdrawalButton).click();
+      cy.getByTestId(formValidationError).should('have.length', 1);
+      cy.getByTestId(useMaximum).click();
+      cy.getByTestId(submitWithdrawalButton).click();
+      cy.getByTestId(formValidationError).should(
+        'have.text',
+        'Value is below minimum'
+      );
+      cy.getByTestId(selectAsset).select(usdtName);
+      cy.getByTestId(ethAddressInput).click().type('123');
+      cy.getByTestId(amountInput).clear().click().type('10');
+      cy.getByTestId(submitWithdrawalButton).click();
+      cy.getByTestId(formValidationError).should(
+        'have.text',
+        'Invalid Ethereum address'
+      );
+    });
+
+    it('Able to withdraw asset: -eth wallet connected -withdraw funds button', function () {
       // fill in withdrawal form
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset).select(usdtName);
@@ -85,9 +107,56 @@ context(
       cy.reload();
       waitForAssetsDisplayed(usdtName);
 
-      // withdrawal history displayed
-      cy.get('[row-id="0"]')
-        .eq(4)
+      // withdrawal history for complete withdrawal displayed
+      cy.get('[col-id="txHash"]', txTimeout)
+        .should('have.length.above', 1)
+        .eq(1)
+        .parent()
+        .within(() => {
+          cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
+          cy.get('[col-id="amount"]').should('have.text', '100.00000');
+          cy.get('[col-id="details.receiverAddress"]')
+            .find('a')
+            .should('have.attr', 'href')
+            .and('contain', 'https://sepolia.etherscan.io/address/');
+          cy.get('[col-id="withdrawnTimestamp"]').should('not.be.empty');
+          cy.get('[col-id="status"]').should('have.text', 'Completed');
+          cy.get('[col-id="txHash"]')
+            .find('a')
+            .should('have.attr', 'href')
+            .and('contain', 'https://sepolia.etherscan.io/tx/');
+        });
+    });
+
+    // Skipping because of bug #1857
+    it.skip('Able to withdraw asset: -eth wallet not connected', function () {
+      const ethWalletAddress = Cypress.env('ethWalletPublicKey');
+      cy.reload();
+      waitForAssetsDisplayed(usdtName);
+      // fill in withdrawal form
+      cy.getByTestId(withdraw).should('be.visible').click();
+      cy.getByTestId(selectAsset).select(usdtName);
+      cy.getByTestId(ethAddressInput).should('be.empty');
+      cy.getByTestId(amountInput).click().type('100');
+      cy.getByTestId(submitWithdrawalButton).click();
+
+      // Need eth address to submit withdrawal
+      cy.getByTestId(formValidationError).should('have.length', 1);
+      cy.getByTestId(ethAddressInput).click().type(ethWalletAddress);
+      cy.getByTestId(submitWithdrawalButton).click();
+
+      cy.contains('Awaiting network confirmation').should('be.visible');
+      // assert withdrawal request
+      cy.getByTestId(dialogTitle, txTimeout).should(
+        'have.text',
+        'Transaction complete'
+      );
+      cy.getByTestId(dialogClose).click();
+
+      cy.getByTestId(completeWithdrawalButton)
+        .eq(0)
+        .parent()
+        .parent()
         .within(() => {
           cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
           cy.get('[col-id="amount"]').should('have.text', '100.00000');
@@ -96,11 +165,7 @@ context(
             .should('have.attr', 'href')
             .and('contain', 'https://sepolia.etherscan.io/address/');
           cy.get('[col-id="createdTimestamp"]').should('not.be.empty');
-          cy.get('[col-id="status"]').should('have.text', 'Completed');
-          cy.get('[col-id="txHash"]')
-            .find('a')
-            .should('have.attr', 'href')
-            .and('contain', 'https://sepolia.etherscan.io/tx/');
+          cy.getByTestId(completeWithdrawalButton).click();
         });
     });
 
