@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useEagerConnect } from '@vegaprotocol/wallet';
 import { NetworkLoader } from '@vegaprotocol/environment';
 import { Connectors } from '../../lib/vega-connectors';
-import { createClient } from '../../lib/apollo-client';
+import type { InMemoryCacheConfig } from '@apollo/client';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -15,6 +15,46 @@ interface AppLoaderProps {
 export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
   useEagerConnect(Connectors);
-
-  return <NetworkLoader createClient={createClient}>{children}</NetworkLoader>;
+  const cache: InMemoryCacheConfig = {
+    typePolicies: {
+      Account: {
+        keyFields: false,
+        fields: {
+          balanceFormatted: {},
+        },
+      },
+      Instrument: {
+        keyFields: false,
+      },
+      TradableInstrument: {
+        keyFields: ['instrument'],
+      },
+      Product: {
+        keyFields: ['settlementAsset', ['id']],
+      },
+      MarketData: {
+        keyFields: ['market', ['id']],
+      },
+      Node: {
+        keyFields: false,
+      },
+      Withdrawal: {
+        fields: {
+          pendingOnForeignChain: {
+            read: (isPending = false) => isPending,
+          },
+        },
+      },
+      ERC20: {
+        keyFields: ['contractAddress'],
+      },
+      PositionUpdate: {
+        keyFields: false,
+      },
+      AccountUpdate: {
+        keyFields: false,
+      },
+    },
+  };
+  return <NetworkLoader cache={cache}>{children}</NetworkLoader>;
 }
