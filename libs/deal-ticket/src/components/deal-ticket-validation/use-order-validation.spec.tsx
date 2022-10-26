@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
@@ -9,10 +10,11 @@ import {
   Schema,
 } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
-import { marketTranslations } from './use-order-validation';
-import { useOrderValidation } from './use-order-validation';
+import { marketTranslations, useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import * as OrderMarginValidation from './use-order-margin-validation';
+import { ValidateMargin } from './validate-margin';
 
 jest.mock('@vegaprotocol/wallet');
 
@@ -250,5 +252,28 @@ describe('useOrderValidation', () => {
       isDisabled: true,
       message: ERROR.FIELD_PRICE_STEP_DECIMAL,
     });
+  });
+
+  it('Returns an error message when the estimated margin is higher than collateral', async () => {
+    const invalidatedMockValue = {
+      balance: '0000000,1',
+      margin: '000,1',
+      id: 'instrument-id',
+      symbol: 'asset-symbol',
+    };
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(invalidatedMockValue);
+    const { result } = setup({});
+
+    expect(result.current.isDisabled).toBe(true);
+
+    const testElement = <ValidateMargin {...invalidatedMockValue} />;
+    expect((result.current.message as React.ReactElement)?.props).toEqual(
+      testElement.props
+    );
+    expect((result.current.message as React.ReactElement)?.type).toEqual(
+      testElement.type
+    );
   });
 });

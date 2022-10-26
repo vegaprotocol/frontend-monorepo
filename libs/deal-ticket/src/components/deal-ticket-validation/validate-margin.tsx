@@ -15,7 +15,10 @@ export const ValidateMargin = ({ margin, symbol, id, balance }: Props) => {
   const [depositDialog, setDepositDialog] = useState(false);
   return (
     <>
-      <div className="flex flex-col center pb-3">
+      <div
+        className="flex flex-col center pb-3"
+        data-testid="deal-ticket-margin-invalidated"
+      >
         <p>
           {t("You don't have enough margin available to open this position.")}
         </p>
@@ -28,6 +31,7 @@ export const ValidateMargin = ({ margin, symbol, id, balance }: Props) => {
           className="center mt-2"
           variant="default"
           size="xs"
+          data-testid="deal-ticket-deposit-dialog-button"
           onClick={() => setDepositDialog(true)}
         >
           {t('Deposit')} {symbol}
