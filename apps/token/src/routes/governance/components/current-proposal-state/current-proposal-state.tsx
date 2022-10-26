@@ -1,10 +1,10 @@
 import { ProposalState } from '@vegaprotocol/types';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 export const CurrentProposalState = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }) => {
   const { state } = proposal;
   let className = 'text-white';

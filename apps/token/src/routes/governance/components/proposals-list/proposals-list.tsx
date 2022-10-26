@@ -7,17 +7,17 @@ import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import { Links } from '../../../../config';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
-  proposals: ProposalFields[];
+  proposals: Proposal_proposal[];
 }
 
 interface SortedProposalsProps {
-  open: ProposalFields[];
-  closed: ProposalFields[];
+  open: Proposal_proposal[];
+  closed: Proposal_proposal[];
 }
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
@@ -39,7 +39,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: ProposalFields) =>
+  const filterPredicate = (p: Proposal_proposal) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 

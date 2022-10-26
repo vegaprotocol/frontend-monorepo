@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { ProposalUserAction } from '@vegaprotocol/types';
+
+export enum ProposalUserAction {
+  CREATE = 'CREATE',
+  VOTE = 'VOTE',
+}
 
 interface ProposalFormMinRequirementsProps {
   minProposalBalance: string;
