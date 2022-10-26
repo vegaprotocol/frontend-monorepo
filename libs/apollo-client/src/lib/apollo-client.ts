@@ -1,3 +1,4 @@
+import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   ApolloClient,
   from,
@@ -15,7 +16,7 @@ import ApolloLinkTimeout from 'apollo-link-timeout';
 
 const isBrowser = typeof window !== 'undefined';
 
-export default function createClient(base?: string) {
+export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
@@ -66,6 +67,6 @@ export default function createClient(base?: string) {
 
   return new ApolloClient({
     link: from([errorLink, timeoutLink, retryLink, splitLink]),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache(cacheConfig),
   });
 }

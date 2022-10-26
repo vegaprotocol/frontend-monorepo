@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { createClient } from './lib/apollo-client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
@@ -33,7 +32,7 @@ function App() {
   return (
     <EnvironmentProvider>
       <ThemeContext.Provider value={theme}>
-        <NetworkLoader createClient={createClient}>
+        <NetworkLoader>
           <VegaWalletProvider>
             <LocalContext.Provider value={localValues}>
               <AppLoader>

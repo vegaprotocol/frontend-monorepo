@@ -1,28 +1,45 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
-import type { ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
+import { createClient } from '@vegaprotocol/apollo-client';
 
-type NetworkLoaderProps<T> = {
+type NetworkLoaderProps = {
   children?: ReactNode;
   skeleton?: ReactNode;
-  createClient: (url: string) => ApolloClient<T>;
 };
 
-export function NetworkLoader<T>({
-  skeleton,
-  children,
-  createClient,
-}: NetworkLoaderProps<T>) {
+export function NetworkLoader({ skeleton, children }: NetworkLoaderProps) {
   const { VEGA_URL } = useEnvironment();
 
   const client = useMemo(() => {
     if (VEGA_URL) {
-      return createClient(VEGA_URL);
+      return createClient(VEGA_URL, {
+        typePolicies: {
+          Market: {
+            merge: true,
+          },
+          Party: {
+            merge: true,
+          },
+          Query: {},
+          Account: {
+            keyFields: false,
+            fields: {
+              balanceFormatted: {},
+            },
+          },
+          Node: {
+            keyFields: false,
+          },
+          Instrument: {
+            keyFields: false,
+          },
+        },
+      });
     }
     return undefined;
-  }, [VEGA_URL, createClient]);
+  }, [VEGA_URL]);
 
   if (!client) {
     return (
