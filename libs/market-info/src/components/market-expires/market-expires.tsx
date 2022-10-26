@@ -1,7 +1,7 @@
-import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
-import { getDateFormat, t } from '@vegaprotocol/react-helpers';
+import { getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import { format, isValid, parseISO } from 'date-fns';
 
+import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 export const EXPIRE_DATE_FORMAT = 'MMM dd';
 
 export const getMarketExpiryDate = (
@@ -45,14 +45,14 @@ export const getExpiryDate = (market: SingleMarketFieldsFragment): string => {
   let content = null;
   if (!closeDate) {
     content = closedMarketDate
-      ? `Expired on ${getDateFormat().format(closedMarketDate)}`
+      ? `Expired on ${getDateTimeFormat().format(closedMarketDate)}`
       : t('Not time-based');
   } else {
     const isExpired = Date.now() - closeDate.valueOf() > 0;
-    const expiryDate = getDateFormat().format(closeDate);
+    const expiryDate = getDateTimeFormat().format(closeDate);
     if (isExpired) {
       content = closedMarketDate
-        ? `Expired on ${getDateFormat().format(closedMarketDate)}`
+        ? `Expired on ${getDateTimeFormat().format(closedMarketDate)}`
         : t('Expired');
     } else {
       content = expiryDate;
