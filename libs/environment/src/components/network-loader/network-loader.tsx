@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
+import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
@@ -7,39 +8,22 @@ import { createClient } from '@vegaprotocol/apollo-client';
 type NetworkLoaderProps = {
   children?: ReactNode;
   skeleton?: ReactNode;
+  cache?: InMemoryCacheConfig;
 };
 
-export function NetworkLoader({ skeleton, children }: NetworkLoaderProps) {
+export function NetworkLoader({
+  skeleton,
+  children,
+  cache,
+}: NetworkLoaderProps) {
   const { VEGA_URL } = useEnvironment();
 
   const client = useMemo(() => {
     if (VEGA_URL) {
-      return createClient(VEGA_URL, {
-        typePolicies: {
-          Market: {
-            merge: true,
-          },
-          Party: {
-            merge: true,
-          },
-          Query: {},
-          Account: {
-            keyFields: false,
-            fields: {
-              balanceFormatted: {},
-            },
-          },
-          Node: {
-            keyFields: false,
-          },
-          Instrument: {
-            keyFields: false,
-          },
-        },
-      });
+      return createClient(VEGA_URL, cache);
     }
     return undefined;
-  }, [VEGA_URL]);
+  }, [VEGA_URL, cache]);
 
   if (!client) {
     return (

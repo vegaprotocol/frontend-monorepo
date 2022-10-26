@@ -15,6 +15,7 @@ import Header from './components/header';
 import { Main } from './components/main';
 import LocalContext from './context/local-context';
 import useLocalValues from './hooks/use-local-values';
+import type { InMemoryCacheConfig } from '@apollo/client';
 
 function App() {
   const [theme, toggleTheme] = useThemeSwitcher();
@@ -29,10 +30,34 @@ function App() {
     setMenuOpen(false);
   }, [location, setMenuOpen]);
 
+  const cacheConfig: InMemoryCacheConfig = {
+    typePolicies: {
+      Market: {
+        merge: true,
+      },
+      Party: {
+        merge: true,
+      },
+      Query: {},
+      Account: {
+        keyFields: false,
+        fields: {
+          balanceFormatted: {},
+        },
+      },
+      Node: {
+        keyFields: false,
+      },
+      Instrument: {
+        keyFields: false,
+      },
+    },
+  };
+
   return (
     <EnvironmentProvider>
       <ThemeContext.Provider value={theme}>
-        <NetworkLoader>
+        <NetworkLoader cache={cacheConfig}>
           <VegaWalletProvider>
             <LocalContext.Provider value={localValues}>
               <AppLoader>
