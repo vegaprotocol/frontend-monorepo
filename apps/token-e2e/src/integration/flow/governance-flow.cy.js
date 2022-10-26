@@ -757,7 +757,7 @@ context(
         cy.get(voteButtons).should('not.exist');
         cy.getByTestId('min-proposal-requirements').should(
           'have.text',
-          'You must have at least 1 VEGA associated to vote on this proposal'
+          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
         );
       });
 
