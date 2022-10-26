@@ -29,7 +29,7 @@ export function Dialog({
   size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
-    'fixed top-0 left-0 z-20 flex justify-center items-start overflow-scroll',
+    'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
     'w-full h-full'
   );
   const wrapperClasses = classNames(
@@ -58,7 +58,7 @@ export function Dialog({
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay
-          className="fixed inset-0 bg-black/50 z-10"
+          className="fixed inset-0 bg-black/50 z-10 chuj"
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content

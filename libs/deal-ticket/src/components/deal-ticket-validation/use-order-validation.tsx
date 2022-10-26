@@ -15,6 +15,9 @@ import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import { ValidateMargin } from './validate-margin';
+import type { OrderMargin } from '../../hooks/use-order-margin';
+import { useOrderMarginValidation } from './use-order-margin-validation';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -30,6 +33,8 @@ export type ValidationProps = {
   orderType: Schema.OrderType;
   orderTimeInForce: Schema.OrderTimeInForce;
   fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
+  order: OrderSubmissionBody['orderSubmission'];
+  estMargin?: OrderMargin | null;
 };
 
 export const marketTranslations = (marketState: MarketState) => {
@@ -46,6 +51,7 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
+  order,
 }: ValidationProps): {
   message: React.ReactNode | string;
   isDisabled: boolean;
@@ -53,9 +59,25 @@ export const useOrderValidation = ({
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
+  const isInvalidOrderMargin = useOrderMarginValidation({ market, order });
+  // const validatedMargin = useMemo(() => <ValidateMargin market={market} order={order}/>, [market, order])
+  const invalidatedMargin = useMemo(
+    () => isInvalidOrderMargin && <ValidateMargin {...isInvalidOrderMargin} />,
+    [isInvalidOrderMargin]
+  );
+  console.log('validatedMargin', invalidatedMargin);
+
   const { message, isDisabled } = useMemo(() => {
     if (!pubKey) {
       return { message: t('No public key selected'), isDisabled: true };
+    }
+
+    if (isInvalidOrderMargin) {
+      console.log('return it?');
+      return {
+        isDisabled: true,
+        message: invalidatedMargin,
+      };
     }
 
     if (
@@ -291,6 +313,8 @@ export const useOrderValidation = ({
     fieldErrors?.price?.type,
     orderType,
     orderTimeInForce,
+    invalidatedMargin,
+    isInvalidOrderMargin
   ]);
 
   return { message, isDisabled };
