@@ -1,39 +1,57 @@
 import { useTranslation } from 'react-i18next';
-
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Thumbs,
+} from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import { ProposalType } from '../proposal/proposal';
 
 interface ProposalVotesTableProps {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
+  proposalType: ProposalType | null;
 }
 
-export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
+export const ProposalVotesTable = ({
+  proposal,
+  proposalType,
+}: ProposalVotesTableProps) => {
   const { t } = useTranslation();
   const {
     appState: { totalSupply },
   } = useAppState();
   const {
-    willPass,
+    willPassByTokenVote,
+    willPassByLPVote,
     totalTokensPercentage,
     participationMet,
+    participationLPMet,
     totalTokensVoted,
     noPercentage,
     yesPercentage,
     noTokens,
     yesTokens,
+    yesEquityLikeShareWeight,
     yesVotes,
     noVotes,
     totalVotes,
     requiredMajorityPercentage,
     requiredParticipation,
     majorityMet,
+    majorityLPMet,
   } = useVoteInformation({ proposal });
+
+  const isUpdateMarket = proposalType === ProposalType.PROPOSAL_UPDATE_MARKET;
+  const updateMarketWillPass = willPassByTokenVote || willPassByLPVote;
+  const updateMarketVotePassMethod = willPassByTokenVote
+    ? t('byTokenVote')
+    : t('byLiquidityVote');
 
   return (
     <KeyValueTable
@@ -44,20 +62,48 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
     >
       <KeyValueTableRow>
         {t('willPass')}
-        {willPass ? '👍' : '👎'}
+        {isUpdateMarket ? (
+          updateMarketWillPass ? (
+            <Thumbs up={true} text={updateMarketVotePassMethod} />
+          ) : (
+            <Thumbs up={false} />
+          )
+        ) : willPassByTokenVote ? (
+          <Thumbs up={true} />
+        ) : (
+          <Thumbs up={false} />
+        )}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('majorityMet')}
-        {majorityMet ? '👍' : '👎'}
+        {majorityMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
       </KeyValueTableRow>
+      {isUpdateMarket && (
+        <KeyValueTableRow>
+          {t('majorityLPMet')}
+          {majorityLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
+        </KeyValueTableRow>
+      )}
       <KeyValueTableRow>
         {t('participationMet')}
-        {participationMet ? '👍' : '👎'}
+        {participationMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
       </KeyValueTableRow>
+      {isUpdateMarket && (
+        <KeyValueTableRow>
+          {t('participationLPMet')}
+          {participationLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
+        </KeyValueTableRow>
+      )}
       <KeyValueTableRow>
         {t('tokenForProposal')}
         {formatNumber(yesTokens, 2)}
       </KeyValueTableRow>
+      {isUpdateMarket && (
+        <KeyValueTableRow>
+          {t('tokenLPForProposal')}
+          {formatNumber(yesEquityLikeShareWeight, 2)}
+        </KeyValueTableRow>
+      )}
       <KeyValueTableRow>
         {t('totalSupply')}
         {formatNumber(totalSupply, 2)}
@@ -74,34 +120,38 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
         {t('majorityRequired')}
         {formatNumberPercentage(requiredMajorityPercentage)}
       </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('numberOfVotingParties')}
-        {formatNumber(totalVotes, 0)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('totalTokensVotes')}
-        {formatNumber(totalTokensVoted, 2)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('totalTokenVotedPercentage')}
-        {formatNumberPercentage(totalTokensPercentage, 2)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('numberOfForVotes')}
-        {formatNumber(yesVotes, 0)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('numberOfAgainstVotes')}
-        {formatNumber(noVotes, 0)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('yesPercentage')}
-        {formatNumberPercentage(yesPercentage, 2)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('noPercentage')}
-        {formatNumberPercentage(noPercentage, 2)}
-      </KeyValueTableRow>
+      {!isUpdateMarket && (
+        <>
+          <KeyValueTableRow>
+            {t('numberOfVotingParties')}
+            {formatNumber(totalVotes, 0)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('totalTokensVotes')}
+            {formatNumber(totalTokensVoted, 2)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('totalTokenVotedPercentage')}
+            {formatNumberPercentage(totalTokensPercentage, 2)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('numberOfForVotes')}
+            {formatNumber(yesVotes, 0)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('numberOfAgainstVotes')}
+            {formatNumber(noVotes, 0)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('yesPercentage')}
+            {formatNumberPercentage(yesPercentage, 2)}
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('noPercentage')}
+            {formatNumberPercentage(noPercentage, 2)}
+          </KeyValueTableRow>
+        </>
+      )}
     </KeyValueTable>
   );
 };

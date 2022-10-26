@@ -19,7 +19,7 @@ import { AsyncRenderer, Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
-import { ProposalUserAction } from '@vegaprotocol/types';
+import { ProposalUserAction } from '../../components/shared';
 
 export interface FreeformProposalFormFields {
   proposalVoteDeadline: string;
