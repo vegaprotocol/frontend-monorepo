@@ -1,12 +1,5 @@
-import {
-  Button,
-  Callout,
-  Intent,
-  Link as UTLink,
-} from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { Links } from '../../../config';
+import { StakingIntro } from './staking-intro';
 import { NodeList } from './node-list';
 
 export const Staking = () => {
@@ -14,33 +7,7 @@ export const Staking = () => {
 
   return (
     <>
-      <section className="mb-8">
-        <Callout
-          intent={Intent.Primary}
-          iconName="help"
-          title={t('stakingDescriptionTitle')}
-        >
-          <ol className="mb-4">
-            <li>
-              {t('stakingDescription1')}{' '}
-              <Link to="/staking/associate" className="underline">
-                {t('stakingBridge')}
-              </Link>
-            </li>
-            <li>{t('stakingDescription2')}</li>
-            <li>{t('stakingDescription3')}</li>
-            <li>{t('stakingDescription4')}</li>
-          </ol>
-
-          <UTLink
-            href={Links.STAKING_GUIDE}
-            target="_blank"
-            data-testid="staking-guide-link"
-          >
-            <Button>{t('readMoreStaking')}</Button>
-          </UTLink>
-        </Callout>
-      </section>
+      <StakingIntro />
       <section>
         <h2 className="text-2xl uppercase">{t('Validator nodes')}</h2>
         <NodeList data-testid="node-list" />
