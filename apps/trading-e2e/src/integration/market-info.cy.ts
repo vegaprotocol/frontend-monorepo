@@ -241,3 +241,43 @@ describe('market states', { tags: '@smoke' }, function () {
     });
   });
 });
+
+describe('market info is displayed - live env', { tags: '@live' }, () => {
+  before(() => {
+    cy.visit('/');
+    cy.getByTestId('dialog-close').click();
+    cy.getByTestId(marketInfoBtn).click();
+  });
+  const titles = ['Market data', 'Market specification', 'Market governance'];
+  const subtitles = [
+    'Current fees',
+    'Market price',
+    'Market volume',
+    'Insurance pool',
+    'Key details',
+    'Instrument',
+    'Settlement asset',
+    'Metadata',
+    'Risk model',
+    'Risk parameters',
+    'Risk factors',
+    'Price monitoring trigger 1',
+    'Price monitoring bound 1',
+    'Liquidity monitoring parameters',
+    'Liquidity',
+    'Oracle',
+    'Proposal',
+  ];
+
+  it('market info titles are displayed', () => {
+    cy.get('.text-lg').each((element, index) => {
+      cy.wrap(element).should('have.text', titles[index]);
+    });
+  });
+
+  it('market info subtitles are displayed', () => {
+    cy.getByTestId(marketTitle).each((element, index) => {
+      cy.wrap(element).should('have.text', subtitles[index]);
+    });
+  });
+});

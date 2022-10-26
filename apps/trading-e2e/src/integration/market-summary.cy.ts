@@ -18,18 +18,23 @@ const itemValue = 'item-value';
 
 describe('Market trading page', () => {
   before(() => {
-    cy.mockTradingPage(
-      MarketState.STATE_ACTIVE,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-    );
-    cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
-    cy.wait('@MarketData');
+    if (!Cypress.env('grepTags').includes('@live')) {
+      cy.mockTradingPage(
+        MarketState.STATE_ACTIVE,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/markets/market-0');
+      cy.wait('@MarketData');
+    } else {
+      cy.visit('/');
+      cy.getByTestId('dialog-close').click();
+    }
     cy.getByTestId(marketSummaryBlock).should('be.visible');
   });
 
-  describe('Market summary', { tags: '@smoke' }, () => {
+  describe('Market summary', { tags: ['@smoke', '@live'] }, () => {
     // 7002-SORD-001
     // 7002-SORD-002
     it('must display market name', () => {
