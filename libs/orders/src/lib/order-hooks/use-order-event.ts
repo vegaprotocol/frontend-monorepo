@@ -1,19 +1,19 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import { OrderEventDocument } from './__generated___/OrderEvent';
 import type {
-  OrderEvent,
-  OrderEventVariables,
-  OrderEvent_busEvents_event_Order,
-} from './';
+  OrderEventSubscription,
+  OrderEventSubscriptionVariables,
+  OrderEventFieldsFragment,
+} from './__generated___/OrderEvent';
 import type { Subscription } from 'zen-observable-ts';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import { BusEventType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 type WaitFunc = (
   orderId: string,
   partyId: string
-) => Promise<OrderEvent_busEvents_event_Order>;
+) => Promise<OrderEventFieldsFragment>;
 
 export const useOrderEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();
@@ -23,8 +23,8 @@ export const useOrderEvent = (transaction: VegaTxState) => {
     (id: string, partyId: string) => {
       return new Promise((resolve) => {
         subRef.current = client
-          .subscribe<OrderEvent, OrderEventVariables>({
-            query: ORDER_EVENT_SUB,
+          .subscribe<OrderEventSubscription, OrderEventSubscriptionVariables>({
+            query: OrderEventDocument,
             variables: { partyId },
           })
           .subscribe(({ data }) => {
@@ -34,7 +34,7 @@ export const useOrderEvent = (transaction: VegaTxState) => {
 
             // No types available for the subscription result
             const matchingOrderEvent = data.busEvents.find((e) => {
-              if (e.event.__typename !== BusEventType.Order) {
+              if (e.event.__typename !== Schema.BusEventType.Order) {
                 return false;
               }
 
@@ -43,7 +43,7 @@ export const useOrderEvent = (transaction: VegaTxState) => {
 
             if (
               matchingOrderEvent &&
-              matchingOrderEvent.event.__typename === BusEventType.Order
+              matchingOrderEvent.event.__typename === Schema.BusEventType.Order
             ) {
               resolve(matchingOrderEvent.event);
               subRef.current?.unsubscribe();

@@ -38,7 +38,7 @@ import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
-import { Side, OrderType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
 
 interface DealTicketMarketProps {
@@ -118,7 +118,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const price = useMemo(() => {
     if (slippage && market?.depth?.lastTrade?.price) {
-      const isLong = order.side === Side.SIDE_BUY;
+      const isLong = order.side === Schema.Side.SIDE_BUY;
       const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
         parseFloat(slippage) / 100
       );
@@ -182,7 +182,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     (value: number) => {
       if (market?.depth?.lastTrade?.price) {
         if (value) {
-          const isLong = order.side === Side.SIDE_BUY;
+          const isLong = order.side === Schema.Side.SIDE_BUY;
           const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
             value / 100
           );
@@ -193,11 +193,11 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
           setValue('price', bestAskPrice);
 
-          if (order.type === OrderType.TYPE_MARKET) {
-            setValue('type', OrderType.TYPE_LIMIT);
+          if (order.type === Schema.OrderType.TYPE_MARKET) {
+            setValue('type', Schema.OrderType.TYPE_LIMIT);
           }
         } else {
-          setValue('type', OrderType.TYPE_MARKET);
+          setValue('type', Schema.OrderType.TYPE_MARKET);
           setValue('price', market?.depth?.lastTrade?.price);
         }
       }

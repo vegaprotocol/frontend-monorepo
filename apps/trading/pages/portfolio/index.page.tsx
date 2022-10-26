@@ -30,12 +30,7 @@ const Portfolio = () => {
             <Tabs>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <div className={tabContentClassName}>
-                    <h4 className="text-xl p-4">{t('Positions')}</h4>
-                    <div>
-                      <PositionsContainer />
-                    </div>
-                  </div>
+                  <PositionsContainer />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>

@@ -15,8 +15,8 @@ import {
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import { MarketState } from '@vegaprotocol/types';
+import type { Market } from '@vegaprotocol/market-list';
 import SimpleMarketToolbar from './simple-market-toolbar';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import { markets as filterData } from './mocks/market-filters.json';
 
 const mockedNavigate = jest.fn();
@@ -35,35 +35,23 @@ describe('SimpleMarketToolbar', () => {
     const routes = useRoutes([
       {
         path: '/',
-        element: (
-          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
-        ),
+        element: <SimpleMarketToolbar data={filterData as Market[]} />,
       },
       {
         path: 'markets',
         children: [
           {
             path: `:state`,
-            element: (
-              <SimpleMarketToolbar
-                data={filterData as SimpleMarkets_markets[]}
-              />
-            ),
+            element: <SimpleMarketToolbar data={filterData as Market[]} />,
             children: [
               {
                 path: `:product`,
-                element: (
-                  <SimpleMarketToolbar
-                    data={filterData as SimpleMarkets_markets[]}
-                  />
-                ),
+                element: <SimpleMarketToolbar data={filterData as Market[]} />,
                 children: [
                   {
                     path: `:asset`,
                     element: (
-                      <SimpleMarketToolbar
-                        data={filterData as SimpleMarkets_markets[]}
-                      />
+                      <SimpleMarketToolbar data={filterData as Market[]} />
                     ),
                   },
                 ],
@@ -71,9 +59,7 @@ describe('SimpleMarketToolbar', () => {
             ],
           },
         ],
-        element: (
-          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
-        ),
+        element: <SimpleMarketToolbar data={filterData as Market[]} />,
       },
     ]);
     const location = useLocation();
@@ -166,7 +152,7 @@ describe('SimpleMarketToolbar', () => {
     }));
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+        <SimpleMarketToolbar data={filterData as Market[]} />
       </MockedProvider>,
       { wrapper: BrowserRouter }
     );
@@ -187,7 +173,7 @@ describe('SimpleMarketToolbar', () => {
     (useParams as jest.Mock).mockImplementation(() => ({}));
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+        <SimpleMarketToolbar data={filterData as Market[]} />
       </MockedProvider>,
       { wrapper: BrowserRouter }
     );
@@ -211,7 +197,7 @@ describe('SimpleMarketToolbar', () => {
     }));
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+        <SimpleMarketToolbar data={filterData as Market[]} />
       </MockedProvider>,
       { wrapper: BrowserRouter }
     );

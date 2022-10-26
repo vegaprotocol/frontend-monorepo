@@ -129,7 +129,7 @@ export const rows: Rows = [
     key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
     label: t('Infrastructure fee account balance'),
     tooltip: t('The infrastructure fee account in this asset'),
-    value: (asset) => num(asset, asset.infrastructureFeeAccount.balance),
+    value: (asset) => num(asset, asset.infrastructureFeeAccount?.balance),
   },
   {
     key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,

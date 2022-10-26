@@ -1,20 +1,12 @@
 import { act, renderHook } from '@testing-library/react';
 import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  BusEventType,
-  MarketState,
-  MarketTradingMode,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode, Schema } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
-import type { OrderEvent } from './';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import type { OrderEventSubscription } from './';
+import { OrderEventDocument } from './';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
@@ -56,9 +48,9 @@ const defaultWalletContext = {
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {
-  const mocks: MockedResponse<OrderEvent> = {
+  const mocks: MockedResponse<OrderEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderEventDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
@@ -67,18 +59,18 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
                 id: 'market-id',
                 decimalPlaces: 5,
@@ -100,9 +92,9 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       },
     },
   };
-  const filterMocks: MockedResponse<OrderEvent> = {
+  const filterMocks: MockedResponse<OrderEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderEventDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
@@ -111,18 +103,18 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: Schema.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Schema.OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Schema.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Schema.Side.SIDE_BUY,
               market: {
                 id: 'market-id',
                 decimalPlaces: 5,
@@ -168,10 +160,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order = {
-      type: OrderType.TYPE_LIMIT,
+      type: Schema.OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
-      side: Side.SIDE_BUY,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
+      side: Schema.Side.SIDE_BUY,
       price: '123456789',
       expiresAt: new Date('2022-01-01').toISOString(),
     };
@@ -181,11 +173,11 @@ describe('useOrderSubmit', () => {
 
     expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
       orderSubmission: {
-        type: OrderType.TYPE_LIMIT,
+        type: Schema.OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id,
         size: '10',
-        side: Side.SIDE_BUY,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789',
         expiresAt: toNanoSeconds(order.expiresAt),
       },
@@ -205,10 +197,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order = {
-      type: OrderType.TYPE_LIMIT,
+      type: Schema.OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-      side: Side.SIDE_BUY,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+      side: Schema.Side.SIDE_BUY,
       price: '123456789',
       expiresAt: new Date('2022-01-01').toISOString(),
     };
@@ -218,11 +210,11 @@ describe('useOrderSubmit', () => {
 
     expect(mockSendTx).toHaveBeenCalledWith(publicKeyObj.publicKey, {
       orderSubmission: {
-        type: OrderType.TYPE_LIMIT,
+        type: Schema.OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id,
         size: '10',
-        side: Side.SIDE_BUY,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+        side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         price: '123456789',
         expiresAt: undefined,
       },

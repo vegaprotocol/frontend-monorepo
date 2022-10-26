@@ -8,7 +8,7 @@ export type PartyBalanceQueryQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyBalanceQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accounts?: Array<{ __typename?: 'Account', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } }> | null } | null };
+export type PartyBalanceQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } }> | null } | null };
 
 
 export const PartyBalanceQueryDocument = gql`

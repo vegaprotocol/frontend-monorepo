@@ -5,7 +5,7 @@ import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 
 const singleRow = {
-  __typename: 'Account',
+  __typename: 'AccountBalance',
   type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
   balance: '125600000',
   market: {
@@ -74,7 +74,7 @@ describe('BreakdownTable', () => {
         balance: '0',
         breakdown: [
           {
-            __typename: 'Account',
+            __typename: 'AccountBalance',
             asset: {
               __typename: 'Asset',
               decimals: 5,

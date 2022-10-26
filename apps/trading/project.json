@@ -60,6 +60,13 @@
           "nx build trading"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/trading/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

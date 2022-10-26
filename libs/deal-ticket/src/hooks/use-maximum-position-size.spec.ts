@@ -1,10 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import {
-  AccountType,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { AccountType, Schema } from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
 import { BigNumber } from 'bignumber.js';
 import { useMaximumPositionSize } from './use-maximum-position-size';
@@ -19,7 +14,7 @@ const defaultMockMarketPositions = {
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
 const mockAccount: Account = {
-  __typename: 'Account',
+  __typename: 'AccountBalance',
   type: AccountType.ACCOUNT_TYPE_GENERAL,
   balance: '200000',
   asset: {
@@ -32,10 +27,10 @@ const mockAccount: Account = {
 };
 
 const mockOrder: OrderSubmissionBody['orderSubmission'] = {
-  type: OrderType.TYPE_MARKET,
+  type: Schema.OrderType.TYPE_MARKET,
   size: '1',
-  side: Side.SIDE_BUY,
-  timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+  side: Schema.Side.SIDE_BUY,
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
   marketId: 'market-id',
 };
 
@@ -92,7 +87,7 @@ describe('useMaximumPositionSize', () => {
 
   it('should return correct size when open positions and opposite side', () => {
     const price = '50';
-    mockOrder.side = Side.SIDE_SELL;
+    mockOrder.side = Schema.Side.SIDE_SELL;
     mockMarketPositions = defaultMockMarketPositions;
     const expected = 4001;
     const { result } = renderHook(() =>

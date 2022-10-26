@@ -1,4 +1,4 @@
-fragment AccountFields on Account {
+fragment AccountFields on AccountBalance {
   type
   balance
   market {

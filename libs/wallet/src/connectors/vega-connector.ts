@@ -1,9 +1,4 @@
-import type {
-  OrderTimeInForce,
-  OrderType,
-  Side,
-  VoteValue,
-} from '@vegaprotocol/types';
+import type { Schema, VoteValue } from '@vegaprotocol/types';
 
 export interface DelegateSubmissionBody {
   delegateSubmission: {
@@ -23,9 +18,9 @@ export interface UndelegateSubmissionBody {
 interface OrderSubmission {
   marketId: string;
   reference?: string;
-  type: OrderType;
-  side: Side;
-  timeInForce: OrderTimeInForce;
+  type: Schema.OrderType;
+  side: Schema.Side;
+  timeInForce: Schema.OrderTimeInForce;
   size: string;
   price?: string;
   expiresAt?: string;
@@ -40,7 +35,7 @@ interface OrderAmendment {
   marketId: string;
   orderId: string;
   reference?: string;
-  timeInForce: OrderTimeInForce;
+  timeInForce: Schema.OrderTimeInForce;
   sizeDelta?: number;
   price?: string;
   expiresAt?: string;

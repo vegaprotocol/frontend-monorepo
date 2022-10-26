@@ -7,7 +7,7 @@ describe('useSettlementAccount Hook', () => {
   it('should filter accounts by settlementAssetId', () => {
     const accounts: Account[] = [
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '2000000000000000000000',
         asset: {
@@ -19,7 +19,7 @@ describe('useSettlementAccount Hook', () => {
         },
       },
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '1000000000',
         asset: {
@@ -31,7 +31,7 @@ describe('useSettlementAccount Hook', () => {
         },
       },
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '5000000000000000000',
         asset: {
@@ -43,7 +43,7 @@ describe('useSettlementAccount Hook', () => {
         },
       },
       {
-        __typename: 'Account',
+        __typename: 'AccountBalance',
         type: AccountType.ACCOUNT_TYPE_MARGIN,
         balance: '5000000000000000000',
         asset: {

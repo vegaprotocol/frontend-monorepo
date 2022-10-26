@@ -3,11 +3,9 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node", "@testing-library/jest-dom"],
-    "jsx": "react",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "types": ["jest", "node", "@testing-library/jest-dom"]
   },
+  "files": ["../../node_modules/@nrwl/react/typings/cssmodule.d.ts"],
   "include": [
     "**/*.test.ts",
     "**/*.spec.ts",

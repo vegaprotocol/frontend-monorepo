@@ -1,4 +1,4 @@
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '../format';
@@ -9,18 +9,23 @@ export const Size = ({
   positionDecimalPlaces = 0,
 }: {
   value: string;
-  side: Side;
+  side: Schema.Side;
   positionDecimalPlaces?: number;
 }) => {
   return (
     <span
       data-testid="size"
       className={classNames('text-right', {
-        'text-vega-green-dark dark:text-vega-green': side === Side.SIDE_BUY,
-        'text-vega-red-dark dark:text-vega-red': side === Side.SIDE_SELL,
+        'text-vega-green-dark dark:text-vega-green':
+          side === Schema.Side.SIDE_BUY,
+        'text-vega-red-dark dark:text-vega-red': side === Schema.Side.SIDE_SELL,
       })}
     >
-      {side === Side.SIDE_BUY ? '+' : side === Side.SIDE_SELL ? '-' : ''}
+      {side === Schema.Side.SIDE_BUY
+        ? '+'
+        : side === Schema.Side.SIDE_SELL
+        ? '-'
+        : ''}
       {addDecimalsFormatNumber(value, positionDecimalPlaces)}
     </span>
   );

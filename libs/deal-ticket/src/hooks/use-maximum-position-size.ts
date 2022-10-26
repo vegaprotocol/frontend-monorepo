@@ -1,7 +1,7 @@
 import { useMarketPositions } from './use-market-positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useSettlementAccount } from './use-settlement-account';
-import { AccountType, Side } from '@vegaprotocol/types';
+import { AccountType, Schema } from '@vegaprotocol/types';
 import { BigNumber } from 'bignumber.js';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
@@ -47,8 +47,10 @@ export const useMaximumPositionSize = ({
   }
 
   const isSameSide =
-    (marketPositions.openVolume.isPositive() && order.side === Side.SIDE_BUY) ||
-    (marketPositions.openVolume.isNegative() && order.side === Side.SIDE_SELL);
+    (marketPositions.openVolume.isPositive() &&
+      order.side === Schema.Side.SIDE_BUY) ||
+    (marketPositions.openVolume.isNegative() &&
+      order.side === Schema.Side.SIDE_SELL);
 
   const adjustedForVolume = new BigNumber(size)[isSameSide ? 'minus' : 'plus'](
     marketPositions.openVolume

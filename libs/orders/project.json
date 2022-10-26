@@ -69,6 +69,13 @@
           "quiet": true
         }
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./libs/orders/tsconfig.spec.json"
+      }
     }
   }
 }

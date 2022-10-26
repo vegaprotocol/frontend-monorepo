@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node", "@testing-library/jest-dom"],
-    "jsx": "react"
+    "types": ["jest", "node", "@testing-library/jest-dom"]
   },
   "include": [
     "**/*.test.ts",

@@ -14,7 +14,7 @@ import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { MarketExpires } from '@vegaprotocol/market-info';
 
 export const MARKET_TAGS_QUERY = gql`
@@ -72,9 +72,10 @@ export default ({
             <div
               className={classNames(
                 {
-                  'buyButton dark:buyButtonDark': order.side === Side.SIDE_BUY,
+                  'buyButton dark:buyButtonDark':
+                    order.side === Schema.Side.SIDE_BUY,
                   'sellButton dark:sellButtonDark':
-                    order.side === Side.SIDE_SELL,
+                    order.side === Schema.Side.SIDE_SELL,
                 },
                 'px-2 py-1 inline text-ui-small'
               )}

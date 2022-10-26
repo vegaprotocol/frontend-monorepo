@@ -2,14 +2,7 @@ import type { ReactNode } from 'react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
-import {
-  BusEventType,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Schema as Types,
-  Side,
-} from '@vegaprotocol/types';
+import { Schema as Types } from '@vegaprotocol/types';
 import { useClosePosition } from './use-close-position';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
@@ -17,8 +10,8 @@ import { initialState } from '@vegaprotocol/wallet';
 import type { TransactionEventSubscription } from '@vegaprotocol/wallet';
 import { TransactionEventDocument } from '@vegaprotocol/wallet';
 import { act } from 'react-dom/test-utils';
-import type { OrderEvent } from '@vegaprotocol/orders';
-import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
+import type { OrderEventSubscription } from '@vegaprotocol/orders';
+import { OrderEventDocument } from '@vegaprotocol/orders';
 
 const pubKey = 'test-pubkey';
 const defaultWalletContext = {
@@ -58,9 +51,9 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       },
     },
   };
-  const mockOrderResult: MockedResponse<OrderEvent> = {
+  const mockOrderResult: MockedResponse<OrderEventSubscription> = {
     request: {
-      query: ORDER_EVENT_SUB,
+      query: OrderEventDocument,
       variables: {
         partyId: context?.pubKey || '',
       },
@@ -69,18 +62,18 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       data: {
         busEvents: [
           {
-            type: BusEventType.Order,
+            type: Types.BusEventType.Order,
             event: {
-              type: OrderType.TYPE_LIMIT,
+              type: Types.OrderType.TYPE_LIMIT,
               id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
-              status: OrderStatus.STATUS_ACTIVE,
+              status: Types.OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               expiresAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-              side: Side.SIDE_BUY,
+              timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Types.Side.SIDE_BUY,
               market: {
                 id: 'market-id',
                 decimalPlaces: 5,
@@ -164,9 +157,9 @@ describe('useClosePosition', () => {
         submissions: [
           {
             marketId,
-            type: OrderType.TYPE_MARKET,
-            timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-            side: Side.SIDE_SELL,
+            type: Types.OrderType.TYPE_MARKET,
+            timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
+            side: Types.Side.SIDE_SELL,
             size: openVolume,
           },
         ],
@@ -208,9 +201,9 @@ describe('useClosePosition', () => {
         submissions: [
           {
             marketId,
-            type: OrderType.TYPE_MARKET,
-            timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-            side: Side.SIDE_BUY,
+            type: Types.OrderType.TYPE_MARKET,
+            timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
+            side: Types.Side.SIDE_BUY,
             size: openVolume.replace('-', ''),
           },
         ],
