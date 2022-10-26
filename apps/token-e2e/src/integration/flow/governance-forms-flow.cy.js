@@ -2,7 +2,6 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
 const proposalValidationDeadline =
   '[data-testid="proposal-validation-deadline"]';
-const proposalEnactmentDeadline = '[data-testid="proposal-enactment-deadline"]';
 const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
 const proposalMarketSelect = '[data-testid="proposal-market-select"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
@@ -12,6 +11,11 @@ const currentParameterValue =
   '[data-testid="selected-proposal-param-current-value"]';
 const newProposedParameterValue =
   '[data-testid="selected-proposal-param-new-value"]';
+const minVoteDeadline = '[data-testid="min-vote"]';
+const maxVoteDeadline = '[data-testid="max-vote"]';
+const minValidationDeadline = '[data-testid="min-validation"]';
+const minEnactDeadline = '[data-testid="min-enactment"]';
+const maxEnactDeadline = '[data-testid="max-enactment"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
 const feedbackError = '[data-testid="Error"]';
@@ -163,7 +167,7 @@ context(
     });
 
     // 3001-VOTE-026 3001-VOTE-027  3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001
-    it('Able to submit new asset proposal', function () {
+    it('Able to submit new asset proposal using min deadlines', function () {
       cy.go_to_make_new_proposal(governanceProposalType.NEW_ASSET);
       cy.get(newProposalTitle).type('Test new asset proposal');
       cy.get(newProposalDescription).type('E2E test for proposals');
@@ -174,6 +178,9 @@ context(
           delay: 2,
         });
       });
+      cy.get(minVoteDeadline).click();
+      cy.get(minValidationDeadline).click();
+      cy.get(minEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Awaiting network confirmation', epochTimeout).should(
         'be.visible'
@@ -206,19 +213,21 @@ context(
       );
     });
 
-    it('Able to submit update asset proposal', function () {
+    it('Able to submit update asset proposal using min deadline', function () {
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
-      cy.get(newProposalTitle).type('Test update asset proposal');
-      cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.fixture('/proposals/update-asset').then((newAssetProposal) => {
-        let newAssetPayload = JSON.stringify(newAssetProposal);
-        cy.get(newProposalTerms).type(newAssetPayload, {
-          parseSpecialCharSequences: false,
-          delay: 2,
-        });
-      });
-      cy.get(proposalVoteDeadline).clear().click().type('50');
-      cy.get(proposalEnactmentDeadline).clear().click().type('50');
+      enterUpdateAssetProposalDetails();
+      cy.get(minVoteDeadline).click();
+      cy.get(minEnactDeadline).click();
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.wait_for_proposal_submitted();
+    });
+
+    // Skipping until #1837 is fixed
+    it.skip('Able to submit update asset proposal using max deadline', function () {
+      cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
+      enterUpdateAssetProposalDetails();
+      cy.get(maxVoteDeadline).click();
+      cy.get(maxEnactDeadline).click();
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.wait_for_proposal_submitted();
     });
@@ -228,5 +237,17 @@ context(
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
     });
+
+    function enterUpdateAssetProposalDetails() {
+      cy.get(newProposalTitle).type('Test update asset proposal');
+      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.fixture('/proposals/update-asset').then((newAssetProposal) => {
+        let newAssetPayload = JSON.stringify(newAssetProposal);
+        cy.get(newProposalTerms).type(newAssetPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+    }
   }
 );
