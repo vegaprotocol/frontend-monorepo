@@ -40,7 +40,7 @@ export const Market = ({
 
   return (
     <div>
-      <div className="border border-[#d2d2d2] rounded-2xl px-2 py-6">
+      <div className="border border-greys-light-200 rounded-2xl px-2 py-6">
         <table className="w-full">
           <thead>
             <tr

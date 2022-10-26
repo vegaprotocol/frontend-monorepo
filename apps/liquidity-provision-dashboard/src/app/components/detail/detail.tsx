@@ -72,7 +72,7 @@ export const Detail = () => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <div className="px-16 pt-14 pb-12 bg-[#F0F0F0]">
+      <div className="px-16 pt-14 pb-12 bg-greys-light-100">
         <div className="max-w-screen-xl mx-auto">
           <Header name={data.name} symbol={data.symbol} />
         </div>
