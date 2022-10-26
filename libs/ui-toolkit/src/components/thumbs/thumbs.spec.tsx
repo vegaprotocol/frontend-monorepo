@@ -14,11 +14,6 @@ describe('Thumbs', () => {
 
   it('renders text', () => {
     render(<Thumbs up={true} text="test" />);
-    expect(screen.getByText('test')).toBeInTheDocument();
-  });
-
-  it('renders text with class of font-mono when fontMono arg is true', () => {
-    render(<Thumbs up={true} text="test" monoFont={true} />);
-    expect(screen.getByText('test')).toHaveClass('font-mono');
+    expect(screen.getByText('👍 test')).toBeInTheDocument();
   });
 });

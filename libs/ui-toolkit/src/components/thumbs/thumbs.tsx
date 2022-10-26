@@ -6,8 +6,7 @@ export interface ThumbsProps {
 export const Thumbs = ({ up, text }: ThumbsProps) => {
   return (
     <span>
-      {up ? '👍' : '👎'}
-      {text && <span className="ml-2">{text}</span>}
+      {up ? '👍' : '👎'} {text}
     </span>
   );
 };
