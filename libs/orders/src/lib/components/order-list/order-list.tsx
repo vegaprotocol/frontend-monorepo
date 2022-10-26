@@ -1,3 +1,4 @@
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   addDecimal,
   getDateTimeFormat,
@@ -5,6 +6,7 @@ import {
   negativeClassNames,
   positiveClassNames,
   t,
+  truncateByChars,
 } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,
@@ -19,10 +21,12 @@ import {
   Intent,
   Link,
 } from '@vegaprotocol/ui-toolkit';
+import type { TransactionResult } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { forwardRef, useState } from 'react';
-
+import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderFeedback } from '../order-feedback';
@@ -32,9 +36,46 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { Order } from '../';
-type OrderListProps = AgGridReactProps;
+import type { AgGridReact } from 'ag-grid-react';
+import type { Order } from '../order-data-provider';
+import type { OrderEventFieldsFragment } from '../../order-hooks';
+
+type OrderListProps = TypedDataAgGrid<Order>;
+
+export const TransactionComplete = ({
+  transaction,
+  transactionResult,
+}: {
+  transaction: VegaTxState;
+  transactionResult?: TransactionResult;
+}) => {
+  const { VEGA_EXPLORER_URL } = useEnvironment();
+  if (!transactionResult) return null;
+  return (
+    <>
+      {transactionResult.status ? (
+        <p>{t('Transaction successful')}</p>
+      ) : (
+        <p className="text-vega-red">
+          {t('Transaction failed')}: {transactionResult.error}
+        </p>
+      )}
+      {transaction.txHash && (
+        <>
+          <p className="font-semibold mt-4">{t('Transaction')}</p>
+          <p>
+            <Link
+              href={`${VEGA_EXPLORER_URL}/txs/${transaction.txHash}`}
+              target="_blank"
+            >
+              {truncateByChars(transaction.txHash)}
+            </Link>
+          </p>
+        </>
+      )}
+    </>
+  );
+};
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
@@ -46,7 +87,10 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
       <>
         <OrderListTable
           {...props}
-          cancel={(order) => {
+          cancelAll={() => {
+            orderCancel.cancel({});
+          }}
+          cancel={(order: Order) => {
             if (!order.market) return;
             orderCancel.cancel({
               orderId: order.id,
@@ -57,14 +101,16 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           setEditOrder={setEditOrder}
         />
         <orderCancel.Dialog
-          title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
-          intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
+          title={getCancelDialogTitle(orderCancel)}
+          intent={getCancelDialogIntent(orderCancel)}
           content={{
-            Complete: (
+            Complete: orderCancel.cancelledOrder ? (
               <OrderFeedback
                 transaction={orderCancel.transaction}
                 order={orderCancel.cancelledOrder}
               />
+            ) : (
+              <TransactionComplete {...orderCancel} />
             ),
           }}
         />
@@ -97,13 +143,14 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   }
 );
 
-export type OrderListTableProps = AgGridReactProps & {
+export type OrderListTableProps = OrderListProps & {
   cancel: (order: Order) => void;
+  cancelAll: () => void;
   setEditOrder: (order: Order) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrder, ...props }, ref) => {
+  ({ cancel, cancelAll, setEditOrder, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -112,6 +159,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
         rowHeight={34}
+        pinnedBottomRowData={[{}]}
         {...props}
       >
         <AgGridColumn
@@ -147,7 +195,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
+            node,
           }: VegaValueFormatterParams<Order, 'size'>) => {
+            if (node?.rowPinned) {
+              return '';
+            }
             if (!data?.market || !isNumeric(value)) {
               return '-';
             }
@@ -166,7 +218,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             data: order,
             value,
+            node,
           }: VegaValueFormatterParams<Order, 'type'>) => {
+            if (node?.rowPinned) {
+              return '';
+            }
             if (!value) return '-';
             if (order?.peggedOrder) return t('Pegged');
             if (order?.liquidityProvision) return t('Liquidity provision');
@@ -196,7 +252,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             data,
             value,
+            node,
           }: VegaValueFormatterParams<Order, 'remaining'>) => {
+            if (node?.rowPinned) {
+              return '';
+            }
             if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
               return '-';
             }
@@ -217,7 +277,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
+            node,
           }: VegaValueFormatterParams<Order, 'price'>) => {
+            if (node?.rowPinned) {
+              return '';
+            }
             if (
               !data?.market ||
               data.type === Schema.OrderType.TYPE_MARKET ||
@@ -259,7 +323,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="updatedAt"
           valueFormatter={({
             value,
+            node,
           }: VegaValueFormatterParams<Order, 'updatedAt'>) => {
+            if (node?.rowPinned) {
+              return '';
+            }
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
@@ -267,10 +335,23 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           colId="amend"
           headerName=""
           field="status"
-          cellRenderer={({ data }: VegaICellRendererParams<Order>) => {
+          cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
+            if (node?.rowPinned) {
+              return (
+                <div className="flex gap-2 items-center h-full justify-end">
+                  <Button
+                    size="xs"
+                    data-testid="cancelAll"
+                    onClick={() => cancelAll()}
+                  >
+                    {t('Cancel all')}
+                  </Button>
+                </div>
+              );
+            }
             if (isOrderAmendable(data)) {
               return data ? (
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center h-full justify-end">
                   <Button
                     data-testid="edit"
                     onClick={() => setEditOrder(data)}
@@ -352,32 +433,46 @@ export const getEditDialogTitle = (
   }
 };
 
-export const getCancelDialogIntent = (
-  status?: Schema.OrderStatus
-): Intent | undefined => {
-  if (!status) {
-    return;
-  }
-
-  switch (status) {
-    case Schema.OrderStatus.STATUS_CANCELLED:
+export const getCancelDialogIntent = ({
+  cancelledOrder,
+  transactionResult,
+}: {
+  cancelledOrder: OrderEventFieldsFragment | null;
+  transactionResult?: TransactionResult;
+}): Intent | undefined => {
+  if (cancelledOrder) {
+    if (cancelledOrder.status === Schema.OrderStatus.STATUS_CANCELLED) {
       return Intent.Success;
-    default:
-      return Intent.Danger;
+    }
+    return Intent.Danger;
   }
+  if (transactionResult) {
+    if ('error' in transactionResult && transactionResult.error) {
+      return Intent.Danger;
+    }
+    return Intent.Success;
+  }
+  return;
 };
 
-export const getCancelDialogTitle = (
-  status?: Schema.OrderStatus
-): string | undefined => {
-  if (!status) {
-    return;
-  }
-
-  switch (status) {
-    case Schema.OrderStatus.STATUS_CANCELLED:
+export const getCancelDialogTitle = ({
+  cancelledOrder,
+  transactionResult,
+}: {
+  cancelledOrder: OrderEventFieldsFragment | null;
+  transactionResult?: TransactionResult;
+}): string | undefined => {
+  if (cancelledOrder) {
+    if (cancelledOrder.status === Schema.OrderStatus.STATUS_CANCELLED) {
       return t('Order cancelled');
-    default:
-      return t('Order cancellation failed');
+    }
+    return t('Order cancellation failed');
   }
+  if (transactionResult) {
+    if (transactionResult.status) {
+      return t('Orders cancelled');
+    }
+    return t('Orders not cancelled');
+  }
+  return;
 };
