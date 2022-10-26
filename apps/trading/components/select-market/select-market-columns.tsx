@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -17,9 +18,13 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Link,
+  PriceCellChange,
+  Sparkline,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
-import Link from 'next/link';
 
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
@@ -29,6 +34,31 @@ import type {
 type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
+
+const TradingMode = ({ market }: { market: Market }) => {
+  return (
+    <Tooltip
+      description={
+        market && (
+          <TradingModeTooltip
+            tradingMode={market.tradingMode}
+            trigger={market.data?.trigger || null}
+          />
+        )
+      }
+    >
+      <span>
+        {market.tradingMode ===
+          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+        market.data?.trigger &&
+        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+          ? `${MarketTradingModeMapping[market.tradingMode]}
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
+          : MarketTradingModeMapping[market.tradingMode]}
+      </span>
+    </Tooltip>
+  );
+};
 
 const FeesInfo = () => {
   return (
@@ -174,10 +204,29 @@ export const columns = (
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
   const candleVolume = market.candles && calcCandleVolume(market.candles);
+  const handleKeyPress = (
+    event: React.KeyboardEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
+    if (event.key === 'Enter' && onSelect) {
+      return onSelect(id);
+    }
+  };
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
-      value: market.tradableInstrument.instrument.code,
+      value: (
+        <Link
+          href={`/markets/${market.id}`}
+          data-testid={`market-link-${market.id}`}
+          onKeyPress={(event) => handleKeyPress(event, market.id)}
+          onClick={() => {
+            onSelect(market.id);
+          }}
+        >
+          {market.tradableInstrument.instrument.code}
+        </Link>
+      ),
       className: cellClassNames,
       onlyOnDetailed: false,
     },
@@ -227,7 +276,7 @@ export const columns = (
       value: (
         <button
           data-dialog-trigger
-          className="inline hover:underline"
+          className="inline underline"
           onClick={(e) =>
             onCellClick(
               e,
@@ -293,14 +342,7 @@ export const columns = (
     },
     {
       kind: ColumnKind.TradingMode,
-      value:
-        market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-          : MarketTradingModeMapping[market.tradingMode],
+      value: <TradingMode market={market} />,
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
@@ -347,17 +389,15 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Market,
       value: (
-        <Link href={`/markets/${market.id}`} passHref={true}>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
-          <a
-            onKeyPress={(event) => handleKeyPress(event, market.id)}
-            onClick={() => {
-              onSelect(market.id);
-            }}
-            data-testid={`market-link-${market.id}`}
-          >
-            {market.tradableInstrument.instrument.code}
-          </a>
+        <Link
+          href={`/markets/${market.id}`}
+          data-testid={`market-link-${market.id}`}
+          onKeyPress={(event) => handleKeyPress(event, market.id)}
+          onClick={() => {
+            onSelect(market.id);
+          }}
+        >
+          {market.tradableInstrument.instrument.code}
         </Link>
       ),
       className: cellClassNames,
@@ -409,7 +449,7 @@ export const columnsPositionMarkets = (
       value: (
         <button
           data-dialog-trigger
-          className="inline hover:underline"
+          className="inline underline"
           onClick={(e) => {
             if (!onCellClick) return;
             onCellClick(
@@ -475,14 +515,7 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.TradingMode,
-      value:
-        market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-          : MarketTradingModeMapping[market.tradingMode],
+      value: <TradingMode market={market} />,
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
