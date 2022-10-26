@@ -71,8 +71,8 @@ describe('use-vote-information', () => {
   it('returns all required vote information', () => {
     const yesVotes = 40;
     const noVotes = 60;
-    const yesELSWeight = '30';
-    const noELSWeight = '70';
+    const yesEquityLikeShareWeight = '30';
+    const noEquityLikeShareWeight = '70';
     // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
     const fixedTokenValue = 1;
 
@@ -85,8 +85,12 @@ describe('use-vote-information', () => {
       },
       votes: {
         __typename: 'ProposalVotes',
-        yes: generateYesVotes(yesVotes, fixedTokenValue, yesELSWeight),
-        no: generateNoVotes(noVotes, fixedTokenValue, noELSWeight),
+        yes: generateYesVotes(
+          yesVotes,
+          fixedTokenValue,
+          yesEquityLikeShareWeight
+        ),
+        no: generateNoVotes(noVotes, fixedTokenValue, noEquityLikeShareWeight),
       },
     });
 
@@ -98,13 +102,13 @@ describe('use-vote-information', () => {
     expect(current.requiredMajorityLPPercentage).toEqual(new BigNumber(50));
     expect(current.noTokens).toEqual(new BigNumber(60));
     expect(current.noVotes).toEqual(new BigNumber(60));
-    expect(current.noELSWeight).toEqual(new BigNumber(70));
+    expect(current.noEquityLikeShareWeight).toEqual(new BigNumber(70));
     expect(current.yesTokens).toEqual(new BigNumber(40));
     expect(current.yesVotes).toEqual(new BigNumber(40));
-    expect(current.yesELSWeight).toEqual(new BigNumber(30));
+    expect(current.yesEquityLikeShareWeight).toEqual(new BigNumber(30));
     expect(current.totalTokensVoted).toEqual(new BigNumber(100));
     expect(current.totalVotes).toEqual(new BigNumber(100));
-    expect(current.totalELSWeight).toEqual(new BigNumber(100));
+    expect(current.totalEquityLikeShareWeight).toEqual(new BigNumber(100));
     expect(current.yesPercentage).toEqual(new BigNumber(40));
     expect(current.yesLPPercentage).toEqual(new BigNumber(30));
     expect(current.noPercentage).toEqual(new BigNumber(60));
@@ -210,8 +214,8 @@ describe('use-vote-information', () => {
   it('correctly shows whether an update market proposal will pass by token or LP vote - both failing', () => {
     const yesVotes = 20;
     const noVotes = 70;
-    const yesELSWeight = '30';
-    const noELSWeight = '60';
+    const yesEquityLikeShareWeight = '30';
+    const noEquityLikeShareWeight = '60';
     const fixedTokenValue = 1;
 
     const proposal = generateProposal({
@@ -223,8 +227,12 @@ describe('use-vote-information', () => {
       },
       votes: {
         __typename: 'ProposalVotes',
-        yes: generateYesVotes(yesVotes, fixedTokenValue, yesELSWeight),
-        no: generateNoVotes(noVotes, fixedTokenValue, noELSWeight),
+        yes: generateYesVotes(
+          yesVotes,
+          fixedTokenValue,
+          yesEquityLikeShareWeight
+        ),
+        no: generateNoVotes(noVotes, fixedTokenValue, noEquityLikeShareWeight),
       },
     });
 
@@ -239,8 +247,8 @@ describe('use-vote-information', () => {
   it('correctly shows whether an update market proposal failing token but passing LP voting', () => {
     const yesVotes = 0;
     const noVotes = 70;
-    const yesELSWeight = '80';
-    const noELSWeight = '20';
+    const yesEquityLikeShareWeight = '80';
+    const noEquityLikeShareWeight = '20';
     const fixedTokenValue = 1;
 
     const proposal = generateProposal({
@@ -252,8 +260,12 @@ describe('use-vote-information', () => {
       },
       votes: {
         __typename: 'ProposalVotes',
-        yes: generateYesVotes(yesVotes, fixedTokenValue, yesELSWeight),
-        no: generateNoVotes(noVotes, fixedTokenValue, noELSWeight),
+        yes: generateYesVotes(
+          yesVotes,
+          fixedTokenValue,
+          yesEquityLikeShareWeight
+        ),
+        no: generateNoVotes(noVotes, fixedTokenValue, noEquityLikeShareWeight),
       },
     });
 

@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next';
-
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Thumbs,
+} from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
   formatNumberPercentage,
@@ -34,7 +37,7 @@ export const ProposalVotesTable = ({
     yesPercentage,
     noTokens,
     yesTokens,
-    yesELSWeight,
+    yesEquityLikeShareWeight,
     yesVotes,
     noVotes,
     totalVotes,
@@ -46,9 +49,9 @@ export const ProposalVotesTable = ({
 
   const isUpdateMarket = proposalType === ProposalType.PROPOSAL_UPDATE_MARKET;
   const updateMarketWillPass = willPassByTokenVote || willPassByLPVote;
-  const updateMarketVotePassMethod =
-    updateMarketWillPass &&
-    (willPassByTokenVote ? t('byTokenVote') : t('byLiquidityVote'));
+  const updateMarketVotePassMethod = willPassByTokenVote
+    ? t('byTokenVote')
+    : t('byLiquidityVote');
 
   return (
     <KeyValueTable
@@ -59,32 +62,36 @@ export const ProposalVotesTable = ({
     >
       <KeyValueTableRow>
         {t('willPass')}
-        {isUpdateMarket
-          ? updateMarketWillPass
-            ? `👍 ${updateMarketVotePassMethod}`
-            : '👎'
-          : willPassByTokenVote
-          ? '👍'
-          : '👎'}
+        {isUpdateMarket ? (
+          updateMarketWillPass ? (
+            <Thumbs up={true} text={updateMarketVotePassMethod} />
+          ) : (
+            <Thumbs up={false} />
+          )
+        ) : willPassByTokenVote ? (
+          <Thumbs up={true} />
+        ) : (
+          <Thumbs up={false} />
+        )}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('majorityMet')}
-        {majorityMet ? '👍' : '👎'}
+        {majorityMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
       </KeyValueTableRow>
       {isUpdateMarket && (
         <KeyValueTableRow>
           {t('majorityLPMet')}
-          {majorityLPMet ? '👍' : '👎'}
+          {majorityLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
         </KeyValueTableRow>
       )}
       <KeyValueTableRow>
         {t('participationMet')}
-        {participationMet ? '👍' : '👎'}
+        {participationMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
       </KeyValueTableRow>
       {isUpdateMarket && (
         <KeyValueTableRow>
           {t('participationLPMet')}
-          {participationLPMet ? '👍' : '👎'}
+          {participationLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
         </KeyValueTableRow>
       )}
       <KeyValueTableRow>
@@ -94,7 +101,7 @@ export const ProposalVotesTable = ({
       {isUpdateMarket && (
         <KeyValueTableRow>
           {t('tokenLPForProposal')}
-          {formatNumber(yesELSWeight, 2)}
+          {formatNumber(yesEquityLikeShareWeight, 2)}
         </KeyValueTableRow>
       )}
       <KeyValueTableRow>
