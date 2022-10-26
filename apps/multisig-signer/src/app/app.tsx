@@ -11,7 +11,6 @@ import { AsyncRenderer, Button, Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig, Web3Provider } from '@vegaprotocol/web3';
 import { ThemeContext, useThemeSwitcher, t } from '@vegaprotocol/react-helpers';
-import { createClient } from './lib/apollo-client';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
 import {
@@ -24,6 +23,7 @@ import { createConnectors } from './lib/web3-connectors';
 import { Web3Connector } from './components/web3-connector';
 import { EthWalletContainer } from './components/eth-wallet-container';
 import { useWeb3React } from '@web3-react/core';
+import type { InMemoryCacheConfig } from '@apollo/client';
 
 const pageWrapperClasses = classnames(
   'min-h-screen w-screen',
@@ -96,10 +96,26 @@ function App() {
 }
 
 const Wrapper = () => {
+  const cache: InMemoryCacheConfig = {
+    typePolicies: {
+      Query: {},
+      Account: {
+        keyFields: false,
+        fields: {
+          balanceFormatted: {},
+        },
+      },
+      Node: {
+        keyFields: false,
+      },
+    },
+  };
   return (
     <EnvironmentProvider>
       <NetworkLoader createClient={createClient}>
-        <App />
+        <ContractsProvider>
+          <App />
+        </ContractsProvider>
       </NetworkLoader>
     </EnvironmentProvider>
   );
