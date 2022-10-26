@@ -29,134 +29,140 @@ export const useVoteInformation = ({
     noEquityLikeShareWeight,
     yesTokens,
     yesEquityLikeShareWeight,
-  } = useMemo(
-    () => ({
-      requiredMajorityPercentage: requiredMajority
-        ? new BigNumber(requiredMajority).times(100)
-        : new BigNumber(100),
-      requiredMajorityLPPercentage: requiredMajorityLP
-        ? new BigNumber(requiredMajorityLP).times(100)
-        : new BigNumber(100),
-      noTokens: new BigNumber(proposal.votes.no.totalTokens),
-      noEquityLikeShareWeight: !proposal.votes.no.totalEquityLikeShareWeight
-        ? new BigNumber(0)
-        : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight),
-      yesTokens: new BigNumber(proposal.votes.yes.totalTokens),
-      yesEquityLikeShareWeight: !proposal.votes.yes.totalEquityLikeShareWeight
-        ? new BigNumber(0)
-        : new BigNumber(proposal.votes.yes.totalEquityLikeShareWeight),
-    }),
-    [
-      proposal.votes.no.totalEquityLikeShareWeight,
-      proposal.votes.no.totalTokens,
-      proposal.votes.yes.totalEquityLikeShareWeight,
-      proposal.votes.yes.totalTokens,
-      requiredMajority,
-      requiredMajorityLP,
-    ]
-  );
-
-  const { totalTokensVoted, totalEquityLikeShareWeight } = useMemo(
-    () => ({
-      totalTokensVoted: yesTokens.plus(noTokens),
-      totalEquityLikeShareWeight: yesEquityLikeShareWeight.plus(
-        noEquityLikeShareWeight
-      ),
-    }),
-    [noEquityLikeShareWeight, noTokens, yesEquityLikeShareWeight, yesTokens]
-  );
-
-  const {
+    totalTokensVoted,
+    totalEquityLikeShareWeight,
     yesPercentage,
     yesLPPercentage,
     noPercentage,
     noLPPercentage,
     participationMet,
     participationLPMet,
-  } = useMemo(
-    () => ({
-      yesPercentage: totalTokensVoted.isZero()
-        ? new BigNumber(0)
-        : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted),
-      yesLPPercentage: totalEquityLikeShareWeight.isZero()
-        ? new BigNumber(0)
-        : yesEquityLikeShareWeight
-            .multipliedBy(100)
-            .dividedBy(totalEquityLikeShareWeight),
-      noPercentage: totalTokensVoted.isZero()
-        ? new BigNumber(0)
-        : noTokens.multipliedBy(100).dividedBy(totalTokensVoted),
-      noLPPercentage: totalEquityLikeShareWeight.isZero()
-        ? new BigNumber(0)
-        : noEquityLikeShareWeight
-            .multipliedBy(100)
-            .dividedBy(totalEquityLikeShareWeight),
-      participationMet: totalTokensVoted.isGreaterThan(
-        totalSupply.multipliedBy(requiredParticipation)
-      ),
-      participationLPMet: requiredParticipationLP
-        ? totalEquityLikeShareWeight.isGreaterThan(
-            totalSupply.multipliedBy(requiredParticipationLP)
-          )
-        : false,
-    }),
-    [
-      noEquityLikeShareWeight,
-      noTokens,
-      requiredParticipation,
-      requiredParticipationLP,
-      totalEquityLikeShareWeight,
-      totalSupply,
-      totalTokensVoted,
-      yesEquityLikeShareWeight,
-      yesTokens,
-    ]
-  );
-
-  const {
     majorityMet,
     majorityLPMet,
     totalTokensPercentage,
     totalLPTokensPercentage,
     willPassByTokenVote,
     willPassByLPVote,
-  } = useMemo(
-    () => ({
-      majorityMet: yesPercentage.isGreaterThanOrEqualTo(
+  } = useMemo(() => {
+    const requiredMajorityPercentage = requiredMajority
+      ? new BigNumber(requiredMajority).times(100)
+      : new BigNumber(100);
+
+    const requiredMajorityLPPercentage = requiredMajorityLP
+      ? new BigNumber(requiredMajorityLP).times(100)
+      : new BigNumber(100);
+
+    const noTokens = new BigNumber(proposal.votes.no.totalTokens);
+
+    const noEquityLikeShareWeight = !proposal.votes.no
+      .totalEquityLikeShareWeight
+      ? new BigNumber(0)
+      : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight);
+
+    const yesTokens = new BigNumber(proposal.votes.yes.totalTokens);
+
+    const yesEquityLikeShareWeight = !proposal.votes.yes
+      .totalEquityLikeShareWeight
+      ? new BigNumber(0)
+      : new BigNumber(proposal.votes.yes.totalEquityLikeShareWeight);
+
+    const totalTokensVoted = yesTokens.plus(noTokens);
+
+    const totalEquityLikeShareWeight = yesEquityLikeShareWeight.plus(
+      noEquityLikeShareWeight
+    );
+
+    const yesPercentage = totalTokensVoted.isZero()
+      ? new BigNumber(0)
+      : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
+
+    const yesLPPercentage = totalEquityLikeShareWeight.isZero()
+      ? new BigNumber(0)
+      : yesEquityLikeShareWeight
+          .multipliedBy(100)
+          .dividedBy(totalEquityLikeShareWeight);
+
+    const noPercentage = totalTokensVoted.isZero()
+      ? new BigNumber(0)
+      : noTokens.multipliedBy(100).dividedBy(totalTokensVoted);
+
+    const noLPPercentage = totalEquityLikeShareWeight.isZero()
+      ? new BigNumber(0)
+      : noEquityLikeShareWeight
+          .multipliedBy(100)
+          .dividedBy(totalEquityLikeShareWeight);
+
+    const participationMet = totalTokensVoted.isGreaterThan(
+      totalSupply.multipliedBy(requiredParticipation)
+    );
+
+    const participationLPMet = requiredParticipationLP
+      ? totalEquityLikeShareWeight.isGreaterThan(
+          totalSupply.multipliedBy(requiredParticipationLP)
+        )
+      : false;
+
+    const majorityMet = yesPercentage.isGreaterThanOrEqualTo(
+      requiredMajorityPercentage
+    );
+
+    const majorityLPMet = yesLPPercentage.isGreaterThanOrEqualTo(
+      requiredMajorityLPPercentage
+    );
+
+    const totalTokensPercentage = totalTokensVoted
+      .multipliedBy(100)
+      .dividedBy(totalSupply);
+
+    const totalLPTokensPercentage = totalEquityLikeShareWeight
+      .multipliedBy(100)
+      .dividedBy(totalSupply);
+
+    const willPassByTokenVote =
+      participationMet &&
+      new BigNumber(yesPercentage).isGreaterThanOrEqualTo(
         requiredMajorityPercentage
-      ),
-      majorityLPMet: yesLPPercentage.isGreaterThanOrEqualTo(
+      );
+
+    const willPassByLPVote =
+      participationLPMet &&
+      new BigNumber(yesLPPercentage).isGreaterThanOrEqualTo(
         requiredMajorityLPPercentage
-      ),
-      totalTokensPercentage: totalTokensVoted
-        .multipliedBy(100)
-        .dividedBy(totalSupply),
-      totalLPTokensPercentage: totalEquityLikeShareWeight
-        .multipliedBy(100)
-        .dividedBy(totalSupply),
-      willPassByTokenVote:
-        participationMet &&
-        new BigNumber(yesPercentage).isGreaterThanOrEqualTo(
-          requiredMajorityPercentage
-        ),
-      willPassByLPVote:
-        participationLPMet &&
-        new BigNumber(yesLPPercentage).isGreaterThanOrEqualTo(
-          requiredMajorityLPPercentage
-        ),
-    }),
-    [
-      participationLPMet,
-      participationMet,
-      requiredMajorityLPPercentage,
+      );
+
+    return {
       requiredMajorityPercentage,
-      totalEquityLikeShareWeight,
-      totalSupply,
+      requiredMajorityLPPercentage,
+      noTokens,
+      noEquityLikeShareWeight,
+      yesTokens,
+      yesEquityLikeShareWeight,
       totalTokensVoted,
-      yesLPPercentage,
+      totalEquityLikeShareWeight,
       yesPercentage,
-    ]
-  );
+      yesLPPercentage,
+      noPercentage,
+      noLPPercentage,
+      participationMet,
+      participationLPMet,
+      majorityMet,
+      majorityLPMet,
+      totalTokensPercentage,
+      totalLPTokensPercentage,
+      willPassByTokenVote,
+      willPassByLPVote,
+    };
+  }, [
+    proposal.votes.no.totalEquityLikeShareWeight,
+    proposal.votes.no.totalTokens,
+    proposal.votes.yes.totalEquityLikeShareWeight,
+    proposal.votes.yes.totalTokens,
+    requiredMajority,
+    requiredMajorityLP,
+    requiredParticipation,
+    requiredParticipationLP,
+    totalSupply,
+  ]);
 
   return {
     willPassByTokenVote,
