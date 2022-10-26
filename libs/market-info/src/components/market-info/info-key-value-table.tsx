@@ -1,5 +1,14 @@
-import { addDecimalsFormatNumber, formatNumber, formatNumberPercentage, t } from '@vegaprotocol/react-helpers';
-import { KeyValueTable, KeyValueTableRow, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  formatNumberPercentage,
+  t,
+} from '@vegaprotocol/react-helpers';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import startCase from 'lodash/startCase';
 

@@ -1,9 +1,25 @@
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
-import { formatNumber, t, useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
-import { AccountType, Interval, MarketStateMapping, MarketTradingModeMapping } from '@vegaprotocol/types';
-import { Accordion, AsyncRenderer, ExternalLink, Link as UiToolkitLink, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  formatNumber,
+  t,
+  useDataProvider,
+  useYesterday,
+} from '@vegaprotocol/react-helpers';
+import {
+  AccountType,
+  Interval,
+  MarketStateMapping,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
+import {
+  Accordion,
+  AsyncRenderer,
+  ExternalLink,
+  Link as UiToolkitLink,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import pick from 'lodash/pick';
 import Link from 'next/link';
