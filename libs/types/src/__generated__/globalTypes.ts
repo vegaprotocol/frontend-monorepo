@@ -56,18 +56,6 @@ export enum ConditionOperator {
 }
 
 /**
- * Status of a liquidity provision order
- */
-export enum LiquidityProvisionStatus {
-  STATUS_ACTIVE = "STATUS_ACTIVE",
-  STATUS_CANCELLED = "STATUS_CANCELLED",
-  STATUS_PENDING = "STATUS_PENDING",
-  STATUS_REJECTED = "STATUS_REJECTED",
-  STATUS_STOPPED = "STATUS_STOPPED",
-  STATUS_UNDEPLOYED = "STATUS_UNDEPLOYED",
-}
-
-/**
  * The current state of a market
  */
 export enum MarketState {

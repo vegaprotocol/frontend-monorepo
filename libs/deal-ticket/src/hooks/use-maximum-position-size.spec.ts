@@ -14,7 +14,7 @@ const defaultMockMarketPositions = {
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
 const mockAccount: Account = {
-  __typename: 'Account',
+  __typename: 'AccountBalance',
   type: AccountType.ACCOUNT_TYPE_GENERAL,
   balance: '200000',
   asset: {

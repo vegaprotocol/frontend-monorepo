@@ -27,7 +27,7 @@ function generateAsset(): AssetFieldsFragment {
     },
     infrastructureFeeAccount: {
       balance: '1',
-      __typename: 'Account',
+      __typename: 'AccountBalance',
     },
   };
 }

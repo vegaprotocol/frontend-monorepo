@@ -6,7 +6,7 @@ import { getMetrics, rejoinPositionData } from './positions-data-providers';
 
 const accounts = [
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     asset: {
       __typename: 'Asset',
@@ -18,7 +18,7 @@ const accounts = [
     market: null,
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
     asset: {
       __typename: 'Asset',
@@ -40,7 +40,7 @@ const accounts = [
     },
   },
   {
-    __typename: 'Account',
+    __typename: 'AccountBalance',
     type: AccountType.ACCOUNT_TYPE_MARGIN,
     asset: {
       __typename: 'Asset',
