@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  formatNumber,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { DepositContainer } from '@vegaprotocol/deposits';

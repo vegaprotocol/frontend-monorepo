@@ -51,7 +51,6 @@ export const DealTicket = ({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
-  // console.log('setValue', setValue)
   const order = watch();
 
   const feeDetails = useFeeDealTicketDetails(order, market);
@@ -62,7 +61,6 @@ export const DealTicket = ({
     orderType: order.type,
     orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
-    order,
     estMargin: feeDetails.estMargin,
   });
   const isDisabled = transactionStatus === 'pending' || disabled;

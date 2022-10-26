@@ -33,8 +33,7 @@ export type ValidationProps = {
   orderType: Schema.OrderType;
   orderTimeInForce: Schema.OrderTimeInForce;
   fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
-  order: OrderSubmissionBody['orderSubmission'];
-  estMargin?: OrderMargin | null;
+  estMargin: OrderMargin | null;
 };
 
 export const marketTranslations = (marketState: MarketState) => {
@@ -51,7 +50,7 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-  order,
+  estMargin,
 }: ValidationProps): {
   message: React.ReactNode | string;
   isDisabled: boolean;
@@ -59,25 +58,11 @@ export const useOrderValidation = ({
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
-  const isInvalidOrderMargin = useOrderMarginValidation({ market, order });
-  // const validatedMargin = useMemo(() => <ValidateMargin market={market} order={order}/>, [market, order])
-  const invalidatedMargin = useMemo(
-    () => isInvalidOrderMargin && <ValidateMargin {...isInvalidOrderMargin} />,
-    [isInvalidOrderMargin]
-  );
-  console.log('validatedMargin', invalidatedMargin);
+  const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
 
   const { message, isDisabled } = useMemo(() => {
     if (!pubKey) {
       return { message: t('No public key selected'), isDisabled: true };
-    }
-
-    if (isInvalidOrderMargin) {
-      console.log('return it?');
-      return {
-        isDisabled: true,
-        message: invalidatedMargin,
-      };
     }
 
     if (
@@ -288,6 +273,13 @@ export const useOrderValidation = ({
       };
     }
 
+    if (isInvalidOrderMargin) {
+      return {
+        isDisabled: true,
+        message: <ValidateMargin {...isInvalidOrderMargin} />,
+      };
+    }
+
     if (
       [
         MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
@@ -313,8 +305,7 @@ export const useOrderValidation = ({
     fieldErrors?.price?.type,
     orderType,
     orderTimeInForce,
-    invalidatedMargin,
-    isInvalidOrderMargin
+    isInvalidOrderMargin,
   ]);
 
   return { message, isDisabled };
