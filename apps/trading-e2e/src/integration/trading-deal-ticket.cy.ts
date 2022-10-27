@@ -2,7 +2,6 @@ import {
   MarketState,
   MarketTradingMode,
   AuctionTrigger,
-  Schema as Types,
 } from '@vegaprotocol/types';
 import {
   generateEstimateOrder,
