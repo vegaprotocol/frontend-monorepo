@@ -16,6 +16,8 @@ import type { ProposalEventSubscription } from '@vegaprotocol/governance';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 
+const paramsDelay = 20;
+
 const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
     query: NETWORK_PARAMETERS_QUERY,
@@ -61,6 +63,7 @@ const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
       ],
     },
   },
+  delay: paramsDelay,
 };
 
 describe('Raw proposal form', () => {
@@ -166,6 +169,10 @@ describe('Raw proposal form', () => {
     );
     setup(mockSendTx);
 
+    await act(async () => {
+      jest.advanceTimersByTime(paramsDelay);
+    });
+
     const inputJSON = JSON.stringify({
       rationale: {
         description: 'Update governance.proposal.freeform.minVoterBalance',
@@ -182,8 +189,6 @@ describe('Raw proposal form', () => {
         enactmentTimestamp: Math.floor(getTime(addHours(new Date(), 3)) / 1000),
       },
     });
-
-    expect(await screen.findByTestId('proposal-data')).toBeTruthy();
 
     fireEvent.change(screen.getByTestId('proposal-data'), {
       target: { value: inputJSON },
@@ -225,6 +230,10 @@ describe('Raw proposal form', () => {
       })
     );
     setup(mockSendTx);
+
+    await act(async () => {
+      jest.advanceTimersByTime(paramsDelay);
+    });
 
     const inputJSON = '{}';
 
