@@ -53,7 +53,11 @@ export const DealTicket = ({
     defaultValues: getDefaultOrder(market),
   });
   const order = watch();
-  const { message, isDisabled: disabled, section: errorSection } = useOrderValidation({
+  const {
+    message,
+    isDisabled: disabled,
+    section: errorSection,
+  } = useOrderValidation({
     market,
     orderType: order.type,
     orderTimeInForce: order.timeInForce,
@@ -112,7 +116,7 @@ export const DealTicket = ({
         control={control}
         render={({ field }) => (
           <>
-          <TypeSelector value={field.value} onSelect={field.onChange} />
+            <TypeSelector value={field.value} onSelect={field.onChange} />
             {errorSection === constants.DEAL_TICKET_SECTION_TYPE && message}
           </>
         )}
