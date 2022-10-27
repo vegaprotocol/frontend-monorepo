@@ -2,8 +2,17 @@ import {
   MarketState,
   MarketTradingMode,
   AuctionTrigger,
+  Schema as Types,
 } from '@vegaprotocol/types';
+import {
+  generateEstimateOrder,
+  generateMarkPrice,
+  generatePartyBalance,
+  generatePartyMarketData,
+} from '../support/mocks/generate-fees';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { aliasQuery } from '@vegaprotocol/cypress';
+import { generatePositions } from '../support/mocks/generate-positions';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -439,5 +448,39 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Until the auction ends, you can only place GFA, GTT, or GTC limit orders'
     );
+  });
+});
+
+describe('margin required validation', { tags: '@regression' }, () => {
+  before(() => {
+    cy.mockTradingPage();
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
+      aliasQuery(req, 'MarketMarkPrice', generateMarkPrice());
+      aliasQuery(req, 'PartyBalance', generatePartyBalance());
+      aliasQuery(req, 'MarketPositions', generatePositions());
+      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+    });
+    cy.visit('/');
+    cy.visit('/markets/market-0');
+    connectVegaWallet();
+    cy.wait('@Market');
+  });
+
+  it('should display info and button for deposit', () => {
+    cy.getByTestId('place-order').should('be.disabled');
+    cy.getByTestId('dealticket-error-message').should(
+      'contain.text',
+      "You don't have enough margin available to open this position"
+    );
+    cy.getByTestId('dealticket-error-message').should(
+      'contain.text',
+      '0.01000 tBTC currently required, 0.00100 tBTC available'
+    );
+    cy.getByTestId('deal-ticket-deposit-dialog-button').click();
+    cy.getByTestId('dialog-content')
+      .find('h1')
+      .eq(0)
+      .should('have.text', 'Deposit');
   });
 });

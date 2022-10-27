@@ -4,6 +4,7 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { usePartyBalanceQuery, useSettlementAccount } from '../../hooks';
+import { useMemo } from 'react';
 
 interface Props {
   market: DealTicketMarketFragment;
@@ -36,6 +37,7 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
         margin: margin.toString(),
         id,
         symbol,
+        decimals: settlementAccount.asset.decimals || 0,
       };
     }
   }

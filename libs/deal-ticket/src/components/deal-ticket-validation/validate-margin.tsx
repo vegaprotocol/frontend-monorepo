@@ -9,9 +9,16 @@ interface Props {
   symbol: string;
   id: string;
   balance: string;
+  decimals: number;
 }
 
-export const ValidateMargin = ({ margin, symbol, id, balance }: Props) => {
+export const ValidateMargin = ({
+  margin,
+  symbol,
+  id,
+  balance,
+  decimals,
+}: Props) => {
   const [depositDialog, setDepositDialog] = useState(false);
   return (
     <>
@@ -23,9 +30,9 @@ export const ValidateMargin = ({ margin, symbol, id, balance }: Props) => {
           {t("You don't have enough margin available to open this position.")}
         </p>
         <p>
-          {`${formatNumber(margin)} ${symbol} ${t(
+          {`${formatNumber(margin, decimals)} ${symbol} ${t(
             'currently required'
-          )}, ${formatNumber(balance)} ${symbol} ${t('available')}`}
+          )}, ${formatNumber(balance, decimals)} ${symbol} ${t('available')}`}
         </p>
         <Button
           className="center mt-2"
