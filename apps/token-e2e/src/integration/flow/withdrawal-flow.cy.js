@@ -18,6 +18,7 @@ const completeWithdrawalButton = 'complete-withdrawal';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
+const truncatedWithdrawalEthAddress = '0xEe7D…22d94F';
 const formValidationError = 'input-error-text';
 const txTimeout = Cypress.env('txTimeout');
 
@@ -61,8 +62,8 @@ context(
         'Value is below minimum'
       );
       cy.getByTestId(selectAsset).select(usdtName);
-      cy.getByTestId(ethAddressInput).click().type('123');
       cy.getByTestId(amountInput).clear().click().type('10');
+      cy.getByTestId(ethAddressInput).click().type('123');
       cy.getByTestId(submitWithdrawalButton).click();
       cy.getByTestId(formValidationError).should(
         'have.text',
@@ -92,9 +93,9 @@ context(
       cy.getByTestId(withdrawalAssetSymbol).should('have.text', usdcSymbol);
       cy.getByTestId(withdrawalAmount).should('have.text', '100.00000');
       cy.getByTestId(withdrawalRecipient)
-        .should('have.text', '0xEe7D…22d94F')
+        .should('have.text', truncatedWithdrawalEthAddress)
         .and('have.attr', 'href')
-        .and('contain', '/address/0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F');
+        .and('contain', `/address/${Cypress.env('ethWalletPublicKey')}`);
       cy.getByTestId(withdrawFundsButton).click();
       // withdrawal complete
       cy.getByTestId(dialogTitle, txTimeout).should(
