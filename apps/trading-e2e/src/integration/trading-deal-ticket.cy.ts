@@ -3,15 +3,9 @@ import {
   MarketTradingMode,
   AuctionTrigger,
 } from '@vegaprotocol/types';
-import {
-  generateEstimateOrder,
-  generateMarkPrice,
-  generatePartyBalance,
-  generatePartyMarketData,
-} from '../support/mocks/generate-fees';
+import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generatePositions } from '../support/mocks/generate-positions';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
