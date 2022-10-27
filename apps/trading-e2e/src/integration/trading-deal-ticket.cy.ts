@@ -454,13 +454,16 @@ describe('margin required validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockGQL((req) => {
-      aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
-      aliasQuery(req, 'MarketMarkPrice', generateMarkPrice());
-      aliasQuery(req, 'PartyBalance', generatePartyBalance());
-      aliasQuery(req, 'MarketPositions', generatePositions());
-      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+      aliasQuery(
+        req,
+        'EstimateOrder',
+        generateEstimateOrder({
+          estimateOrder: {
+            marginLevels: { __typename: 'MarginLevels', initialLevel: '1000' },
+          },
+        })
+      );
     });
-    cy.visit('/');
     cy.visit('/markets/market-0');
     connectVegaWallet();
     cy.wait('@Market');

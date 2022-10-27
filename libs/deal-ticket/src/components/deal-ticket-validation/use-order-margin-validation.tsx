@@ -16,6 +16,7 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
   const { data: partyBalance } = usePartyBalanceQuery({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
+    fetchPolicy: 'no-cache',
   });
 
   const settlementAccount = useSettlementAccount(

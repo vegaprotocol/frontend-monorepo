@@ -61,7 +61,7 @@ export function createClient(base?: string) {
         keyFields: false,
       },
       Party: {
-        merge: true,
+        keyFields: false,
       },
       Fees: {
         keyFields: false,
