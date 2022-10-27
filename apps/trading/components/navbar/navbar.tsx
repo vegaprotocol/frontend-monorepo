@@ -9,6 +9,7 @@ import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
 import { useEffect, useState } from 'react';
+import testnetBg from '../../assets/green-cloud.png';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
@@ -38,14 +39,24 @@ export const Navbar = ({
     dark: navbarTheme === 'dark',
   });
 
-  const navbarClasses = classNames('flex items-stretch border-b px-4', {
-    'dark:bg-black dark:text-white border-default': navbarTheme !== 'yellow',
-    'bg-vega-yellow border-vega-yellow text-black': navbarTheme === 'yellow',
-  });
+  const isYellow = navbarTheme === 'yellow';
+  const navbarClasses = classNames(
+    'flex items-stretch border-b px-4 border-default',
+    {
+      'dark:bg-black dark:text-white': !isYellow,
+      'bg-vega-yellow text-black bg-right-top bg-no-repeat bg-contain':
+        isYellow,
+    }
+  );
 
   return (
     <div className={themeWrapperClasses}>
-      <div className={navbarClasses}>
+      <div
+        className={navbarClasses}
+        style={{
+          backgroundImage: isYellow ? `url("${testnetBg.src}")` : '',
+        }}
+      >
         <div className="flex gap-4 items-center">
           <Link href="/" passHref={true}>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
