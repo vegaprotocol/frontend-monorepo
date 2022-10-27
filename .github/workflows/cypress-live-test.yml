@@ -24,6 +24,7 @@ jobs:
           browser: chrome
           record: true
           baseUrl: ${{ github.event.inputs.url }}
+          project: ./apps/trading-e2e
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
