@@ -69,39 +69,3 @@ describe('home', { tags: '@regression' }, () => {
     });
   });
 });
-
-describe('market list', { tags: '@live' }, () => {
-  beforeEach(() => {
-    cy.log(`base url: `, Cypress.config('baseUrl') || 'no base url');
-    cy.visit('/');
-  });
-
-  it('shows the market list page', () => {
-    cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
-
-    // Overlay should be shown
-    cy.getByTestId(selectMarketOverlay).should('exist');
-    cy.contains('Select a market to get started').should('be.visible');
-
-    // I expect the market overlay table to contain at least one row
-    cy.getByTestId(selectMarketOverlay)
-      .get('table tr')
-      .should('have.length.greaterThan', 1);
-
-    // each market shown in overlay table contains content under the last price and change fields
-    cy.getByTestId(selectMarketOverlay)
-      .get('table tr')
-      .getByTestId('price')
-      .should('not.be.empty');
-  });
-
-  it('redirects to a default market', () => {
-    cy.getByTestId('dialog-close').click();
-    cy.getByTestId(selectMarketOverlay).should('not.exist');
-
-    // the choose market overlay is no longer showing
-    cy.contains('Select a market to get started').should('not.exist');
-    cy.contains('Loading...').should('not.exist');
-    cy.getByTestId('popover-trigger').should('not.be.empty');
-  });
-});

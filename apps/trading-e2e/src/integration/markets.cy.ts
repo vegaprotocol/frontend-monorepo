@@ -64,40 +64,6 @@ describe('markets table', { tags: '@smoke' }, () => {
   });
 });
 
-describe('markets table', { tags: '@live' }, () => {
-  beforeEach(() => {
-    cy.visit('/');
-  });
-
-  it('renders markets correctly', () => {
-    cy.get('[data-testid^="market-link-"]').should('not.be.empty');
-    cy.getByTestId('price').invoke('text').should('not.be.empty');
-    cy.getByTestId('settlement-asset').should('not.be.empty');
-    cy.getByTestId('price-change-percentage').should('not.be.empty');
-    cy.getByTestId('price-change').should('not.be.empty');
-    cy.getByTestId('sparkline-svg').should('be.visible');
-  });
-
-  it('renders market list drop down', () => {
-    openMarketDropDown();
-    cy.getByTestId('price').invoke('text').should('not.be.empty');
-    cy.getByTestId('trading-mode-col').should('not.be.empty');
-    cy.getByTestId('taker-fee').should('contain.text', '%');
-    cy.getByTestId('market-volume').should('not.be.empty');
-    cy.getByTestId('market-name').should('not.be.empty');
-  });
-
-  it('Able to select market from dropdown', () => {
-    cy.getByTestId('popover-trigger')
-      .invoke('text')
-      .then((marketName) => {
-        openMarketDropDown();
-        cy.get('[data-testid^=market-link').eq(1).click();
-        cy.getByTestId('popover-trigger').should('not.be.equal', marketName);
-      });
-  });
-});
-
 function openMarketDropDown() {
   cy.getByTestId('dialog-close').click();
   cy.getByTestId('popover-trigger').click();
