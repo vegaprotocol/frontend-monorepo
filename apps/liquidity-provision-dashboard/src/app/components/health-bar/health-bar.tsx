@@ -12,7 +12,30 @@ const marketTradingModeStyle = {
   [MarketTradingMode.TRADING_MODE_NO_TRADING]: 'none',
 };
 
-const COPY_CLASS = 'text-[8px] leading-[1.2em] font-medium';
+const Indicator = ({
+  backgroundColor,
+  opacity,
+}: {
+  backgroundColor?: string;
+  opacity?: number;
+}) => {
+  return (
+    <div
+      className="inline-block w-2 h-2 mt-1.5 mr-1 rounded-full bg-black"
+      style={{
+        opacity,
+        backgroundColor,
+      }}
+    />
+  );
+};
+
+const Remainder = () => (
+  <div className="bg-greys-light-200 h-[inherit] relative flex-1"></div>
+);
+
+const COPY_CLASS =
+  'text-sm font-medium whitespace-nowrap text-white font-alpha';
 
 const Tooltip = ({
   children,
@@ -24,27 +47,13 @@ const Tooltip = ({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-1/2 -translate-x-2/4 -translate-y-[120%] border border-[#bfccd6] py-0.5 px-2 flex-col z-10 bg-white group-hover:flex min-w-[65px]',
+        'absolute top-0 left-1/2 -translate-x-2/4 -translate-y-[80%] p-2 z-10 bg-greys-light-400 group-hover:flex rounded',
         {
           flex: isExpanded,
           hidden: !isExpanded,
         }
       )}
     >
-      <div
-        className="absolute w-0 h-0 translate-y-full translate-x-2/4 left-[calc(50% - 8px)] -bottom-px border-4"
-        style={{
-          left: 'calc(50% - 8px)',
-          borderColor: '#bfccd6 transparent transparent transparent',
-        }}
-      ></div>
-      <div
-        style={{
-          left: 'calc(50% - 8px)',
-          borderColor: 'white transparent transparent transparent',
-        }}
-        className="absolute bottom-0 w-0 h-0 translate-y-full translate-x-2/4 left-[calc(50% - 8px)] border-4"
-      ></div>
       {children}
     </div>
   );
@@ -62,17 +71,20 @@ const Target = ({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-1/2 -translate-x-2/4 px-1.5 group'
+        'absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5 group'
       )}
       style={{ left: `${targetPercent}%` }}
     >
       <div
-        className={classNames('health-target w-0.5 h-8 bg-black', {
-          'h-[72px]': isLarge,
-        })}
-      >
-        {children}
-      </div>
+        className={classNames(
+          'health-target w-0.5 bg-black group-hover:scale-x-150 group-hover:scale-y-108',
+          {
+            'h-6': !isLarge,
+            'h-12': isLarge,
+          }
+        )}
+      ></div>
+      {children}
     </div>
   );
 };
@@ -81,14 +93,14 @@ const Level = ({
   children,
   commitmentAmount,
   total,
-  index,
-  status,
+  backgroundColor,
+  opacity,
 }: {
   children: ReactNode;
-  index: number;
-  status: MarketTradingMode;
   commitmentAmount: number;
   total: number;
+  backgroundColor: string;
+  opacity: number;
 }) => {
   const width = new BigNumber(commitmentAmount)
     .div(total)
@@ -97,26 +109,26 @@ const Level = ({
 
   return (
     <div
-      className={classNames(`relative h-[inherit] w-full group`)}
+      className={classNames(`relative h-[inherit] w-full group min-w-[1px]`)}
       style={{
         width: `${width}%`,
-        opacity: 1 - 0.1 * index,
       }}
     >
       <div
-        className="relative w-full h-[inherit]"
+        className="relative w-full h-[inherit] group-hover:scale-y-150"
         style={{
-          opacity: 1 - 0.1 * index,
-          backgroundColor: marketTradingModeStyle[status],
+          opacity,
+          backgroundColor,
         }}
       ></div>
+
       {children}
     </div>
   );
 };
 
 const Full = () => (
-  <div className="bg-neutral-100 w-full h-[inherit] absolute bottom-0 left-0"></div>
+  <div className="bg-transparent w-full h-[inherit] absolute bottom-0 left-0"></div>
 );
 
 interface Levels {
@@ -168,36 +180,50 @@ export const HealthBar = ({
         >
           <Full />
 
-          <div className="health-bars h-[inherit] flex w-full">
+          <div className="health-bars h-[inherit] flex w-full gap-0.5">
             {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
-
+              const prevLevel = levels[index - 1]?.commitmentAmount;
+              const backgroundColor = marketTradingModeStyle[status];
+              const opacity = 1 - 0.1 * index;
               return (
                 <Level
-                  status={status}
                   commitmentAmount={commitmentAmount}
-                  index={index}
                   total={total}
+                  backgroundColor={backgroundColor}
+                  opacity={opacity}
                 >
                   <Tooltip isExpanded={isExpanded}>
-                    <span className={COPY_CLASS}>
-                      {fee}% {t('Fee')}
-                    </span>
-                    <span className={COPY_CLASS}>
-                      {addDecimalsFormatNumber(commitmentAmount, decimals)}
-                    </span>
+                    <Indicator
+                      backgroundColor={backgroundColor}
+                      opacity={opacity}
+                    />
+                    <div className="flex  flex-col">
+                      <span className={COPY_CLASS}>
+                        {fee}% {t('Fee')}
+                      </span>
+                      <span className={classNames(COPY_CLASS, 'opacity-60')}>
+                        {prevLevel
+                          ? addDecimalsFormatNumber(prevLevel, decimals)
+                          : '0'}{' '}
+                        - {addDecimalsFormatNumber(commitmentAmount, decimals)}
+                      </span>
+                    </div>
                   </Tooltip>
                 </Level>
               );
             })}
+            {(total !== committedNumber || levels.length === 0) && (
+              <Remainder />
+            )}
           </div>
         </div>
 
         <Target targetPercent={targetPercent} isLarge={isLarge}>
           <Tooltip isExpanded={isExpanded}>
-            <span className={COPY_CLASS}>{t('Target stake')}</span>
+            <Indicator />
             <span className={COPY_CLASS}>
-              {addDecimalsFormatNumber(target, decimals)}
+              {t('Target stake')} {addDecimalsFormatNumber(target, decimals)}
             </span>
           </Tooltip>
         </Target>
