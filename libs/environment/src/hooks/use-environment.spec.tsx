@@ -2,14 +2,14 @@
 // workaround based on: https://github.com/facebook/react/issues/11565
 import type { ComponentProps, ReactNode } from 'react';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import createClient from '../utils/apollo-client';
+import { createClient } from '@vegaprotocol/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks, ErrorType } from '../types';
 import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
 import { getErrorByType } from '../utils/validate-node';
 
-jest.mock('../utils/apollo-client');
+jest.mock('@vegaprotocol/apollo-client');
 
 jest.mock('react-dom', () => ({
   ...jest.requireActual('react-dom'),
