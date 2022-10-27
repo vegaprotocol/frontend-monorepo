@@ -54,4 +54,12 @@ export class CollateralBridge {
       signatures
     );
   }
+
+  is_stopped() {
+    return this.contract.is_stopped();
+  }
+
+  get_erc20_asset_pool_address() {
+    return this.contract.erc20_asset_pool_address();
+  }
 }
