@@ -22,6 +22,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
       );
       // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
       cy.get_asset_information().then((assets) => {
+        console.log(assets);
         const asset = assets[assetName];
         if (assets[assetName] !== undefined) {
           for (let i = 0; i < asset.decimals; i++) amount += '0';
@@ -33,7 +34,7 @@ export function addVegaWalletReceiveFaucetedAsset() {
               assert.include(
                 response,
                 `"success":true`,
-                'Ensuring curl command was succesfully undertaken'
+                'Ensuring curl command was successfully undertaken'
               );
             });
         } else {

@@ -22,6 +22,12 @@ import { generateMargins, generatePositions } from './mocks/generate-positions';
 import { generateStatistics } from './mocks/generate-statistics';
 import { generateTrades } from './mocks/generate-trades';
 import { generateWithdrawals } from './mocks/generate-withdrawals';
+import {
+  generateEstimateOrder,
+  generateMarkPrice,
+  generatePartyBalance,
+  generatePartyMarketData,
+} from './mocks/generate-fees';
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
@@ -96,6 +102,11 @@ const mockTradingPage = (
   aliasQuery(req, 'Candles', generateCandles());
   aliasQuery(req, 'Withdrawals', generateWithdrawals());
   aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+  aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
+  aliasQuery(req, 'MarketMarkPrice', generateMarkPrice());
+  aliasQuery(req, 'PartyBalance', generatePartyBalance());
+  aliasQuery(req, 'MarketPositions', generatePositions());
+  aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
 };
 
 declare global {

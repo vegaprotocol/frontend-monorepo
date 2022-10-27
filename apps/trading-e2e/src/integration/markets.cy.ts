@@ -62,10 +62,10 @@ describe('markets table', { tags: '@smoke' }, () => {
         .should('have.text', ExpectedSortedMarkets[i]);
     }
   });
-
-  function openMarketDropDown() {
-    cy.getByTestId('dialog-close').click();
-    cy.getByTestId('popover-trigger').click();
-    cy.contains('Loading market data...').should('not.exist');
-  }
 });
+
+function openMarketDropDown() {
+  cy.getByTestId('dialog-close').click();
+  cy.getByTestId('popover-trigger').click();
+  cy.contains('Loading market data...').should('not.exist');
+}
