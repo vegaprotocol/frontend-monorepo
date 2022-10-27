@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { MarketExpires } from './market-expires';
 
 describe('MarketExpires', () => {
@@ -13,7 +14,7 @@ describe('MarketExpires', () => {
         'settlement:20220525T1200',
       ];
       render(<MarketExpires tags={tags} />);
-      expect(screen.getByText('May 25')).toBeInTheDocument();
+      expect(screen.getByText('25/05/2022, 12:00:00')).toBeInTheDocument();
     });
 
     it('settlement-date:date', () => {
@@ -23,7 +24,7 @@ describe('MarketExpires', () => {
         'settlement-date:2022-04-25T1200',
       ];
       render(<MarketExpires tags={tags} />);
-      expect(screen.getByText('Apr 25')).toBeInTheDocument();
+      expect(screen.getByText('25/04/2022, 12:00:00')).toBeInTheDocument();
     });
 
     it('last one proper tag should matter', () => {
@@ -33,7 +34,7 @@ describe('MarketExpires', () => {
         'settlement-expiry-date:2022-03-25T12:00:00',
       ];
       render(<MarketExpires tags={tags} />);
-      expect(screen.getByText('Mar 25')).toBeInTheDocument();
+      expect(screen.getByText('25/03/2022, 12:00:00')).toBeInTheDocument();
     });
 
     it('when no proper tag nor date should be null', () => {

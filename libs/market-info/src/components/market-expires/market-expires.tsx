@@ -1,8 +1,7 @@
 import { getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
-import { format, isValid, parseISO } from 'date-fns';
+import { isValid, parseISO } from 'date-fns';
 
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
-export const EXPIRE_DATE_FORMAT = 'MMM dd';
 
 export const getMarketExpiryDate = (
   tags?: ReadonlyArray<string> | null
@@ -31,7 +30,7 @@ export const getMarketExpiryDateFormatted = (
 ): string | null => {
   if (tags) {
     const dateFound = getMarketExpiryDate(tags);
-    return dateFound ? format(dateFound, EXPIRE_DATE_FORMAT) : null;
+    return dateFound ? getDateTimeFormat().format(dateFound) : null;
   }
   return null;
 };
