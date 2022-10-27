@@ -65,8 +65,7 @@ export const AddSignerForm = () => {
         return;
       }
 
-      // @ts-ignore - ABI requires nonce to be a number (uint256)
-      await perform(bundle.newSigner, Number(bundle.nonce), bundle.signatures);
+      await perform(bundle.newSigner, bundle.nonce, bundle.signatures);
     } catch (err: unknown) {
       captureException(err);
     }
