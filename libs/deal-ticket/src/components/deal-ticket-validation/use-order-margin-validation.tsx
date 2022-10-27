@@ -23,22 +23,24 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
     partyBalance?.party?.accounts || [],
     AccountType.ACCOUNT_TYPE_GENERAL
   );
-  if (settlementAccount) {
-    const balance = toBigNum(
-      settlementAccount.balance || 0,
-      settlementAccount.asset.decimals || 0
-    );
-    const margin = toBigNum(estMargin?.margin || 0, 0);
-    const { id, symbol } = settlementAccount.asset;
-    if (balance.isZero() || balance.isLessThan(margin)) {
-      return {
-        balance: balance.toString(),
-        margin: margin.toString(),
-        id,
-        symbol,
-        decimals: settlementAccount.asset.decimals || 0,
-      };
-    }
+  const balance = settlementAccount
+    ? toBigNum(
+        settlementAccount.balance || 0,
+        settlementAccount.asset.decimals || 0
+      )
+    : toBigNum('0', 0);
+  const margin = toBigNum(estMargin?.margin || 0, 0);
+  const { id, symbol, decimals } =
+    market.tradableInstrument.instrument.product.settlementAsset;
+  if (balance.isZero() || balance.isLessThan(margin)) {
+    return {
+      balance: balance.toString(),
+      margin: margin.toString(),
+      id,
+      symbol,
+      decimals,
+    };
   }
+
   return false;
 };
