@@ -44,7 +44,11 @@ function AppBody({ Component, pageProps }: AppProps) {
       <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
-          <Navbar theme={theme} toggleTheme={toggleTheme} />
+          <Navbar
+            theme={theme}
+            toggleTheme={toggleTheme}
+            navbarTheme="yellow"
+          />
           <main data-testid={pageProps.page}>
             <Component {...pageProps} />
           </main>
