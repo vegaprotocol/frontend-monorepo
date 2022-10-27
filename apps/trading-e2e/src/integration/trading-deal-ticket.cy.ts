@@ -203,7 +203,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
 });
 
 describe('deal ticket validation', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
