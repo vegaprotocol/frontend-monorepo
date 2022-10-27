@@ -117,12 +117,23 @@ function setup(
 }
 
 describe('useOrderValidation', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('Returns empty string when given valid data', () => {
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(false);
+
     const { result } = setup();
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 
   it('Returns an error message when no keypair found', () => {
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(false);
     const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
