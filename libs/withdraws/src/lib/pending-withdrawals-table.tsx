@@ -153,7 +153,11 @@ export type CompleteCellProps = {
   complete: (withdrawal: WithdrawalFields) => void;
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => (
-  <Button size="xs" onClick={() => complete(data)}>
+  <Button
+    data-testid="complete-withdrawal"
+    size="xs"
+    onClick={() => complete(data)}
+  >
     {t('Complete withdrawal')}
   </Button>
 );

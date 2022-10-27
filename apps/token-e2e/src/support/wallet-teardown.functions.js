@@ -2,6 +2,8 @@ import {
   StakingBridge,
   Token,
   TokenVesting,
+  TokenFaucetable,
+  CollateralBridge,
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
@@ -18,6 +20,7 @@ const ethStakingBridgeContractAddress = Cypress.env(
 const ethProviderUrl = Cypress.env('ethProviderUrl');
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 const transactionTimeout = '90000';
+const Erc20BridgeAddress = '0x9708FF7510D4A7B9541e1699d15b53Ecb1AFDc54';
 
 before('Vega wallet teardown prep', function () {
   cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
@@ -37,6 +40,53 @@ before('Vega wallet teardown prep', function () {
     cy.wrap(new TokenVesting(vegaTokenContractAddress, signer), {
       log: false,
     }).as('vestingContract');
+  });
+});
+
+Cypress.Commands.add('deposit_asset', function (assetEthAddress) {
+  cy.get('@signer', { log: false }).then((signer) => {
+    // Approve asset
+    cy.wrap(
+      new TokenFaucetable(assetEthAddress, signer).approve(
+        Erc20BridgeAddress,
+        '10000000000'
+      )
+    )
+      .then((tx) => {
+        cy.wait_for_transaction(tx);
+      })
+      .then(() => {
+        cy.wrap(new CollateralBridge(Erc20BridgeAddress, signer), {
+          log: false,
+        }).then((bridge) => {
+          // Deposit asset into vega wallet
+          cy.wrap(
+            bridge.deposit_asset(
+              assetEthAddress,
+              '1000000000',
+              '0x' + vegaWalletPubKey
+            ),
+            { timeout: transactionTimeout, log: false }
+          ).then((tx) => {
+            cy.wait_for_transaction(tx);
+          });
+        });
+      });
+  });
+});
+
+Cypress.Commands.add('faucet_asset', function (assetEthAddress) {
+  cy.get('@signer', { log: false }).then((signer) => {
+    cy.wrap(new TokenFaucetable(assetEthAddress, signer), { log: false }).then(
+      (token) => {
+        cy.wrap(token.faucet(), {
+          timeout: transactionTimeout,
+          log: false,
+        }).then((tx) => {
+          cy.wait_for_transaction(tx);
+        });
+      }
+    );
   });
 });
 

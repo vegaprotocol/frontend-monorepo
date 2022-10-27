@@ -1,5 +1,5 @@
 import {
-  addDecimal,
+  addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
   negativeClassNames,
@@ -157,7 +157,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
                 : '-'
               : '';
             return (
-              prefix + addDecimal(value, data.market.positionDecimalPlaces)
+              prefix +
+              addDecimalsFormatNumber(value, data.market.positionDecimalPlaces)
             );
           }}
         />
@@ -204,10 +205,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             const size = new BigNumber(data.size);
             const remaining = new BigNumber(value);
             const fills = size.minus(remaining);
-            return `${addDecimal(fills.toString(), dps)}/${addDecimal(
-              size.toString(),
+            return `${addDecimalsFormatNumber(
+              fills.toString(),
               dps
-            )}`;
+            )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
           }}
         />
         <AgGridColumn
@@ -225,7 +226,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             ) {
               return '-';
             }
-            return addDecimal(value, data.market.decimalPlaces);
+            return addDecimalsFormatNumber(value, data.market.decimalPlaces);
           }}
         />
         <AgGridColumn

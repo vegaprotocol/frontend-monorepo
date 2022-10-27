@@ -1,31 +1,36 @@
-import { useMemo } from 'react';
+import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   formatNumber,
   t,
   useDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash, Accordion } from '@vegaprotocol/ui-toolkit';
-import pick from 'lodash/pick';
-import BigNumber from 'bignumber.js';
-import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   AccountType,
   Interval,
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { MarketInfoTable } from './info-key-value-table';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { generatePath } from 'react-router-dom';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { Link as UiToolkitLink } from '@vegaprotocol/ui-toolkit';
+import {
+  Accordion,
+  AsyncRenderer,
+  ExternalLink,
+  Link as UiToolkitLink,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
+import BigNumber from 'bignumber.js';
+import pick from 'lodash/pick';
 import Link from 'next/link';
-import { marketInfoDataProvider } from './market-info-data-provider';
-import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
-import type { MarketInfoQuery } from './__generated___/MarketInfo';
-import { getMarketExpiryDateFormatted } from '../market-expires';
+import { useMemo } from 'react';
+import { generatePath } from 'react-router-dom';
 
+import { getMarketExpiryDateFormatted } from '../market-expires';
+import { MarketInfoTable } from './info-key-value-table';
+import { marketInfoDataProvider } from './market-info-data-provider';
+
+import type { MarketInfoQuery } from './__generated___/MarketInfo';
 const Links = {
   PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
 };
@@ -271,7 +276,20 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
       title: t(`Price monitoring bound ${i + 1}`),
       content: (
-        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
+        <>
+          <MarketInfoTable
+            data={trigger}
+            decimalPlaces={market.decimalPlaces}
+            omits={['referencePrice', '__typename']}
+          />
+          <MarketInfoTable
+            data={{ referencePrice: trigger.referencePrice }}
+            decimalPlaces={
+              market?.tradableInstrument.instrument.product?.settlementAsset
+                .decimals
+            }
+          />
+        </>
       ),
     })),
     {

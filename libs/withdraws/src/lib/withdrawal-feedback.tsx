@@ -45,11 +45,13 @@ export const WithdrawalFeedback = ({
         <KeyValueTable>
           <KeyValueTableRow>
             <span>{t('Asset')}</span>
-            <span>{withdrawal.asset.symbol}</span>
+            <span data-testid="withdrawal-asset-symbol">
+              {withdrawal.asset.symbol}
+            </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
             <span>{t('Amount')}</span>
-            <span>
+            <span data-testid="withdrawal-amount">
               {addDecimalsFormatNumber(
                 withdrawal.amount,
                 withdrawal.asset.decimals
@@ -64,6 +66,7 @@ export const WithdrawalFeedback = ({
                 href={`${VEGA_EXPLORER_URL}/address/${withdrawal.details.receiverAddress}`}
                 rel="noreferrer"
                 className="underline"
+                data-testid="withdrawal-recipient"
               >
                 {truncateByChars(withdrawal.details.receiverAddress)}
               </a>
@@ -74,6 +77,7 @@ export const WithdrawalFeedback = ({
       {isAvailable ? (
         <Button
           disabled={withdrawal === null ? true : false}
+          data-testid="withdraw-funds"
           onClick={() => {
             if (withdrawal) {
               submitWithdraw(withdrawal.id);

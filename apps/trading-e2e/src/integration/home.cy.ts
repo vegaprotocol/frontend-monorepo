@@ -1,6 +1,8 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
+
+const selectMarketOverlay = 'select-market-list';
+
 describe('home', { tags: '@regression' }, () => {
-  const selectMarketOverlay = 'select-market-list';
   beforeEach(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
