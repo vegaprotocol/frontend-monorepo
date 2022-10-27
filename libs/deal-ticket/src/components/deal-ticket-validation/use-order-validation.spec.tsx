@@ -260,6 +260,7 @@ describe('useOrderValidation', () => {
       margin: '000,1',
       id: 'instrument-id',
       symbol: 'asset-symbol',
+      decimals: 5,
     };
     jest
       .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
