@@ -13,6 +13,55 @@ import {
 import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/governance';
 import type { ProposalEventSubscription } from '@vegaprotocol/governance';
+import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
+import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+
+const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+  request: {
+    query: NETWORK_PARAMETERS_QUERY,
+  },
+  result: {
+    data: {
+      networkParameters: [
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.asset.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateAsset.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.market.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateMarket.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.updateNetParam.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'governance.proposal.freeform.minProposerBalance',
+          value: '1',
+        },
+        {
+          __typename: 'NetworkParameter',
+          key: 'spam.protection.proposal.min.tokens',
+          value: '1000000000000000000',
+        },
+      ],
+    },
+  },
+};
 
 describe('Raw proposal form', () => {
   const pubKey = '0x123';
@@ -47,7 +96,9 @@ describe('Raw proposal form', () => {
   const setup = (mockSendTx = jest.fn()) => {
     return render(
       <AppStateProvider>
-        <MockedProvider mocks={[mockProposalEvent]}>
+        <MockedProvider
+          mocks={[rawProposalNetworkParamsQueryMock, mockProposalEvent]}
+        >
           <VegaWalletContext.Provider
             value={
               {
@@ -74,6 +125,8 @@ describe('Raw proposal form', () => {
   it('handles validation', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve());
     setup(mockSendTx);
+
+    expect(await screen.findByTestId('proposal-submit')).toBeTruthy();
     await act(async () => {
       fireEvent.click(screen.getByTestId('proposal-submit'));
     });
@@ -129,6 +182,9 @@ describe('Raw proposal form', () => {
         enactmentTimestamp: Math.floor(getTime(addHours(new Date(), 3)) / 1000),
       },
     });
+
+    expect(await screen.findByTestId('proposal-data')).toBeTruthy();
+
     fireEvent.change(screen.getByTestId('proposal-data'), {
       target: { value: inputJSON },
     });
@@ -171,6 +227,9 @@ describe('Raw proposal form', () => {
     setup(mockSendTx);
 
     const inputJSON = '{}';
+
+    expect(await screen.findByTestId('proposal-data')).toBeTruthy();
+
     fireEvent.change(screen.getByTestId('proposal-data'), {
       target: { value: inputJSON },
     });
