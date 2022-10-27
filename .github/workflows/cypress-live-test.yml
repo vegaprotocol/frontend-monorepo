@@ -1,0 +1,30 @@
+name: Cypress Console tests -- live environment
+
+# This workflow runs using provided url
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Url'
+        required: true
+        type: string
+
+jobs:
+  cypress-run:
+    name: Run Cypress Trading tests -- live environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v4
+        with:
+          browser: chrome
+          record: true
+          baseUrl: ${{ github.event.inputs.url }}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          grepTags: '@live'
