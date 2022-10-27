@@ -42,7 +42,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_metadata {
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount {
-  __typename: "Account";
+  __typename: "AccountBalance";
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
@@ -286,7 +286,7 @@ export interface MarketsQuery_markets_accounts_asset {
 }
 
 export interface MarketsQuery_markets_accounts {
-  __typename: "Account";
+  __typename: "AccountBalance";
   /**
    * Asset, the 'currency'
    */

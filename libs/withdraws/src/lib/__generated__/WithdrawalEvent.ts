@@ -10,7 +10,7 @@ import { WithdrawalStatus, AssetStatus } from "@vegaprotocol/types";
 // ====================================================
 
 export interface WithdrawalEvent_busEvents_event_TimeUpdate {
-  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Order" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "OracleSpec" | "LiquidityProvision";
+  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Order" | "Trade" | "AccountEvent" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "OracleSpec" | "LiquidityProvision" | "TransactionResult";
 }
 
 export interface WithdrawalEvent_busEvents_event_Withdrawal_asset_source_BuiltinAsset {

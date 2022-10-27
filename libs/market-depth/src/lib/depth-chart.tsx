@@ -7,7 +7,7 @@ import {
   ThemeContext,
   getNumberFormat,
 } from '@vegaprotocol/react-helpers';
-import dataProvider from './market-depth-provider';
+import { marketDepthProvider } from './market-depth-provider';
 import {
   useCallback,
   useEffect,
@@ -19,10 +19,9 @@ import {
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import type { MarketData } from '@vegaprotocol/market-list';
 import type {
-  MarketDepthSubscription_marketsDepthUpdate,
-  MarketDepthSubscription_marketsDepthUpdate_sell,
-  MarketDepthSubscription_marketsDepthUpdate_buy,
-} from './__generated__/MarketDepthSubscription';
+  MarketDepthUpdateSubscription,
+  PriceLevelFieldsFragment,
+} from './__generated___/MarketDepth';
 import type { DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
 
@@ -42,8 +41,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const dataRef = useRef<DepthData | null>(null);
   const marketDataRef = useRef<MarketData | null>(null);
   const deltaRef = useRef<{
-    sell: MarketDepthSubscription_marketsDepthUpdate_sell[];
-    buy: MarketDepthSubscription_marketsDepthUpdate_buy[];
+    sell: PriceLevelFieldsFragment[];
+    buy: PriceLevelFieldsFragment[];
   }>({
     sell: [],
     buy: [],
@@ -93,7 +92,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     ({
       delta: deltas,
     }: {
-      delta?: MarketDepthSubscription_marketsDepthUpdate[];
+      delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'];
     }) => {
       if (!dataRef.current) {
         return false;
@@ -116,7 +115,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   );
 
   const { data, error, loading } = useDataProvider({
-    dataProvider,
+    dataProvider: marketDepthProvider,
     update,
     variables,
   });

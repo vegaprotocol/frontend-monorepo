@@ -12,7 +12,7 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import { Side } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 interface Props {
   partyId: string;
@@ -118,13 +118,13 @@ const useColumnDefinitions = ({ partyId }: Props) => {
             const taker = t('Taker');
             const maker = t('Maker');
             if (data?.buyer.id === partyId) {
-              if (value === Side.SIDE_BUY) {
+              if (value === Schema.Side.SIDE_BUY) {
                 return taker;
               } else {
                 return maker;
               }
             } else if (data?.seller.id === partyId) {
-              if (value === Side.SIDE_SELL) {
+              if (value === Schema.Side.SIDE_SELL) {
                 return taker;
               } else {
                 return maker;

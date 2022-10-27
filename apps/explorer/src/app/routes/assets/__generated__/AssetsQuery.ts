@@ -36,7 +36,7 @@ export interface AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccoun
 }
 
 export interface AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount {
-  __typename: "Account";
+  __typename: "AccountBalance";
   /**
    * Account type (General, Margin, etc)
    */
@@ -76,7 +76,7 @@ export interface AssetsQuery_assetsConnection_edges_node {
   /**
    * The infrastructure fee account for this asset
    */
-  infrastructureFeeAccount: AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount;
+  infrastructureFeeAccount: AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount | null;
 }
 
 export interface AssetsQuery_assetsConnection_edges {

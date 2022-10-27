@@ -294,7 +294,7 @@ context(
         );
 
         cy.get('[data-testid="manage-vega-wallet"]').click();
-        cy.get('[data-testid="select-keypair-button"]').click();
+        cy.get('[data-testid="select-keypair-button"]').eq(0).click();
         cy.get(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey2')
@@ -314,7 +314,7 @@ context(
       after(
         'teardown environment to prevent test data bleeding into other tests',
         function () {
-          if (Cypress.env('CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS')) {
+          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
             cy.restart_vegacapsule_network();
           }
         }

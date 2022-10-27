@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
+import { ProposalState, ProposalRejectionReason, PropertyKeyType, ConditionOperator, VoteValue } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Proposal
@@ -40,9 +40,135 @@ export interface Proposal_proposal_terms_change_NewFreeform {
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
   __typename: "Asset";
   /**
+   * The ID of the asset
+   */
+  id: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+  /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
+  /**
+   * The minimum economically meaningful amount in the asset
+   */
+  quantum: string;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters {
+  __typename: "Filter";
+  /**
+   * The oracle data property key targeted by the filter.
+   */
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_key;
+  /**
+   * The conditions that should be matched by the data to be
+   * considered of interest.
+   */
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_conditions[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData {
+  __typename: "OracleSpecConfiguration";
+  /**
+   * The list of authorised public keys that signed the data for this
+   * oracle. All the public keys in the oracle data should be contained in these
+   * public keys.
+   */
+  pubKeys: string[] | null;
+  /**
+   * Filters describes which oracle data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters {
+  __typename: "Filter";
+  /**
+   * The oracle data property key targeted by the filter.
+   */
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_key;
+  /**
+   * The conditions that should be matched by the data to be
+   * considered of interest.
+   */
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_conditions[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination {
+  __typename: "OracleSpecConfiguration";
+  /**
+   * The list of authorised public keys that signed the data for this
+   * oracle. All the public keys in the oracle data should be contained in these
+   * public keys.
+   */
+  pubKeys: string[] | null;
+  /**
+   * Filters describes which oracle data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecBinding {
+  __typename: "OracleSpecToFutureBinding";
+  settlementDataProperty: string;
+  tradingTerminationProperty: string;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct {
@@ -51,6 +177,27 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
    * Product asset
    */
   settlementAsset: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
+  /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
+  /**
+   * The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle
+   */
+  settlementDataDecimals: number;
+  /**
+   * Describes the oracle data that an instrument wants to get from the oracle engine for settlement data.
+   */
+  oracleSpecForSettlementData: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData;
+  /**
+   * Describes the oracle data that an instrument wants to get from the oracle engine for trading termination.
+   */
+  oracleSpecForTradingTermination: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination;
+  /**
+   * OracleSpecToFutureBinding tells on which property oracle data should be
+   * used as settlement data.
+   */
+  oracleSpecBinding: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecBinding;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument {
@@ -72,14 +219,262 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument {
 export interface Proposal_proposal_terms_change_NewMarket {
   __typename: "NewMarket";
   /**
+   * Decimal places used for the new market, sets the smallest price increment on the book
+   */
+  decimalPlaces: number;
+  /**
+   * Metadata for this instrument, tags
+   */
+  metadata: string[] | null;
+  /**
    * New market instrument configuration
    */
   instrument: Proposal_proposal_terms_change_NewMarket_instrument;
 }
 
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters {
+  __typename: "Filter";
+  /**
+   * The oracle data property key targeted by the filter.
+   */
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_key;
+  /**
+   * The conditions that should be matched by the data to be
+   * considered of interest.
+   */
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_conditions[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData {
+  __typename: "OracleSpecConfiguration";
+  /**
+   * The list of authorised public keys that signed the data for this
+   * oracle. All the public keys in the oracle data should be contained in these
+   * public keys.
+   */
+  pubKeys: string[] | null;
+  /**
+   * Filters describes which oracle data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters {
+  __typename: "Filter";
+  /**
+   * The oracle data property key targeted by the filter.
+   */
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_key;
+  /**
+   * The conditions that should be matched by the data to be
+   * considered of interest.
+   */
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_conditions[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination {
+  __typename: "OracleSpecConfiguration";
+  /**
+   * The list of authorised public keys that signed the data for this
+   * oracle. All the public keys in the oracle data should be contained in these
+   * public keys.
+   */
+  pubKeys: string[] | null;
+  /**
+   * Filters describes which oracle data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecBinding {
+  __typename: "OracleSpecToFutureBinding";
+  settlementDataProperty: string;
+  tradingTerminationProperty: string;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product {
+  __typename: "UpdateFutureProduct";
+  quoteName: string;
+  oracleSpecForSettlementData: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData;
+  oracleSpecForTradingTermination: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination;
+  oracleSpecBinding: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecBinding;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument {
+  __typename: "UpdateInstrumentConfiguration";
+  code: string;
+  product: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_priceMonitoringParameters_triggers {
+  __typename: "PriceMonitoringTrigger";
+  /**
+   * Price monitoring projection horizon τ in seconds (> 0).
+   */
+  horizonSecs: number;
+  /**
+   * Price monitoring probability level p. (>0 and < 1)
+   */
+  probability: number;
+  /**
+   * Price monitoring auction extension duration in seconds should the price
+   * breach its theoretical level over the specified horizon at the specified
+   * probability level (> 0)
+   */
+  auctionExtensionSecs: number;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_priceMonitoringParameters {
+  __typename: "PriceMonitoringParameters";
+  /**
+   * The list of triggers for this price monitoring
+   */
+  triggers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_priceMonitoringParameters_triggers[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_liquidityMonitoringParameters_targetStakeParameters {
+  __typename: "TargetStakeParameters";
+  /**
+   * Specifies length of time window expressed in seconds for target stake calculation
+   */
+  timeWindow: number;
+  /**
+   * Specifies scaling factors used in target stake calculation
+   */
+  scalingFactor: number;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_liquidityMonitoringParameters {
+  __typename: "LiquidityMonitoringParameters";
+  /**
+   * Specifies the triggering ratio for entering liquidity auction
+   */
+  triggeringRatio: number;
+  /**
+   * Specifies parameters related to target stake calculation
+   */
+  targetStakeParameters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_liquidityMonitoringParameters_targetStakeParameters;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketSimpleRiskModel_simple {
+  __typename: "SimpleRiskModelParams";
+  /**
+   * Risk factor for long
+   */
+  factorLong: number;
+  /**
+   * Risk factor for short
+   */
+  factorShort: number;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketSimpleRiskModel {
+  __typename: "UpdateMarketSimpleRiskModel";
+  simple: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketSimpleRiskModel_simple | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel_logNormal_params {
+  __typename: "LogNormalModelParams";
+  /**
+   * R parameter
+   */
+  r: number;
+  /**
+   * Sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
+   */
+  sigma: number;
+  /**
+   * Mu parameter, annualised growth rate of the underlying asset
+   */
+  mu: number;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel_logNormal {
+  __typename: "LogNormalRiskModel";
+  /**
+   * Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1
+   */
+  riskAversionParameter: number;
+  /**
+   * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
+   */
+  tau: number;
+  /**
+   * Parameters for the log normal risk model
+   */
+  params: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel_logNormal_params;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel {
+  __typename: "UpdateMarketLogNormalRiskModel";
+  logNormal: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel_logNormal | null;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketSimpleRiskModel | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration {
+  __typename: "UpdateMarketConfiguration";
+  instrument: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument;
+  metadata: (string | null)[] | null;
+  priceMonitoringParameters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_priceMonitoringParameters;
+  liquidityMonitoringParameters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_liquidityMonitoringParameters;
+  riskParameters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters;
+}
+
 export interface Proposal_proposal_terms_change_UpdateMarket {
   __typename: "UpdateMarket";
   marketId: string;
+  updateMarketConfiguration: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration;
 }
 
 export interface Proposal_proposal_terms_change_NewAsset_source_BuiltinAsset {
@@ -96,6 +491,17 @@ export interface Proposal_proposal_terms_change_NewAsset_source_ERC20 {
    * The address of the ERC20 contract
    */
   contractAddress: string;
+  /**
+   * The lifetime limits deposit per address
+   * Note: this is a temporary measure that can be changed by governance
+   */
+  lifetimeLimit: string;
+  /**
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
+   */
+  withdrawThreshold: string;
 }
 
 export type Proposal_proposal_terms_change_NewAsset_source = Proposal_proposal_terms_change_NewAsset_source_BuiltinAsset | Proposal_proposal_terms_change_NewAsset_source_ERC20;
@@ -110,6 +516,14 @@ export interface Proposal_proposal_terms_change_NewAsset {
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
+  /**
+   * The precision of the asset
+   */
+  decimals: number;
+  /**
+   * The minimum economically meaningful amount of this specific asset
+   */
+  quantum: string;
   /**
    * The source of the new asset
    */
@@ -137,12 +551,13 @@ export interface Proposal_proposal_terms_change_UpdateAsset_source {
   __typename: "UpdateERC20";
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for alpha mainnet
+   * Note: this is a temporary measure that can be changed by governance
    */
   lifetimeLimit: string;
   /**
-   * The maximum allowed per withdrawal
-   * Note: this is a temporary measure for alpha mainnet
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;
 }

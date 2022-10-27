@@ -14,6 +14,13 @@ export const generateDealTicketQuery = (
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      fees: {
+        factors: {
+          makerFee: '0.0002',
+          infrastructureFee: '0.0005',
+          liquidityFee: '0.0005',
+        },
+      },
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {

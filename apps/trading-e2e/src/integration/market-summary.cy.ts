@@ -3,7 +3,6 @@ import {
   MarketState,
   MarketTradingMode,
 } from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
 
 const marketSummaryBlock = 'header-summary';
 const marketExpiry = 'market-expiry';
@@ -19,14 +18,11 @@ const itemValue = 'item-value';
 
 describe('Market trading page', () => {
   before(() => {
-    cy.mockGQL((req) => {
-      mockTradingPage(
-        req,
-        MarketState.STATE_ACTIVE,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
-      );
-    });
+    cy.mockTradingPage(
+      MarketState.STATE_ACTIVE,
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+    );
     cy.mockGQLSubscription();
     cy.visit('/markets/market-0');
     cy.wait('@MarketData');
@@ -71,7 +67,7 @@ describe('Market trading page', () => {
     it('must see market volume', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketVolume).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Volume');
+          cy.getByTestId(itemHeader).should('have.text', 'Volume (24h)');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });

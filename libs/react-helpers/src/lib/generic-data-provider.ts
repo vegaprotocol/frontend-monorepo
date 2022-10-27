@@ -7,7 +7,7 @@ import type {
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 export interface UpdateDelta<Delta> {
   delta?: Delta;
@@ -35,7 +35,7 @@ export interface Load<Data> {
   (start?: number, end?: number): Promise<Data | null>;
 }
 
-type Pagination = PaginationWithoutSkip & {
+type Pagination = Schema.Pagination & {
   skip?: number;
 };
 
@@ -94,6 +94,14 @@ interface GetDelta<SubscriptionData, Delta> {
   (subscriptionData: SubscriptionData, variables?: OperationVariables): Delta;
 }
 
+export type Node = { id: string };
+export type Cursor = {
+  cursor?: string | null;
+};
+export interface Edge<T extends Node> extends Cursor {
+  node: T;
+}
+
 export function defaultAppend<Data>(
   data: Data | null,
   insertionData: Data | null,
@@ -104,7 +112,7 @@ export function defaultAppend<Data>(
   if (data && insertionData && insertionPageInfo) {
     if (!(data instanceof Array) || !(insertionData instanceof Array)) {
       throw new Error(
-        'data needs to be instance of { cursor: string }[] when using pagination'
+        'data needs to be instance of Edge[] when using pagination'
       );
     }
     if (pagination?.after) {
@@ -220,9 +228,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
       if (!start) {
         paginationVariables.after = undefined;
       } else if (data && data[start - 1]) {
-        paginationVariables.after = (
-          data[start - 1] as { cursor: string }
-        ).cursor;
+        paginationVariables.after = (data[start - 1] as Cursor).cursor;
       } else {
         let skip = 1;
         while (!data[start - 1 - skip] && skip <= start) {
@@ -232,9 +238,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
         if (skip === start) {
           paginationVariables.after = undefined;
         } else {
-          paginationVariables.after = (
-            data[start - 1 - skip] as { cursor: string }
-          ).cursor;
+          paginationVariables.after = (data[start - 1 - skip] as Cursor).cursor;
         }
       }
     } else if (!pageInfo.hasNextPage) {
@@ -282,7 +286,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
       if (data && pagination) {
         if (!(data instanceof Array)) {
           throw new Error(
-            'data needs to be instance of { cursor: string }[] when using pagination'
+            'data needs to be instance of Edge[] when using pagination'
           );
         }
         pageInfo = pagination.getPageInfo(res.data);
@@ -493,26 +497,35 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
  */
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
+export type DerivedPart = Parameters<DependencyUpdateCallback>['0'];
 export type CombineDerivedData<Data> = (
-  data: Parameters<DependencyUpdateCallback>['0']['data'][],
+  data: DerivedPart['data'][],
   variables?: OperationVariables
 ) => Data | null;
 
-export type CombineDerivedDelta<Delta> = (
-  parts: Parameters<DependencyUpdateCallback>['0'][],
+export type CombineDerivedDelta<Data, Delta> = (
+  data: Data,
+  parts: DerivedPart[],
   variables?: OperationVariables
 ) => Delta | undefined;
+
+export type CombineInsertionData<Data> = (
+  data: Data,
+  parts: DerivedPart[],
+  variables?: OperationVariables
+) => Data | undefined;
 
 function makeDerivedDataProviderInternal<Data, Delta>(
   dependencies: DependencySubscribe[],
   combineData: CombineDerivedData<Data>,
-  combineDelta?: CombineDerivedDelta<Delta>
+  combineDelta?: CombineDerivedDelta<Data, Delta>,
+  combineInsertionData?: CombineInsertionData<Data>
 ): Subscribe<Data, Delta> {
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
   let client: ApolloClient<object>;
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   let variables: OperationVariables | undefined;
-  const parts: Parameters<DependencyUpdateCallback>['0'][] = [];
+  const parts: DerivedPart[] = [];
   let data: Data | null = null;
   let error: Error | undefined;
   let loading = true;
@@ -541,7 +554,8 @@ function makeDerivedDataProviderInternal<Data, Delta>(
   const combine = (updatedPartIndex: number) => {
     let delta: Delta | undefined;
     let isUpdate = false;
-    const isInsert = false;
+    let isInsert = false;
+    let insertionData: Data | undefined;
     let newError: Error | undefined;
     let newLoading = false;
     let newLoaded = true;
@@ -558,17 +572,6 @@ function makeDerivedDataProviderInternal<Data, Delta>(
           variables
         )
       : data;
-    if (newLoaded) {
-      const updatedPart = parts[updatedPartIndex];
-      if (updatedPart.isUpdate) {
-        isUpdate = true;
-        if (updatedPart.delta && combineDelta) {
-          delta = combineDelta(parts, variables);
-        }
-        delete updatedPart.isUpdate;
-        delete updatedPart.delta;
-      }
-    }
     if (
       newLoading !== loading ||
       newError !== error ||
@@ -579,10 +582,30 @@ function makeDerivedDataProviderInternal<Data, Delta>(
       error = newError;
       loaded = newLoaded;
       data = newData;
+      if (newLoaded) {
+        const updatedPart = parts[updatedPartIndex];
+        if (updatedPart.isUpdate) {
+          isUpdate = true;
+          if (updatedPart.delta && combineDelta && data) {
+            delta = combineDelta(data, parts, variables);
+          }
+          delete updatedPart.isUpdate;
+          delete updatedPart.delta;
+        }
+        if (updatedPart.isInsert) {
+          isInsert = updatedPartIndex === 0;
+          if (updatedPart.insertionData && combineInsertionData && data) {
+            insertionData = combineInsertionData(data, parts, variables);
+          }
+          delete updatedPart.insertionData;
+          delete updatedPart.isInsert;
+        }
+      }
       notifyAll({
         isUpdate,
         isInsert,
         delta,
+        insertionData,
       });
     }
   };
@@ -641,10 +664,16 @@ function makeDerivedDataProviderInternal<Data, Delta>(
 export function makeDerivedDataProvider<Data, Delta>(
   dependencies: DependencySubscribe[],
   combineData: CombineDerivedData<Data>,
-  combineDelta?: CombineDerivedDelta<Delta>
+  combineDelta?: CombineDerivedDelta<Data, Delta>,
+  combineInsertionData?: CombineInsertionData<Data>
 ): Subscribe<Data, Delta> {
   const getInstance = memoize<Data, Delta>(() =>
-    makeDerivedDataProviderInternal(dependencies, combineData, combineDelta)
+    makeDerivedDataProviderInternal(
+      dependencies,
+      combineData,
+      combineDelta,
+      combineInsertionData
+    )
   );
   return (callback, client, variables) =>
     getInstance(variables)(callback, client, variables);

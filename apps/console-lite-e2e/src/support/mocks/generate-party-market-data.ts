@@ -8,7 +8,7 @@ export const generatePartyMarketData = () => {
           balance: '1200000',
           asset: { id: 'fBTC', decimals: 5, __typename: 'Asset' },
           market: null,
-          __typename: 'Account',
+          __typename: 'AccountBalance',
         },
       ],
       marginsConnection: { edges: null, __typename: 'MarginConnection' },

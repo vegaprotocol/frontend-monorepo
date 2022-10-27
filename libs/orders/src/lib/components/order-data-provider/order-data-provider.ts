@@ -1,94 +1,44 @@
 import produce from 'immer';
-import { gql } from '@apollo/client';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
+  paginatedCombineDelta as combineDelta,
+  paginatedCombineInsertionData as combineInsertionData,
 } from '@vegaprotocol/react-helpers';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
-import type { PageInfo } from '@vegaprotocol/react-helpers';
+import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
 import type {
-  Orders,
-  Orders_party_ordersConnection_edges,
-  Orders_party_ordersConnection_edges_node,
-  Orders_party_ordersConnection_edges_node_liquidityProvision,
-  OrderSub,
-  OrderSub_orders,
-} from '../';
+  OrderFieldsFragment,
+  OrdersQuery,
+  OrdersUpdateSubscription,
+} from './__generated___/orders';
+import { OrdersDocument, OrdersUpdateDocument } from './__generated___/orders';
 
-export const ORDERS_QUERY = gql`
-  query Orders($partyId: ID!, $pagination: Pagination) {
-    party(id: $partyId) {
-      id
-      ordersConnection(pagination: $pagination) {
-        edges {
-          node {
-            id
-            market {
-              id
-            }
-            type
-            side
-            size
-            status
-            rejectionReason
-            price
-            timeInForce
-            remaining
-            expiresAt
-            createdAt
-            updatedAt
-            liquidityProvision {
-              __typename
-            }
-            peggedOrder {
-              __typename
-            }
-          }
-          cursor
-        }
-        pageInfo {
-          startCursor
-          endCursor
-          hasNextPage
-          hasPreviousPage
-        }
-      }
-    }
-  }
-`;
+export type Order = Omit<OrderFieldsFragment, 'market'> & {
+  market?: Market;
+};
+export type OrderEdge = Edge<Order>;
 
-export const ORDERS_SUB = gql`
-  subscription OrderSub($partyId: ID!) {
-    orders(partyId: $partyId) {
-      id
-      marketId
-      type
-      side
-      size
-      status
-      rejectionReason
-      price
-      timeInForce
-      remaining
-      expiresAt
-      createdAt
-      updatedAt
-      liquidityProvisionId
-      peggedOrder {
-        __typename
-      }
-    }
-  }
-`;
+const getData = (responseData: OrdersQuery) =>
+  responseData?.party?.ordersConnection?.edges || null;
+
+const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
+  subscriptionData.orders || [];
+
+const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
+  responseData.party?.ordersConnection?.pageInfo || null;
 
 export const update = (
-  data: Orders_party_ordersConnection_edges[],
-  delta: OrderSub_orders[]
+  data: ReturnType<typeof getData>,
+  delta: ReturnType<typeof getDelta>
 ) => {
+  if (!data) {
+    return data;
+  }
   return produce(data, (draft) => {
     // A single update can contain the same order with multiple updates, so we need to find
     // the latest version of the order and only update using that
@@ -112,12 +62,13 @@ export const update = (
         const { marketId, liquidityProvisionId, ...order } = node;
 
         // If there is a liquidity provision id add the object to the resulting order
-        const liquidityProvision: Orders_party_ordersConnection_edges_node_liquidityProvision | null =
-          liquidityProvisionId
-            ? {
-                __typename: 'LiquidityProvision',
-              }
-            : null;
+        const liquidityProvision:
+          | OrderFieldsFragment['liquidityProvision']
+          | null = liquidityProvisionId
+          ? {
+              __typename: 'LiquidityProvision',
+            }
+          : null;
 
         draft.unshift({
           node: {
@@ -137,27 +88,9 @@ export const update = (
   });
 };
 
-export type Order = Omit<Orders_party_ordersConnection_edges_node, 'market'> & {
-  market?: Market;
-};
-export type OrderEdge = {
-  node: Order;
-  cursor: Orders_party_ordersConnection_edges['cursor'];
-};
-
-const getData = (
-  responseData: Orders
-): Orders_party_ordersConnection_edges[] | null =>
-  responseData?.party?.ordersConnection?.edges || null;
-
-const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
-
-const getPageInfo = (responseData: Orders): PageInfo | null =>
-  responseData.party?.ordersConnection?.pageInfo || null;
-
 export const ordersProvider = makeDataProvider({
-  query: ORDERS_QUERY,
-  subscriptionQuery: ORDERS_SUB,
+  query: OrdersDocument,
+  subscriptionQuery: OrdersUpdateDocument,
   update,
   getData,
   getDelta,
@@ -169,12 +102,12 @@ export const ordersProvider = makeDataProvider({
 });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
-  OrderEdge[],
+  (OrderEdge | null)[],
   Order[]
 >(
   [ordersProvider, marketsProvider],
   (partsData): OrderEdge[] =>
-    ((partsData[0] as Parameters<typeof update>['0']) || []).map((edge) => ({
+    ((partsData[0] as ReturnType<typeof getData>) || []).map((edge) => ({
       cursor: edge.cursor,
       node: {
         ...edge.node,
@@ -183,20 +116,6 @@ export const ordersWithMarketProvider = makeDerivedDataProvider<
         ),
       },
     })),
-  (parts): Order[] | undefined => {
-    if (!parts[0].isUpdate) {
-      return;
-    }
-    // map OrderSub_orders[] from subscription to updated Order[]
-    return (parts[0].delta as ReturnType<typeof getDelta>).map(
-      (deltaOrder) => ({
-        ...((parts[0].data as ReturnType<typeof getData>)?.find(
-          (order) => order.node.id === deltaOrder.id
-        )?.node as Orders_party_ordersConnection_edges_node),
-        market: (parts[1].data as Market[]).find(
-          (market) => market.id === deltaOrder.marketId
-        ),
-      })
-    );
-  }
+  combineDelta<Order, ReturnType<typeof getDelta>['0']>,
+  combineInsertionData<Order>
 );

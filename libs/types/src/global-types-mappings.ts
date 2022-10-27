@@ -110,11 +110,11 @@ export enum OrderRejectionReasonMapping {
   ORDER_ERROR_CANNOT_AMEND_TO_GTT_WITHOUT_EXPIRYAT = 'Cannot amend to GTT without expiry time specified',
   ORDER_ERROR_CANNOT_HAVE_GTC_AND_EXPIRYAT = 'Cannot have GTC and expiry time specified',
   ORDER_ERROR_CANNOT_SEND_FOK_ORDER_DURING_AUCTION = 'Cannot send FOK order during auction',
+  ORDER_ERROR_CANNOT_SEND_GFN_ORDER_DURING_AN_AUCTION = 'Cannot send GFN order during auction',
   ORDER_ERROR_CANNOT_SEND_IOC_ORDER_DURING_AUCTION = 'Cannot send IOC order during auction',
   ORDER_ERROR_EDIT_NOT_ALLOWED = 'Edit not allowed',
   ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT = 'Expiry time before creation time',
-  ORDER_ERROR_GFA_ORDER_DURING_CONTINUOUS_TRADING = 'GFA order during continuous trading',
-  ORDER_ERROR_GFN_ORDER_DURING_AN_AUCTION = 'GFN order during an auction',
+  ORDER_ERROR_GFA_CANNOT_SEND_ORDER_DURING_CONTINUOUS_TRADING = 'Cannot send GFA order during continuous trading',
   ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE = 'Insufficient asset balance',
   ORDER_ERROR_INSUFFICIENT_FUNDS_TO_PAY_FEES = 'Insufficient funds to pay fees',
   ORDER_ERROR_INTERNAL_ERROR = 'Internal error',
@@ -221,6 +221,7 @@ export enum ProposalRejectionReasonMapping {
   PROPOSAL_ERROR_UNKNOWN_TYPE = 'Unknown type',
   PROPOSAL_ERROR_UNSUPPORTED_PRODUCT = 'Unsupported product',
   PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE = 'Unsupported trading mode',
+  PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'ERC20 address already in use by an existing asset',
 }
 
 /**
@@ -275,4 +276,21 @@ export enum WithdrawalStatusMapping {
   STATUS_FINALIZED = 'Finalized',
   STATUS_OPEN = 'Open',
   STATUS_REJECTED = 'Rejected',
+}
+
+/**
+ * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
+ */
+export enum Interval {
+  INTERVAL_I15M = 'INTERVAL_I15M',
+  INTERVAL_I1D = 'INTERVAL_I1D',
+  INTERVAL_I1H = 'INTERVAL_I1H',
+  INTERVAL_I1M = 'INTERVAL_I1M',
+  INTERVAL_I5M = 'INTERVAL_I5M',
+  INTERVAL_I6H = 'INTERVAL_I6H',
+}
+
+export enum ProposalUserAction {
+  CREATE = 'CREATE',
+  VOTE = 'VOTE',
 }

@@ -2,28 +2,37 @@ import { waitFor, fireEvent, render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
+import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
-import type { Asset } from '@vegaprotocol/react-helpers';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@web3-react/core');
 
-function generateAsset(): Asset {
+function generateAsset(): AssetFieldsFragment {
   return {
     __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 2,
+    quantum: '',
+    status: AssetStatus.STATUS_ENABLED,
     source: {
       __typename: 'ERC20',
       contractAddress: 'contract-address',
+      lifetimeLimit: '',
+      withdrawThreshold: '',
+    },
+    infrastructureFeeAccount: {
+      balance: '1',
+      __typename: 'AccountBalance',
     },
   };
 }
 
-let asset: Asset;
+let asset: AssetFieldsFragment;
 let props: DepositFormProps;
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
@@ -227,20 +236,12 @@ describe('Deposit form', () => {
     );
 
     // Check deposit limit is displayed
-    expect(
-      screen.getByText('Balance available', { selector: 'th' })
-        .nextElementSibling
-    ).toHaveTextContent(balance.toString());
-    expect(
-      screen.getByText('Maximum total deposit amount', { selector: 'th' })
-        .nextElementSibling
-    ).toHaveTextContent(max.toString());
-    expect(
-      screen.getByText('Deposited', { selector: 'th' }).nextElementSibling
-    ).toHaveTextContent(deposited.toString());
-    expect(
-      screen.getByText('Remaining', { selector: 'th' }).nextElementSibling
-    ).toHaveTextContent(max.minus(deposited).toString());
+    expect(screen.getByTestId('BALANCE_AVAILABLE_value')).toHaveTextContent(
+      '50'
+    );
+    expect(screen.getByTestId('MAX_LIMIT_value')).toHaveTextContent('20');
+    expect(screen.getByTestId('DEPOSITED_value')).toHaveTextContent('10');
+    expect(screen.getByTestId('REMAINING_value')).toHaveTextContent('10');
 
     fireEvent.change(screen.getByLabelText('Amount'), {
       target: { value: '8' },

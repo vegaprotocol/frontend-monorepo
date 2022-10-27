@@ -74,6 +74,13 @@
           "nx build explorer"
         ]
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/explorer/tsconfig.spec.json"
+      }
     }
   },
   "tags": []

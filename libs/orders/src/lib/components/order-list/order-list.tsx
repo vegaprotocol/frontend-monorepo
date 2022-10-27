@@ -1,41 +1,39 @@
 import {
-  OrderTimeInForce,
-  OrderStatus,
-  Side,
-  OrderType,
-  OrderTypeMapping,
-  OrderStatusMapping,
-  OrderTimeInForceMapping,
-  OrderRejectionReasonMapping,
-} from '@vegaprotocol/types';
-import {
   addDecimal,
   getDateTimeFormat,
-  t,
-  positiveClassNames,
-  negativeClassNames,
   isNumeric,
+  negativeClassNames,
+  positiveClassNames,
+  t,
 } from '@vegaprotocol/react-helpers';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/ui-toolkit';
+import {
+  OrderRejectionReasonMapping,
+  OrderStatusMapping,
+  OrderTimeInForceMapping,
+  OrderTypeMapping,
+  Schema,
+} from '@vegaprotocol/types';
 import {
   AgGridDynamic as AgGrid,
   Button,
   Intent,
+  Link,
 } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
+import { forwardRef, useState } from 'react';
 
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
-import { OrderEditDialog } from './order-edit-dialog';
-import type { Order } from '../';
 import { OrderFeedback } from '../order-feedback';
+import { OrderEditDialog } from './order-edit-dialog';
 
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
+import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
+import type { Order } from '../';
 type OrderListProps = AgGridReactProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
@@ -61,20 +59,26 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <orderCancel.Dialog
           title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
           intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderCancel.transaction}
-            order={orderCancel.cancelledOrder}
-          />
-        </orderCancel.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderCancel.transaction}
+                order={orderCancel.cancelledOrder}
+              />
+            ),
+          }}
+        />
         <orderEdit.Dialog
           title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
-        >
-          <OrderFeedback
-            transaction={orderEdit.transaction}
-            order={orderEdit.updatedOrder}
-          />
-        </orderEdit.Dialog>
+          content={{
+            Complete: (
+              <OrderFeedback
+                transaction={orderEdit.transaction}
+                order={orderEdit.updatedOrder}
+              />
+            ),
+          }}
+        />
         {editOrder && (
           <OrderEditDialog
             isOpen={Boolean(editOrder)}
@@ -84,7 +88,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={editOrder}
             onSubmit={(fields) => {
               setEditOrder(null);
-              orderEdit.edit({ price: fields.entryPrice });
+              orderEdit.edit({ price: fields.limitPrice });
             }}
           />
         )}
@@ -113,6 +117,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<
+            Order,
+            'market.tradableInstrument.instrument.code'
+          >) =>
+            data?.market?.id ? (
+              <Link href={`/markets/${data?.market?.id}`} target="_blank">
+                {value}
+              </Link>
+            ) : (
+              value
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Size')}
@@ -121,9 +140,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           type="rightAligned"
           cellClassRules={{
             [positiveClassNames]: ({ data }: { data: Order }) =>
-              data?.side === Side.SIDE_BUY,
+              data?.side === Schema.Side.SIDE_BUY,
             [negativeClassNames]: ({ data }: { data: Order }) =>
-              data?.side === Side.SIDE_SELL,
+              data?.side === Schema.Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
@@ -133,7 +152,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return '-';
             }
             const prefix = data
-              ? data.side === Side.SIDE_BUY
+              ? data.side === Schema.Side.SIDE_BUY
                 ? '+'
                 : '-'
               : '';
@@ -160,7 +179,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             value,
             data,
           }: VegaValueFormatterParams<Order, 'status'>) => {
-            if (value === OrderStatus.STATUS_REJECTED) {
+            if (value === Schema.OrderStatus.STATUS_REJECTED) {
               return `${OrderStatusMapping[value]}: ${
                 data?.rejectionReason &&
                 OrderRejectionReasonMapping[data.rejectionReason]
@@ -201,7 +220,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           }: VegaValueFormatterParams<Order, 'price'>) => {
             if (
               !data?.market ||
-              data.type === OrderType.TYPE_MARKET ||
+              data.type === Schema.OrderType.TYPE_MARKET ||
               !isNumeric(value)
             ) {
               return '-';
@@ -216,7 +235,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             data,
           }: VegaValueFormatterParams<Order, 'timeInForce'>) => {
             if (
-              value === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+              value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
               data?.expiresAt
             ) {
               const expiry = getDateTimeFormat().format(
@@ -281,14 +300,14 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
 /**
  * Check if an order is active to determine if it can be edited or cancelled
  */
-export const isOrderActive = (status: OrderStatus) => {
+export const isOrderActive = (status: Schema.OrderStatus) => {
   return ![
-    OrderStatus.STATUS_CANCELLED,
-    OrderStatus.STATUS_REJECTED,
-    OrderStatus.STATUS_EXPIRED,
-    OrderStatus.STATUS_FILLED,
-    OrderStatus.STATUS_STOPPED,
-    OrderStatus.STATUS_PARTIALLY_FILLED,
+    Schema.OrderStatus.STATUS_CANCELLED,
+    Schema.OrderStatus.STATUS_REJECTED,
+    Schema.OrderStatus.STATUS_EXPIRED,
+    Schema.OrderStatus.STATUS_FILLED,
+    Schema.OrderStatus.STATUS_STOPPED,
+    Schema.OrderStatus.STATUS_PARTIALLY_FILLED,
   ].includes(status);
 };
 
@@ -305,28 +324,28 @@ export const isOrderAmendable = (order: Order | undefined) => {
 };
 
 export const getEditDialogTitle = (
-  status?: OrderStatus
+  status?: Schema.OrderStatus
 ): string | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_ACTIVE:
+    case Schema.OrderStatus.STATUS_ACTIVE:
       return t('Order updated');
-    case OrderStatus.STATUS_FILLED:
+    case Schema.OrderStatus.STATUS_FILLED:
       return t('Order filled');
-    case OrderStatus.STATUS_PARTIALLY_FILLED:
+    case Schema.OrderStatus.STATUS_PARTIALLY_FILLED:
       return t('Order partially filled');
-    case OrderStatus.STATUS_PARKED:
+    case Schema.OrderStatus.STATUS_PARKED:
       return t('Order parked');
-    case OrderStatus.STATUS_STOPPED:
+    case Schema.OrderStatus.STATUS_STOPPED:
       return t('Order stopped');
-    case OrderStatus.STATUS_EXPIRED:
+    case Schema.OrderStatus.STATUS_EXPIRED:
       return t('Order expired');
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
-    case OrderStatus.STATUS_REJECTED:
+    case Schema.OrderStatus.STATUS_REJECTED:
       return t('Order rejected');
     default:
       return t('Order amendment failed');
@@ -334,14 +353,14 @@ export const getEditDialogTitle = (
 };
 
 export const getCancelDialogIntent = (
-  status?: OrderStatus
+  status?: Schema.OrderStatus
 ): Intent | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return Intent.Success;
     default:
       return Intent.Danger;
@@ -349,14 +368,14 @@ export const getCancelDialogIntent = (
 };
 
 export const getCancelDialogTitle = (
-  status?: OrderStatus
+  status?: Schema.OrderStatus
 ): string | undefined => {
   if (!status) {
     return;
   }
 
   switch (status) {
-    case OrderStatus.STATUS_CANCELLED:
+    case Schema.OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
     default:
       return t('Order cancellation failed');

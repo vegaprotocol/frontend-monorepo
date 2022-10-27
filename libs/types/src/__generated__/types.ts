@@ -15,8 +15,8 @@ export type Scalars = {
 };
 
 /** An account record */
-export type Account = {
-  __typename?: 'Account';
+export type AccountBalance = {
+  __typename?: 'AccountBalance';
   /** Asset, the 'currency' */
   asset: Asset;
   /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
@@ -50,11 +50,25 @@ export type AccountEdge = {
   /** Cursor identifying the account */
   cursor: Scalars['String'];
   /** The account */
-  node: Account;
+  node: AccountBalance;
+};
+
+/** An account record */
+export type AccountEvent = {
+  __typename?: 'AccountEvent';
+  /** Asset, the 'currency' */
+  asset: Asset;
+  /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
+  balance: Scalars['String'];
+  /** Market (only relevant to margin accounts) */
+  market?: Maybe<Market>;
+  /** Owner of the account */
+  party?: Maybe<Party>;
+  /** Account type (General, Margin, etc) */
+  type: AccountType;
 };
 
 export enum AccountField {
-  AccountId = 'AccountId',
   AccountType = 'AccountType',
   AssetId = 'AssetId',
   MarketId = 'MarketId',
@@ -136,8 +150,6 @@ export type AccountsConnection = {
 
 export type AggregatedBalance = {
   __typename?: 'AggregatedBalance';
-  /** Account identifier, if query was grouped by account - else null */
-  accountId?: Maybe<Scalars['ID']>;
   /** Account type, if query was grouped by account type - else null */
   accountType?: Maybe<AccountType>;
   /** Asset identifier, if query was grouped by asset - else null */
@@ -146,7 +158,7 @@ export type AggregatedBalance = {
   balance: Scalars['String'];
   /** Market identifier, if query was grouped by market - else null */
   marketId?: Maybe<Scalars['ID']>;
-  /** Party identifier, if query was grouped by party - else null */
+  /** Account identifier, if query was grouped by account - else null */
   partyId?: Maybe<Scalars['ID']>;
   /** RFC3339Nano time from at which this balance was relevant */
   timestamp: Scalars['Timestamp'];
@@ -165,23 +177,52 @@ export type AggregatedBalanceEdge = {
   node: AggregatedBalance;
 };
 
+export type AggregatedLedgerEntries = {
+  __typename?: 'AggregatedLedgerEntries';
+  /** Account type, if query was grouped by account type - else null */
+  accountType?: Maybe<AccountType>;
+  /** Asset identifier, if query was grouped by asset - else null */
+  assetId?: Maybe<Scalars['ID']>;
+  /** Market identifier, if query was grouped by market - else null */
+  marketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by party - else null */
+  partyId?: Maybe<Scalars['ID']>;
+  /** Net amount of ledger entries for the accounts specified in the filter at this time */
+  quantity: Scalars['String'];
+  transferType?: Maybe<Scalars['String']>;
+  /** RFC3339Nano time from at which this ledger entries records were relevant */
+  vegaTime: Scalars['String'];
+};
+
+export type AggregatedLedgerEntriesConnection = {
+  __typename?: 'AggregatedLedgerEntriesConnection';
+  edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
+  pageInfo: PageInfo;
+};
+
+export type AggregatedLedgerEntriesEdge = {
+  __typename?: 'AggregatedLedgerEntriesEdge';
+  cursor: Scalars['String'];
+  node: AggregatedLedgerEntries;
+};
+
 /** Represents an asset in Vega */
 export type Asset = {
   __typename?: 'Asset';
   /** The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18 */
   decimals: Scalars['Int'];
   /** The global reward pool account for this asset */
-  globalRewardPoolAccount?: Maybe<Account>;
+  globalRewardPoolAccount?: Maybe<AccountBalance>;
   /** The ID of the asset */
   id: Scalars['ID'];
   /** The infrastructure fee account for this asset */
-  infrastructureFeeAccount: Account;
+  infrastructureFeeAccount?: Maybe<AccountBalance>;
   /** The liquidity provision reward account for this asset */
-  lpFeeRewardAccount?: Maybe<Account>;
+  lpFeeRewardAccount?: Maybe<AccountBalance>;
   /** The maker fee reward account for this asset */
-  makerFeeRewardAccount?: Maybe<Account>;
+  makerFeeRewardAccount?: Maybe<AccountBalance>;
   /** The market proposer reward account for this asset */
-  marketProposerRewardAccount?: Maybe<Account>;
+  marketProposerRewardAccount?: Maybe<AccountBalance>;
   /** The full name of the asset (e.g: Great British Pound) */
   name: Scalars['String'];
   /** The minimum economically meaningful amount in the asset */
@@ -193,7 +234,7 @@ export type Asset = {
   /** The symbol of the asset (e.g: GBP) */
   symbol: Scalars['String'];
   /** The taker fee reward account for this asset */
-  takerFeeRewardAccount?: Maybe<Account>;
+  takerFeeRewardAccount?: Maybe<AccountBalance>;
 };
 
 /** Edge type containing the asset and cursor information returned by a AssetsConnection */
@@ -556,12 +597,13 @@ export type ERC20 = {
   contractAddress: Scalars['String'];
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for alpha mainnet
+   * Note: this is a temporary measure that can be changed by governance
    */
   lifetimeLimit: Scalars['String'];
   /**
-   * The maximum allowed per withdrawal
-   * Note: this is a temporary measure for alpha mainnet
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: Scalars['String'];
 };
@@ -811,7 +853,7 @@ export type EthereumKeyRotationsConnection = {
 };
 
 /** Union type for wrapped events in stream PROPOSAL is mapped to governance data, something to keep in mind */
-export type Event = Account | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
+export type Event = AccountEvent | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
 
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
@@ -880,6 +922,24 @@ export type FutureProduct = {
   settlementAsset: Asset;
   /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
   settlementDataDecimals: Scalars['Int'];
+};
+
+export type GroupOptions = {
+  ByAccountField?: InputMaybe<Array<InputMaybe<AccountField>>>;
+  ByLedgerEntryField?: InputMaybe<Array<InputMaybe<LedgerEntryField>>>;
+};
+
+/** A segment of datanode history */
+export type HistorySegment = {
+  __typename?: 'HistorySegment';
+  /** Chain ID of the history segment */
+  chainID: Scalars['String'];
+  /** From block height of the history segment */
+  fromHeight: Scalars['Int'];
+  /** ID of the history segment */
+  historySegmentId: Scalars['String'];
+  /** To block height of the history segment */
+  toHeight: Scalars['Int'];
 };
 
 /** Describes something that can be traded on Vega */
@@ -963,16 +1023,28 @@ export type KeyRotationEdge = {
 
 export type LedgerEntry = {
   __typename?: 'LedgerEntry';
+  /** Account from which the asset was taken */
+  accountFromId: AccountDetails;
+  /** Account to which the balance was transferred */
+  accountToId: AccountDetails;
   /** The amount transferred */
   amount: Scalars['String'];
-  /** Account from which the asset was taken */
-  fromAccount: AccountDetails;
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['String'];
-  /** Account to which the balance was transferred */
-  toAccount: AccountDetails;
   /** Type of ledger entry */
   type: Scalars['String'];
+};
+
+export enum LedgerEntryField {
+  TransferType = 'TransferType'
+}
+
+/** Filter for historical entry ledger queries */
+export type LedgerEntryFilter = {
+  AccountFromFilter?: InputMaybe<AccountFilter>;
+  AccountToFilter?: InputMaybe<AccountFilter>;
+  CloseOnAccountFilters?: InputMaybe<Scalars['Boolean']>;
+  TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
 
 /** Configuration of a market liquidity monitoring parameters */
@@ -1215,7 +1287,7 @@ export type Market = {
    * Get account for a party or market
    * @deprecated Use the accountsConnection instead
    */
-  accounts?: Maybe<Array<Account>>;
+  accounts?: Maybe<Array<AccountBalance>>;
   /** Get account for a party or market */
   accountsConnection?: Maybe<AccountsConnection>;
   /** Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination */
@@ -2196,6 +2268,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_CANNOT_HAVE_GTC_AND_EXPIRYAT = 'ORDER_ERROR_CANNOT_HAVE_GTC_AND_EXPIRYAT',
   /** Cannot send FOK orders during an auction */
   ORDER_ERROR_CANNOT_SEND_FOK_ORDER_DURING_AUCTION = 'ORDER_ERROR_CANNOT_SEND_FOK_ORDER_DURING_AUCTION',
+  /** Good for Normal order received during an auction */
+  ORDER_ERROR_CANNOT_SEND_GFN_ORDER_DURING_AN_AUCTION = 'ORDER_ERROR_CANNOT_SEND_GFN_ORDER_DURING_AN_AUCTION',
   /** Cannot send IOC orders during an auction */
   ORDER_ERROR_CANNOT_SEND_IOC_ORDER_DURING_AUCTION = 'ORDER_ERROR_CANNOT_SEND_IOC_ORDER_DURING_AUCTION',
   /** Edit is not allowed */
@@ -2203,9 +2277,7 @@ export enum OrderRejectionReason {
   /** Attempt to amend expiry time to a value before time order was created */
   ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT = 'ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT',
   /** Good for Auction order received during continuous trading */
-  ORDER_ERROR_GFA_ORDER_DURING_CONTINUOUS_TRADING = 'ORDER_ERROR_GFA_ORDER_DURING_CONTINUOUS_TRADING',
-  /** Good for Normal order received during an auction */
-  ORDER_ERROR_GFN_ORDER_DURING_AN_AUCTION = 'ORDER_ERROR_GFN_ORDER_DURING_AN_AUCTION',
+  ORDER_ERROR_GFA_CANNOT_SEND_ORDER_DURING_CONTINUOUS_TRADING = 'ORDER_ERROR_GFA_CANNOT_SEND_ORDER_DURING_CONTINUOUS_TRADING',
   /** Insufficient balance to submit the order (no deposit made) */
   ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE = 'ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE',
   /** Insufficient funds to pay fees */
@@ -2395,7 +2467,7 @@ export type Party = {
    * Collateral accounts relating to a party
    * @deprecated Use accountsConnection instead
    */
-  accounts?: Maybe<Array<Account>>;
+  accounts?: Maybe<Array<AccountBalance>>;
   /** Collateral accounts relating to a party */
   accountsConnection?: Maybe<AccountsConnection>;
   /** @deprecated Use delegationsConnection instead */
@@ -2964,6 +3036,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_ENACT_TIME_TOO_LATE = 'PROPOSAL_ERROR_ENACT_TIME_TOO_LATE',
   /** The specified enactment time is too early based on network parameters */
   PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = 'PROPOSAL_ERROR_ENACT_TIME_TOO_SOON',
+  /** The erc20 address specified by this proposal is alread in use by another asset */
+  PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
   /** The proposal is rejected because the party does not have enough equity like share in the market */
@@ -3149,6 +3223,12 @@ export type ProposalsConnection = {
   pageInfo: PageInfo;
 };
 
+/** Indicator showing whether the data-node is ready for the protocol upgrade to begin. */
+export type ProtocolUpgradeStatus = {
+  __typename?: 'ProtocolUpgradeStatus';
+  ready: Scalars['Boolean'];
+};
+
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Query = {
   __typename?: 'Query';
@@ -3161,6 +3241,8 @@ export type Query = {
   assets?: Maybe<Array<Asset>>;
   /** The list of all assets in use in the Vega network or the specified asset if ID is provided */
   assetsConnection?: Maybe<AssetsConnection>;
+  /** Get historical balances for an account within the given date range */
+  balanceChanges: AggregatedBalanceConnection;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -3168,7 +3250,7 @@ export type Query = {
   /** Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch */
   epoch: Epoch;
   /** Get the signatures bundle to allowlist an ERC20 token in the collateral bridge */
-  erc20ListAssetBundle: Erc20ListAssetBundle;
+  erc20ListAssetBundle?: Maybe<Erc20ListAssetBundle>;
   /** Get the signature bundle to add a particular validator to the signer list of the multisig contract */
   erc20MultiSigSignerAddedBundles: ERC20MultiSigSignerAddedConnection;
   /** Get the signatures bundle to remove a particular validator from signer list of the multisig contract */
@@ -3188,8 +3270,6 @@ export type Query = {
   getMarketDataHistoryByID?: Maybe<Array<Maybe<MarketData>>>;
   /** Get market data history for a specific market. If no dates are given, the latest snapshot will be returned. If only the start date is provided all history from the given date will be provided, and if only the end date is provided, all history from the start up to and including the end date will be provided. Pagination is provided using a cursor based pagination model */
   getMarketDataHistoryConnectionByID?: Maybe<MarketDataConnection>;
-  /** Get historical balances for an account or specific asset within the given date range. */
-  historicBalances: AggregatedBalanceConnection;
   /**
    * Query for historic key rotations
    * @deprecated use keyRotationsConnection instead
@@ -3199,6 +3279,8 @@ export type Query = {
   keyRotationsConnection: KeyRotationConnection;
   /** The last block process by the blockchain */
   lastBlockHeight: Scalars['String'];
+  /** Get ledger entries by asset, market, party, account type, transfer type within the given date range. */
+  ledgerEntries: AggregatedLedgerEntriesConnection;
   /** An instrument that is trading on the Vega network */
   market?: Maybe<Market>;
   /**
@@ -3208,6 +3290,8 @@ export type Query = {
   markets?: Maybe<Array<Market>>;
   /** One or more instruments that are trading on the Vega network */
   marketsConnection?: Maybe<MarketConnection>;
+  /** The most recent history segment */
+  mostRecentHistorySegment: HistorySegment;
   /** Current network limits */
   networkLimits?: Maybe<NetworkLimits>;
   /** Return a single network parameter */
@@ -3309,6 +3393,8 @@ export type Query = {
   proposals?: Maybe<Array<Proposal>>;
   /** All governance proposals in the Vega network */
   proposalsConnection?: Maybe<ProposalsConnection>;
+  /** Flag indicating whether the data-node is ready to begin the protocol upgrade */
+  protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
   /** Get statistics about the Vega node */
   statistics: Statistics;
   /**
@@ -3339,6 +3425,14 @@ export type QueryassetArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryassetsConnectionArgs = {
   id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerybalanceChangesArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<AccountFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -3438,15 +3532,6 @@ export type QuerygetMarketDataHistoryConnectionByIDArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryhistoricBalancesArgs = {
-  dateRange?: InputMaybe<DateRange>;
-  filter?: InputMaybe<AccountFilter>;
-  groupBy?: InputMaybe<Array<InputMaybe<AccountField>>>;
-  pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerykeyRotationsArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
@@ -3455,6 +3540,15 @@ export type QuerykeyRotationsArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerykeyRotationsConnectionArgs = {
   id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryledgerEntriesArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<LedgerEntryFilter>;
+  groupOptions?: InputMaybe<GroupOptions>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4362,6 +4456,8 @@ export type Transfer = {
   id: Scalars['ID'];
   /** The type of transfer being made, i.e. a one-off or recurring transfer */
   kind: TransferKind;
+  /** An optional reason explaining the status of the transfer */
+  reason?: Maybe<Scalars['String']>;
   /** An optional reference */
   reference?: Maybe<Scalars['String']>;
   /** The status of this transfer */
@@ -4436,6 +4532,34 @@ export enum TransferStatus {
   STATUS_STOPPED = 'STATUS_STOPPED'
 }
 
+export enum TransferType {
+  TRANSFER_TYPE_BOND_HIGH = 'TRANSFER_TYPE_BOND_HIGH',
+  TRANSFER_TYPE_BOND_LOW = 'TRANSFER_TYPE_BOND_LOW',
+  TRANSFER_TYPE_BOND_SLASHING = 'TRANSFER_TYPE_BOND_SLASHING',
+  TRANSFER_TYPE_CLEAR_ACCOUNT = 'TRANSFER_TYPE_CLEAR_ACCOUNT',
+  TRANSFER_TYPE_CLOSE = 'TRANSFER_TYPE_CLOSE',
+  TRANSFER_TYPE_DEPOSIT = 'TRANSFER_TYPE_DEPOSIT',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE = 'TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE',
+  TRANSFER_TYPE_LIQUIDITY_FEE_PAY = 'TRANSFER_TYPE_LIQUIDITY_FEE_PAY',
+  TRANSFER_TYPE_LOSS = 'TRANSFER_TYPE_LOSS',
+  TRANSFER_TYPE_MAKER_FEE_PAY = 'TRANSFER_TYPE_MAKER_FEE_PAY',
+  TRANSFER_TYPE_MAKER_FEE_RECEIVE = 'TRANSFER_TYPE_MAKER_FEE_RECEIVE',
+  TRANSFER_TYPE_MARGIN_CONFISCATED = 'TRANSFER_TYPE_MARGIN_CONFISCATED',
+  TRANSFER_TYPE_MARGIN_HIGH = 'TRANSFER_TYPE_MARGIN_HIGH',
+  TRANSFER_TYPE_MARGIN_LOW = 'TRANSFER_TYPE_MARGIN_LOW',
+  TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
+  TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
+  TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
+  TRANSFER_TYPE_TRANSFER_FUNDS_SEND = 'TRANSFER_TYPE_TRANSFER_FUNDS_SEND',
+  TRANSFER_TYPE_UNSPECIFIED = 'TRANSFER_TYPE_UNSPECIFIED',
+  TRANSFER_TYPE_WIN = 'TRANSFER_TYPE_WIN',
+  TRANSFER_TYPE_WITHDRAW = 'TRANSFER_TYPE_WITHDRAW',
+  TRANSFER_TYPE_WITHDRAW_LOCK = 'TRANSFER_TYPE_WITHDRAW_LOCK'
+}
+
 /** A proposal to update an asset's details */
 export type UpdateAsset = {
   __typename?: 'UpdateAsset';
@@ -4455,12 +4579,13 @@ export type UpdateERC20 = {
   __typename?: 'UpdateERC20';
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for alpha mainnet
+   * Note: this is a temporary measure that can be changed by governance
    */
   lifetimeLimit: Scalars['String'];
   /**
-   * The maximum allowed per withdrawal
-   * Note: this is a temporary measure for alpha mainnet
+   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+   * There’s no limit on the size of a withdrawal
+   * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: Scalars['String'];
 };

@@ -1,5 +1,6 @@
 import { update } from './order-data-provider';
-import type { OrderSub_orders, Orders_party_ordersConnection_edges } from '../';
+import type { OrderUpdateFieldsFragment, OrderFieldsFragment } from '../';
+import type { Edge } from '@vegaprotocol/react-helpers';
 describe('order data provider', () => {
   it('puts incoming data in proper place', () => {
     const data = [
@@ -16,7 +17,7 @@ describe('order data provider', () => {
           createdAt: new Date('2022-01-30').toISOString(),
         },
       },
-    ] as Orders_party_ordersConnection_edges[];
+    ] as Edge<OrderFieldsFragment>[];
 
     const delta = [
       // this one should be dropped because id don't exits and it's older than newest
@@ -46,16 +47,20 @@ describe('order data provider', () => {
         updatedAt: new Date('2022-02-03').toISOString(),
         createdAt: new Date('2022-01-29').toISOString(),
       },
-    ] as OrderSub_orders[];
+    ] as OrderUpdateFieldsFragment[];
 
     const updatedData = update(data, delta);
     expect(
-      updatedData.findIndex((edge) => edge.node.id === delta[0].id)
+      updatedData?.findIndex((edge) => edge.node.id === delta[0].id)
     ).toEqual(-1);
-    expect(updatedData[2].node.id).toEqual(delta[2].id);
-    expect(updatedData[2].node.updatedAt).toEqual(delta[2].updatedAt);
-    expect(updatedData[0].node.id).toEqual(delta[3].id);
-    expect(updatedData[1].node.id).toEqual(delta[4].id);
-    expect(updatedData[1].node.updatedAt).toEqual(delta[4].updatedAt);
+    expect(updatedData && updatedData[2].node.id).toEqual(delta[2].id);
+    expect(updatedData && updatedData[2].node.updatedAt).toEqual(
+      delta[2].updatedAt
+    );
+    expect(updatedData && updatedData[0].node.id).toEqual(delta[3].id);
+    expect(updatedData && updatedData[1].node.id).toEqual(delta[4].id);
+    expect(updatedData && updatedData[1].node.updatedAt).toEqual(
+      delta[4].updatedAt
+    );
   });
 });

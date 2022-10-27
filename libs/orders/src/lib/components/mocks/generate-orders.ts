@@ -1,12 +1,5 @@
 import merge from 'lodash/merge';
-import {
-  MarketState,
-  MarketTradingMode,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-} from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode, Schema } from '@vegaprotocol/types';
 import type { Order } from '../';
 import type { PartialDeep } from 'type-fest';
 
@@ -59,12 +52,12 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     size: '10',
-    type: OrderType.TYPE_MARKET,
-    status: OrderStatus.STATUS_ACTIVE,
-    side: Side.SIDE_BUY,
+    type: Schema.OrderType.TYPE_MARKET,
+    status: Schema.OrderStatus.STATUS_ACTIVE,
+    side: Schema.Side.SIDE_BUY,
     remaining: '5',
     price: '',
-    timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+    timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
     createdAt: new Date().toISOString(),
     updatedAt: null,
     expiresAt: null,
@@ -77,17 +70,17 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
 
 export const limitOrder = generateOrder({
   id: 'limit-order',
-  type: OrderType.TYPE_LIMIT,
-  status: OrderStatus.STATUS_ACTIVE,
-  timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+  type: Schema.OrderType.TYPE_LIMIT,
+  status: Schema.OrderStatus.STATUS_ACTIVE,
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
   createdAt: new Date(2022, 3, 3).toISOString(),
   expiresAt: new Date(2022, 3, 5).toISOString(),
 });
 
 export const marketOrder = generateOrder({
   id: 'market-order',
-  type: OrderType.TYPE_MARKET,
-  status: OrderStatus.STATUS_ACTIVE,
+  type: Schema.OrderType.TYPE_MARKET,
+  status: Schema.OrderStatus.STATUS_ACTIVE,
 });
 
 export const generateMockOrders = (): Order[] => {
@@ -99,12 +92,12 @@ export const generateMockOrders = (): Order[] => {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
       },
       size: '10',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '20000000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2020, 1, 1).toISOString(),
     }),
     generateOrder({
@@ -114,12 +107,12 @@ export const generateMockOrders = (): Order[] => {
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
       },
       size: '1',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '100',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date().toISOString(),
     }),
     generateOrder({
@@ -129,12 +122,12 @@ export const generateMockOrders = (): Order[] => {
         id: 'c6f4337b31ed57a961969c3ba10297b369d01b9e75a4cbb96db4fc62886444e6',
       },
       size: '1',
-      type: OrderType.TYPE_LIMIT,
-      status: OrderStatus.STATUS_FILLED,
-      side: Side.SIDE_BUY,
+      type: Schema.OrderType.TYPE_LIMIT,
+      status: Schema.OrderStatus.STATUS_FILLED,
+      side: Schema.Side.SIDE_BUY,
       remaining: '0',
       price: '20000',
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       createdAt: new Date(2022, 5, 10).toISOString(),
     }),
   ];

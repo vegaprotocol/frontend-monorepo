@@ -48,6 +48,7 @@ export const VestingChart = () => {
           <Tooltip
             contentStyle={{ backgroundColor: colors.black }}
             separator=":"
+            // @ts-ignore formatter doesnt seem to allow returning JSX but nonetheless it works
             formatter={(value: number) => {
               return (
                 <div

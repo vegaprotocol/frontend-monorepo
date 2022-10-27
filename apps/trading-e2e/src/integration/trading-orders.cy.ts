@@ -1,9 +1,4 @@
-import {
-  MarketState,
-  OrderRejectionReason,
-  OrderStatus,
-} from '@vegaprotocol/types';
-import { mockTradingPage } from '../support/trading';
+import { Schema } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 import {
   updateOrder,
@@ -24,17 +19,15 @@ const editOrderBtn = 'edit';
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
-    cy.spy(subscriptionMocks, 'OrderSub');
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.spy(subscriptionMocks, 'OrdersUpdate');
+    cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
     cy.visit('/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
     connectVegaWallet();
     cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrderSub).to.be.calledOnce;
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
   });
   it('renders orders', () => {
@@ -131,17 +124,15 @@ describe('orders list', { tags: '@smoke' }, () => {
 describe('subscribe orders', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
-    cy.spy(subscriptionMocks, 'OrderSub');
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.spy(subscriptionMocks, 'OrdersUpdate');
+    cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
     cy.visit('/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
     connectVegaWallet();
     cy.wait('@Orders').then(() => {
-      expect(subscriptionMocks.OrderSub).to.be.calledOnce;
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
   });
   const orderId = '1234567890';
@@ -151,7 +142,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // 7002-SORD-041
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_ACTIVE,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -163,7 +154,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // 7002-SORD-042
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_EXPIRED,
+      status: Schema.OrderStatus.STATUS_EXPIRED,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -176,7 +167,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // NOT COVERED:  see the txn that cancelled it and a link to the block explorer, if cancelled by a user transaction.
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_CANCELLED,
+      status: Schema.OrderStatus.STATUS_CANCELLED,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -189,7 +180,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // NOT COVERED:  see an explanation of why stopped
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_STOPPED,
+      status: Schema.OrderStatus.STATUS_STOPPED,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -201,7 +192,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // 7002-SORD-045
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_PARTIALLY_FILLED,
+      status: Schema.OrderStatus.STATUS_PARTIALLY_FILLED,
       size: '5',
       remaining: '1',
     });
@@ -220,7 +211,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // NOT COVERED:  Must be able to see/link to all trades that were created from this order
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_FILLED,
+      status: Schema.OrderStatus.STATUS_FILLED,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -232,8 +223,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // 7002-SORD-047
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_REJECTED,
-      rejectionReason: OrderRejectionReason.ORDER_ERROR_INTERNAL_ERROR,
+      status: Schema.OrderStatus.STATUS_REJECTED,
+      rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_INTERNAL_ERROR,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',
@@ -246,7 +237,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     // NOT COVERED:   must see an explanation of why parked orders happen
     updateOrder({
       id: orderId,
-      status: OrderStatus.STATUS_PARKED,
+      status: Schema.OrderStatus.STATUS_PARKED,
     });
     cy.get(`[row-id=${orderId}] [col-id=${orderStatus}]`).should(
       'have.text',

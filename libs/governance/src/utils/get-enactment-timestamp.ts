@@ -3,12 +3,20 @@ import { getClosingTimestamp } from './get-closing-timestamp';
 
 export const getEnactmentTimestamp = (
   proposalVoteDeadline: string,
-  enactmentDeadline: string
+  enactmentDeadline: string,
+  minimumVoteDeadlineSelected: boolean
 ) =>
   Math.floor(
     getTime(
       addHours(
-        new Date(fromUnixTime(getClosingTimestamp(proposalVoteDeadline))),
+        new Date(
+          fromUnixTime(
+            getClosingTimestamp(
+              proposalVoteDeadline,
+              minimumVoteDeadlineSelected
+            )
+          )
+        ),
         Number(enactmentDeadline)
       )
     ) / 1000

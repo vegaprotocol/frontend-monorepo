@@ -1,13 +1,11 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateFills } from '../support/mocks/generate-fills';
-import { MarketState } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
-import { mockTradingPage } from '../support/trading';
 
 describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
+    cy.mockTradingPage();
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'Fills', generateFills());
     });
     cy.mockGQLSubscription();
@@ -23,9 +21,7 @@ describe('fills', { tags: '@regression' }, () => {
   });
 
   it('renders fills on trading tab', () => {
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
+    cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Please connect Vega wallet');

@@ -1,31 +1,10 @@
-query MarketLiquidity($marketId: ID!) {
+# MarketLp
+
+query MarketLp($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
-    liquidityProvisionsConnection {
-      edges {
-        node {
-          id
-          party {
-            id
-            accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
-              edges {
-                node {
-                  type
-                  balance
-                }
-              }
-            }
-          }
-          createdAt
-          updatedAt
-          commitmentAmount
-          fee
-          status
-        }
-      }
-    }
     tradableInstrument {
       instrument {
         code
@@ -49,13 +28,86 @@ query MarketLiquidity($marketId: ID!) {
       openInterest
       targetStake
       marketValueProxy
-      liquidityProviderFeeShare {
-        party {
-          id
+    }
+  }
+}
+
+# Liquidity Provisions
+
+fragment LiquidityProvisionFields on LiquidityProvision {
+  party {
+    id
+    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+      edges {
+        node {
+          type
+          balance
         }
-        equityLikeShare
-        averageEntryValuation
       }
+    }
+  }
+  createdAt
+  updatedAt
+  commitmentAmount
+  fee
+  status
+}
+
+query LiquidityProvisions($marketId: ID!) {
+  market(id: $marketId) {
+    liquidityProvisionsConnection {
+      edges {
+        node {
+          ...LiquidityProvisionFields
+        }
+      }
+    }
+  }
+}
+
+subscription LiquidityProvisionsUpdate($partyId: ID, $marketId: ID) {
+  liquidityProvisions(partyId: $partyId, marketId: $marketId) {
+    id
+    partyID
+    createdAt
+    updatedAt
+    marketID
+    commitmentAmount
+    fee
+    status
+  }
+}
+
+# Liquidity Provider Share Fee
+
+fragment LiquidityProviderFeeShareFields on LiquidityProviderFeeShare {
+  party {
+    id
+  }
+  equityLikeShare
+  averageEntryValuation
+}
+
+query LiquidityProviderFeeShare($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    data {
+      market {
+        id
+      }
+      liquidityProviderFeeShare {
+        ...LiquidityProviderFeeShareFields
+      }
+    }
+  }
+}
+
+subscription LiquidityProviderFeeShareUpdate($marketId: ID!) {
+  marketsData(marketIds: [$marketId]) {
+    liquidityProviderFeeShare {
+      partyId
+      equityLikeShare
+      averageEntryValuation
     }
   }
 }

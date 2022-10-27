@@ -38,6 +38,13 @@
         "jestConfig": "libs/governance/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "build-spec": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./libs/governance/tsconfig.spec.json"
+      }
     }
   }
 }
