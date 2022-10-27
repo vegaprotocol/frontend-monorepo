@@ -23,9 +23,9 @@ jobs:
         with:
           browser: chrome
           record: true
-          baseUrl: ${{ github.event.inputs.url }}
           project: ./apps/trading-e2e
+          config: baseUrl=${{ github.event.inputs.url }}
+          env: grepTags=@live
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          grepTags: '@live'
