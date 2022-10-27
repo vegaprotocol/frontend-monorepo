@@ -1,19 +1,20 @@
 import {
-  t,
   addDecimalsFormatNumber,
-  formatNumberPercentage,
   formatNumber,
+  formatNumberPercentage,
+  t,
 } from '@vegaprotocol/react-helpers';
 import {
-  KeyValueTableRow,
   KeyValueTable,
+  KeyValueTableRow,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import startCase from 'lodash/startCase';
-import type { ReactNode } from 'react';
+
 import { tooltipMapping } from './tooltip-mapping';
 
+import type { ReactNode } from 'react';
 interface RowProps {
   field: string;
   value: unknown;
@@ -39,7 +40,9 @@ const Row = ({
       return value;
     }
     if (decimalPlaces) {
-      return `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`;
+      return `${parseFloat(
+        addDecimalsFormatNumber(value, decimalPlaces)
+      )} ${assetSymbol}`;
     }
     if (asPercentage) {
       return formatNumberPercentage(new BigNumber(value).times(100));

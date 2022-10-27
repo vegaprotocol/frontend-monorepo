@@ -64,6 +64,7 @@ fragment ProposalFields on Proposal {
     yes {
       totalTokens
       totalNumber
+      totalEquityLikeShareWeight
       votes {
         value
         party {
@@ -78,6 +79,7 @@ fragment ProposalFields on Proposal {
     no {
       totalTokens
       totalNumber
+      totalEquityLikeShareWeight
       votes {
         value
         party {

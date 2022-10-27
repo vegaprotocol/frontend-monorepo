@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ProposalState } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 export const StatusPass = ({ children }: { children: ReactNode }) => (
   <span className="text-vega-green">{children}</span>
@@ -42,11 +42,12 @@ const WillPass = ({
 export const CurrentProposalStatus = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }) => {
-  const { willPass, majorityMet, participationMet } = useVoteInformation({
-    proposal,
-  });
+  const { willPassByTokenVote, majorityMet, participationMet } =
+    useVoteInformation({
+      proposal,
+    });
   const { t } = useTranslation();
 
   const daysClosedAgo = formatDistanceToNow(
@@ -61,7 +62,9 @@ export const CurrentProposalStatus = ({
     });
 
   if (proposal.state === ProposalState.STATE_OPEN) {
-    return <WillPass willPass={willPass}>{t('currentlySetTo')}</WillPass>;
+    return (
+      <WillPass willPass={willPassByTokenVote}>{t('currentlySetTo')}</WillPass>
+    );
   }
 
   if (
@@ -108,7 +111,12 @@ export const CurrentProposalStatus = ({
     return (
       <>
         <span>{t('votePassed')}</span>
-        <StatusPass>&nbsp;{proposal.state}</StatusPass>
+        <StatusPass>
+          &nbsp;
+          {proposal.state === ProposalState.STATE_ENACTED
+            ? t('Enacted')
+            : t('Passed')}
+        </StatusPass>
         <span>
           &nbsp;
           {proposal.state === ProposalState.STATE_ENACTED
@@ -121,7 +129,7 @@ export const CurrentProposalStatus = ({
 
   if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
     return (
-      <WillPass willPass={willPass}>
+      <WillPass willPass={willPassByTokenVote}>
         <span>{t('WaitingForNodeVote')}</span>{' '}
         <span>{t('currentlySetTo')}</span>
       </WillPass>

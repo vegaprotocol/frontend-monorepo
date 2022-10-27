@@ -36,7 +36,7 @@ import {
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
-import { ProposalUserAction } from '@vegaprotocol/types';
+import { ProposalUserAction } from '../../components/shared';
 
 export const MARKETS_QUERY = gql`
   query ProposalMarketsQuery {

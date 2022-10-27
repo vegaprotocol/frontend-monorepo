@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { ProposalMinRequirements } from './proposal-min-requirements';
-import { ProposalUserAction } from '@vegaprotocol/types';
+import { ProposalUserAction } from '../../components/shared';
 
 describe('ProposalFormMinRequirements', () => {
   it('should render successfully with spam protection value, if larger', () => {

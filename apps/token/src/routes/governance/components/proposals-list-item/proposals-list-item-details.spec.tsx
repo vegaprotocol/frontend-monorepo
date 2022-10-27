@@ -26,10 +26,10 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { Proposals_proposalsConnection_edges_node as ProposalNode } from '../../proposals/__generated__/Proposals';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 const renderComponent = (
-  proposal: ProposalNode,
+  proposal: Proposal_proposal,
   mock = networkParamsQueryMock
 ) =>
   render(

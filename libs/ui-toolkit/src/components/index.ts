@@ -31,6 +31,7 @@ export * from './syntax-highlighter';
 export * from './tabs';
 export * from './text-area';
 export * from './theme-switcher';
+export * from './thumbs';
 export * from './toggle';
 export * from './tooltip';
 export * from './vega-icons';
