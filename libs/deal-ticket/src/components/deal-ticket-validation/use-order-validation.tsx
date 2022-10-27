@@ -15,6 +15,8 @@ import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import * as constants from '../constants';
+import { DEAL_TICKET_SECTION_EXPIRY } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -41,6 +43,15 @@ export const marketTranslations = (marketState: MarketState) => {
   }
 };
 
+type DealTicketSection =
+  | ''
+  | typeof constants.DEAL_TICKET_SECTION_TYPE
+  | typeof constants.DEAL_TICKET_SECTION_SIZE
+  | typeof constants.DEAL_TICKET_SECTION_PRICE
+  | typeof constants.DEAL_TICKET_SECTION_FORCE
+  | typeof constants.DEAL_TICKET_SECTION_EXPIRY
+  | typeof constants.DEAL_TICKET_SECTION_SUMMARY;
+
 export const useOrderValidation = ({
   market,
   fieldErrors = {},
@@ -49,6 +60,7 @@ export const useOrderValidation = ({
 }: ValidationProps): {
   message: React.ReactNode | string;
   isDisabled: boolean;
+  section: DealTicketSection;
 } => {
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
@@ -74,6 +86,7 @@ export const useOrderValidation = ({
             market.state
           )} and not accepting orders`
         ),
+        section: constants.DEAL_TICKET_SECTION_SUMMARY,
       };
     }
 
@@ -89,6 +102,7 @@ export const useOrderValidation = ({
             market.state
           )} and only accepting liquidity commitment orders`
         ),
+        section: constants.DEAL_TICKET_SECTION_SUMMARY,
       };
     }
 
@@ -115,6 +129,7 @@ export const useOrderValidation = ({
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
+            section: constants.DEAL_TICKET_SECTION_TYPE,
           };
         }
         if (
@@ -138,6 +153,7 @@ export const useOrderValidation = ({
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
+            section: constants.DEAL_TICKET_SECTION_TYPE,
           };
         }
         return {
@@ -145,6 +161,7 @@ export const useOrderValidation = ({
           message: t(
             'Only limit orders are permitted when market is in auction'
           ),
+          section: constants.DEAL_TICKET_SECTION_SUMMARY,
         };
       }
       if (
@@ -178,6 +195,7 @@ export const useOrderValidation = ({
                 )}
               </span>
             ),
+            section: constants.DEAL_TICKET_SECTION_FORCE,
           };
         }
         if (
@@ -203,6 +221,7 @@ export const useOrderValidation = ({
                 )}
               </span>
             ),
+            section: constants.DEAL_TICKET_SECTION_FORCE,
           };
         }
         return {
@@ -210,6 +229,7 @@ export const useOrderValidation = ({
           message: t(
             `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
           ),
+          section: constants.DEAL_TICKET_SECTION_FORCE,
         };
       }
     }
@@ -218,6 +238,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t('You need to provide a size'),
+        section: constants.DEAL_TICKET_SECTION_SIZE,
       };
     }
 
@@ -225,6 +246,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(`Size cannot be lower than "${minSize}"`),
+        section: constants.DEAL_TICKET_SECTION_SIZE,
       };
     }
 
@@ -235,6 +257,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
+        section: constants.DEAL_TICKET_SECTION_PRICE,
       };
     }
 
@@ -245,6 +268,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
+        section: constants.DEAL_TICKET_SECTION_PRICE,
       };
     }
 
@@ -256,6 +280,7 @@ export const useOrderValidation = ({
         return {
           isDisabled: true,
           message: t('Order sizes must be in whole numbers for this market'),
+          section: constants.DEAL_TICKET_SECTION_SIZE,
         };
       }
       return {
@@ -263,6 +288,7 @@ export const useOrderValidation = ({
         message: t(
           `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
         ),
+        section: constants.DEAL_TICKET_SECTION_SIZE,
       };
     }
 
@@ -278,6 +304,7 @@ export const useOrderValidation = ({
         message: t(
           'Any orders placed now will not trade until the auction ends'
         ),
+        section: constants.DEAL_TICKET_SECTION_EXPIRY,
       };
     }
 
@@ -293,5 +320,5 @@ export const useOrderValidation = ({
     orderTimeInForce,
   ]);
 
-  return { message, isDisabled };
+  return { message, isDisabled, section: '' };
 };

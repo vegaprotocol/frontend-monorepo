@@ -21,6 +21,7 @@ import {
   useFeeDealTicketDetails,
   getFeeDetailsValues,
 } from '../../hooks/use-fee-deal-ticket-details';
+import * as constants from '../constants';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -52,7 +53,7 @@ export const DealTicket = ({
     defaultValues: getDefaultOrder(market),
   });
   const order = watch();
-  const { message, isDisabled: disabled } = useOrderValidation({
+  const { message, isDisabled: disabled, section: errorSection } = useOrderValidation({
     market,
     orderType: order.type,
     orderTimeInForce: order.timeInForce,
@@ -110,7 +111,10 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
+          <>
           <TypeSelector value={field.value} onSelect={field.onChange} />
+            {errorSection === constants.DEAL_TICKET_SECTION_TYPE && message}
+          </>
         )}
       />
       <Controller
