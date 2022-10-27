@@ -114,6 +114,7 @@ export const WithdrawForm = ({
                 id="asset"
                 name="asset"
                 required
+                data-testid="select-asset"
               >
                 <option value="">{t('Please select')}</option>
                 {assets.filter(isAssetTypeERC20).map((a) => (
@@ -134,6 +135,7 @@ export const WithdrawForm = ({
         >
           <Input
             id="ethereum-address"
+            data-testid="eth-address-input"
             {...register('to', { validate: { required, ethereumAddress } })}
           />
           {errors.to?.message && (
@@ -153,6 +155,7 @@ export const WithdrawForm = ({
         )}
         <FormGroup label={t('Amount')} labelFor="amount">
           <Input
+            data-testid="amount-input"
             type="number"
             autoComplete="off"
             id="amount"

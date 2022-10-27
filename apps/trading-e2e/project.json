@@ -12,6 +12,9 @@
       "configurations": {
         "production": {
           "devServerTarget": "trading:serve:production"
+        },
+        "live": {
+          "devServerTarget": ""
         }
       }
     },
