@@ -1,19 +1,23 @@
+fragment MarketNode on Market {
+  id
+  liquidityProvisionsConnection {
+    edges {
+      node {
+        commitmentAmount
+        fee
+      }
+    }
+  }
+  data {
+    targetStake
+  }
+}
+
 query LiquidityProvisionMarkets {
   marketsConnection {
     edges {
       node {
-        id
-        liquidityProvisionsConnection {
-          edges {
-            node {
-              commitmentAmount
-              fee
-            }
-          }
-        }
-        data {
-          targetStake
-        }
+        ...MarketNode
       }
     }
   }

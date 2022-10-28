@@ -1,16 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+
+import {
+  SelectAllMarketsTableBody,
+  SelectMarketLandingTable,
+} from './select-market';
+
 import type { ReactNode } from 'react';
 import type {
   MarketWithCandles,
   MarketWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
-import {
-  SelectAllMarketsTableBody,
-  SelectMarketLandingTable,
-} from './select-market';
-
 type Market = MarketWithCandles & MarketWithData;
 
 jest.mock(
@@ -162,7 +163,7 @@ describe('SelectMarket', () => {
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
     expect(container).toHaveTextContent(/1,000/); // volume
-    fireEvent.click(screen.getByTestId(`market-link-1`));
+    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');
   });
 
@@ -177,9 +178,9 @@ describe('SelectMarket', () => {
         onSelect={onSelect}
       />
     );
-    fireEvent.click(screen.getByTestId(`market-link-1`));
+    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');
-    fireEvent.click(screen.getByTestId(`market-link-2`));
+    fireEvent.click(screen.getAllByTestId(`market-link-2`)[0]);
     expect(onSelect).toHaveBeenCalledWith('2');
   });
 });
