@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
+import { FormGroup, InputError, Select } from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
@@ -8,6 +9,7 @@ interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
+  errorMessage?: { message: ReactNode | string; isDisabled: boolean };
 }
 
 type PossibleOrderKeys = Exclude<
@@ -22,6 +24,7 @@ export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
+  errorMessage,
 }: TimeInForceSelectorProps) => {
   const [prevValue, setPrevValue] = useState<PrevSelectedValue>({
     [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -59,6 +62,16 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
+      {errorMessage && (
+        <div className="mb-6 -mt-2">
+          <InputError
+            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
+            data-testid="dealticket-error-message-force"
+          >
+            {errorMessage.message}
+          </InputError>
+        </div>
+      )}
     </FormGroup>
   );
 };

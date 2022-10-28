@@ -1,4 +1,5 @@
-import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
+import { FormGroup, InputError } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
@@ -6,6 +7,7 @@ import { Toggle } from '@vegaprotocol/ui-toolkit';
 interface TypeSelectorProps {
   value: Schema.OrderType;
   onSelect: (type: Schema.OrderType) => void;
+  errorMessage?: { message: ReactNode | string; isDisabled: boolean };
 }
 
 const toggles = [
@@ -13,7 +15,11 @@ const toggles = [
   { label: t('Limit'), value: Schema.OrderType.TYPE_LIMIT },
 ];
 
-export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
+export const TypeSelector = ({
+  value,
+  onSelect,
+  errorMessage,
+}: TypeSelectorProps) => {
   return (
     <FormGroup label={t('Order type')} labelFor="order-type">
       <Toggle
@@ -23,6 +29,16 @@ export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
         checkedValue={value}
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
+      {errorMessage && (
+        <div className="mb-6 -mt-2">
+          <InputError
+            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
+            data-testid="dealticket-error-message-price"
+          >
+            {errorMessage.message}
+          </InputError>
+        </div>
+      )}
     </FormGroup>
   );
 };

@@ -19,7 +19,6 @@ import { ValidateMargin } from './validate-margin';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { useOrderMarginValidation } from './use-order-margin-validation';
 import * as constants from '../constants';
-import { DEAL_TICKET_SECTION_EXPIRY } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -69,12 +68,15 @@ export const useOrderValidation = ({
 } => {
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
-
   const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
 
-  const { message, isDisabled } = useMemo(() => {
+  const { message, isDisabled, section } = useMemo(() => {
     if (!pubKey) {
-      return { message: t('No public key selected'), isDisabled: true };
+      return {
+        message: t('No public key selected'),
+        isDisabled: true,
+        section: constants.DEAL_TICKET_SECTION_SUMMARY,
+      };
     }
 
     if (
@@ -303,6 +305,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: <ValidateMargin {...isInvalidOrderMargin} />,
+        section: constants.DEAL_TICKET_SECTION_PRICE,
       };
     }
 
@@ -322,7 +325,7 @@ export const useOrderValidation = ({
       };
     }
 
-    return { isDisabled: false, message: '' };
+    return { isDisabled: false, message: '', section: '' };
   }, [
     minSize,
     pubKey,
@@ -335,5 +338,5 @@ export const useOrderValidation = ({
     isInvalidOrderMargin,
   ]);
 
-  return { message, isDisabled, section: '' };
+  return { message, isDisabled, section: section as DealTicketSection };
 };

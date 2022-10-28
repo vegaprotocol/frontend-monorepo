@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
@@ -11,6 +12,7 @@ export interface DealTicketAmountProps {
   register: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
   quoteName: string;
   price?: string;
+  errorMessage?: { message: ReactNode | string; isDisabled: boolean };
 }
 
 export const DealTicketAmount = ({

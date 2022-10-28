@@ -117,10 +117,15 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <>
-            <TypeSelector value={field.value} onSelect={field.onChange} />
-            {errorSection === constants.DEAL_TICKET_SECTION_TYPE && message}
-          </>
+          <TypeSelector
+            value={field.value}
+            onSelect={field.onChange}
+            errorMessage={
+              errorSection === constants.DEAL_TICKET_SECTION_TYPE
+                ? { message, isDisabled }
+                : undefined
+            }
+          />
         )}
       />
       <Controller
@@ -136,6 +141,14 @@ export const DealTicket = ({
         register={register}
         price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
+        errorMessage={
+          [
+            constants.DEAL_TICKET_SECTION_SIZE,
+            constants.DEAL_TICKET_SECTION_PRICE,
+          ].includes(errorSection)
+            ? { message, isDisabled }
+            : undefined
+        }
       />
       <Controller
         name="timeInForce"
@@ -145,6 +158,11 @@ export const DealTicket = ({
             value={field.value}
             orderType={order.type}
             onSelect={field.onChange}
+            errorMessage={
+              errorSection === constants.DEAL_TICKET_SECTION_FORCE
+                ? { message, isDisabled }
+                : undefined
+            }
           />
         )}
       />
@@ -154,7 +172,15 @@ export const DealTicket = ({
             name="expiresAt"
             control={control}
             render={({ field }) => (
-              <ExpirySelector value={field.value} onSelect={field.onChange} />
+              <ExpirySelector
+                value={field.value}
+                onSelect={field.onChange}
+                errorMessage={
+                  errorSection === constants.DEAL_TICKET_SECTION_EXPIRY
+                    ? { message, isDisabled }
+                    : undefined
+                }
+              />
             )}
           />
         )}
@@ -171,7 +197,7 @@ export const DealTicket = ({
               ? t('Pending...')
               : t('Place order')}
           </Button>
-          {message && (
+          {errorSection === constants.DEAL_TICKET_SECTION_SUMMARY && (
             <InputError
               intent={isDisabled ? 'danger' : 'warning'}
               data-testid="dealticket-error-message"
