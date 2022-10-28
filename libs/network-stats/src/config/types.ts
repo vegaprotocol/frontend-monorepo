@@ -1,13 +1,11 @@
-import { Schema } from '@vegaprotocol/types'
-import type {
-  StatsQuery,
-} from '../components/stats-manager/__generated__/Stats';
+import type { Schema } from '@vegaprotocol/types';
+import type { StatsQuery } from '../components/stats-manager/__generated__/Stats';
 
 type NodeDataKeys =
   | 'stakedTotal'
   | 'totalNodes'
   | 'inactiveNodes'
-  | 'validatingNodes'
+  | 'validatingNodes';
 
 export type Stats = Pick<Schema.NodeData, NodeDataKeys> &
   Omit<StatsQuery['statistics'], '__typename'>;
