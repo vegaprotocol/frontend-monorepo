@@ -41,6 +41,9 @@ function AppBody({ Component, pageProps }: AppProps) {
   const [theme, toggleTheme] = useThemeSwitcher();
   return (
     <ThemeContext.Provider value={theme}>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>

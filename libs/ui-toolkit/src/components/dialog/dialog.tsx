@@ -29,7 +29,7 @@ export function Dialog({
   size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
-    'fixed top-0 left-0 z-20 flex justify-center items-start overflow-scroll',
+    'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
     'w-full h-full'
   );
   const wrapperClasses = classNames(

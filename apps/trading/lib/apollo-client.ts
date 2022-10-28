@@ -60,6 +60,12 @@ export function createClient(base?: string) {
       AccountUpdate: {
         keyFields: false,
       },
+      Party: {
+        keyFields: false,
+      },
+      Fees: {
+        keyFields: false,
+      },
     },
   });
 

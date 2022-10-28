@@ -53,6 +53,10 @@ export const DealTicket = ({
     defaultValues: getDefaultOrder(market),
   });
   const order = watch();
+
+  const feeDetails = useFeeDealTicketDetails(order, market);
+  const details = getFeeDetailsValues(feeDetails);
+
   const {
     message,
     isDisabled: disabled,
@@ -62,6 +66,7 @@ export const DealTicket = ({
     orderType: order.type,
     orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
+    estMargin: feeDetails.estMargin,
   });
   const isDisabled = transactionStatus === 'pending' || disabled;
 
@@ -105,9 +110,6 @@ export const DealTicket = ({
       setValue('price', marketPriceFormatted);
     }
   }, [marketPriceFormatted, order.type, setValue]);
-
-  const feeDetails = useFeeDealTicketDetails(order, market);
-  const details = getFeeDetailsValues(feeDetails);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
