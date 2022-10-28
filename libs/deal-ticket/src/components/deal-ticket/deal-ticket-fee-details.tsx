@@ -1,4 +1,5 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+
 import type { ReactNode } from 'react';
 
 interface DealTicketFeeDetailsProps {
@@ -20,7 +21,7 @@ export const DealTicketFeeDetails = ({
       {details.map(({ label, value, labelDescription, quoteName }) => (
         <div
           key={label}
-          className="text-sm mt-2 flex justify-between items-center gap-4 flex-wrap"
+          className="text-xs mt-2 flex justify-between items-center gap-4 flex-wrap"
         >
           <div>
             <Tooltip description={labelDescription}>

@@ -1,27 +1,28 @@
-import { useCallback, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { t, removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
-import { TypeSelector } from './type-selector';
-import { SideSelector } from './side-selector';
-import { DealTicketAmount } from './deal-ticket-amount';
-import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketMarketFragment } from './__generated___/DealTicket';
-import { ExpirySelector } from './expiry-selector';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
+import { Button, InputError } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useCallback, useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import {
+  getFeeDetailsValues,
+  useFeeDealTicketDetails,
+} from '../../hooks/use-fee-deal-ticket-details';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
+import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
-import {
-  useFeeDealTicketDetails,
-  getFeeDetailsValues,
-} from '../../hooks/use-fee-deal-ticket-details';
+import { ExpirySelector } from './expiry-selector';
+import { SideSelector } from './side-selector';
+import { TimeInForceSelector } from './time-in-force-selector';
+import { TypeSelector } from './type-selector';
 
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {

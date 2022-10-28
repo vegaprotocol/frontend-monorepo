@@ -3,6 +3,7 @@ import { BigNumber as EthersBigNumber } from 'ethers';
 import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 import React from 'react';
+
 import { getUserLocale } from './utils';
 
 const MAX_FRACTION_DIGITS = 20;
@@ -55,11 +56,30 @@ export const getDecimalSeparator = memoize(
       .find((part) => part.type === 'decimal')?.value
 );
 
+/** formatNumber will format the number with fixed decimals
+ * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
+ * @param formatDecimals - number of decimals to use
+ */
 export const formatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
   return getNumberFormat(formatDecimals).format(Number(rawValue));
+};
+
+/** normalizeFormatNumber will format the number with fixed decimals, but without insignificant trailing zeros
+ * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
+ * @param formatDecimals - number of decimals to use
+ */
+export const normalizeFormatNumber = (
+  rawValue: string | number | BigNumber,
+  formatDecimals = 0
+) => {
+  const numberToFormat = getNumberFormat(formatDecimals).format(
+    Number(rawValue)
+  );
+  // Multiplying by 1 safely removes the insignificant trailing zeros from the formatted number
+  return (Number(numberToFormat) * 1).toString();
 };
 
 export const addDecimalsFormatNumber = (
