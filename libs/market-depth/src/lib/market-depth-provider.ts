@@ -23,13 +23,18 @@ export const update: Update<
     if (delta.marketId !== data.id) {
       continue;
     }
-    if (Number(delta.sequenceNumber) <= Number(data.depth.sequenceNumber)) {
+    if (BigInt(delta.sequenceNumber) <= BigInt(data.depth.sequenceNumber)) {
+      captureException(
+        new Error(
+          `Sequence number from delta is lower or equal to last sequenceNumber for ${data.id}, ${delta.sequenceNumber} <= ${data.depth.sequenceNumber}, update skipped`
+        )
+      );
       return data;
     }
     if (delta.previousSequenceNumber !== data.depth.sequenceNumber) {
       captureException(
         new Error(
-          `Sequence number gap in marketsDepthUpdate for {data.id}, {sequenceNumbers[delta.marketId]} - {delta.previousSequenceNumber}`
+          `Sequence number gap between delta previousSequenceNumber and stored sequence number in marketsDepthUpdate for market ${data.id}; ${delta.previousSequenceNumber} !== ${data.depth.sequenceNumber}, data provider reload`
         )
       );
       reload();
