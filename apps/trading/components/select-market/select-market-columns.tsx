@@ -220,7 +220,8 @@ export const columns = (
           href={`/markets/${market.id}`}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             onSelect(market.id);
           }}
         >
@@ -277,14 +278,15 @@ export const columns = (
         <button
           data-dialog-trigger
           className="inline underline"
-          onClick={(e) =>
+          onClick={(e) => {
+            e.stopPropagation();
             onCellClick(
               e,
               ColumnKind.Asset,
               market.tradableInstrument.instrument.product.settlementAsset
                 .symbol
-            )
-          }
+            );
+          }}
         >
           {market.tradableInstrument.instrument.product.settlementAsset.symbol}
         </button>
@@ -393,7 +395,8 @@ export const columnsPositionMarkets = (
           href={`/markets/${market.id}`}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             onSelect(market.id);
           }}
         >
@@ -451,6 +454,7 @@ export const columnsPositionMarkets = (
           data-dialog-trigger
           className="inline underline"
           onClick={(e) => {
+            e.stopPropagation();
             if (!onCellClick) return;
             onCellClick(
               e,
