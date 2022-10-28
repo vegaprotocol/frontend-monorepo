@@ -41,28 +41,6 @@ export const lpDataProvider = makeDerivedDataProvider(
   })
 );
 
-const formatMarket = (data: MarketLpQuery) => {
-  return {
-    name: data?.market?.tradableInstrument.instrument.name,
-    symbol:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset
-        .symbol,
-    settlementAsset:
-      data?.market?.tradableInstrument.instrument.product.settlementAsset,
-    targetStake: data?.market?.data?.targetStake,
-    tradingMode: data?.market?.data?.marketTradingMode,
-    trigger: data?.market?.data?.trigger,
-  };
-};
-
-export const lpDataProvider = makeDerivedDataProvider(
-  [marketLiquidityDataProvider, liquidityProvisionsDataProvider],
-  ([market, providers]) => ({
-    market: { ...formatMarket(market) },
-    liquidityProviders: providers || [],
-  })
-);
-
 const useMarketDetails = (marketId: string | undefined) => {
   const { data, loading, error } = useDataProvider({
     dataProvider: lpDataProvider,
