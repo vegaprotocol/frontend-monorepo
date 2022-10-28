@@ -234,7 +234,7 @@ export const positionsDataProvider = makeDataProvider<
     subscriptionData.positions,
 });
 
-const upgradeMarginsConection = (
+const upgradeMarginsConnection = (
   marketId: string,
   margins: MarginsQuery['party'] | null
 ) => {
@@ -270,7 +270,7 @@ export const rejoinPositionData = (
         updatedAt: node.updatedAt,
         market:
           marketsData?.find((market) => market.id === node.market.id) || null,
-        margins: upgradeMarginsConection(node.market.id, margins),
+        margins: upgradeMarginsConnection(node.market.id, margins),
       };
     });
   }
@@ -291,7 +291,7 @@ export const positionsMetricsDataProvider = makeDerivedDataProvider<
     const positionsData = rejoinPositionData(positions, marketsData, margins);
     return sortBy(
       getMetrics(positionsData, accounts as Account[] | null),
-      'updatedAt'
-    ).reverse();
+      'marketName'
+    );
   }
 );
