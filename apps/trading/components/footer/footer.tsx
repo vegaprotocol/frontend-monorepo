@@ -17,6 +17,7 @@ export const Footer = () => {
 };
 
 const NodeUrl = ({ url }: { url: string }) => {
+  // get base url from api url, api sub domain
   const urlObj = new URL(url);
   const nodeUrl = urlObj.origin.replace(/^[^.]+\./g, '');
   return (
