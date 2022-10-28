@@ -20,7 +20,7 @@ const formatToHours = ({ value }: { value?: string | null }) => {
   return `${Math.round(Math.abs(now - created) / MS_IN_HOUR)}h`;
 };
 
-export const Providers = ({
+export const LPProvidersGrid = ({
   liquidityProviders,
   settlementAsset,
 }: {

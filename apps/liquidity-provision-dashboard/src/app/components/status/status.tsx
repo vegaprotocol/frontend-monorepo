@@ -34,7 +34,7 @@ export const Status = ({
         'text-sm': size === 'small',
       })}
     >
-      <Lozenge className="border border-[#a7a7a7] bg-[#f0f0f0]">
+      <Lozenge className="border border-greys-light-300 bg-greys-light-100">
         {getStatus()}
       </Lozenge>
     </div>
