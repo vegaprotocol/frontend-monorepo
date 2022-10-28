@@ -1,11 +1,14 @@
 const plugin = require('tailwindcss/plugin');
 const colors = require('tailwindcss/colors');
 const theme = require('./theme');
-
+// font-feature-settings: 'liga' off, 'calt' off;
 const vegaCustomClasses = plugin(function ({ addUtilities }) {
   addUtilities({
     '.calt': {
       fontFeatureSettings: "'calt'",
+    },
+    '.liga-0-calt-0': {
+      fontFeatureSettings: "'liga' 0, 'calt' 0",
     },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
