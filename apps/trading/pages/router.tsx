@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-const LazyHome = dynamic(() => import('../client-pages/home/home'), {
+const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
 });
 
@@ -14,18 +14,15 @@ const LazyMarkets = dynamic(() => import('../client-pages/markets'), {
   ssr: false,
 });
 
-const LazyMarket = dynamic(() => import('../client-pages/market/market'), {
+const LazyMarket = dynamic(() => import('../client-pages/market'), {
   ssr: false,
 });
 
-const LazyPortfolio = dynamic(
-  () => import('../client-pages/portfolio/portfolio'),
-  {
-    ssr: false,
-  }
-);
+const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
+  ssr: false,
+});
 
-const LazyDeposit = dynamic(() => import('../client-pages/deposit/deposit'), {
+const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
   ssr: false,
 });
 

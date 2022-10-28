@@ -14,7 +14,7 @@ import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
 
-const Portfolio = () => {
+export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -78,12 +78,6 @@ const Portfolio = () => {
     </div>
   );
 };
-
-Portfolio.getInitialProps = () => ({
-  page: 'portfolio',
-});
-
-export default Portfolio;
 
 interface PortfolioGridChildProps {
   children: ReactNode;

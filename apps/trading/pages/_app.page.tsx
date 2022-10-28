@@ -45,6 +45,9 @@ function AppBody({ pageProps }: AppProps) {
   const [theme, toggleTheme] = useThemeSwitcher();
   const [mounted, setMounted] = useState(false);
 
+  // Hash router requires access to the document object. At compile time that doesn't exist
+  // so we need to ensure client side rendering only from this point onwards in
+  // the component tree
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -52,26 +55,28 @@ function AppBody({ pageProps }: AppProps) {
   if (!mounted) return null;
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <Title />
-      <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
-        <AppLoader>
-          <Navbar
-            theme={theme}
-            toggleTheme={toggleTheme}
-            navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-          />
-          <main data-testid={pageProps.page}>
-            <Router />
-          </main>
-          <Footer />
-          <DialogsContainer />
-        </AppLoader>
-      </div>
-    </ThemeContext.Provider>
+    <HashRouter>
+      <ThemeContext.Provider value={theme}>
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <Title />
+        <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
+          <AppLoader>
+            <Navbar
+              theme={theme}
+              toggleTheme={toggleTheme}
+              navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
+            />
+            <main data-testid={pageProps.page}>
+              <Router />
+            </main>
+            <Footer />
+            <DialogsContainer />
+          </AppLoader>
+        </div>
+      </ThemeContext.Provider>
+    </HashRouter>
   );
 }
 
@@ -79,9 +84,7 @@ function VegaTradingApp(props: AppProps) {
   return (
     <EnvironmentProvider>
       <VegaWalletProvider>
-        <HashRouter>
-          <AppBody {...props} />
-        </HashRouter>
+        <AppBody {...props} />
       </VegaWalletProvider>
     </EnvironmentProvider>
   );

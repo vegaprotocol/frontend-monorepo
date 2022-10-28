@@ -31,7 +31,7 @@ export interface SingleMarketData extends SingleMarketFieldsFragment {
   data: MarketData;
 }
 
-const MarketPage = ({
+export const Market = ({
   id,
   marketId: mid,
 }: {
@@ -158,11 +158,9 @@ const MarketPage = ({
   );
 };
 
-MarketPage.getInitialProps = () => ({
+Market.getInitialProps = () => ({
   page: 'market',
 });
-
-export default MarketPage;
 
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState(() => {

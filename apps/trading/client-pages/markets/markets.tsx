@@ -1,10 +1,10 @@
 import { MarketsContainer } from '@vegaprotocol/market-list';
-import { useGlobalStore, usePageTitleStore } from '../stores';
+import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/react-helpers';
 import { useNavigate } from 'react-router-dom';
 
-const Markets = () => {
+export const Markets = () => {
   const navigate = useNavigate();
   const { update } = useGlobalStore((store) => ({ update: store.update }));
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -23,9 +23,3 @@ const Markets = () => {
     />
   );
 };
-
-Markets.getInitialProps = () => ({
-  page: 'markets',
-});
-
-export default Markets;

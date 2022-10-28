@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 
-export function Index() {
+export const Home = () => {
   const navigate = useNavigate();
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in     us mode(i.e. not in auction).
@@ -60,10 +60,4 @@ export function Index() {
       {null}
     </AsyncRenderer>
   );
-}
-
-Index.getInitialProps = () => ({
-  page: 'home',
-});
-
-export default Index;
+};

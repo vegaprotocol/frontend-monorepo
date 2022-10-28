@@ -22,13 +22,13 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { Header, HeaderStat } from '../components/header';
+import { Header, HeaderStat } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
 
-const LiquidityPage = () => {
+export const Liquidity = () => {
   const params = useParams();
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
@@ -220,9 +220,3 @@ const LiquidityPage = () => {
     </AsyncRenderer>
   );
 };
-
-LiquidityPage.getInitialProps = () => ({
-  page: 'liquidity',
-});
-
-export default LiquidityPage;
