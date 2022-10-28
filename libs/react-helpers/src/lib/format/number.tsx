@@ -79,7 +79,9 @@ export const normalizeFormatNumber = (
     Number(rawValue)
   );
   // Multiplying by 1 safely removes the insignificant trailing zeros from the formatted number
-  return (Number(numberToFormat) * 1).toString();
+  return !isNaN(Number(numberToFormat))
+    ? (Number(numberToFormat) * 1).toString()
+    : numberToFormat;
 };
 
 export const addDecimalsFormatNumber = (
