@@ -1,14 +1,13 @@
 import { useCallback, useState } from 'react';
 import { AgGridColumn } from 'ag-grid-react';
 import type {
-  GroupCellRendererParams,
   ValueFormatterParams,
   GetRowIdParams,
   RowClickedEvent,
 } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { Icon, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/liquidity';
 import {
@@ -22,44 +21,6 @@ import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
-
-const marketNameCellRenderer = ({
-  value,
-  data,
-}: {
-  value: string;
-  data: Market;
-}) => {
-  return (
-    <>
-      <span style={{ lineHeight: '12px' }}>{value}</span>
-      <span style={{ lineHeight: '12px' }}>
-        {data?.tradableInstrument?.instrument?.product?.settlementAsset?.symbol}
-      </span>
-    </>
-  );
-};
-
-const healthCellRenderer = ({
-  value,
-  data,
-}: {
-  value: MarketTradingMode;
-  data: Market;
-}) => {
-  return (
-    <div>
-      <HealthBar
-        status={value}
-        target={data.target}
-        decimals={
-          data.tradableInstrument.instrument.product.settlementAsset.decimals
-        }
-        levels={data.feeLevels}
-      />
-    </div>
-  );
-};
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -98,7 +59,25 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Market (futures)')}
             field="tradableInstrument.instrument.name"
-            cellRenderer={marketNameCellRenderer}
+            cellRenderer={({
+              value,
+              data,
+            }: {
+              value: string;
+              data: Market;
+            }) => {
+              return (
+                <>
+                  <span className="leading-3">{value}</span>
+                  <span className="leading-3">
+                    {
+                      data?.tradableInstrument?.instrument?.product
+                        ?.settlementAsset?.symbol
+                    }
+                  </span>
+                </>
+              );
+            }}
             minWidth={100}
             flex="1"
           />
@@ -106,13 +85,13 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
-            cellRenderer={({ value, data }: GroupCellRendererParams) => {
-              return (
-                <div>
-                  {formatNumber(value)} ({displayChange(data.volumeChange)})
-                </div>
-              );
-            }}
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              `${addDecimalsFormatNumber(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+                  .decimals
+              )} (${displayChange(data.volumeChange)})`
+            }
           />
 
           <AgGridColumn
@@ -157,7 +136,23 @@ export const MarketList = () => {
               );
             }}
             field="tradingMode"
-            cellRenderer={healthCellRenderer}
+            cellRenderer={({
+              value,
+              data,
+            }: {
+              value: MarketTradingMode;
+              data: Market;
+            }) => (
+              <HealthBar
+                status={value}
+                target={data.target}
+                decimals={
+                  data.tradableInstrument.instrument.product.settlementAsset
+                    .decimals
+                }
+                levels={data.feeLevels}
+              />
+            )}
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
           />

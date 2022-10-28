@@ -102,7 +102,7 @@ export const Last24hVolume = ({
           ? addDecimalsFormatNumber(candleVolume, decimals)
           : '0'}{' '}
       </span>
-      <span className="text-lg text-[#626262]">
+      <span className="text-lg text-greys-light-400">
         ({displayChange(volumeChange)})
       </span>
     </div>

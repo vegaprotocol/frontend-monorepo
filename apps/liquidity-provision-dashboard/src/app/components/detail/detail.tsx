@@ -15,9 +15,9 @@ import {
 } from '@vegaprotocol/liquidity';
 import type { MarketLpQuery } from '@vegaprotocol/liquidity';
 
-import { Market } from './Market';
+import { Market } from './market';
 import { Header } from './header';
-import { Providers } from './providers';
+import { LPProvidersGrid } from './providers';
 
 const formatMarket = (data: MarketLpQuery) => {
   return {
@@ -95,7 +95,7 @@ export const Detail = () => {
             <h2 className="font-alpha text-2xl mb-4">
               {t('Current Liquidity Provision')}
             </h2>
-            <Providers
+            <LPProvidersGrid
               liquidityProviders={data.liquidityProviders}
               settlementAsset={data.settlementAsset}
             />
