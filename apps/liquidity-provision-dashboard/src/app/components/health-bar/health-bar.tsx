@@ -1,34 +1,12 @@
 import classNames from 'classnames';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import type { MarketTradingMode } from '@vegaprotocol/types';
 import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { BigNumber } from 'bignumber.js';
 import type { ReactNode } from 'react';
 
-const marketTradingModeStyle = {
-  [MarketTradingMode.TRADING_MODE_CONTINUOUS]: '#00a88a',
-  [MarketTradingMode.TRADING_MODE_MONITORING_AUCTION]: '#fb8e7f',
-  [MarketTradingMode.TRADING_MODE_OPENING_AUCTION]: '#68e2e4',
-  [MarketTradingMode.TRADING_MODE_BATCH_AUCTION]: 'batch',
-  [MarketTradingMode.TRADING_MODE_NO_TRADING]: 'none',
-};
+import { getColorForStatus } from '../../lib/utils';
 
-const Indicator = ({
-  backgroundColor,
-  opacity,
-}: {
-  backgroundColor?: string;
-  opacity?: number;
-}) => {
-  return (
-    <div
-      className="inline-block w-2 h-2 mt-1.5 mr-1 rounded-full bg-black"
-      style={{
-        opacity,
-        backgroundColor,
-      }}
-    />
-  );
-};
+import { Indicator } from '../indicator';
 
 const Remainder = () => (
   <div className="bg-greys-light-200 h-[inherit] relative flex-1"></div>
@@ -163,6 +141,7 @@ export const HealthBar = ({
     targetNumber * 2 >= committedNumber ? targetNumber * 2 : committedNumber;
   const targetPercent = (targetNumber / total) * 100;
   const isLarge = size === 'large';
+  const backgroundColor = getColorForStatus(status);
 
   return (
     <div className="w-full">
@@ -184,8 +163,7 @@ export const HealthBar = ({
             {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
               const prevLevel = levels[index - 1]?.commitmentAmount;
-              const backgroundColor = marketTradingModeStyle[status];
-              const opacity = 1 - 0.1 * index;
+              const opacity = 1 - 0.2 * index;
               return (
                 <Level
                   commitmentAmount={commitmentAmount}
@@ -194,10 +172,9 @@ export const HealthBar = ({
                   opacity={opacity}
                 >
                   <Tooltip isExpanded={isExpanded}>
-                    <Indicator
-                      backgroundColor={backgroundColor}
-                      opacity={opacity}
-                    />
+                    <div className="mt-1.5 inline-flex">
+                      <Indicator status={status} opacity={opacity} />
+                    </div>
                     <div className="flex  flex-col">
                       <span className={COPY_CLASS}>
                         {fee}% {t('Fee')}
@@ -221,7 +198,9 @@ export const HealthBar = ({
 
         <Target targetPercent={targetPercent} isLarge={isLarge}>
           <Tooltip isExpanded={isExpanded}>
-            <Indicator />
+            <div className="mt-1.5 inline-flex">
+              <Indicator />
+            </div>
             <span className={COPY_CLASS}>
               {t('Target stake')} {addDecimalsFormatNumber(target, decimals)}
             </span>

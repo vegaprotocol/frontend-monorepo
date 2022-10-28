@@ -1,7 +1,7 @@
 const plugin = require('tailwindcss/plugin');
 const colors = require('tailwindcss/colors');
 const theme = require('./theme');
-// font-feature-settings: 'liga' off, 'calt' off;
+
 const vegaCustomClasses = plugin(function ({ addUtilities }) {
   addUtilities({
     '.calt': {
