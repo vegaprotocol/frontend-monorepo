@@ -15,6 +15,9 @@ import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import { ValidateMargin } from './validate-margin';
+import type { OrderMargin } from '../../hooks/use-order-margin';
+import { useOrderMarginValidation } from './use-order-margin-validation';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -30,6 +33,7 @@ export type ValidationProps = {
   orderType: Schema.OrderType;
   orderTimeInForce: Schema.OrderTimeInForce;
   fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
+  estMargin: OrderMargin | null;
 };
 
 export const marketTranslations = (marketState: MarketState) => {
@@ -46,12 +50,15 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
+  estMargin,
 }: ValidationProps): {
   message: React.ReactNode | string;
   isDisabled: boolean;
 } => {
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
+
+  const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
 
   const { message, isDisabled } = useMemo(() => {
     if (!pubKey) {
@@ -266,6 +273,13 @@ export const useOrderValidation = ({
       };
     }
 
+    if (isInvalidOrderMargin) {
+      return {
+        isDisabled: true,
+        message: <ValidateMargin {...isInvalidOrderMargin} />,
+      };
+    }
+
     if (
       [
         MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
@@ -291,6 +305,7 @@ export const useOrderValidation = ({
     fieldErrors?.price?.type,
     orderType,
     orderTimeInForce,
+    isInvalidOrderMargin,
   ]);
 
   return { message, isDisabled };
