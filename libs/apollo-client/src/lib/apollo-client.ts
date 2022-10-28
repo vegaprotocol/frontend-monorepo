@@ -24,7 +24,7 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   const urlWS = new URL(base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
-  const timeoutLink = new ApolloLinkTimeout(5000);
+  const timeoutLink = new ApolloLinkTimeout(10000);
   const retryLink = new RetryLink({
     delay: {
       initial: 300,
