@@ -92,6 +92,15 @@ export const addDecimalsFormatNumber = (
   return formatNumber(x, formatDecimals);
 };
 
+export const addDecimalsNormalizeNumber = (
+  rawValue: string | number,
+  decimalPlaces: number,
+  formatDecimals: number = decimalPlaces
+) => {
+  const x = addDecimal(rawValue, decimalPlaces);
+  return normalizeFormatNumber(x, formatDecimals);
+};
+
 export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
     typeof decimals === 'undefined' ? Math.max(value.dp() || 0, 2) : decimals;
