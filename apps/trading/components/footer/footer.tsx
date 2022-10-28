@@ -9,7 +9,7 @@ export const Footer = () => {
       <div className="flex justify-between">
         <div className="flex gap-2">
           {VEGA_URL && <NodeUrl url={VEGA_URL} />}
-          <ButtonLink onClick={setNodeSwitcherOpen}>Change</ButtonLink>
+          <ButtonLink onClick={setNodeSwitcherOpen}>{t('Change')}</ButtonLink>
         </div>
       </div>
     </footer>
