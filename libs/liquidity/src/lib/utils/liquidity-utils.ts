@@ -3,8 +3,7 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 
 import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
 
-export type LiquidityProvisionMarket =
-  MarketNodeFragment;
+export type LiquidityProvisionMarket = MarketNodeFragment;
 
 export interface Provider {
   commitmentAmount: string;
