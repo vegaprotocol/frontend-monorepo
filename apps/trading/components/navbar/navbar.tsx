@@ -59,10 +59,7 @@ export const Navbar = ({
       >
         <div className="flex gap-4 items-center">
           <Link to="/">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <Vega className="w-13" />
-            </a>
+            <Vega className="w-13" />
           </Link>
           <NetworkSwitcher />
         </div>

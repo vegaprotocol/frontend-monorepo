@@ -15,7 +15,7 @@ import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import { HashRouter, useLocation } from 'react-router-dom';
-import { Router } from './router';
+import { ClientRouter } from './client-router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -53,7 +53,7 @@ function AppBody() {
             navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
           />
           <main data-testid={location.pathname}>
-            <Router />
+            <ClientRouter />
           </main>
           <Footer />
           <DialogsContainer />
