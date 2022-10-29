@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
-import { Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
@@ -27,13 +26,7 @@ export const Navbar = ({
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
   }));
-  const [tradingPath, setTradingPath] = useState('/markets');
-
-  useEffect(() => {
-    if (marketId) {
-      setTradingPath(`/markets/${marketId}`);
-    }
-  }, [marketId]);
+  const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
 
   const themeWrapperClasses = classNames({
     dark: navbarTheme === 'dark',
@@ -64,17 +57,17 @@ export const Navbar = ({
           <NetworkSwitcher />
         </div>
         <nav className="flex items-center flex-1 px-2">
-          <NavLink
+          <AppNavLink
             name={t('Trading')}
             path={tradingPath}
             navbarTheme={navbarTheme}
           />
-          <NavLink
+          <AppNavLink
             name={t('Portfolio')}
             path="/portfolio"
             navbarTheme={navbarTheme}
           />
-          <NavLink
+          <AppNavLink
             name={t('Governance')}
             path={`${VEGA_TOKEN_URL}/governance`}
             alignRight={true}
@@ -91,7 +84,7 @@ export const Navbar = ({
   );
 };
 
-interface NavLinkProps {
+interface AppNavLinkProps {
   name: string;
   path: string;
   navbarTheme: NavbarTheme;
@@ -100,38 +93,44 @@ interface NavLinkProps {
   target?: HTMLAttributeAnchorTarget;
 }
 
-const NavLink = ({
+const AppNavLink = ({
   name,
   path,
   navbarTheme,
   alignRight,
   target,
   testId = name,
-}: NavLinkProps) => {
-  const router = useRouter();
-  const isActive = router.asPath?.includes(path);
-  const linkClasses = classNames('mx-2 py-3 self-end relative', {
-    'cursor-default': isActive,
-    'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
-    'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
-      !isActive && navbarTheme !== 'yellow',
-    'ml-auto': alignRight,
-    'text-black': isActive && navbarTheme === 'yellow',
-    'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
-  });
+}: AppNavLinkProps) => {
   const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
     'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
     'bg-black': navbarTheme === 'yellow',
   });
   return (
-    <Link
+    <NavLink
       data-testid={testId}
       to={path}
-      className={linkClasses}
+      className={({ isActive }) => {
+        return classNames('mx-2 py-3 self-end relative', {
+          'cursor-default': isActive,
+          'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
+          'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
+            !isActive && navbarTheme !== 'yellow',
+          'ml-auto': alignRight,
+          'text-black': isActive && navbarTheme === 'yellow',
+          'text-black/60 hover:text-black':
+            !isActive && navbarTheme === 'yellow',
+        });
+      }}
       target={target}
     >
-      {name}
-      {isActive && <span className={borderClasses} />}
-    </Link>
+      {({ isActive }) => {
+        return (
+          <>
+            {name}
+            {isActive && <span className={borderClasses} />}
+          </>
+        );
+      }}
+    </NavLink>
   );
 };
