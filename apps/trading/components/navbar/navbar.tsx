@@ -7,8 +7,8 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
-import { useEffect, useState } from 'react';
 import testnetBg from '../../assets/green-cloud.png';
+import { Routes } from '../../pages/client-router';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
@@ -64,7 +64,7 @@ export const Navbar = ({
           />
           <AppNavLink
             name={t('Portfolio')}
-            path="/portfolio"
+            path={Routes.PORTFOLIO}
             navbarTheme={navbarTheme}
           />
           <AppNavLink

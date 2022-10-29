@@ -26,13 +26,20 @@ const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
   ssr: false,
 });
 
+export enum Routes {
+  HOME = '/',
+  MARKETS = '/markets',
+  PORTFOLIO = '/portfolio',
+  PORTFOLIO_DEPOSIT = '/portfolio/deposit',
+}
+
 const routerConfig = [
   {
     index: true,
     element: <LazyHome />,
   },
   {
-    path: 'markets',
+    path: Routes.HOME,
     element: <LazyMarkets />,
   },
   {
@@ -44,11 +51,11 @@ const routerConfig = [
     element: <LazyLiquidity />,
   },
   {
-    path: 'portfolio',
+    path: Routes.PORTFOLIO,
     element: <LazyPortfolio />,
   },
   {
-    path: 'portfolio/deposit',
+    path: Routes.PORTFOLIO_DEPOSIT,
     element: <LazyDeposit />,
   },
 ];
