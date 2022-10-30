@@ -74,7 +74,7 @@ export const formatNumber = (
 export const normalizeFormatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
-) => {
+): string => {
   const numberToFormat = getNumberFormat(formatDecimals).format(
     Number(rawValue)
   );
