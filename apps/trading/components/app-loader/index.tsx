@@ -54,6 +54,12 @@ export function AppLoader({ children }: AppLoaderProps) {
       AccountUpdate: {
         keyFields: false,
       },
+      Party: {
+        keyFields: false,
+      },
+      Fees: {
+        keyFields: false,
+      },
     },
   };
   return <NetworkLoader cache={cache}>{children}</NetworkLoader>;
