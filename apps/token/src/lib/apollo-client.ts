@@ -2,11 +2,11 @@ import type { FieldFunctionOptions, Reference } from '@apollo/client';
 import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
 import { BigNumber } from './bignumber';
-import { addDecimal } from './decimals';
 import { deterministicShuffle } from './deterministic-shuffle';
 
 // Create seed in memory. Validator list order will remain the same
@@ -20,7 +20,7 @@ export function createClient(base?: string) {
     throw new Error('Base must be passed into createClient!');
   }
   const formatUintToNumber = (amount: string, decimals = 18) =>
-    addDecimal(new BigNumber(amount), decimals).toString();
+    addDecimal(amount, decimals).toString();
 
   const createReadField = (fieldName: string) => ({
     [`${fieldName}Formatted`]: {

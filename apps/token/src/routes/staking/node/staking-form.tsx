@@ -8,7 +8,6 @@ import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
-import { addDecimal, removeDecimal } from '../../../lib/decimals';
 import type {
   PartyDelegations,
   PartyDelegationsVariables,
@@ -29,7 +28,12 @@ import type {
   UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useNetworkParam, NetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  useNetworkParam,
+  NetworkParams,
+  removeDecimal,
+  addDecimal,
+} from '@vegaprotocol/react-helpers';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -107,7 +111,7 @@ export const StakingForm = ({
   );
 
   const minTokensWithDecimals = React.useMemo(() => {
-    const minTokens = new BigNumber(minAmount !== null ? minAmount : '');
+    const minTokens = minAmount !== null ? minAmount : '';
     return addDecimal(minTokens, appState.decimals);
   }, [appState.decimals, minAmount]);
 
@@ -128,13 +132,13 @@ export const StakingForm = ({
     const delegateInput: DelegateSubmissionBody = {
       delegateSubmission: {
         nodeId,
-        amount: removeDecimal(new BigNumber(amount), appState.decimals),
+        amount: removeDecimal(amount, appState.decimals),
       },
     };
     const undelegateInput: UndelegateSubmissionBody = {
       undelegateSubmission: {
         nodeId,
-        amount: removeDecimal(new BigNumber(amount), appState.decimals),
+        amount: removeDecimal(amount, appState.decimals),
         method:
           removeType === RemoveType.Now
             ? 'METHOD_NOW'
