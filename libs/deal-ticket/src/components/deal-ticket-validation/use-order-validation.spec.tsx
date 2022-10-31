@@ -127,7 +127,11 @@ describe('useOrderValidation', () => {
       .mockReturnValue(false);
 
     const { result } = setup();
-    expect(result.current).toStrictEqual({ isDisabled: false, message: ``, section: '' });
+    expect(result.current).toStrictEqual({
+      isDisabled: false,
+      message: ``,
+      section: '',
+    });
   });
 
   it('Returns an error message when no keypair found', () => {
@@ -135,7 +139,11 @@ describe('useOrderValidation', () => {
       .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
       .mockReturnValue(false);
     const { result } = setup(defaultOrder, { pubKey: null });
-    expect(result.current).toStrictEqual({ isDisabled: false, message: ``, section: '' });
+    expect(result.current).toStrictEqual({
+      isDisabled: false,
+      message: ``,
+      section: '',
+    });
   });
 
   it.each`
@@ -154,7 +162,7 @@ describe('useOrderValidation', () => {
         message: `This market is ${marketTranslations(
           state
         )} and not accepting orders`,
-        section: 'sec-summary'
+        section: 'sec-summary',
       });
     }
   );
@@ -178,7 +186,7 @@ describe('useOrderValidation', () => {
         message: `This market is ${MarketStateMapping[
           state as MarketState
         ].toLowerCase()} and only accepting liquidity commitment orders`,
-        section: 'sec-summary'
+        section: 'sec-summary',
       });
     }
   );
@@ -222,7 +230,7 @@ describe('useOrderValidation', () => {
       expect(result.current).toStrictEqual({
         isDisabled: true,
         message: errorMessage,
-        section: 'sec-force'
+        section: 'sec-force',
       });
     }
   );
@@ -267,7 +275,7 @@ describe('useOrderValidation', () => {
     expect(result.current).toStrictEqual({
       isDisabled: true,
       message: ERROR.FIELD_PRICE_STEP_DECIMAL,
-      section: 'sec-size'
+      section: 'sec-size',
     });
   });
 
