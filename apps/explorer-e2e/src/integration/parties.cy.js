@@ -17,13 +17,13 @@ const assetsInTest = Object.keys(assetData);
 context('Parties page', { tags: '@regression' }, function () {
   before('send-faucet assets to connected vega wallet', function () {
     cy.vega_wallet_import();
-    assetsInTest.forEach((asset) => {
-      cy.vega_wallet_receive_fauceted_asset(
-        assetData[asset].name,
-        assetData[asset].amount,
-        vegaWalletPublicKey
-      );
-    });
+    // assetsInTest.forEach((asset) => {
+    //   cy.vega_wallet_receive_fauceted_asset(
+    //     assetData[asset].name,
+    //     assetData[asset].amount,
+    //     vegaWalletPublicKey
+    //   );
+    // });
     cy.visit('/');
   });
 
@@ -50,9 +50,9 @@ context('Parties page', { tags: '@regression' }, function () {
     });
 
     it('should see party address id - having searched', function () {
-      cy.contains('Address')
+      cy.getByTestId('parties-header')
         .siblings()
-        .contains(vegaWalletPublicKey)
+        .contains(vegaWalletPublicKey.substring(0,14))
         .should('be.visible');
     });
 
@@ -76,19 +76,23 @@ context('Parties page', { tags: '@regression' }, function () {
       });
     });
 
-    it('should be able to copy the party address id', function () {
+    it('should be able to copy the party address id', { browser: 'chrome' }, function () {
       cy.monitor_clipboard().as('clipboard');
-      cy.contains('Address').siblings().last().click();
+      cy.getByTestId('parties-header').next().within(() => {
+        cy.get('button').click()
+      })
       cy.get('@clipboard')
         .get_copied_text_from_clipboard()
         .should('equal', vegaWalletPublicKey);
     });
 
-    it('should be able to copy an asset id', function () {
+    it('should be able to copy an asset id', { browser: 'chrome' }, function () {
       cy.monitor_clipboard().as('clipboard');
 
       cy.contains(assetData.fDAI.name, txTimeout).should('be.visible');
       cy.contains(assetData.fDAI.name)
+        .parent()
+        .parent()
         .siblings()
         .within(() => {
           cy.get('[data-state="closed"]').last().click({ force: true });
