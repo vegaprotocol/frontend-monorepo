@@ -10,24 +10,15 @@ export const ThemeSwitcher = ({
   onToggle: () => void;
   className?: string;
 }) => {
-  const classes = 'text-neutral-800 dark:text-neutral-300';
   return (
     <button
       type="button"
-      onClick={() => onToggle()}
+      onClick={onToggle}
       className={className}
       data-testid="theme-switcher"
     >
-      {theme === 'dark' && (
-        <span className={classes}>
-          <SunIcon />
-        </span>
-      )}
-      {theme === 'light' && (
-        <span className={classes}>
-          <MoonIcon />
-        </span>
-      )}
+      {theme === 'dark' && <SunIcon />}
+      {theme === 'light' && <MoonIcon />}
     </button>
   );
 };

@@ -18,12 +18,10 @@ const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
 const fillClasses = 'block w-full';
 const defaultClasses = [
-  'text-black dark:text-white',
-  'border-black dark:border-white',
-  'bg-white dark:bg-black',
-  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-neutral-700',
-  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-700',
-  'enabled:active:border-neutral-400',
+  'border-neutral-500',
+  'bg-transparent',
+  'enabled:hover:bg-neutral-500/20 dark:enabled:hover:bg-neutral-500/40',
+  'enabled:active:bg-neutral-500/20 dark:enabled:active:bg-neutral-500/40',
 ];
 const primary = [
   'text-black',
