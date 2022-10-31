@@ -3,8 +3,6 @@ import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
-import React from 'react';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -27,7 +25,7 @@ const singleRow: Position = {
   unrealisedPNL: '456',
   searchPrice: '0',
   updatedAt: '2022-07-27T15:02:58.400Z',
-  marginAccountBalance: new BigNumber(123456),
+  marginAccountBalance: '12345600',
 };
 
 const singleRowData = [singleRow];
