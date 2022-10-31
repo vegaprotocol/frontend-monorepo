@@ -112,29 +112,6 @@ export function createClient(base?: string) {
           ...createReadField('stakedTotal'),
         },
       },
-      Party: {
-        fields: {
-          stake: {
-            merge(existing, incoming) {
-              return {
-                ...existing,
-                ...incoming,
-              };
-            },
-            read(stake) {
-              if (stake) {
-                return {
-                  ...stake,
-                  currentStakeAvailableFormatted: formatUintToNumber(
-                    stake.currentStakeAvailable
-                  ),
-                };
-              }
-              return stake;
-            },
-          },
-        },
-      },
       Withdrawal: {
         fields: {
           pendingOnForeignChain: {
