@@ -20,15 +20,13 @@ export const DealTicketMarketAmount = ({
 }: DealTicketMarketAmountProps) => {
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   return (
-    <>
+    <div className="mb-6">
       <div className="flex items-center gap-4 relative">
         <div className="flex-1">
           <FormGroup
             label={t('Size')}
             labelFor="input-order-size-market"
-            className={classNames({
-              '!mb-1': errorMessage,
-            })}
+            className="!mb-1"
           >
             <Input
               id="input-order-size-market"
@@ -46,9 +44,12 @@ export const DealTicketMarketAmount = ({
             />
           </FormGroup>
         </div>
-        <div>@</div>
+        <div className="flex-0 items-center">
+          <div className="flex">&nbsp;</div>
+          <div className="flex">@</div>
+        </div>
         <div className="flex-1" data-testid="last-price">
-          {isMarketInAuction(market) && (
+          {isMarketInAuction(market) ? (
             <Tooltip
               description={t(
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
@@ -58,6 +59,8 @@ export const DealTicketMarketAmount = ({
                 {t(`Estimated uncrossing price`)}
               </div>
             </Tooltip>
+          ) : (
+            <div>&nbsp;</div>
           )}
           <div className="text-sm text-right">
             {price && quoteName ? (
@@ -74,6 +77,6 @@ export const DealTicketMarketAmount = ({
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-price-market"
       />
-    </>
+    </div>
   );
 };

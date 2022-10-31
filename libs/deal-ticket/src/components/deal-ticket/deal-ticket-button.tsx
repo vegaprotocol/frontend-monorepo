@@ -20,7 +20,7 @@ export const DealTicketButton = ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   return pubKey ? (
-    <>
+    <div className="mb-6">
       <Button
         variant="primary"
         fill
@@ -34,7 +34,7 @@ export const DealTicketButton = ({
         errorMessage={errorMessage}
         data-testid="dealticket-error-message"
       />
-    </>
+    </div>
   ) : (
     <Button
       variant="default"
@@ -42,6 +42,7 @@ export const DealTicketButton = ({
       type="button"
       data-testid="order-connect-wallet"
       onClick={openVegaWalletDialog}
+      className="mb-6"
     >
       {t('Connect wallet')}
     </Button>

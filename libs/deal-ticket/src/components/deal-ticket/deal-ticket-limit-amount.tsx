@@ -20,15 +20,13 @@ export const DealTicketLimitAmount = ({
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
 
   return (
-    <>
+    <div className="mb-6">
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <FormGroup
             label={t('Size')}
             labelFor="input-order-size-limit"
-            className={classNames({
-              '!mb-1': errorMessage,
-            })}
+            className="!mb-1"
           >
             <Input
               id="input-order-size-limit"
@@ -46,15 +44,16 @@ export const DealTicketLimitAmount = ({
             />
           </FormGroup>
         </div>
-        <div>@</div>
+        <div className="flex-0 items-center">
+          <div className="flex">&nbsp;</div>
+          <div className="flex">@</div>
+        </div>
         <div className="flex-1">
           <FormGroup
             labelFor="input-price-quote"
             label={t(`Price (${quoteName})`)}
             labelAlign="right"
-            className={classNames({
-              '!mb-1': errorMessage,
-            })}
+            className="!mb-1"
           >
             <Input
               id="input-price-quote"
@@ -75,6 +74,6 @@ export const DealTicketLimitAmount = ({
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-price-limit"
       />
-    </>
+    </div>
   );
 };
