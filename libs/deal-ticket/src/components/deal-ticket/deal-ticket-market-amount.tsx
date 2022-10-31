@@ -1,14 +1,10 @@
-import {
-  FormGroup,
-  Input,
-  InputError,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { formatNumber, t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation/validate-size';
 import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
 import classNames from 'classnames';
+import { DealTicketError } from './deal-ticket-error';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -74,16 +70,10 @@ export const DealTicketMarketAmount = ({
           </div>
         </div>
       </div>
-      {errorMessage && (
-        <div className="mb-6 -mt-2">
-          <InputError
-            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
-            data-testid="dealticket-error-message-price-market"
-          >
-            {errorMessage.message}
-          </InputError>
-        </div>
-      )}
+      <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-price-market"
+      />
     </>
   );
 };

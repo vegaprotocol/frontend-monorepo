@@ -46,7 +46,7 @@ export const marketTranslations = (marketState: MarketState) => {
   }
 };
 
-type DealTicketSection =
+export type DealTicketSection =
   | ''
   | typeof constants.DEAL_TICKET_SECTION_TYPE
   | typeof constants.DEAL_TICKET_SECTION_SIZE

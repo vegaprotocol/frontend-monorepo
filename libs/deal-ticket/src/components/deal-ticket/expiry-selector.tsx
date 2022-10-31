@@ -1,12 +1,13 @@
-import type { ReactNode } from 'react';
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
+import { DealTicketError } from './deal-ticket-error';
 
 interface ExpirySelectorProps {
   value?: string;
   onSelect: (expiration: string | null) => void;
-  errorMessage?: { message: ReactNode | string; isDisabled: boolean };
+  errorMessage?: DealTicketErrorMessage;
 }
 
 export const ExpirySelector = ({
@@ -28,16 +29,10 @@ export const ExpirySelector = ({
         onChange={(e) => onSelect(e.target.value)}
         min={minDate}
       />
-      {errorMessage && (
-        <div className="mb-6 -mt-2">
-          <InputError
-            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
-            data-testid="dealticket-error-message-expiry"
-          >
-            {errorMessage.message}
-          </InputError>
-        </div>
-      )}
+      <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-force"
+      />
     </FormGroup>
   );
 };

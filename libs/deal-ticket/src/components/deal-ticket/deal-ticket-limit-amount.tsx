@@ -1,8 +1,9 @@
 import classNames from 'classnames';
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation';
+import { DealTicketError } from './deal-ticket-error';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
@@ -70,16 +71,10 @@ export const DealTicketLimitAmount = ({
           </FormGroup>
         </div>
       </div>
-      {errorMessage && (
-        <div className="mb-6 -mt-2">
-          <InputError
-            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
-            data-testid="dealticket-error-message-price-limit"
-          >
-            {errorMessage.message}
-          </InputError>
-        </div>
-      )}
+      <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-price-limit"
+      />
     </>
   );
 };

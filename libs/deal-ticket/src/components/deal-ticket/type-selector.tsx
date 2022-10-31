@@ -1,13 +1,14 @@
-import type { ReactNode } from 'react';
-import { FormGroup, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
+import { DealTicketError } from './deal-ticket-error';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
   onSelect: (type: Schema.OrderType) => void;
-  errorMessage?: { message: ReactNode | string; isDisabled: boolean };
+  errorMessage?: DealTicketErrorMessage;
 }
 
 const toggles = [
@@ -29,16 +30,10 @@ export const TypeSelector = ({
         checkedValue={value}
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
-      {errorMessage && (
-        <div className="mb-6 -mt-2">
-          <InputError
-            intent={errorMessage.isDisabled ? 'danger' : 'warning'}
-            data-testid="dealticket-error-message-price"
-          >
-            {errorMessage.message}
-          </InputError>
-        </div>
-      )}
+      <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-type"
+      />
     </FormGroup>
   );
 };

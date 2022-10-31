@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { t, removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
+import { removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
@@ -9,7 +8,6 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { ExpirySelector } from './expiry-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
@@ -22,6 +20,7 @@ import {
   getFeeDetailsValues,
 } from '../../hooks/use-fee-deal-ticket-details';
 import * as constants from '../constants';
+import { DealTicketButton } from './deal-ticket-button';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -37,10 +36,6 @@ export const DealTicket = ({
   submit,
   transactionStatus,
 }: DealTicketProps) => {
-  const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
   const {
     register,
     control,
@@ -184,39 +179,15 @@ export const DealTicket = ({
             )}
           />
         )}
-      {pubKey ? (
-        <>
-          <Button
-            variant="primary"
-            fill={true}
-            type="submit"
-            disabled={isDisabled}
-            data-testid="place-order"
-          >
-            {transactionStatus === 'pending'
-              ? t('Pending...')
-              : t('Place order')}
-          </Button>
-          {errorSection === constants.DEAL_TICKET_SECTION_SUMMARY && (
-            <InputError
-              intent={isDisabled ? 'danger' : 'warning'}
-              data-testid="dealticket-error-message"
-            >
-              {message}
-            </InputError>
-          )}
-        </>
-      ) : (
-        <Button
-          variant="default"
-          fill
-          type="button"
-          data-testid="order-connect-wallet"
-          onClick={openVegaWalletDialog}
-        >
-          {t('Connect wallet')}
-        </Button>
-      )}
+      <DealTicketButton
+        transactionStatus={transactionStatus}
+        isDisabled={isDisabled}
+        errorMessage={
+          errorSection === constants.DEAL_TICKET_SECTION_SUMMARY
+            ? { message, isDisabled }
+            : undefined
+        }
+      />
       <DealTicketFeeDetails details={details} />
     </form>
   );
