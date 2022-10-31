@@ -321,7 +321,7 @@ export const useOrderValidation = ({
         message: t(
           'Any orders placed now will not trade until the auction ends'
         ),
-        section: constants.DEAL_TICKET_SECTION_EXPIRY,
+        section: constants.DEAL_TICKET_SECTION_SUMMARY,
       };
     }
 
