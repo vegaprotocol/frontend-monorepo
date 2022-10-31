@@ -3,7 +3,6 @@ import { formatNumber, t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation/validate-size';
 import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
-import classNames from 'classnames';
 import { DealTicketError } from './deal-ticket-error';
 
 export type DealTicketMarketAmountProps = Omit<

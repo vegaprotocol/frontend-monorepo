@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
