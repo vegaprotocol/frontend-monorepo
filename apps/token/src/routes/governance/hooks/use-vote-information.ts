@@ -158,6 +158,7 @@ export const useVoteInformation = ({
       willPassByLPVote,
     };
   }, [
+    decimals,
     proposal.votes.no.totalEquityLikeShareWeight,
     proposal.votes.no.totalTokens,
     proposal.votes.yes.totalEquityLikeShareWeight,
