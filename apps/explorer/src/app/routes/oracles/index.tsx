@@ -11,23 +11,60 @@ import { SubHeading } from '../../components/sub-heading';
 const ORACLE_SPECS_QUERY = gql`
   query OracleSpecs {
     oracleSpecs {
-      status
-      id
-      createdAt
-      updatedAt
-      pubKeys
-      filters {
-        key {
-          name
-          type
-        }
-        conditions {
-          value
-          operator
+      dataSourceSpec {
+        spec {
+          id
+          createdAt
+          updatedAt
+          status
+          config {
+            signers {
+              signer {
+                ... on ETHAddress {
+                  address
+                }
+                ... on PubKey {
+                  key
+                }
+              }
+            }
+            filters {
+              key {
+                name
+                type
+              }
+              conditions {
+                value
+                operator
+              }
+            }
+          }
         }
       }
-      data {
-        pubKeys
+      dataConnection {
+        edges {
+          node {
+            externalData {
+              data {
+                signers {
+                  signer {
+                    ... on ETHAddress {
+                      address
+                    }
+                    ... on PubKey {
+                      key
+                    }
+                  }
+                }
+                data {
+                  name
+                  value
+                }
+                matchedSpecIds
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -53,12 +90,15 @@ const Oracles = () => {
     <section>
       <RouteTitle data-testid="oracle-specs-heading">{t('Oracles')}</RouteTitle>
       {data?.oracleSpecs
-        ? data.oracleSpecs.map((o) => (
-            <React.Fragment key={o.id}>
-              <SubHeading id={o.id.toString()}>{o.id}</SubHeading>
-              <SyntaxHighlighter data={o} />
-            </React.Fragment>
-          ))
+        ? data.oracleSpecs.map((o) => {
+            const id = o.dataSourceSpec.spec.id;
+            return (
+              <React.Fragment key={id}>
+                <SubHeading id={id.toString()}>{id}</SubHeading>
+                <SyntaxHighlighter data={o} />
+              </React.Fragment>
+            );
+          })
         : null}
     </section>
   );

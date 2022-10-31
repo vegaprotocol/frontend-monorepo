@@ -430,7 +430,7 @@ export type CandleEdge = {
   node: Candle;
 };
 
-/** Condition describes the condition that must be validated by the oracle engine */
+/** Condition describes the condition that must be validated by the data source engine */
 export type Condition = {
   __typename?: 'Condition';
   /** The type of comparison to make on the value. */
@@ -443,14 +443,14 @@ export type Condition = {
 export enum ConditionOperator {
   /** Verify if the property values are strictly equal or not. */
   OPERATOR_EQUALS = 'OPERATOR_EQUALS',
-  /** Verify if the oracle data value is greater than the Condition value. */
+  /** Verify if the data source data value is greater than the Condition value. */
   OPERATOR_GREATER_THAN = 'OPERATOR_GREATER_THAN',
   /**
-   * Verify if the oracle data value is greater than or equal to the Condition
+   * Verify if the data source data value is greater than or equal to the Condition
    * value.
    */
   OPERATOR_GREATER_THAN_OR_EQUAL = 'OPERATOR_GREATER_THAN_OR_EQUAL',
-  /**  Verify if the oracle data value is less than the Condition value. */
+  /**  Verify if the data source data value is less than the Condition value. */
   OPERATOR_LESS_THAN = 'OPERATOR_LESS_THAN',
   /**
    * Verify if the oracle data value is less or equal to than the Condition
@@ -464,6 +464,83 @@ export type ContinuousTrading = {
   __typename?: 'ContinuousTrading';
   /** Size of an increment in price in terms of the quote currency */
   tickSize: Scalars['String'];
+};
+
+/** A data source contains the data sent by a data source */
+export type Data = {
+  __typename?: 'Data';
+  /**
+   * RFC3339Nano formatted date and time for when the data was broadcast to the markets
+   * with a matching data spec.
+   * It has no value when the source data does not match any data spec.
+   */
+  broadcastAt: Scalars['String'];
+  /** properties contains all the properties sent by a data source */
+  data?: Maybe<Array<Property>>;
+  /**
+   * List of all the data specs that matched this source data.
+   * When the array is empty, it means no data spec matched this source data.
+   */
+  matchedSpecIds?: Maybe<Array<Scalars['ID']>>;
+  /** signers is the list of public keys/ETH addresses that signed the data */
+  signers?: Maybe<Array<Signer>>;
+};
+
+/**
+ * An data source specification describes the data source data that a product (or a risk model)
+ * wants to get from the oracle engine.
+ */
+export type DataSourceSpec = {
+  __typename?: 'DataSourceSpec';
+  config: DataSourceSpecConfiguration;
+  /** RFC3339Nano creation date time */
+  createdAt: Scalars['String'];
+  /** ID is a hash generated from the DataSourceSpec data. */
+  id: Scalars['ID'];
+  /** Status describes the status of the data source spec */
+  status: DataSourceSpecStatus;
+  /** RFC3339Nano last updated timestamp */
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+/**
+ * A data spec describes the source data that an instrument wants to get from the
+ * sourcing engine.
+ */
+export type DataSourceSpecConfiguration = {
+  __typename?: 'DataSourceSpecConfiguration';
+  /**
+   * filters describes which source data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters?: Maybe<Array<Filter>>;
+  /**
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
+   */
+  signers?: Maybe<Array<Signer>>;
+};
+
+/** Status describe the status of the data spec */
+export enum DataSourceSpecStatus {
+  /** describes an active data spec. */
+  STATUS_ACTIVE = 'STATUS_ACTIVE',
+  /**
+   * describes a data spec that is not listening to data
+   * anymore.
+   */
+  STATUS_DEACTIVATED = 'STATUS_DEACTIVATED'
+}
+
+/**
+ * DataSourceSpecToFutureBinding tells on which property data source data should be
+ * used as settlement data and trading termination.
+ */
+export type DataSourceSpecToFutureBinding = {
+  __typename?: 'DataSourceSpecToFutureBinding';
+  settlementDataProperty: Scalars['String'];
+  tradingTerminationProperty: Scalars['String'];
 };
 
 /**
@@ -688,6 +765,11 @@ export type ERC20SetAssetLimitsBundle = {
   vegaAssetId: Scalars['String'];
 };
 
+export type ETHAddress = {
+  __typename?: 'ETHAddress';
+  address?: Maybe<Scalars['String']>;
+};
+
 /** Epoch describes a specific period of time in the Vega network */
 export type Epoch = {
   __typename?: 'Epoch';
@@ -814,7 +896,7 @@ export type Erc20WithdrawalDetails = {
   receiverAddress: Scalars['String'];
 };
 
-/** An Ethereum oracle */
+/** An Ethereum data source */
 export type EthereumEvent = {
   __typename?: 'EthereumEvent';
   /** The ID of the ethereum contract to use (string) */
@@ -855,6 +937,20 @@ export type EthereumKeyRotationsConnection = {
 /** Union type for wrapped events in stream PROPOSAL is mapped to governance data, something to keep in mind */
 export type Event = AccountEvent | Asset | AuctionEvent | Deposit | LiquidityProvision | LossSocialization | MarginLevels | Market | MarketData | MarketEvent | MarketTick | NodeSignature | OracleSpec | Order | Party | PositionResolution | Proposal | RiskFactor | SettleDistressed | SettlePosition | TimeUpdate | Trade | TransactionResult | TransferResponses | Vote | Withdrawal;
 
+export type ExternalData = {
+  __typename?: 'ExternalData';
+  data: Data;
+};
+
+/**
+ * externalDataSourceSpec is the type that wraps the DataSourceSpec type in order to be further used/extended
+ * by the OracleSpec
+ */
+export type ExternalDataSourceSpec = {
+  __typename?: 'ExternalDataSourceSpec';
+  spec: DataSourceSpec;
+};
+
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
   __typename?: 'FeeFactors';
@@ -884,38 +980,38 @@ export type Filter = {
    * considered of interest.
    */
   conditions?: Maybe<Array<Condition>>;
-  /** The oracle data property key targeted by the filter. */
+  /** key is the data source data property key targeted by the filter. */
   key: PropertyKey;
 };
 
 /** A Future product */
 export type Future = {
   __typename?: 'Future';
-  /** The binding between the oracle spec and the settlement data */
-  oracleSpecBinding: OracleSpecToFutureBinding;
-  /** The oracle spec describing the oracle data of interest for settlement. */
-  oracleSpecForSettlementData: OracleSpec;
-  /** The oracle spec describing the oracle data of interest for trading termination. */
-  oracleSpecForTradingTermination: OracleSpec;
+  /** The binding between the data source specification and the settlement data */
+  dataSourceSpecBinding: DataSourceSpecToFutureBinding;
+  /** The data source specification that describes the data of interest for settlement. */
+  dataSourceSpecForSettlementData: DataSourceSpec;
+  /** The data source specification describing the data source data of interest for trading termination. */
+  dataSourceSpecForTradingTermination: DataSourceSpec;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
   quoteName: Scalars['String'];
   /** The name of the asset (string) */
   settlementAsset: Asset;
-  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
+  /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement data source */
   settlementDataDecimals: Scalars['Int'];
 };
 
 export type FutureProduct = {
   __typename?: 'FutureProduct';
   /**
-   * OracleSpecToFutureBinding tells on which property oracle data should be
+   * DataSourceSpecToFutureBinding tells on which property source data should be
    * used as settlement data.
    */
-  oracleSpecBinding: OracleSpecToFutureBinding;
-  /** Describes the oracle data that an instrument wants to get from the oracle engine for settlement data. */
-  oracleSpecForSettlementData: OracleSpecConfiguration;
-  /** Describes the oracle data that an instrument wants to get from the oracle engine for trading termination. */
-  oracleSpecForTradingTermination: OracleSpecConfiguration;
+  dataSourceSpecBinding: DataSourceSpecToFutureBinding;
+  /** Describes the data source data that an instrument wants to get from the data source engine for settlement data. */
+  dataSourceSpecForSettlementData: DataSourceSpecConfiguration;
+  /** Describes the source data that an instrument wants to get from the data source engine for trading termination. */
+  dataSourceSpecForTradingTermination: DataSourceSpecConfiguration;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
   quoteName: Scalars['String'];
   /** Product asset */
@@ -2028,139 +2124,48 @@ export type Oracle = EthereumEvent;
 /** An oracle data contains the data sent by an oracle */
 export type OracleData = {
   __typename?: 'OracleData';
-  /**
-   * RFC3339Nano formatted date and time for when the data was broadcast to the markets
-   * with a matching oracle spec.
-   * It has no value when the oracle date does not match any oracle spec.
-   */
-  broadcastAt: Scalars['String'];
-  /** All the properties sent by an oracle */
-  data?: Maybe<Array<Property>>;
-  /**
-   * Lists of all the oracle specs that matched this oracle data.
-   * When the array is empty, it means no oracle spec matched this oracle data.
-   */
-  matchedSpecIds?: Maybe<Array<Scalars['ID']>>;
-  /** The list of public keys that signed the data */
-  pubKeys?: Maybe<Array<Scalars['String']>>;
+  externalData: ExternalData;
 };
 
-/** Connection type for retrieving cursor-based paginated oracle data information */
 export type OracleDataConnection = {
   __typename?: 'OracleDataConnection';
-  /** The oracle data */
+  /** The oracle data spec */
   edges?: Maybe<Array<Maybe<OracleDataEdge>>>;
   /** The pagination information */
   pageInfo: PageInfo;
 };
 
-/** Edge type containing the oracle data and cursor information returned by a OracleDataConnection */
 export type OracleDataEdge = {
   __typename?: 'OracleDataEdge';
   /** The cursor for the data item */
   cursor: Scalars['String'];
-  /** The oracle data */
+  /** The oracle data source */
   node: OracleData;
 };
 
-/**
- * An oracle spec describe the oracle data that a product (or a risk model)
- * wants to get from the oracle engine.
- */
 export type OracleSpec = {
   __typename?: 'OracleSpec';
-  /** RFC3339Nano creation date time */
-  createdAt: Scalars['String'];
-  /**
-   * Data list all the oracle data broadcast to this spec
-   * @deprecated Use dataConnection instead
-   */
-  data: Array<OracleData>;
   /** Data list all the oracle data broadcast to this spec */
   dataConnection: OracleDataConnection;
-  /**
-   * Filters describes which oracle data are considered of interest or not for
-   * the product (or the risk model).
-   */
-  filters?: Maybe<Array<Filter>>;
-  /** ID is a hash generated from the OracleSpec data. */
-  id: Scalars['ID'];
-  /**
-   * The list of authorized public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
-   */
-  pubKeys?: Maybe<Array<Scalars['String']>>;
-  /** Status describes the status of the oracle spec */
-  status: OracleSpecStatus;
-  /** RFC3339Nano last updated timestamp */
-  updatedAt?: Maybe<Scalars['String']>;
+  dataSourceSpec: ExternalDataSourceSpec;
 };
 
 
-/**
- * An oracle spec describe the oracle data that a product (or a risk model)
- * wants to get from the oracle engine.
- */
 export type OracleSpecdataConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
-/**
- * An oracle spec describe the oracle data that an instrument wants to get from the
- * oracle engine.
- */
-export type OracleSpecConfiguration = {
-  __typename?: 'OracleSpecConfiguration';
-  /**
-   * Filters describes which oracle data are considered of interest or not for
-   * the product (or the risk model).
-   */
-  filters?: Maybe<Array<Filter>>;
-  /**
-   * The list of authorised public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
-   */
-  pubKeys?: Maybe<Array<Scalars['String']>>;
-};
-
-/** Edge type containing the oracle spec and cursor information returned by a OracleSpecsConnection */
 export type OracleSpecEdge = {
   __typename?: 'OracleSpecEdge';
-  /** The cursor for the spec item */
+  /** The cursor for the external data */
   cursor: Scalars['String'];
-  /** The oracle spec */
+  /** The external data spec */
   node: OracleSpec;
 };
 
-/** Status describe the status of the oracle spec */
-export enum OracleSpecStatus {
-  /** Describes an active oracle spec. */
-  STATUS_ACTIVE = 'STATUS_ACTIVE',
-  /**
-   * Describes an oracle spec that is not listening to data
-   * anymore.
-   */
-  STATUS_DEACTIVATED = 'STATUS_DEACTIVATED'
-}
-
-/**
- * OracleSpecToFutureBinding tells on which property oracle data should be
- * used as settlement data and trading termination.
- */
-export type OracleSpecToFutureBinding = {
-  __typename?: 'OracleSpecToFutureBinding';
-  settlementDataProperty: Scalars['String'];
-  tradingTerminationProperty: Scalars['String'];
-};
-
-/** Connection type for retrieving cursor-based paginated oracle specs information */
 export type OracleSpecsConnection = {
   __typename?: 'OracleSpecsConnection';
-  /** The oracle specs */
   edges?: Maybe<Array<Maybe<OracleSpecEdge>>>;
-  /** The pagination information */
   pageInfo: PageInfo;
 };
 
@@ -2935,7 +2940,7 @@ export type Property = {
   value: Scalars['String'];
 };
 
-/** PropertyKey describes the property key contained in an oracle data. */
+/** PropertyKey describes the property key contained in a source data. */
 export type PropertyKey = {
   __typename?: 'PropertyKey';
   /** The name of the property. */
@@ -2945,7 +2950,7 @@ export type PropertyKey = {
 };
 
 /**
- * Type describes the type of properties that are supported by the oracle
+ * Type describes the type of properties that are supported by the data source
  * engine.
  */
 export enum PropertyKeyType {
@@ -3221,10 +3226,55 @@ export type ProposalsConnection = {
   pageInfo: PageInfo;
 };
 
+export type ProtocolUpgradeProposal = {
+  __typename?: 'ProtocolUpgradeProposal';
+  /** Tendermint validators that have agreed to the upgrade */
+  approvers: Array<Scalars['String']>;
+  /** the status of the proposal */
+  status: ProtocolUpgradeProposalStatus;
+  /** At which block the upgrade is proposed */
+  upgradeBlockHeight: Scalars['String'];
+  /** To which vega release tag the upgrade is proposed */
+  vegaReleaseTag: Scalars['String'];
+};
+
+export type ProtocolUpgradeProposalConnection = {
+  __typename?: 'ProtocolUpgradeProposalConnection';
+  /** The positions in this connection */
+  edges?: Maybe<Array<ProtocolUpgradeProposalEdge>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the protocol upgrade protocol cursor information */
+export type ProtocolUpgradeProposalEdge = {
+  __typename?: 'ProtocolUpgradeProposalEdge';
+  /** Cursor identifying the protocol upgrade proposal */
+  cursor: Scalars['String'];
+  /** The protocol upgrade proposal */
+  node: ProtocolUpgradeProposal;
+};
+
+export enum ProtocolUpgradeProposalStatus {
+  /** Proposal to upgrade protocol version accepted */
+  PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED = 'PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED',
+  /** Proposal to upgrade protocol version is awaiting sufficient validator approval */
+  PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING = 'PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING',
+  /** Proposal to upgrade protocol version has been rejected */
+  PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED = 'PROTOCOL_UPGRADE_PROPOSAL_STATUS_REJECTED',
+  /** Invalid proposal state */
+  PROTOCOL_UPGRADE_PROPOSAL_STATUS_UNSPECIFIED = 'PROTOCOL_UPGRADE_PROPOSAL_STATUS_UNSPECIFIED'
+}
+
 /** Indicator showing whether the data-node is ready for the protocol upgrade to begin. */
 export type ProtocolUpgradeStatus = {
   __typename?: 'ProtocolUpgradeStatus';
   ready: Scalars['Boolean'];
+};
+
+export type PubKey = {
+  __typename?: 'PubKey';
+  key?: Maybe<Scalars['String']>;
 };
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
@@ -3391,6 +3441,8 @@ export type Query = {
   proposals?: Maybe<Array<Proposal>>;
   /** All governance proposals in the Vega network */
   proposalsConnection?: Maybe<ProposalsConnection>;
+  /** List protocol upgrade proposals, optionally filtering on status or approver */
+  protocolUpgradeProposals?: Maybe<ProtocolUpgradeProposalConnection>;
   /** Flag indicating whether the data-node is ready to begin the protocol upgrade */
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
   /** Get statistics about the Vega node */
@@ -3745,6 +3797,14 @@ export type QueryproposalsConnectionArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryprotocolUpgradeProposalsArgs = {
+  approvedBy?: InputMaybe<Scalars['String']>;
+  inState?: InputMaybe<ProtocolUpgradeProposalStatus>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytransfersArgs = {
   isFrom?: InputMaybe<Scalars['Boolean']>;
   isTo?: InputMaybe<Scalars['Boolean']>;
@@ -3983,6 +4043,14 @@ export enum Side {
   /** The placer of the order is aiming to sell */
   SIDE_SELL = 'SIDE_SELL'
 }
+
+/** Signer is the authorized signature used for the data. */
+export type Signer = {
+  __typename?: 'Signer';
+  signer: SignerKind;
+};
+
+export type SignerKind = ETHAddress | PubKey;
 
 /** A type of simple/dummy risk model where you can specify the risk factor long and short in params */
 export type SimpleRiskModel = {
@@ -4590,9 +4658,9 @@ export type UpdateERC20 = {
 
 export type UpdateFutureProduct = {
   __typename?: 'UpdateFutureProduct';
-  oracleSpecBinding: OracleSpecToFutureBinding;
-  oracleSpecForSettlementData: OracleSpecConfiguration;
-  oracleSpecForTradingTermination: OracleSpecConfiguration;
+  dataSourceSpecBinding: DataSourceSpecToFutureBinding;
+  dataSourceSpecForSettlementData: DataSourceSpecConfiguration;
+  dataSourceSpecForTradingTermination: DataSourceSpecConfiguration;
   quoteName: Scalars['String'];
 };
 

@@ -92,7 +92,7 @@ export enum NodeStatusMapping {
 /**
  * Status describe the status of the oracle spec
  */
-export enum OracleSpecStatusMapping {
+export enum DataSourceSpecStatusMapping {
   STATUS_ACTIVE = 'Active',
   STATUS_DEACTIVATED = 'Deactivated',
 }

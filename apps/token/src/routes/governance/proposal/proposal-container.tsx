@@ -46,8 +46,14 @@ export const PROPOSAL_QUERY = gql`
                 }
                 quoteName
                 settlementDataDecimals
-                oracleSpecForSettlementData {
-                  pubKeys
+                dataSourceSpecForSettlementData {
+                  signers {
+                    signer {
+                      ... on PubKey {
+                        key
+                      }
+                    }
+                  }
                   filters {
                     key {
                       name
@@ -59,8 +65,14 @@ export const PROPOSAL_QUERY = gql`
                     }
                   }
                 }
-                oracleSpecForTradingTermination {
-                  pubKeys
+                dataSourceSpecForTradingTermination {
+                  signers {
+                    signer {
+                      ... on PubKey {
+                        key
+                      }
+                    }
+                  }
                   filters {
                     key {
                       name
@@ -72,7 +84,7 @@ export const PROPOSAL_QUERY = gql`
                     }
                   }
                 }
-                oracleSpecBinding {
+                dataSourceSpecBinding {
                   settlementDataProperty
                   tradingTerminationProperty
                 }
@@ -86,8 +98,14 @@ export const PROPOSAL_QUERY = gql`
                 code
                 product {
                   quoteName
-                  oracleSpecForSettlementData {
-                    pubKeys
+                  dataSourceSpecForSettlementData {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                      }
+                    }
                     filters {
                       key {
                         name
@@ -99,8 +117,14 @@ export const PROPOSAL_QUERY = gql`
                       }
                     }
                   }
-                  oracleSpecForTradingTermination {
-                    pubKeys
+                  dataSourceSpecForTradingTermination {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                      }
+                    }
                     filters {
                       key {
                         name
@@ -112,7 +136,7 @@ export const PROPOSAL_QUERY = gql`
                       }
                     }
                   }
-                  oracleSpecBinding {
+                  dataSourceSpecBinding {
                     settlementDataProperty
                     tradingTerminationProperty
                   }

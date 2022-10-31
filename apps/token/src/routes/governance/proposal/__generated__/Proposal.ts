@@ -61,7 +61,23 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   quantum: string;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_key {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_ETHAddress | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_PubKey;
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_key {
   __typename: "PropertyKey";
   /**
    * The name of the property.
@@ -73,7 +89,7 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   type: PropertyKeyType;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_conditions {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -85,35 +101,51 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters {
   __typename: "Filter";
   /**
-   * The oracle data property key targeted by the filter.
+   * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_key;
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData {
-  __typename: "OracleSpecConfiguration";
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData {
+  __typename: "DataSourceSpecConfiguration";
   /**
-   * The list of authorised public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
    */
-  pubKeys: string[] | null;
+  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers[] | null;
   /**
-   * Filters describes which oracle data are considered of interest or not for
+   * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData_filters[] | null;
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters[] | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_key {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_ETHAddress | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_PubKey;
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_key {
   __typename: "PropertyKey";
   /**
    * The name of the property.
@@ -125,7 +157,7 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   type: PropertyKeyType;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_conditions {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -137,36 +169,36 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters {
   __typename: "Filter";
   /**
-   * The oracle data property key targeted by the filter.
+   * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_key;
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination {
-  __typename: "OracleSpecConfiguration";
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination {
+  __typename: "DataSourceSpecConfiguration";
   /**
-   * The list of authorised public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
    */
-  pubKeys: string[] | null;
+  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers[] | null;
   /**
-   * Filters describes which oracle data are considered of interest or not for
+   * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination_filters[] | null;
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters[] | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecBinding {
-  __typename: "OracleSpecToFutureBinding";
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecBinding {
+  __typename: "DataSourceSpecToFutureBinding";
   settlementDataProperty: string;
   tradingTerminationProperty: string;
 }
@@ -186,18 +218,18 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
    */
   settlementDataDecimals: number;
   /**
-   * Describes the oracle data that an instrument wants to get from the oracle engine for settlement data.
+   * Describes the data source data that an instrument wants to get from the data source engine for settlement data.
    */
-  oracleSpecForSettlementData: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForSettlementData;
+  dataSourceSpecForSettlementData: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData;
   /**
-   * Describes the oracle data that an instrument wants to get from the oracle engine for trading termination.
+   * Describes the source data that an instrument wants to get from the data source engine for trading termination.
    */
-  oracleSpecForTradingTermination: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecForTradingTermination;
+  dataSourceSpecForTradingTermination: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination;
   /**
-   * OracleSpecToFutureBinding tells on which property oracle data should be
+   * DataSourceSpecToFutureBinding tells on which property source data should be
    * used as settlement data.
    */
-  oracleSpecBinding: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_oracleSpecBinding;
+  dataSourceSpecBinding: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecBinding;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument {
@@ -232,7 +264,23 @@ export interface Proposal_proposal_terms_change_NewMarket {
   instrument: Proposal_proposal_terms_change_NewMarket_instrument;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_key {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_ETHAddress | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_PubKey;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_key {
   __typename: "PropertyKey";
   /**
    * The name of the property.
@@ -244,7 +292,7 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   type: PropertyKeyType;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_conditions {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -256,35 +304,51 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters {
   __typename: "Filter";
   /**
-   * The oracle data property key targeted by the filter.
+   * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_key;
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData {
-  __typename: "OracleSpecConfiguration";
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData {
+  __typename: "DataSourceSpecConfiguration";
   /**
-   * The list of authorised public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
    */
-  pubKeys: string[] | null;
+  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers[] | null;
   /**
-   * Filters describes which oracle data are considered of interest or not for
+   * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData_filters[] | null;
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters[] | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_key {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_ETHAddress | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_PubKey;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_key {
   __typename: "PropertyKey";
   /**
    * The name of the property.
@@ -296,7 +360,7 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   type: PropertyKeyType;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_conditions {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -308,36 +372,36 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters {
   __typename: "Filter";
   /**
-   * The oracle data property key targeted by the filter.
+   * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_key;
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination {
-  __typename: "OracleSpecConfiguration";
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination {
+  __typename: "DataSourceSpecConfiguration";
   /**
-   * The list of authorised public keys that signed the data for this
-   * oracle. All the public keys in the oracle data should be contained in these
-   * public keys.
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
    */
-  pubKeys: string[] | null;
+  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers[] | null;
   /**
-   * Filters describes which oracle data are considered of interest or not for
+   * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination_filters[] | null;
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters[] | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecBinding {
-  __typename: "OracleSpecToFutureBinding";
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecBinding {
+  __typename: "DataSourceSpecToFutureBinding";
   settlementDataProperty: string;
   tradingTerminationProperty: string;
 }
@@ -345,9 +409,9 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
 export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product {
   __typename: "UpdateFutureProduct";
   quoteName: string;
-  oracleSpecForSettlementData: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForSettlementData;
-  oracleSpecForTradingTermination: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecForTradingTermination;
-  oracleSpecBinding: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_oracleSpecBinding;
+  dataSourceSpecForSettlementData: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData;
+  dataSourceSpecForTradingTermination: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination;
+  dataSourceSpecBinding: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecBinding;
 }
 
 export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument {
