@@ -142,10 +142,10 @@ const Party = () => {
 
   const staking = (
     <section>
-      {data?.party?.stake?.currentStakeAvailable ? (
+      {data?.party?.stakingSummary?.currentStakeAvailable ? (
         <InfoPanel
           title={t('Current Stake Available')}
-          id={data?.party?.stake?.currentStakeAvailable}
+          id={data?.party?.stakingSummary?.currentStakeAvailable}
           copy={false}
         />
       ) : (
