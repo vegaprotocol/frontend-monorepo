@@ -37,9 +37,8 @@ const DELEGATIONS_QUERY = gql`
         }
         epoch
       }
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
       accounts {
         asset {

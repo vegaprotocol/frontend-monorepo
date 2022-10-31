@@ -40,7 +40,7 @@ const PARTY_ASSETS_QUERY = gql`
         }
         epoch
       }
-      stake {
+      stakingSummary {
         currentStakeAvailable
       }
       accounts {

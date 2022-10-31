@@ -9,16 +9,12 @@ import { NodeStatus } from "@vegaprotocol/types";
 // GraphQL query operation: Staking
 // ====================================================
 
-export interface Staking_party_stake {
-  __typename: "PartyStake";
+export interface Staking_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
-  /**
-   * The currently available stake formatted by the client
-   */
-  currentStakeAvailableFormatted: string;
 }
 
 export interface Staking_party_delegations_node {
@@ -58,7 +54,7 @@ export interface Staking_party {
   /**
    * The staking information for this Party
    */
-  stake: Staking_party_stake;
+  stakingSummary: Staking_party_stakingSummary;
   delegations: Staking_party_delegations[] | null;
 }
 

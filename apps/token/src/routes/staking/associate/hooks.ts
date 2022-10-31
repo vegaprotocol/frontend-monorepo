@@ -71,11 +71,15 @@ const PARTY_STAKE_LINKINGS = gql`
   query PartyStakeLinkings($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         linkings {
-          id
-          txHash
-          status
+          edges {
+            node {
+              id
+              txHash
+              status
+            }
+          }
         }
       }
     }

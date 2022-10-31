@@ -3,11 +3,6 @@ extend type Delegation {
   amountFormatted: String!
 }
 
-extend type PartyStake {
-  "The currently available stake formatted by the client"
-  currentStakeAvailableFormatted: String!
-}
-
 extend type NodeData {
   "The total staked field formatted by the client"
   stakedTotalFormatted: String!

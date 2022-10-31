@@ -35,9 +35,8 @@ export const VOTE_BUTTONS_QUERY = gql`
   query VoteButtonsQuery($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
     }
   }
