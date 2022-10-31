@@ -19,6 +19,8 @@ import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import { AccountType } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const DELEGATIONS_QUERY = gql`
@@ -62,6 +64,10 @@ const DELEGATIONS_QUERY = gql`
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
+  const {
+    appState: { decimals },
+  } = useAppState();
+
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
@@ -108,8 +114,9 @@ export const usePollForDelegations = () => {
             });
             setDelegations(sortedDelegations);
             setCurrentStakeAvailable(
-              new BigNumber(
-                res.data.party?.stake.currentStakeAvailableFormatted || 0
+              toBigNum(
+                res.data.party?.stakingSummary.currentStakeAvailable || 0,
+                decimals
               )
             );
             const accounts = res.data.party?.accounts || [];
@@ -230,7 +237,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, pubKey, t, vegaToken.address]);
+  }, [client, decimals, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };
