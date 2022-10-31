@@ -6,7 +6,6 @@ import { addDecimal } from '@vegaprotocol/react-helpers';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
-import { BigNumber } from './bignumber';
 import { deterministicShuffle } from './deterministic-shuffle';
 
 // Create seed in memory. Validator list order will remain the same
