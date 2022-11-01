@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AgGridDynamic as AgGrid,
@@ -11,10 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
-import { ValidatorStatus } from '@vegaprotocol/types';
-import type { Nodes } from './__generated__/Nodes';
+import { Schema } from '@vegaprotocol/types';
 import type { ColDef } from 'ag-grid-community';
 import compact from 'lodash/compact';
+import { useNodesQuery } from './__generated___/Nodes';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -27,44 +26,6 @@ const STAKE_SCORE = 'stakeScore';
 const PERFORMANCE_SCORE = 'performanceScore';
 const VOTING_POWER = 'votingPower';
 
-export const NODES_QUERY = gql`
-  query Nodes {
-    epoch {
-      id
-      timestamps {
-        start
-        end
-        expiry
-      }
-    }
-    nodesConnection {
-      edges {
-        node {
-          avatarUrl
-          id
-          name
-          pubkey
-          stakedTotal
-          stakedTotalFormatted @client
-          pendingStake
-          pendingStakeFormatted @client
-          rankingScore {
-            rankingScore
-            stakeScore
-            performanceScore
-            votingPower
-            status
-          }
-        }
-      }
-    }
-    nodeData {
-      stakedTotal
-      stakedTotalFormatted @client
-    }
-  }
-`;
-
 interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
 }
@@ -72,7 +33,7 @@ interface ValidatorRendererProps {
 interface CanonisedNodeProps {
   id: string;
   [VALIDATOR]: {
-    avatarUrl: string | null;
+    avatarUrl: string | null | undefined;
     name: string;
   };
   [STATUS]: string;
@@ -114,9 +75,7 @@ const nodeListGridStyles = `
 export const NodeList = () => {
   const { t } = useTranslation();
   // errorPolicy due to vegaprotocol/vega issue 5898
-  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY, {
-    errorPolicy: 'ignore',
-  });
+  const { data, error, loading, refetch } = useNodesQuery();
   const navigate = useNavigate();
   const [hideTopThird, setHideTopThird] = useState(true);
 
@@ -168,11 +127,12 @@ export const NodeList = () => {
               '%';
         const statusTranslated = t(
           `${
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
+            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
               'Ersatz') ||
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
+            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
               'Pending') ||
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
+            (status ===
+              Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
               'Consensus')
           }`
         );

@@ -1,20 +1,19 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import merge from 'lodash/merge';
-import { NodeList, NODES_QUERY } from './node-list';
+import { NodeList } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import type { Nodes_nodesConnection_edges_node } from './__generated__/Nodes';
 import type { PartialDeep } from 'type-fest';
-import { ValidatorStatus } from '@vegaprotocol/types';
+import type { NodesFragmentFragment } from './__generated___/Nodes';
+import { NodesDocument } from './__generated___/Nodes';
+import { Schema } from '@vegaprotocol/types';
 
 jest.mock('../../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
 }));
 
-const nodeFactory = (
-  overrides?: PartialDeep<Nodes_nodesConnection_edges_node>
-) => {
+const nodeFactory = (overrides?: PartialDeep<NodesFragmentFragment>) => {
   const defaultNode = {
     id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
     name: 'high',
@@ -55,7 +54,7 @@ const MOCK_NODES = {
           stakeScore: '0.2300971220240714',
           performanceScore: '1',
           votingPower: '2408',
-          status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+          status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
           __typename: 'RankingScore',
         },
       }),
@@ -72,7 +71,7 @@ const MOCK_NODES = {
           stakeScore: '0.0966762995515676',
           performanceScore: '0.999629748500531',
           votingPower: '1163',
-          status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+          status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
           __typename: 'RankingScore',
         },
       }),
@@ -105,7 +104,7 @@ const renderNodeList = (data = MOCK_NODES) => {
       <MockedProvider
         mocks={[
           {
-            request: { query: NODES_QUERY },
+            request: { query: NodesDocument },
             result: { data },
           },
         ]}
@@ -172,7 +171,7 @@ describe('Nodes list', () => {
               stakeScore: '0.2300971220240714',
               performanceScore: '1',
               votingPower: '2408',
-              status: ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
+              status: Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT,
               __typename: 'RankingScore',
             },
           }),
