@@ -1,12 +1,17 @@
 import { gql, useQuery } from '@apollo/client';
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import type { NetworkParams as NetworkParamsResponse } from './__generated__/NetworkParams';
 
 export const NETWORK_PARAMETERS_QUERY = gql`
   query NetworkParams {
-    networkParameters {
-      key
-      value
+    networkParametersConnection {
+      edges {
+        node {
+          key
+          value
+        }
+      }
     }
   }
 `;
@@ -131,11 +136,11 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
   );
 
   const paramsObj = useMemo(() => {
-    if (!data?.networkParameters) return null;
-    return data.networkParameters
+    if (!data?.networkParametersConnection.edges) return null;
+    return compact(data.networkParametersConnection.edges)
       .map((p) => ({
-        ...p,
-        key: p.key.split('.').join('_'),
+        ...p.node,
+        key: p.node.key.split('.').join('_'),
       }))
       .filter((p) => {
         if (params === undefined || params.length === 0) return true;

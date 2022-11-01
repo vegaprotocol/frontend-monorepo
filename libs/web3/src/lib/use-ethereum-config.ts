@@ -1,6 +1,6 @@
-import { gql, useQuery } from '@apollo/client';
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
-import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
+import { useNetworkParamsQueryQuery } from './__generated___/NetworkParams';
 
 export interface EthereumConfig {
   network_id: string;
@@ -23,27 +23,17 @@ export interface EthereumConfig {
   };
 }
 
-export const NETWORK_PARAMS_QUERY = gql`
-  query NetworkParamsQuery {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
-
 export const useEthereumConfig = () => {
-  const { data, loading, error } =
-    useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
+  const { data, loading, error } = useNetworkParamsQueryQuery();
 
   const config = useMemo(() => {
     if (!data) {
       return null;
     }
 
-    const param = data.networkParameters?.find(
-      (np) => np.key === 'blockchains.ethereumConfig'
-    );
+    const param = compact(data.networkParametersConnection.edges)
+      .map(({ node }) => node)
+      ?.find((node) => node.key === 'blockchains.ethereumConfig');
 
     if (!param) {
       return null;

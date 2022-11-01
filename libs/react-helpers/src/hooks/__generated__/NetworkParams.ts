@@ -7,7 +7,7 @@
 // GraphQL query operation: NetworkParams
 // ====================================================
 
-export interface NetworkParams_networkParameters {
+export interface NetworkParams_networkParametersConnection_edges_node {
   __typename: "NetworkParameter";
   /**
    * The name of the network parameter
@@ -19,9 +19,25 @@ export interface NetworkParams_networkParameters {
   value: string;
 }
 
+export interface NetworkParams_networkParametersConnection_edges {
+  __typename: "NetworkParameterEdge";
+  /**
+   * The network parameter
+   */
+  node: NetworkParams_networkParametersConnection_edges_node;
+}
+
+export interface NetworkParams_networkParametersConnection {
+  __typename: "NetworkParametersConnection";
+  /**
+   * List of network parameters available for the connection
+   */
+  edges: (NetworkParams_networkParametersConnection_edges | null)[] | null;
+}
+
 export interface NetworkParams {
   /**
    * Return the full list of network parameters
    */
-  networkParameters: NetworkParams_networkParameters[] | null;
+  networkParametersConnection: NetworkParams_networkParametersConnection;
 }
