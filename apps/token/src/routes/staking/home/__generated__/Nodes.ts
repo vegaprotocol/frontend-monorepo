@@ -37,7 +37,7 @@ export interface Nodes_epoch {
   timestamps: Nodes_epoch_timestamps;
 }
 
-export interface Nodes_nodes_rankingScore {
+export interface Nodes_nodesConnection_edges_node_rankingScore {
   __typename: "RankingScore";
   /**
    * The ranking score of the validator
@@ -61,7 +61,7 @@ export interface Nodes_nodes_rankingScore {
   status: ValidatorStatus;
 }
 
-export interface Nodes_nodes {
+export interface Nodes_nodesConnection_edges_node {
   __typename: "Node";
   avatarUrl: string | null;
   /**
@@ -92,7 +92,23 @@ export interface Nodes_nodes {
   /**
    * Ranking scores and status for the validator for the current epoch
    */
-  rankingScore: Nodes_nodes_rankingScore;
+  rankingScore: Nodes_nodesConnection_edges_node_rankingScore;
+}
+
+export interface Nodes_nodesConnection_edges {
+  __typename: "NodeEdge";
+  /**
+   * The node
+   */
+  node: Nodes_nodesConnection_edges_node;
+}
+
+export interface Nodes_nodesConnection {
+  __typename: "NodesConnection";
+  /**
+   * List of nodes available for the connection
+   */
+  edges: (Nodes_nodesConnection_edges | null)[] | null;
 }
 
 export interface Nodes_nodeData {
@@ -115,7 +131,7 @@ export interface Nodes {
   /**
    * All known network nodes
    */
-  nodes: Nodes_nodes[] | null;
+  nodesConnection: Nodes_nodesConnection;
   /**
    * Returns information about nodes
    */

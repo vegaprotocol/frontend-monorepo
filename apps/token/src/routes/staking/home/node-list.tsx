@@ -14,6 +14,7 @@ import { formatNumber } from '@vegaprotocol/react-helpers';
 import { ValidatorStatus } from '@vegaprotocol/types';
 import type { Nodes } from './__generated__/Nodes';
 import type { ColDef } from 'ag-grid-community';
+import compact from 'lodash/compact';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -36,21 +37,25 @@ export const NODES_QUERY = gql`
         expiry
       }
     }
-    nodes {
-      avatarUrl
-      id
-      name
-      pubkey
-      stakedTotal
-      stakedTotalFormatted @client
-      pendingStake
-      pendingStakeFormatted @client
-      rankingScore {
-        rankingScore
-        stakeScore
-        performanceScore
-        votingPower
-        status
+    nodesConnection {
+      edges {
+        node {
+          avatarUrl
+          id
+          name
+          pubkey
+          stakedTotal
+          stakedTotalFormatted @client
+          pendingStake
+          pendingStakeFormatted @client
+          rankingScore {
+            rankingScore
+            stakeScore
+            performanceScore
+            votingPower
+            status
+          }
+        }
       }
     }
     nodeData {
@@ -133,22 +138,24 @@ export const NodeList = () => {
   }, [data?.epoch.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
-    if (!data?.nodes) return [];
+    if (!data?.nodesConnection.edges) return [];
 
-    const canonisedNodes = data.nodes.map(
+    const canonisedNodes = compact(data.nodesConnection.edges).map(
       ({
-        id,
-        name,
-        avatarUrl,
-        stakedTotalFormatted,
-        rankingScore: {
-          rankingScore,
-          stakeScore,
-          status,
-          performanceScore,
-          votingPower,
+        node: {
+          id,
+          name,
+          avatarUrl,
+          stakedTotalFormatted,
+          rankingScore: {
+            rankingScore,
+            stakeScore,
+            status,
+            performanceScore,
+            votingPower,
+          },
+          pendingStakeFormatted,
         },
-        pendingStakeFormatted,
       }) => {
         const stakedTotal = new BigNumber(
           data?.nodeData?.stakedTotalFormatted || 0

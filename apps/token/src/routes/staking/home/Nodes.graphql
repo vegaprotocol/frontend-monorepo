@@ -1,19 +1,23 @@
 query Nodes {
-  nodes {
-    avatarUrl
-    id
-    name
-    pubkey
-    stakedTotal
-    stakedTotalFormatted @client
-    pendingStake
-    pendingStakeFormatted @client
-    rankingScore {
-      rankingScore
-      stakeScore
-      performanceScore
-      votingPower
-      status
+  nodesConnection {
+    edges {
+      node {
+        avatarUrl
+        id
+        name
+        pubkey
+        stakedTotal
+        stakedTotalFormatted @client
+        pendingStake
+        pendingStakeFormatted @client
+        rankingScore {
+          rankingScore
+          stakeScore
+          performanceScore
+          votingPower
+          status
+        }
+      }
     }
   }
   nodeData {
