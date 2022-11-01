@@ -134,8 +134,9 @@ export const DealTicket = ({
       reset(undefined, {
         keepDefaultValues: true,
       });
+      setValue('price', marketPriceFormatted);
     }
-  }, [reset, isSubmitSuccessful]);
+  }, [reset, isSubmitSuccessful, marketPriceFormatted, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
