@@ -1,4 +1,4 @@
-query NetworkParamsQuery {
+query NetworkParams {
   networkParametersConnection {
     edges {
       node {

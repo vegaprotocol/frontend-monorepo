@@ -1,4 +1,4 @@
-import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
+import { NetworkParamsDocument } from '@vegaprotocol/web3';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import type { PubKey } from '@vegaprotocol/wallet';
@@ -29,17 +29,21 @@ const mockEthereumConfig = {
 
 export const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'blockchains.ethereumConfig',
-          value: JSON.stringify(mockEthereumConfig),
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'blockchains.ethereumConfig',
+              value: JSON.stringify(mockEthereumConfig),
+            },
+          },
+        ],
+      },
     },
   },
 };

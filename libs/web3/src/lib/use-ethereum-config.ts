@@ -1,6 +1,6 @@
 import compact from 'lodash/compact';
 import { useMemo } from 'react';
-import { useNetworkParamsQueryQuery } from './__generated___/NetworkParams';
+import { useNetworkParamsQuery } from './__generated___/NetworkParams';
 
 export interface EthereumConfig {
   network_id: string;
@@ -24,7 +24,7 @@ export interface EthereumConfig {
 }
 
 export const useEthereumConfig = () => {
-  const { data, loading, error } = useNetworkParamsQueryQuery();
+  const { data, loading, error } = useNetworkParamsQuery();
 
   const config = useMemo(() => {
     if (!data) {

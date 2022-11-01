@@ -3,14 +3,14 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type NetworkParamsQueryQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type NetworkParamsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NetworkParamsQueryQuery = { __typename?: 'Query', networkParametersConnection: { __typename?: 'NetworkParametersConnection', edges?: Array<{ __typename?: 'NetworkParameterEdge', node: { __typename?: 'NetworkParameter', key: string, value: string } } | null> | null } };
+export type NetworkParamsQuery = { __typename?: 'Query', networkParametersConnection: { __typename?: 'NetworkParametersConnection', edges?: Array<{ __typename?: 'NetworkParameterEdge', node: { __typename?: 'NetworkParameter', key: string, value: string } } | null> | null } };
 
 
-export const NetworkParamsQueryDocument = gql`
-    query NetworkParamsQuery {
+export const NetworkParamsDocument = gql`
+    query NetworkParams {
   networkParametersConnection {
     edges {
       node {
@@ -23,28 +23,28 @@ export const NetworkParamsQueryDocument = gql`
     `;
 
 /**
- * __useNetworkParamsQueryQuery__
+ * __useNetworkParamsQuery__
  *
- * To run a query within a React component, call `useNetworkParamsQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useNetworkParamsQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useNetworkParamsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNetworkParamsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useNetworkParamsQueryQuery({
+ * const { data, loading, error } = useNetworkParamsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useNetworkParamsQueryQuery(baseOptions?: Apollo.QueryHookOptions<NetworkParamsQueryQuery, NetworkParamsQueryQueryVariables>) {
+export function useNetworkParamsQuery(baseOptions?: Apollo.QueryHookOptions<NetworkParamsQuery, NetworkParamsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<NetworkParamsQueryQuery, NetworkParamsQueryQueryVariables>(NetworkParamsQueryDocument, options);
+        return Apollo.useQuery<NetworkParamsQuery, NetworkParamsQueryVariables>(NetworkParamsDocument, options);
       }
-export function useNetworkParamsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NetworkParamsQueryQuery, NetworkParamsQueryQueryVariables>) {
+export function useNetworkParamsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NetworkParamsQuery, NetworkParamsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<NetworkParamsQueryQuery, NetworkParamsQueryQueryVariables>(NetworkParamsQueryDocument, options);
+          return Apollo.useLazyQuery<NetworkParamsQuery, NetworkParamsQueryVariables>(NetworkParamsDocument, options);
         }
-export type NetworkParamsQueryQueryHookResult = ReturnType<typeof useNetworkParamsQueryQuery>;
-export type NetworkParamsQueryLazyQueryHookResult = ReturnType<typeof useNetworkParamsQueryLazyQuery>;
-export type NetworkParamsQueryQueryResult = Apollo.QueryResult<NetworkParamsQueryQuery, NetworkParamsQueryQueryVariables>;
+export type NetworkParamsQueryHookResult = ReturnType<typeof useNetworkParamsQuery>;
+export type NetworkParamsLazyQueryHookResult = ReturnType<typeof useNetworkParamsLazyQuery>;
+export type NetworkParamsQueryResult = Apollo.QueryResult<NetworkParamsQuery, NetworkParamsQueryVariables>;
