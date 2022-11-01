@@ -1,5 +1,26 @@
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  getDateTimeFormat,
+  PriceFlashCell,
+  signedNumberCssClass,
+  signedNumberCssClassRules,
+  t,
+  volumePrefix,
+} from '@vegaprotocol/react-helpers';
+import { MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AgGridDynamic as AgGrid,
+  Button,
+  EmptyCell,
+  Intent,
+  ProgressBarCell,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
+import { AgGridColumn } from 'ag-grid-react';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
+
 import type { CSSProperties } from 'react';
 import type {
   ICellRendererParams,
@@ -9,25 +30,9 @@ import type {
   ValueProps as PriceCellProps,
   VegaValueFormatterParams,
 } from '@vegaprotocol/ui-toolkit';
-import { EmptyCell, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
-import {
-  PriceFlashCell,
-  addDecimalsFormatNumber,
-  volumePrefix,
-  t,
-  formatNumber,
-  getDateTimeFormat,
-  signedNumberCssClass,
-  signedNumberCssClassRules,
-} from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {

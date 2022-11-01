@@ -1,19 +1,19 @@
-import type { AgGridReact } from 'ag-grid-react';
-import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef } from 'react';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridColumn } from 'ag-grid-react';
+import BigNumber from 'bignumber.js';
+import { forwardRef } from 'react';
+
+import type { AgGridReact } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
 import type { Trade } from './trades-data-provider';
-import BigNumber from 'bignumber.js';
-
 export const UP_CLASS = 'text-vega-green-dark dark:text-vega-green';
 export const DOWN_CLASS = 'text-vega-red-dark dark:text-vega-red';
 

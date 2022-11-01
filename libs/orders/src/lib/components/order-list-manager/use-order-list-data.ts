@@ -1,11 +1,13 @@
-import { useCallback, useMemo, useRef } from 'react';
-import type { RefObject } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
 import {
   makeInfiniteScrollGetRows,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
+import { useCallback, useMemo, useRef } from 'react';
+
 import { ordersWithMarketProvider } from '../';
+
+import type { RefObject } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import type { OrderEdge, Order } from '../';
 
 interface Props {

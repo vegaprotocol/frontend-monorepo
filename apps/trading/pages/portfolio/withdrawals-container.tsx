@@ -1,14 +1,15 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
+import { Web3Container } from '@vegaprotocol/web3';
 import {
   PendingWithdrawalsTable,
   useWithdrawals,
   WithdrawalDialogs,
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
-import { t } from '@vegaprotocol/react-helpers';
 import { useState } from 'react';
+
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { Web3Container } from '@vegaprotocol/web3';
 
 export const WithdrawalsContainer = () => {
   const { pending, completed, loading, error } = useWithdrawals();

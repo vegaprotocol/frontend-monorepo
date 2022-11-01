@@ -1,11 +1,13 @@
-import { useRef, memo } from 'react';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
-import type { AgGridReact } from 'ag-grid-react';
-import PositionsTable from './positions-table';
-import type { Position } from './positions-data-providers';
 import { AssetBalance } from '@vegaprotocol/accounts';
+import { t } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { memo, useRef } from 'react';
+
+import PositionsTable from './positions-table';
 import { usePositionsData } from './use-positions-data';
+
+import type { AgGridReact } from 'ag-grid-react';
+import type { Position } from './positions-data-providers';
 
 interface PositionsProps {
   partyId: string;
@@ -23,7 +25,7 @@ export const Positions = memo(
     );
 
     return (
-      <AsyncRenderer loading={loading} error={error} data={data}>
+      <AsyncRenderer loading={loading} error={error} data={data || []}>
         <div className="flex justify-between items-center px-4 pt-3 pb-1">
           <h4>
             {assetSymbol} {t('markets')}

@@ -1,17 +1,23 @@
-import { t, titlefy } from '@vegaprotocol/react-helpers';
-import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderListContainer } from '@vegaprotocol/orders';
-import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
-import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { DepositsContainer } from './deposits-container';
-import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
+import { OrderListContainer } from '@vegaprotocol/orders';
+import { PositionsContainer } from '@vegaprotocol/positions';
+import { t, titlefy } from '@vegaprotocol/react-helpers';
+import {
+  ResizableGrid,
+  ResizableGridPanel,
+  Tab,
+  Tabs,
+} from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
+import { useEffect } from 'react';
+
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from './accounts-container';
+import { DepositsContainer } from './deposits-container';
+import { WithdrawalsContainer } from './withdrawals-container';
+
+import type { ReactNode } from 'react';
 
 const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -36,7 +42,6 @@ const Portfolio = () => {
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-xl p-4">{t('Orders')}</h4>
                     <div>
                       <OrderListContainer />
                     </div>
@@ -46,7 +51,6 @@ const Portfolio = () => {
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-xl p-4">{t('Fills')}</h4>
                     <div>
                       <FillsContainer />
                     </div>

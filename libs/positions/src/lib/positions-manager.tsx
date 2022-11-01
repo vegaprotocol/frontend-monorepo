@@ -1,12 +1,13 @@
-import { useRef } from 'react';
-import { AsyncRenderer, Icon, Intent } from '@vegaprotocol/ui-toolkit';
-import { useClosePosition, usePositionsData, PositionsTable } from '../';
-import type { AgGridReact } from 'ag-grid-react';
-import { Requested } from './close-position-dialog/requested';
-import { Complete } from './close-position-dialog/complete';
-import type { TransactionResult } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer, Icon, Intent } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
 
+import { PositionsTable, useClosePosition, usePositionsData } from '../';
+import { Complete } from './close-position-dialog/complete';
+import { Requested } from './close-position-dialog/requested';
+
+import type { AgGridReact } from 'ag-grid-react';
+import type { TransactionResult } from '@vegaprotocol/wallet';
 interface PositionsManagerProps {
   partyId: string;
 }
@@ -25,7 +26,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
 
   return (
     <>
-      <AsyncRenderer loading={loading} error={error} data={data}>
+      <AsyncRenderer loading={loading} error={error} data={data || []}>
         <PositionsTable
           domLayout="autoHeight"
           style={{ width: '100%' }}

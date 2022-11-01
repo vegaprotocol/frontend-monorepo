@@ -1,10 +1,11 @@
-import type { AgGridReact } from 'ag-grid-react';
-import { useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
+
 import { FillsTable } from './fills-table';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { useFillsList } from './use-fills-list';
 
+import type { AgGridReact } from 'ag-grid-react';
+import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 interface FillsManagerProps {
   partyId: string;
 }
@@ -29,7 +30,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data || []}>
       <FillsTable
         ref={gridRef}
         partyId={partyId}

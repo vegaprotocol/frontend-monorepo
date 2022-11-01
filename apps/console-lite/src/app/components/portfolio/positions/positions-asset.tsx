@@ -1,13 +1,14 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useRef } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
-import type { Position } from '@vegaprotocol/positions';
-import { PriceFlashCell, t } from '@vegaprotocol/react-helpers';
 import { AssetBalance } from '@vegaprotocol/accounts';
 import { usePositionsData } from '@vegaprotocol/positions';
+import { PriceFlashCell, t } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
+
 import { ConsoleLiteGrid } from '../../console-lite-grid';
 import useColumnDefinitions from './use-column-definitions';
 
+import type { AgGridReact } from 'ag-grid-react';
+import type { Position } from '@vegaprotocol/positions';
 interface Props {
   partyId: string;
   assetSymbol: string;
@@ -24,7 +25,7 @@ const PositionsAsset = ({ partyId, assetSymbol }: Props) => {
   );
   const { columnDefs, defaultColDef } = useColumnDefinitions();
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data || []}>
       <div
         data-testid={`positions-asset-${assetSymbol}`}
         className="flex justify-between items-center px-4 pt-3 pb-1"

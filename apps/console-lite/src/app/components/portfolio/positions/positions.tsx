@@ -1,14 +1,15 @@
-import { useOutletContext } from 'react-router-dom';
-import { t } from '@vegaprotocol/react-helpers';
 import { usePositionsAssets } from '@vegaprotocol/positions';
+import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { useOutletContext } from 'react-router-dom';
+
 import PositionsAsset from './positions-asset';
 
 const Positions = () => {
   const { partyId } = useOutletContext<{ partyId: string }>();
   const { data, error, loading, assetSymbols } = usePositionsAssets(partyId);
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data || []}>
       {assetSymbols && assetSymbols.length > 0 && (
         <div className="w-full, h-max">
           {assetSymbols?.map((assetSymbol) => (

@@ -1,13 +1,15 @@
 import {
-  useDataProvider,
   makeInfiniteScrollGetRows,
+  useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
-import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
+
 import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
+
+import type { AgGridReact } from 'ag-grid-react';
+import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import type { Trade, TradeEdge } from './trades-data-provider';
 import type { TradesQueryVariables } from './__generated___/Trades';
 
@@ -109,7 +111,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={data || []}>
       <TradesTable
         ref={gridRef}
         rowModelType={data?.length ? 'infinite' : 'clientSide'}

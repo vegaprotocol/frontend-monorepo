@@ -21,17 +21,18 @@ import {
   Intent,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import type { TransactionResult } from '@vegaprotocol/wallet';
-import type { VegaTxState } from '@vegaprotocol/wallet';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { forwardRef, useState } from 'react';
-import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
+
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderFeedback } from '../order-feedback';
 import { OrderEditDialog } from './order-edit-dialog';
 
+import type { TransactionResult } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
+import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
