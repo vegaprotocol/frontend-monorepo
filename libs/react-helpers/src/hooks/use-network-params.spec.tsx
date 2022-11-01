@@ -57,23 +57,31 @@ describe('useNetworkParams', () => {
       },
       result: {
         data: {
-          networkParameters: [
-            {
-              __typename: 'NetworkParameter',
-              key: 'spam.protection.proposal.min.tokens',
-              value: '1',
-            },
-            {
-              __typename: 'NetworkParameter',
-              key: 'governance.proposal.updateMarket.minProposerBalance',
-              value: '2',
-            },
-            {
-              __typename: 'NetworkParameter',
-              key: 'reward.staking.delegation.payoutDelay',
-              value: '200',
-            },
-          ],
+          networkParametersConnection: {
+            edges: [
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'spam.protection.proposal.min.tokens',
+                  value: '1',
+                },
+              },
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'governance.proposal.updateMarket.minProposerBalance',
+                  value: '2',
+                },
+              },
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'reward.staking.delegation.payoutDelay',
+                  value: '200',
+                },
+              },
+            ],
+          },
         },
       },
     };
