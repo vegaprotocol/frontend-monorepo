@@ -6,7 +6,7 @@ import { AppStateProvider } from '../../../../contexts/app-state/app-state-provi
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({

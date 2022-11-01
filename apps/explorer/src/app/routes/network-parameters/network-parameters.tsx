@@ -12,8 +12,8 @@ import {
 import { suitableForSyntaxHighlighter } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
-import { useNetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import compact from 'lodash/compact';
 
 const PERCENTAGE_PARAMS = [

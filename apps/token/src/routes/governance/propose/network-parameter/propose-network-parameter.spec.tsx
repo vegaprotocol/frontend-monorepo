@@ -5,7 +5,7 @@ import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MemoryRouter as Router } from 'react-router-dom';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { MockedResponse } from '@apollo/client/testing';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 

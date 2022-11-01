@@ -1,4 +1,4 @@
-export * from './__generated__/NetworkParam';
+export * from './__generated___/NetworkParams';
 export * from './use-apply-grid-transaction';
 export * from './use-data-provider';
 export * from './use-fetch';

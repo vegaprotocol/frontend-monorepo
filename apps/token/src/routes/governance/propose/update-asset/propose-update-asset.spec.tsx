@@ -5,7 +5,7 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateAsset } from './propose-update-asset';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { MockedResponse } from '@apollo/client/testing';
 import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 
