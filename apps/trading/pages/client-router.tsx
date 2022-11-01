@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -63,6 +65,14 @@ const routerConfig = [
 export const ClientRouter = () => {
   const routes = useRoutes(routerConfig);
   return (
-    <Suspense fallback={<div>Suspense fallback...</div>}>{routes}</Suspense>
+    <Suspense
+      fallback={
+        <div className="w-full h-full flex justify-center items-center">
+          {t('Loading...')}
+        </div>
+      }
+    >
+      {routes}
+    </Suspense>
   );
 };
