@@ -158,10 +158,6 @@ export const Market = ({
   );
 };
 
-Market.getInitialProps = () => ({
-  page: 'market',
-});
-
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState(() => {
     if (typeof window !== 'undefined') {
