@@ -21,38 +21,52 @@ const updateAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateAsset.maxClose',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateAsset.maxEnact',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateAsset.minClose',
-          value: '1h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateAsset.minEnact',
-          value: '2h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateAsset.minProposerBalance',
-          value: '1',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'spam.protection.proposal.min.tokens',
-          value: '1000000000000000000',
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateAsset.maxClose',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateAsset.maxEnact',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateAsset.minClose',
+              value: '1h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateAsset.minEnact',
+              value: '2h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateAsset.minProposerBalance',
+              value: '1',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'spam.protection.proposal.min.tokens',
+              value: '1000000000000000000',
+            },
+          },
+        ],
+      },
     },
   },
 };

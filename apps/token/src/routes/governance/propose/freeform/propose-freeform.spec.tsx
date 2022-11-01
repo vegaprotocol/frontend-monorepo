@@ -21,38 +21,52 @@ const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.maxClose',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.maxEnact',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minClose',
-          value: '1h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minEnact',
-          value: '2h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minProposerBalance',
-          value: '1',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'spam.protection.proposal.min.tokens',
-          value: '1000000000000000000',
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.maxClose',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.maxEnact',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minClose',
+              value: '1h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minEnact',
+              value: '2h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minProposerBalance',
+              value: '1',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'spam.protection.proposal.min.tokens',
+              value: '1000000000000000000',
+            },
+          },
+        ],
+      },
     },
   },
 };
