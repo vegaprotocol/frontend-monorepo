@@ -251,7 +251,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 });
 
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
-  before(() => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
@@ -260,6 +260,8 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
   it('must warn if order size input has too many digits after the decimal place', function () {
     //7002-SORD-016
     cy.getByTestId(orderSizeField).clear().type('1.234');
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
     cy.getByTestId('dealticket-error-message-price-market').should(
       'have.text',
@@ -269,6 +271,8 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 
   it('must warn if order size is set to 0', function () {
     cy.getByTestId(orderSizeField).clear().type('0');
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
     cy.getByTestId('dealticket-error-message-price-market').should(
       'have.text',
@@ -416,6 +420,8 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 
   it('should show warning for market order', function () {
     cy.getByTestId(toggleMarket).click();
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
     cy.getByTestId('dealticket-error-message-type').should(
       'have.text',
@@ -464,6 +470,8 @@ describe('margin required validation', { tags: '@regression' }, () => {
   });
 
   it('should display info and button for deposit', () => {
+    cy.getByTestId('place-order').should('not.be.disabled');
+    cy.getByTestId('place-order').click();
     cy.getByTestId('place-order').should('be.disabled');
     cy.getByTestId('deal-ticket-margin-invalidated').should(
       'contain.text',
@@ -471,7 +479,7 @@ describe('margin required validation', { tags: '@regression' }, () => {
     );
     cy.getByTestId('deal-ticket-margin-invalidated').should(
       'contain.text',
-      '0.01000 tBTC currently required, 0.00100 tBTC available'
+      '0.01 tBTC currently required, 0.001 tBTC available'
     );
     cy.getByTestId('deal-ticket-deposit-dialog-button').click();
     cy.getByTestId('dialog-content')
