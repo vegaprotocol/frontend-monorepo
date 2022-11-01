@@ -3,7 +3,7 @@ import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation';
 import { DealTicketError } from './deal-ticket-error';
-import * as constants from '../constants';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
@@ -73,10 +73,7 @@ export const DealTicketLimitAmount = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-price-limit"
-        section={[
-          constants.DEAL_TICKET_SECTION_SIZE,
-          constants.DEAL_TICKET_SECTION_PRICE,
-        ]}
+        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
       />
     </div>
   );

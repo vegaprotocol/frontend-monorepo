@@ -4,7 +4,7 @@ import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { validateSize } from '../deal-ticket-validation/validate-size';
 import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketError } from './deal-ticket-error';
-import * as constants from '../constants';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -76,10 +76,7 @@ export const DealTicketMarketAmount = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-price-market"
-        section={[
-          constants.DEAL_TICKET_SECTION_SIZE,
-          constants.DEAL_TICKET_SECTION_PRICE,
-        ]}
+        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
       />
     </div>
   );

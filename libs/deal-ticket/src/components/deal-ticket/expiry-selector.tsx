@@ -3,7 +3,7 @@ import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 import { DealTicketError } from './deal-ticket-error';
-import * as constants from '../constants';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 interface ExpirySelectorProps {
   value?: string;
@@ -33,7 +33,7 @@ export const ExpirySelector = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-force"
-        section={constants.DEAL_TICKET_SECTION_EXPIRY}
+        section={DEAL_TICKET_SECTION.EXPIRY}
       />
     </FormGroup>
   );

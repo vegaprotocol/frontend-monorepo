@@ -19,7 +19,7 @@ import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/Dea
 import { ValidateMargin } from './validate-margin';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { useOrderMarginValidation } from './use-order-margin-validation';
-import * as constants from '../constants';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -49,12 +49,7 @@ export const marketTranslations = (marketState: MarketState) => {
 
 export type DealTicketSection =
   | ''
-  | typeof constants.DEAL_TICKET_SECTION_TYPE
-  | typeof constants.DEAL_TICKET_SECTION_SIZE
-  | typeof constants.DEAL_TICKET_SECTION_PRICE
-  | typeof constants.DEAL_TICKET_SECTION_FORCE
-  | typeof constants.DEAL_TICKET_SECTION_EXPIRY
-  | typeof constants.DEAL_TICKET_SECTION_SUMMARY;
+  | typeof DEAL_TICKET_SECTION[keyof typeof DEAL_TICKET_SECTION];
 
 export const useOrderValidation = ({
   market,
@@ -80,7 +75,7 @@ export const useOrderValidation = ({
       return {
         message: t('No public key selected'),
         isDisabled: true,
-        section: constants.DEAL_TICKET_SECTION_SUMMARY,
+        section: DEAL_TICKET_SECTION.SUMMARY,
       };
     }
 
@@ -100,7 +95,7 @@ export const useOrderValidation = ({
             market.state
           )} and not accepting orders`
         ),
-        section: constants.DEAL_TICKET_SECTION_SUMMARY,
+        section: DEAL_TICKET_SECTION.SUMMARY,
       };
     }
 
@@ -116,7 +111,7 @@ export const useOrderValidation = ({
             market.state
           )} and only accepting liquidity commitment orders`
         ),
-        section: constants.DEAL_TICKET_SECTION_SUMMARY,
+        section: DEAL_TICKET_SECTION.SUMMARY,
       };
     }
 
@@ -143,7 +138,7 @@ export const useOrderValidation = ({
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
-            section: constants.DEAL_TICKET_SECTION_TYPE,
+            section: DEAL_TICKET_SECTION.TYPE,
           };
         }
         if (
@@ -167,7 +162,7 @@ export const useOrderValidation = ({
                 {t('Only limit orders are permitted when market is in auction')}
               </span>
             ),
-            section: constants.DEAL_TICKET_SECTION_TYPE,
+            section: DEAL_TICKET_SECTION.TYPE,
           };
         }
         return {
@@ -175,7 +170,7 @@ export const useOrderValidation = ({
           message: t(
             'Only limit orders are permitted when market is in auction'
           ),
-          section: constants.DEAL_TICKET_SECTION_SUMMARY,
+          section: DEAL_TICKET_SECTION.SUMMARY,
         };
       }
       if (
@@ -209,7 +204,7 @@ export const useOrderValidation = ({
                 )}
               </span>
             ),
-            section: constants.DEAL_TICKET_SECTION_FORCE,
+            section: DEAL_TICKET_SECTION.FORCE,
           };
         }
         if (
@@ -235,7 +230,7 @@ export const useOrderValidation = ({
                 )}
               </span>
             ),
-            section: constants.DEAL_TICKET_SECTION_FORCE,
+            section: DEAL_TICKET_SECTION.FORCE,
           };
         }
         return {
@@ -243,7 +238,7 @@ export const useOrderValidation = ({
           message: t(
             `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
           ),
-          section: constants.DEAL_TICKET_SECTION_FORCE,
+          section: DEAL_TICKET_SECTION.FORCE,
         };
       }
     }
@@ -252,7 +247,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t('You need to provide a size'),
-        section: constants.DEAL_TICKET_SECTION_SIZE,
+        section: DEAL_TICKET_SECTION.SIZE,
       };
     }
 
@@ -260,7 +255,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(`Size cannot be lower than "${minSize}"`),
-        section: constants.DEAL_TICKET_SECTION_SIZE,
+        section: DEAL_TICKET_SECTION.SIZE,
       };
     }
 
@@ -271,7 +266,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
-        section: constants.DEAL_TICKET_SECTION_PRICE,
+        section: DEAL_TICKET_SECTION.PRICE,
       };
     }
 
@@ -282,7 +277,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
-        section: constants.DEAL_TICKET_SECTION_PRICE,
+        section: DEAL_TICKET_SECTION.PRICE,
       };
     }
 
@@ -294,7 +289,7 @@ export const useOrderValidation = ({
         return {
           isDisabled: true,
           message: t('Order sizes must be in whole numbers for this market'),
-          section: constants.DEAL_TICKET_SECTION_SIZE,
+          section: DEAL_TICKET_SECTION.SIZE,
         };
       }
       return {
@@ -302,7 +297,7 @@ export const useOrderValidation = ({
         message: t(
           `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
         ),
-        section: constants.DEAL_TICKET_SECTION_SIZE,
+        section: DEAL_TICKET_SECTION.SIZE,
       };
     }
 
@@ -310,7 +305,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: <ValidateMargin {...isInvalidOrderMargin} />,
-        section: constants.DEAL_TICKET_SECTION_PRICE,
+        section: DEAL_TICKET_SECTION.PRICE,
       };
     }
 
@@ -326,7 +321,7 @@ export const useOrderValidation = ({
         message: t(
           'Any orders placed now will not trade until the auction ends'
         ),
-        section: constants.DEAL_TICKET_SECTION_SUMMARY,
+        section: DEAL_TICKET_SECTION.SUMMARY,
       };
     }
 

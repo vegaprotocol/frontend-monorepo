@@ -5,7 +5,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 import { DealTicketError } from './deal-ticket-error';
-import * as constants from '../constants';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
@@ -67,7 +67,7 @@ export const TimeInForceSelector = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-force"
-        section={constants.DEAL_TICKET_SECTION_FORCE}
+        section={DEAL_TICKET_SECTION.FORCE}
       />
     </FormGroup>
   );

@@ -47,8 +47,7 @@ export const DealTicket = ({
     setValue,
     clearErrors,
     setError,
-    formState: { errors, isSubmitted, isSubmitSuccessful },
-    reset,
+    formState: { errors, isSubmitted },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -128,15 +127,6 @@ export const DealTicket = ({
       setValue('price', marketPriceFormatted);
     }
   }, [marketPriceFormatted, order.type, setValue]);
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset(undefined, {
-        keepDefaultValues: true,
-      });
-      setValue('price', marketPriceFormatted);
-    }
-  }, [reset, isSubmitSuccessful, marketPriceFormatted, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
