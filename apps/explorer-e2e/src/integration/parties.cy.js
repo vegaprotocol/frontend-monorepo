@@ -50,9 +50,9 @@ context('Parties page', { tags: '@regression' }, function () {
     });
 
     it('should see party address id - having searched', function () {
-      cy.contains('Address')
+      cy.getByTestId('parties-header')
         .siblings()
-        .contains(vegaWalletPublicKey)
+        .contains(vegaWalletPublicKey.substring(0, 14))
         .should('be.visible');
     });
 
@@ -76,28 +76,42 @@ context('Parties page', { tags: '@regression' }, function () {
       });
     });
 
-    it('should be able to copy the party address id', function () {
-      cy.monitor_clipboard().as('clipboard');
-      cy.contains('Address').siblings().last().click();
-      cy.get('@clipboard')
-        .get_copied_text_from_clipboard()
-        .should('equal', vegaWalletPublicKey);
-    });
+    it(
+      'should be able to copy the party address id',
+      { browser: 'chrome' },
+      function () {
+        cy.monitor_clipboard().as('clipboard');
+        cy.getByTestId('parties-header')
+          .next()
+          .within(() => {
+            cy.get('button').click();
+          });
+        cy.get('@clipboard')
+          .get_copied_text_from_clipboard()
+          .should('equal', vegaWalletPublicKey);
+      }
+    );
 
-    it('should be able to copy an asset id', function () {
-      cy.monitor_clipboard().as('clipboard');
+    it(
+      'should be able to copy an asset id',
+      { browser: 'chrome' },
+      function () {
+        cy.monitor_clipboard().as('clipboard');
 
-      cy.contains(assetData.fDAI.name, txTimeout).should('be.visible');
-      cy.contains(assetData.fDAI.name)
-        .siblings()
-        .within(() => {
-          cy.get('[data-state="closed"]').last().click({ force: true });
-        });
+        cy.contains(assetData.fDAI.name, txTimeout).should('be.visible');
+        cy.contains(assetData.fDAI.name)
+          .parent()
+          .parent()
+          .siblings()
+          .within(() => {
+            cy.get('[data-state="closed"]').last().click({ force: true });
+          });
 
-      cy.get('@clipboard')
-        .get_copied_text_from_clipboard()
-        .should('equal', assetData.fDAI.id);
-    });
+        cy.get('@clipboard')
+          .get_copied_text_from_clipboard()
+          .should('equal', assetData.fDAI.id);
+      }
+    );
 
     it('should be able to see JSON of each asset containing correct balance and decimals', function () {
       cy.get(partiesJsonSection).should('be.visible');
