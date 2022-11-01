@@ -4,6 +4,7 @@ import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 import { DealTicketError } from './deal-ticket-error';
+import * as constants from '../constants';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
@@ -33,6 +34,7 @@ export const TypeSelector = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message-type"
+        section={constants.DEAL_TICKET_SECTION_TYPE}
       />
     </FormGroup>
   );

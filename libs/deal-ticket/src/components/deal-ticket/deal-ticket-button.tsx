@@ -3,6 +3,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 import { DealTicketError } from './deal-ticket-error';
+import * as constants from '../constants';
 
 interface Props {
   transactionStatus: 'default' | 'pending';
@@ -33,6 +34,7 @@ export const DealTicketButton = ({
       <DealTicketError
         errorMessage={errorMessage}
         data-testid="dealticket-error-message"
+        section={constants.DEAL_TICKET_SECTION_SUMMARY}
       />
     </div>
   ) : (

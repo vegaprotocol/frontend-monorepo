@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
 import { TypeSelector } from './type-selector';
@@ -21,6 +21,7 @@ import {
 } from '../../hooks/use-fee-deal-ticket-details';
 import * as constants from '../constants';
 import { DealTicketButton } from './deal-ticket-button';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -36,13 +37,19 @@ export const DealTicket = ({
   submit,
   transactionStatus,
 }: DealTicketProps) => {
+  const [errorMessage, setErrorMessage] = useState<
+    DealTicketErrorMessage | undefined
+  >(undefined);
   const {
     register,
     control,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    clearErrors,
+    setError,
+    formState: { errors, isSubmitted, isSubmitSuccessful },
+    reset,
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -63,6 +70,23 @@ export const DealTicket = ({
     fieldErrors: errors,
     estMargin: feeDetails.estMargin,
   });
+
+  useEffect(() => {
+    if (disabled) {
+      setError('marketId', {});
+    } else {
+      clearErrors('marketId');
+    }
+  }, [disabled, setError, clearErrors]);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      setErrorMessage({ message, isDisabled: disabled, errorSection });
+    } else {
+      setErrorMessage(undefined);
+    }
+  }, [disabled, message, errorSection, isSubmitted]);
+
   const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
@@ -106,6 +130,14 @@ export const DealTicket = ({
     }
   }, [marketPriceFormatted, order.type, setValue]);
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset(undefined, {
+        keepDefaultValues: true,
+      });
+    }
+  }, [reset, isSubmitSuccessful]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
       <Controller
@@ -115,11 +147,7 @@ export const DealTicket = ({
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
-            errorMessage={
-              errorSection === constants.DEAL_TICKET_SECTION_TYPE
-                ? { message, isDisabled }
-                : undefined
-            }
+            errorMessage={errorMessage}
           />
         )}
       />
@@ -136,14 +164,7 @@ export const DealTicket = ({
         register={register}
         price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
-        errorMessage={
-          [
-            constants.DEAL_TICKET_SECTION_SIZE,
-            constants.DEAL_TICKET_SECTION_PRICE,
-          ].includes(errorSection)
-            ? { message, isDisabled }
-            : undefined
-        }
+        errorMessage={errorMessage}
       />
       <Controller
         name="timeInForce"
@@ -153,11 +174,7 @@ export const DealTicket = ({
             value={field.value}
             orderType={order.type}
             onSelect={field.onChange}
-            errorMessage={
-              errorSection === constants.DEAL_TICKET_SECTION_FORCE
-                ? { message, isDisabled }
-                : undefined
-            }
+            errorMessage={errorMessage}
           />
         )}
       />
@@ -170,23 +187,15 @@ export const DealTicket = ({
               <ExpirySelector
                 value={field.value}
                 onSelect={field.onChange}
-                errorMessage={
-                  errorSection === constants.DEAL_TICKET_SECTION_EXPIRY
-                    ? { message, isDisabled }
-                    : undefined
-                }
+                errorMessage={errorMessage}
               />
             )}
           />
         )}
       <DealTicketButton
         transactionStatus={transactionStatus}
-        isDisabled={isDisabled}
-        errorMessage={
-          errorSection === constants.DEAL_TICKET_SECTION_SUMMARY
-            ? { message, isDisabled }
-            : undefined
-        }
+        isDisabled={isSubmitted && isDisabled}
+        errorMessage={errorMessage}
       />
       <DealTicketFeeDetails details={details} />
     </form>
