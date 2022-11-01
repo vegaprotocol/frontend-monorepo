@@ -1,6 +1,6 @@
+import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import compact from 'lodash/compact';
 import { useMemo } from 'react';
-import { useNetworkParamsQuery } from './__generated___/NetworkParams';
 
 export interface EthereumConfig {
   network_id: string;
