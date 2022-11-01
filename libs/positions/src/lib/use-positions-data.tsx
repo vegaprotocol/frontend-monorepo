@@ -57,7 +57,6 @@ export const usePositionsData = (
 
       const update: Position[] = [];
       const add: Position[] = [];
-      const remove: Position[] = [];
       if (!gridRef.current?.api) {
         return false;
       }
@@ -67,9 +66,11 @@ export const usePositionsData = (
         );
         if (rowNode) {
           update.push(position);
+        } else {
+          add.push(position);
         }
       });
-      if (update.length || add.length || remove.length) {
+      if (update.length || add.length) {
         gridRef.current.api.applyTransactionAsync({
           update,
           add,
