@@ -15,11 +15,8 @@ import type {
 } from './__generated__/VoteButtonsQuery';
 import { VoteState } from './use-user-vote';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import {
-  ProposalState,
-  ProposalUserAction,
-  VoteValue,
-} from '@vegaprotocol/types';
+import { ProposalState, VoteValue } from '@vegaprotocol/types';
+import { ProposalUserAction } from '../shared';
 import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalMinRequirements } from '../shared';
 import { addDecimal } from '@vegaprotocol/react-helpers';

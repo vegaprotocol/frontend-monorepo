@@ -2,9 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { shorten } from '@vegaprotocol/react-helpers';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
-export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
+export const ProposalHeader = ({
+  proposal,
+}: {
+  proposal: Proposal_proposal;
+}) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 

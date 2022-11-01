@@ -1,13 +1,14 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
+
 import { MarketDataGrid } from './market-data-grid';
 
+import type { ReactNode } from 'react';
 type TradingModeTooltipProps = {
   tradingMode: MarketTradingMode | null;
   trigger: AuctionTrigger | null;
-  compiledGrid: { label: ReactNode; value?: ReactNode }[];
+  compiledGrid?: { label: ReactNode; value?: ReactNode }[];
 };
 
 export const TradingModeTooltip = ({
@@ -38,7 +39,7 @@ export const TradingModeTooltip = ({
               {t('Find out more')}
             </ExternalLink>
           </p>
-          <MarketDataGrid grid={compiledGrid} />
+          {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
         </section>
       );
     }
@@ -57,7 +58,7 @@ export const TradingModeTooltip = ({
                   {t('Find out more')}
                 </ExternalLink>
               </p>
-              <MarketDataGrid grid={compiledGrid} />
+              {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>
           );
         }
@@ -72,7 +73,7 @@ export const TradingModeTooltip = ({
                   {t('Find out more')}
                 </ExternalLink>
               </p>
-              <MarketDataGrid grid={compiledGrid} />
+              {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>
           );
         }

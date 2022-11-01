@@ -192,6 +192,7 @@ export const PROPOSAL_QUERY = gql`
         yes {
           totalTokens
           totalNumber
+          totalEquityLikeShareWeight
           votes {
             value
             party {
@@ -206,6 +207,7 @@ export const PROPOSAL_QUERY = gql`
         no {
           totalTokens
           totalNumber
+          totalEquityLikeShareWeight
           votes {
             value
             party {

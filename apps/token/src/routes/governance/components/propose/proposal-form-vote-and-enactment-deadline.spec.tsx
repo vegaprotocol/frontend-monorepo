@@ -1,6 +1,13 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ProposalFormVoteAndEnactmentDeadline } from './proposal-form-vote-and-enactment-deadline';
 
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  ...jest.requireActual('@vegaprotocol/react-helpers'),
+  getDateTimeFormat: jest.fn(() => ({
+    format: (date: Date) => date.toISOString(),
+  })),
+}));
+
 beforeEach(() => {
   jest.useFakeTimers();
   jest.setSystemTime(new Date('2022-01-01T00:00:00.000Z'));
@@ -19,7 +26,6 @@ const maxEnactDeadline = '4h0m0s';
  * Formats date according to locale.
  * @param expected Use format: YYYY-MM-DDThh:mm:ss.000Z
  */
-const expectedDate = (expected: string) => new Date(expected).toLocaleString();
 
 const renderComponent = () => {
   const register = jest.fn();
@@ -142,13 +148,13 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     // Should be adding 2 mins to the vote deadline as the minimum is set by
     // default, and we add 2 mins for wallet confirmation
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      expectedDate('2022-01-01T01:02:00.000Z')
+      '2022-01-01T01:02:00.000Z'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      expectedDate('2022-01-01T00:02:00.000Z')
+      '2022-01-01T00:02:00.000Z'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      expectedDate('2022-01-01T02:00:00.000Z')
+      '2022-01-01T02:00:00.000Z'
     );
   });
 
@@ -159,13 +165,13 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     });
 
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      expectedDate('2022-01-01T01:02:30.000Z')
+      '2022-01-01T01:02:30.000Z'
     );
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      expectedDate('2022-01-01T00:02:30.000Z')
+      '2022-01-01T00:02:30.000Z'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      expectedDate('2022-01-01T02:00:30.000Z')
+      '2022-01-01T02:00:30.000Z'
     );
   });
 
@@ -174,10 +180,10 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
     fireEvent.change(voteDeadlineInput, { target: { value: 2 } });
     expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      expectedDate('2022-01-01T02:00:00.000Z')
+      '2022-01-01T02:00:00.000Z'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      expectedDate('2022-01-01T03:00:00.000Z')
+      '2022-01-01T03:00:00.000Z'
     );
   });
 
@@ -192,12 +198,12 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     fireEvent.click(voteDeadlineMaxButton);
     fireEvent.click(validationDeadlineMaxButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      expectedDate('2022-01-01T05:00:00.000Z')
+      '2022-01-01T05:00:00.000Z'
     );
     expect(validationDeadlineInput).toHaveValue(5);
     fireEvent.click(voteDeadlineMinButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      expectedDate('2022-01-01T01:00:00.000Z')
+      '2022-01-01T01:00:00.000Z'
     );
     expect(validationDeadlineInput).toHaveValue(1);
   });

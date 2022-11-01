@@ -19,6 +19,7 @@ const Template: Story = (args) => {
       <OrderListTable
         rowData={args.data}
         cancel={cancel}
+        cancelAll={cancel}
         setEditOrder={() => {
           return;
         }}
@@ -47,6 +48,7 @@ const Template2: Story = (args) => {
         <OrderListTable
           rowData={args.data}
           cancel={cancel}
+          cancelAll={cancel}
           setEditOrder={setEditOrder}
         />
       </div>

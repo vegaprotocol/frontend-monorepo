@@ -6,6 +6,7 @@ import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import {
   EnvironmentProvider,
   envTriggerMapping,
+  Networks,
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { AppLoader } from '../components/app-loader';
@@ -38,13 +39,21 @@ const Title = () => {
 };
 
 function AppBody({ Component, pageProps }: AppProps) {
+  const { VEGA_ENV } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
   return (
     <ThemeContext.Provider value={theme}>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
-          <Navbar theme={theme} toggleTheme={toggleTheme} />
+          <Navbar
+            theme={theme}
+            toggleTheme={toggleTheme}
+            navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
+          />
           <main data-testid={pageProps.page}>
             <Component {...pageProps} />
           </main>

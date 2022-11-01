@@ -37,15 +37,15 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('market-name').should('not.be.empty');
   });
 
-  it('Able to select market from dropdown', () => {
+  it('able to select market from dropdown', () => {
     openMarketDropDown();
-    cy.getByTestId('market-link-market-0').should('be.visible').click();
+    cy.getByTestId('market-link-market-0').first().should('be.visible').click();
     cy.contains('ACTIVE MARKET').should('be.visible');
     cy.url().should('include', '/markets/market-0');
     cy.getByTestId('popover-trigger').should('not.be.empty');
   });
 
-  it('Able to open and sort full market list - market page', () => {
+  it('able to open and sort full market list - market page', () => {
     const ExpectedSortedMarkets = [
       'AAPL.MF21',
       'BTCUSD.MF21',
@@ -62,10 +62,10 @@ describe('markets table', { tags: '@smoke' }, () => {
         .should('have.text', ExpectedSortedMarkets[i]);
     }
   });
-
-  function openMarketDropDown() {
-    cy.getByTestId('dialog-close').click();
-    cy.getByTestId('popover-trigger').click();
-    cy.contains('Loading market data...').should('not.exist');
-  }
 });
+
+function openMarketDropDown() {
+  cy.getByTestId('dialog-close').click();
+  cy.getByTestId('popover-trigger').click();
+  cy.contains('Loading market data...').should('not.exist');
+}

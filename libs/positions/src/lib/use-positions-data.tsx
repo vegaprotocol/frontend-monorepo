@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import { useCallback, useMemo, useRef } from 'react';
 import type { RefObject } from 'react';
 import { BigNumber } from 'bignumber.js';
@@ -41,6 +42,7 @@ export const usePositionsData = (
   assetSymbol?: string
 ) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
+  const summaryRow = useRef<ReturnType<typeof getSummaryRow>>();
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
@@ -66,9 +68,11 @@ export const usePositionsData = (
       const lastRow = dataRef.current?.length ?? -1;
       successCallback(rowsThisBlock, lastRow);
       if (gridRef.current?.api) {
-        gridRef.current.api.setPinnedBottomRowData([
-          getSummaryRow(rowsThisBlock),
-        ]);
+        const updatedSummaryRow = getSummaryRow(rowsThisBlock);
+        if (!isEqual(updatedSummaryRow, summaryRow.current)) {
+          summaryRow.current = updatedSummaryRow;
+          gridRef.current.api.setPinnedBottomRowData([updatedSummaryRow]);
+        }
       }
     },
     [gridRef]

@@ -68,19 +68,20 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const emptyString = ' - ';
   const step = toDecimal(market.positionDecimalPlaces);
   const order = watch();
-  const { message: invalidText, isDisabled } = useOrderValidation({
-    market,
-    orderType: order.type,
-    orderTimeInForce: order.timeInForce,
-    fieldErrors: errors,
-  });
-  const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
   const { pubKey } = useVegaWallet();
   const estMargin = useOrderMargin({
     order,
     market,
     partyId: pubKey || '',
   });
+  const { message: invalidText, isDisabled } = useOrderValidation({
+    market,
+    orderType: order.type,
+    orderTimeInForce: order.timeInForce,
+    fieldErrors: errors,
+    estMargin,
+  });
+  const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
   const { data: partyBalance } = usePartyBalanceQuery({
     variables: { partyId: pubKey || '' },

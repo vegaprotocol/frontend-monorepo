@@ -1,5 +1,7 @@
+import * as React from 'react';
 import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import {
   MarketState,
@@ -8,10 +10,11 @@ import {
   Schema,
 } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
-import { marketTranslations } from './use-order-validation';
-import { useOrderValidation } from './use-order-validation';
+import { marketTranslations, useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from './validate-size';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import * as OrderMarginValidation from './use-order-margin-validation';
+import { ValidateMargin } from './validate-margin';
 
 jest.mock('@vegaprotocol/wallet');
 
@@ -73,6 +76,15 @@ const defaultOrder = {
   step: 0.1,
   orderType: Schema.OrderType.TYPE_MARKET,
   orderTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  estMargin: {
+    margin: '0,000001',
+    totalFees: '0,000006',
+    fees: {
+      makerFee: '0,000003',
+      liquidityFee: '0,000002',
+      infrastructureFee: '0,000001',
+    },
+  },
 };
 
 const ERROR = {
@@ -99,16 +111,29 @@ function setup(
 ) {
   const mockUseVegaWallet = useVegaWallet as jest.Mock;
   mockUseVegaWallet.mockReturnValue({ ...defaultWalletContext, context });
-  return renderHook(() => useOrderValidation({ ...defaultOrder, ...props }));
+  return renderHook(() => useOrderValidation({ ...defaultOrder, ...props }), {
+    wrapper: MockedProvider,
+  });
 }
 
 describe('useOrderValidation', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('Returns empty string when given valid data', () => {
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(false);
+
     const { result } = setup();
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 
   it('Returns an error message when no keypair found', () => {
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(false);
     const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
@@ -238,5 +263,29 @@ describe('useOrderValidation', () => {
       isDisabled: true,
       message: ERROR.FIELD_PRICE_STEP_DECIMAL,
     });
+  });
+
+  it('Returns an error message when the estimated margin is higher than collateral', async () => {
+    const invalidatedMockValue = {
+      balance: '0000000,1',
+      margin: '000,1',
+      id: 'instrument-id',
+      symbol: 'asset-symbol',
+      decimals: 5,
+    };
+    jest
+      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .mockReturnValue(invalidatedMockValue);
+    const { result } = setup({});
+
+    expect(result.current.isDisabled).toBe(true);
+
+    const testElement = <ValidateMargin {...invalidatedMockValue} />;
+    expect((result.current.message as React.ReactElement)?.props).toEqual(
+      testElement.props
+    );
+    expect((result.current.message as React.ReactElement)?.type).toEqual(
+      testElement.type
+    );
   });
 });

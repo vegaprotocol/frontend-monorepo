@@ -15,7 +15,7 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -37,12 +37,13 @@ const ParticipationNotReached = () => {
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: ProposalFields;
+  proposal: Proposal_proposal;
 }) => {
   const { state } = proposal;
-  const { willPass, majorityMet, participationMet } = useVoteInformation({
-    proposal,
-  });
+  const { willPassByTokenVote, majorityMet, participationMet } =
+    useVoteInformation({
+      proposal,
+    });
   const { t } = useTranslation();
   const { voteState } = useUserVote(
     proposal.id,
@@ -133,7 +134,7 @@ export const ProposalsListItemDetails = ({
       voteStatus =
         (!participationMet && <ParticipationNotReached />) ||
         (!majorityMet && <MajorityNotReached />) ||
-        (willPass ? (
+        (willPassByTokenVote ? (
           <>
             {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
           </>

@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
-import type { ProposalFields } from '../../__generated__/ProposalFields';
+import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
-const renderComponent = (proposal: ProposalFields) => (
+const renderComponent = (proposal: Proposal_proposal) => (
   <ProposalHeader proposal={proposal} />
 );
 

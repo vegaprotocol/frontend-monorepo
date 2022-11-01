@@ -34,7 +34,10 @@ export const WithdrawalsContainer = () => {
                   {completed && completed.length > 0 && (
                     <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
                   )}
-                  <WithdrawalsTable rowData={completed} />
+                  <WithdrawalsTable
+                    data-testid="withdrawals-history"
+                    rowData={completed}
+                  />
                 </>
               )}
             />
