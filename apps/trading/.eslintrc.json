@@ -19,7 +19,7 @@
           },
           {
             "name": "next/router",
-            "message": "Please routing hooks from react-router-dom instead"
+            "message": "Please use routing hooks from react-router-dom instead"
           }
         ]
       }
