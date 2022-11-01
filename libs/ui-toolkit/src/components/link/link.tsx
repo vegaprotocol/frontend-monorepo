@@ -23,6 +23,8 @@ export const Link = ({ className, children, ...props }: LinkProps) => {
     className: anchorClassName,
   };
 
+  // if no href is passed just render a span, this is so that we can wrap an
+  // element with our links styles with a react router link compoment
   if (!props.href) {
     return (
       <span {...shared} {...props}>

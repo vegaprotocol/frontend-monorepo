@@ -4,6 +4,7 @@ import {
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
@@ -63,7 +64,7 @@ export const compileGridData = (
           to={`/liquidity/${market.id}`}
           onClick={() => onSelect && onSelect(market.id)}
         >
-          {t('Current liquidity')}
+          <UILink>{t('Current liquidity')}</UILink>
         </Link>
       ),
       value: formatStake(market.data.suppliedStake),
