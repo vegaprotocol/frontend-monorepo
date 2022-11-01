@@ -3,6 +3,7 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
 import type { Proposal_proposal } from '../proposal/__generated__/Proposal';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useVoteInformation = ({
   proposal,
@@ -10,7 +11,7 @@ export const useVoteInformation = ({
   proposal: Proposal_proposal;
 }) => {
   const {
-    appState: { totalSupply },
+    appState: { totalSupply, decimals },
   } = useAppState();
 
   const {
@@ -52,14 +53,18 @@ export const useVoteInformation = ({
       ? new BigNumber(requiredMajorityLP).times(100)
       : new BigNumber(100);
 
-    const noTokens = new BigNumber(proposal.votes.no.totalTokens);
+    const noTokens = new BigNumber(
+      addDecimal(proposal.votes.no.totalTokens, decimals)
+    );
 
     const noEquityLikeShareWeight = !proposal.votes.no
       .totalEquityLikeShareWeight
       ? new BigNumber(0)
       : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight);
 
-    const yesTokens = new BigNumber(proposal.votes.yes.totalTokens);
+    const yesTokens = new BigNumber(
+      addDecimal(proposal.votes.yes.totalTokens, decimals)
+    );
 
     const yesEquityLikeShareWeight = !proposal.votes.yes
       .totalEquityLikeShareWeight
@@ -153,6 +158,7 @@ export const useVoteInformation = ({
       willPassByLPVote,
     };
   }, [
+    decimals,
     proposal.votes.no.totalEquityLikeShareWeight,
     proposal.votes.no.totalTokens,
     proposal.votes.yes.totalEquityLikeShareWeight,

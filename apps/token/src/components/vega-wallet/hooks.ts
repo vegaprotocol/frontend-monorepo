@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
-import { addDecimal } from '../../lib/decimals';
 import type { WalletCardAssetProps } from '../wallet-card';
 import type {
   Delegations,
@@ -20,6 +19,7 @@ import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import { AccountType } from '@vegaprotocol/types';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -130,7 +130,7 @@ export const usePollForDelegations = () => {
                     symbol: a.asset.symbol,
                     decimals: a.asset.decimals,
                     balance: new BigNumber(
-                      addDecimal(new BigNumber(a.balance), a.asset.decimals)
+                      addDecimal(a.balance, a.asset.decimals)
                     ),
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,

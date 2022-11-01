@@ -15,7 +15,7 @@ jest.mock('@vegaprotocol/environment', () => ({
   }),
 }));
 
-const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
+const newAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
     query: NETWORK_PARAMETERS_QUERY,
   },
@@ -60,7 +60,7 @@ const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
 const renderComponent = () =>
   render(
     <Router>
-      <MockedProvider mocks={[updateMarketNetworkParamsQueryMock]}>
+      <MockedProvider mocks={[newAssetNetworkParamsQueryMock]}>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposeNewAsset />
