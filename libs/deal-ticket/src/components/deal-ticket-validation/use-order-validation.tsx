@@ -47,8 +47,8 @@ export const marketTranslations = (marketState: MarketState) => {
   }
 };
 
-export type DealTicketSection =
-  | typeof constants.DEAL_TICKET_SECTION_NONE
+type DealTicketSection =
+  | ''
   | typeof constants.DEAL_TICKET_SECTION_TYPE
   | typeof constants.DEAL_TICKET_SECTION_SIZE
   | typeof constants.DEAL_TICKET_SECTION_PRICE
@@ -330,7 +330,11 @@ export const useOrderValidation = ({
       };
     }
 
-    return { isDisabled: false, message: '', section: '' };
+    return {
+      isDisabled: false,
+      message: '',
+      section: '',
+    };
   }, [
     minSize,
     pubKey,

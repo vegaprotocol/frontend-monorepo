@@ -26,4 +26,3 @@ export const DEAL_TICKET_SECTION_PRICE = 'sec-price';
 export const DEAL_TICKET_SECTION_FORCE = 'sec-force';
 export const DEAL_TICKET_SECTION_EXPIRY = 'sec-expiry';
 export const DEAL_TICKET_SECTION_SUMMARY = 'sec-summary';
-export const DEAL_TICKET_SECTION_NONE = '';
