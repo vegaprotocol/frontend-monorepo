@@ -11,7 +11,7 @@ import type {
   MarketWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 type Market = MarketWithCandles & MarketWithData;
 
 type PartialMarket = Partial<

@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
