@@ -74,7 +74,7 @@ describe('use-vote-information', () => {
     const yesEquityLikeShareWeight = '30';
     const noEquityLikeShareWeight = '70';
     // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       terms: {
@@ -128,7 +128,7 @@ describe('use-vote-information', () => {
   it('correctly returns majority, participation and will-pass status for a proposal with no votes', () => {
     const yesVotes = 0;
     const noVotes = 0;
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       votes: {
@@ -150,7 +150,7 @@ describe('use-vote-information', () => {
   it('correctly shows lack of participation for a failing proposal lacking votes', () => {
     const yesVotes = 20;
     const noVotes = 10;
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       votes: {
@@ -170,7 +170,7 @@ describe('use-vote-information', () => {
   it('correctly shows participation but lack of majority for a failing proposal with enough votes but not enough majority', () => {
     const yesVotes = 20;
     const noVotes = 70;
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       votes: {
@@ -192,7 +192,7 @@ describe('use-vote-information', () => {
   it('correctly shows participation, majority and will-pass data for successful proposal', () => {
     const yesVotes = 70;
     const noVotes = 20;
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       votes: {
@@ -216,7 +216,7 @@ describe('use-vote-information', () => {
     const noVotes = 70;
     const yesEquityLikeShareWeight = '30';
     const noEquityLikeShareWeight = '60';
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       terms: {
@@ -249,7 +249,7 @@ describe('use-vote-information', () => {
     const noVotes = 70;
     const yesEquityLikeShareWeight = '80';
     const noEquityLikeShareWeight = '20';
-    const fixedTokenValue = 1;
+    const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({
       terms: {
