@@ -19,7 +19,7 @@ import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import { ProposalUserAction } from '../shared';
 import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalMinRequirements } from '../shared';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -35,9 +35,8 @@ export const VOTE_BUTTONS_QUERY = gql`
   query VoteButtonsQuery($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
     }
   }
@@ -45,6 +44,9 @@ export const VOTE_BUTTONS_QUERY = gql`
 
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   const { pubKey } = useVegaWallet();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const { data, loading, error } = useQuery<
     VoteButtonsQueryResult,
     VoteButtonsQueryVariables
@@ -57,9 +59,10 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <VoteButtons
         {...props}
-        currentStakeAvailable={
-          new BigNumber(data?.party?.stake.currentStakeAvailableFormatted || 0)
-        }
+        currentStakeAvailable={toBigNum(
+          data?.party?.stakingSummary.currentStakeAvailable || 0,
+          decimals
+        )}
       />
     </AsyncRenderer>
   );

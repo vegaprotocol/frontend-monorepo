@@ -8,7 +8,7 @@ export type PartyAssetsQueryQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyAssetsQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, delegations?: Array<{ __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } }> | null, stake: { __typename?: 'PartyStake', currentStakeAvailable: string }, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } }> | null } | null };
+export type PartyAssetsQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, delegations?: Array<{ __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } }> | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } }> | null } | null };
 
 
 export const PartyAssetsQueryDocument = gql`
@@ -23,7 +23,7 @@ export const PartyAssetsQueryDocument = gql`
       }
       epoch
     }
-    stake {
+    stakingSummary {
       currentStakeAvailable
     }
     accounts {

@@ -9,7 +9,7 @@ import { StakeLinkingStatus } from "@vegaprotocol/types";
 // GraphQL query operation: PartyStakeLinkings
 // ====================================================
 
-export interface PartyStakeLinkings_party_stake_linkings {
+export interface PartyStakeLinkings_party_stakingSummary_linkings_edges_node {
   __typename: "StakeLinking";
   id: string;
   /**
@@ -22,12 +22,28 @@ export interface PartyStakeLinkings_party_stake_linkings {
   status: StakeLinkingStatus;
 }
 
-export interface PartyStakeLinkings_party_stake {
-  __typename: "PartyStake";
+export interface PartyStakeLinkings_party_stakingSummary_linkings_edges {
+  __typename: "StakeLinkingEdge";
+  /**
+   * The stake linking
+   */
+  node: PartyStakeLinkings_party_stakingSummary_linkings_edges_node;
+}
+
+export interface PartyStakeLinkings_party_stakingSummary_linkings {
+  __typename: "StakesConnection";
+  /**
+   * List of stake links available for the connection
+   */
+  edges: (PartyStakeLinkings_party_stakingSummary_linkings_edges | null)[] | null;
+}
+
+export interface PartyStakeLinkings_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The list of all stake link/unlink for the party
    */
-  linkings: PartyStakeLinkings_party_stake_linkings[] | null;
+  linkings: PartyStakeLinkings_party_stakingSummary_linkings;
 }
 
 export interface PartyStakeLinkings_party {
@@ -39,7 +55,7 @@ export interface PartyStakeLinkings_party {
   /**
    * The staking information for this Party
    */
-  stake: PartyStakeLinkings_party_stake;
+  stakingSummary: PartyStakeLinkings_party_stakingSummary;
 }
 
 export interface PartyStakeLinkings {

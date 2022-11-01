@@ -7,16 +7,12 @@
 // GraphQL query operation: VoteButtonsQuery
 // ====================================================
 
-export interface VoteButtonsQuery_party_stake {
-  __typename: "PartyStake";
+export interface VoteButtonsQuery_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
-  /**
-   * The currently available stake formatted by the client
-   */
-  currentStakeAvailableFormatted: string;
 }
 
 export interface VoteButtonsQuery_party {
@@ -28,7 +24,7 @@ export interface VoteButtonsQuery_party {
   /**
    * The staking information for this Party
    */
-  stake: VoteButtonsQuery_party_stake;
+  stakingSummary: VoteButtonsQuery_party_stakingSummary;
 }
 
 export interface VoteButtonsQuery {
