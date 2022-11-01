@@ -2752,8 +2752,6 @@ export type PartyStake = {
   __typename?: 'PartyStake';
   /** The stake currently available for the party */
   currentStakeAvailable: Scalars['String'];
-  /** The currently available stake formatted by the client */
-  currentStakeAvailableFormatted: Scalars['String'];
   /** The list of all stake link/unlink for the party */
   linkings?: Maybe<Array<StakeLinking>>;
 };

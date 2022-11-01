@@ -46,16 +46,12 @@ export interface Delegations_party_delegations {
   epoch: number;
 }
 
-export interface Delegations_party_stake {
-  __typename: "PartyStake";
+export interface Delegations_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
-  /**
-   * The currently available stake formatted by the client
-   */
-  currentStakeAvailableFormatted: string;
 }
 
 export interface Delegations_party_accounts_asset_source_BuiltinAsset {
@@ -122,7 +118,7 @@ export interface Delegations_party {
   /**
    * The staking information for this Party
    */
-  stake: Delegations_party_stake;
+  stakingSummary: Delegations_party_stakingSummary;
   /**
    * Collateral accounts relating to a party
    */

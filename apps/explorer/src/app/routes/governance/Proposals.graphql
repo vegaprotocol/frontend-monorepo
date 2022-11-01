@@ -48,7 +48,7 @@ query ProposalsQuery {
           value
           party {
             id
-            stake {
+            stakingSummary {
               currentStakeAvailable
             }
           }
@@ -62,7 +62,7 @@ query ProposalsQuery {
           value
           party {
             id
-            stake {
+            stakingSummary {
               currentStakeAvailable
             }
           }

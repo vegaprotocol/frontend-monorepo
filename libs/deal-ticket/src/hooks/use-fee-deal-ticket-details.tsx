@@ -1,22 +1,23 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import type { DealTicketMarketFragment } from '../components';
+
 import {
-  NOTIONAL_SIZE_TOOLTIP_TEXT,
-  EST_MARGIN_TOOLTIP_TEXT,
   EST_CLOSEOUT_TOOLTIP_TEXT,
+  EST_MARGIN_TOOLTIP_TEXT,
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
 } from '../components/constants';
+import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
-import type { OrderMargin } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
-import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { DealTicketMarketFragment } from '../components';
+import type { OrderMargin } from './use-order-margin';
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
   market: DealTicketMarketFragment
@@ -97,12 +98,12 @@ export const getFeeDetailsValues = ({
 }: FeeDetails) => {
   const formatValue = (value: string | number | null | undefined): string => {
     return value && !isNaN(Number(value))
-      ? formatNumber(value, market.decimalPlaces)
+      ? normalizeFormatNumber(value, market.decimalPlaces)
       : '-';
   };
   return [
     {
-      label: t('Notional value'),
+      label: t('Notional'),
       value: formatValue(notionalSize),
       quoteName,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
@@ -127,14 +128,14 @@ export const getFeeDetailsValues = ({
       quoteName,
     },
     {
-      label: t('Margin required'),
+      label: t('Margin'),
       value: estMargin?.margin && `~${formatValue(estMargin?.margin)}`,
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
     {
-      label: t('Liquidation price (variable)'),
-      value: formatValue(estCloseOut),
+      label: t('Liquidation'),
+      value: estCloseOut && `~${formatValue(estCloseOut)}`,
       quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },

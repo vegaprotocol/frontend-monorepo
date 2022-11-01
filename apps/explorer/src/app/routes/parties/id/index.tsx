@@ -40,7 +40,7 @@ const PARTY_ASSETS_QUERY = gql`
         }
         epoch
       }
-      stake {
+      stakingSummary {
         currentStakeAvailable
       }
       accounts {
@@ -142,10 +142,10 @@ const Party = () => {
 
   const staking = (
     <section>
-      {data?.party?.stake?.currentStakeAvailable ? (
+      {data?.party?.stakingSummary?.currentStakeAvailable ? (
         <InfoPanel
           title={t('Current Stake Available')}
-          id={data?.party?.stake?.currentStakeAvailable}
+          id={data?.party?.stakingSummary?.currentStakeAvailable}
           copy={false}
         />
       ) : (
