@@ -1,13 +1,45 @@
 import BigNumber from 'bignumber.js';
+
 import {
+  addDecimalsNormalizeNumber,
+  compactNumber,
   formatNumber,
   formatNumberPercentage,
-  toNumberParts,
   isNumeric,
-  compactNumber,
+  normalizeFormatNumber,
+  toNumberParts,
 } from './number';
 
-describe('formatNumber and formatNumberPercentage', () => {
+describe('number react-helpers', () => {
+  it.each([
+    { v: new BigNumber(123000), d: 5, o: '1.23' },
+    { v: new BigNumber(123000), d: 3, o: '123' },
+    { v: new BigNumber(123000), d: 1, o: '12,300.0' },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01' },
+    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
+  ])(
+    'formats with addDecimalsNormalizeNumber given number correctly',
+    ({ v, d, o }) => {
+      expect(addDecimalsNormalizeNumber(v.toString(), d)).toStrictEqual(o);
+    }
+  );
+
+  it.each([
+    { v: new BigNumber(123.0), d: 3, o: '123' },
+    { v: new BigNumber(123.123), d: 3, o: '123.123' },
+    { v: new BigNumber(123.6666), d: 3, o: '123.667' },
+    { v: new BigNumber(123.003), d: 6, o: '123.003' },
+    { v: new BigNumber(123.003), d: 0, o: '123' },
+    { v: new BigNumber(123), d: undefined, o: '123' },
+    { v: new BigNumber(30000), d: undefined, o: '30,000' },
+    { v: new BigNumber(3.000001), d: undefined, o: '3' },
+  ])(
+    `formats with normalizeFormatNumber given number correctly`,
+    ({ v, d, o }) => {
+      expect(normalizeFormatNumber(v, d)).toStrictEqual(o);
+    }
+  );
+
   it.each([
     { v: new BigNumber(123), d: 3, o: '123.000' },
     { v: new BigNumber(123.123), d: 3, o: '123.123' },
@@ -17,7 +49,7 @@ describe('formatNumber and formatNumberPercentage', () => {
     { v: new BigNumber(123), d: undefined, o: '123' },
     { v: new BigNumber(30000), d: undefined, o: '30,000' },
     { v: new BigNumber(3.000001), d: undefined, o: '3' },
-  ])('formats given number correctly', ({ v, d, o }) => {
+  ])('formats with formatNumber given number correctly', ({ v, d, o }) => {
     expect(formatNumber(v, d)).toStrictEqual(o);
   });
 
