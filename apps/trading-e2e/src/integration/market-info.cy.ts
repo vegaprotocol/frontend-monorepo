@@ -10,7 +10,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
     cy.wait('@MarketInfo');
@@ -222,7 +222,7 @@ describe('market states', { tags: '@smoke' }, function () {
       before(function () {
         cy.mockTradingPage(marketState);
         cy.mockGQLSubscription();
-        cy.visit('/markets/market-0');
+        cy.visit('/#/markets/market-0');
         cy.wait('@Market');
         connectVegaWallet();
       });

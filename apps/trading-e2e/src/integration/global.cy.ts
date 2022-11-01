@@ -11,7 +11,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
 
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.get('main[data-testid="portfolio"]').should('exist');
@@ -79,7 +79,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParams', generateNetworkParameters());
     });

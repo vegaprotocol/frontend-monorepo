@@ -9,7 +9,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockWeb3Provider();
     cy.mockGQLSubscription();
     cy.mockTradingPage();
-    cy.visit('/portfolio/deposit');
+    cy.visit('/#/portfolio/deposit');
 
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId(connectEthWalletBtn).click();
