@@ -12,9 +12,8 @@ export const STAKING_QUERY = gql`
   query Staking($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
       delegations {
         amount

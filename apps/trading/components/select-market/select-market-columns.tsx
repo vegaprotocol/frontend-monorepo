@@ -7,7 +7,7 @@ import {
   calcCandleVolume,
 } from '@vegaprotocol/market-list';
 import {
-  addDecimalsFormatNumber,
+  addDecimalsNormalizeNumber,
   PriceCell,
   signedNumberCssClass,
   t,
@@ -236,7 +236,7 @@ export const columns = (
       value: market.data?.markPrice ? (
         <PriceCell
           value={Number(market.data?.markPrice)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             market.data?.markPrice.toString(),
             market.decimalPlaces,
             2
@@ -300,7 +300,7 @@ export const columns = (
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             candleHigh.toString(),
             market.decimalPlaces,
             2
@@ -317,7 +317,7 @@ export const columns = (
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             candleLow.toString(),
             market.decimalPlaces,
             2
@@ -332,7 +332,7 @@ export const columns = (
     {
       kind: ColumnKind.Volume,
       value: candleVolume
-        ? addDecimalsFormatNumber(
+        ? addDecimalsNormalizeNumber(
             candleVolume.toString(),
             market.positionDecimalPlaces,
             2
@@ -411,7 +411,7 @@ export const columnsPositionMarkets = (
       value: market.data?.markPrice ? (
         <PriceCell
           value={Number(market.data.markPrice)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             market.data.markPrice.toString(),
             market.decimalPlaces,
             2
@@ -475,7 +475,7 @@ export const columnsPositionMarkets = (
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             candleHigh.toString(),
             market.decimalPlaces,
             2
@@ -492,7 +492,7 @@ export const columnsPositionMarkets = (
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
-          valueFormatted={addDecimalsFormatNumber(
+          valueFormatted={addDecimalsNormalizeNumber(
             candleLow.toString(),
             market.decimalPlaces,
             2
@@ -507,7 +507,7 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Volume,
       value: candleVolume
-        ? addDecimalsFormatNumber(
+        ? addDecimalsNormalizeNumber(
             candleVolume.toString(),
             market.positionDecimalPlaces,
             2

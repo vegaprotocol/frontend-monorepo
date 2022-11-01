@@ -1,8 +1,8 @@
-import React from 'react';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
-import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
 import { DepositContainer } from '@vegaprotocol/deposits';
+import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useState } from 'react';
 
 interface Props {
   margin: string;
@@ -30,9 +30,11 @@ export const ValidateMargin = ({
           {t("You don't have enough margin available to open this position.")}
         </p>
         <p>
-          {`${formatNumber(margin, decimals)} ${symbol} ${t(
+          {`${normalizeFormatNumber(margin, decimals)} ${symbol} ${t(
             'currently required'
-          )}, ${formatNumber(balance, decimals)} ${symbol} ${t('available')}`}
+          )}, ${normalizeFormatNumber(balance, decimals)} ${symbol} ${t(
+            'available'
+          )}`}
         </p>
         <Button
           className="center mt-2"

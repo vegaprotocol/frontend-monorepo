@@ -8,16 +8,15 @@ export type VoteButtonsQueryVariables = Types.Exact<{
 }>;
 
 
-export type VoteButtonsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', currentStakeAvailable: string, currentStakeAvailableFormatted: string } } | null };
+export type VoteButtonsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } | null };
 
 
 export const VoteButtonsDocument = gql`
     query VoteButtons($partyId: ID!) {
   party(id: $partyId) {
     id
-    stake {
+    stakingSummary {
       currentStakeAvailable
-      currentStakeAvailableFormatted @client
     }
   }
 }

@@ -10,12 +10,13 @@ import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import type {
   PartyStakeLinkings,
-  PartyStakeLinkings_party_stake_linkings,
   PartyStakeLinkingsVariables,
+  PartyStakeLinkings_party_stakingSummary_linkings_edges_node,
 } from './__generated__/PartyStakeLinkings';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { StakeLinkingStatus } from '@vegaprotocol/types';
+import compact from 'lodash/compact';
 
 export const useAddStake = (
   address: string,
@@ -71,11 +72,15 @@ const PARTY_STAKE_LINKINGS = gql`
   query PartyStakeLinkings($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         linkings {
-          id
-          txHash
-          status
+          edges {
+            node {
+              id
+              txHash
+              status
+            }
+          }
         }
       }
     }
@@ -88,7 +93,9 @@ export const usePollForStakeLinking = (
 ) => {
   const client = useApolloClient();
   const [linking, setLinking] =
-    React.useState<PartyStakeLinkings_party_stake_linkings | null>(null);
+    React.useState<PartyStakeLinkings_party_stakingSummary_linkings_edges_node | null>(
+      null
+    );
 
   // Query for linkings under current connected party (vega key)
   React.useEffect(() => {
@@ -104,7 +111,12 @@ export const usePollForStakeLinking = (
           fetchPolicy: 'no-cache',
         })
         .then((res) => {
-          const linkings = res.data?.party?.stake.linkings;
+          const linkings =
+            compact(
+              res.data?.party?.stakingSummary.linkings.edges?.map(
+                (e) => e?.node
+              )
+            ) || [];
 
           if (!linkings?.length) return;
 

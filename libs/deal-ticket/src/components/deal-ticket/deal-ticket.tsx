@@ -19,7 +19,6 @@ import {
   useFeeDealTicketDetails,
   getFeeDetailsValues,
 } from '../../hooks/use-fee-deal-ticket-details';
-import * as constants from '../constants';
 import { DealTicketButton } from './deal-ticket-button';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 

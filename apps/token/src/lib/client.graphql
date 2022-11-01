@@ -20,10 +20,6 @@ extend type NodeData {
   stakedTotalFormatted: String!
 }
 
-extend type PartyStake {
-  currentStakeAvailableFormatted: String!
-}
-
 extend type Reward {
   amountFormatted: String!
 }
