@@ -7,7 +7,7 @@ import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeNewAsset } from './propose-new-asset';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { MockedResponse } from '@apollo/client/testing';
-import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
@@ -17,7 +17,7 @@ jest.mock('@vegaprotocol/environment', () => ({
 
 const newAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMETERS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {

@@ -3,8 +3,8 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { Web3Container } from './web3-container';
 import type { useWeb3React } from '@web3-react/core';
-import type { NetworkParamsQuery } from './__generated___/NetworkParams';
-import { NetworkParamsDocument } from './__generated___/NetworkParams';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 
 const defaultHookValue = {

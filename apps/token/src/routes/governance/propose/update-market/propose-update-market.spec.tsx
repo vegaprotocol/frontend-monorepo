@@ -9,11 +9,11 @@ import { ProposeUpdateMarket } from './propose-update-market';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { MARKETS_QUERY } from './propose-update-market';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
-import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMETERS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {
