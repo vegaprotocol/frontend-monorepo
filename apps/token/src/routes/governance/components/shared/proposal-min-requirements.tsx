@@ -13,6 +13,9 @@ interface ProposalFormMinRequirementsProps {
   userAction: ProposalUserAction.CREATE | ProposalUserAction.VOTE;
 }
 
+export const formatMinRequiredBalance = (balance: string) =>
+  new BigNumber(addDecimal(balance, 18));
+
 // Returns the larger, formatted value of the two token amounts
 export const ProposalMinRequirements = ({
   minProposalBalance,
@@ -20,12 +23,10 @@ export const ProposalMinRequirements = ({
   userAction,
 }: ProposalFormMinRequirementsProps) => {
   const { t } = useTranslation();
-  const minProposalBalanceFormatted = new BigNumber(
-    addDecimal(minProposalBalance, 18)
-  );
-  const spamProtectionMinFormatted = new BigNumber(
-    addDecimal(spamProtectionMin, 18)
-  );
+  const minProposalBalanceFormatted =
+    formatMinRequiredBalance(minProposalBalance);
+  const spamProtectionMinFormatted =
+    formatMinRequiredBalance(spamProtectionMin);
 
   const larger =
     minProposalBalanceFormatted > spamProtectionMinFormatted

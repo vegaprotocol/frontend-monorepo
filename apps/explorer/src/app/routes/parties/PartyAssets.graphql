@@ -9,7 +9,7 @@ query PartyAssetsQuery($partyId: ID!) {
       }
       epoch
     }
-    stake {
+    stakingSummary {
       currentStakeAvailable
     }
     accounts {

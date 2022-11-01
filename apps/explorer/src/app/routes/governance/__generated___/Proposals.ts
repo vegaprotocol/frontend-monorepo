@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ProposalsQueryQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ProposalsQueryQuery = { __typename?: 'Query', proposals?: Array<{ __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: string, rejectionReason?: Types.ProposalRejectionReason | null, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: string, enactmentDatetime?: string | null, change: { __typename: 'NewAsset', symbol: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: string, party: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', currentStakeAvailable: string } } }> | null }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: string, party: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', currentStakeAvailable: string } } }> | null } } }> | null };
+export type ProposalsQueryQuery = { __typename?: 'Query', proposals?: Array<{ __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: string, rejectionReason?: Types.ProposalRejectionReason | null, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: string, enactmentDatetime?: string | null, change: { __typename: 'NewAsset', symbol: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: string, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: string, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null } } }> | null };
 
 
 export const ProposalsQueryDocument = gql`
@@ -60,7 +60,7 @@ export const ProposalsQueryDocument = gql`
           value
           party {
             id
-            stake {
+            stakingSummary {
               currentStakeAvailable
             }
           }
@@ -74,7 +74,7 @@ export const ProposalsQueryDocument = gql`
           value
           party {
             id
-            stake {
+            stakingSummary {
               currentStakeAvailable
             }
           }

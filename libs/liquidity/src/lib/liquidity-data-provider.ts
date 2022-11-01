@@ -13,7 +13,7 @@ import {
   LiquidityProvisionsDocument,
   LiquidityProvisionsUpdateDocument,
   MarketLpDocument,
-} from './__generated___/MarketLiquidity';
+} from './__generated__/MarketLiquidity';
 
 import type {
   MarketLpQuery,
@@ -23,7 +23,7 @@ import type {
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsUpdateSubscription,
-} from './__generated___/MarketLiquidity';
+} from './__generated__/MarketLiquidity';
 import type { Account } from '@vegaprotocol/accounts';
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,

@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/react';
 import { Button, Callout, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { BigNumber } from '../../../lib/bignumber';
-import { removeDecimal } from '../../../lib/decimals';
+import type { BigNumber } from '../../../lib/bignumber';
 import type { UndelegateSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 interface PendingStakeProps {
   pendingAmount: BigNumber;
@@ -37,10 +37,7 @@ export const PendingStake = ({
       const command: UndelegateSubmissionBody = {
         undelegateSubmission: {
           nodeId,
-          amount: removeDecimal(
-            new BigNumber(pendingAmount),
-            appState.decimals
-          ),
+          amount: removeDecimal(pendingAmount.toString(), appState.decimals),
           method: 'METHOD_NOW',
         },
       };

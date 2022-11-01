@@ -3,6 +3,19 @@ import React from 'react';
 
 import { MarketExpires } from './market-expires';
 
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  t: jest.fn().mockImplementation((text) => text),
+  getDateTimeFormat: () =>
+    Intl.DateTimeFormat('en-GB', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+    }),
+}));
+
 describe('MarketExpires', () => {
   describe('should properly parse different tags', () => {
     it('settlement:date', () => {

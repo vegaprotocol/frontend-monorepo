@@ -1,10 +1,14 @@
-import type {
-  NetworkStats_nodeData,
-  NetworkStats_statistics,
-} from '../components/stats-manager/__generated__/NetworkStats';
+import type { Schema } from '@vegaprotocol/types';
+import type { StatsQuery } from '../components/stats-manager/__generated__/Stats';
 
-export type Stats = Omit<NetworkStats_nodeData, '__typename'> &
-  Omit<NetworkStats_statistics, '__typename'>;
+type NodeDataKeys =
+  | 'stakedTotal'
+  | 'totalNodes'
+  | 'inactiveNodes'
+  | 'validatingNodes';
+
+export type Stats = Pick<Schema.NodeData, NodeDataKeys> &
+  Omit<StatsQuery['statistics'], '__typename'>;
 
 // eslint-disable-next-line
 export type value = any;

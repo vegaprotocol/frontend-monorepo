@@ -14,6 +14,7 @@ const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
 const orderCreatedAt = 'createdAt';
 const cancelOrderBtn = 'cancel';
+const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
 
 describe('orders list', { tags: '@smoke' }, () => {
@@ -29,50 +30,49 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
+    cy.wait('@Markets');
   });
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
-
+    cy.getByTestId(cancelAllOrdersBtn).should('be.visible');
+    cy.getByTestId(cancelOrderBtn).should('have.length.at.least', 1);
+    cy.getByTestId(editOrderBtn).should('have.length.at.least', 1);
     cy.getByTestId('tab-orders').within(() => {
-      cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {
-        cy.wrap($symbol).invoke('text').should('not.be.empty');
-      });
+      cy.get(`[role='rowgroup']`)
+        .first()
+        .within(() => {
+          cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {
+            cy.wrap($symbol).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderSize}']`).each(($size) => {
-        cy.wrap($size).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderSize}']`).each(($size) => {
+            cy.wrap($size).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderType}']`).each(($type) => {
-        cy.wrap($type).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderType}']`).each(($type) => {
+            cy.wrap($type).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderStatus}']`).each(($status) => {
-        cy.wrap($status).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderStatus}']`).each(($status) => {
+            cy.wrap($status).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
-        cy.wrap($remaining).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
+            cy.wrap($remaining).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderPrice}']`).each(($price) => {
-        cy.wrap($price).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderPrice}']`).each(($price) => {
+            cy.wrap($price).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderTimeInForce}']`).each(($timeInForce) => {
-        cy.wrap($timeInForce).invoke('text').should('not.be.empty');
-      });
+          cy.get(`[col-id='${orderTimeInForce}']`).each(($timeInForce) => {
+            cy.wrap($timeInForce).invoke('text').should('not.be.empty');
+          });
 
-      cy.get(`[col-id='${orderCreatedAt}']`).each(($dateTime) => {
-        cy.wrap($dateTime).invoke('text').should('not.be.empty');
-      });
-
-      cy.getByTestId(cancelOrderBtn)
-        .should('be.visible')
-        .and('have.length.at.least', 1);
-
-      cy.getByTestId(editOrderBtn)
-        .should('be.visible')
-        .and('have.length.at.least', 1);
+          cy.get(`[col-id='${orderCreatedAt}']`).each(($dateTime) => {
+            cy.wrap($dateTime).invoke('text').should('not.be.empty');
+          });
+        });
     });
   });
 

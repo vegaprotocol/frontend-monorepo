@@ -4,23 +4,43 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 import {
+  AsyncRenderer,
   FormGroup,
   InputError,
   Link,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { validateJson } from '@vegaprotocol/react-helpers';
+import {
+  NetworkParams,
+  useNetworkParams,
+  validateJson,
+} from '@vegaprotocol/react-helpers';
 import { useProposalSubmit } from '@vegaprotocol/governance';
 import {
   ProposalFormSubmit,
   ProposalFormTransactionDialog,
 } from '../../components/propose';
+import { ProposalRawMinRequirements } from './proposal-raw-min-requirements';
 
 export interface RawProposalFormFields {
   rawProposalData: string;
 }
 
 export const ProposeRaw = () => {
+  const {
+    params,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_asset_minProposerBalance,
+    NetworkParams.governance_proposal_updateAsset_minProposerBalance,
+    NetworkParams.governance_proposal_market_minProposerBalance,
+    NetworkParams.governance_proposal_updateMarket_minProposerBalance,
+    NetworkParams.governance_proposal_updateNetParam_minProposerBalance,
+    NetworkParams.governance_proposal_freeform_minProposerBalance,
+    NetworkParams.spam_protection_proposal_min_tokens,
+  ]);
+
   const { VEGA_EXPLORER_URL, VEGA_DOCS_URL } = useEnvironment();
   const { t } = useTranslation();
   const {
@@ -37,11 +57,33 @@ export const ProposeRaw = () => {
   };
 
   return (
-    <>
+    <AsyncRenderer
+      loading={networkParamsLoading}
+      error={networkParamsError}
+      data={params}
+    >
       <Heading title={t('NewRawProposal')} />
       <VegaWalletContainer>
         {() => (
           <>
+            <ProposalRawMinRequirements
+              assetMin={params.governance_proposal_asset_minProposerBalance}
+              updateAssetMin={
+                params.governance_proposal_updateAsset_minProposerBalance
+              }
+              marketMin={params.governance_proposal_market_minProposerBalance}
+              updateMarketMin={
+                params.governance_proposal_updateMarket_minProposerBalance
+              }
+              updateNetParamMin={
+                params.governance_proposal_updateNetParam_minProposerBalance
+              }
+              freeformMin={
+                params.governance_proposal_freeform_minProposerBalance
+              }
+              spamProtectionMin={params.spam_protection_proposal_min_tokens}
+            />
+
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
@@ -94,6 +136,6 @@ export const ProposeRaw = () => {
           </>
         )}
       </VegaWalletContainer>
-    </>
+    </AsyncRenderer>
   );
 };

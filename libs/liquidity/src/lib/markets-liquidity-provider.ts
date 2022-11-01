@@ -18,8 +18,8 @@ import {
   marketListProvider,
 } from '@vegaprotocol/market-list';
 
-import type { LiquidityProvisionMarkets } from './__generated__/LiquidityProvisionMarkets';
-import { LiquidityProvisionMarketsDocument } from './__generated___/MarketsLiquidity';
+import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
+import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';
 
 import {
   calcDayVolume,
@@ -45,7 +45,7 @@ export interface Markets {
 }
 
 const getData = (
-  responseData: LiquidityProvisionMarkets
+  responseData: LiquidityProvisionMarketsQuery
 ): LiquidityProvisionMarket[] | null => {
   return (
     responseData?.marketsConnection?.edges.map((edge) => {
@@ -82,7 +82,7 @@ export const addData = (
 };
 
 export const liquidityMarketsProvider = makeDataProvider<
-  LiquidityProvisionMarkets,
+  LiquidityProvisionMarketsQuery,
   LiquidityProvisionMarket[],
   never,
   never

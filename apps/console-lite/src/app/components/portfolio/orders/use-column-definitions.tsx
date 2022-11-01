@@ -11,11 +11,8 @@ import {
   positiveClassNames,
   t,
 } from '@vegaprotocol/react-helpers';
-import type {
-  OrderFieldsFragment,
-  Order,
-  CancelOrderArgs,
-} from '@vegaprotocol/orders';
+import type { OrderFieldsFragment, Order } from '@vegaprotocol/orders';
+import type { OrderCancellationBody } from '@vegaprotocol/wallet';
 import { isOrderActive } from '@vegaprotocol/orders';
 import {
   OrderRejectionReasonMapping,
@@ -34,7 +31,7 @@ type OrderTimeKey = keyof typeof OrderTimeInForceMapping;
 interface Props {
   setEditOrder: (order: Order) => void;
   orderCancel: {
-    cancel: (args: CancelOrderArgs) => void;
+    cancel: (args: OrderCancellationBody['orderCancellation']) => void;
     [key: string]: unknown;
   };
 }

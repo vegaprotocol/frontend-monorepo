@@ -1,34 +1,35 @@
-import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useMarketList } from '@vegaprotocol/market-list';
+import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
   Icon,
   Intent,
-  Loader,
   Link,
+  Loader,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
-import { useMarketList } from '@vegaprotocol/market-list';
-import type {
-  MarketWithCandles,
-  MarketWithData,
-} from '@vegaprotocol/market-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { PositionFieldsFragment } from '@vegaprotocol/positions';
-import { positionsDataProvider } from '@vegaprotocol/positions';
+import { useMemo, useState } from 'react';
+
+import {
+  columnHeaders,
+  columnHeadersPositionMarkets,
+  columns,
+  columnsPositionMarkets,
+} from './select-market-columns';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
-import type { Column, OnCellClickHandler } from './select-market-columns';
-import {
-  columnHeadersPositionMarkets,
-  columnsPositionMarkets,
-  columnHeaders,
-  columns,
-} from './select-market-columns';
 
+import type { ReactNode } from 'react';
+import type {
+  MarketWithCandles,
+  MarketWithData,
+} from '@vegaprotocol/market-list';
+import type { PositionFieldsFragment } from '@vegaprotocol/positions';
+import type { Column, OnCellClickHandler } from './select-market-columns';
 type Market = MarketWithCandles & MarketWithData;
 
 export const SelectMarketLandingTable = ({

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import classnames from 'classnames';
-import { useQuery, gql } from '@apollo/client';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { statsFields } from '../../config/stats-fields';
 import type {
@@ -11,39 +10,14 @@ import { Table } from '../table';
 import { TableRow } from '../table-row';
 import { PromotedStats } from '../promoted-stats';
 import { PromotedStatsItem } from '../promoted-stats-item';
-import type { NetworkStats } from './__generated__/NetworkStats';
+import { useStatsQuery } from './__generated__/Stats';
+import type { StatsQuery } from './__generated__/Stats';
 
 interface StatsManagerProps {
   className?: string;
 }
 
-const STATS_QUERY = gql`
-  query NetworkStats {
-    nodeData {
-      stakedTotal
-      totalNodes
-      inactiveNodes
-      validatingNodes
-    }
-    statistics {
-      status
-      blockHeight
-      blockDuration
-      backlogLength
-      txPerBlock
-      tradesPerSecond
-      ordersPerSecond
-      averageOrdersPerBlock
-      vegaTime
-      appVersion
-      chainVersion
-      chainId
-      genesisTime
-    }
-  }
-`;
-
-const compileData = (data?: NetworkStats) => {
+const compileData = (data?: StatsQuery) => {
   const { nodeData, statistics } = data || {};
   const returned = { ...nodeData, ...statistics };
 
@@ -71,8 +45,7 @@ const compileData = (data?: NetworkStats) => {
 
 export const StatsManager = ({ className }: StatsManagerProps) => {
   const { VEGA_ENV } = useEnvironment();
-  const { data, error, startPolling, stopPolling } =
-    useQuery<NetworkStats>(STATS_QUERY);
+  const { data, error, startPolling, stopPolling } = useStatsQuery();
 
   useEffect(() => {
     startPolling(1000);

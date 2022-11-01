@@ -246,7 +246,7 @@
   "VEGA ADDRESS / PUBLIC KEY": "VEGA ADDRESS / PUBLIC KEY",
   "ABOUT THIS VALIDATOR": "ABOUT THIS VALIDATOR",
   "ETHEREUM ADDRESS": "ETHEREUM ADDRESS",
-  "IP ADDRESS": "IP ADDRESS",
+  "IP ADDRESS": "SERVER LOCATION",
   "TOTAL STAKE": "TOTAL STAKE",
   "STAKE SHARE": "STAKE SHARE",
   "PENDING STAKE": "PENDING STAKE",
@@ -702,5 +702,7 @@
   "FreeformProposal": "Freeform proposal",
   "unknownReason": "unknown reason",
   "votingEnded": "Voting has ended.",
-  "STATUS": "STATUS"
+  "STATUS": "STATUS",
+  "ProposalMinimumAmounts": "Different proposal types can have different minimum token requirements. You must have the greater of the proposal minimum or spam protection minimum from the table below",
+  "SpamProtectionMin": "Spam protection minimum"
 }

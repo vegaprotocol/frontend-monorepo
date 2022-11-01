@@ -1,6 +1,6 @@
 import { BigNumber } from '../../lib/bignumber';
-import { addDecimal } from '../../lib/decimals';
 import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export enum ClaimStatus {
   Ready,
@@ -107,7 +107,6 @@ export function claimReducer(
           error: new Error('Invalid code'),
         };
       } else {
-        const denomination = new BigNumber(action.data.amount);
         return {
           ...state,
           claimData: {
@@ -118,7 +117,9 @@ export function claimReducer(
               v: Number(action.data.v),
             },
             claim: {
-              amount: new BigNumber(addDecimal(denomination, action.decimals)),
+              amount: new BigNumber(
+                addDecimal(action.data.amount, action.decimals)
+              ),
               target: action.data.target ?? null,
               tranche: Number(action.data.trancheId),
               expiry: Number(action.data.expiry),

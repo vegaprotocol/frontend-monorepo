@@ -14,7 +14,7 @@ import {
   TxState,
 } from '../../../hooks/transaction-reducer';
 import Routes from '../../routes';
-import type { PartyStakeLinkings_party_stake_linkings } from './__generated__/PartyStakeLinkings';
+import type { PartyStakeLinkings_party_stakingSummary_linkings_edges_node } from './__generated__/PartyStakeLinkings';
 import { truncateMiddle } from '../../../lib/truncate-middle';
 
 export const AssociateTransaction = ({
@@ -30,7 +30,7 @@ export const AssociateTransaction = ({
   state: TransactionState;
   dispatch: React.Dispatch<TransactionAction>;
   requiredConfirmations: number;
-  linking: PartyStakeLinkings_party_stake_linkings | null;
+  linking: PartyStakeLinkings_party_stakingSummary_linkings_edges_node | null;
 }) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
