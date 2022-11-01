@@ -4,19 +4,19 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { NetworkParamsKey } from './use-network-params';
 import {
   NetworkParams,
-  NETWORK_PARAMETER_QUERY,
   useNetworkParam,
   useNetworkParams,
 } from './use-network-params';
 import type { ReactNode } from 'react';
 import type { NetworkParamsQuery } from './__generated___/NetworkParams';
+import { NetworkParamDocument } from './__generated___/NetworkParams';
 import { NetworkParamsDocument } from './__generated___/NetworkParams';
 
 describe('useNetworkParam', () => {
   const setup = (arg: NetworkParamsKey) => {
     const mock: MockedResponse = {
       request: {
-        query: NETWORK_PARAMETER_QUERY,
+        query: NetworkParamDocument,
         variables: {
           key: arg,
         },
