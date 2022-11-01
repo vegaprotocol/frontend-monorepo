@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
@@ -47,7 +48,7 @@ export const marketTranslations = (marketState: MarketState) => {
 };
 
 export type DealTicketSection =
-  | ''
+  | typeof constants.DEAL_TICKET_SECTION_NONE
   | typeof constants.DEAL_TICKET_SECTION_TYPE
   | typeof constants.DEAL_TICKET_SECTION_SIZE
   | typeof constants.DEAL_TICKET_SECTION_PRICE
@@ -62,7 +63,7 @@ export const useOrderValidation = ({
   orderTimeInForce,
   estMargin,
 }: ValidationProps): {
-  message: React.ReactNode | string;
+  message: ReactNode | string;
   isDisabled: boolean;
   section: DealTicketSection;
 } => {
@@ -70,7 +71,11 @@ export const useOrderValidation = ({
   const minSize = toDecimal(market.positionDecimalPlaces);
   const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
 
-  const { message, isDisabled, section } = useMemo(() => {
+  const { message, isDisabled, section } = useMemo<{
+    message: ReactNode | string;
+    isDisabled: boolean;
+    section: DealTicketSection;
+  }>(() => {
     if (!pubKey) {
       return {
         message: t('No public key selected'),
@@ -338,5 +343,5 @@ export const useOrderValidation = ({
     isInvalidOrderMargin,
   ]);
 
-  return { message, isDisabled, section: section as DealTicketSection };
+  return { message, isDisabled, section };
 };
