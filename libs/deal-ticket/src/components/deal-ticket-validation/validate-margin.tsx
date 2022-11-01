@@ -1,8 +1,8 @@
-import { DepositContainer } from '@vegaprotocol/deposits';
 import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useState } from 'react';
+import { DepositDialog } from '@vegaprotocol/deposits';
 
 interface Props {
   margin: string;
@@ -43,10 +43,11 @@ export const ValidateMargin = ({
           )}`}
         </p>
       </div>
-      <Dialog open={depositDialog} onChange={setDepositDialog}>
-        <h1 className="text-2xl mb-4">{t('Deposit')}</h1>
-        <DepositContainer assetId={id} />
-      </Dialog>
+      <DepositDialog
+        depositDialog={depositDialog}
+        setDepositDialog={setDepositDialog}
+        assetId={id}
+      />
     </>
   );
 };

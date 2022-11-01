@@ -4,7 +4,10 @@ import { useCallback, useMemo, useState } from 'react';
 import type { EthereumError } from './ethereum-error';
 import { isExpectedEthereumError } from './ethereum-error';
 import { isEthereumError } from './ethereum-error';
-import { EthereumTransactionDialog } from './ethereum-transaction-dialog';
+import {
+  EthereumTransactionDialog,
+  getTransactionContent,
+} from './ethereum-transaction-dialog';
 
 export enum EthTxStatus {
   Default = 'Default',
@@ -163,5 +166,18 @@ export const useEthereumTransaction = <
     );
   }, [methodName, transaction, requiredConfirmations, reset]);
 
-  return { perform, transaction, reset, setConfirmed, Dialog };
+  const TxContent = useMemo(
+    () =>
+      getTransactionContent({
+        title: formatLabel(methodName as string),
+        transaction,
+        requiredConfirmations,
+        reset,
+      }),
+    [methodName, requiredConfirmations, reset, transaction]
+  );
+
+  return { perform, transaction, reset, setConfirmed, Dialog, TxContent };
 };
+
+export type EthTransaction = ReturnType<typeof useEthereumTransaction>;
