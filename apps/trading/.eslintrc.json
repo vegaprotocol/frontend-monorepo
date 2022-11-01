@@ -10,7 +10,18 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "apps/trading/pages"]
+        "@next/next/no-html-link-for-pages": ["error", "apps/trading/pages"],
+        "no-restricted-imports": [
+          "error",
+          {
+            "name": "next/link",
+            "message": "Please Link from react-router-dom instead"
+          },
+          {
+            "name": "next/router",
+            "message": "Please routing hooks from react-router-dom instead"
+          }
+        ]
       }
     },
     {
