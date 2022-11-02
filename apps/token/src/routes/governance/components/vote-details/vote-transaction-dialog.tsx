@@ -30,7 +30,7 @@ export const VoteTransactionDialog = ({
     voteState === VoteState.Failed ? <p>{t('voteError')}</p> : undefined;
 
   return (
-    <div data-testid="proposal-transaction-dialog">
+    <div data-testid="vote-transaction-dialog">
       <TransactionDialog
         title={dialogTitle(voteState)}
         content={{
