@@ -1,25 +1,27 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
-import { TypeSelector } from './type-selector';
-import { SideSelector } from './side-selector';
-import { DealTicketAmount } from './deal-ticket-amount';
-import { TimeInForceSelector } from './time-in-force-selector';
-import type { DealTicketMarketFragment } from './__generated___/DealTicket';
-import { ExpirySelector } from './expiry-selector';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
+import { useCallback, useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import {
+  getFeeDetailsValues,
+  useFeeDealTicketDetails,
+} from '../../hooks/use-fee-deal-ticket-details';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
-import { DealTicketFeeDetails } from './deal-ticket-fee-details';
-import {
-  useFeeDealTicketDetails,
-  getFeeDetailsValues,
-} from '../../hooks/use-fee-deal-ticket-details';
+import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import { ExpirySelector } from './expiry-selector';
+import { SideSelector } from './side-selector';
+import { TimeInForceSelector } from './time-in-force-selector';
+import { TypeSelector } from './type-selector';
+
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 
 export type TransactionStatus = 'default' | 'pending';
@@ -183,6 +185,8 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton
+        size={order && order.size}
+        productType={market.tradableInstrument.instrument.product.__typename}
         transactionStatus={transactionStatus}
         isDisabled={isSubmitted && isDisabled}
         errorMessage={errorMessage}

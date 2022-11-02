@@ -1,20 +1,25 @@
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
+import { DEAL_TICKET_SECTION } from '../constants';
+import { DealTicketError } from './deal-ticket-error';
+
+import type { DealTicketErrorMessage } from './deal-ticket-error';
 interface Props {
   transactionStatus: 'default' | 'pending';
   isDisabled: boolean;
   errorMessage?: DealTicketErrorMessage;
+  size: string;
+  productType?: string;
 }
 
 export const DealTicketButton = ({
   transactionStatus,
   errorMessage,
   isDisabled,
+  size,
+  productType,
 }: Props) => {
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
@@ -22,6 +27,15 @@ export const DealTicketButton = ({
   }));
   return pubKey ? (
     <div className="mb-6">
+      {size && (
+        <span className="text-xs mb-2">
+          {t(
+            `You are buying ${size} ${productType?.toLocaleLowerCase()} ${
+              size === '1' ? 'contract' : 'contracts'
+            } `
+          )}
+        </span>
+      )}
       <Button
         variant="primary"
         fill
