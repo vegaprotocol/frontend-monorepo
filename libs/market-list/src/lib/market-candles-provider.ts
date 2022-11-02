@@ -11,8 +11,18 @@ import {
 
 export type Candle = MarketCandlesFieldsFragment;
 
-const update = (data: Candle[], delta: Candle) =>
-  data && delta ? [...data, delta] : data;
+export const update = (data: Candle[] | null, delta: Candle) => {
+  if (data && data.length) {
+    if (data[data.length - 1].periodStart === delta.periodStart) {
+      return [...data.slice(0, -1), delta];
+    } else if (data[data.length - 1].periodStart < delta.periodStart) {
+      return [...data, delta];
+    } else {
+      return data;
+    }
+  }
+  return [delta];
+};
 
 const getData = (responseData: MarketCandlesQuery): Candle[] | null =>
   responseData?.marketsConnection?.edges[0]?.node.candlesConnection?.edges
