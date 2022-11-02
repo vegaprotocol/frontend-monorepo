@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { PartialDeep } from 'type-fest';
 
 export const generateNetworkParameters = (
