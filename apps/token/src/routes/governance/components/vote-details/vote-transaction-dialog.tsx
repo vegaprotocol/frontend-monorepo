@@ -1,8 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { VoteState } from './use-user-vote';
-import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import type { DialogProps } from '@vegaprotocol/wallet';
-import type { ReactNode } from 'react';
 
 interface VoteTransactionDialogProps {
   voteState: VoteState;
