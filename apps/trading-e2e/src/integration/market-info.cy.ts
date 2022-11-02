@@ -227,6 +227,7 @@ describe('market states', { tags: '@smoke' }, function () {
       it.skip('must display correct market state');
       //7002-/SORD-/061 no state displayed
       it('must display that market is not accepting orders', function () {
+        cy.getByTestId('place-order').click();
         cy.getByTestId('dealticket-error-message').should(
           'have.text',
           `This market is ${marketState
@@ -234,8 +235,6 @@ describe('market states', { tags: '@smoke' }, function () {
             .pop()
             ?.toLowerCase()} and not accepting orders`
         );
-      });
-      it('must have place order button disabled', function () {
         cy.getByTestId('place-order').should('be.disabled');
       });
     });
