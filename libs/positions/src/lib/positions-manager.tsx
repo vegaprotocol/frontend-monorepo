@@ -13,7 +13,7 @@ interface PositionsManagerProps {
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error, loading, getRows } = usePositionsData(partyId, gridRef);
+  const { data, error, loading } = usePositionsData(partyId, gridRef);
   const {
     submit,
     closingOrder,
@@ -30,9 +30,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
           domLayout="autoHeight"
           style={{ width: '100%' }}
           ref={gridRef}
-          rowModelType={data?.length ? 'infinite' : 'clientSide'}
-          rowData={data?.length ? undefined : []}
-          datasource={{ getRows }}
+          rowData={data}
           onClose={(position) => submit(position)}
         />
       </AsyncRenderer>
