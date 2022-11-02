@@ -4,6 +4,7 @@ fragment MarketCandlesFields on Candle {
   open
   close
   volume
+  periodStart
 }
 
 query MarketCandles($interval: Interval!, $since: String!, $marketId: ID!) {
