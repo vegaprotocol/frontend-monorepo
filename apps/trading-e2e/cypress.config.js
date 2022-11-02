@@ -38,6 +38,8 @@ module.exports = defineConfig({
   },
   env: {
     TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',
+    ETHEREUM_PROVIDER_URL:
+      'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     VEGA_PUBLIC_KEY:
       '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
     VEGA_PUBLIC_KEY2:
