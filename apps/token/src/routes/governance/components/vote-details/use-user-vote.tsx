@@ -1,16 +1,8 @@
-import { captureException, captureMessage } from '@sentry/minimal';
+import { captureMessage } from '@sentry/minimal';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useMemo, useState } from 'react';
-
-export type Vote = {
-  value: VoteValue;
-  datetime: string;
-  party: { id: string };
-};
-
-export type Votes = Array<Vote | null>;
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -20,6 +12,14 @@ export enum VoteState {
   Pending = 'Pending',
   Failed = 'Failed',
 }
+
+export type Vote = {
+  value: VoteValue;
+  datetime: string;
+  party: { id: string };
+};
+
+export type Votes = Array<Vote | null>;
 
 export function getUserVote(pubkey: string, yesVotes?: Votes, noVotes?: Votes) {
   const yesVote = yesVotes?.find((v) => v && v.party.id === pubkey);
@@ -42,7 +42,7 @@ export function useUserVote(
   yesVotes: Votes | null,
   noVotes: Votes | null
 ) {
-  const { pubKey, sendTx } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [timeout, setTimeoutValue] = useState<any>(null);
   const yes = useMemo(() => yesVotes || [], [yesVotes]);
@@ -87,37 +87,8 @@ export function useUserVote(
     return () => clearTimeout(timeout);
   }, [timeout, voteState]);
 
-  /**
-   * Casts a vote using the users connected wallet
-   */
-  async function castVote(value: VoteValue) {
-    if (!proposalId || !pubKey) return;
-    const previousVoteState = voteState;
-    setVoteState(VoteState.Requested);
-
-    try {
-      const res = await sendTx(pubKey, {
-        voteSubmission: {
-          value: value,
-          proposalId,
-        },
-      });
-      if (res === null) {
-        setVoteState(previousVoteState);
-      } else {
-        setVoteState(VoteState.Pending);
-      }
-
-      // Now await vote via poll in parent component
-    } catch (err) {
-      setVoteState(VoteState.Failed);
-      captureException(err);
-    }
-  }
-
   return {
     voteState,
-    castVote,
     userVote,
     voteDatetime: userVote ? new Date(userVote.datetime) : null,
   };

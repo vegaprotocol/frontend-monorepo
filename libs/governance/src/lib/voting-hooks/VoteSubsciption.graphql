@@ -1,0 +1,18 @@
+fragment VoteEventFields on Vote {
+  proposalId
+  value
+  datetime
+}
+
+subscription VoteEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types:[Vote]) {
+    type
+    event {
+      ...on Vote {
+        proposalId
+        value
+        datetime
+      }
+    }
+  }
+}
