@@ -27,8 +27,6 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     <>
       <AsyncRenderer loading={loading} error={error} data={data}>
         <PositionsTable
-          domLayout="autoHeight"
-          style={{ width: '100%' }}
           ref={gridRef}
           rowData={data}
           onClose={(position) => submit(position)}

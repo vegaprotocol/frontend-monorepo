@@ -200,7 +200,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'openVolume'>):
             | string
             | undefined => {
-            return !data
+            return data?.openVolume === undefined
               ? undefined
               : volumePrefix(
                   addDecimalsFormatNumber(
