@@ -127,7 +127,11 @@ describe('useOrderValidation', () => {
       .mockReturnValue(false);
 
     const { result } = setup();
-    expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
+    expect(result.current).toStrictEqual({
+      isDisabled: false,
+      message: ``,
+      section: '',
+    });
   });
 
   it('Returns an error message when no keypair found', () => {
@@ -135,7 +139,11 @@ describe('useOrderValidation', () => {
       .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
       .mockReturnValue(false);
     const { result } = setup(defaultOrder, { pubKey: null });
-    expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
+    expect(result.current).toStrictEqual({
+      isDisabled: false,
+      message: ``,
+      section: '',
+    });
   });
 
   it.each`
@@ -154,6 +162,7 @@ describe('useOrderValidation', () => {
         message: `This market is ${marketTranslations(
           state
         )} and not accepting orders`,
+        section: 'sec-summary',
       });
     }
   );
@@ -177,6 +186,7 @@ describe('useOrderValidation', () => {
         message: `This market is ${MarketStateMapping[
           state as MarketState
         ].toLowerCase()} and only accepting liquidity commitment orders`,
+        section: 'sec-summary',
       });
     }
   );
@@ -220,19 +230,20 @@ describe('useOrderValidation', () => {
       expect(result.current).toStrictEqual({
         isDisabled: true,
         message: errorMessage,
+        section: 'sec-force',
       });
     }
   );
 
   it.each`
-    fieldName  | errorType     | errorMessage
-    ${`size`}  | ${`required`} | ${ERROR.FIELD_SIZE_REQ}
-    ${`size`}  | ${`min`}      | ${ERROR.FIELD_SIZE_MIN}
-    ${`price`} | ${`required`} | ${ERROR.FIELD_PRICE_REQ}
-    ${`price`} | ${`min`}      | ${ERROR.FIELD_PRICE_MIN}
+    fieldName  | errorType     | section        | errorMessage
+    ${`size`}  | ${`required`} | ${'sec-size'}  | ${ERROR.FIELD_SIZE_REQ}
+    ${`size`}  | ${`min`}      | ${'sec-size'}  | ${ERROR.FIELD_SIZE_MIN}
+    ${`price`} | ${`required`} | ${'sec-price'} | ${ERROR.FIELD_PRICE_REQ}
+    ${`price`} | ${`min`}      | ${'sec-price'} | ${ERROR.FIELD_PRICE_MIN}
   `(
     `Returns an error message when the order $fieldName "$errorType" validation fails`,
-    ({ fieldName, errorType, errorMessage }) => {
+    ({ fieldName, errorType, section, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
         orderType: Schema.OrderType.TYPE_LIMIT,
@@ -240,6 +251,7 @@ describe('useOrderValidation', () => {
       expect(result.current).toStrictEqual({
         isDisabled: true,
         message: errorMessage,
+        section,
       });
     }
   );
@@ -252,6 +264,7 @@ describe('useOrderValidation', () => {
     expect(result.current).toStrictEqual({
       isDisabled: true,
       message: ERROR.FIELD_PRICE_STEP_NULL,
+      section: 'sec-size',
     });
   });
 
@@ -262,6 +275,7 @@ describe('useOrderValidation', () => {
     expect(result.current).toStrictEqual({
       isDisabled: true,
       message: ERROR.FIELD_PRICE_STEP_DECIMAL,
+      section: 'sec-size',
     });
   });
 

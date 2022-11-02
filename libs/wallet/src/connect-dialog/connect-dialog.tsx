@@ -272,7 +272,7 @@ const SelectedForm = ({
                 {t('hosted wallet')}
               </Link>
               {t(', or for the real experience create a wallet in the ')}
-              <Link href={constants.VEGA_WALLET_RELEASE_URL}>
+              <Link href={constants.VEGA_WALLET_URL}>
                 {t('Vega wallet app')}
               </Link>
             </p>

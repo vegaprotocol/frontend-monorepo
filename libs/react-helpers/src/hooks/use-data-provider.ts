@@ -15,8 +15,12 @@ function hasDelta<T>(
   return !!updateData.isUpdate;
 }
 
-interface useDataProviderParams<Data, Delta> {
-  dataProvider: Subscribe<Data, Delta>;
+interface useDataProviderParams<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+> {
+  dataProvider: Subscribe<Data, Delta, Variables>;
   update?: ({ delta, data }: { delta?: Delta; data: Data }) => boolean;
   insert?: ({
     insertionData,
@@ -27,7 +31,7 @@ interface useDataProviderParams<Data, Delta> {
     data: Data;
     totalCount?: number;
   }) => boolean;
-  variables?: OperationVariables;
+  variables?: Variables;
   updateOnInit?: boolean;
   noUpdate?: boolean;
   skip?: boolean;
@@ -40,7 +44,11 @@ interface useDataProviderParams<Data, Delta> {
  * @param variables optional
  * @returns state: data, loading, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
  */
-export const useDataProvider = <Data, Delta>({
+export const useDataProvider = <
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>({
   dataProvider,
   update,
   insert,
@@ -48,7 +56,7 @@ export const useDataProvider = <Data, Delta>({
   updateOnInit,
   noUpdate,
   skip,
-}: useDataProviderParams<Data, Delta>) => {
+}: useDataProviderParams<Data, Delta, Variables>) => {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
   const [totalCount, setTotalCount] = useState<number>();

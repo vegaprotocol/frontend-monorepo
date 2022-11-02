@@ -1,10 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import {
-  VEGA_WALLET_CONCEPTS_URL,
-  VEGA_WALLET_RELEASE_URL,
-} from '../constants';
+import { VEGA_WALLET_CONCEPTS_URL, VEGA_WALLET_URL } from '../constants';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
@@ -28,7 +25,7 @@ export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
         children
       ) : (
         <>
-          <Link href={VEGA_WALLET_RELEASE_URL}>{t('Get a Vega Wallet')}</Link>
+          <Link href={VEGA_WALLET_URL}>{t('Get a Vega Wallet')}</Link>
           {' | '}
           <Link href={VEGA_WALLET_CONCEPTS_URL}>{t('Having trouble?')}</Link>
         </>

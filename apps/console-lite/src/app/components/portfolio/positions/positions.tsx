@@ -1,27 +1,37 @@
-import { usePositionsAssets } from '@vegaprotocol/positions';
-import { t } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { getRowId, usePositionsData } from '@vegaprotocol/positions';
+import { PriceFlashCell } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import PositionsAsset from './positions-asset';
+import { NO_DATA_MESSAGE } from '../../../constants';
+import { ConsoleLiteGrid } from '../../console-lite-grid';
+import useColumnDefinitions from './use-column-definitions';
 
+import type { AgGridReact } from 'ag-grid-react';
+import type { Position } from '@vegaprotocol/positions';
 const Positions = () => {
+  const gridRef = useRef<AgGridReact | null>(null);
   const { partyId } = useOutletContext<{ partyId: string }>();
-  const { data, error, loading, assetSymbols } = usePositionsAssets(partyId);
+  const { data, error, loading } = usePositionsData(partyId, gridRef);
+  const { columnDefs, defaultColDef } = useColumnDefinitions();
   return (
-    <AsyncRenderer loading={loading} error={error} data={data || []}>
-      {assetSymbols && assetSymbols.length > 0 && (
-        <div className="w-full, h-max">
-          {assetSymbols?.map((assetSymbol) => (
-            <PositionsAsset
-              key={assetSymbol}
-              partyId={partyId}
-              assetSymbol={assetSymbol}
-            />
-          ))}
-        </div>
-      )}
-      {assetSymbols?.length === 0 && <Splash>{t('No data to display')}</Splash>}
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data?.length ? data : null}
+      noDataMessage={NO_DATA_MESSAGE}
+    >
+      <ConsoleLiteGrid<Position>
+        ref={gridRef}
+        domLayout="autoHeight"
+        classNamesParam="h-auto"
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        getRowId={getRowId}
+        rowData={data || undefined}
+        components={{ PriceFlashCell }}
+      />
     </AsyncRenderer>
   );
 };
