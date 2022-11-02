@@ -27,8 +27,8 @@ interface OrderSubmission {
 }
 
 interface OrderCancellation {
-  orderId: string;
-  marketId: string;
+  orderId?: string;
+  marketId?: string;
 }
 
 interface OrderAmendment {

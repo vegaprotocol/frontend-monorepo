@@ -2,13 +2,14 @@ import { useCallback, useMemo, useRef } from 'react';
 import type { RefObject } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { AgGridReact } from 'ag-grid-react';
-import type { GetRowsParams } from './positions-table';
 import type { Position } from './positions-data-providers';
-import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
-import filter from 'lodash/filter';
+import { positionsMetricsProvider } from './positions-data-providers';
+import type { PositionsMetricsProviderVariables } from './positions-data-providers';
 import { t, toBigNum, useDataProvider } from '@vegaprotocol/react-helpers';
 
-const getSummaryRow = (positions: Position[]) => {
+export const getRowId = ({ data }: { data: Position }) => data.marketId;
+
+const getSummaryRowData = (positions: Position[]) => {
   const summaryRow = {
     notional: new BigNumber(0),
     realisedPNL: BigInt(0),
@@ -37,46 +38,69 @@ const getSummaryRow = (positions: Position[]) => {
 
 export const usePositionsData = (
   partyId: string,
-  gridRef: RefObject<AgGridReact>,
-  assetSymbol?: string
+  gridRef: RefObject<AgGridReact>
 ) => {
-  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const variables = useMemo<PositionsMetricsProviderVariables>(
+    () => ({ partyId }),
+    [partyId]
+  );
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
-    ({ data }: { data: Position[] | null }) => {
-      dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
-      gridRef.current?.api?.refreshInfiniteCache();
-      return true;
-    },
-    [assetSymbol, gridRef]
-  );
-  const { data, error, loading } = useDataProvider<Position[], never>({
-    dataProvider,
-    update,
-    variables,
-  });
-  if (!dataRef.current && data) {
-    dataRef.current = assetSymbol ? filter(data, { assetSymbol }) : data;
-  }
-  const getRows = useCallback(
-    async ({ successCallback, startRow, endRow }: GetRowsParams) => {
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow)
-        : [];
-      const lastRow = dataRef.current?.length ?? -1;
-      successCallback(rowsThisBlock, lastRow);
-      if (gridRef.current?.api) {
-        gridRef.current.api.setPinnedBottomRowData([
-          getSummaryRow(rowsThisBlock),
-        ]);
+    ({
+      data,
+      delta,
+    }: {
+      data: Position[] | null;
+      delta?: Position[] | null;
+    }) => {
+      dataRef.current = data;
+
+      const update: Position[] = [];
+      const add: Position[] = [];
+      if (!gridRef.current?.api) {
+        return false;
       }
+      (delta || []).forEach((position) => {
+        const rowNode = gridRef.current?.api.getRowNode(
+          getRowId({ data: position })
+        );
+        if (rowNode) {
+          update.push(position);
+        } else {
+          add.push(position);
+        }
+      });
+      if (update.length || add.length) {
+        gridRef.current.api.applyTransactionAsync({
+          update,
+          add,
+          addIndex: 0,
+        });
+        const summaryRowNode = gridRef.current.api.getPinnedBottomRow(0);
+        if (summaryRowNode && dataRef.current) {
+          summaryRowNode.data = getSummaryRowData(dataRef.current);
+          gridRef.current.api.refreshCells({
+            force: true,
+            rowNodes: [summaryRowNode],
+          });
+        } else {
+          gridRef.current.api.setPinnedBottomRowData(
+            dataRef.current ? [getSummaryRowData(dataRef.current)] : []
+          );
+        }
+      }
+      return true;
     },
     [gridRef]
   );
+  const { data, error, loading } = useDataProvider({
+    dataProvider: positionsMetricsProvider,
+    update,
+    variables,
+  });
   return {
     data,
     error,
     loading,
-    getRows,
   };
 };

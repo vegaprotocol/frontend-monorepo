@@ -9,16 +9,12 @@ import { NodeStatus } from "@vegaprotocol/types";
 // GraphQL query operation: Staking
 // ====================================================
 
-export interface Staking_party_stake {
-  __typename: "PartyStake";
+export interface Staking_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
   currentStakeAvailable: string;
-  /**
-   * The currently available stake formatted by the client
-   */
-  currentStakeAvailableFormatted: string;
 }
 
 export interface Staking_party_delegations_node {
@@ -58,7 +54,7 @@ export interface Staking_party {
   /**
    * The staking information for this Party
    */
-  stake: Staking_party_stake;
+  stakingSummary: Staking_party_stakingSummary;
   delegations: Staking_party_delegations[] | null;
 }
 
@@ -90,7 +86,7 @@ export interface Staking_epoch {
   timestamps: Staking_epoch_timestamps;
 }
 
-export interface Staking_nodes_epochData {
+export interface Staking_nodesConnection_edges_node_epochData {
   __typename: "EpochData";
   /**
    * Total number of epochs since node was created
@@ -106,7 +102,7 @@ export interface Staking_nodes_epochData {
   online: number;
 }
 
-export interface Staking_nodes_rankingScore {
+export interface Staking_nodesConnection_edges_node_rankingScore {
   __typename: "RankingScore";
   /**
    * The ranking score of the validator
@@ -126,7 +122,7 @@ export interface Staking_nodes_rankingScore {
   votingPower: string;
 }
 
-export interface Staking_nodes {
+export interface Staking_nodesConnection_edges_node {
   __typename: "Node";
   /**
    * The node URL eg n01.vega.xyz
@@ -184,7 +180,7 @@ export interface Staking_nodes {
   /**
    * Summary of epoch data across all nodes
    */
-  epochData: Staking_nodes_epochData | null;
+  epochData: Staking_nodesConnection_edges_node_epochData | null;
   /**
    * Validator status of the node
    */
@@ -192,7 +188,23 @@ export interface Staking_nodes {
   /**
    * Ranking scores and status for the validator for the current epoch
    */
-  rankingScore: Staking_nodes_rankingScore;
+  rankingScore: Staking_nodesConnection_edges_node_rankingScore;
+}
+
+export interface Staking_nodesConnection_edges {
+  __typename: "NodeEdge";
+  /**
+   * The node
+   */
+  node: Staking_nodesConnection_edges_node;
+}
+
+export interface Staking_nodesConnection {
+  __typename: "NodesConnection";
+  /**
+   * List of nodes available for the connection
+   */
+  edges: (Staking_nodesConnection_edges | null)[] | null;
 }
 
 export interface Staking_nodeData {
@@ -235,7 +247,7 @@ export interface Staking {
   /**
    * All known network nodes
    */
-  nodes: Staking_nodes[] | null;
+  nodesConnection: Staking_nodesConnection;
   /**
    * Returns information about nodes
    */

@@ -11,6 +11,9 @@ import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import compact from 'lodash/compact';
 
 interface StakingNodeProps {
   data?: StakingQueryResult;
@@ -18,10 +21,15 @@ interface StakingNodeProps {
 
 export const StakingNode = ({ data }: StakingNodeProps) => {
   const { pubKey: vegaKey } = useVegaWallet();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
   const nodeInfo = React.useMemo(() => {
-    return data?.nodes?.find(({ id }) => id === node);
+    return compact(data?.nodesConnection?.edges).find(
+      ({ node: { id } }) => id === node
+    )?.node;
   }, [node, data]);
 
   const currentEpoch = React.useMemo(() => {
@@ -59,13 +67,15 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   }, [currentEpoch, data?.party?.delegations]);
 
   const unstaked = React.useMemo(() => {
-    const value = new BigNumber(
-      data?.party?.stake.currentStakeAvailableFormatted || 0
+    const value = toBigNum(
+      data?.party?.stakingSummary.currentStakeAvailable || 0,
+      decimals
     ).minus(currentDelegationAmount);
     return value.isLessThan(0) ? new BigNumber(0) : value;
   }, [
     currentDelegationAmount,
-    data?.party?.stake.currentStakeAvailableFormatted,
+    data?.party?.stakingSummary.currentStakeAvailable,
+    decimals,
   ]);
 
   if (!nodeInfo) {

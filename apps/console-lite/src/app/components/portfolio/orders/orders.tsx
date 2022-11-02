@@ -65,8 +65,8 @@ const OrdersManager = () => {
         defaultColDef={defaultColDef}
       />
       <orderCancel.Dialog
-        title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
-        intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
+        title={getCancelDialogTitle(orderCancel)}
+        intent={getCancelDialogIntent(orderCancel)}
         content={{
           Complete: (
             <OrderFeedback

@@ -4,6 +4,7 @@ import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
 import type { DealTicketMarketFragment } from './__generated___/DealTicket';
 import { Schema } from '@vegaprotocol/types';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
 
 export interface DealTicketAmountProps {
   orderType: Schema.OrderType;
@@ -11,6 +12,7 @@ export interface DealTicketAmountProps {
   register: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
   quoteName: string;
   price?: string;
+  errorMessage?: DealTicketErrorMessage;
 }
 
 export const DealTicketAmount = ({

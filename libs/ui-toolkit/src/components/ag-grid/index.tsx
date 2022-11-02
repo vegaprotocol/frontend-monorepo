@@ -2,6 +2,7 @@ import type { Get } from 'type-fest';
 import type {
   ICellRendererParams,
   ValueFormatterParams,
+  ValueGetterParams,
 } from 'ag-grid-community';
 
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -22,6 +23,12 @@ type RowHelper<TObj, TRow, TField extends Field> = Omit<
 
 export type VegaValueFormatterParams<TRow, TField extends Field> = RowHelper<
   ValueFormatterParams,
+  TRow,
+  TField
+>;
+
+export type VegaValueGetterParams<TRow, TField extends Field> = RowHelper<
+  ValueGetterParams,
   TRow,
   TField
 >;

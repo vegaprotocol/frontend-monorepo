@@ -95,8 +95,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
     });
 
     it('data should be properly rendered', () => {
-      cy.getByTestId('positions-asset-tDAI').should('exist');
-      cy.getByTestId('positions-asset-tEURO').should('exist');
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 2);
     });
   });
 

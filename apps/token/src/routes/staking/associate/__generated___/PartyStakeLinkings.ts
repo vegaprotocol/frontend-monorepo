@@ -8,18 +8,22 @@ export type PartyStakeLinkingsQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyStakeLinkingsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stake: { __typename?: 'PartyStake', linkings?: Array<{ __typename?: 'StakeLinking', id: string, txHash: string, status: Types.StakeLinkingStatus }> | null } } | null };
+export type PartyStakeLinkingsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', linkings: { __typename?: 'StakesConnection', edges?: Array<{ __typename?: 'StakeLinkingEdge', node: { __typename?: 'StakeLinking', id: string, txHash: string, status: Types.StakeLinkingStatus } } | null> | null } } } | null };
 
 
 export const PartyStakeLinkingsDocument = gql`
     query PartyStakeLinkings($partyId: ID!) {
   party(id: $partyId) {
     id
-    stake {
+    stakingSummary {
       linkings {
-        id
-        txHash
-        status
+        edges {
+          node {
+            id
+            txHash
+            status
+          }
+        }
       }
     }
   }

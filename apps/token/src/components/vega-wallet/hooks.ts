@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
-import { addDecimal } from '../../lib/decimals';
 import type { WalletCardAssetProps } from '../wallet-card';
 import type {
   Delegations,
@@ -20,6 +19,9 @@ import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import { AccountType } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../contexts/app-state/app-state-context';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -37,9 +39,8 @@ const DELEGATIONS_QUERY = gql`
         }
         epoch
       }
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
       accounts {
         asset {
@@ -63,6 +64,10 @@ const DELEGATIONS_QUERY = gql`
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
+  const {
+    appState: { decimals },
+  } = useAppState();
+
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
@@ -109,8 +114,9 @@ export const usePollForDelegations = () => {
             });
             setDelegations(sortedDelegations);
             setCurrentStakeAvailable(
-              new BigNumber(
-                res.data.party?.stake.currentStakeAvailableFormatted || 0
+              toBigNum(
+                res.data.party?.stakingSummary.currentStakeAvailable || 0,
+                decimals
               )
             );
             const accounts = res.data.party?.accounts || [];
@@ -130,7 +136,7 @@ export const usePollForDelegations = () => {
                     symbol: a.asset.symbol,
                     decimals: a.asset.decimals,
                     balance: new BigNumber(
-                      addDecimal(new BigNumber(a.balance), a.asset.decimals)
+                      addDecimal(a.balance, a.asset.decimals)
                     ),
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,
@@ -231,7 +237,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, pubKey, t, vegaToken.address]);
+  }, [client, decimals, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

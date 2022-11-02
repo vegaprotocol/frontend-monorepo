@@ -1,19 +1,24 @@
 import { useCallback, useState } from 'react';
-import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
+import {
+  useVegaWallet,
+  useVegaTransaction,
+  useTransactionResult,
+} from '@vegaprotocol/wallet';
+import type {
+  OrderCancellationBody,
+  TransactionResult,
+} from '@vegaprotocol/wallet';
 import type { OrderEventFieldsFragment } from './';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
-
-export interface CancelOrderArgs {
-  orderId: string;
-  marketId: string;
-}
 
 export const useOrderCancel = () => {
   const { pubKey } = useVegaWallet();
 
   const [cancelledOrder, setCancelledOrder] =
     useState<OrderEventFieldsFragment | null>(null);
+  const [transactionResult, setTransactionResult] =
+    useState<TransactionResult>();
 
   const {
     send,
@@ -24,6 +29,7 @@ export const useOrderCancel = () => {
   } = useVegaTransaction();
 
   const waitForOrderEvent = useOrderEvent(transaction);
+  const waitForTransactionResult = useTransactionResult();
 
   const reset = useCallback(() => {
     resetTransaction();
@@ -31,7 +37,7 @@ export const useOrderCancel = () => {
   }, [resetTransaction]);
 
   const cancel = useCallback(
-    async (args: CancelOrderArgs) => {
+    async (orderCancellation: OrderCancellationBody['orderCancellation']) => {
       if (!pubKey) {
         return;
       }
@@ -39,26 +45,36 @@ export const useOrderCancel = () => {
       setCancelledOrder(null);
 
       try {
-        await send(pubKey, {
-          orderCancellation: {
-            orderId: args.orderId,
-            marketId: args.marketId,
-          },
+        const res = await send(pubKey, {
+          orderCancellation,
         });
-
-        const cancelledOrder = await waitForOrderEvent(args.orderId, pubKey);
-        setCancelledOrder(cancelledOrder);
-        setComplete();
+        if (orderCancellation.orderId) {
+          const cancelledOrder = await waitForOrderEvent(
+            orderCancellation.orderId,
+            pubKey
+          );
+          setCancelledOrder(cancelledOrder);
+          setComplete();
+        } else if (res) {
+          const txResult = await waitForTransactionResult(
+            res.transactionHash,
+            pubKey
+          );
+          setTransactionResult(txResult);
+          setComplete();
+        }
+        return res;
       } catch (e) {
         Sentry.captureException(e);
         return;
       }
     },
-    [pubKey, send, setComplete, waitForOrderEvent]
+    [pubKey, send, setComplete, waitForOrderEvent, waitForTransactionResult]
   );
 
   return {
     transaction,
+    transactionResult,
     cancelledOrder,
     Dialog,
     cancel,

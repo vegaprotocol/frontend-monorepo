@@ -34,8 +34,8 @@ export interface PartyAssetsQuery_party_delegations {
   epoch: number;
 }
 
-export interface PartyAssetsQuery_party_stake {
-  __typename: "PartyStake";
+export interface PartyAssetsQuery_party_stakingSummary {
+  __typename: "StakingSummary";
   /**
    * The stake currently available for the party
    */
@@ -106,7 +106,7 @@ export interface PartyAssetsQuery_party {
   /**
    * The staking information for this Party
    */
-  stake: PartyAssetsQuery_party_stake;
+  stakingSummary: PartyAssetsQuery_party_stakingSummary;
   /**
    * Collateral accounts relating to a party
    */

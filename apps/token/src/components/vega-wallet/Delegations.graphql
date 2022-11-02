@@ -13,9 +13,8 @@ query Delegations($partyId: ID!) {
       }
       epoch
     }
-    stake {
+    stakingSummary {
       currentStakeAvailable
-      currentStakeAvailableFormatted @client
     }
     accounts {
       asset {

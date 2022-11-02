@@ -12,9 +12,8 @@ export const STAKING_QUERY = gql`
   query Staking($partyId: ID!) {
     party(id: $partyId) {
       id
-      stake {
+      stakingSummary {
         currentStakeAvailable
-        currentStakeAvailableFormatted @client
       }
       delegations {
         amount
@@ -33,33 +32,37 @@ export const STAKING_QUERY = gql`
         expiry
       }
     }
-    nodes {
-      id
-      name
-      pubkey
-      infoUrl
-      location
-      ethereumAddress
-      stakedByOperator
-      stakedByDelegates
-      stakedTotal
-      pendingStake
-      stakedByOperatorFormatted @client
-      stakedByDelegatesFormatted @client
-      stakedTotalFormatted @client
-      pendingStakeFormatted @client
-      epochData {
-        total
-        offline
-        online
-      }
-      status
-      rankingScore {
-        rankingScore
-        stakeScore
-        performanceScore
-        votingPower
-        stakeScore
+    nodesConnection {
+      edges {
+        node {
+          id
+          name
+          pubkey
+          infoUrl
+          location
+          ethereumAddress
+          stakedByOperator
+          stakedByDelegates
+          stakedTotal
+          pendingStake
+          stakedByOperatorFormatted @client
+          stakedByDelegatesFormatted @client
+          stakedTotalFormatted @client
+          pendingStakeFormatted @client
+          epochData {
+            total
+            offline
+            online
+          }
+          status
+          rankingScore {
+            rankingScore
+            stakeScore
+            performanceScore
+            votingPower
+            stakeScore
+          }
+        }
       }
     }
     nodeData {

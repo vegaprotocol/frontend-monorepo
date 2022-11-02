@@ -251,7 +251,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 });
 
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
-  before(() => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.visit('/markets/market-0');
     cy.wait('@Market');
@@ -260,8 +260,10 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
   it('must warn if order size input has too many digits after the decimal place', function () {
     //7002-SORD-016
     cy.getByTestId(orderSizeField).clear().type('1.234');
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).should(
+    cy.getByTestId('dealticket-error-message-price-market').should(
       'have.text',
       'Order sizes must be in whole numbers for this market'
     );
@@ -269,8 +271,10 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 
   it('must warn if order size is set to 0', function () {
     cy.getByTestId(orderSizeField).clear().type('0');
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).should(
+    cy.getByTestId('dealticket-error-message-price-market').should(
       'have.text',
       'Size cannot be lower than "1"'
     );
@@ -416,8 +420,10 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 
   it('should show warning for market order', function () {
     cy.getByTestId(toggleMarket).click();
+    cy.getByTestId(placeOrderBtn).should('not.be.disabled');
+    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).should(
+    cy.getByTestId('dealticket-error-message-type').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Only limit orders are permitted when market is in auction'
     );
@@ -437,7 +443,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       TIFlist.filter((item) => item.code === 'FOK')[0].value
     );
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId(errorMessage).should(
+    cy.getByTestId('dealticket-error-message-force').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Until the auction ends, you can only place GFA, GTT, or GTC limit orders'
     );
@@ -464,14 +470,16 @@ describe('margin required validation', { tags: '@regression' }, () => {
   });
 
   it('should display info and button for deposit', () => {
+    cy.getByTestId('place-order').should('not.be.disabled');
+    cy.getByTestId('place-order').click();
     cy.getByTestId('place-order').should('be.disabled');
-    cy.getByTestId('dealticket-error-message').should(
+    cy.getByTestId('deal-ticket-margin-invalidated').should(
       'contain.text',
       "You don't have enough margin available to open this position"
     );
-    cy.getByTestId('dealticket-error-message').should(
+    cy.getByTestId('deal-ticket-margin-invalidated').should(
       'contain.text',
-      '0.01000 tBTC currently required, 0.00100 tBTC available'
+      '0.01 tBTC currently required, 0.001 tBTC available'
     );
     cy.getByTestId('deal-ticket-deposit-dialog-button').click();
     cy.getByTestId('dialog-content')

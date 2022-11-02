@@ -25,6 +25,7 @@ const defaultProps: OrderListTableProps = {
   rowData: [],
   setEditOrder: jest.fn(),
   cancel: jest.fn(),
+  cancelAll: jest.fn(),
 };
 
 const generateJsx = (
@@ -87,8 +88,8 @@ describe('OrderListTable', () => {
       '-',
       'Edit',
     ];
-    cells.forEach((cell, i) =>
-      expect(cell).toHaveTextContent(expectedValues[i])
+    expectedValues.forEach((expectedValue, i) =>
+      expect(cells[i]).toHaveTextContent(expectedValue)
     );
   });
 
@@ -112,8 +113,8 @@ describe('OrderListTable', () => {
       '-',
       'Edit',
     ];
-    cells.forEach((cell, i) =>
-      expect(cell).toHaveTextContent(expectedValues[i])
+    expectedValues.forEach((expectedValue, i) =>
+      expect(cells[i]).toHaveTextContent(expectedValue)
     );
   });
 
