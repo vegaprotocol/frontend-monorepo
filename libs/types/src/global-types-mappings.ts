@@ -294,3 +294,33 @@ export enum ProposalUserAction {
   CREATE = 'CREATE',
   VOTE = 'VOTE',
 }
+
+// https://docs.vega.xyz/testnet/api/grpc/vega/vega.proto#transfertype
+export enum TransferTypeMapping {
+  TRANSFER_TYPE_UNSPECIFIED = 'Default value, always invalid',
+  TRANSFER_TYPE_LOSS = 'Loss',
+  TRANSFER_TYPE_WIN = 'Win',
+  TRANSFER_TYPE_CLOSE = 'Close',
+  TRANSFER_TYPE_MTM_LOSS = 'Mark to market loss',
+  TRANSFER_TYPE_MTM_WIN = 'Mark to market win',
+  TRANSFER_TYPE_MARGIN_LOW = 'Margin too low',
+  TRANSFER_TYPE_MARGIN_HIGH = 'Margin too high',
+  TRANSFER_TYPE_MARGIN_CONFISCATED = 'Margin was confiscated',
+  TRANSFER_TYPE_MAKER_FEE_PAY = 'Pay maker fee',
+  TRANSFER_TYPE_MAKER_FEE_RECEIVE = 'Receive maker fee',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'Pay infrastructure fee',
+  TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'Receive infrastructure fee',
+  TRANSFER_TYPE_LIQUIDITY_FEE_PAY = 'Pay liquidity fee',
+  TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE = 'Receive liquidity fee',
+  TRANSFER_TYPE_BOND_LOW = 'Bond too low',
+  TRANSFER_TYPE_BOND_HIGH = 'Bond too high',
+  TRANSFER_TYPE_WITHDRAW_LOCK = 'Lock amount for withdraw',
+  TRANSFER_TYPE_WITHDRAW = 'Actual withdraw from system',
+  TRANSFER_TYPE_DEPOSIT = 'Deposit funds',
+  TRANSFER_TYPE_BOND_SLASHING = 'Bond slashing',
+  TRANSFER_TYPE_STAKE_REWARD = 'Stake reward',
+  TRANSFER_TYPE_TRANSFER_FUNDS_SEND = 'Transfer funds',
+  TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'Transfer funds',
+  TRANSFER_TYPE_CLEAR_ACCOUNT = 'Market is closed, accounts are cleared',
+  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE = 'Restore a balance from a checkpoint',
+}

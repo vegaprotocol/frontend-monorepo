@@ -12,6 +12,7 @@ import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from './accounts-container';
+import { LedgerContainer } from '@vegaprotocol/ledger';
 
 const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -51,6 +52,11 @@ const Portfolio = () => {
                       <FillsContainer />
                     </div>
                   </div>
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="ledger-entries" name={t('Ledger entries')}>
+                <VegaWalletContainer>
+                  <LedgerContainer />
                 </VegaWalletContainer>
               </Tab>
             </Tabs>
