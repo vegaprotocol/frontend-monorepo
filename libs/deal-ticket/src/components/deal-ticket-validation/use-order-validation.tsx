@@ -84,21 +84,6 @@ export const useOrderValidation = ({
       };
     }
 
-    if (
-      [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
-        market.state
-      )
-    ) {
-      return {
-        isDisabled: false,
-        message: t(
-          `This market is ${marketTranslations(
-            market.state
-          )} and only accepting liquidity commitment orders`
-        ),
-      };
-    }
-
     if (isMarketInAuction(market)) {
       if (orderType === Schema.OrderType.TYPE_MARKET) {
         if (
@@ -277,6 +262,21 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: <ValidateMargin {...isInvalidOrderMargin} />,
+      };
+    }
+
+    if (
+      [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
+        market.state
+      )
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          `This market is ${marketTranslations(
+            market.state
+          )} and only accepting liquidity commitment orders`
+        ),
       };
     }
 

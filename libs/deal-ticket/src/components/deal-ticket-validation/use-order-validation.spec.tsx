@@ -165,12 +165,17 @@ describe('useOrderValidation', () => {
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
+      jest
+        .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+        .mockReturnValue(false);
       const { result } = setup({
         market: {
           ...defaultOrder.market,
           state,
           tradingMode: MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         },
+        orderType: Schema.OrderType.TYPE_LIMIT,
+        orderTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
       });
       expect(result.current).toStrictEqual({
         isDisabled: false,
