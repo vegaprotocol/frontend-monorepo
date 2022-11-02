@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
@@ -42,7 +43,7 @@ interface PositionRejoined {
 export interface Position {
   marketName: string;
   averageEntryPrice: string;
-  marginAccountBalance: BigNumber;
+  marginAccountBalance: string;
   capitalUtilisation: number;
   currentLeverage: number;
   decimals: number;
@@ -152,7 +153,7 @@ export const getMetrics = (
     metrics.push({
       marketName: market.tradableInstrument.instrument.name,
       averageEntryPrice: position.averageEntryPrice,
-      marginAccountBalance,
+      marginAccountBalance: marginAccount.balance,
       capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,
@@ -277,9 +278,14 @@ export const rejoinPositionData = (
   return null;
 };
 
-export const positionsMetricsDataProvider = makeDerivedDataProvider<
+export interface PositionsMetricsProviderVariables {
+  partyId: string;
+}
+
+export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
-  never
+  Position[],
+  PositionsMetricsProviderVariables
 >(
   [
     positionsDataProvider,
@@ -287,11 +293,21 @@ export const positionsMetricsDataProvider = makeDerivedDataProvider<
     marketsWithDataProvider,
     marginsDataProvider,
   ],
-  ([positions, accounts, marketsData, margins]) => {
+  ([positions, accounts, marketsData, margins], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData, margins);
+    if (!variables) {
+      return [];
+    }
     return sortBy(
       getMetrics(positionsData, accounts as Account[] | null),
       'marketName'
     );
-  }
+  },
+  (data, delta, previousData) =>
+    data.filter((row) => {
+      const previousRow = previousData?.find(
+        (previousRow) => previousRow.marketId === row.marketId
+      );
+      return !(previousRow && isEqual(previousRow, row));
+    })
 );

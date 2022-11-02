@@ -6,7 +6,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
-import type { Staking_nodes } from './__generated__/Staking';
+import type { Staking_nodesConnection_edges_node } from './__generated__/Staking';
 
 const ValidatorTableCell = ({
   children,
@@ -21,7 +21,7 @@ const ValidatorTableCell = ({
 );
 
 export interface ValidatorTableProps {
-  node: Staking_nodes;
+  node: Staking_nodesConnection_edges_node;
   stakedTotal: string;
   stakeThisEpoch: BigNumber;
 }

@@ -1,19 +1,35 @@
+fragment NodesFragment on Node {
+  avatarUrl
+  id
+  name
+  pubkey
+  stakedTotal
+  stakedTotalFormatted @client
+  pendingStake
+  pendingStakeFormatted @client
+  rankingScore {
+    rankingScore
+    stakeScore
+    performanceScore
+    votingPower
+    status
+  }
+}
+
 query Nodes {
-  nodes {
-    avatarUrl
+  epoch {
     id
-    name
-    pubkey
-    stakedTotal
-    stakedTotalFormatted @client
-    pendingStake
-    pendingStakeFormatted @client
-    rankingScore {
-      rankingScore
-      stakeScore
-      performanceScore
-      votingPower
-      status
+    timestamps {
+      start
+      end
+      expiry
+    }
+  }
+  nodesConnection {
+    edges {
+      node {
+        ...NodesFragment
+      }
     }
   }
   nodeData {

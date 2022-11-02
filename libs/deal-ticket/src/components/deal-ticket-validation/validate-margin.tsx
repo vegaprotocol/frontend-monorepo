@@ -1,6 +1,6 @@
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useState } from 'react';
 
@@ -26,8 +26,14 @@ export const ValidateMargin = ({
         className="flex flex-col center pb-3"
         data-testid="deal-ticket-margin-invalidated"
       >
-        <p>
-          {t("You don't have enough margin available to open this position.")}
+        <p className="mb-2">
+          {t("You don't have enough margin available to open this position.")}{' '}
+          <ButtonLink
+            data-testid="deal-ticket-deposit-dialog-button"
+            onClick={() => setDepositDialog(true)}
+          >
+            {t(`Deposit ${symbol}`)}
+          </ButtonLink>
         </p>
         <p>
           {`${normalizeFormatNumber(margin, decimals)} ${symbol} ${t(
@@ -36,15 +42,6 @@ export const ValidateMargin = ({
             'available'
           )}`}
         </p>
-        <Button
-          className="center mt-2"
-          variant="default"
-          size="xs"
-          data-testid="deal-ticket-deposit-dialog-button"
-          onClick={() => setDepositDialog(true)}
-        >
-          {t('Deposit')} {symbol}
-        </Button>
       </div>
       <Dialog open={depositDialog} onChange={setDepositDialog}>
         <h1 className="text-2xl mb-4">{t('Deposit')}</h1>

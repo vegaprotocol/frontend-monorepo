@@ -45,11 +45,15 @@ export interface PageInfo {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
 }
-export interface Subscribe<Data, Delta> {
+export interface Subscribe<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+> {
   (
     callback: UpdateCallback<Data, Delta>,
     client: ApolloClient<object>,
-    variables?: OperationVariables
+    variables?: Variables
   ): {
     unsubscribe: () => void;
     reload: (forceReset?: boolean) => void;
@@ -166,7 +170,13 @@ interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
  * @param fetchPolicy
  * @returns subscribe function
  */
-function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
+function makeDataProviderInternal<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>({
   query,
   subscriptionQuery,
   update,
@@ -177,7 +187,8 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   resetDelay,
 }: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
   Data,
-  Delta
+  Delta,
+  Variables
 > {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
@@ -439,14 +450,18 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
  * @param fn
  * @returns subscibe function
  */
-const memoize = <Data, Delta>(
-  fn: (variables?: OperationVariables) => Subscribe<Data, Delta>
+const memoize = <
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>(
+  fn: (variables?: Variables) => Subscribe<Data, Delta, Variables>
 ) => {
   const cache: {
-    subscribe: Subscribe<Data, Delta>;
-    variables?: OperationVariables;
+    subscribe: Subscribe<Data, Delta, Variables>;
+    variables?: Variables;
   }[] = [];
-  return (variables?: OperationVariables) => {
+  return (variables?: Variables) => {
     const cached = cache.find((c) => isEqual(c.variables, variables));
     if (cached) {
       return cached.subscribe;
@@ -481,9 +496,15 @@ const memoize = <Data, Delta>(
  * )
  *
  */
-export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
+export function makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>(
   params: DataProviderParams<QueryData, Data, SubscriptionData, Delta>
-): Subscribe<Data, Delta> {
+): Subscribe<Data, Delta, Variables> {
   const getInstance = memoize<Data, Delta>(() =>
     makeDataProviderInternal(params)
   );
@@ -498,33 +519,45 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
 export type DerivedPart = Parameters<DependencyUpdateCallback>['0'];
-export type CombineDerivedData<Data> = (
-  data: DerivedPart['data'][],
-  variables?: OperationVariables
-) => Data | null;
+export type CombineDerivedData<
+  Data,
+  Variables extends OperationVariables = OperationVariables
+> = (data: DerivedPart['data'][], variables?: Variables) => Data | null;
 
-export type CombineDerivedDelta<Data, Delta> = (
+export type CombineDerivedDelta<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+> = (
   data: Data,
   parts: DerivedPart[],
-  variables?: OperationVariables
+  previousData: Data | null,
+  variables?: Variables
 ) => Delta | undefined;
 
-export type CombineInsertionData<Data> = (
+export type CombineInsertionData<
+  Data,
+  Variables extends OperationVariables = OperationVariables
+> = (
   data: Data,
   parts: DerivedPart[],
-  variables?: OperationVariables
+  variables?: Variables
 ) => Data | undefined;
 
-function makeDerivedDataProviderInternal<Data, Delta>(
+function makeDerivedDataProviderInternal<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDerivedData<Data>,
-  combineDelta?: CombineDerivedDelta<Data, Delta>,
-  combineInsertionData?: CombineInsertionData<Data>
-): Subscribe<Data, Delta> {
+  combineData: CombineDerivedData<Data, Variables>,
+  combineDelta?: CombineDerivedDelta<Data, Delta, Variables>,
+  combineInsertionData?: CombineInsertionData<Data, Variables>
+): Subscribe<Data, Delta, Variables> {
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
   let client: ApolloClient<object>;
   const callbacks: UpdateCallback<Data, Delta>[] = [];
-  let variables: OperationVariables | undefined;
+  let variables: Variables | undefined;
   const parts: DerivedPart[] = [];
   let data: Data | null = null;
   let error: Error | undefined;
@@ -581,13 +614,14 @@ function makeDerivedDataProviderInternal<Data, Delta>(
       loading = newLoading;
       error = newError;
       loaded = newLoaded;
+      const previousData = data;
       data = newData;
       if (newLoaded) {
         const updatedPart = parts[updatedPartIndex];
         if (updatedPart.isUpdate) {
           isUpdate = true;
           if (updatedPart.delta && combineDelta && data) {
-            delta = combineDelta(data, parts, variables);
+            delta = combineDelta(data, parts, previousData, variables);
           }
           delete updatedPart.isUpdate;
           delete updatedPart.delta;
@@ -661,14 +695,18 @@ function makeDerivedDataProviderInternal<Data, Delta>(
   };
 }
 
-export function makeDerivedDataProvider<Data, Delta>(
+export function makeDerivedDataProvider<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDerivedData<Data>,
-  combineDelta?: CombineDerivedDelta<Data, Delta>,
-  combineInsertionData?: CombineInsertionData<Data>
-): Subscribe<Data, Delta> {
-  const getInstance = memoize<Data, Delta>(() =>
-    makeDerivedDataProviderInternal(
+  combineData: CombineDerivedData<Data, Variables>,
+  combineDelta?: CombineDerivedDelta<Data, Delta, Variables>,
+  combineInsertionData?: CombineInsertionData<Data, Variables>
+): Subscribe<Data, Delta, Variables> {
+  const getInstance = memoize<Data, Delta, Variables>(() =>
+    makeDerivedDataProviderInternal<Data, Delta, Variables>(
       dependencies,
       combineData,
       combineDelta,
