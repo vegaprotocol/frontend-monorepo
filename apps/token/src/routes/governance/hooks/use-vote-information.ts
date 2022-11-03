@@ -3,7 +3,7 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
 import type { Proposal_proposal } from '../proposal/__generated__/Proposal';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 export const useVoteInformation = ({
   proposal,
@@ -54,7 +54,7 @@ export const useVoteInformation = ({
       : new BigNumber(100);
 
     const noTokens = new BigNumber(
-      addDecimal(proposal.votes.no.totalTokens, decimals)
+      removeDecimal(proposal.votes.no.totalTokens, decimals)
     );
 
     const noEquityLikeShareWeight = !proposal.votes.no
@@ -63,7 +63,7 @@ export const useVoteInformation = ({
       : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight);
 
     const yesTokens = new BigNumber(
-      addDecimal(proposal.votes.yes.totalTokens, decimals)
+      removeDecimal(proposal.votes.yes.totalTokens, decimals)
     );
 
     const yesEquityLikeShareWeight = !proposal.votes.yes
