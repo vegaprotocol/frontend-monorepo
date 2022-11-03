@@ -5,10 +5,10 @@ fragment VoteEventFields on Vote {
 }
 
 subscription VoteEvent($partyId: ID!) {
-  busEvents(partyId: $partyId, batchSize: 0, types:[Vote]) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Vote]) {
     type
     event {
-      ...on Vote {
+      ... on Vote {
         proposalId
         value
         datetime
