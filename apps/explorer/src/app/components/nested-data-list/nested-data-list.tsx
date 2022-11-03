@@ -9,6 +9,8 @@ import isArray from 'lodash/isArray';
 
 interface NestedDataListProps {
   data: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     [key: string]: any;
   };
   index?: number;
@@ -130,6 +132,8 @@ const NestedDataListItem = ({
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const sortNestedDataByChildren = (data: { [key: string]: any }) =>
   Object.keys(data)
     .filter((key) => key)
