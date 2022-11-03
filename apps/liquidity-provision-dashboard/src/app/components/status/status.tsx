@@ -8,6 +8,8 @@ import {
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
 
+import { Indicator } from '../indicator';
+
 export const Status = ({
   tradingMode,
   trigger,
@@ -34,7 +36,8 @@ export const Status = ({
         'text-sm': size === 'small',
       })}
     >
-      <Lozenge className="border border-greys-light-300 bg-greys-light-100">
+      <Lozenge className="border border-greys-light-300 bg-greys-light-100 flex items-center">
+        <Indicator status={tradingMode} />
         {getStatus()}
       </Lozenge>
     </div>
