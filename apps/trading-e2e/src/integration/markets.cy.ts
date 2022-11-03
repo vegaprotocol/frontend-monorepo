@@ -52,7 +52,9 @@ describe('markets table', { tags: '@smoke' }, () => {
       'ETHBTC.QM21',
       'SOLUSD',
     ];
-    cy.getByTestId('link').should('have.attr', 'href', '/markets').click();
+    cy.getByTestId('view-market-list-link')
+      .should('have.attr', 'href', '/markets')
+      .click();
     cy.url().should('eq', Cypress.config('baseUrl') + '/markets');
     cy.contains('AAPL.MF21').should('be.visible');
     cy.contains('Market').click(); // sort by market name
