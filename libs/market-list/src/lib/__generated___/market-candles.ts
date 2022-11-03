@@ -3,7 +3,7 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketCandlesFieldsFragment = { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string };
+export type MarketCandlesFieldsFragment = { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: string };
 
 export type MarketCandlesQueryVariables = Types.Exact<{
   interval: Types.Interval;
@@ -12,7 +12,7 @@ export type MarketCandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } }> } | null };
+export type MarketCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: string } } | null> | null } | null } }> } | null };
 
 export type MarketCandlesUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -20,7 +20,7 @@ export type MarketCandlesUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type MarketCandlesUpdateSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string } };
+export type MarketCandlesUpdateSubscription = { __typename?: 'Subscription', candles: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: string } };
 
 export const MarketCandlesFieldsFragmentDoc = gql`
     fragment MarketCandlesFields on Candle {
@@ -29,6 +29,7 @@ export const MarketCandlesFieldsFragmentDoc = gql`
   open
   close
   volume
+  periodStart
 }
     `;
 export const MarketCandlesDocument = gql`

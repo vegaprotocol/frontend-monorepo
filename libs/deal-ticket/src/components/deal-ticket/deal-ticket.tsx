@@ -1,28 +1,27 @@
-import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { removeDecimal, addDecimal } from '@vegaprotocol/react-helpers';
+import { TypeSelector } from './type-selector';
+import { SideSelector } from './side-selector';
+import { DealTicketAmount } from './deal-ticket-amount';
+import { TimeInForceSelector } from './time-in-force-selector';
+import type { DealTicketMarketFragment } from './__generated___/DealTicket';
+import { ExpirySelector } from './expiry-selector';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { useCallback, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-
-import {
-  getFeeDetailsValues,
-  useFeeDealTicketDetails,
-} from '../../hooks/use-fee-deal-ticket-details';
 import { getDefaultOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
   useOrderValidation,
 } from '../deal-ticket-validation/use-order-validation';
-import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
-import { ExpirySelector } from './expiry-selector';
-import { SideSelector } from './side-selector';
-import { TimeInForceSelector } from './time-in-force-selector';
-import { TypeSelector } from './type-selector';
+import {
+  useFeeDealTicketDetails,
+  getFeeDetailsValues,
+} from '../../hooks/use-fee-deal-ticket-details';
+import { DealTicketButton } from './deal-ticket-button';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
 
-import type { DealTicketMarketFragment } from './__generated___/DealTicket';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
@@ -37,17 +36,18 @@ export const DealTicket = ({
   submit,
   transactionStatus,
 }: DealTicketProps) => {
-  const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const [errorMessage, setErrorMessage] = useState<
+    DealTicketErrorMessage | undefined
+  >(undefined);
   const {
     register,
     control,
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    clearErrors,
+    setError,
+    formState: { errors, isSubmitted },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -57,13 +57,34 @@ export const DealTicket = ({
   const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailsValues(feeDetails);
 
-  const { message, isDisabled: disabled } = useOrderValidation({
+  const {
+    message,
+    isDisabled: disabled,
+    section: errorSection,
+  } = useOrderValidation({
     market,
     orderType: order.type,
     orderTimeInForce: order.timeInForce,
     fieldErrors: errors,
     estMargin: feeDetails.estMargin,
   });
+
+  useEffect(() => {
+    if (disabled) {
+      setError('marketId', {});
+    } else {
+      clearErrors('marketId');
+    }
+  }, [disabled, setError, clearErrors]);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      setErrorMessage({ message, isDisabled: disabled, errorSection });
+    } else {
+      setErrorMessage(undefined);
+    }
+  }, [disabled, message, errorSection, isSubmitted]);
+
   const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
@@ -113,7 +134,11 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector value={field.value} onSelect={field.onChange} />
+          <TypeSelector
+            value={field.value}
+            onSelect={field.onChange}
+            errorMessage={errorMessage}
+          />
         )}
       />
       <Controller
@@ -129,6 +154,7 @@ export const DealTicket = ({
         register={register}
         price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
+        errorMessage={errorMessage}
       />
       <Controller
         name="timeInForce"
@@ -138,6 +164,7 @@ export const DealTicket = ({
             value={field.value}
             orderType={order.type}
             onSelect={field.onChange}
+            errorMessage={errorMessage}
           />
         )}
       />
@@ -147,43 +174,19 @@ export const DealTicket = ({
             name="expiresAt"
             control={control}
             render={({ field }) => (
-              <ExpirySelector value={field.value} onSelect={field.onChange} />
+              <ExpirySelector
+                value={field.value}
+                onSelect={field.onChange}
+                errorMessage={errorMessage}
+              />
             )}
           />
         )}
-      {pubKey ? (
-        <>
-          <Button
-            variant="primary"
-            fill={true}
-            type="submit"
-            disabled={isDisabled}
-            data-testid="place-order"
-          >
-            {transactionStatus === 'pending'
-              ? t('Pending...')
-              : t('Place order')}
-          </Button>
-          {message && (
-            <InputError
-              intent={isDisabled ? 'danger' : 'warning'}
-              data-testid="dealticket-error-message"
-            >
-              {message}
-            </InputError>
-          )}
-        </>
-      ) : (
-        <Button
-          variant="default"
-          fill
-          type="button"
-          data-testid="order-connect-wallet"
-          onClick={openVegaWalletDialog}
-        >
-          {t('Connect wallet')}
-        </Button>
-      )}
+      <DealTicketButton
+        transactionStatus={transactionStatus}
+        isDisabled={isSubmitted && isDisabled}
+        errorMessage={errorMessage}
+      />
       <DealTicketFeeDetails details={details} />
     </form>
   );

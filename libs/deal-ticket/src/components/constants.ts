@@ -19,3 +19,12 @@ export const EST_FEES_TOOLTIP_TEXT = t(
 export const EST_SLIPPAGE = t(
   'When you execute a trade on Vega, the price obtained in the market may differ from the best available price displayed at the time of placing the trade. The estimated slippage shows the difference between the best available price and the estimated execution price, determined by market liquidity and your chosen order size.'
 );
+
+export const DEAL_TICKET_SECTION = {
+  TYPE: 'sec-type',
+  SIZE: 'sec-size',
+  PRICE: 'sec-price',
+  FORCE: 'sec-force',
+  EXPIRY: 'sec-expiry',
+  SUMMARY: 'sec-summary',
+};
