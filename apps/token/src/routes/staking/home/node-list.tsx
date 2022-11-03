@@ -263,6 +263,7 @@ export const NodeList = () => {
         sortable: true,
         resizable: true,
         comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
+        cellStyle: { margin: '10px 0' },
       }),
       []
     );
@@ -300,7 +301,7 @@ export const NodeList = () => {
           overlayNoRowsTemplate={t('noValidators')}
           ref={ref}
           rowData={nodes}
-          rowHeight={32}
+          rowHeight={52}
           columnDefs={colDefs}
           defaultColDef={defaultColDef}
           animateRows={true}
