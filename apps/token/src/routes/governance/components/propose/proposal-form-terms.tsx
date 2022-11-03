@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import {
   FormGroup,
   InputError,
-  Link,
+  ExternalLink,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -31,10 +31,12 @@ export const ProposalFormTerms = ({
       {VEGA_DOCS_URL && (
         <div className="mt-[-4px] mb-2 text-sm font-light">
           <span className="mr-1">{t('ProposalTermsText')}</span>
-          <Link
+          <ExternalLink
             href={`${VEGA_DOCS_URL}/tutorials/proposals${customDocLink || ''}`}
             target="_blank"
-          >{`${VEGA_DOCS_URL}/tutorials/proposals${customDocLink || ''}`}</Link>
+          >{`${VEGA_DOCS_URL}/tutorials/proposals${
+            customDocLink || ''
+          }`}</ExternalLink>
         </div>
       )}
 
