@@ -28,3 +28,5 @@ export const DEAL_TICKET_SECTION = {
   EXPIRY: 'sec-expiry',
   SUMMARY: 'sec-summary',
 };
+
+export const ERROR_SIZE_DECIMAL = 'step';

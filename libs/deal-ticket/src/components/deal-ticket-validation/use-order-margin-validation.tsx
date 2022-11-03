@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountType } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
@@ -33,15 +34,16 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
   const margin = toBigNum(estMargin?.margin || 0, 0);
   const { id, symbol, decimals } =
     market.tradableInstrument.instrument.product.settlementAsset;
-  if (balance.isZero() || balance.isLessThan(margin)) {
-    return {
-      balance: balance.toString(),
-      margin: margin.toString(),
-      id,
-      symbol,
-      decimals,
-    };
-  }
-
-  return false;
+  return useMemo(() => {
+    if (balance.isZero() || balance.isLessThan(margin)) {
+      return {
+        balance: balance.toString(),
+        margin: margin.toString(),
+        id,
+        symbol,
+        decimals,
+      };
+    }
+    return false;
+  }, [balance.toString(), margin.toString(), id, symbol, decimals]);
 };

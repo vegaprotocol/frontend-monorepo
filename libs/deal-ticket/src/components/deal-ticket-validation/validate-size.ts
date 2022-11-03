@@ -1,4 +1,4 @@
-export const ERROR_SIZE_DECIMAL = 'step';
+import { ERROR_SIZE_DECIMAL } from '../constants';
 
 export const validateSize = (step: number) => {
   const [, stepDecimals = ''] = String(step).split('.');
