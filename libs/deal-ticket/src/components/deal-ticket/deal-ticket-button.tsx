@@ -10,16 +10,12 @@ interface Props {
   transactionStatus: 'default' | 'pending';
   isDisabled: boolean;
   errorMessage?: DealTicketErrorMessage;
-  size: string;
-  productType?: string;
 }
 
 export const DealTicketButton = ({
   transactionStatus,
   errorMessage,
   isDisabled,
-  size,
-  productType,
 }: Props) => {
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
@@ -27,15 +23,6 @@ export const DealTicketButton = ({
   }));
   return pubKey ? (
     <div className="mb-6">
-      {size && (
-        <span className="text-xs mb-2">
-          {t(
-            `You are buying ${size} ${productType?.toLocaleLowerCase()} ${
-              size === '1' ? 'contract' : 'contracts'
-            } `
-          )}
-        </span>
-      )}
       <Button
         variant="primary"
         fill

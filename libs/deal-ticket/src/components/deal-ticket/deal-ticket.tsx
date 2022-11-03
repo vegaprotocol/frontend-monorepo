@@ -185,8 +185,6 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton
-        size={order && order.size}
-        productType={market.tradableInstrument.instrument.product.__typename}
         transactionStatus={transactionStatus}
         isDisabled={isSubmitted && isDisabled}
         errorMessage={errorMessage}

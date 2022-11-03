@@ -1,10 +1,12 @@
-import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { formatNumber, t, toDecimal } from '@vegaprotocol/react-helpers';
-import type { DealTicketAmountProps } from './deal-ticket-amount';
-import { validateSize } from '../deal-ticket-validation/validate-size';
-import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
-import { DealTicketError } from './deal-ticket-error';
+import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
+
 import { DEAL_TICKET_SECTION } from '../constants';
+import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
+import { validateSize } from '../deal-ticket-validation/validate-size';
+import { DealTicketError } from './deal-ticket-error';
+
+import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -55,7 +57,7 @@ export const DealTicketMarketAmount = ({
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
               )}
             >
-              <div className="absolute top-0 right-0 text-sm">
+              <div className="absolute top-0 right-0 text-xs">
                 {t(`Estimated uncrossing price`)}
               </div>
             </Tooltip>
