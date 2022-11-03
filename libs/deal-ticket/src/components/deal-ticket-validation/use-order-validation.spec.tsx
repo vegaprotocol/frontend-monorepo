@@ -11,10 +11,10 @@ import {
 } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
-import { ERROR_SIZE_DECIMAL } from './validate-size';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 import * as OrderMarginValidation from './use-order-margin-validation';
 import { ValidateMargin } from './validate-margin';
+import { ERROR_SIZE_DECIMAL } from '../constants';
 
 jest.mock('@vegaprotocol/wallet');
 
@@ -307,4 +307,28 @@ describe('useOrderValidation', () => {
       testElement.type
     );
   });
+
+  it.each`
+    state
+    ${MarketState.STATE_PENDING}
+    ${MarketState.STATE_PROPOSED}
+  `(
+    'Returns error when market state is pending and size is wrong',
+    ({ state }) => {
+      const { result } = setup({
+        fieldErrors: {
+          size: { type: `validate`, message: ERROR_SIZE_DECIMAL },
+        },
+        market: {
+          ...market,
+          state,
+        },
+      });
+      expect(result.current).toStrictEqual({
+        isDisabled: true,
+        message: ERROR.FIELD_PRICE_STEP_DECIMAL,
+        section: 'sec-size',
+      });
+    }
+  );
 });
