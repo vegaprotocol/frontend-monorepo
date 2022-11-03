@@ -12,14 +12,13 @@ import {
 } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { ERROR_SIZE_DECIMAL } from './validate-size';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
 import { ValidateMargin } from './validate-margin';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { useOrderMarginValidation } from './use-order-margin-validation';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { DEAL_TICKET_SECTION, ERROR_SIZE_DECIMAL } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
@@ -53,7 +52,7 @@ export type DealTicketSection =
 
 export const useOrderValidation = ({
   market,
-  fieldErrors = {},
+  fieldErrors,
   orderType,
   orderTimeInForce,
   estMargin,
@@ -65,6 +64,80 @@ export const useOrderValidation = ({
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
   const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
+
+  const fieldErrorChecking = useMemo<{
+    message: ReactNode | string;
+    isDisabled: boolean;
+    section: DealTicketSection;
+  } | null>(() => {
+    if (fieldErrors?.size?.type || fieldErrors?.price?.type) {
+      if (fieldErrors?.size?.type === 'required') {
+        return {
+          isDisabled: true,
+          message: t('You need to provide a size'),
+          section: DEAL_TICKET_SECTION.SIZE,
+        };
+      }
+
+      if (fieldErrors?.size?.type === 'min') {
+        return {
+          isDisabled: true,
+          message: t(`Size cannot be lower than "${minSize}"`),
+          section: DEAL_TICKET_SECTION.SIZE,
+        };
+      }
+
+      if (
+        fieldErrors?.price?.type === 'required' &&
+        orderType !== Schema.OrderType.TYPE_MARKET
+      ) {
+        return {
+          isDisabled: true,
+          message: t('You need to provide a price'),
+          section: DEAL_TICKET_SECTION.PRICE,
+        };
+      }
+
+      if (
+        fieldErrors?.price?.type === 'min' &&
+        orderType !== Schema.OrderType.TYPE_MARKET
+      ) {
+        return {
+          isDisabled: true,
+          message: t(`The price cannot be negative`),
+          section: DEAL_TICKET_SECTION.PRICE,
+        };
+      }
+
+      if (
+        fieldErrors?.size?.type === 'validate' &&
+        fieldErrors?.size?.message === ERROR_SIZE_DECIMAL
+      ) {
+        if (market.positionDecimalPlaces === 0) {
+          return {
+            isDisabled: true,
+            message: t('Order sizes must be in whole numbers for this market'),
+            section: DEAL_TICKET_SECTION.SIZE,
+          };
+        }
+        return {
+          isDisabled: true,
+          message: t(
+            `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
+          ),
+          section: DEAL_TICKET_SECTION.SIZE,
+        };
+      }
+    }
+    return null;
+  }, [
+    fieldErrors?.size?.type,
+    fieldErrors?.size?.message,
+    fieldErrors?.price?.type,
+    minSize,
+    orderType,
+    market.positionDecimalPlaces,
+  ]);
 
   const { message, isDisabled, section } = useMemo<{
     message: ReactNode | string;
@@ -104,6 +177,9 @@ export const useOrderValidation = ({
         market.state
       )
     ) {
+      if (fieldErrorChecking) {
+        return fieldErrorChecking;
+      }
       return {
         isDisabled: false,
         message: t(
@@ -243,62 +319,8 @@ export const useOrderValidation = ({
       }
     }
 
-    if (fieldErrors?.size?.type === 'required') {
-      return {
-        isDisabled: true,
-        message: t('You need to provide a size'),
-        section: DEAL_TICKET_SECTION.SIZE,
-      };
-    }
-
-    if (fieldErrors?.size?.type === 'min') {
-      return {
-        isDisabled: true,
-        message: t(`Size cannot be lower than "${minSize}"`),
-        section: DEAL_TICKET_SECTION.SIZE,
-      };
-    }
-
-    if (
-      fieldErrors?.price?.type === 'required' &&
-      orderType !== Schema.OrderType.TYPE_MARKET
-    ) {
-      return {
-        isDisabled: true,
-        message: t('You need to provide a price'),
-        section: DEAL_TICKET_SECTION.PRICE,
-      };
-    }
-
-    if (
-      fieldErrors?.price?.type === 'min' &&
-      orderType !== Schema.OrderType.TYPE_MARKET
-    ) {
-      return {
-        isDisabled: true,
-        message: t(`The price cannot be negative`),
-        section: DEAL_TICKET_SECTION.PRICE,
-      };
-    }
-
-    if (
-      fieldErrors?.size?.type === 'validate' &&
-      fieldErrors?.size?.message === ERROR_SIZE_DECIMAL
-    ) {
-      if (market.positionDecimalPlaces === 0) {
-        return {
-          isDisabled: true,
-          message: t('Order sizes must be in whole numbers for this market'),
-          section: DEAL_TICKET_SECTION.SIZE,
-        };
-      }
-      return {
-        isDisabled: true,
-        message: t(
-          `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
-        ),
-        section: DEAL_TICKET_SECTION.SIZE,
-      };
+    if (fieldErrorChecking) {
+      return fieldErrorChecking;
     }
 
     if (isInvalidOrderMargin) {
@@ -331,12 +353,9 @@ export const useOrderValidation = ({
       section: '',
     };
   }, [
-    minSize,
     pubKey,
     market,
-    fieldErrors?.size?.type,
-    fieldErrors?.size?.message,
-    fieldErrors?.price?.type,
+    fieldErrorChecking,
     orderType,
     orderTimeInForce,
     isInvalidOrderMargin,
