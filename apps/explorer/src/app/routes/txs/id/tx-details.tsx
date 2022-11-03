@@ -25,7 +25,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   return (
     <section className="mb-10">
       <h3 className="text-3xl xl:text-4xl uppercase font-alpha mb-4">
-        Order submission by{' '}
+        {txData.type} by{' '}
         <Link
           className="font-bold underline"
           to={`/${Routes.PARTIES}/${pubKey}`}
