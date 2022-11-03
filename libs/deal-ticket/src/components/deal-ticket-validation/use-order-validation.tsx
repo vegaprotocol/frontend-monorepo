@@ -70,7 +70,7 @@ export const useOrderValidation = ({
     isDisabled: boolean;
     section: DealTicketSection;
   } | null>(() => {
-    if (fieldErrors) {
+    if (fieldErrors?.size?.type || fieldErrors?.price?.type) {
       if (fieldErrors?.size?.type === 'required') {
         return {
           isDisabled: true,

@@ -34,16 +34,20 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
   const margin = toBigNum(estMargin?.margin || 0, 0);
   const { id, symbol, decimals } =
     market.tradableInstrument.instrument.product.settlementAsset;
-  return useMemo(() => {
-    if (balance.isZero() || balance.isLessThan(margin)) {
-      return {
-        balance: balance.toString(),
-        margin: margin.toString(),
-        id,
-        symbol,
-        decimals,
-      };
-    }
-    return false;
-  }, [balance.toString(), margin.toString(), id, symbol, decimals]);
+  const balanceString = balance.toString();
+  const marginString = margin.toString();
+  const memoizedValue = useMemo(() => {
+    return {
+      balance: balanceString,
+      margin: marginString,
+      id,
+      symbol,
+      decimals,
+    };
+  }, [balanceString, marginString, id, symbol, decimals]);
+
+  if (balance.isZero() || balance.isLessThan(margin)) {
+    return memoizedValue;
+  }
+  return false;
 };

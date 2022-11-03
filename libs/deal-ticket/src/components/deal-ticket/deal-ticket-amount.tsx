@@ -1,4 +1,4 @@
-import type { UseFormRegister, UseFormTrigger } from 'react-hook-form';
+import type { UseFormRegister } from 'react-hook-form';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
