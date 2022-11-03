@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AgGridDynamic as AgGrid,
@@ -11,9 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
-import { ValidatorStatus } from '@vegaprotocol/types';
-import type { Nodes } from './__generated__/Nodes';
+import { Schema } from '@vegaprotocol/types';
 import type { ColDef } from 'ag-grid-community';
+import compact from 'lodash/compact';
+import { useNodesQuery } from './__generated___/Nodes';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -26,40 +26,6 @@ const STAKE_SCORE = 'stakeScore';
 const PERFORMANCE_SCORE = 'performanceScore';
 const VOTING_POWER = 'votingPower';
 
-export const NODES_QUERY = gql`
-  query Nodes {
-    epoch {
-      id
-      timestamps {
-        start
-        end
-        expiry
-      }
-    }
-    nodes {
-      avatarUrl
-      id
-      name
-      pubkey
-      stakedTotal
-      stakedTotalFormatted @client
-      pendingStake
-      pendingStakeFormatted @client
-      rankingScore {
-        rankingScore
-        stakeScore
-        performanceScore
-        votingPower
-        status
-      }
-    }
-    nodeData {
-      stakedTotal
-      stakedTotalFormatted @client
-    }
-  }
-`;
-
 interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
 }
@@ -67,7 +33,7 @@ interface ValidatorRendererProps {
 interface CanonisedNodeProps {
   id: string;
   [VALIDATOR]: {
-    avatarUrl: string | null;
+    avatarUrl: string | null | undefined;
     name: string;
   };
   [STATUS]: string;
@@ -109,9 +75,7 @@ const nodeListGridStyles = `
 export const NodeList = () => {
   const { t } = useTranslation();
   // errorPolicy due to vegaprotocol/vega issue 5898
-  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY, {
-    errorPolicy: 'ignore',
-  });
+  const { data, error, loading, refetch } = useNodesQuery();
   const navigate = useNavigate();
   const [hideTopThird, setHideTopThird] = useState(true);
 
@@ -133,22 +97,24 @@ export const NodeList = () => {
   }, [data?.epoch.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
-    if (!data?.nodes) return [];
+    if (!data?.nodesConnection.edges) return [];
 
-    const canonisedNodes = data.nodes.map(
+    const canonisedNodes = compact(data.nodesConnection.edges).map(
       ({
-        id,
-        name,
-        avatarUrl,
-        stakedTotalFormatted,
-        rankingScore: {
-          rankingScore,
-          stakeScore,
-          status,
-          performanceScore,
-          votingPower,
+        node: {
+          id,
+          name,
+          avatarUrl,
+          stakedTotalFormatted,
+          rankingScore: {
+            rankingScore,
+            stakeScore,
+            status,
+            performanceScore,
+            votingPower,
+          },
+          pendingStakeFormatted,
         },
-        pendingStakeFormatted,
       }) => {
         const stakedTotal = new BigNumber(
           data?.nodeData?.stakedTotalFormatted || 0
@@ -161,11 +127,12 @@ export const NodeList = () => {
               '%';
         const statusTranslated = t(
           `${
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
+            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
               'Ersatz') ||
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
+            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
               'Pending') ||
-            (status === ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
+            (status ===
+              Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
               'Consensus')
           }`
         );
@@ -235,6 +202,7 @@ export const NodeList = () => {
             if (a === b) return 0;
             return a > b ? 1 : -1;
           },
+          pinned: 'left',
         },
         {
           field: STATUS,
@@ -295,6 +263,7 @@ export const NodeList = () => {
         sortable: true,
         resizable: true,
         comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
+        cellStyle: { margin: '10px 0' },
       }),
       []
     );
@@ -332,7 +301,7 @@ export const NodeList = () => {
           overlayNoRowsTemplate={t('noValidators')}
           ref={ref}
           rowData={nodes}
-          rowHeight={32}
+          rowHeight={52}
           columnDefs={colDefs}
           defaultColDef={defaultColDef}
           animateRows={true}

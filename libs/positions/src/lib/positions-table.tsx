@@ -8,6 +8,8 @@ import type {
 import type {
   ValueProps as PriceCellProps,
   VegaValueFormatterParams,
+  VegaValueGetterParams,
+  TypedDataAgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { EmptyCell, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
@@ -15,6 +17,7 @@ import {
   addDecimalsFormatNumber,
   volumePrefix,
   t,
+  toBigNum,
   formatNumber,
   getDateTimeFormat,
   signedNumberCssClass,
@@ -22,24 +25,13 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
+import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { getRowId } from './use-positions-data';
 
-export const getRowId = ({ data }: { data: Position }) => data.marketId;
-
-export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
-  successCallback(rowsThisBlock: Position[], lastRow?: number): void;
-}
-
-export interface Datasource extends IDatasource {
-  getRows(params: GetRowsParams): void;
-}
-interface Props extends AgGridReactProps {
-  rowData?: Position[] | null;
-  datasource?: Datasource;
+interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
   style?: CSSProperties;
 }
@@ -143,6 +135,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         defaultColDef={{
           flex: 1,
           resizable: true,
+          sortable: true,
+          filter: true,
           tooltipComponent: TooltipCellComponent,
         }}
         components={{ AmountCell, PriceFlashCell, ProgressBarCell }}
@@ -171,14 +165,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="notional"
           type="rightAligned"
           cellClass="font-mono text-right"
-          valueFormatter={({
-            value,
+          filter="agNumberColumnFilter"
+          valueGetter={({
             data,
-          }: VegaValueFormatterParams<Position, 'notional'>): string => {
-            if (!value || !data) {
-              return '';
-            }
-            return addDecimalsFormatNumber(value, data.decimals);
+          }: VegaValueGetterParams<Position, 'notional'>) => {
+            return data?.notional === undefined
+              ? undefined
+              : toBigNum(data?.notional, data.decimals).toNumber();
+          }}
+          valueFormatter={({
+            data,
+          }: VegaValueFormatterParams<Position, 'notional'>) => {
+            return !data
+              ? undefined
+              : addDecimalsFormatNumber(data.notional, data.decimals);
           }}
         />
         <AgGridColumn
@@ -187,18 +187,27 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           cellClass="font-mono text-right"
           cellClassRules={signedNumberCssClassRules}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'openVolume'>) => {
+            return data?.openVolume === undefined
+              ? undefined
+              : toBigNum(data?.openVolume, data.decimals).toNumber();
+          }}
           valueFormatter={({
-            value,
             data,
           }: VegaValueFormatterParams<Position, 'openVolume'>):
             | string
             | undefined => {
-            if (!value || !data) {
-              return undefined;
-            }
-            return volumePrefix(
-              addDecimalsFormatNumber(value, data.positionDecimalPlaces)
-            );
+            return data?.openVolume === undefined
+              ? undefined
+              : volumePrefix(
+                  addDecimalsFormatNumber(
+                    data.openVolume,
+                    data.positionDecimalPlaces
+                  )
+                );
           }}
         />
         <AgGridColumn
@@ -212,12 +221,21 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
             };
           }}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'markPrice'>) => {
+            return !data ||
+              data.marketTradingMode ===
+                MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+              ? undefined
+              : toBigNum(data.markPrice, data.marketDecimalPlaces).toNumber();
+          }}
           valueFormatter={({
-            value,
             data,
             node,
           }: VegaValueFormatterParams<Position, 'markPrice'>) => {
-            if (!data || !value || node?.rowPinned) {
+            if (!data || node?.rowPinned) {
               return undefined;
             }
             if (
@@ -227,7 +245,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               return '-';
             }
             return addDecimalsFormatNumber(
-              value.toString(),
+              data.markPrice,
               data.marketDecimalPlaces
             );
           }}
@@ -244,17 +262,30 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
             };
           }}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'averageEntryPrice'>) => {
+            return data?.markPrice === undefined || !data
+              ? undefined
+              : toBigNum(
+                  data.averageEntryPrice,
+                  data.marketDecimalPlaces
+                ).toNumber();
+          }}
           valueFormatter={({
             data,
-            value,
             node,
           }: VegaValueFormatterParams<Position, 'averageEntryPrice'>):
             | string
             | undefined => {
-            if (!data || node?.rowPinned || !value) {
+            if (!data || node?.rowPinned) {
               return undefined;
             }
-            return addDecimalsFormatNumber(value, data.marketDecimalPlaces);
+            return addDecimalsFormatNumber(
+              data.averageEntryPrice,
+              data.marketDecimalPlaces
+            );
           }}
         />
         <AgGridColumn
@@ -264,6 +295,17 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerTooltip={t(
             'Liquidation prices are based on the amount of collateral you have available, the risk of your position and the liquidity on the order book. They can change rapidly based on the profit and loss of your positions and any changes to collateral from opening/closing other positions and making deposits/withdrawals.'
           )}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'liquidationPrice'>) => {
+            return !data
+              ? undefined
+              : toBigNum(
+                  data?.liquidationPrice,
+                  data.marketDecimalPlaces
+                ).toNumber();
+          }}
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
@@ -277,6 +319,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Leverage')}
           field="currentLeverage"
           type="rightAligned"
+          filter="agNumberColumnFilter"
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
@@ -294,6 +337,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Margin allocated')}
           field="marginAccountBalance"
           type="rightAligned"
+          filter="agNumberColumnFilter"
           cellRendererSelector={(
             params: ICellRendererParams
           ): CellRendererSelectorResult => {
@@ -301,17 +345,26 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
             };
           }}
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'marginAccountBalance'>) => {
+            return !data
+              ? undefined
+              : toBigNum(data.marginAccountBalance, data.decimals).toNumber();
+          }}
           valueFormatter={({
             data,
-            value,
             node,
           }: VegaValueFormatterParams<Position, 'marginAccountBalance'>):
             | string
             | undefined => {
-            if (!data || node?.rowPinned || !value) {
+            if (!data || node?.rowPinned) {
               return undefined;
             }
-            return formatNumber(value, data.decimals);
+            return addDecimalsFormatNumber(
+              data.marginAccountBalance,
+              data.decimals
+            );
           }}
         />
         <AgGridColumn
@@ -319,14 +372,21 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
-          valueFormatter={({
-            value,
+          filter="agNumberColumnFilter"
+          valueGetter={({
             data,
-          }: VegaValueFormatterParams<Position, 'realisedPNL'>) =>
-            value === undefined || data === undefined
+          }: VegaValueGetterParams<Position, 'realisedPNL'>) => {
+            return !data
               ? undefined
-              : addDecimalsFormatNumber(value.toString(), data.decimals)
-          }
+              : toBigNum(data.realisedPNL, data.decimals).toNumber();
+          }}
+          valueFormatter={({
+            data,
+          }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
+            return !data
+              ? undefined
+              : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
+          }}
           cellRenderer="PriceFlashCell"
           headerTooltip={t(
             'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
@@ -337,13 +397,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="unrealisedPNL"
           type="rightAligned"
           cellClassRules={signedNumberCssClassRules}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'unrealisedPNL'>) => {
+            return !data
+              ? undefined
+              : toBigNum(data.unrealisedPNL, data.decimals).toNumber();
+          }}
           valueFormatter={({
-            value,
             data,
           }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
-            value === undefined || data === undefined
+            !data
               ? undefined
-              : addDecimalsFormatNumber(value.toString(), data.decimals)
+              : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
           cellRenderer="PriceFlashCell"
           headerTooltip={t(
@@ -354,6 +421,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Updated')}
           field="updatedAt"
           type="rightAligned"
+          filter="agDateColumnFilter"
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<Position, 'updatedAt'>) => {

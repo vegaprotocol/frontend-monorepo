@@ -79,6 +79,7 @@ const MARKET_A: PartialMarket = {
       open: '10',
       close: '80',
       volume: '1000',
+      periodStart: '2022-11-01T15:49:00Z',
     },
     {
       __typename: 'Candle',
@@ -87,6 +88,7 @@ const MARKET_A: PartialMarket = {
       open: '1',
       close: '100',
       volume: '1000',
+      periodStart: '2022-11-01T15:50:00Z',
     },
   ],
 };
@@ -145,6 +147,7 @@ const MARKET_B: PartialMarket = {
       open: '10',
       close: '80',
       volume: '1000',
+      periodStart: '2022-11-01T15:49:00Z',
     },
   ],
 };

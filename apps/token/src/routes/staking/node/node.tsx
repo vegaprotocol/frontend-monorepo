@@ -13,6 +13,7 @@ import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import compact from 'lodash/compact';
 
 interface StakingNodeProps {
   data?: StakingQueryResult;
@@ -26,7 +27,9 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
   const nodeInfo = React.useMemo(() => {
-    return data?.nodes?.find(({ id }) => id === node);
+    return compact(data?.nodesConnection?.edges).find(
+      ({ node: { id } }) => id === node
+    )?.node;
   }, [node, data]);
 
   const currentEpoch = React.useMemo(() => {

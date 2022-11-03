@@ -3,11 +3,15 @@ import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
+import type { DealTicketErrorMessage } from './deal-ticket-error';
+import { DealTicketError } from './deal-ticket-error';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
+  errorMessage?: DealTicketErrorMessage;
 }
 
 type PossibleOrderKeys = Exclude<
@@ -22,6 +26,7 @@ export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
+  errorMessage,
 }: TimeInForceSelectorProps) => {
   const [prevValue, setPrevValue] = useState<PrevSelectedValue>({
     [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -59,6 +64,11 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
+      <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-force"
+        section={DEAL_TICKET_SECTION.FORCE}
+      />
     </FormGroup>
   );
 };
