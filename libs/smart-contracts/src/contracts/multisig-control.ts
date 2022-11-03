@@ -1,4 +1,4 @@
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 import abi from '../abis/multisig_abi.json';
 
 export class MultisigControl {
@@ -14,15 +14,11 @@ export class MultisigControl {
   }
 
   add_signer(newSigner: string, nonce: string, signatures: string) {
-    return this.contract.add_signer(
-      newSigner,
-      BigNumber.from(nonce),
-      signatures
-    );
+    return this.contract.add_signer(newSigner, nonce, signatures);
   }
 
   burn_nonce(nonce: string, signatures: string) {
-    return this.contract.burn_nonce(BigNumber.from(nonce), signatures);
+    return this.contract.burn_nonce(nonce, signatures);
   }
 
   get_current_threshold() {
@@ -42,19 +38,11 @@ export class MultisigControl {
   }
 
   remove_signer(oldSigner: string, nonce: string, signatures: string) {
-    return this.contract.remove_signer(
-      oldSigner,
-      BigNumber.from(nonce),
-      signatures
-    );
+    return this.contract.remove_signer(oldSigner, nonce, signatures);
   }
 
   set_threshold(newThreshold: string, nonce: string, signatures: string) {
-    return this.contract.set_threshold(
-      newThreshold,
-      BigNumber.from(nonce),
-      signatures
-    );
+    return this.contract.set_threshold(newThreshold, nonce, signatures);
   }
 
   signers(address: string) {
@@ -62,10 +50,6 @@ export class MultisigControl {
   }
 
   verify_signatures(nonce: string, message: string, signatures: string) {
-    return this.contract.verify_signatures(
-      BigNumber.from(nonce),
-      message,
-      signatures
-    );
+    return this.contract.verify_signatures(nonce, message, signatures);
   }
 }
