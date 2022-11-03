@@ -115,7 +115,7 @@ const headers: Column[] = [
   {
     kind: ColumnKind.ProductType,
     value: t('Type'),
-    className: `py-1 first:text-left hidden sm:table-cell`,
+    className: `py-2 text-left hidden sm:table-cell`,
     onlyOnDetailed: false,
   },
   {
@@ -241,7 +241,7 @@ export const columns = (
     {
       kind: ColumnKind.ProductType,
       value: market.tradableInstrument.instrument.product.__typename,
-      className: `${cellClassNames} hidden sm:table-cell`,
+      className: `py-2 text-left hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
@@ -422,7 +422,7 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.ProductType,
       value: market.tradableInstrument.instrument.product.__typename,
-      className: `${cellClassNames} hidden sm:table-cell`,
+      className: `py-2 first:text-left hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
