@@ -115,7 +115,7 @@ const headers: Column[] = [
   {
     kind: ColumnKind.ProductType,
     value: t('Type'),
-    className: `${cellClassNames} hidden sm:table-cell`,
+    className: `py-1 first:text-left hidden sm:table-cell`,
     onlyOnDetailed: false,
   },
   {
