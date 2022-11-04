@@ -86,6 +86,7 @@ export enum ColumnKind {
   LastPrice,
   Change24,
   Asset,
+  ProductType,
   Sparkline,
   High24,
   Low24,
@@ -109,6 +110,12 @@ const headers: Column[] = [
     kind: ColumnKind.Market,
     value: t('Market'),
     className: cellClassNames,
+    onlyOnDetailed: false,
+  },
+  {
+    kind: ColumnKind.ProductType,
+    value: t('Type'),
+    className: `py-2 text-left hidden sm:table-cell`,
     onlyOnDetailed: false,
   },
   {
@@ -229,6 +236,12 @@ export const columns = (
         </Link>
       ),
       className: cellClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      kind: ColumnKind.ProductType,
+      value: market.tradableInstrument.instrument.product.__typename,
+      className: `py-2 text-left hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
@@ -404,6 +417,12 @@ export const columnsPositionMarkets = (
         </Link>
       ),
       className: cellClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      kind: ColumnKind.ProductType,
+      value: market.tradableInstrument.instrument.product.__typename,
+      className: `py-2 first:text-left hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {

@@ -7,7 +7,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountManager } from '@vegaprotocol/accounts';
-import { DepositDialog } from './deposits-container';
+import { DepositDialog } from '@vegaprotocol/deposits';
 
 export const AccountsContainer = () => {
   const { pubKey } = useVegaWallet();

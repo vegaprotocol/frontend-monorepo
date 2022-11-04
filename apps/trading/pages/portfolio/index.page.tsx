@@ -12,6 +12,7 @@ import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from './accounts-container';
+import { LedgerContainer } from '@vegaprotocol/ledger';
 
 const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -21,7 +22,6 @@ const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
   const wrapperClasses = 'h-full max-h-full flex flex-col';
-  const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
       <ResizableGrid vertical={true}>
@@ -35,22 +35,17 @@ const Portfolio = () => {
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <div className={tabContentClassName}>
-                    <h4 className="text-xl p-4">{t('Orders')}</h4>
-                    <div>
-                      <OrderListContainer />
-                    </div>
-                  </div>
+                  <OrderListContainer />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <div className={tabContentClassName}>
-                    <h4 className="text-xl p-4">{t('Fills')}</h4>
-                    <div>
-                      <FillsContainer />
-                    </div>
-                  </div>
+                  <FillsContainer />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="ledger-entries" name={t('Ledger entries')}>
+                <VegaWalletContainer>
+                  <LedgerContainer />
                 </VegaWalletContainer>
               </Tab>
             </Tabs>

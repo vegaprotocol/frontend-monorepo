@@ -1,10 +1,11 @@
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
+import { DEAL_TICKET_SECTION } from '../constants';
+import { DealTicketError } from './deal-ticket-error';
+
+import type { DealTicketErrorMessage } from './deal-ticket-error';
 interface Props {
   transactionStatus: 'default' | 'pending';
   isDisabled: boolean;

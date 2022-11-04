@@ -74,21 +74,23 @@ function App() {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <Web3Provider connectors={Connectors}>
-        <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
-          <div className={pageWrapperClasses}>
-            <AsyncRenderer loading={loading} data={config} error={error}>
-              <Header theme={theme} toggleTheme={toggleTheme} />
-              <EthWalletContainer
-                dialogOpen={dialogOpen}
-                setDialogOpen={setDialogOpen}
-              >
-                <ConnectedApp config={config} />
-              </EthWalletContainer>
-            </AsyncRenderer>
-          </div>
-        </Web3Connector>
-      </Web3Provider>
+      <AsyncRenderer loading={loading} data={config} error={error}>
+        <Web3Provider connectors={Connectors}>
+          <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
+            <EthWalletContainer
+              dialogOpen={dialogOpen}
+              setDialogOpen={setDialogOpen}
+            >
+              <ContractsProvider>
+                <div className={pageWrapperClasses}>
+                  <Header theme={theme} toggleTheme={toggleTheme} />
+                  <ConnectedApp config={config} />
+                </div>
+              </ContractsProvider>
+            </EthWalletContainer>
+          </Web3Connector>
+        </Web3Provider>
+      </AsyncRenderer>
     </ThemeContext.Provider>
   );
 }
@@ -97,9 +99,7 @@ const Wrapper = () => {
   return (
     <EnvironmentProvider>
       <NetworkLoader createClient={createClient}>
-        <ContractsProvider>
-          <App />
-        </ContractsProvider>
+        <App />
       </NetworkLoader>
     </EnvironmentProvider>
   );

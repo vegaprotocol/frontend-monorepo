@@ -70,6 +70,7 @@ it('Ethereum transaction flow', async () => {
       dialogOpen: false,
     },
     Dialog: expect.any(Function),
+    TxContent: expect.any(Object),
     setConfirmed: expect.any(Function),
     perform: expect.any(Function),
     reset: expect.any(Function),

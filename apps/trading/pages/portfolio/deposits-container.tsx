@@ -1,5 +1,5 @@
-import { AsyncRenderer, Button, Dialog } from '@vegaprotocol/ui-toolkit';
-import { DepositContainer, DepositsTable } from '@vegaprotocol/deposits';
+import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
+import { DepositDialog, DepositsTable } from '@vegaprotocol/deposits';
 import { useDeposits } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
 import { useState } from 'react';
@@ -26,28 +26,9 @@ export const DepositsContainer = () => {
       />
       <div className="w-full dark:bg-black bg-white absolute bottom-0 h-auto flex justify-end px-[11px] py-2">
         <Button size="sm" onClick={() => setDepositDialog(true)}>
-          Deposit
+          {t('Deposit')}
         </Button>
       </div>
     </div>
-  );
-};
-
-export interface DepositDialogProps {
-  assetId?: string;
-  depositDialog: boolean;
-  setDepositDialog: (open: boolean) => void;
-}
-
-export const DepositDialog = ({
-  assetId,
-  depositDialog,
-  setDepositDialog,
-}: DepositDialogProps) => {
-  return (
-    <Dialog open={depositDialog} onChange={setDepositDialog}>
-      <h1 className="text-2xl mb-4">{t('Deposit')}</h1>
-      <DepositContainer assetId={assetId} />
-    </Dialog>
   );
 };

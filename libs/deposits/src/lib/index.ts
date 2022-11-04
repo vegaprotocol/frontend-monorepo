@@ -14,3 +14,4 @@ export * from './use-get-deposited-amount';
 export * from './use-submit-approval';
 export * from './use-submit-deposit';
 export * from './use-submit-faucet';
+export * from './deposit-dialog';
