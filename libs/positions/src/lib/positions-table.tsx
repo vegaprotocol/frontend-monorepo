@@ -137,6 +137,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           resizable: true,
           sortable: true,
           filter: true,
+          filterParams: { buttons: ['reset'] },
           tooltipComponent: TooltipCellComponent,
         }}
         components={{ AmountCell, PriceFlashCell, ProgressBarCell }}

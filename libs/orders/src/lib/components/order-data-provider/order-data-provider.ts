@@ -1,6 +1,7 @@
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
+import type { OperationVariables } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -15,6 +16,7 @@ import type {
   OrderFieldsFragment,
   OrdersQuery,
   OrdersUpdateSubscription,
+  OrdersQueryVariables,
 } from './__generated___/orders';
 import { OrdersDocument, OrdersUpdateDocument } from './__generated___/orders';
 
@@ -24,7 +26,7 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 export type OrderEdge = Edge<Order>;
 
 const getData = (responseData: OrdersQuery) =>
-  responseData?.party?.ordersConnection?.edges || null;
+  responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
   subscriptionData.orders || [];
@@ -34,7 +36,8 @@ const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
 
 export const update = (
   data: ReturnType<typeof getData>,
-  delta: ReturnType<typeof getDelta>
+  delta: ReturnType<typeof getDelta>,
+  variables: OrdersQueryVariables
 ) => {
   if (!data) {
     return data;

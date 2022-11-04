@@ -7,6 +7,7 @@ import {
   positiveClassNames,
   t,
   truncateByChars,
+  SetFilter,
 } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,
@@ -155,7 +156,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
       <AgGrid
         ref={ref}
         overlayNoRowsTemplate="No orders"
-        defaultColDef={{ flex: 1, resizable: true }}
+        defaultColDef={{
+          flex: 1,
+          resizable: true,
+          filterParams: { buttons: ['reset'] },
+        }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
         rowHeight={34}
@@ -165,6 +170,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
+          sortable
+          filter
           cellRenderer={({
             value,
             data,
@@ -216,6 +223,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="type"
+          sortable
+          filter={SetFilter}
+          filterParams={{
+            set: OrderTypeMapping,
+          }}
           valueFormatter={({
             data: order,
             value,
@@ -232,6 +244,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="status"
+          sortable
+          filter={SetFilter}
+          filterParams={{
+            set: OrderStatusMapping,
+          }}
           valueFormatter={({
             value,
             data,
@@ -295,6 +312,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="timeInForce"
+          sortable
+          filter={SetFilter}
+          filterParams={{
+            set: OrderTimeInForceMapping,
+          }}
           valueFormatter={({
             value,
             data,
@@ -322,6 +344,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="updatedAt"
+          sortable
+          filter="agDateColumnFilter"
           valueFormatter={({
             value,
             node,

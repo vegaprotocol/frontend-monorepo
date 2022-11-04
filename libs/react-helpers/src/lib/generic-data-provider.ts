@@ -2,7 +2,6 @@ import type {
   ApolloClient,
   DocumentNode,
   FetchPolicy,
-  TypedDocumentNode,
   OperationVariables,
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
@@ -65,8 +64,13 @@ export interface Subscribe<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
-export interface Update<Data, Delta> {
-  (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
+export interface Update<Data, Delta, Variables> {
+  (
+    data: Data,
+    delta: Delta,
+    reload: (forceReset?: boolean) => void,
+    variables?: Variables
+  ): Data;
 }
 
 export interface Append<Data> {
@@ -82,8 +86,8 @@ export interface Append<Data> {
   };
 }
 
-interface GetData<QueryData, Data> {
-  (queryData: QueryData, variables?: OperationVariables): Data | null;
+interface GetData<QueryData, Data, Variables> {
+  (queryData: QueryData, variables?: Variables): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
@@ -94,8 +98,8 @@ interface GetTotalCount<QueryData> {
   (queryData: QueryData): number | undefined;
 }
 
-interface GetDelta<SubscriptionData, Delta> {
-  (subscriptionData: SubscriptionData, variables?: OperationVariables): Delta;
+interface GetDelta<SubscriptionData, Delta, Variables> {
+  (subscriptionData: SubscriptionData, variables?: Variables): Delta;
 }
 
 export type Node = { id: string };
@@ -146,12 +150,18 @@ export function defaultAppend<Data>(
   return { data, totalCount };
 }
 
-interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
+interface DataProviderParams<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta,
+  Variables
+> {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;
-  update?: Update<Data, Delta>;
-  getData: GetData<QueryData, Data>;
-  getDelta?: GetDelta<SubscriptionData, Delta>;
+  update?: Update<Data, Delta, Variables>;
+  getData: GetData<QueryData, Data, Variables>;
+  getDelta?: GetDelta<SubscriptionData, Delta, Variables>;
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount?: GetTotalCount<QueryData>;
@@ -185,18 +195,20 @@ function makeDataProviderInternal<
   pagination,
   fetchPolicy,
   resetDelay,
-}: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
+}: DataProviderParams<
+  QueryData,
   Data,
+  SubscriptionData,
   Delta,
   Variables
-> {
+>): Subscribe<Data, Delta, Variables> {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
   let resetTimer: ReturnType<typeof setTimeout>;
-  let variables: OperationVariables | undefined;
+  let variables: Variables | undefined;
   let data: Data | null = null;
   let error: Error | undefined;
   let loading = true;
@@ -317,7 +329,7 @@ function makeDataProviderInternal<
         while (updateQueue.length) {
           const delta = updateQueue.shift();
           if (delta) {
-            data = update(data, delta, reload);
+            data = update(data, delta, reload, variables);
           }
         }
       }
@@ -380,7 +392,7 @@ function makeDataProviderInternal<
             if (loading || !data) {
               updateQueue.push(delta);
             } else {
-              const updatedData = update(data, delta, reload);
+              const updatedData = update(data, delta, reload, variables);
               if (updatedData === data) {
                 return;
               }
@@ -503,9 +515,15 @@ export function makeDataProvider<
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  params: DataProviderParams<QueryData, Data, SubscriptionData, Delta>
+  params: DataProviderParams<
+    QueryData,
+    Data,
+    SubscriptionData,
+    Delta,
+    Variables
+  >
 ): Subscribe<Data, Delta, Variables> {
-  const getInstance = memoize<Data, Delta>(() =>
+  const getInstance = memoize<Data, Delta, Variables>(() =>
     makeDataProviderInternal(params)
   );
   return (callback, client, variables) =>

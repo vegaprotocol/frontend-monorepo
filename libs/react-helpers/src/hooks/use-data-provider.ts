@@ -21,7 +21,14 @@ interface useDataProviderParams<
   Variables extends OperationVariables = OperationVariables
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({ delta, data }: { delta?: Delta; data: Data }) => boolean;
+  update?: ({
+    delta,
+    data,
+  }: {
+    delta?: Delta;
+    data: Data;
+    variables?: Variables;
+  }) => boolean;
   insert?: ({
     insertionData,
     data,
@@ -104,7 +111,7 @@ export const useDataProvider = <
             !noUpdate &&
             update &&
             hasDelta<Delta>(arg) &&
-            update({ delta: arg.delta, data })
+            update({ delta: arg.delta, data, variables })
           ) {
             return;
           }
@@ -124,7 +131,7 @@ export const useDataProvider = <
         initialized.current = true;
       }
     },
-    [update, insert, noUpdate, updateOnInit]
+    [update, insert, noUpdate, updateOnInit, variables]
   );
   useEffect(() => {
     if (skip) {
