@@ -1,0 +1,26 @@
+fragment LedgerEntry on AggregatedLedgerEntries {
+  vegaTime
+  quantity
+  partyId
+  assetId
+  marketId
+  accountType
+  transferType
+}
+
+query LedgerEntries($partyId: ID!) {
+  ledgerEntries(
+    filter: { AccountFromFilter: { partyIds: [$partyId] } }
+    groupOptions: {
+      ByAccountField: [PartyId, AccountType, AssetId, MarketId]
+      ByLedgerEntryField: [TransferType]
+    }
+    pagination: { first: 500 }
+  ) {
+    edges {
+      node {
+        ...LedgerEntry
+      }
+    }
+  }
+}
