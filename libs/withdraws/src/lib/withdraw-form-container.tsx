@@ -5,6 +5,7 @@ import { accountsOnlyDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
 import { useMemo } from 'react';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
@@ -37,6 +38,7 @@ export const WithdrawFormContainer = ({
       loading={loading && assetsLoading}
       error={error && assetsError}
       data={data}
+      noDataMessage={t('You have no assets to withdraw')}
     >
       {assets && data && (
         <WithdrawManager
