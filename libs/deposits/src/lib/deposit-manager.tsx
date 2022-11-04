@@ -7,11 +7,17 @@ import { useDepositStore } from './deposit-store';
 import { useCallback, useEffect } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
+import type { DepositDialogStylePropsSetter } from './deposit-dialog';
+import pick from 'lodash/pick';
+import type { EthTransaction } from '@vegaprotocol/web3';
+import { EthTxStatus } from '@vegaprotocol/web3';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface DepositManagerProps {
   assetId?: string;
   assets: Asset[];
   isFaucetable: boolean;
+  setDialogStyleProps?: DepositDialogStylePropsSetter;
 }
 
 const useDepositAsset = (assets: Asset[], assetId?: string) => {
@@ -33,10 +39,14 @@ const useDepositAsset = (assets: Asset[], assetId?: string) => {
   return { asset, balance, allowance, deposited, max, handleSelectAsset };
 };
 
+const getProps = (txContent?: EthTransaction['TxContent']) =>
+  txContent ? pick(txContent, ['title', 'icon', 'intent']) : undefined;
+
 export const DepositManager = ({
   assetId,
   assets,
   isFaucetable,
+  setDialogStyleProps,
 }: DepositManagerProps) => {
   const { asset, balance, allowance, deposited, max, handleSelectAsset } =
     useDepositAsset(assets, assetId);
@@ -52,24 +62,39 @@ export const DepositManager = ({
   // Set up faucet transaction
   const faucet = useSubmitFaucet();
 
+  const transactionInProgress = [
+    approve.TxContent,
+    deposit.TxContent,
+    faucet.TxContent,
+  ].filter((t) => t.status !== EthTxStatus.Default)[0];
+
+  useEffect(() => {
+    setDialogStyleProps?.(getProps(transactionInProgress));
+  }, [setDialogStyleProps, transactionInProgress]);
+
+  const returnLabel = t('Return to deposit');
+
   return (
     <>
-      <DepositForm
-        balance={balance}
-        selectedAsset={asset}
-        onSelectAsset={handleSelectAsset}
-        assets={sortBy(assets, 'name')}
-        submitApprove={() => approve.perform()}
-        submitDeposit={(args) => deposit.perform(args)}
-        requestFaucet={() => faucet.perform()}
-        deposited={deposited}
-        max={max}
-        allowance={allowance}
-        isFaucetable={isFaucetable}
-      />
-      <approve.Dialog />
-      <faucet.Dialog />
-      <deposit.Dialog />
+      {!transactionInProgress && (
+        <DepositForm
+          balance={balance}
+          selectedAsset={asset}
+          onSelectAsset={handleSelectAsset}
+          assets={sortBy(assets, 'name')}
+          submitApprove={() => approve.perform()}
+          submitDeposit={(args) => deposit.perform(args)}
+          requestFaucet={() => faucet.perform()}
+          deposited={deposited}
+          max={max}
+          allowance={allowance}
+          isFaucetable={isFaucetable}
+        />
+      )}
+
+      <approve.TxContent.Content returnLabel={returnLabel} />
+      <faucet.TxContent.Content returnLabel={returnLabel} />
+      <deposit.TxContent.Content returnLabel={returnLabel} />
     </>
   );
 };
