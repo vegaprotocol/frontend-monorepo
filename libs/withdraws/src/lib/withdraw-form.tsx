@@ -133,6 +133,16 @@ export const WithdrawForm = ({
           label={t('To (Ethereum address)')}
           labelFor="ethereum-address"
         >
+          {address && (
+            <UseButton
+              onClick={() => {
+                setValue('to', address);
+                clearErrors('to');
+              }}
+            >
+              {t('Use connected')}
+            </UseButton>
+          )}
           <Input
             id="ethereum-address"
             data-testid="eth-address-input"
