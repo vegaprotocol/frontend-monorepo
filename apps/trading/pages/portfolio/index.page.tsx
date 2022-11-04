@@ -5,7 +5,7 @@ import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
@@ -24,7 +24,7 @@ const Portfolio = () => {
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
-      <ResizableGrid vertical={true}>
+      <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs>
@@ -83,7 +83,7 @@ Portfolio.getInitialProps = () => ({
   page: 'portfolio',
 });
 
-export default Portfolio;
+export default memo(Portfolio);
 
 interface PortfolioGridChildProps {
   children: ReactNode;
