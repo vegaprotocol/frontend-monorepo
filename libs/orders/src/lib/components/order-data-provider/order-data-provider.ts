@@ -1,7 +1,6 @@
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
-import type { OperationVariables } from '@apollo/client';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -37,7 +36,8 @@ const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
 export const update = (
   data: ReturnType<typeof getData>,
   delta: ReturnType<typeof getDelta>,
-  variables: OrdersQueryVariables
+  reload: () => void,
+  variables?: OrdersQueryVariables
 ) => {
   if (!data) {
     return data;
@@ -106,7 +106,8 @@ export const ordersProvider = makeDataProvider({
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
   (OrderEdge | null)[],
-  Order[]
+  Order[],
+  OrdersQueryVariables
 >(
   [ordersProvider, marketsProvider],
   (partsData): OrderEdge[] =>
