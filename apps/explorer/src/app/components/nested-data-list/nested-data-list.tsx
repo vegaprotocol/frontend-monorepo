@@ -7,13 +7,12 @@ import { IconNames } from '@blueprintjs/icons';
 import { VegaColours } from '@vegaprotocol/tailwindcss-config';
 import isArray from 'lodash/isArray';
 
+export type UnknownObject = Record<string, unknown>;
+export type UnknownArray = unknown[];
+
 interface NestedDataListProps {
-  data: {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    [key: string]: any;
-  };
-  index?: number;
+  data: UnknownObject | UnknownArray;
+  level?: number;
 }
 
 interface NestedDataListItemProps {
@@ -125,21 +124,25 @@ const NestedDataListItem = ({
       </div>
       {hasChildren && (
         <div aria-hidden={isCollapsed} className={isCollapsed ? 'hidden' : ''}>
-          <NestedDataList index={index + 1} data={value} />
+          <NestedDataList
+            data={value as UnknownObject | UnknownArray}
+            level={index + 1}
+          />
         </div>
       )}
     </li>
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const sortNestedDataByChildren = (data: { [key: string]: any }) =>
+export const sortNestedDataByChildren = (data: UnknownObject | UnknownArray) =>
   Object.keys(data)
     .filter((key) => key)
     .sort((a, b) => {
-      const hasChildrenA = isObject(data[a]) && !!Object.keys(data[a]).length;
-      const hasChildrenB = isObject(data[b]) && !!Object.keys(data[b]).length;
+      const isArr = isArray(data);
+      const valA = isArr ? data[+a] : data[a];
+      const valB = isArr ? data[+b] : data[b];
+      const hasChildrenA = isObject(valA) && !!Object.keys(valA).length;
+      const hasChildrenB = isObject(valB) && !!Object.keys(valB).length;
 
       if (hasChildrenA && !hasChildrenB) {
         return 1;
@@ -152,19 +155,24 @@ export const sortNestedDataByChildren = (data: { [key: string]: any }) =>
       return 0;
     });
 
-export const NestedDataList = ({ data, index = 0 }: NestedDataListProps) => {
-  const nestedItems = useMemo(
-    () =>
-      sortNestedDataByChildren(data).map((key) => (
+export const NestedDataList = ({ data, level = 0 }: NestedDataListProps) => {
+  const nestedItems = useMemo(() => {
+    const sortedData = sortNestedDataByChildren(data);
+    const isArr = isArray(data);
+
+    if (sortedData.length) {
+      return sortedData.map((key) => (
         <NestedDataListItem
           key={key}
           label={key}
-          value={data[key]}
-          index={index}
+          value={isArr ? data[Number(key)] : data[key]}
+          index={level}
         />
-      )),
-    [data, index]
-  );
+      ));
+    }
+
+    return null;
+  }, [data, level]);
 
   return <ul className="list-none">{nestedItems}</ul>;
 };
