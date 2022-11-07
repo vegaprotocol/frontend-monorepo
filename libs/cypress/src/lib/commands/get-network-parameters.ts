@@ -11,7 +11,8 @@ declare global {
 export function addGetNetworkParameters() {
   // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('get_network_parameters', () => {
-    const mutation = `{
+    const mutation = `
+  {
     networkParametersConnection {
       edges {
         node {
@@ -19,7 +20,8 @@ export function addGetNetworkParameters() {
           value
         }
       }
-    }`;
+    }
+  }`;
     cy.request({
       method: 'POST',
       url: `http://localhost:3028/query`,
