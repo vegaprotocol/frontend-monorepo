@@ -112,7 +112,7 @@ const Wrapper = () => {
   };
   return (
     <EnvironmentProvider>
-      <NetworkLoader createClient={createClient}>
+      <NetworkLoader cache={cache}>
         <ContractsProvider>
           <App />
         </ContractsProvider>
