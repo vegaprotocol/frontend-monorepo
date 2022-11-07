@@ -216,7 +216,7 @@ context('Validator page', { tags: '@smoke' }, function () {
       const whiteThemeSelectedMenuOptionColor = 'rgb(255, 7, 127)';
       const whiteThemeJsonFieldBackColor = 'rgb(255, 255, 255)';
       const whiteThemeSideMenuBackgroundColor = 'rgb(255, 255, 255)';
-      const darkThemeSelectedMenuOptionColor = 'rgb(223, 255, 11)';
+      const darkThemeSelectedMenuOptionColor = 'rgb(215, 251, 80)';
       const darkThemeJsonFieldBackColor = 'rgb(38, 38, 38)';
       const darkThemeSideMenuBackgroundColor = 'rgb(0, 0, 0)';
       const themeSwitcher = '[data-testid="theme-switcher"]';
