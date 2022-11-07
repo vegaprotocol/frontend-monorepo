@@ -6,7 +6,7 @@ import {
   Intent,
   Link as UTLink,
 } from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../../config';
+import { ExternalLinks as Links } from '@vegaprotocol/react-helpers';
 
 export const StakingIntro = () => {
   const { t } = useTranslation();

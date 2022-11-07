@@ -1,5 +1,5 @@
 import capitalize from 'lodash/capitalize';
-import { t } from '@vegaprotocol/react-helpers';
+import { ExternalLinks, t } from '@vegaprotocol/react-helpers';
 import {
   ButtonLink,
   Cross,
@@ -14,7 +14,6 @@ import { ClientErrors } from '../connectors';
 import type { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
-import { VEGA_WALLET_CONCEPTS_URL } from '../constants';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -186,7 +185,7 @@ const Error = ({
         <>
           {capitalize(error.data)}
           {'. '}
-          <Link href={VEGA_WALLET_CONCEPTS_URL}>
+          <Link href={ExternalLinks.VEGA_WALLET_CONCEPTS_URL}>
             {t('Read the docs to troubleshoot')}
           </Link>
         </>

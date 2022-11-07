@@ -8,7 +8,7 @@ import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
-import { Links } from '../../../../config';
+import { ExternalLinks as Links } from '@vegaprotocol/react-helpers';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
