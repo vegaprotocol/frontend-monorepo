@@ -5,7 +5,7 @@ import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
@@ -83,7 +83,7 @@ Portfolio.getInitialProps = () => ({
   page: 'portfolio',
 });
 
-export default memo(Portfolio);
+export default Portfolio;
 
 interface PortfolioGridChildProps {
   children: ReactNode;
