@@ -302,7 +302,7 @@
   "stakingHasAssociated": "You have {{tokens}} $VEGA tokens associated.",
   "stakingAssociateMoreButton": "Associate more $VEGA tokens with wallet",
   "stakingDisassociateButton": "Disassociate $VEGA tokens from wallet",
-  "stakingConfirm": "Open you wallet app to confirm",
+  "stakingConfirm": "Open your wallet app to confirm",
   "associateButton": "Associate $VEGA tokens with wallet",
   "nodeQueryFailed": "Could not get data for validator {{node}}",
   "stakeAddPendingTitle": "Adding {{amount}} $VEGA to validator {{node}}",

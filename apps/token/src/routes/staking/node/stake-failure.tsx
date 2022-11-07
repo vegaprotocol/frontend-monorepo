@@ -1,4 +1,4 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 interface StakeFailureProps {
@@ -8,12 +8,16 @@ interface StakeFailureProps {
 export const StakeFailure = ({ nodeName }: StakeFailureProps) => {
   const { t } = useTranslation();
   return (
-    <Callout intent={Intent.Danger} title={t('Something went wrong')}>
+    <Dialog
+      intent={Intent.Danger}
+      title={t('Something went wrong')}
+      open={true}
+    >
       <p>
         {t('stakeFailed', {
           node: nodeName,
         })}
       </p>
-    </Callout>
+    </Dialog>
   );
 };

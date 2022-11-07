@@ -39,12 +39,11 @@ export const VoteDetails = ({
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
-  const { voteState, voteDatetime, castVote } = useUserVote(
+  const { voteState, voteDatetime } = useUserVote(
     proposal.id,
     proposal.votes.yes.votes,
     proposal.votes.no.votes
   );
-
   const defaultDecimals = 2;
 
   return (
@@ -164,9 +163,9 @@ export const VoteDetails = ({
             <h3 className="text-xl mb-2">{t('yourVote')}</h3>
             <VoteButtonsContainer
               voteState={voteState}
-              castVote={castVote}
               voteDatetime={voteDatetime}
               proposalState={proposal.state}
+              proposalId={proposal.id}
               minVoterBalance={minVoterBalance}
               spamProtectionMinTokens={spamProtectionMinTokens}
               className="flex"
