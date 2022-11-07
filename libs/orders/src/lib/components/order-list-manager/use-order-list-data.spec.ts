@@ -94,8 +94,9 @@ describe('useOrderListData Hook', () => {
       addNewRows: expect.any(Function),
       getRows: expect.any(Function),
     });
+    updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).not.toHaveBeenCalled();
-    updateMock({ data: [], delta: [] });
+    updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
   });
 
@@ -147,6 +148,10 @@ describe('useOrderListData Hook', () => {
       startRow: 2,
       endRow: 4,
     } as unknown as IGetRowsParams;
+
+    await waitFor(async () => {
+      updateMock({ data: mockData });
+    });
 
     await waitFor(async () => {
       const promise = result.current.getRows(getRowsParams);
