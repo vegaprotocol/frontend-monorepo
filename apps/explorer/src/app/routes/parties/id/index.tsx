@@ -9,16 +9,10 @@ import {
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
-import {
-  CopyWithTooltip,
-  Icon,
-  SyntaxHighlighter,
-  AsyncRenderer,
-} from '@vegaprotocol/ui-toolkit';
+import { SyntaxHighlighter, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
-import { TruncateInline } from '../../../components/truncate/truncate';
 import { DATA_SOURCES } from '../../../config';
 import type {
   PartyAssetsQuery,
@@ -27,6 +21,7 @@ import type {
 import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
+import { PageHeader } from '../../../components/page-header';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -91,19 +86,12 @@ const Party = () => {
   );
 
   const header = data?.party?.id ? (
-    <header className="flex items-center gap-x-4">
-      <TruncateInline
-        text={data.party.id}
-        startChars={visibleChars}
-        endChars={visibleChars}
-        className="text-4xl xl:text-5xl uppercase font-alpha"
-      />
-      <CopyWithTooltip text={data.party.id}>
-        <button className="bg-zinc-100 dark:bg-zinc-900 rounded-sm py-2 px-3">
-          <Icon name="duplicate" className="" />
-        </button>
-      </CopyWithTooltip>
-    </header>
+    <PageHeader
+      title={data.party.id}
+      copy
+      truncateStart={visibleChars}
+      truncateEnd={visibleChars}
+    />
   ) : (
     <Panel>
       <p>No party found for key {party}</p>

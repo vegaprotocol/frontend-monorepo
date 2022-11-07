@@ -1,0 +1,17 @@
+query NetworkParams {
+  networkParametersConnection {
+    edges {
+      node {
+        key
+        value
+      }
+    }
+  }
+}
+
+query NetworkParam($key: String!) {
+  networkParameter(key: $key) {
+    key
+    value
+  }
+}

@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
+import { Button, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { isEthereumError } from '../ethereum-error';
 import type { EthTxState, TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
@@ -39,7 +39,44 @@ export const EthereumTransactionDialog = ({
   );
 };
 
-export const TransactionContent = ({
+export const getTransactionContent = ({
+  title,
+  transaction,
+  requiredConfirmations,
+  reset,
+}: {
+  title: string;
+  transaction: EthTxState;
+  requiredConfirmations?: number;
+  reset: () => void;
+}) => {
+  const { status, error, confirmations, txHash } = transaction;
+  const content = ({ returnLabel }: { returnLabel?: string }) => (
+    <>
+      {status !== EthTxStatus.Default && (
+        <TransactionContent
+          status={status}
+          error={error}
+          txHash={txHash}
+          confirmations={confirmations}
+          requiredConfirmations={requiredConfirmations}
+        />
+      )}
+      {(status === EthTxStatus.Confirmed || status === EthTxStatus.Error) && (
+        <Button size="sm" className="mt-2" onClick={reset}>
+          {returnLabel ? returnLabel : t('Return')}
+        </Button>
+      )}
+    </>
+  );
+  return {
+    ...getWrapperProps(title, status),
+    status,
+    Content: content,
+  };
+};
+
+const TransactionContent = ({
   status,
   error,
   txHash,
@@ -83,11 +120,15 @@ export const TransactionContent = ({
   );
 };
 
-export const getWrapperProps = (title: string, status: EthTxStatus) => {
+type WrapperProps = { title: string; icon?: JSX.Element; intent?: Intent };
+export const getWrapperProps = (
+  title: string,
+  status: EthTxStatus
+): WrapperProps => {
   const propsMap = {
     [EthTxStatus.Default]: {
       title: '',
-      icon: null,
+      icon: undefined,
       intent: undefined,
     },
     [EthTxStatus.Error]: {

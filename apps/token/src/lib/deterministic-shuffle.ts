@@ -1,5 +1,5 @@
 // creates a random number generator function.
-function createRandomGenerator(seed: number) {
+export function createRandomGenerator(seed: number) {
   const a = 5486230734; // some big numbers
   const b = 6908969830;
   const m = 9853205067;
@@ -13,7 +13,7 @@ function createRandomGenerator(seed: number) {
 }
 
 // function creates a 32bit hash of a string
-function stringTo32BitHash(str: string) {
+export function stringTo32BitHash(str: string) {
   let v = 0;
   for (let i = 0; i < str.length; i += 1) {
     v += str.charCodeAt(i) << i % 24;

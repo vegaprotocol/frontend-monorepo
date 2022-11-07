@@ -12,6 +12,7 @@ import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from './accounts-container';
+import { LedgerContainer } from '@vegaprotocol/ledger';
 
 const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -23,7 +24,7 @@ const Portfolio = () => {
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
-      <ResizableGrid vertical={true}>
+      <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs>
@@ -40,6 +41,11 @@ const Portfolio = () => {
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <FillsContainer />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="ledger-entries" name={t('Ledger entries')}>
+                <VegaWalletContainer>
+                  <LedgerContainer />
                 </VegaWalletContainer>
               </Tab>
             </Tabs>

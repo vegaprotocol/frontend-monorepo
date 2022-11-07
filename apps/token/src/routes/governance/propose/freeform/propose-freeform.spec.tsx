@@ -5,9 +5,9 @@ import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MemoryRouter as Router } from 'react-router-dom';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import type { MockedResponse } from '@apollo/client/testing';
-import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
@@ -17,42 +17,56 @@ jest.mock('@vegaprotocol/environment', () => ({
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMETERS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.maxClose',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.maxEnact',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minClose',
-          value: '1h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minEnact',
-          value: '2h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.freeform.minProposerBalance',
-          value: '1',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'spam.protection.proposal.min.tokens',
-          value: '1000000000000000000',
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.maxClose',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.maxEnact',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minClose',
+              value: '1h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minEnact',
+              value: '2h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.freeform.minProposerBalance',
+              value: '1',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'spam.protection.proposal.min.tokens',
+              value: '1000000000000000000',
+            },
+          },
+        ],
+      },
     },
   },
 };

@@ -302,7 +302,7 @@
   "stakingHasAssociated": "You have {{tokens}} $VEGA tokens associated.",
   "stakingAssociateMoreButton": "Associate more $VEGA tokens with wallet",
   "stakingDisassociateButton": "Disassociate $VEGA tokens from wallet",
-  "stakingConfirm": "Open you wallet app to confirm",
+  "stakingConfirm": "Open your wallet app to confirm",
   "associateButton": "Associate $VEGA tokens with wallet",
   "nodeQueryFailed": "Could not get data for validator {{node}}",
   "stakeAddPendingTitle": "Adding {{amount}} $VEGA to validator {{node}}",
@@ -704,5 +704,8 @@
   "votingEnded": "Voting has ended.",
   "STATUS": "STATUS",
   "ProposalMinimumAmounts": "Different proposal types can have different minimum token requirements. You must have the greater of the proposal minimum or spam protection minimum from the table below",
-  "SpamProtectionMin": "Spam protection minimum"
+  "SpamProtectionMin": "Spam protection minimum",
+  "ListAsset": "List Asset",
+  "ListAssetDescription": "This asset needs to be listed on the collateral bridge before it can be used.",
+  "ListAssetAction": "List asset"
 }

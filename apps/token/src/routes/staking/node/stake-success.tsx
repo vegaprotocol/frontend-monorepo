@@ -1,4 +1,4 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Routes from '../../routes';
@@ -30,7 +30,12 @@ export const StakeSuccess = ({
     : t('stakeRemoveNowSuccessMessage');
 
   return (
-    <Callout iconName="tick" intent={Intent.Success} title={title}>
+    <Dialog
+      icon={<Icon name="tick" />}
+      intent={Intent.Success}
+      title={title}
+      open={true}
+    >
       <div>
         <p>{message}</p>
         <p>
@@ -39,6 +44,6 @@ export const StakeSuccess = ({
           </Link>
         </p>
       </div>
-    </Callout>
+    </Dialog>
   );
 };

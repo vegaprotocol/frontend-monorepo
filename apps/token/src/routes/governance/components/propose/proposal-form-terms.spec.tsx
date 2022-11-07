@@ -28,20 +28,13 @@ describe('Proposal Form Terms', () => {
     expect(screen.getByText('Error text')).toBeInTheDocument();
   });
 
-  it('should render the generic docs link if no custom override', () => {
-    renderComponent();
-    expect(
-      screen.getByText('https://docs.vega.xyz/tutorials/proposals')
-    ).toBeInTheDocument();
-  });
-
-  it('should render the custom docs link if provided', () => {
+  it('should render the docs link', () => {
     const register = jest.fn();
     render(
       <ProposalFormTerms
         registerField={register('proposalTerms')}
         errorMessage="Error text"
-        customDocLink="/custom"
+        docsLink="/custom"
       />
     );
     expect(
