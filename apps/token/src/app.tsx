@@ -36,12 +36,11 @@ import type {
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
-import { BigNumber } from './lib/bignumber';
-import { addDecimal } from './lib/decimals';
 import { deterministicShuffle } from './lib/deterministic-shuffle';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const formatUintToNumber = (amount: string, decimals = 18) =>
-  addDecimal(new BigNumber(amount), decimals).toString();
+  addDecimal(amount, decimals).toString();
 
 const createReadField = (fieldName: string) => ({
   [`${fieldName}Formatted`]: {
