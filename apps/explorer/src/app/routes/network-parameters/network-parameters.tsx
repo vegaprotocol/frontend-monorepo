@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import {
   AsyncRenderer,
   KeyValueTable,
@@ -12,11 +11,10 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { suitableForSyntaxHighlighter } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
-import type {
-  NetworkParametersQuery,
-  NetworkParametersQuery_networkParameters,
-} from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import compact from 'lodash/compact';
 
 const PERCENTAGE_PARAMS = [
   'governance.proposal.asset.requiredMajority',
@@ -57,7 +55,7 @@ const BIG_NUMBER_PARAMS = [
 export const NetworkParameterRow = ({
   row: { key, value },
 }: {
-  row: NetworkParametersQuery_networkParameters;
+  row: { key: string; value: string };
 }) => {
   const isSyntaxRow = suitableForSyntaxHighlighter(value);
 
@@ -86,18 +84,9 @@ export const NetworkParameterRow = ({
   );
 };
 
-export const NETWORK_PARAMETERS_QUERY = gql`
-  query NetworkParametersQuery {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
-
 export interface NetworkParametersTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
-  data?: NetworkParametersQuery;
+  data?: NetworkParamsQuery | undefined;
   error?: Error;
   loading: boolean;
 }
@@ -118,7 +107,9 @@ export const NetworkParametersTable = ({
       error={error}
       render={(data) => {
         const ascParams = orderBy(
-          data.networkParameters || [],
+          compact(data.networkParametersConnection.edges).map(
+            ({ node }) => node
+          ) || [],
           (param) => param.key,
           'asc'
         );
@@ -135,8 +126,6 @@ export const NetworkParametersTable = ({
 );
 
 export const NetworkParameters = () => {
-  const { data, loading, error } = useQuery<NetworkParametersQuery>(
-    NETWORK_PARAMETERS_QUERY
-  );
+  const { data, loading, error } = useNetworkParamsQuery();
   return <NetworkParametersTable data={data} error={error} loading={loading} />;
 };

@@ -17,7 +17,7 @@ import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import {
   ButtonLink,
-  Callout,
+  Dialog,
   FormGroup,
   Intent,
   Radio,
@@ -200,9 +200,13 @@ export const StakingForm = ({
     return <StakeFailure nodeName={nodeName} />;
   } else if (formState === FormState.Requested) {
     return (
-      <Callout title="Confirm transaction in wallet" intent={Intent.Warning}>
+      <Dialog
+        title="Confirm transaction in wallet"
+        intent={Intent.Warning}
+        open={true}
+      >
         <p>{t('stakingConfirm')}</p>
-      </Callout>
+      </Dialog>
     );
   } else if (formState === FormState.Pending) {
     return <StakePending action={action} amount={amount} nodeName={nodeName} />;

@@ -33,7 +33,7 @@ export interface LiquidityTableProps {
   data?: LiquidityProvisionData[];
   symbol?: string;
   assetDecimalPlaces?: number;
-  stakeToCcySiskas: string;
+  stakeToCcySiskas: string | null;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(

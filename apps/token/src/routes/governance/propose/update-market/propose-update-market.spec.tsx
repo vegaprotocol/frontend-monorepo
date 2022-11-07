@@ -6,49 +6,63 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { MARKETS_QUERY } from './propose-update-market';
 import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
-import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMETERS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateMarket.maxClose',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateMarket.maxEnact',
-          value: '8760h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateMarket.minClose',
-          value: '1h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateMarket.minEnact',
-          value: '2h0m0s',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateMarket.minProposerBalance',
-          value: '1',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'spam.protection.proposal.min.tokens',
-          value: '1000000000000000000',
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateMarket.maxClose',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateMarket.maxEnact',
+              value: '8760h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateMarket.minClose',
+              value: '1h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateMarket.minEnact',
+              value: '2h0m0s',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateMarket.minProposerBalance',
+              value: '1',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'spam.protection.proposal.min.tokens',
+              value: '1000000000000000000',
+            },
+          },
+        ],
+      },
     },
   },
 };

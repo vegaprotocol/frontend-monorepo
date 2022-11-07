@@ -11,7 +11,17 @@ declare global {
 export function addGetNetworkParameters() {
   // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('get_network_parameters', () => {
-    const mutation = '{networkParameters {key value}}';
+    const mutation = `
+  {
+    networkParametersConnection {
+      edges {
+        node {
+          key
+          value
+        }
+      }
+    }
+  }`;
     cy.request({
       method: 'POST',
       url: `http://localhost:3028/query`,
@@ -20,11 +30,12 @@ export function addGetNetworkParameters() {
       },
       headers: { 'content-type': 'application/json' },
     })
-      .its('body.data.networkParameters')
+      .its('body.data.networkParametersConnection.edges')
       .then(function (response) {
         // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
         const object = response.reduce(function (r, e) {
-          r[e.key] = e.value;
+          const { value, key } = e.node;
+          r[key] = value;
           return r;
         }, {});
         return object;

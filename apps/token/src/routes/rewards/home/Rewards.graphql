@@ -1,34 +1,43 @@
+fragment RewardFields on Reward {
+  rewardType
+  asset {
+    id
+    symbol
+  }
+  party {
+    id
+  }
+  epoch {
+    id
+  }
+  amount
+  amountFormatted @client
+  percentageOfTotal
+  receivedAt
+}
+
+fragment DelegationFields on Delegation {
+  amount
+  amountFormatted @client
+  epoch
+}
+
 query Rewards($partyId: ID!) {
   party(id: $partyId) {
     id
-    rewardDetails {
-      asset {
-        id
-        symbol
+    rewardsConnection {
+      edges {
+        node {
+          ...RewardFields
+        }
       }
-      rewards {
-        rewardType
-        asset {
-          id
-        }
-        party {
-          id
-        }
-        epoch {
-          id
-        }
-        amount
-        amountFormatted @client
-        percentageOfTotal
-        receivedAt
-      }
-      totalAmount
-      totalAmountFormatted @client
     }
-    delegations {
-      amount
-      amountFormatted @client
-      epoch
+    delegationsConnection {
+      edges {
+        node {
+          ...DelegationFields
+        }
+      }
     }
   }
   epoch {
