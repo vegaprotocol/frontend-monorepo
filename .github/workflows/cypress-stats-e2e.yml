@@ -1,6 +1,7 @@
 name: Cypress - stats
 
 on: workflow_call
+
 jobs:
   stats-e2e:
     runs-on: self-hosted
@@ -22,6 +23,11 @@ jobs:
             /home/runner/.cache/Cypress
           key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: frontend-monorepo
+
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
         run: yarn cypress install
@@ -32,4 +38,3 @@ jobs:
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
