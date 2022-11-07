@@ -32,19 +32,26 @@ const Title = () => {
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
   }, [pageTitle, networkName]);
-  return <title>{title}</title>;
+
+  return (
+    <Head>
+      <title>{title}</title>
+    </Head>
+  );
 };
 
 function AppBody() {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
+  console.log('render');
 
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
-        <Title />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
           <Navbar
