@@ -24,7 +24,7 @@ const Portfolio = () => {
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
-      <ResizableGrid vertical={true}>
+      <ResizableGrid vertical>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs>
