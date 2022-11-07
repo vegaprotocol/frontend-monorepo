@@ -8,7 +8,7 @@ import type { IGetRowsParams } from 'ag-grid-community';
 
 const loadMock = jest.fn();
 
-let mockData = null;
+let mockData: Edge<OrderFieldsFragment>[] | null = null;
 let mockDataProviderData = {
   data: mockData as (Edge<OrderFieldsFragment> | null)[] | null,
   error: undefined,
