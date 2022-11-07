@@ -163,7 +163,7 @@ export const ProposeNewAsset = () => {
                   })}
                   labelOverride={'Terms.newAsset (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={DOCS_LINK}
+                  docsLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline

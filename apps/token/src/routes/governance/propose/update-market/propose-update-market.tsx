@@ -277,7 +277,7 @@ export const ProposeUpdateMarket = () => {
                   })}
                   labelOverride={t('ProposeUpdateMarketTerms')}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={DOCS_LINK}
+                  docsLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline

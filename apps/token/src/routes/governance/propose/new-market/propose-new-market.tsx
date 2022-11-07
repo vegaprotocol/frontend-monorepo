@@ -158,7 +158,7 @@ export const ProposeNewMarket = () => {
                   })}
                   labelOverride={'Terms.newMarket (JSON format)'}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={DOCS_LINK}
+                  docsLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
