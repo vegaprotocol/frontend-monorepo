@@ -55,7 +55,7 @@ it('renders each section', async () => {
   expect(screen.queryByTestId('proposal-list-asset')).not.toBeInTheDocument();
 });
 
-it('renders whitelsit section if proposal is new asset and source is erc20', async () => {
+it('renders whitelist section if proposal is new asset and source is erc20', async () => {
   const proposal = generateProposal({
     terms: {
       change: {
