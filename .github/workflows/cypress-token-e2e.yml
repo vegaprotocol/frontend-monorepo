@@ -20,7 +20,7 @@ on:
 jobs:
   token-e2e:
     runs-on: self-hosted
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       # Add GOBIN to PATH
       - name: Add GOBIN to PATH
