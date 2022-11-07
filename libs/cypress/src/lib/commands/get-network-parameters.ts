@@ -30,11 +30,12 @@ export function addGetNetworkParameters() {
       },
       headers: { 'content-type': 'application/json' },
     })
-      .its('body.data.networkParameters')
+      .its('body.data.networkParametersConnection.edges')
       .then(function (response) {
         // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
         const object = response.reduce(function (r, e) {
-          r[e.key] = e.value;
+          const { value, key } = e.node;
+          r[key] = value;
           return r;
         }, {});
         return object;
