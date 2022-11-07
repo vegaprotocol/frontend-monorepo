@@ -86,7 +86,7 @@ describe('useFillsList Hook', () => {
       addNewRows: expect.any(Function),
       getRows: expect.any(Function),
     });
-    updateMock({ data: mockData});
+    updateMock({ data: mockData });
     expect(mockRefreshAgGridApi).not.toHaveBeenCalled();
     updateMock({ data: mockData });
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
