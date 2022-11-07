@@ -1,10 +1,12 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-
+import { DocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';
 
 import type { ReactNode } from 'react';
+import { useEnvironment } from '@vegaprotocol/environment';
+
 type TradingModeTooltipProps = {
   tradingMode: MarketTradingMode | null;
   trigger: AuctionTrigger | null;
@@ -16,6 +18,7 @@ export const TradingModeTooltip = ({
   trigger,
   compiledGrid,
 }: TradingModeTooltipProps) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
   switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
@@ -35,7 +38,7 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-opening">
+            <ExternalLink href={DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}>
               {t('Find out more')}
             </ExternalLink>
           </p>
@@ -54,7 +57,11 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>{' '}
-                <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring">
+                <ExternalLink
+                  href={
+                    DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_LIQUIDITY_MONITORING
+                  }
+                >
                   {t('Find out more')}
                 </ExternalLink>
               </p>
@@ -69,7 +76,9 @@ export const TradingModeTooltip = ({
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring">
+                <ExternalLink
+                  href={DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_PRICE_MONITORING}
+                >
                   {t('Find out more')}
                 </ExternalLink>
               </p>
