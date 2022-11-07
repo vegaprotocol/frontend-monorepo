@@ -4,7 +4,6 @@ import { connectVegaWallet } from '../support/vega-wallet';
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
-const link = 'link';
 const externalLink = 'external-link';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
