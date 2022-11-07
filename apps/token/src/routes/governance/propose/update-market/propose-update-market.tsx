@@ -26,11 +26,11 @@ import {
 import { ProposalMinRequirements } from '../../components/shared';
 import {
   AsyncRenderer,
+  ExternalLink,
   FormGroup,
   InputError,
   KeyValueTable,
   KeyValueTableRow,
-  Link,
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
@@ -175,20 +175,20 @@ export const ProposeUpdateMarket = () => {
             {VEGA_DOCS_URL && (
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
-                <Link
+                <ExternalLink
                   href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</Link>
+                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</ExternalLink>
               </p>
             )}
 
             {VEGA_EXPLORER_URL && (
               <p className="text-sm">
                 {t('MoreMarketsInfo')}{' '}
-                <Link
+                <ExternalLink
                   href={`${VEGA_EXPLORER_URL}/markets`}
                   target="_blank"
-                >{`${VEGA_EXPLORER_URL}/markets`}</Link>
+                >{`${VEGA_EXPLORER_URL}/markets`}</ExternalLink>
               </p>
             )}
 
@@ -277,7 +277,7 @@ export const ProposeUpdateMarket = () => {
                   })}
                   labelOverride={t('ProposeUpdateMarketTerms')}
                   errorMessage={errors?.proposalTerms?.message}
-                  customDocLink={DOCS_LINK}
+                  docsLink={DOCS_LINK}
                 />
 
                 <ProposalFormVoteAndEnactmentDeadline
