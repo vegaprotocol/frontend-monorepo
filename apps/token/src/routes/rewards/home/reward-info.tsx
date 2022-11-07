@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react';
+import compact from 'lodash/compact';
 import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,69 +7,53 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../../lib/date-formats';
 import type {
-  Rewards,
-  Rewards_party_delegations,
-  Rewards_party_rewardDetails_rewards,
-} from './__generated__/Rewards';
+  RewardsQuery,
+  RewardFieldsFragment,
+  DelegationFieldsFragment,
+} from './__generated___/Rewards';
 
 interface RewardInfoProps {
-  data: Rewards | undefined;
+  data: RewardsQuery | undefined;
   currVegaKey: string;
-  rewardAssetId: string;
 }
 
-export const RewardInfo = ({
-  data,
-  currVegaKey,
-  rewardAssetId,
-}: RewardInfoProps) => {
+export const RewardInfo = ({ data, currVegaKey }: RewardInfoProps) => {
   const { t } = useTranslation();
 
-  // Create array of rewards per epoch
-  const vegaTokenRewards = React.useMemo(() => {
-    if (!data?.party || !data.party.rewardDetails?.length) return [];
+  const rewards = React.useMemo(() => {
+    if (!data?.party || !data.party.rewardsConnection?.edges?.length) return [];
 
-    const vegaTokenRewards = data.party.rewardDetails.find(
-      (r) => r?.asset.id === rewardAssetId
+    return (
+      compact(data.party.rewardsConnection.edges.map((edge) => edge?.node)) ||
+      []
     );
+  }, [data]);
 
-    // We only issue rewards as Vega tokens for now so there should only be one
-    // item in the rewardDetails array
-    if (!vegaTokenRewards) {
-      const rewardAssets = data.party.rewardDetails
-        .map((r) => r?.asset.symbol)
-        .join(', ');
-      Sentry.captureMessage(
-        `Could not find VEGA token rewards ${rewardAssets}`
-      );
+  const delegations = React.useMemo(() => {
+    if (!data?.party || !data.party.delegationsConnection?.edges?.length) {
       return [];
     }
 
-    if (!vegaTokenRewards?.rewards?.length) return [];
-
-    const sorted = Array.from(vegaTokenRewards.rewards).sort((a, b) => {
-      if (!a || !b) return 0;
-      if (a.epoch > b.epoch) return -1;
-      if (a.epoch < b.epoch) return 1;
-      return 0;
-    });
-
-    return sorted;
-  }, [data, rewardAssetId]);
+    return (
+      compact(
+        data.party.delegationsConnection.edges.map((edge) => edge?.node)
+      ) || []
+    );
+  }, [data]);
 
   return (
     <div>
       <p>
         {t('Connected Vega key')}: {currVegaKey}
       </p>
-      {vegaTokenRewards.length ? (
-        vegaTokenRewards.map((reward, i) => {
+      {rewards.length ? (
+        rewards.map((reward, i) => {
           if (!reward) return null;
           return (
             <RewardTable
               key={i}
               reward={reward}
-              delegations={data?.party?.delegations || []}
+              delegations={delegations || []}
             />
           );
         })
@@ -81,8 +65,8 @@ export const RewardInfo = ({
 };
 
 interface RewardTableProps {
-  reward: Rewards_party_rewardDetails_rewards;
-  delegations: Rewards_party_delegations[];
+  reward: RewardFieldsFragment;
+  delegations: DelegationFieldsFragment[] | [];
 }
 
 export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
