@@ -101,7 +101,7 @@ const mockTradingPage = (
   aliasQuery(req, 'Chart', generateChart());
   aliasQuery(req, 'Candles', generateCandles());
   aliasQuery(req, 'Withdrawals', generateWithdrawals());
-  aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+  aliasQuery(req, 'NetworkParams', generateNetworkParameters());
   aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
   aliasQuery(req, 'MarketMarkPrice', generateMarkPrice());
   aliasQuery(req, 'PartyBalance', generatePartyBalance());

@@ -81,7 +81,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
     cy.visit('/portfolio');
     cy.mockGQL((req) => {
-      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+      aliasQuery(req, 'NetworkParams', generateNetworkParameters());
     });
     cy.mockGQLSubscription();
     cy.get('main[data-testid="portfolio"]').should('exist');
@@ -89,7 +89,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
   });
 
   it('can connect', () => {
-    cy.wait('@NetworkParamsQuery');
+    cy.wait('@NetworkParams');
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();

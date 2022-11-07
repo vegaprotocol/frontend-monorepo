@@ -1,14 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
-import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxContent } from './tx-content';
 import { TxDetails } from './tx-details';
-import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
 import { toNonHex } from '../../../components/search/detect-search';
+import { PageHeader } from '../../../components/page-header';
+import { Routes } from '../../../routes/route-names';
+import { IconNames } from '@blueprintjs/icons';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
@@ -22,7 +24,25 @@ const Tx = () => {
 
   return (
     <section>
-      <RouteTitle>{t('Transaction details')}</RouteTitle>
+      <Link
+        className="font-normal underline underline-offset-4 block mb-5"
+        to={`/${Routes.TX}`}
+      >
+        <Icon
+          className="text-vega-light-300 dark:text-vega-light-300"
+          name={IconNames.CHEVRON_LEFT}
+        />
+        All Transactions
+      </Link>
+
+      <PageHeader
+        title={hash}
+        prefix="Transaction"
+        copy
+        truncateStart={5}
+        truncateEnd={9}
+        className="mb-5"
+      />
 
       <RenderFetched error={tTxError} loading={tTxLoading}>
         <>
@@ -31,10 +51,6 @@ const Tx = () => {
             txData={data?.transaction}
             pubKey={data?.transaction.submitter}
           />
-
-          <h2 className="text-2xl uppercase mb-4">
-            {t('Transaction content')}
-          </h2>
 
           <TxContent data={data?.transaction} />
         </>

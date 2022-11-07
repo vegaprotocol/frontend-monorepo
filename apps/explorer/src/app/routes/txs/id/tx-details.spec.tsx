@@ -25,11 +25,6 @@ const renderComponent = (txData: BlockExplorerTransactionResult) => (
 );
 
 describe('Transaction details', () => {
-  it('Renders the tx hash', () => {
-    render(renderComponent(txData));
-    expect(screen.getByText(hash)).toBeInTheDocument();
-  });
-
   it('Renders the pubKey', () => {
     render(renderComponent(txData));
     expect(screen.getByText(pubKey)).toBeInTheDocument();
@@ -38,10 +33,5 @@ describe('Transaction details', () => {
   it('Renders the height', () => {
     render(renderComponent(txData));
     expect(screen.getByText(height)).toBeInTheDocument();
-  });
-
-  it('Renders a copy button', () => {
-    render(renderComponent(txData));
-    expect(screen.getByTestId('copy-tx-to-clipboard')).toBeInTheDocument();
   });
 });

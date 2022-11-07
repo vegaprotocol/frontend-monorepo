@@ -8,7 +8,7 @@ import type { IGetRowsParams } from 'ag-grid-community';
 
 const loadMock = jest.fn();
 
-let mockData = null;
+let mockData: Edge<OrderFieldsFragment>[] | null = null;
 let mockDataProviderData = {
   data: mockData as (Edge<OrderFieldsFragment> | null)[] | null,
   error: undefined,
@@ -94,8 +94,9 @@ describe('useOrderListData Hook', () => {
       addNewRows: expect.any(Function),
       getRows: expect.any(Function),
     });
+    updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).not.toHaveBeenCalled();
-    updateMock({ data: [], delta: [] });
+    updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
   });
 
@@ -147,6 +148,10 @@ describe('useOrderListData Hook', () => {
       startRow: 2,
       endRow: 4,
     } as unknown as IGetRowsParams;
+
+    await waitFor(async () => {
+      updateMock({ data: mockData });
+    });
 
     await waitFor(async () => {
       const promise = result.current.getRows(getRowsParams);

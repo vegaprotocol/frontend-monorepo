@@ -4,19 +4,19 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { NetworkParamsKey } from './use-network-params';
 import {
   NetworkParams,
-  NETWORK_PARAMETERS_QUERY,
-  NETWORK_PARAMETER_QUERY,
   useNetworkParam,
   useNetworkParams,
 } from './use-network-params';
 import type { ReactNode } from 'react';
-import type { NetworkParams as NetworkParamsResponse } from './__generated__/NetworkParams';
+import type { NetworkParamsQuery } from './__generated___/NetworkParams';
+import { NetworkParamDocument } from './__generated___/NetworkParams';
+import { NetworkParamsDocument } from './__generated___/NetworkParams';
 
 describe('useNetworkParam', () => {
   const setup = (arg: NetworkParamsKey) => {
     const mock: MockedResponse = {
       request: {
-        query: NETWORK_PARAMETER_QUERY,
+        query: NetworkParamDocument,
         variables: {
           key: arg,
         },
@@ -51,29 +51,37 @@ describe('useNetworkParam', () => {
 
 describe('useNetworkParams', () => {
   const setup = (args?: NetworkParamsKey[]) => {
-    const mock: MockedResponse<NetworkParamsResponse> = {
+    const mock: MockedResponse<NetworkParamsQuery> = {
       request: {
-        query: NETWORK_PARAMETERS_QUERY,
+        query: NetworkParamsDocument,
       },
       result: {
         data: {
-          networkParameters: [
-            {
-              __typename: 'NetworkParameter',
-              key: 'spam.protection.proposal.min.tokens',
-              value: '1',
-            },
-            {
-              __typename: 'NetworkParameter',
-              key: 'governance.proposal.updateMarket.minProposerBalance',
-              value: '2',
-            },
-            {
-              __typename: 'NetworkParameter',
-              key: 'reward.staking.delegation.payoutDelay',
-              value: '200',
-            },
-          ],
+          networkParametersConnection: {
+            edges: [
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'spam.protection.proposal.min.tokens',
+                  value: '1',
+                },
+              },
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'governance.proposal.updateMarket.minProposerBalance',
+                  value: '2',
+                },
+              },
+              {
+                node: {
+                  __typename: 'NetworkParameter',
+                  key: 'reward.staking.delegation.payoutDelay',
+                  value: '200',
+                },
+              },
+            ],
+          },
         },
       },
     };
