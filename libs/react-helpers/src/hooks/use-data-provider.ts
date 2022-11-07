@@ -24,6 +24,7 @@ interface useDataProviderParams<
   update?: ({
     delta,
     data,
+    variables,
   }: {
     delta?: Delta;
     data: Data;

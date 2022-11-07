@@ -41,7 +41,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   };
 
   const onFilterChanged = (event: FilterChangedEvent) => {
-    setFilter(event.api.getFilterModel());
+    setFilter(event.api.getFilterModel() as Filter);
   };
 
   const onSortChange = (event: SortChangedEvent) => {

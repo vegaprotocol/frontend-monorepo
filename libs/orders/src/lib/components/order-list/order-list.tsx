@@ -8,6 +8,7 @@ import {
   t,
   truncateByChars,
   SetFilter,
+  DateRangeFilter,
 } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,
@@ -345,7 +346,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="updatedAt"
           sortable
-          filter="agDateColumnFilter"
+          filter={DateRangeFilter}
           valueFormatter={({
             value,
             node,

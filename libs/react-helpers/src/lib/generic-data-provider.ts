@@ -159,7 +159,7 @@ interface DataProviderParams<
   Data,
   SubscriptionData,
   Delta,
-  Variables
+  Variables extends OperationVariables = OperationVariables
 > {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;

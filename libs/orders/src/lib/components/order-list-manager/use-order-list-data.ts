@@ -6,14 +6,25 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { ordersWithMarketProvider } from '../';
-import type { OrderEdge, Order } from '../';
-
+import type { OrderEdge, Order, OrdersQueryVariables } from '../';
+import type { Schema as Types } from '@vegaprotocol/types';
 export interface Sort {
   colId: string;
   sort: string;
 }
 export interface Filter {
-  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  updatedAt?: {
+    value: Types.DateRange;
+  };
+  type?: {
+    value: Types.OrderType[];
+  };
+  status?: {
+    value: Types.OrderStatus[];
+  };
+  timeInForce?: {
+    value: Types.OrderTimeInForce[];
+  };
 }
 interface Props {
   partyId: string;
@@ -34,9 +45,9 @@ export const useOrderListData = ({
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
-  const variables = useMemo(
-    () => ({ partyId, sort, filter }),
-    [partyId, sort, filter]
+  const variables = useMemo<OrdersQueryVariables>(
+    () => ({ partyId, dateRange: filter?.updatedAt?.value }),
+    [partyId, filter]
   );
 
   const addNewRows = useCallback(() => {
