@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
@@ -15,7 +16,6 @@ import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import { HashRouter, useLocation } from 'react-router-dom';
-import { ClientRouter } from './client-router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -40,11 +40,10 @@ const Title = () => {
   );
 };
 
-function AppBody() {
+function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
-  console.log('render');
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -60,7 +59,7 @@ function AppBody() {
             navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
           />
           <main data-testid={location.pathname}>
-            <ClientRouter />
+            <Component />
           </main>
           <Footer />
           <DialogsContainer />
@@ -70,7 +69,7 @@ function AppBody() {
   );
 }
 
-function VegaTradingApp() {
+function VegaTradingApp(props: AppProps) {
   const [mounted, setMounted] = useState(false);
 
   // Hash router requires access to the document object. At compile time that doesn't exist
@@ -86,7 +85,7 @@ function VegaTradingApp() {
     <HashRouter>
       <EnvironmentProvider>
         <VegaWalletProvider>
-          <AppBody />
+          <AppBody {...props} />
         </VegaWalletProvider>
       </EnvironmentProvider>
     </HashRouter>
