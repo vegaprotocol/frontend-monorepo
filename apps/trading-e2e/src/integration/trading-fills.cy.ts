@@ -13,7 +13,7 @@ describe('fills', { tags: '@regression' }, () => {
 
   it('renders fills on portfolio page', () => {
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
     connectVegaWallet();

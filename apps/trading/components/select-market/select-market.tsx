@@ -5,7 +5,7 @@ import {
   Dialog,
   Icon,
   Intent,
-  Link,
+  Link as UILink,
   Loader,
   Popover,
 } from '@vegaprotocol/ui-toolkit';
@@ -30,6 +30,7 @@ import type {
 } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
+import { Link } from 'react-router-dom';
 type Market = MarketWithCandles & MarketWithData;
 
 export const SelectMarketLandingTable = ({
@@ -65,8 +66,8 @@ export const SelectMarketLandingTable = ({
         </table>
       </div>
       <div className="mt-4 text-md">
-        <Link href="/markets" data-testid="view-market-list-link">
-          {'Or view full market list'}
+        <Link to="/markets" data-testid="view-market-list-link">
+          <UILink>{'Or view full market list'} </UILink>
         </Link>
       </div>
     </>

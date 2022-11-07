@@ -40,7 +40,7 @@ const routerConfig = [
     element: <LazyHome />,
   },
   {
-    path: Routes.HOME,
+    path: Routes.MARKETS,
     element: <LazyMarkets />,
   },
   {

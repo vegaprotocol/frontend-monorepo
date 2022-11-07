@@ -14,7 +14,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
   it('can connect', () => {
@@ -84,7 +84,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
       aliasQuery(req, 'NetworkParams', generateNetworkParameters());
     });
     cy.mockGQLSubscription();
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Withdrawals').click();
   });
 
