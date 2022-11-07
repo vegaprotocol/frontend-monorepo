@@ -80,7 +80,7 @@ export const useEthereumTransaction = <
         ) {
           throw new Error('method not found on contract');
         }
-        await contract.contract.callStatic[methodName as string](...args);
+        // await contract.contract.callStatic[methodName as string](...args);
       } catch (err) {
         setTransaction({
           status: EthTxStatus.Error,
@@ -121,6 +121,7 @@ export const useEthereumTransaction = <
           setTransaction({ status: EthTxStatus.Confirmed, receipt });
         }
       } catch (err) {
+        console.log(err);
         if (err instanceof Error || isEthereumError(err)) {
           if (isExpectedEthereumError(err)) {
             setTransaction({ dialogOpen: false });

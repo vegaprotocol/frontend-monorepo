@@ -34,6 +34,9 @@ jest.mock('../proposal-votes-table', () => ({
 jest.mock('../vote-details', () => ({
   VoteDetails: () => <div data-testid="proposal-vote-details"></div>,
 }));
+jest.mock('../list-asset', () => ({
+  ListAsset: () => <div data-testid="proposal-list-asset"></div>,
+}));
 
 it('Renders with data-testid', async () => {
   const proposal = generateProposal();
@@ -49,4 +52,5 @@ it('renders each section', async () => {
   expect(screen.getByTestId('proposal-terms-json')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-votes-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-vote-details')).toBeInTheDocument();
+  expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });
