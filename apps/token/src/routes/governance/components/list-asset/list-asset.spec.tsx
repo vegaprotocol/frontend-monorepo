@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { ListAsset } from './list-asset';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
@@ -9,23 +9,76 @@ import type {
 import { AssetListBundleDocument } from './__generated___/Asset';
 import { ProposalAssetDocument } from './__generated___/Asset';
 import { AssetStatus } from '@vegaprotocol/types';
+import type { useWeb3React } from '@web3-react/core';
+import BigNumber from 'bignumber.js';
+import type { AppState } from '../../../../contexts/app-state/app-state-context';
 
-// jest.mock('@vegaprotocol/react-helpers', () => ({
-//   ...jest.requireActual('@vegaprotocol/react-helpers'),
-//   useNetworkParams: jest.fn(() => ({
-//     params: {
-//       governance_proposal_asset_minVoterBalance: '1',
-//       governance_proposal_freeform_minVoterBalance: '0',
-//       governance_proposal_market_minVoterBalance: '1',
-//       governance_proposal_updateAsset_minVoterBalance: '0',
-//       governance_proposal_updateMarket_minVoterBalance: '1',
-//       governance_proposal_updateNetParam_minVoterBalance: '1',
-//       spam_protection_voting_min_tokens: '1000000000000000000',
-//     },
-//     loading: false,
-//     error: null,
-//   })),
-// }));
+const mockUseEthTx = {
+  perform: jest.fn(),
+  Dialog: () => null,
+};
+
+jest.mock('@vegaprotocol/web3', () => {
+  const orig = jest.requireActual('@vegaprotocol/web3');
+  return {
+    ...orig,
+    useBridgeContract: jest.fn().mockReturnValue({
+      list_asset: jest.fn(),
+      isNewContract: true,
+    }),
+    useEthereumTransaction: jest.fn(() => mockUseEthTx),
+  };
+});
+
+const defaultHookValue = {
+  isActive: false,
+  error: undefined,
+  connector: null,
+  chainId: 3,
+  account: null,
+} as unknown as ReturnType<typeof useWeb3React>;
+let mockHookValue: ReturnType<typeof useWeb3React>;
+
+jest.mock('@web3-react/core', () => {
+  const original = jest.requireActual('@web3-react/core');
+  return {
+    ...original,
+    useWeb3React: jest.fn(() => mockHookValue),
+  };
+});
+
+const mockAppState: AppState = {
+  totalAssociated: new BigNumber('50063005'),
+  decimals: 18,
+  totalSupply: new BigNumber(65000000),
+  balanceFormatted: new BigNumber(0),
+  walletBalance: new BigNumber(0),
+  lien: new BigNumber(0),
+  allowance: new BigNumber(0),
+  tranches: null,
+  vegaWalletOverlay: false,
+  vegaWalletManageOverlay: false,
+  ethConnectOverlay: false,
+  walletAssociatedBalance: null,
+  vestingAssociatedBalance: null,
+  trancheBalances: [],
+  totalLockedBalance: new BigNumber(0),
+  totalVestedBalance: new BigNumber(0),
+  trancheError: null,
+  drawerOpen: false,
+  associationBreakdown: {
+    vestingAssociations: {},
+    stakingAssociations: {},
+  },
+  transactionOverlay: false,
+  bannerMessage: '',
+};
+
+jest.mock('../../../contexts/app-state/app-state-context', () => ({
+  useAppState: () => ({
+    appState: mockAppState,
+  }),
+}));
 
 const ASSET_ID = 'foo';
 
@@ -65,7 +118,7 @@ const assetBundleMock: MockedResponse<AssetListBundleQuery> = {
   result: {
     data: {
       erc20ListAssetBundle: {
-        assetSource: '',
+        assetSource: '0xf00',
         vegaAssetId: ASSET_ID,
         nonce: '1',
         signatures: '0x0',
@@ -86,8 +139,48 @@ const renderComponent = (assetId: string) => {
   );
 };
 
-it('Renders with data-testid', async () => {
+it('Renders connect state if not connected', async () => {
+  mockHookValue = defaultHookValue;
   renderComponent(ASSET_ID);
-  screen.debug();
-  expect(await screen.findByTestId('proposal')).toBeInTheDocument();
+
+  expect(
+    await screen.findByText('Connect Ethereum wallet')
+  ).toBeInTheDocument();
+});
+
+it('Renders title, description and button when connected', async () => {
+  mockHookValue = {
+    ...defaultHookValue,
+    account: 'foo',
+  };
+  renderComponent(ASSET_ID);
+  expect(await screen.findByText('List asset')).toBeInTheDocument();
+  expect(
+    await screen.findByText(
+      'This asset needs to be listed on the collateral bridge before it can be used.'
+    )
+  ).toBeInTheDocument();
+  expect(await screen.findByTestId('list-asset')).toHaveTextContent(
+    'List asset'
+  );
+});
+
+it('Sends transaction correctly when button is pressed', async () => {
+  mockHookValue = {
+    ...defaultHookValue,
+    account: 'foo',
+  };
+  renderComponent(ASSET_ID);
+  expect(await screen.findByTestId('list-asset')).toHaveTextContent(
+    'List asset'
+  );
+  fireEvent.click(screen.getByTestId('list-asset'));
+  expect(mockUseEthTx.perform).toBeCalledWith(
+    '0xf00',
+    '0xfoo',
+    '100',
+    '1',
+    '1',
+    '0x0'
+  );
 });

@@ -60,7 +60,7 @@ export const ListAsset = ({
 }: ListAssetProps) => {
   const { t } = useTranslation();
   const {
-    transaction: { perform, Dialog },
+    transaction,
     data,
     loadingAsset,
     errorAsset,
@@ -68,6 +68,7 @@ export const ListAsset = ({
     loadingBundle,
     errorBundle,
   } = useListAsset(assetId);
+  const { perform, Dialog } = transaction;
 
   if (
     !assetData?.erc20ListAssetBundle ||
@@ -89,6 +90,7 @@ export const ListAsset = ({
       <p className="pr-8">{t('ListAssetDescription')}</p>
       <EthWalletContainer>
         <Button
+          data-testid="list-asset"
           onClick={() =>
             perform(
               assetSource,
