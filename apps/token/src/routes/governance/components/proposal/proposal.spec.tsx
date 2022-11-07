@@ -34,6 +34,9 @@ jest.mock('../proposal-votes-table', () => ({
 jest.mock('../vote-details', () => ({
   VoteDetails: () => <div data-testid="proposal-vote-details"></div>,
 }));
+jest.mock('../list-asset', () => ({
+  ListAsset: () => <div data-testid="proposal-list-asset"></div>,
+}));
 
 it('Renders with data-testid', async () => {
   const proposal = generateProposal();
@@ -49,4 +52,26 @@ it('renders each section', async () => {
   expect(screen.getByTestId('proposal-terms-json')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-votes-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-vote-details')).toBeInTheDocument();
+  expect(screen.queryByTestId('proposal-list-asset')).not.toBeInTheDocument();
+});
+
+it('renders whitelist section if proposal is new asset and source is erc20', async () => {
+  const proposal = generateProposal({
+    terms: {
+      change: {
+        __typename: 'NewAsset',
+        name: 'foo',
+        symbol: 'FOO',
+        decimals: 18,
+        quantum: '1',
+        source: {
+          __typename: 'ERC20',
+          lifetimeLimit: '1',
+          withdrawThreshold: '100',
+        },
+      },
+    },
+  });
+  render(<Proposal proposal={proposal as Proposal_proposal} />);
+  expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });
