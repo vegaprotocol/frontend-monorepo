@@ -22,7 +22,8 @@ on:
         type: boolean
 
 jobs:
-  select-tests:
+  ## THIS ADDITIONAL JOB AND MOVING LOGIC TO TESTS ITSELF ARE DONE BECAUSE OF THE ISSUE WITH DEFINING REQUIRED JOBS IN PR
+  select-test:
     runs-on: ubuntu-latest
     steps:
       - run: echo CONSOLE_LITE=${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }} >> $GITHUB_ENV
@@ -31,23 +32,31 @@ jobs:
       - run: echo STATS=${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }} >> $GITHUB_ENV
       - run: echo TOKEN=${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }} >> $GITHUB_ENV
       - run: echo TRADING=${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }} >> $GITHUB_ENV
-      - run: echo " console lite ${{ env.CONSTOLE_LITE }} explorer ${{ env.EXPLORER }}  liquidity ${{ env.LIQUIDITY }} stats ${{ env.STATS }} trading ${{ env.TRADING }} token ${{ env.TOKEN }}
+    output:
+      console-lite: ${{env.CONSOLE_LITE}}
+      explorer: ${{env.EXPLORER}}
+      liquidity: ${{env.LIQUIDITY}}
+      stats: ${{env.STATS}}
+      token: ${{env.TOKEN}}
+      trading: ${{env.TRADING}}
 
   run-console-lite-e2e:
-    if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-console-lite-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{needs.select-test.output.console-lite}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
 
   run-explorer-e2e:
-    if: ${{ contains(inputs.project, 'explorer-e2e') || contains(inputs.project, 'explorer') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-explorer-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{needs.select-test.output.explorer}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
@@ -55,30 +64,36 @@ jobs:
       night-run: ${{ inputs.night-run }}
 
   run-liquidity-e2e:
-    if: ${{ contains(inputs.project, 'liquidity-provision-dashboard-e2e') || contains(inputs.project, 'liquidity-provision-dashboard') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-liquidity-provision-dashboard-e2e.yml
     secrets: inherit
+    with:
+      trigger: ${{needs.select-test.output.liquidity}}
 
   run-stats-e2e:
-    if: ${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-stats-e2e.yml
     secrets: inherit
+    with:
+      trigger: ${{needs.select-test.output.stats}}
 
   run-token-e2e:
-    if: ${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-token-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{needs.select-test.output.token}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
 
   run-trading-e2e:
-    if: ${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }}
+    needs: select-test
     uses: ./.github/workflows/cypress-trading-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{needs.select-test.output.trading}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
