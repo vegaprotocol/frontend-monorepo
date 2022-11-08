@@ -51,6 +51,6 @@ module.exports = defineConfig({
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,
-    TEARDOWN_NETWORK_AFTER_FLOWS: false
+    TEARDOWN_NETWORK_AFTER_FLOWS: false,
   },
 });
