@@ -17,7 +17,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
-  it.only('can connect', () => {
+  it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.contains('Desktop wallet app');
     cy.contains('Command line wallet app');
@@ -28,8 +28,6 @@ describe('vega wallet', { tags: '@smoke' }, () => {
       .click();
     cy.getByTestId(form).find('#wallet').click().type(walletName);
     cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-    cy.log('wallet name', walletName);
-    cy.log('wallet passphrase', walletPassphrase);
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
     cy.getByTestId(manageVegaBtn).should('exist');
   });

@@ -31,7 +31,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.wait('@Assets');
   });
 
-  it.only('form validation', () => {
+  it('form validation', () => {
     cy.getByTestId(submitWithdrawBtn).click();
 
     cy.getByTestId(formFieldError).should('contain.text', 'Required');

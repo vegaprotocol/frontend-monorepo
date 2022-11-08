@@ -9,10 +9,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: echo capsule
-      shell: bash
-      run: echo ${{ inputs.capsule }}
-
     - name: Create passphrase
       shell: bash
       run: echo "${{ inputs.passphrase }}" > ./passphrase
