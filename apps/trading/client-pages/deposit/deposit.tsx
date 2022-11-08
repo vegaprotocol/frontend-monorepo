@@ -5,9 +5,9 @@ import { t, titlefy, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3Container } from '@vegaprotocol/web3';
 import { useEffect } from 'react';
-import { usePageTitleStore } from '../../../stores';
+import { usePageTitleStore } from '../../stores';
 
-const Deposit = () => {
+export const Deposit = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -50,9 +50,3 @@ const Deposit = () => {
     </Web3Container>
   );
 };
-
-Deposit.getInitialProps = () => ({
-  page: 'deposit',
-});
-
-export default Deposit;

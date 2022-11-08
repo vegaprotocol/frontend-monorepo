@@ -126,7 +126,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
@@ -205,7 +205,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
 describe('deal ticket validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
   });
 
@@ -253,7 +253,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
@@ -284,7 +284,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleLimit).click();
   });
@@ -358,7 +358,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
 describe('market order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleMarket).click();
   });
@@ -413,7 +413,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
@@ -464,7 +464,7 @@ describe('margin required validation', { tags: '@regression' }, () => {
         })
       );
     });
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     connectVegaWallet();
     cy.wait('@Market');
   });

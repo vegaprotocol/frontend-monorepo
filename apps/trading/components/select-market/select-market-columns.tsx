@@ -19,7 +19,7 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import {
-  Link,
+  Link as UILink,
   PriceCellChange,
   Sparkline,
   Tooltip,
@@ -31,6 +31,8 @@ import type {
   MarketWithData,
   MarketWithCandles,
 } from '@vegaprotocol/market-list';
+import { Link } from 'react-router-dom';
+
 type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
@@ -224,7 +226,7 @@ export const columns = (
       kind: ColumnKind.Market,
       value: (
         <Link
-          href={`/markets/${market.id}`}
+          to={`/markets/${market.id}`}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {
@@ -232,7 +234,7 @@ export const columns = (
             onSelect(market.id);
           }}
         >
-          {market.tradableInstrument.instrument.code}
+          <UILink>{market.tradableInstrument.instrument.code}</UILink>
         </Link>
       ),
       className: cellClassNames,
@@ -392,7 +394,7 @@ export const columnsPositionMarkets = (
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
   const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLAnchorElement>,
+    event: React.KeyboardEvent<HTMLSpanElement>,
     id: string
   ) => {
     if (event.key === 'Enter' && onSelect) {
@@ -405,7 +407,7 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.Market,
       value: (
         <Link
-          href={`/markets/${market.id}`}
+          to={`/markets/${market.id}`}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {
@@ -413,7 +415,7 @@ export const columnsPositionMarkets = (
             onSelect(market.id);
           }}
         >
-          {market.tradableInstrument.instrument.code}
+          <UILink>{market.tradableInstrument.instrument.code}</UILink>
         </Link>
       ),
       className: cellClassNames,

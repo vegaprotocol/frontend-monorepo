@@ -1,7 +1,7 @@
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockGQLSubscription();
-  cy.visit('/markets/market-0');
+  cy.visit('/#/markets/market-0');
 });
 
 describe('trades', { tags: '@smoke' }, () => {

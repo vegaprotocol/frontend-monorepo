@@ -15,28 +15,25 @@ import {
 import { Schema } from '@vegaprotocol/types';
 import {
   AsyncRenderer,
-  Link as UiToolkitLink,
   Tab,
   Tabs,
+  Link as UiToolkitLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { Header, HeaderStat } from '../../components/header';
 
 import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
+import { Link, useParams } from 'react-router-dom';
 
-const LiquidityPage = ({ id }: { id?: string }) => {
-  const { query } = useRouter();
+export const Liquidity = () => {
+  const params = useParams();
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
 
-  // Default to first marketId query item if found
-  const marketId =
-    id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
+  const marketId = params.marketId;
 
   const { data: marketProvision } = useDataProvider({
     dataProvider: marketLiquidityDataProvider,
@@ -139,7 +136,7 @@ const LiquidityPage = ({ id }: { id?: string }) => {
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <Link href={`/markets/${marketId}`} passHref={true}>
+            <Link to={`/markets/${marketId}`}>
               <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
                 {`${
                   marketProvision?.market?.tradableInstrument.instrument.name
@@ -223,8 +220,3 @@ const LiquidityPage = ({ id }: { id?: string }) => {
     </AsyncRenderer>
   );
 };
-LiquidityPage.getInitialProps = () => ({
-  page: 'liquidity',
-});
-
-export default LiquidityPage;

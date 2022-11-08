@@ -1,5 +1,5 @@
-import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
@@ -13,8 +13,9 @@ import { AppLoader } from '../components/app-loader';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
+import { HashRouter, useLocation } from 'react-router-dom';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -31,6 +32,7 @@ const Title = () => {
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
   }, [pageTitle, networkName]);
+
   return (
     <Head>
       <title>{title}</title>
@@ -38,9 +40,11 @@ const Title = () => {
   );
 };
 
-function AppBody({ Component, pageProps }: AppProps) {
+function AppBody({ Component }: AppProps) {
+  const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
+
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
@@ -54,8 +58,8 @@ function AppBody({ Component, pageProps }: AppProps) {
             toggleTheme={toggleTheme}
             navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
           />
-          <main data-testid={pageProps.page}>
-            <Component {...pageProps} />
+          <main data-testid={location.pathname}>
+            <Component />
           </main>
           <Footer />
           <DialogsContainer />
@@ -66,12 +70,25 @@ function AppBody({ Component, pageProps }: AppProps) {
 }
 
 function VegaTradingApp(props: AppProps) {
+  const [mounted, setMounted] = useState(false);
+
+  // Hash router requires access to the document object. At compile time that doesn't exist
+  // so we need to ensure client side rendering only from this point onwards in
+  // the component tree
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
-    <EnvironmentProvider>
-      <VegaWalletProvider>
-        <AppBody {...props} />
-      </VegaWalletProvider>
-    </EnvironmentProvider>
+    <HashRouter>
+      <EnvironmentProvider>
+        <VegaWalletProvider>
+          <AppBody {...props} />
+        </VegaWalletProvider>
+      </EnvironmentProvider>
+    </HashRouter>
   );
 }
 

@@ -19,7 +19,9 @@ describe('Console - market list - live env', { tags: '@live' }, () => {
   });
 
   it('shows the market list page', () => {
-    cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
+    cy.get('main', { timeout: 20000 }).then((el) => {
+      expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
+    }); // Wait for page to be rendered to before checking url
 
     // Overlay should be shown
     cy.getByTestId(selectMarketOverlay).should('exist');

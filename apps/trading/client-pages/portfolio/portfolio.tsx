@@ -11,16 +11,18 @@ import { DepositsContainer } from './deposits-container';
 import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
 import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
-import { AccountsContainer } from './accounts-container';
 import { LedgerContainer } from '@vegaprotocol/ledger';
+import { AccountsContainer } from '../../components/accounts-container';
 
-const Portfolio = () => {
+export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
+
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
+
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
@@ -78,12 +80,6 @@ const Portfolio = () => {
     </div>
   );
 };
-
-Portfolio.getInitialProps = () => ({
-  page: 'portfolio',
-});
-
-export default Portfolio;
 
 interface PortfolioGridChildProps {
   children: ReactNode;

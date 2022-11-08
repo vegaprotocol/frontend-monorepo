@@ -17,7 +17,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
 
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();
 
     // Withdraw page requires vega wallet connection
