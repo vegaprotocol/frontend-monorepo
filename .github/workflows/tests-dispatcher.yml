@@ -25,8 +25,8 @@ jobs:
   echo:
     runs-on: ubuntu-latest
     steps:
-      - name: echo project
-        run: echo ${{ inputs.project }}
+      - name: echo everything
+        run: echo ${{ inputs.project }} ${{ inputs.vega-version }} ${{ inputs.tags }}
 
   run-console-lite-e2e:
     if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
