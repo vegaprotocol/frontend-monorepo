@@ -64,7 +64,7 @@ jobs:
     uses: ./.github/workflows/tests-dispatcher.yml
     secrets: inherit
     with:
-      project: ${{ needs.manual.outputs.projects }}
-      vega-version: ${{needs.manual.outputs.vega-version}}
-      gobin: ${{needs.manual.outputs.gobin}}
+      project: ${{ needs.pr.outputs.projects }}
+      vega-version: ${{needs.pr.outputs.vega-version}}
+      gobin: ${{needs.pr.outputs.gobin}}
       tags: "--env.grepTags='@smoke'"
