@@ -3,6 +3,10 @@ name: Cypress - token
 on:
   workflow_call:
     inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
       vega-version:
         required: true
         type: string
@@ -19,6 +23,7 @@ on:
 
 jobs:
   token-e2e:
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     timeout-minutes: 60
     steps:
