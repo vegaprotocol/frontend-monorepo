@@ -3,6 +3,10 @@ name: Cypress - explorer
 on:
   workflow_call:
     inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
       vega-version:
         required: true
         type: string
@@ -23,6 +27,7 @@ on:
 
 jobs:
   explorer-e2e:
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
