@@ -56,7 +56,7 @@ jobs:
       trigger: ${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }}
 
   run-token-e2e:
-    uses: ./.github/workflows/cypress-token-e2e.yml
+    uses: ./.github/workflows/error.yml
     secrets: inherit
     with:
       trigger: ${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }}
