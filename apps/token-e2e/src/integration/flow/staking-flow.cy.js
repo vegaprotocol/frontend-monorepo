@@ -365,7 +365,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-        cy.get(totalStake, epochTimeout).should('have.text', '2');
+        cy.get(totalStake, epochTimeout).should('contain.text', '2');
         cy.get(stakeShare, epochTimeout).should('have.text', '100%');
 
         cy.navigate_to('staking');
@@ -543,6 +543,7 @@ context(
           txTimeout
         );
 
+        cy.close_staking_dialog();
         cy.staking_page_disassociate_all_tokens('wallet');
 
         cy.get(ethWalletContainer).within(() => {
@@ -596,7 +597,7 @@ context(
           2.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_disassociate_all_tokens('contract');
 
         cy.get(ethWalletContainer).within(() => {
@@ -648,7 +649,7 @@ context(
           2.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_disassociate_tokens('1');
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
@@ -696,7 +697,7 @@ context(
           3.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_associate_tokens('4');
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -732,7 +733,7 @@ context(
           3.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_associate_tokens('4', { type: 'contract' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -768,7 +769,7 @@ context(
           3.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_associate_tokens('4', { type: 'contract' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -804,8 +805,7 @@ context(
           0.0,
           txTimeout
         );
-
-        cy.navigate_to('staking');
+        cy.close_staking_dialog();
 
         cy.click_on_validator_from_list(1);
 
@@ -816,7 +816,7 @@ context(
           0.0,
           txTimeout
         );
-
+        cy.close_staking_dialog();
         cy.staking_page_associate_tokens('6');
 
         cy.get(vegaWallet).within(() => {
@@ -860,8 +860,7 @@ context(
           1.0,
           txTimeout
         );
-
-        cy.navigate_to('staking');
+        cy.close_staking_dialog();
 
         cy.click_on_validator_from_list(0);
 
