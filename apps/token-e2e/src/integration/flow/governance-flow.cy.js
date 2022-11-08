@@ -414,8 +414,6 @@ context(
               .should('be.visible');
           }
         );
-        // 3001-VOTE-043
-        cy.contains('3 days left to vote').should('be.visible');
       });
 
       it('Newly created proposal details - shows default status set to fail', function () {
@@ -425,7 +423,6 @@ context(
         cy.get_submitted_proposal_from_proposal_list().within(() =>
           cy.get(viewProposalButton).click()
         );
-        cy.contains('currently set to fail').should('be.visible');
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
