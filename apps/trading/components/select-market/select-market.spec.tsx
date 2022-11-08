@@ -6,20 +6,13 @@ import {
   SelectMarketLandingTable,
 } from './select-market';
 
-import type { ReactNode } from 'react';
 import type {
   MarketWithCandles,
   MarketWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
+import { MemoryRouter } from 'react-router-dom';
 type Market = MarketWithCandles & MarketWithData;
-
-jest.mock(
-  'next/link',
-  () =>
-    ({ children }: { children: ReactNode }) =>
-      children
-);
 
 type PartialMarket = Partial<
   Omit<Market, 'data'> & { data: Partial<MarketData> }
@@ -157,11 +150,13 @@ describe('SelectMarket', () => {
     const onSelect = jest.fn();
     const onCellClick = jest.fn();
     const { container } = render(
-      <SelectAllMarketsTableBody
-        markets={[MARKET_A as Market, MARKET_B as Market]}
-        onCellClick={onCellClick}
-        onSelect={onSelect}
-      />
+      <MemoryRouter>
+        <SelectAllMarketsTableBody
+          markets={[MARKET_A as Market, MARKET_B as Market]}
+          onCellClick={onCellClick}
+          onSelect={onSelect}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
@@ -175,11 +170,13 @@ describe('SelectMarket', () => {
     const onCellClick = jest.fn();
 
     render(
-      <SelectMarketLandingTable
-        markets={[MARKET_A as Market, MARKET_B as Market]}
-        onCellClick={onCellClick}
-        onSelect={onSelect}
-      />
+      <MemoryRouter>
+        <SelectMarketLandingTable
+          markets={[MARKET_A as Market, MARKET_B as Market]}
+          onCellClick={onCellClick}
+          onSelect={onSelect}
+        />
+      </MemoryRouter>
     );
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');

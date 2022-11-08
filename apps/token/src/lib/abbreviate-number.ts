@@ -1,11 +1,9 @@
+import { getUserLocale } from '@vegaprotocol/react-helpers';
 import type { BigNumber } from './bignumber';
 
 export const getAbbreviatedNumber = (num: BigNumber) => {
-  const number = num.toNumber();
-  if (number < 1000) {
-    return Number(num.toFixed()).toLocaleString();
-  } else if (number < 1000000) {
-    return Number((number / 1000).toFixed()).toLocaleString() + 'K';
-  }
-  return Number((number / 1000000).toFixed()).toLocaleString() + 'M';
+  return Intl.NumberFormat(getUserLocale(), {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(num.toNumber());
 };

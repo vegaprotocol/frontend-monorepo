@@ -16,15 +16,25 @@ export const Link = ({ className, children, ...props }: LinkProps) => {
     'cursor-pointer': props['aria-disabled'] !== true,
     'opacity-50 pointer-events-none': props['aria-disabled'] === true,
   });
+  const shared = {
+    role: 'link',
+    'data-testid': 'link',
+    referrerPolicy: 'strict-origin' as const,
+    className: anchorClassName,
+  };
+
+  // if no href is passed just render a span, this is so that we can wrap an
+  // element with our links styles with a react router link compoment
+  if (!props.href) {
+    return (
+      <span {...shared} {...props}>
+        {children}
+      </span>
+    );
+  }
 
   return (
-    <a
-      role="link"
-      data-testid="link"
-      referrerPolicy="strict-origin"
-      className={anchorClassName}
-      {...props}
-    >
+    <a {...shared} {...props}>
       {children}
     </a>
   );

@@ -1,24 +1,9 @@
-import { gql, useQuery } from '@apollo/client';
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
-import type { NetworkParams as NetworkParamsResponse } from './__generated__/NetworkParams';
-
-export const NETWORK_PARAMETERS_QUERY = gql`
-  query NetworkParams {
-    networkParameters {
-      key
-      value
-    }
-  }
-`;
-
-export const NETWORK_PARAMETER_QUERY = gql`
-  query NetworkParam($key: String!) {
-    networkParameter(key: $key) {
-      key
-      value
-    }
-  }
-`;
+import {
+  useNetworkParamQuery,
+  useNetworkParamsQuery,
+} from './__generated___/NetworkParams';
 
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
@@ -126,16 +111,14 @@ type Result = {
 };
 
 export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
-  const { data, loading, error } = useQuery<NetworkParamsResponse, never>(
-    NETWORK_PARAMETERS_QUERY
-  );
+  const { data, loading, error } = useNetworkParamsQuery();
 
   const paramsObj = useMemo(() => {
-    if (!data?.networkParameters) return null;
-    return data.networkParameters
+    if (!data?.networkParametersConnection.edges) return null;
+    return compact(data.networkParametersConnection.edges)
       .map((p) => ({
-        ...p,
-        key: p.key.split('.').join('_'),
+        ...p.node,
+        key: p.node.key.split('.').join('_'),
       }))
       .filter((p) => {
         if (params === undefined || params.length === 0) return true;
@@ -156,11 +139,12 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
 };
 
 export const useNetworkParam = (param: NetworkParamsKey) => {
-  const { data, loading, error } = useQuery(NETWORK_PARAMETER_QUERY, {
+  const { data, loading, error } = useNetworkParamQuery({
     variables: {
       key: param,
     },
   });
+
   return {
     param: data?.networkParameter ? data.networkParameter.value : null,
     loading,

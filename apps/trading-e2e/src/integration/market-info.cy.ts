@@ -4,14 +4,13 @@ import { connectVegaWallet } from '../support/vega-wallet';
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
-const link = 'link';
 const externalLink = 'external-link';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(marketInfoBtn).click();
     cy.wait('@MarketInfo');
@@ -154,7 +153,10 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
     validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
 
-    cy.getByTestId(link).should('have.text', 'View liquidity provision table');
+    cy.getByTestId('view-liquidity-link').should(
+      'have.text',
+      'View liquidity provision table'
+    );
   });
 
   it('oracle displayed', () => {
@@ -220,7 +222,7 @@ describe('market states', { tags: '@smoke' }, function () {
       before(function () {
         cy.mockTradingPage(marketState);
         cy.mockGQLSubscription();
-        cy.visit('/markets/market-0');
+        cy.visit('/#/markets/market-0');
         cy.wait('@Market');
         connectVegaWallet();
       });

@@ -11,10 +11,10 @@ describe('vega wallet', { tags: '@smoke' }, () => {
 
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
   it('can connect', () => {
@@ -79,17 +79,17 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     cy.mockGQL((req) => {
-      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
+      aliasQuery(req, 'NetworkParams', generateNetworkParameters());
     });
     cy.mockGQLSubscription();
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Withdrawals').click();
   });
 
   it('can connect', () => {
-    cy.wait('@NetworkParamsQuery');
+    cy.wait('@NetworkParams');
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();

@@ -37,6 +37,23 @@ export class CollateralBridge {
   default_withdraw_delay() {
     return this.contract.default_withdraw_delay();
   }
+  list_asset(
+    address: string,
+    vegaAssetId: string,
+    lifetimeLimit: string,
+    withdraw_threshold: string,
+    nonce: string,
+    signatures: string
+  ) {
+    return this.contract.list_asset(
+      address,
+      vegaAssetId,
+      lifetimeLimit,
+      withdraw_threshold,
+      nonce,
+      signatures
+    );
+  }
   withdraw_asset(
     assetSource: string,
     amount: string,

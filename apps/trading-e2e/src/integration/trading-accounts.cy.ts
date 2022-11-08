@@ -5,7 +5,7 @@ beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
   cy.mockGQLSubscription();
-  cy.visit('/markets/market-0');
+  cy.visit('/#/markets/market-0');
 });
 
 describe('accounts', { tags: '@smoke' }, () => {

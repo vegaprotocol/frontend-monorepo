@@ -6,6 +6,7 @@ import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalTermsJson } from '../proposal-terms-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
 import { VoteDetails } from '../vote-details';
+import { ListAsset } from '../list-asset';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -15,7 +16,6 @@ export enum ProposalType {
   PROPOSAL_NETWORK_PARAMETER = 'PROPOSAL_NETWORK_PARAMETER',
   PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
 }
-
 interface ProposalProps {
   proposal: Proposal_proposal;
 }
@@ -77,6 +77,15 @@ export const Proposal = ({ proposal }: ProposalProps) => {
         <div className="mb-8">
           <ProposalChangeTable proposal={proposal} />
         </div>
+        {proposal.terms.change.__typename === 'NewAsset' &&
+        proposal.terms.change.source.__typename === 'ERC20' &&
+        proposal.id ? (
+          <ListAsset
+            assetId={proposal.id}
+            withdrawalThreshold={proposal.terms.change.source.withdrawThreshold}
+            lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
+          />
+        ) : null}
         <div className="mb-8">
           <VoteDetails
             proposal={proposal}

@@ -14,7 +14,9 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Market');
 
-      cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
+      cy.get('main', { timeout: 20000 }).then((el) => {
+        expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
+      }); // Wait for page to be rendered to before checking url
 
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
@@ -45,7 +47,7 @@ describe('home', { tags: '@regression' }, () => {
       // the choose market overlay is no longer showing
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
-      cy.url().should('eq', Cypress.config().baseUrl + '/markets/market-0');
+      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-0');
     });
   });
 
@@ -65,7 +67,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
-      cy.url().should('eq', Cypress.config().baseUrl + '/markets');
+      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets');
     });
   });
 });

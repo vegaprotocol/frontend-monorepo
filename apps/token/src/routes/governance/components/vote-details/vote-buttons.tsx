@@ -2,29 +2,29 @@ import { gql, useQuery } from '@apollo/client';
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
+import { useVoteSubmit } from '@vegaprotocol/governance';
+import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import {
   AppStateActionType,
   useAppState,
 } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
+import { VoteState } from './use-user-vote';
+import { ProposalMinRequirements, ProposalUserAction } from '../shared';
+import { VoteTransactionDialog } from './vote-transaction-dialog';
 import type {
   VoteButtonsQuery as VoteButtonsQueryResult,
   VoteButtonsQueryVariables,
 } from './__generated__/VoteButtonsQuery';
-import { VoteState } from './use-user-vote';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { ProposalState, VoteValue } from '@vegaprotocol/types';
-import { ProposalUserAction } from '../shared';
-import { AsyncRenderer, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { ProposalMinRequirements } from '../shared';
-import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
-  castVote: (vote: VoteValue) => void;
   voteDatetime: Date | null;
+  proposalId: string | null;
   proposalState: ProposalState;
   minVoterBalance: string | null;
   spamProtectionMinTokens: string | null;
@@ -74,9 +74,9 @@ interface VoteButtonsProps extends VoteButtonsContainerProps {
 
 export const VoteButtons = ({
   voteState,
-  castVote,
   voteDatetime,
   proposalState,
+  proposalId,
   currentStakeAvailable,
   minVoterBalance,
   spamProtectionMinTokens,
@@ -84,6 +84,7 @@ export const VoteButtons = ({
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
+  const { submit, Dialog } = useVoteSubmit();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
@@ -161,7 +162,7 @@ export const VoteButtons = ({
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);
-    castVote(vote);
+    submit(vote, proposalId);
   }
 
   // Should only render null for a split second while initial vote state
@@ -174,64 +175,56 @@ export const VoteButtons = ({
     return <div>{cantVoteUI}</div>;
   }
 
-  if (voteState === VoteState.Requested) {
-    return <p data-testid="vote-requested">{t('voteRequested')}...</p>;
-  }
-
-  if (voteState === VoteState.Pending) {
-    return <p data-testid="vote-pending">{t('votePending')}...</p>;
-  }
-
-  // If voted show current vote info`
-  if (
-    !changeVote &&
-    (voteState === VoteState.Yes || voteState === VoteState.No)
-  ) {
-    const className =
-      voteState === VoteState.Yes ? 'text-success' : 'text-danger';
-    return (
-      <p data-testid="you-voted">
-        <span>{t('youVoted')}:</span>{' '}
-        <span className={className}>{t(`voteState_${voteState}`)}</span>{' '}
-        {voteDatetime ? (
-          <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
-        ) : null}
-        {proposalVotable ? (
-          <ButtonLink
-            data-testid="change-vote-button"
-            onClick={() => {
-              setChangeVote(true);
-            }}
-          >
-            {t('changeVote')}
-          </ButtonLink>
-        ) : null}
-      </p>
-    );
-  }
-
-  if (!changeVote && voteState === VoteState.Failed) {
-    return <p data-testid="vote-failure">{t('voteError')}</p>;
-  }
-
   return (
-    <div className="flex gap-4" data-testid="vote-buttons">
-      <div className="flex-1">
-        <Button
-          data-testid="vote-for"
-          onClick={() => submitVote(VoteValue.VALUE_YES)}
-        >
-          {t('voteFor')}
-        </Button>
-      </div>
-      <div className="flex-1">
-        <Button
-          data-testid="vote-against"
-          onClick={() => submitVote(VoteValue.VALUE_NO)}
-        >
-          {t('voteAgainst')}
-        </Button>
-      </div>
-    </div>
+    <>
+      {changeVote || (voteState === VoteState.NotCast && proposalVotable) ? (
+        <div className="flex gap-4" data-testid="vote-buttons">
+          <div className="flex-1">
+            <Button
+              data-testid="vote-for"
+              onClick={() => submitVote(VoteValue.VALUE_YES)}
+            >
+              {t('voteFor')}
+            </Button>
+          </div>
+          <div className="flex-1">
+            <Button
+              data-testid="vote-against"
+              onClick={() => submitVote(VoteValue.VALUE_NO)}
+            >
+              {t('voteAgainst')}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        (voteState === VoteState.Yes || voteState === VoteState.No) && (
+          <p data-testid="you-voted">
+            <span>{t('youVoted')}:</span>{' '}
+            <span
+              className={
+                voteState === VoteState.Yes ? 'text-success' : 'text-danger'
+              }
+            >
+              {t(`voteState_${voteState}`)}
+            </span>{' '}
+            {voteDatetime ? (
+              <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
+            ) : null}
+            {proposalVotable ? (
+              <ButtonLink
+                data-testid="change-vote-button"
+                onClick={() => {
+                  setChangeVote(true);
+                  voteState = VoteState.NotCast;
+                }}
+              >
+                {t('changeVote')}
+              </ButtonLink>
+            ) : null}
+          </p>
+        )
+      )}
+      <VoteTransactionDialog voteState={voteState} TransactionDialog={Dialog} />
+    </>
   );
 };

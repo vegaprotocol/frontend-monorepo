@@ -1,22 +1,28 @@
 import { render, screen } from '@testing-library/react';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParametersTable } from './network-parameters';
-import type { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
 
 describe('NetworkParametersTable', () => {
   it('renders correctly when it has network params', () => {
-    const data: NetworkParametersQuery = {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'market.liquidityProvision.minLpStakeQuantumMultiple',
-          value: '1',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'market.fee.factors.infrastructureFee',
-          value: '0.0005',
-        },
-      ],
+    const data: NetworkParamsQuery = {
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'market.liquidityProvision.minLpStakeQuantumMultiple',
+              value: '1',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'market.fee.factors.infrastructureFee',
+              value: '0.0005',
+            },
+          },
+        ],
+      },
     };
     render(<NetworkParametersTable data={data} loading={false} />);
     expect(screen.getByTestId('network-param-header')).toHaveTextContent(
@@ -34,19 +40,25 @@ describe('NetworkParametersTable', () => {
   });
 
   it('renders the rows in ascending order', () => {
-    const data: NetworkParametersQuery = {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'market.fee.factors.infrastructureFee',
-          value: '0.0005',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'market.liquidityProvision.minLpStakeQuantumMultiple',
-          value: '1',
-        },
-      ],
+    const data: NetworkParamsQuery = {
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'market.fee.factors.infrastructureFee',
+              value: '0.0005',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'market.liquidityProvision.minLpStakeQuantumMultiple',
+              value: '1',
+            },
+          },
+        ],
+      },
     };
     render(<NetworkParametersTable data={data} loading={false} />);
     expect(screen.getByTestId('network-param-header')).toHaveTextContent(

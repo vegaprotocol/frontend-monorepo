@@ -32,10 +32,8 @@ const AccountsManager = () => {
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
+    updateOnInit: true,
   });
-  if (!dataRef.current && data) {
-    dataRef.current = data;
-  }
   const getRows = async ({
     successCallback,
     startRow,

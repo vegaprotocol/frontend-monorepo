@@ -1,11 +1,11 @@
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
-import { RewardsIndex } from './home';
+import { RewardsPage } from './home';
 
 const Rewards = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
 
-  return <RewardsIndex />;
+  return <RewardsPage />;
 };
 
 export default Rewards;

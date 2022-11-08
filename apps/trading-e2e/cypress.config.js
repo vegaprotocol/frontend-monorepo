@@ -55,7 +55,7 @@ module.exports = defineConfig({
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
     TRADING_MODE_LINK:
-      'https://docs.vega.xyz/docs/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring',
+      'https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring',
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,

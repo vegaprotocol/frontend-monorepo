@@ -17,14 +17,13 @@ import {
   Accordion,
   AsyncRenderer,
   ExternalLink,
-  Link as UiToolkitLink,
+  Link as UILink,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import pick from 'lodash/pick';
-import Link from 'next/link';
 import { useMemo } from 'react';
-import { generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 
 import { getMarketExpiryDateFormatted } from '../market-expires';
 import { MarketInfoTable } from './info-key-value-table';
@@ -319,10 +318,12 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           }
           assetSymbol={assetSymbol}
         >
-          <Link passHref={true} href={`/liquidity/${market.id}`}>
-            <UiToolkitLink onClick={() => onSelect(market.id)}>
-              {t('View liquidity provision table')}
-            </UiToolkitLink>
+          <Link
+            to={`/liquidity/${market.id}`}
+            onClick={() => onSelect(market.id)}
+            data-testid="view-liquidity-link"
+          >
+            <UILink>{t('View liquidity provision table')}</UILink>
           </Link>
         </MarketInfoTable>
       ),

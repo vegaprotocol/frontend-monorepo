@@ -1,9 +1,9 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
-import { NETWORK_PARAMETERS_QUERY } from '@vegaprotocol/react-helpers';
 import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
+import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { CurrentProposalStatus } from './current-proposal-status';
@@ -11,22 +11,28 @@ import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
 const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
-    query: NETWORK_PARAMETERS_QUERY,
+    query: NetworkParamsDocument,
   },
   result: {
     data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateNetParam.requiredMajority',
-          value: '0.00000001',
-        },
-        {
-          __typename: 'NetworkParameter',
-          key: 'governance.proposal.updateNetParam.requiredParticipation',
-          value: '0.000000001',
-        },
-      ],
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateNetParam.requiredMajority',
+              value: '0.00000001',
+            },
+          },
+          {
+            node: {
+              __typename: 'NetworkParameter',
+              key: 'governance.proposal.updateNetParam.requiredParticipation',
+              value: '0.000000001',
+            },
+          },
+        ],
+      },
     },
   },
 };

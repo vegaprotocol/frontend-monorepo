@@ -1,12 +1,11 @@
 import { act, render } from '@testing-library/react';
 import { AccountManager } from './accounts-manager';
+import * as helpers from '@vegaprotocol/react-helpers';
 
-const mockReload = jest.fn();
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
   useDataProvider: jest.fn(() => ({
     data: [],
-    reload: mockReload,
   })),
 }));
 
@@ -15,10 +14,14 @@ describe('AccountManager', () => {
     const { rerender } = render(
       <AccountManager partyId="partyOne" onClickAsset={jest.fn} />
     );
-    expect(mockReload).not.toHaveBeenCalled();
+    expect(
+      (helpers.useDataProvider as jest.Mock).mock.calls[0][0].variables.partyId
+    ).toEqual('partyOne');
     await act(() => {
       rerender(<AccountManager partyId="partyTwo" onClickAsset={jest.fn} />);
     });
-    expect(mockReload).toHaveBeenCalledWith(true);
+    expect(
+      (helpers.useDataProvider as jest.Mock).mock.calls[1][0].variables.partyId
+    ).toEqual('partyTwo');
   });
 });

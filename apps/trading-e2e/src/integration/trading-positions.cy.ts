@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('positions', { tags: '@smoke' }, () => {
   it('renders positions on trading page', () => {
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.getByTestId('Positions').click();
     cy.getByTestId('tab-positions').contains('Please connect Vega wallet');
 
@@ -17,7 +17,7 @@ describe('positions', { tags: '@smoke' }, () => {
   });
 
   it('renders positions on portfolio page', () => {
-    cy.visit('/portfolio');
+    cy.visit('/#/portfolio');
     connectVegaWallet();
     validatePositionsDisplayed();
   });
