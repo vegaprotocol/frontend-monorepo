@@ -5,7 +5,7 @@ inputs:
     description: 'Wallet password'
   capsule:
     description: 'Is Capsule network used'
-    default: false
+    default: 'false'
 runs:
   using: 'composite'
   steps:
@@ -29,17 +29,17 @@ runs:
       shell: bash
       run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
 
-    - name: Import fairground network
+    - name: Import network
       shell: bash
-      if: ${{ inputs.capsule==false }}
+      if: ${{ inputs.capsule=='false' }}
       run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
 
     - name: Start service using fairground network
       shell: bash
-      if: ${{ inputs.capsule==false }}
+      if: ${{ inputs.capsule=='false' }}
       run: vegawallet service run --network stagnet3 --automatic-consent --no-version-check --home ~/.vegacapsule/testnet/wallet &
 
     - name: Start service using capsule network
       shell: bash
-      if: ${{ inputs.capsule==true }}
+      if: ${{ inputs.capsule=='true' }}
       run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
