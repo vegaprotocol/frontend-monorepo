@@ -9,7 +9,6 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
   },
-  "files": [],
   "include": [],
   "references": [
     {
