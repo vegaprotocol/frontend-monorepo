@@ -20,6 +20,9 @@ jobs:
   pr:
     runs-on: ubuntu-latest
     steps:
+      - name: test
+        run: echo 'test'
+
       # Checkout front ends
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
