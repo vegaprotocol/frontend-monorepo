@@ -32,7 +32,7 @@ jobs:
       - run: echo STATS=${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }} >> $GITHUB_ENV
       - run: echo TOKEN=${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }} >> $GITHUB_ENV
       - run: echo TRADING=${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }} >> $GITHUB_ENV
-    output:
+    outputs:
       console-lite: ${{env.CONSOLE_LITE}}
       explorer: ${{env.EXPLORER}}
       liquidity: ${{env.LIQUIDITY}}
