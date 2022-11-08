@@ -22,6 +22,11 @@ on:
         type: boolean
 
 jobs:
+  echo:
+    - steps:
+        - name: echo project
+          run: echo ${{ inputs.project }}
+
   run-console-lite-e2e:
     if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
     uses: ./.github/workflows/cypress-console-lite-e2e.yml
