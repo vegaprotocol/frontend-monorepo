@@ -30,9 +30,7 @@ export const WithdrawFormContainer = ({
         toBigNum(account.balance, account.asset.decimals).isGreaterThan(0)
     )
     .map((account) => account.asset);
-
   const assets = filteredAsset?.length ? filteredAsset : null;
-
   return (
     <AsyncRenderer
       loading={loading}

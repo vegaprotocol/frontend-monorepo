@@ -208,7 +208,6 @@ describe('WithdrawFormContainer', () => {
 
   it('should filter out zero balance account assets', () => {
     mockData = [{ ...account1 }, { ...account2, balance: '0' }];
-    console.log('mockData', mockData);
     render(
       <MockedProvider>
         <WithdrawFormContainer {...props} />
