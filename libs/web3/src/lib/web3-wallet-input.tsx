@@ -34,7 +34,10 @@ export const Web3WalletInput = ({ inputProps }: Web3WalletInputProps) => {
           {t('Connected with ')}
           <span className="font-mono">{account}</span>
         </p>
-        <Button onClick={() => connector.deactivate()}>
+        <Button
+          onClick={() => connector.deactivate()}
+          data-testid="disconnect-ethereum-wallet"
+        >
           {t('Disconnect Ethereum Wallet')}
         </Button>
       </Dialog>
