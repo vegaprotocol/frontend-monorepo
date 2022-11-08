@@ -5,7 +5,8 @@ on:
     inputs:
       trigger:
         required: true
-        default: 'false'
+        type: boolean
+        default: false
       vega-version:
         required: true
         type: string
@@ -26,7 +27,7 @@ on:
 
 jobs:
   explorer-e2e:
-    if: ${{ inputs.trigger == 'true' }}
+    if: ${{ inputs.trigger == true }}
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
