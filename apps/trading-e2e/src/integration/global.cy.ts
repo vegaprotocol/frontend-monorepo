@@ -28,6 +28,8 @@ describe('vega wallet', { tags: '@smoke' }, () => {
       .click();
     cy.getByTestId(form).find('#wallet').click().type(walletName);
     cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
+    cy.log('wallet name', walletName);
+    cy.log('wallet passphrase', walletPassphrase);
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
     cy.getByTestId(manageVegaBtn).should('exist');
   });
