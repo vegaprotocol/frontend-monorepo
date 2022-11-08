@@ -5,8 +5,8 @@ on:
     inputs:
       trigger:
         required: true
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
       vega-version:
         required: true
         type: string
@@ -23,7 +23,7 @@ on:
 
 jobs:
   trading-e2e:
-    if: ${{ inputs.trigger == true }}
+    if: ${{ inputs.trigger == 'true' }}
     timeout-minutes: 30
     runs-on: self-hosted
     steps:

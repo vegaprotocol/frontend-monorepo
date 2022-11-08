@@ -5,13 +5,13 @@ on:
     inputs:
       trigger:
         required: true
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
 
 jobs:
   stats-e2e:
     runs-on: self-hosted
-    if: ${{ inputs.trigger == true }}
+    if: ${{ inputs.trigger == 'true' }}
     timeout-minutes: 10
     steps:
       # Checkout front ends

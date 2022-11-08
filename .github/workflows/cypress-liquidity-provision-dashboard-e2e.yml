@@ -5,13 +5,13 @@ on:
     inputs:
       trigger:
         required: true
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
 
 jobs:
   liquidity-provision-dashboard-e2e:
     timeout-minutes: 10
-    if: ${{ inputs.trigger == true }}
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     steps:
       # Checkout front ends
