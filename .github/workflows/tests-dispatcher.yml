@@ -23,6 +23,7 @@ on:
 
 jobs:
   echo:
+    runs-on: ubuntu-latest
     steps:
       - name: echo project
         run: echo ${{ github.event.inputs.project }}
