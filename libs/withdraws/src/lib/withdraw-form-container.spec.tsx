@@ -1,9 +1,8 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Account } from '@vegaprotocol/accounts';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { Schema as Types } from '@vegaprotocol/types';
-import * as helpers from '@vegaprotocol/react-helpers';
 import { useWeb3React } from '@web3-react/core';
 let mockData: Account[] | null = null;
 jest.mock('@vegaprotocol/react-helpers', () => ({
@@ -15,15 +14,11 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
 jest.mock('@web3-react/core');
 
 describe('WithdrawFormContainer', () => {
-  const submit = jest.fn();
-  const assetId = 'assetId';
-  const partyId = 'partyId';
   const props = {
-    submit,
-    assetId,
-    partyId,
+    submit: jest.fn(),
+    assetId: 'assetId',
+    partyId: 'partyId',
   };
-
   const MOCK_ETH_ADDRESS = '0xcool';
 
   beforeEach(() => {
