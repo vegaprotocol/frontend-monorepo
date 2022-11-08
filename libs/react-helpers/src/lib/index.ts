@@ -10,4 +10,4 @@ export * from './i18n';
 export * from './pagination';
 export * from './remove-0x';
 export * from './time';
-export * from './constants';
+export * from './links';

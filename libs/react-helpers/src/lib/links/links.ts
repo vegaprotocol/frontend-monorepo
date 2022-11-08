@@ -1,8 +1,8 @@
-/** ExternalLinks returns external documentation links that are specific to an environment
+/** createDocsLinks returns external documentation links that are specific to an environment
  * @param {string} docsUrl - the documentation URL for the environment ex. https://docs.vega.xyz/testnet or https://docs.vega.xyz (NX_VEGA_DOCS_URL)
  */
 
-export const DocsLinks = (docsUrl = 'https://docs.vega.xyz/testnet') => ({
+export const createDocsLinks = (docsUrl: string) => ({
   AUCTION_TYPE_OPENING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-opening`,
   AUCTION_TYPE_LIQUIDITY_MONITORING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring`,
   AUCTION_TYPE_PRICE_MONITORING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,
@@ -10,11 +10,6 @@ export const DocsLinks = (docsUrl = 'https://docs.vega.xyz/testnet') => ({
 });
 
 export const ExternalLinks = {
-  SUSHI_PAIRS: 'https://analytics.sushi.com/pairs/',
-  SUSHI_ONSEN_MENU: 'https://app.sushi.com/farm',
-  SUSHI_ONSEN_WHAT_IS:
-    'https://docs.sushi.com/products/yield-farming/what-is-onsen',
-  SUSHI_ONSEN_FAQ: 'https://docs.sushi.com/faq-1/onsen-faq',
   FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
   GITHUB: 'https://github.com/vegaprotocol/token-frontend',
   DISCORD: 'https://vega.xyz/discord',

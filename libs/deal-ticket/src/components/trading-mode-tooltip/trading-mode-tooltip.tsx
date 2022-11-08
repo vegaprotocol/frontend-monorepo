@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { DocsLinks } from '@vegaprotocol/react-helpers';
+import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';
 
 import type { ReactNode } from 'react';
@@ -19,6 +19,7 @@ export const TradingModeTooltip = ({
   compiledGrid,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const vegaDocsUrl = VEGA_DOCS_URL || 'http://docs.vega.xyz/testnet';
   switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
@@ -38,7 +39,9 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <ExternalLink href={DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}>
+            <ExternalLink
+              href={createDocsLinks(vegaDocsUrl).AUCTION_TYPE_OPENING}
+            >
               {t('Find out more')}
             </ExternalLink>
           </p>
@@ -59,7 +62,8 @@ export const TradingModeTooltip = ({
                 </span>{' '}
                 <ExternalLink
                   href={
-                    DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_LIQUIDITY_MONITORING
+                    createDocsLinks(vegaDocsUrl)
+                      .AUCTION_TYPE_LIQUIDITY_MONITORING
                   }
                 >
                   {t('Find out more')}
@@ -77,7 +81,9 @@ export const TradingModeTooltip = ({
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
                 <ExternalLink
-                  href={DocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_PRICE_MONITORING}
+                  href={
+                    createDocsLinks(vegaDocsUrl).AUCTION_TYPE_PRICE_MONITORING
+                  }
                 >
                   {t('Find out more')}
                 </ExternalLink>
