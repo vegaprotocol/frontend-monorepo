@@ -5,7 +5,7 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4200',
     fileServerFolder: '.',
     fixturesFolder: false,
-    specPattern: '**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: '**/global.cy.{js,jsx,ts,tsx}',
     supportFile: './src/support/index.js',
     video: false,
     videosFolder: '../../dist/cypress/apps/trading-e2e/videos',

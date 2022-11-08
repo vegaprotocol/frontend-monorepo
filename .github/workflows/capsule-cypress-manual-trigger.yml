@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set tags
-        run: echo TAGS="--env.grepTags [ ${{ github.event.inputs.tags }} ]" >> $GITHUB_ENV
+        run: echo TAGS="--env.grepTags '[ ${{ github.event.inputs.tags }} ]'" >> $GITHUB_ENV
 
       - name: Set --skip-nx-cache flag
         if: ${{ github.event.inputs.skip-nx-cache == 'true' }}
