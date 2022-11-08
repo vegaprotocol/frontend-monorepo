@@ -18,4 +18,4 @@ jobs:
       - name: Create config
         run: echo "module.exports = {extends:['@commitlint/config-conventional']};" > commitlint.config.js
       - name: Check PR title
-        run: echo "${{ github.event.pull_request.title }}" | commitlint
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint
