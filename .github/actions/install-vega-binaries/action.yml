@@ -14,18 +14,18 @@ runs:
       if: ${{ inputs.all }}
       shell: bash
       run: |
-        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vega-linux-amd64.zip' -q
+        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vega-linux-amd64.zip'
         unzip vega-linux-amd64.zip -d ${{ inputs.gobin }}
 
     - name: Install date-node binaries
       if: ${{ inputs.all  }}
       shell: bash
       run: |
-        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/data-node-linux-amd64.zip' -q
+        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/data-node-linux-amd64.zip'
         unzip data-node-linux-amd64.zip -d ${{ inputs.gobin }}
 
     - name: Install Vega wallet binaries
       shell: bash
       run: |
-        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vegawallet-linux-amd64.zip' -q
+        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vegawallet-linux-amd64.zip'
         unzip vegawallet-linux-amd64.zip -d ${{ inputs.gobin }}

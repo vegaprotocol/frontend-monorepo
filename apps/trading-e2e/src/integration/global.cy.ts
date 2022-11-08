@@ -17,7 +17,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
     cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
-  it('can connect', () => {
+  it.only('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.contains('Desktop wallet app');
     cy.contains('Command line wallet app');
