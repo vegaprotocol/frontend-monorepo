@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import uniqBy from 'lodash/uniqBy';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useDataProvider, t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
-import { t } from '@vegaprotocol/react-helpers';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
@@ -24,10 +23,12 @@ export const WithdrawFormContainer = ({
     variables,
     noUpdate: true,
   });
-  const assets = uniqBy(
-    data?.map((account) => account.asset),
-    'id'
-  );
+  const assets = data
+    ? uniqBy(
+        data.map((account) => account.asset),
+        'id'
+      )
+    : null;
 
   return (
     <AsyncRenderer
