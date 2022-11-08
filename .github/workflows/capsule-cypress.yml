@@ -54,6 +54,9 @@ jobs:
         run: echo AFFECTED=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
         working-directory: frontend-monorepo
 
+      - name: echo affected
+        run: echo ${{ env.AFFECTED }}
+
     outputs:
       projects: ${{ env.AFFECTED }}
       vega-version: ${{ env.VEGA_VERSION }}
