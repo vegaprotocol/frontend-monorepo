@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import uniqBy from 'lodash/uniqBy';
-import { useDataProvider, t } from '@vegaprotocol/react-helpers';
+import { useDataProvider, t, toBigNum } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
+import { Schema as Types } from '@vegaprotocol/types';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
@@ -21,14 +21,17 @@ export const WithdrawFormContainer = ({
   const { data, loading, error } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables,
-    noUpdate: true,
   });
-  const assets = data
-    ? uniqBy(
-        data.map((account) => account.asset),
-        'id'
-      )
-    : null;
+
+  const filteredAsset = data
+    ?.filter(
+      (account) =>
+        account.type === Types.AccountType.ACCOUNT_TYPE_GENERAL &&
+        toBigNum(account.balance, account.asset.decimals).isGreaterThan(0)
+    )
+    .map((account) => account.asset);
+
+  const assets = filteredAsset?.length ? filteredAsset : null;
 
   return (
     <AsyncRenderer

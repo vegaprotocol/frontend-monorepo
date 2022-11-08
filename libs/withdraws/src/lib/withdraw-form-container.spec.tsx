@@ -21,6 +21,74 @@ describe('WithdrawFormContainer', () => {
   };
   const MOCK_ETH_ADDRESS = '0xcool';
 
+  const account1: Account = {
+    type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+    balance: '200099689',
+    market: null,
+    asset: {
+      id: 'assetId-1',
+      name: 'tBTC TEST',
+      symbol: 'tBTC',
+      decimals: 5,
+      quantum: '1',
+      source: {
+        __typename: 'ERC20',
+        contractAddress: '0x1d525fB145Af5c51766a89706C09fE07E6058D1D',
+        lifetimeLimit: '0',
+        withdrawThreshold: '0',
+      },
+      status: Types.AssetStatus.STATUS_ENABLED,
+      infrastructureFeeAccount: {
+        balance: '1',
+        __typename: 'AccountBalance',
+      },
+      globalRewardPoolAccount: {
+        balance: '1',
+        __typename: 'AccountBalance',
+      },
+      takerFeeRewardAccount: null,
+      makerFeeRewardAccount: null,
+      lpFeeRewardAccount: null,
+      marketProposerRewardAccount: null,
+      __typename: 'Asset',
+    },
+    __typename: 'AccountBalance',
+  };
+
+  const account2: Account = {
+    type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+    balance: '199994240',
+    market: null,
+    asset: {
+      id: 'assetId-2',
+      name: 'tUSDC TEST',
+      symbol: 'tUSDC',
+      decimals: 5,
+      quantum: '1',
+      source: {
+        __typename: 'ERC20',
+        contractAddress: '0xdBa6373d0DAAAA44bfAd663Ff93B1bF34cE054E9',
+        lifetimeLimit: '0',
+        withdrawThreshold: '0',
+      },
+      status: Types.AssetStatus.STATUS_ENABLED,
+      infrastructureFeeAccount: {
+        balance: '2',
+        __typename: 'AccountBalance',
+      },
+      globalRewardPoolAccount: {
+        balance: '0',
+        __typename: 'AccountBalance',
+      },
+      takerFeeRewardAccount: null,
+      makerFeeRewardAccount: null,
+      lpFeeRewardAccount: null,
+      marketProposerRewardAccount: null,
+      __typename: 'Asset',
+    },
+    __typename: 'AccountBalance',
+  };
+
   beforeEach(() => {
     (useWeb3React as jest.Mock).mockReturnValue({ account: MOCK_ETH_ADDRESS });
   });
@@ -29,72 +97,8 @@ describe('WithdrawFormContainer', () => {
   });
   it('should be properly rendered', () => {
     mockData = [
-      {
-        type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-        balance: '200099689',
-        market: null,
-        asset: {
-          id: 'assetId-1',
-          name: 'tBTC TEST',
-          symbol: 'tBTC',
-          decimals: 5,
-          quantum: '1',
-          source: {
-            __typename: 'ERC20',
-            contractAddress: '0x1d525fB145Af5c51766a89706C09fE07E6058D1D',
-            lifetimeLimit: '0',
-            withdrawThreshold: '0',
-          },
-          status: Types.AssetStatus.STATUS_ENABLED,
-          infrastructureFeeAccount: {
-            balance: '1',
-            __typename: 'AccountBalance',
-          },
-          globalRewardPoolAccount: {
-            balance: '1',
-            __typename: 'AccountBalance',
-          },
-          takerFeeRewardAccount: null,
-          makerFeeRewardAccount: null,
-          lpFeeRewardAccount: null,
-          marketProposerRewardAccount: null,
-          __typename: 'Asset',
-        },
-        __typename: 'AccountBalance',
-      },
-      {
-        type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-        balance: '199994240',
-        market: null,
-        asset: {
-          id: 'assetId-2',
-          name: 'tUSDC TEST',
-          symbol: 'tUSDC',
-          decimals: 5,
-          quantum: '1',
-          source: {
-            __typename: 'ERC20',
-            contractAddress: '0xdBa6373d0DAAAA44bfAd663Ff93B1bF34cE054E9',
-            lifetimeLimit: '0',
-            withdrawThreshold: '0',
-          },
-          status: Types.AssetStatus.STATUS_ENABLED,
-          infrastructureFeeAccount: {
-            balance: '2',
-            __typename: 'AccountBalance',
-          },
-          globalRewardPoolAccount: {
-            balance: '0',
-            __typename: 'AccountBalance',
-          },
-          takerFeeRewardAccount: null,
-          makerFeeRewardAccount: null,
-          lpFeeRewardAccount: null,
-          marketProposerRewardAccount: null,
-          __typename: 'Asset',
-        },
-        __typename: 'AccountBalance',
-      },
+      { ...account1 },
+      { ...account2 },
       {
         type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
         balance: '201159',
@@ -192,6 +196,33 @@ describe('WithdrawFormContainer', () => {
 
   it('should display no data message', () => {
     mockData = null;
+    render(
+      <MockedProvider>
+        <WithdrawFormContainer {...props} />
+      </MockedProvider>
+    );
+    expect(
+      screen.getByText('You have no assets to withdraw')
+    ).toBeInTheDocument();
+  });
+
+  it('should filter out zero balance account assets', () => {
+    mockData = [{ ...account1 }, { ...account2, balance: '0' }];
+    console.log('mockData', mockData);
+    render(
+      <MockedProvider>
+        <WithdrawFormContainer {...props} />
+      </MockedProvider>
+    );
+    expect(screen.getByTestId('select-asset')).toBeInTheDocument();
+    expect(screen.getAllByRole('option')).toHaveLength(2);
+  });
+
+  it('when no accounts have a balance should should display no data message', () => {
+    mockData = [
+      { ...account1, balance: '0' },
+      { ...account2, balance: '0' },
+    ];
     render(
       <MockedProvider>
         <WithdrawFormContainer {...props} />
