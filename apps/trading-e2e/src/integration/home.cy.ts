@@ -13,7 +13,7 @@ describe('home', { tags: '@regression' }, () => {
     it('redirects to a default market with the landing dialog open', () => {
       cy.visit('/');
       cy.wait('@Market');
-
+      console.log('Just a test');
       cy.get('main', { timeout: 20000 }).then((el) => {
         expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
       }); // Wait for page to be rendered to before checking url

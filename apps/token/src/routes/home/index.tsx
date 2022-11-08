@@ -43,6 +43,7 @@ const Home = ({ name }: RouteChildProps) => {
       </HomeSection>
       <HomeSection>
         <h2>{t('Token Vesting')}</h2>
+        <p> 'this is just a drill' </p>
         <p>
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
