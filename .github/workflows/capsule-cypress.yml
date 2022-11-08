@@ -27,6 +27,9 @@ jobs:
           fetch-depth: 0
           path: './frontend-monorepo'
 
+      - name: echo test
+        run: echo 'test'
+
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
         uses: actions/cache@v3
