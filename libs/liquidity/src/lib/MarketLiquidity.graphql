@@ -24,9 +24,11 @@ query MarketLp($marketId: ID!) {
       market {
         id
       }
+      marketTradingMode
       suppliedStake
       openInterest
       targetStake
+      trigger
       marketValueProxy
     }
   }

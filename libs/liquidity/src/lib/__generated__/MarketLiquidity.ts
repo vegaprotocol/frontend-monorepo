@@ -8,7 +8,7 @@ export type MarketLpQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketLpQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } }, data?: { __typename?: 'MarketData', suppliedStake?: string | null, openInterest: string, targetStake?: string | null, marketValueProxy: string, market: { __typename?: 'Market', id: string } } | null } | null };
+export type MarketLpQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, product: { __typename?: 'Future', settlementAsset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } }, data?: { __typename?: 'MarketData', marketTradingMode: Types.MarketTradingMode, suppliedStake?: string | null, openInterest: string, targetStake?: string | null, trigger: Types.AuctionTrigger, marketValueProxy: string, market: { __typename?: 'Market', id: string } } | null } | null };
 
 export type LiquidityProvisionFieldsFragment = { __typename?: 'LiquidityProvision', createdAt: string, updatedAt?: string | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } };
 
@@ -97,9 +97,11 @@ export const MarketLpDocument = gql`
       market {
         id
       }
+      marketTradingMode
       suppliedStake
       openInterest
       targetStake
+      trigger
       marketValueProxy
     }
   }
