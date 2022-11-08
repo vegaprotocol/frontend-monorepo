@@ -320,7 +320,10 @@ export const Info = ({ market, onSelect }: InfoProps) => {
           assetSymbol={assetSymbol}
         >
           <Link passHref={true} href={`/liquidity/${market.id}`}>
-            <UiToolkitLink onClick={() => onSelect(market.id)}>
+            <UiToolkitLink
+              onClick={() => onSelect(market.id)}
+              data-testid="view-liquidity-link"
+            >
               {t('View liquidity provision table')}
             </UiToolkitLink>
           </Link>

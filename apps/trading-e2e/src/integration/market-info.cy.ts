@@ -4,7 +4,6 @@ import { connectVegaWallet } from '../support/vega-wallet';
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
 const marketTitle = 'accordion-title';
-const link = 'link';
 const externalLink = 'external-link';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
@@ -154,7 +153,10 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(1, 'Supplied Stake', '0.56767 tBTC');
     validateMarketDataRow(2, 'Market Value Proxy', '6.77678 tBTC');
 
-    cy.getByTestId(link).should('have.text', 'View liquidity provision table');
+    cy.getByTestId('view-liquidity-link').should(
+      'have.text',
+      'View liquidity provision table'
+    );
   });
 
   it('oracle displayed', () => {

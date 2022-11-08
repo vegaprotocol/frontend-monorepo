@@ -65,7 +65,9 @@ export const SelectMarketLandingTable = ({
         </table>
       </div>
       <div className="mt-4 text-md">
-        <Link href="/markets">{'Or view full market list'}</Link>
+        <Link href="/markets" data-testid="view-market-list-link">
+          {'Or view full market list'}
+        </Link>
       </div>
     </>
   );
