@@ -23,9 +23,9 @@ on:
 
 jobs:
   echo:
-    - steps:
-        - name: echo project
-          run: echo ${{ inputs.project }}
+    steps:
+      - name: echo project
+        run: echo ${{ inputs.project }}
 
   run-console-lite-e2e:
     if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
