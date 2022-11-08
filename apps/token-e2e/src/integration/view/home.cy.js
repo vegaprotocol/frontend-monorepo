@@ -35,6 +35,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
 
     describe('Navigation tabs', function () {
       it('should have HOME tab', function () {
+        console.log('test');
         cy.get(navSection).within(() => {
           cy.get(navHome).should('be.visible');
         });

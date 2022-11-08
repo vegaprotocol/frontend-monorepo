@@ -14,6 +14,7 @@ describe('simple trading app', { tags: '@smoke' }, () => {
   });
 
   it('render', () => {
+    console.log('test');
     cy.get('#root').should('exist');
   });
 });
