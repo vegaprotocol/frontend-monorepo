@@ -1,8 +1,7 @@
 ---
+name: 'Add Issues To Project Board'
 
-name: "Add Issues To Project Board"
-
-"on":
+'on':
   issues:
     types:
       - opened
@@ -16,7 +15,7 @@ jobs:
   add_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: "Add issue to project board"
+      - name: 'Add issue to project board'
         run: |
           gh api graphql -f query='
             mutation($user:String!, $project:ID!, $issue:ID!) {
