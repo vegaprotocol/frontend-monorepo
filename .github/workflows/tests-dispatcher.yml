@@ -45,7 +45,7 @@ jobs:
     uses: ./.github/workflows/cypress-console-lite-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.console-lite}}
+      trigger: ${{needs.select-test.outputs.console-lite}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
@@ -56,7 +56,7 @@ jobs:
     uses: ./.github/workflows/cypress-explorer-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.explorer}}
+      trigger: ${{needs.select-test.outputs.explorer}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
@@ -68,21 +68,21 @@ jobs:
     uses: ./.github/workflows/cypress-liquidity-provision-dashboard-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.liquidity}}
+      trigger: ${{needs.select-test.outputs.liquidity}}
 
   run-stats-e2e:
     needs: select-test
     uses: ./.github/workflows/cypress-stats-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.stats}}
+      trigger: ${{needs.select-test.outputs.stats}}
 
   run-token-e2e:
     needs: select-test
     uses: ./.github/workflows/cypress-token-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.token}}
+      trigger: ${{needs.select-test.outputs.token}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
@@ -93,7 +93,7 @@ jobs:
     uses: ./.github/workflows/cypress-trading-e2e.yml
     secrets: inherit
     with:
-      trigger: ${{needs.select-test.output.trading}}
+      trigger: ${{needs.select-test.outputs.trading}}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
