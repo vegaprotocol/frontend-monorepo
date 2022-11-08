@@ -10,6 +10,9 @@ on:
         required: false
         type: string
         default: /home/runner/go/bin
+      skip-cache:
+        required: false
+        type: string
       tags:
         required: false
         type: string
@@ -39,6 +42,11 @@ jobs:
             /home/runner/.cache/Cypress
           key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: frontend-monorepo
+
       #######
       ## Build and run Vegacapsule network
       #######
@@ -67,10 +75,9 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx run trading-e2e:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ inputs.tags }}
+        run: npx nx run trading-e2e:e2e ${{ inputs.skip-cache }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ inputs.tags }}
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false

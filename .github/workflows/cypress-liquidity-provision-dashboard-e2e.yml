@@ -1,6 +1,7 @@
 name: Cypress - liquidity provision dashboard
 
 on: workflow_call
+
 jobs:
   liquidity-provision-dashboard-e2e:
     timeout-minutes: 10
@@ -32,4 +33,3 @@ jobs:
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
