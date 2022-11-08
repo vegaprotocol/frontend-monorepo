@@ -1,5 +1,5 @@
 ---
-name: Check that PR titles match a conventional commit
+name: Verify PR title
 
 on:
   pull_request:
