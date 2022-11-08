@@ -22,6 +22,17 @@ on:
         type: boolean
 
 jobs:
+  select-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo CONSOLE_LITE=${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }} >> $GITHUB_ENV
+      - run: echo EXPLORER=${{ contains(inputs.project, 'explorer-e2e') || contains(inputs.project, 'explorer') }} >> $GITHUB_ENV
+      - run: echo LIQUIDITY=${{ contains(inputs.project, 'liquidity-provision-dashboard-e2e') || contains(inputs.project, 'liquidity-provision-dashboard') }} >> $GITHUB_ENV
+      - run: echo STATS=${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }} >> $GITHUB_ENV
+      - run: echo TOKEN=${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }} >> $GITHUB_ENV
+      - run: echo TRADING=${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }} >> $GITHUB_ENV
+      - run: echo " console lite ${{ env.CONSTOLE_LITE }} explorer ${{ env.EXPLORER }}  liquidity ${{ env.LIQUIDITY }} stats ${{ env.STATS }} trading ${{ env.TRADING }} token ${{ env.TOKEN }}
+
   run-console-lite-e2e:
     if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
     uses: ./.github/workflows/cypress-console-lite-e2e.yml
