@@ -37,9 +37,6 @@ context(
       cy.navigate_to('withdrawals');
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
-      waitForAssetsDisplayed(usdtName);
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(4000);
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
