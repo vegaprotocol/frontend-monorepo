@@ -1,18 +1,12 @@
 import { Routes } from '../../route-names';
-import { ButtonLink, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
-import {
-  TableWithTbody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '../../../components/table';
-import { TruncateInline } from '../../../components/truncate/truncate';
 import { t } from '@vegaprotocol/react-helpers';
-import { HighlightedLink } from '../../../components/highlighted-link';
-import type { Result } from '../tendermint-transaction-response.d';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
+import React from 'react';
+import { TruncateInline } from '../../../components/truncate/truncate';
+import { Link } from 'react-router-dom';
 
 interface TxDetailsProps {
-  txData: Result | undefined;
+  txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   className?: string;
 }
@@ -21,54 +15,35 @@ export const txDetailsTruncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
-    return <>{t('Awaiting Tendermint transaction details')}</>;
+    return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
+  const truncatedSubmitter = (
+    <TruncateInline text={pubKey || ''} startChars={5} endChars={5} />
+  );
+
   return (
-    <TableWithTbody className={className}>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Hash')}</TableCell>
-        <TableCell modifier="bordered" data-testid="hash">
-          {txData.hash}
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableHeader scope="row" className="w-[160px]">
-          {t('Submitted by')}
-        </TableHeader>
-        <TableCell modifier="bordered" data-testid="submitted-by">
-          <HighlightedLink to={`/${Routes.PARTIES}/${pubKey}`} text={pubKey} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Block')}</TableCell>
-        <TableCell modifier="bordered" data-testid="block">
-          <HighlightedLink
-            to={`/${Routes.BLOCKS}/${txData.height}`}
-            text={txData.height}
-          />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Encoded txn')}</TableCell>
-        <TableCell
-          modifier="bordered"
-          data-testid="encoded-tnx"
-          className="flex justify-between"
+    <section className="mb-10">
+      <h3 className="text-3xl xl:text-4xl uppercase font-alpha mb-4">
+        {txData.type} by{' '}
+        <Link
+          className="font-bold underline"
+          to={`/${Routes.PARTIES}/${pubKey}`}
         >
-          <TruncateInline
-            text={txData.tx}
-            startChars={txDetailsTruncateLength}
-            endChars={txDetailsTruncateLength}
-          />
-          <CopyWithTooltip text={txData.tx}>
-            <ButtonLink
-              title={t('Copy tx to clipboard')}
-              data-testid="copy-tx-to-clipboard"
-            />
-          </CopyWithTooltip>
-        </TableCell>
-      </TableRow>
-    </TableWithTbody>
+          {truncatedSubmitter}
+        </Link>
+      </h3>
+      <p className="text-xl xl:text-2xl uppercase font-alpha">
+        Block{' '}
+        <Link
+          className="font-bold underline"
+          to={`/${Routes.BLOCKS}/${txData.block}`}
+        >
+          {txData.block}
+        </Link>
+        {', '}
+        Index {txData.index}
+      </p>
+    </section>
   );
 };

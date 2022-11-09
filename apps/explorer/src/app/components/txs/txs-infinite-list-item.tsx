@@ -1,69 +1,79 @@
-import React, { useState } from 'react';
-import {
-  Dialog,
-  Icon,
-  Intent,
-  SyntaxHighlighter,
-} from '@vegaprotocol/ui-toolkit';
+import React from 'react';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { Routes } from '../../routes/route-names';
 import { TxOrderType } from './tx-order-type';
-import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
+import { toHex } from '../search/detect-search';
 
 const TRUNCATE_LENGTH = 14;
 
 export const TxsInfiniteListItem = ({
-  TxHash,
-  PubKey,
-  Type,
-  Command,
-}: ChainExplorerTxResponse) => {
-  const [open, setOpen] = useState(false);
-
-  if (!TxHash || !PubKey || !Type || !Command) {
+  hash,
+  submitter,
+  type,
+  block,
+  index,
+}: Partial<BlockExplorerTransactionResult>) => {
+  if (
+    !hash ||
+    !submitter ||
+    !type ||
+    block === undefined ||
+    index === undefined
+  ) {
     return <div>Missing vital data</div>;
   }
 
   return (
     <div
       data-testid="transaction-row"
-      className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full border-t border-neutral-600 dark:border-neutral-800 py-8 txs-infinite-list-item"
+      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-2"
     >
-      <div className="whitespace-nowrap overflow-scroll" data-testid="tx-hash">
+      <div
+        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        data-testid="tx-hash"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">ID:&nbsp;</span>
         <TruncatedLink
-          to={`/${Routes.TX}/${TxHash}`}
-          text={TxHash}
-          startChars={TRUNCATE_LENGTH}
-          endChars={TRUNCATE_LENGTH}
-        />
-      </div>
-      <div className="whitespace-nowrap overflow-scroll" data-testid="pub-key">
-        <TruncatedLink
-          to={`/${Routes.PARTIES}/${PubKey}`}
-          text={PubKey}
+          to={`/${Routes.TX}/${toHex(hash)}`}
+          text={hash}
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
       </div>
       <div
-        className="flex justify-between whitespace-nowrap overflow-scroll"
-        data-testid="type"
+        className="text-sm col-span-10 xl:col-span-3 leading-none"
+        data-testid="pub-key"
       >
-        <TxOrderType orderType={Type} />
-        <button
-          title="More details"
-          onClick={() => setOpen(true)}
-          data-testid="command-details"
-        >
-          <Icon name="search-template" />
-        </button>
-        <Dialog
-          open={open}
-          onChange={(isOpen) => setOpen(false)}
-          intent={Intent.None}
-        >
-          <SyntaxHighlighter data={JSON.parse(Command)} />
-        </Dialog>
+        <span className="xl:hidden uppercase text-zinc-500">By:&nbsp;</span>
+        <TruncatedLink
+          to={`/${Routes.PARTIES}/${submitter}`}
+          text={submitter}
+          startChars={TRUNCATE_LENGTH}
+          endChars={TRUNCATE_LENGTH}
+        />
+      </div>
+      <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
+        <TxOrderType orderType={type} />
+      </div>
+      <div
+        className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"
+        data-testid="tx-block"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">Block:&nbsp;</span>
+        <TruncatedLink
+          to={`/${Routes.BLOCKS}/${block}`}
+          text={block}
+          startChars={TRUNCATE_LENGTH}
+          endChars={TRUNCATE_LENGTH}
+        />
+      </div>
+      <div
+        className="text-sm col-span-2 xl:col-span-1 leading-none flex items-center"
+        data-testid="tx-index"
+      >
+        <span className="xl:hidden uppercase text-zinc-500">Index:&nbsp;</span>
+        {index}
       </div>
     </div>
   );

@@ -1,17 +1,27 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
-import React from 'react';
+import {
+  t,
+  useFetch,
+  addDecimalsFormatNumber,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { RouteTitle } from '../../../components/route-title';
 import { SubHeading } from '../../../components/sub-heading';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { SyntaxHighlighter, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { Panel } from '../../../components/panel';
+import { InfoPanel } from '../../../components/info-panel';
+import { toNonHex } from '../../../components/search/detect-search';
 import { DATA_SOURCES } from '../../../config';
-import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
 import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
 } from './__generated__/PartyAssetsQuery';
+import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
+import { useTxsData } from '../../../hooks/use-txs-data';
+import { TxsInfiniteList } from '../../../components/txs';
+import { PageHeader } from '../../../components/page-header';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -50,13 +60,19 @@ const PARTY_ASSETS_QUERY = gql`
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
+  const partyId = party ? toNonHex(party) : '';
+  const { isMobile } = useScreenDimensions();
+  const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
+  const filters = `filters[tx.submitter]=${partyId}`;
+  const { hasMoreTxs, loadTxs, error, txsData, loading } = useTxsData({
+    limit: 10,
+    filters,
+  });
 
   const {
     state: { data: partyData },
   } = useFetch<TendermintSearchTransactionResponse>(
-    `${
-      DATA_SOURCES.tendermintUrl
-    }/tx_search?query="tx.submitter='${party?.replace('0x', '')}'"`
+    `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${partyId}'"`
   );
 
   const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
@@ -64,18 +80,104 @@ const Party = () => {
     {
       // Don't cache data for this query, party information can move quite quickly
       fetchPolicy: 'network-only',
-      variables: { partyId: party?.replace('0x', '') || '' },
+      variables: { partyId },
       skip: !party,
     }
   );
 
+  const header = data?.party?.id ? (
+    <PageHeader
+      title={data.party.id}
+      copy
+      truncateStart={visibleChars}
+      truncateEnd={visibleChars}
+    />
+  ) : (
+    <Panel>
+      <p>No party found for key {party}</p>
+    </Panel>
+  );
+
+  const accounts = (
+    <section>
+      {data?.party?.accounts?.length ? (
+        data.party.accounts.map((account) => {
+          return (
+            <InfoPanel title={account.asset.name} id={account.asset.id}>
+              <section>
+                <dl className="flex gap-2">
+                  <dt className="text-zinc-500 dark:text-zinc-400 text-md">
+                    {t('Balance')} ({account.asset.symbol})
+                  </dt>
+                  <dd className="text-md">
+                    {addDecimalsFormatNumber(
+                      account.balance,
+                      account.asset.decimals
+                    )}
+                  </dd>
+                </dl>
+              </section>
+            </InfoPanel>
+          );
+        })
+      ) : (
+        <Panel>
+          <p>No Data</p>
+        </Panel>
+      )}
+    </section>
+  );
+
+  const staking = (
+    <section>
+      {data?.party?.stake?.currentStakeAvailable ? (
+        <InfoPanel
+          title={t('Current Stake Available')}
+          id={data?.party?.stake?.currentStakeAvailable}
+          copy={false}
+        />
+      ) : (
+        <Panel>
+          <p>Nothing staked for {party}</p>
+        </Panel>
+      )}
+    </section>
+  );
+
   return (
     <section>
-      <RouteTitle data-testid="parties-header">{t('Party')}</RouteTitle>
+      <h1
+        className="font-alpha uppercase font-xl mb-4 text-zinc-800 dark:text-zinc-200"
+        data-testid="parties-header"
+      >
+        {t('Party')}
+      </h1>
       {data ? (
         <>
+          {header}
           <SubHeading>{t('Asset data')}</SubHeading>
-          <SyntaxHighlighter data={data} />
+          {accounts}
+          <SubHeading>{t('Staking')}</SubHeading>
+          {staking}
+          <SubHeading>{t('JSON')}</SubHeading>
+          <section data-testid="parties-json">
+            <SyntaxHighlighter data={data} />
+          </section>
+          <AsyncRenderer
+            loading={loading as boolean}
+            error={error}
+            data={txsData}
+          >
+            <SubHeading>{t('Transactions')}</SubHeading>
+            <TxsInfiniteList
+              hasMoreTxs={hasMoreTxs}
+              areTxsLoading={loading}
+              txs={txsData}
+              loadMoreTxs={loadTxs}
+              error={error}
+              className="mb-28"
+            />
+          </AsyncRenderer>
         </>
       ) : null}
 

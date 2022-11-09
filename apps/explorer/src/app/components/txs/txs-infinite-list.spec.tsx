@@ -1,18 +1,34 @@
 import { TxsInfiniteList } from './txs-infinite-list';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
-const generateTxs = (number: number) => {
+const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   return Array.from(Array(number)).map((_) => ({
-    Type: 'ChainEvent',
-    Command:
-      '{"txId":"0xc8941ac4ea989988cb8f72e8fdab2e2009376fd17619491439d36b519d27bc93","nonce":"1494","stakingEvent":{"index":"263","block":"14805346","stakeDeposited":{"ethereumAddress":"0x2e5fe63e5d49c26998cf4bfa9b64de1cf9ae7ef2","vegaPublicKey":"657c2a8a5867c43c831e24820b7544e2fdcc1cf610cfe0ece940fe78137400fd","amount":"38471116086510047870875","blockTime":"1652968806"}}}',
-    Sig: 'fe7624ab742c492cf1e667e79de4777992aca8e093c8707e1f22685c3125c6082cd21b85cd966a61ad4ca0cca2f8bed3082565caa5915bc3b2f78c1ae35cac0b',
-    PubKey:
-      '0x7d69327393cdfaaae50e5e215feca65273eafabfb38f32b8124e66298af346d5',
-    Nonce: 18296387398179254000,
-    TxHash:
-      '0x9C753FA6325F7A40D9C4FA5C25E24476C54613E12B1FA2DD841E3BB00D088B77',
+    block: '87901',
+    index: 2,
+    hash: '0F8B98DA0923A50786B852D9CA11E051CACC4C733E1DB93D535C7D81DBD10F6F',
+    submitter:
+      '4b782482f587d291e8614219eb9a5ee9280fa2c58982dee71d976782a9be1964',
+    type: 'Submit Order',
+    code: 0,
+    cursor: '87901.2',
+    command: {
+      nonce: '4214037379192575529',
+      blockHeight: '87898',
+      orderSubmission: {
+        marketId:
+          'b4d0a070f5cc73a7d53b23d6f63f8cb52e937ed65d2469a3af4cc1e80e155fcf',
+        price: '14525946',
+        size: '54',
+        side: 'SIDE_SELL',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '1664966445481288736',
+        type: 'TYPE_LIMIT',
+        reference: 'traderbot',
+        peggedOrder: null,
+      },
+    },
   }));
 };
 
@@ -41,13 +57,15 @@ describe('Txs infinite list', () => {
         error={Error('test error!')}
       />
     );
-    expect(screen.getByText('Error: test error!')).toBeInTheDocument();
+    expect(
+      screen.getByText('Cannot fetch transaction: Error: test error!')
+    ).toBeInTheDocument();
   });
 
   it('item renders data of n length into list of n length', () => {
     // Provided the number of items doesn't exceed the 30 it initially
     // desires, all txs will initially render
-    const txs = generateTxs(10);
+    const txs = generateTxs(7);
     render(
       <MemoryRouter>
         <TxsInfiniteList
@@ -64,7 +82,7 @@ describe('Txs infinite list', () => {
       screen
         .getByTestId('infinite-scroll-wrapper')
         .querySelectorAll('.txs-infinite-list-item')
-    ).toHaveLength(10);
+    ).toHaveLength(7);
   });
 
   it('tries to load more items when required to initially fill the list', () => {
@@ -108,7 +126,7 @@ describe('Txs infinite list', () => {
   });
 
   it('loads more items is called when scrolled', () => {
-    const txs = generateTxs(20);
+    const txs = generateTxs(14);
     const callback = jest.fn();
 
     render(
@@ -125,7 +143,7 @@ describe('Txs infinite list', () => {
 
     act(() => {
       fireEvent.scroll(screen.getByTestId('infinite-scroll-wrapper'), {
-        target: { scrollY: 600 },
+        target: { scrollY: 2000 },
       });
     });
 

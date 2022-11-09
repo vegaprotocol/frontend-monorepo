@@ -1,5 +1,3 @@
-import { Lozenge, Intent } from '@vegaprotocol/ui-toolkit';
-
 interface TxOrderTypeProps {
   orderType: string;
   className?: string;
@@ -34,10 +32,13 @@ const displayString: StringMap = {
   ValidatorHeartbeat: 'Validator Heartbeat',
 };
 
-export const TxOrderType = ({ orderType, className }: TxOrderTypeProps) => {
+export const TxOrderType = ({ orderType }: TxOrderTypeProps) => {
   return (
-    <Lozenge data-testid="tx-type" variant={Intent.None} className={className}>
+    <div
+      data-testid="tx-type"
+      className="text-sm rounded-md leading-none px-2 py-2 inline-block text-white dark:text-white bg-zinc-800	dark:bg-zinc-800	"
+    >
       {displayString[orderType] || orderType}
-    </Lozenge>
+    </div>
   );
 };

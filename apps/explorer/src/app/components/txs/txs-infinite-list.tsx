@@ -1,21 +1,21 @@
 import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
-import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
   areTxsLoading: boolean | undefined;
-  txs: ChainExplorerTxResponse[] | undefined;
+  txs: BlockExplorerTransactionResult[] | undefined;
   loadMoreTxs: () => void;
   error: Error | undefined;
   className?: string;
 }
 
 interface ItemProps {
-  index: ChainExplorerTxResponse;
+  index: BlockExplorerTransactionResult;
   style: React.CSSProperties;
   isLoading: boolean;
   error: Error | undefined;
@@ -27,19 +27,19 @@ const NOOP = () => {};
 const Item = ({ index, style, isLoading, error }: ItemProps) => {
   let content;
   if (error) {
-    content = t(`${error}`);
+    content = t(`Cannot fetch transaction: ${error}`);
   } else if (isLoading) {
     content = t('Loading...');
   } else {
-    const { TxHash, PubKey, Type, Command, Sig, Nonce } = index;
+    const { hash, submitter, type, command, block, index: blockIndex } = index;
     content = (
       <TxsInfiniteListItem
-        Type={Type}
-        Command={Command}
-        Sig={Sig}
-        PubKey={PubKey}
-        Nonce={Nonce}
-        TxHash={TxHash}
+        type={type}
+        command={command}
+        submitter={submitter}
+        hash={hash}
+        block={block}
+        index={blockIndex}
       />
     );
   }
@@ -55,6 +55,9 @@ export const TxsInfiniteList = ({
   error,
   className,
 }: TxsInfiniteListProps) => {
+  const { screenSize } = useScreenDimensions();
+  const isStacked = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+
   if (!txs) {
     return <div>No items</div>;
   }
@@ -71,10 +74,15 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="transactions-list">
-      <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full mb-8">
-        <div className="text-lg font-bold">Txn hash</div>
-        <div className="text-lg font-bold">Party</div>
-        <div className="text-lg font-bold pl-2">Type</div>
+      <div className="xl:grid grid-cols-10 w-full mb-3 hidden text-zinc-500 uppercase">
+        <div className="col-span-3">
+          <span className="hidden xl:inline">Transaction &nbsp;</span>
+          <span>ID</span>
+        </div>
+        <div className="col-span-3">Submitted By</div>
+        <div className="col-span-2">Type</div>
+        <div className="col-span-1">Block</div>
+        <div className="col-span-1">Index</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader
@@ -87,7 +95,7 @@ export const TxsInfiniteList = ({
               className="List"
               height={595}
               itemCount={itemCount}
-              itemSize={41}
+              itemSize={isStacked ? 134 : 72}
               onItemsRendered={onItemsRendered}
               ref={ref}
               width={'100%'}

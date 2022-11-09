@@ -1,49 +1,59 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import type { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
-import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { DATA_SOURCES } from '../../../config';
-import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxContent } from './tx-content';
 import { TxDetails } from './tx-details';
-import { t } from '@vegaprotocol/react-helpers';
+import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
+import { toNonHex } from '../../../components/search/detect-search';
+import { PageHeader } from '../../../components/page-header';
+import { Routes } from '../../../routes/route-names';
+import { IconNames } from '@blueprintjs/icons';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
+  const hash = txHash ? toNonHex(txHash) : '';
 
   const {
-    state: { data: tTxData, loading: tTxLoading, error: tTxError },
-  } = useFetch<TendermintTransactionResponse>(
-    `${DATA_SOURCES.tendermintUrl}/tx?hash=${txHash}`
+    state: { data, loading: tTxLoading, error: tTxError },
+  } = useFetch<BlockExplorerTransaction>(
+    `${DATA_SOURCES.blockExplorerUrl}/transactions/${toNonHex(hash)}`
   );
-
-  const {
-    state: { data: ceTxData, loading: ceTxLoading, error: ceTxError },
-  } = useFetch<ChainExplorerTxResponse>(DATA_SOURCES.chainExplorerUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      tx_hash: txHash,
-      node_url: `${DATA_SOURCES.tendermintUrl}/`,
-    }),
-  });
 
   return (
     <section>
-      <RouteTitle>{t('Transaction details')}</RouteTitle>
+      <Link
+        className="font-normal underline underline-offset-4 block mb-5"
+        to={`/${Routes.TX}`}
+      >
+        <Icon
+          className="text-vega-light-300 dark:text-vega-light-300"
+          name={IconNames.CHEVRON_LEFT}
+        />
+        All Transactions
+      </Link>
+
+      <PageHeader
+        title={hash}
+        prefix="Transaction"
+        copy
+        truncateStart={5}
+        truncateEnd={9}
+        className="mb-5"
+      />
 
       <RenderFetched error={tTxError} loading={tTxLoading}>
-        <TxDetails
-          className="mb-28"
-          txData={tTxData?.result}
-          pubKey={ceTxData?.PubKey}
-        />
-      </RenderFetched>
+        <>
+          <TxDetails
+            className="mb-28"
+            txData={data?.transaction}
+            pubKey={data?.transaction.submitter}
+          />
 
-      <h2 className="text-2xl uppercase mb-4">{t('Transaction content')}</h2>
-      <RenderFetched error={ceTxError} loading={ceTxLoading}>
-        <TxContent data={ceTxData} />
+          <TxContent data={data?.transaction} />
+        </>
       </RenderFetched>
     </section>
   );
