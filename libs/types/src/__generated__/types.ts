@@ -487,14 +487,44 @@ export type Data = {
 };
 
 /**
+ * DataSourceDefinition represents the top level object that deals with data sources.
+ * DataSourceDefinition can be external or internal, with whatever number of data sources are defined
+ * for each type in the child objects below.
+ */
+export type DataSourceDefinition = {
+  __typename?: 'DataSourceDefinition';
+  sourceType: DataSourceKind;
+};
+
+/**
+ * DataSourceDefinitionExternal is the top level object used for all external data sources.
+ * It contains one of any of the defined `SourceType` variants.
+ */
+export type DataSourceDefinitionExternal = {
+  __typename?: 'DataSourceDefinitionExternal';
+  sourceType: ExternalDataSourceKind;
+};
+
+/**
+ * DataSourceDefinitionInternal is the top level object used for all internal data sources.
+ * It contains one of any of the defined `SourceType` variants.
+ */
+export type DataSourceDefinitionInternal = {
+  __typename?: 'DataSourceDefinitionInternal';
+  sourceType: InternalDataSourceKind;
+};
+
+export type DataSourceKind = DataSourceDefinitionExternal | DataSourceDefinitionInternal;
+
+/**
  * An data source specification describes the data source data that a product (or a risk model)
  * wants to get from the oracle engine.
  */
 export type DataSourceSpec = {
   __typename?: 'DataSourceSpec';
-  config: DataSourceSpecConfiguration;
   /** RFC3339Nano creation date time */
   createdAt: Scalars['String'];
+  data: DataSourceDefinition;
   /** ID is a hash generated from the DataSourceSpec data. */
   id: Scalars['ID'];
   /** Status describes the status of the data source spec */
@@ -520,6 +550,12 @@ export type DataSourceSpecConfiguration = {
    * list.
    */
   signers?: Maybe<Array<Signer>>;
+};
+
+/** DataSourceSpecConfigurationTime is the internal data source used for emitting timestamps. */
+export type DataSourceSpecConfigurationTime = {
+  __typename?: 'DataSourceSpecConfigurationTime';
+  conditions: Array<Maybe<Condition>>;
 };
 
 /** Status describe the status of the data spec */
@@ -942,6 +978,8 @@ export type ExternalData = {
   data: Data;
 };
 
+export type ExternalDataSourceKind = DataSourceSpecConfiguration;
+
 /**
  * externalDataSourceSpec is the type that wraps the DataSourceSpec type in order to be further used/extended
  * by the OracleSpec
@@ -1009,9 +1047,9 @@ export type FutureProduct = {
    */
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
   /** Describes the data source data that an instrument wants to get from the data source engine for settlement data. */
-  dataSourceSpecForSettlementData: DataSourceSpecConfiguration;
+  dataSourceSpecForSettlementData: DataSourceDefinition;
   /** Describes the source data that an instrument wants to get from the data source engine for trading termination. */
-  dataSourceSpecForTradingTermination: DataSourceSpecConfiguration;
+  dataSourceSpecForTradingTermination: DataSourceDefinition;
   /** String representing the quote (e.g. BTCUSD -> USD is quote) */
   quoteName: Scalars['String'];
   /** Product asset */
@@ -1069,6 +1107,8 @@ export type InstrumentMetadata = {
   /** An arbitrary list of tags to associated to associate to the Instrument (string list) */
   tags?: Maybe<Array<Scalars['String']>>;
 };
+
+export type InternalDataSourceKind = DataSourceSpecConfigurationTime;
 
 /** The interval for trade candles when subscribing via Vega GraphQL, default is I15M */
 export enum Interval {
@@ -3226,6 +3266,7 @@ export type ProposalsConnection = {
   pageInfo: PageInfo;
 };
 
+/** A proposal to upgrade the vega protocol (i.e. which version of the vega software nodes will run) */
 export type ProtocolUpgradeProposal = {
   __typename?: 'ProtocolUpgradeProposal';
   /** Tendermint validators that have agreed to the upgrade */
@@ -3238,6 +3279,7 @@ export type ProtocolUpgradeProposal = {
   vegaReleaseTag: Scalars['String'];
 };
 
+/** Connection type for retrieving cursor-based paginated protocol upgrade proposals */
 export type ProtocolUpgradeProposalConnection = {
   __typename?: 'ProtocolUpgradeProposalConnection';
   /** The positions in this connection */
@@ -3255,6 +3297,7 @@ export type ProtocolUpgradeProposalEdge = {
   node: ProtocolUpgradeProposal;
 };
 
+/** The set of valid statuses for a protocol upgrade proposal */
 export enum ProtocolUpgradeProposalStatus {
   /** Proposal to upgrade protocol version accepted */
   PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED = 'PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED',
@@ -4659,8 +4702,8 @@ export type UpdateERC20 = {
 export type UpdateFutureProduct = {
   __typename?: 'UpdateFutureProduct';
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
-  dataSourceSpecForSettlementData: DataSourceSpecConfiguration;
-  dataSourceSpecForTradingTermination: DataSourceSpecConfiguration;
+  dataSourceSpecForSettlementData: DataSourceDefinition;
+  dataSourceSpecForTradingTermination: DataSourceDefinition;
   quoteName: Scalars['String'];
 };
 

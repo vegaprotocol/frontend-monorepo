@@ -17,25 +17,43 @@ const ORACLE_SPECS_QUERY = gql`
           createdAt
           updatedAt
           status
-          config {
-            signers {
-              signer {
-                ... on ETHAddress {
-                  address
-                }
-                ... on PubKey {
-                  key
+          data {
+            sourceType {
+              ... on DataSourceDefinitionInternal {
+                sourceType {
+                  ... on DataSourceSpecConfigurationTime {
+                    conditions {
+                      value
+                      operator
+                    }
+                  }
                 }
               }
-            }
-            filters {
-              key {
-                name
-                type
-              }
-              conditions {
-                value
-                operator
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on ETHAddress {
+                          address
+                        }
+                        ... on PubKey {
+                          key
+                        }
+                      }
+                    }
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        value
+                        operator
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -61,6 +79,7 @@ const ORACLE_SPECS_QUERY = gql`
                   value
                 }
                 matchedSpecIds
+                broadcastAt
               }
             }
           }

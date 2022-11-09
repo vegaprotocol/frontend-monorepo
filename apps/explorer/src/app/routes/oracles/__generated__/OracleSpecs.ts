@@ -3,42 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DataSourceSpecStatus, PropertyKeyType, ConditionOperator } from "@vegaprotocol/types";
+import { DataSourceSpecStatus, ConditionOperator, PropertyKeyType } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: OracleSpecs
 // ====================================================
 
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer_ETHAddress {
-  __typename: "ETHAddress";
-  address: string | null;
-}
-
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer_PubKey {
-  __typename: "PubKey";
-  key: string | null;
-}
-
-export type OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer = OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer_ETHAddress | OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer_PubKey;
-
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers {
-  __typename: "Signer";
-  signer: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers_signer;
-}
-
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters_key {
-  __typename: "PropertyKey";
-  /**
-   * The name of the property.
-   */
-  name: string | null;
-  /**
-   * The type of the property.
-   */
-  type: PropertyKeyType;
-}
-
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters_conditions {
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal_sourceType_conditions {
   __typename: "Condition";
   /**
    * The value to compare against.
@@ -50,32 +21,95 @@ export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters_cond
   operator: ConditionOperator;
 }
 
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters {
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal_sourceType {
+  __typename: "DataSourceSpecConfigurationTime";
+  conditions: (OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal_sourceType_conditions | null)[];
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal {
+  __typename: "DataSourceDefinitionInternal";
+  sourceType: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal_sourceType;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+  address: string | null;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export type OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer = OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress | OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey;
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers {
+  __typename: "Signer";
+  signer: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters {
   __typename: "Filter";
   /**
    * key is the data source data property key targeted by the filter.
    */
-  key: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters_key;
+  key: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters_conditions[] | null;
+  conditions: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions[] | null;
 }
 
-export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_config {
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType {
   __typename: "DataSourceSpecConfiguration";
   /**
    * signers is the list of authorized signatures that signed the data for this
    * data source. All the public keys in the data should be contained in this
    * list.
    */
-  signers: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_signers[] | null;
+  signers: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_signers[] | null;
   /**
    * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config_filters[] | null;
+  filters: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType_filters[] | null;
+}
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal {
+  __typename: "DataSourceDefinitionExternal";
+  sourceType: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal_sourceType;
+}
+
+export type OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType = OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionInternal | OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType_DataSourceDefinitionExternal;
+
+export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec_data {
+  __typename: "DataSourceDefinition";
+  sourceType: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data_sourceType;
 }
 
 export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec {
@@ -96,7 +130,7 @@ export interface OracleSpecs_oracleSpecs_dataSourceSpec_spec {
    * Status describes the status of the data source spec
    */
   status: DataSourceSpecStatus;
-  config: OracleSpecs_oracleSpecs_dataSourceSpec_spec_config;
+  data: OracleSpecs_oracleSpecs_dataSourceSpec_spec_data;
 }
 
 export interface OracleSpecs_oracleSpecs_dataSourceSpec {
@@ -148,6 +182,12 @@ export interface OracleSpecs_oracleSpecs_dataConnection_edges_node_externalData_
    * When the array is empty, it means no data spec matched this source data.
    */
   matchedSpecIds: string[] | null;
+  /**
+   * RFC3339Nano formatted date and time for when the data was broadcast to the markets
+   * with a matching data spec.
+   * It has no value when the source data does not match any data spec.
+   */
+  broadcastAt: string;
 }
 
 export interface OracleSpecs_oracleSpecs_dataConnection_edges_node_externalData {

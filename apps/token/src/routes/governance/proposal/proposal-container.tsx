@@ -47,40 +47,82 @@ export const PROPOSAL_QUERY = gql`
                 quoteName
                 settlementDataDecimals
                 dataSourceSpecForSettlementData {
-                  signers {
-                    signer {
-                      ... on PubKey {
-                        key
+                  sourceType {
+                    ... on DataSourceDefinitionInternal {
+                      sourceType {
+                        ... on DataSourceSpecConfigurationTime {
+                          conditions {
+                            operator
+                            value
+                          }
+                        }
                       }
                     }
-                  }
-                  filters {
-                    key {
-                      name
-                      type
-                    }
-                    conditions {
-                      operator
-                      value
+                    ... on DataSourceDefinitionExternal {
+                      sourceType {
+                        ... on DataSourceSpecConfiguration {
+                          signers {
+                            signer {
+                              ... on PubKey {
+                                key
+                              }
+                              ... on ETHAddress {
+                                address
+                              }
+                            }
+                          }
+                          filters {
+                            key {
+                              name
+                              type
+                            }
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
                 dataSourceSpecForTradingTermination {
-                  signers {
-                    signer {
-                      ... on PubKey {
-                        key
+                  sourceType {
+                    ... on DataSourceDefinitionInternal {
+                      sourceType {
+                        ... on DataSourceSpecConfigurationTime {
+                          conditions {
+                            operator
+                            value
+                          }
+                        }
                       }
                     }
-                  }
-                  filters {
-                    key {
-                      name
-                      type
-                    }
-                    conditions {
-                      operator
-                      value
+                    ... on DataSourceDefinitionExternal {
+                      sourceType {
+                        ... on DataSourceSpecConfiguration {
+                          signers {
+                            signer {
+                              ... on PubKey {
+                                key
+                              }
+                              ... on ETHAddress {
+                                address
+                              }
+                            }
+                          }
+                          filters {
+                            key {
+                              name
+                              type
+                            }
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -99,40 +141,82 @@ export const PROPOSAL_QUERY = gql`
                 product {
                   quoteName
                   dataSourceSpecForSettlementData {
-                    signers {
-                      signer {
-                        ... on PubKey {
-                          key
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
                         }
                       }
-                    }
-                    filters {
-                      key {
-                        name
-                        type
-                      }
-                      conditions {
-                        operator
-                        value
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
                   dataSourceSpecForTradingTermination {
-                    signers {
-                      signer {
-                        ... on PubKey {
-                          key
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
                         }
                       }
-                    }
-                    filters {
-                      key {
-                        name
-                        type
-                      }
-                      conditions {
-                        operator
-                        value
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

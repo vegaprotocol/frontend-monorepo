@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, PropertyKeyType, ConditionOperator, VoteValue } from "@vegaprotocol/types";
+import { ProposalState, ProposalRejectionReason, ConditionOperator, PropertyKeyType, VoteValue } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Proposal
@@ -61,35 +61,7 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   quantum: string;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_ETHAddress {
-  __typename: "ETHAddress";
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_PubKey {
-  __typename: "PubKey";
-  key: string | null;
-}
-
-export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_ETHAddress | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer_PubKey;
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers {
-  __typename: "Signer";
-  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers_signer;
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_key {
-  __typename: "PropertyKey";
-  /**
-   * The name of the property.
-   */
-  name: string | null;
-  /**
-   * The type of the property.
-   */
-  type: PropertyKeyType;
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_conditions {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -101,63 +73,98 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType {
+  __typename: "DataSourceSpecConfigurationTime";
+  conditions: (Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType_conditions | null)[];
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal {
+  __typename: "DataSourceDefinitionInternal";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+  address: string | null;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress;
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters {
   __typename: "Filter";
   /**
    * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_key;
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions[] | null;
 }
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType {
+  __typename: "DataSourceSpecConfiguration";
+  /**
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
+   */
+  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers[] | null;
+  /**
+   * filters describes which source data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal {
+  __typename: "DataSourceDefinitionExternal";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal;
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData {
-  __typename: "DataSourceSpecConfiguration";
-  /**
-   * signers is the list of authorized signatures that signed the data for this
-   * data source. All the public keys in the data should be contained in this
-   * list.
-   */
-  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_signers[] | null;
-  /**
-   * filters describes which source data are considered of interest or not for
-   * the product (or the risk model).
-   */
-  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_filters[] | null;
+  __typename: "DataSourceDefinition";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForSettlementData_sourceType;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_ETHAddress {
-  __typename: "ETHAddress";
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_PubKey {
-  __typename: "PubKey";
-  key: string | null;
-}
-
-export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_ETHAddress | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer_PubKey;
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers {
-  __typename: "Signer";
-  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers_signer;
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_key {
-  __typename: "PropertyKey";
-  /**
-   * The name of the property.
-   */
-  name: string | null;
-  /**
-   * The type of the property.
-   */
-  type: PropertyKeyType;
-}
-
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_conditions {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -169,32 +176,95 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType {
+  __typename: "DataSourceSpecConfigurationTime";
+  conditions: (Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType_conditions | null)[];
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal {
+  __typename: "DataSourceDefinitionInternal";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+  address: string | null;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress;
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters {
   __typename: "Filter";
   /**
    * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_key;
+  key: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination {
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType {
   __typename: "DataSourceSpecConfiguration";
   /**
    * signers is the list of authorized signatures that signed the data for this
    * data source. All the public keys in the data should be contained in this
    * list.
    */
-  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_signers[] | null;
+  signers: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers[] | null;
   /**
    * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_filters[] | null;
+  filters: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal {
+  __typename: "DataSourceDefinitionExternal";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType;
+}
+
+export type Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType = Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal | Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal;
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination {
+  __typename: "DataSourceDefinition";
+  sourceType: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecForTradingTermination_sourceType;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_dataSourceSpecBinding {
@@ -264,35 +334,7 @@ export interface Proposal_proposal_terms_change_NewMarket {
   instrument: Proposal_proposal_terms_change_NewMarket_instrument;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_ETHAddress {
-  __typename: "ETHAddress";
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_PubKey {
-  __typename: "PubKey";
-  key: string | null;
-}
-
-export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_ETHAddress | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer_PubKey;
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers {
-  __typename: "Signer";
-  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers_signer;
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_key {
-  __typename: "PropertyKey";
-  /**
-   * The name of the property.
-   */
-  name: string | null;
-  /**
-   * The type of the property.
-   */
-  type: PropertyKeyType;
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_conditions {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -304,63 +346,98 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType {
+  __typename: "DataSourceSpecConfigurationTime";
+  conditions: (Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType_conditions | null)[];
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal {
+  __typename: "DataSourceDefinitionInternal";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal_sourceType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+  address: string | null;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters {
   __typename: "Filter";
   /**
    * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_key;
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions[] | null;
 }
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType {
+  __typename: "DataSourceSpecConfiguration";
+  /**
+   * signers is the list of authorized signatures that signed the data for this
+   * data source. All the public keys in the data should be contained in this
+   * list.
+   */
+  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_signers[] | null;
+  /**
+   * filters describes which source data are considered of interest or not for
+   * the product (or the risk model).
+   */
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal {
+  __typename: "DataSourceDefinitionExternal";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal_sourceType;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionInternal | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType_DataSourceDefinitionExternal;
 
 export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData {
-  __typename: "DataSourceSpecConfiguration";
-  /**
-   * signers is the list of authorized signatures that signed the data for this
-   * data source. All the public keys in the data should be contained in this
-   * list.
-   */
-  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_signers[] | null;
-  /**
-   * filters describes which source data are considered of interest or not for
-   * the product (or the risk model).
-   */
-  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_filters[] | null;
+  __typename: "DataSourceDefinition";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForSettlementData_sourceType;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_ETHAddress {
-  __typename: "ETHAddress";
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_PubKey {
-  __typename: "PubKey";
-  key: string | null;
-}
-
-export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_ETHAddress | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer_PubKey;
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers {
-  __typename: "Signer";
-  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers_signer;
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_key {
-  __typename: "PropertyKey";
-  /**
-   * The name of the property.
-   */
-  name: string | null;
-  /**
-   * The type of the property.
-   */
-  type: PropertyKeyType;
-}
-
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_conditions {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType_conditions {
   __typename: "Condition";
   /**
    * The type of comparison to make on the value.
@@ -372,32 +449,95 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
   value: string | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType {
+  __typename: "DataSourceSpecConfigurationTime";
+  conditions: (Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType_conditions | null)[];
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal {
+  __typename: "DataSourceDefinitionInternal";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal_sourceType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey {
+  __typename: "PubKey";
+  key: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress {
+  __typename: "ETHAddress";
+  address: string | null;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_PubKey | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer_ETHAddress;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers {
+  __typename: "Signer";
+  signer: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers_signer;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_key {
+  __typename: "PropertyKey";
+  /**
+   * The name of the property.
+   */
+  name: string | null;
+  /**
+   * The type of the property.
+   */
+  type: PropertyKeyType;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions {
+  __typename: "Condition";
+  /**
+   * The type of comparison to make on the value.
+   */
+  operator: ConditionOperator;
+  /**
+   * The value to compare against.
+   */
+  value: string | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters {
   __typename: "Filter";
   /**
    * key is the data source data property key targeted by the filter.
    */
-  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_key;
+  key: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_key;
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters_conditions[] | null;
+  conditions: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters_conditions[] | null;
 }
 
-export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination {
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType {
   __typename: "DataSourceSpecConfiguration";
   /**
    * signers is the list of authorized signatures that signed the data for this
    * data source. All the public keys in the data should be contained in this
    * list.
    */
-  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_signers[] | null;
+  signers: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_signers[] | null;
   /**
    * filters describes which source data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_filters[] | null;
+  filters: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType_filters[] | null;
+}
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal {
+  __typename: "DataSourceDefinitionExternal";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal_sourceType;
+}
+
+export type Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType = Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionInternal | Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType_DataSourceDefinitionExternal;
+
+export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination {
+  __typename: "DataSourceDefinition";
+  sourceType: Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecForTradingTermination_sourceType;
 }
 
 export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_instrument_product_dataSourceSpecBinding {
