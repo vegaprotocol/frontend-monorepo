@@ -24,7 +24,7 @@ const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Withdrawals - with eth and vega wallet connected',
-  { tags: '@slow' },
+  { tags: '@withdrawal' },
   function () {
     before('visit withdrawals and connect vega wallet', function () {
       cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
@@ -38,6 +38,8 @@ context(
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
       waitForAssetsDisplayed(usdtName);
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(4000);
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
