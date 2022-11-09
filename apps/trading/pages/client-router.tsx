@@ -27,7 +27,6 @@ export enum Routes {
   HOME = '/',
   MARKETS = '/markets',
   PORTFOLIO = '/portfolio',
-  PORTFOLIO_DEPOSIT = '/portfolio/deposit',
 }
 
 const routerConfig = [
