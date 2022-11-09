@@ -43,6 +43,7 @@ context(
       // needs to reload page for withdrawal form to be displayed in ci - not reproducible outside of ci
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.visit('/');
+      cy.navigate_to('withdrawals');
       cy.ethereum_wallet_connect();
       cy.getByTestId(selectAsset)
         .find('option')
