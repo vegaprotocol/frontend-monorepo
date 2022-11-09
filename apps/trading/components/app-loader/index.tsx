@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import { useEagerConnect } from '@vegaprotocol/wallet';
 import { NetworkLoader } from '@vegaprotocol/environment';
 import { Connectors } from '../../lib/vega-connectors';
@@ -15,52 +16,55 @@ interface AppLoaderProps {
 export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
   useEagerConnect(Connectors);
-  const cache: InMemoryCacheConfig = {
-    typePolicies: {
-      Account: {
-        keyFields: false,
-        fields: {
-          balanceFormatted: {},
-        },
-      },
-      Instrument: {
-        keyFields: false,
-      },
-      TradableInstrument: {
-        keyFields: ['instrument'],
-      },
-      Product: {
-        keyFields: ['settlementAsset', ['id']],
-      },
-      MarketData: {
-        keyFields: ['market', ['id']],
-      },
-      Node: {
-        keyFields: false,
-      },
-      Withdrawal: {
-        fields: {
-          pendingOnForeignChain: {
-            read: (isPending = false) => isPending,
+  const cache: InMemoryCacheConfig = useMemo(
+    () => ({
+      typePolicies: {
+        Account: {
+          keyFields: false,
+          fields: {
+            balanceFormatted: {},
           },
         },
+        Instrument: {
+          keyFields: false,
+        },
+        TradableInstrument: {
+          keyFields: ['instrument'],
+        },
+        Product: {
+          keyFields: ['settlementAsset', ['id']],
+        },
+        MarketData: {
+          keyFields: ['market', ['id']],
+        },
+        Node: {
+          keyFields: false,
+        },
+        Withdrawal: {
+          fields: {
+            pendingOnForeignChain: {
+              read: (isPending = false) => isPending,
+            },
+          },
+        },
+        ERC20: {
+          keyFields: ['contractAddress'],
+        },
+        PositionUpdate: {
+          keyFields: false,
+        },
+        AccountUpdate: {
+          keyFields: false,
+        },
+        Party: {
+          keyFields: false,
+        },
+        Fees: {
+          keyFields: false,
+        },
       },
-      ERC20: {
-        keyFields: ['contractAddress'],
-      },
-      PositionUpdate: {
-        keyFields: false,
-      },
-      AccountUpdate: {
-        keyFields: false,
-      },
-      Party: {
-        keyFields: false,
-      },
-      Fees: {
-        keyFields: false,
-      },
-    },
-  };
+    }),
+    []
+  );
   return <NetworkLoader cache={cache}>{children}</NetworkLoader>;
 }
