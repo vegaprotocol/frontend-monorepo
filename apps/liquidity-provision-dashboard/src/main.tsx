@@ -35,13 +35,13 @@ const cache: InMemoryCacheConfig = {
 root?.render(
   <StrictMode>
     <BrowserRouter>
-    <EnvironmentProvider>
-      <ThemeContext.Provider value="light">
-        <NetworkLoader cache={cache}>
-          <App />
-        </NetworkLoader>
-      </ThemeContext.Provider>
-    </EnvironmentProvider>
+      <EnvironmentProvider>
+        <ThemeContext.Provider value="light">
+          <NetworkLoader cache={cache}>
+            <App />
+          </NetworkLoader>
+        </ThemeContext.Provider>
+      </EnvironmentProvider>
     </BrowserRouter>
   </StrictMode>
 );
