@@ -22,6 +22,7 @@ import {
   getDateTimeFormat,
   signedNumberCssClass,
   signedNumberCssClassRules,
+  DateRangeFilter,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -422,7 +423,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Updated')}
           field="updatedAt"
           type="rightAligned"
-          filter="agDateColumnFilter"
+          filter={DateRangeFilter}
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<Position, 'updatedAt'>) => {
