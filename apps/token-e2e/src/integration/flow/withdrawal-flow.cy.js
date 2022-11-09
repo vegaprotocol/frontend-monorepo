@@ -45,6 +45,7 @@ context(
       cy.visit('/');
       cy.navigate_to('withdrawals');
       cy.ethereum_wallet_connect();
+      cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset)
         .find('option')
         .should('have.length.at.least', 2);
