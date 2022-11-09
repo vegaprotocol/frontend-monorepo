@@ -9,7 +9,6 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
   useProposalSubmit,
-  deadlineToRoundedHours,
   doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -119,18 +118,6 @@ export const ProposeNetworkParameter = () => {
     const isEnactmentDeadlineAtMaximum = doesValueEquateToParam(
       fields.proposalEnactmentDeadline,
       params.governance_proposal_updateNetParam_maxEnact
-    );
-
-    const testVotingDeadline = getClosingTimestamp(
-      fields.proposalVoteDeadline,
-      isVoteDeadlineAtMinimum,
-      isVoteDeadlineAtMaximum
-    );
-
-    const testEnactmentDeadline = getEnactmentTimestamp(
-      fields.proposalEnactmentDeadline,
-      isEnactmentDeadlineAtMinimum,
-      isEnactmentDeadlineAtMaximum
     );
 
     await submit({

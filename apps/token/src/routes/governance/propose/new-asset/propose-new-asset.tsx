@@ -5,7 +5,6 @@ import {
   getEnactmentTimestamp,
   getValidationTimestamp,
   useProposalSubmit,
-  deadlineToRoundedHours,
   doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
