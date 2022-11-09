@@ -20,7 +20,7 @@ afterEach(() => {
 const minVoteDeadline = '1h0m0s';
 const maxVoteDeadline = '5h0m0s';
 const minEnactDeadline = '1h0m0s';
-const maxEnactDeadline = '4h0m0s';
+const maxEnactDeadline = '5h0m0s';
 
 /**
  * Formats date according to locale.
@@ -118,7 +118,7 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     const maxButton = screen.getByTestId('max-enactment');
     const minButton = screen.getByTestId('min-enactment');
     fireEvent.click(maxButton);
-    expect(enactmentDeadlineInput).toHaveValue(4);
+    expect(enactmentDeadlineInput).toHaveValue(5);
     fireEvent.click(minButton);
     expect(enactmentDeadlineInput).toHaveValue(1);
   });
@@ -154,7 +154,24 @@ describe('Proposal form vote, validation and enactment deadline', () => {
       '2022-01-01T00:02:00.000Z'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '2022-01-01T02:00:00.000Z'
+      '2022-01-01T01:02:00.000Z'
+    );
+    // When max values are used, the deadlines should have 2 seconds subtracted
+    // from them to account any delays
+    const voteDeadlineMaxButton = screen.getByTestId('max-vote');
+    const enactmentDeadlineMaxButton = screen.getByTestId('max-enactment');
+    const validationDeadlineMaxButton = screen.getByTestId('max-validation');
+    fireEvent.click(voteDeadlineMaxButton);
+    fireEvent.click(enactmentDeadlineMaxButton);
+    fireEvent.click(validationDeadlineMaxButton);
+    expect(screen.getByTestId('voting-date')).toHaveTextContent(
+      '2022-01-01T04:59:58.000Z'
+    );
+    expect(screen.getByTestId('validation-date')).toHaveTextContent(
+      '2022-01-01T04:59:58.000Z'
+    );
+    expect(screen.getByTestId('enactment-date')).toHaveTextContent(
+      '2022-01-01T04:59:58.000Z'
     );
   });
 
@@ -171,19 +188,7 @@ describe('Proposal form vote, validation and enactment deadline', () => {
       '2022-01-01T00:02:30.000Z'
     );
     expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '2022-01-01T02:00:30.000Z'
-    );
-  });
-
-  it('update the vote deadline date and the enactment deadline date when the vote deadline is changed', () => {
-    renderComponent();
-    const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
-    fireEvent.change(voteDeadlineInput, { target: { value: 2 } });
-    expect(screen.getByTestId('voting-date')).toHaveTextContent(
-      '2022-01-01T02:00:00.000Z'
-    );
-    expect(screen.getByTestId('enactment-date')).toHaveTextContent(
-      '2022-01-01T03:00:00.000Z'
+      '2022-01-01T01:02:30.000Z'
     );
   });
 
@@ -198,7 +203,7 @@ describe('Proposal form vote, validation and enactment deadline', () => {
     fireEvent.click(voteDeadlineMaxButton);
     fireEvent.click(validationDeadlineMaxButton);
     expect(screen.getByTestId('validation-date')).toHaveTextContent(
-      '2022-01-01T05:00:00.000Z'
+      '2022-01-01T04:59:58.000Z'
     );
     expect(validationDeadlineInput).toHaveValue(5);
     fireEvent.click(voteDeadlineMinButton);
@@ -206,5 +211,20 @@ describe('Proposal form vote, validation and enactment deadline', () => {
       '2022-01-01T01:00:00.000Z'
     );
     expect(validationDeadlineInput).toHaveValue(1);
+  });
+
+  it('displays error text if the vote deadline is set later than the enactment deadline', () => {
+    renderComponent();
+    const voteDeadlineInput = screen.getByTestId('proposal-vote-deadline');
+    const enactmentDeadlineInput = screen.getByTestId(
+      'proposal-enactment-deadline'
+    );
+    fireEvent.change(voteDeadlineInput, { target: { value: 5 } });
+    fireEvent.change(enactmentDeadlineInput, { target: { value: 2 } });
+    expect(
+      screen.getByTestId('enactment-before-voting-deadline')
+    ).toHaveTextContent(
+      'Proposal will fail if enactment is earlier than the voting deadline'
+    );
   });
 });

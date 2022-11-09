@@ -6,6 +6,7 @@ import {
   getValidationTimestamp,
   useProposalSubmit,
   deadlineToRoundedHours,
+  doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -65,11 +66,26 @@ export const ProposeNewAsset = () => {
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: NewAssetProposalFormFields) => {
-    const isVoteDeadlineAtMinimum =
-      fields.proposalVoteDeadline ===
-      deadlineToRoundedHours(
-        params.governance_proposal_asset_minClose
-      ).toString();
+    const isVoteDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_asset_minClose
+    );
+    const isVoteDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_asset_maxClose
+    );
+    const isEnactmentDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_asset_minEnact
+    );
+    const isEnactmentDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_asset_maxEnact
+    );
+    const isValidationDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalValidationDeadline,
+      params.governance_proposal_asset_maxClose
+    );
 
     await submit({
       rationale: {
@@ -82,15 +98,17 @@ export const ProposeNewAsset = () => {
         },
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
         enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline,
-          isVoteDeadlineAtMinimum
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
         validationTimestamp: getValidationTimestamp(
-          fields.proposalValidationDeadline
+          fields.proposalValidationDeadline,
+          isValidationDeadlineAtMaximum
         ),
       },
     });

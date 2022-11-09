@@ -9,8 +9,10 @@ import {
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { addHours, addMinutes } from 'date-fns';
 import {
+  addTwoMinutes,
   deadlineToSeconds,
   secondsToRoundedHours,
+  subtractTwoSeconds,
 } from '@vegaprotocol/governance';
 import { ProposalFormSubheader } from './proposal-form-subheader';
 import type { UseFormRegisterReturn } from 'react-hook-form';
@@ -218,6 +220,22 @@ const EnactmentForm = ({
           <span data-testid="enactment-date" className="pl-2">
             {getDateTimeFormat().format(deadlineDates.enactment)}
           </span>
+          {deadlines.enactment === minEnactmentHours && (
+            <span
+              data-testid="enactment-2-mins-extra"
+              className="block mt-4 font-light"
+            >
+              {t('ThisWillAdd2MinutesToAllowTimeToConfirmInWallet')}
+            </span>
+          )}
+          {deadlines.enactment && deadlines.enactment < deadlines.vote && (
+            <span
+              data-testid="enactment-before-voting-deadline"
+              className="block mt-4 text-vega-red-dark"
+            >
+              {t('ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline')}
+            </span>
+          )}
         </p>
       )}
     </FormGroup>
@@ -302,16 +320,13 @@ export function ProposalFormVoteAndEnactmentDeadline({
   });
 
   const [deadlineDates, setDeadlineDates] = useState<DeadlineDatesProps>({
-    vote:
-      deadlines.vote === minVoteHours
-        ? addHours(addMinutes(new Date(), 2), deadlines.vote)
-        : addHours(new Date(), deadlines.vote),
+    vote: addHours(addTwoMinutes(), deadlines.vote),
     enactment: deadlines.enactment
-      ? addHours(new Date(), deadlines.vote + deadlines.enactment)
+      ? addHours(addTwoMinutes(), deadlines.enactment)
       : undefined,
     validation:
       deadlines.validation === 0
-        ? addHours(addMinutes(new Date(), 2), deadlines.validation)
+        ? addHours(addTwoMinutes(), deadlines.validation)
         : addHours(new Date(), deadlines.validation),
   });
 
@@ -319,21 +334,40 @@ export function ProposalFormVoteAndEnactmentDeadline({
     const interval = setInterval(() => {
       setDeadlineDates((prev) => ({
         ...prev,
-        vote:
-          deadlines.vote === minVoteHours
-            ? addHours(addMinutes(new Date(), 2), deadlines.vote)
-            : addHours(new Date(), deadlines.vote),
+        vote: addHours(
+          (deadlines.vote === minVoteHours && addTwoMinutes()) ||
+            (deadlines.vote === maxVoteHours && subtractTwoSeconds()) ||
+            new Date(),
+          deadlines.vote
+        ),
         enactment: deadlines.enactment
-          ? addHours(new Date(), deadlines.vote + deadlines.enactment)
+          ? addHours(
+              (deadlines.enactment === minEnactmentHours && addTwoMinutes()) ||
+                (deadlines.enactment === maxEnactmentHours &&
+                  subtractTwoSeconds()) ||
+                new Date(),
+              deadlines.enactment
+            )
           : undefined,
         validation:
           deadlines.validation === 0
-            ? addHours(addMinutes(new Date(), 2), deadlines.validation)
-            : addHours(new Date(), deadlines.validation),
+            ? addHours(addTwoMinutes(), deadlines.validation)
+            : addHours(
+                (deadlines.validation === maxVoteHours &&
+                  subtractTwoSeconds()) ||
+                  new Date(),
+                deadlines.validation
+              ),
       }));
     }, 1000);
     return () => clearInterval(interval);
-  }, [deadlines, minVoteHours]);
+  }, [
+    deadlines,
+    maxEnactmentHours,
+    maxVoteHours,
+    minEnactmentHours,
+    minVoteHours,
+  ]);
 
   const updateVoteDeadlineAndDate = (hours: number) => {
     // Validation, when needed, can only happen within the voting period. Therefore, if the
@@ -345,22 +379,24 @@ export function ProposalFormVoteAndEnactmentDeadline({
       validation: prev.validation && Math.min(prev.validation, hours),
     }));
 
-    // If the vote deadline is set to minimum, add 2 mins to the date as we do
+    // If the vote deadlines are set to minimum, add 2 mins to the date as we do
     // this on submission to allow time to confirm in the wallet. Amending the
     // vote deadline also changes the enactment date and potentially the validation
     // date.
     // The validation deadline date cannot be after the vote deadline date. Therefore,
     // if the vote deadline is changed, the validation deadline must potentially
     // be changed to be within the new vote deadline.
+    // Whilst it's not ideal, currently enactment deadlines are uncoupled from
+    // vote deadlines in the API. Therefore, the UI currently is too, so updating
+    // the vote deadline does not update the enactment deadline.
     setDeadlineDates((prev) => ({
       ...prev,
-      vote:
-        hours === minVoteHours
-          ? addHours(addMinutes(new Date(), 2), hours)
-          : addHours(new Date(), hours),
-      enactment: deadlines.enactment
-        ? addHours(new Date(), hours + deadlines.enactment)
-        : undefined,
+      vote: addHours(
+        (hours === minVoteHours && addTwoMinutes()) ||
+          (hours === maxVoteHours && subtractTwoSeconds()) ||
+          new Date(),
+        hours
+      ),
       validation: addHours(new Date(), Math.min(hours, deadlines.validation)),
     }));
   };
@@ -373,7 +409,12 @@ export function ProposalFormVoteAndEnactmentDeadline({
 
     setDeadlineDates((prev) => ({
       ...prev,
-      enactment: addHours(deadlineDates.vote, hours),
+      enactment: addHours(
+        (hours === minEnactmentHours && addTwoMinutes()) ||
+          (hours === maxEnactmentHours && subtractTwoSeconds()) ||
+          new Date(),
+        hours
+      ),
     }));
   };
 
@@ -385,10 +426,12 @@ export function ProposalFormVoteAndEnactmentDeadline({
 
     setDeadlineDates((prev) => ({
       ...prev,
-      validation:
-        hours === 0
-          ? addHours(addMinutes(new Date(), 2), hours)
-          : addHours(new Date(), hours),
+      validation: addHours(
+        (hours === 0 && addTwoMinutes()) ||
+          (hours === maxVoteHours && subtractTwoSeconds()) ||
+          new Date(),
+        hours
+      ),
     }));
   };
 
