@@ -40,16 +40,16 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
           node,
         });
         if (
-          value.end &&
+          value.start &&
           rowValue &&
-          new Date(value.end) <= new Date(rowValue)
+          new Date(rowValue) <= new Date(value.start)
         ) {
           return false;
         }
         if (
-          value.start &&
+          value.end &&
           rowValue &&
-          new Date(value.end) >= new Date(rowValue)
+          new Date(rowValue) >= new Date(value.end)
         ) {
           return false;
         }
