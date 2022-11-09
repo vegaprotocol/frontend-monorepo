@@ -8,7 +8,7 @@ describe('<PriceCell />', () => {
   it('Displays formatted value', () => {
     render(<PriceCell value={100} valueFormatted="100.00" />);
     expect(screen.getByTestId('price')).toHaveTextContent('100.00');
-    expect(screen.getByTestId('price')).toHaveAttribute('title','100.00');
+    expect(screen.getByTestId('price')).toHaveAttribute('title', '100.00');
   });
   it('Displays 0', () => {
     render(<PriceCell value={0} valueFormatted="0.00" />);
