@@ -4,6 +4,20 @@ import * as useDataProviderHook from '@vegaprotocol/react-helpers';
 import type { OrderFieldsFragment } from '../';
 import * as orderListMock from '../order-list/order-list';
 import { forwardRef } from 'react';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { MockedProvider } from '@apollo/client/testing';
+
+const generateJsx = () => {
+  const pubKey = '0x123';
+  return (
+    <MockedProvider>
+      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
+        <OrderListManager partyId={pubKey} />
+      </VegaWalletContext.Provider>
+    </MockedProvider>
+  );
+};
 
 it('Renders a loading state while awaiting orders', () => {
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
@@ -15,7 +29,7 @@ it('Renders a loading state while awaiting orders', () => {
     load: jest.fn(),
     totalCount: 0,
   });
-  render(<OrderListManager partyId="0x123" />);
+  render(generateJsx());
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 });
 
@@ -30,7 +44,7 @@ it('Renders an error state', () => {
     load: jest.fn(),
     totalCount: undefined,
   });
-  render(<OrderListManager partyId="0x123" />);
+  render(generateJsx());
   expect(
     screen.getByText(`Something went wrong: ${errorMsg}`)
   ).toBeInTheDocument();
@@ -49,6 +63,6 @@ it('Renders the order list if orders provided', async () => {
     load: jest.fn(),
     totalCount: undefined,
   });
-  render(<OrderListManager partyId="0x123" />);
+  render(generateJsx());
   expect(await screen.findByText('OrderList')).toBeInTheDocument();
 });

@@ -95,8 +95,6 @@ describe('useOrderListData Hook', () => {
       getRows: expect.any(Function),
     });
     updateMock({ data: mockData, delta: [] });
-    expect(mockRefreshAgGridApi).not.toHaveBeenCalled();
-    updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
   });
 

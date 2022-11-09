@@ -13,7 +13,7 @@ import { OrderList } from '../order-list/order-list';
 import { useOrderListData } from './use-order-list-data';
 import type { Filter, Sort } from './use-order-list-data';
 
-interface OrderListManagerProps {
+export interface OrderListManagerProps {
   partyId: string;
 }
 
@@ -64,7 +64,6 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     setSort(sort.length > 0 ? sort : undefined);
   };
 
-  console.log('render:', { data, error, loading });
   return (
     <>
       <OrderList

@@ -81,7 +81,6 @@ export const useOrderListData = ({
         (dataRef.current?.length && data?.length) ||
         (!dataRef.current?.length && !data?.length)
       );
-      console.log('dataRef.current', data);
       dataRef.current = data;
       gridRef.current?.api?.refreshInfiniteCache();
       return avoidRerender;

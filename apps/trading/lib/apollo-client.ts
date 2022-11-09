@@ -105,8 +105,9 @@ export function createClient(base?: string) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    console.log(graphQLErrors);
-    console.log(networkError);
+    if (process.env['NODE_ENV'] === 'development') {
+      console.error({ graphQLErrors, networkError });
+    }
   });
 
   return new ApolloClient({
