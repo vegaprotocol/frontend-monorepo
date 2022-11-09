@@ -72,7 +72,7 @@ const ExpiryTooltipContent = ({
   if (market.marketTimestamps.close === null) {
     const oracleId =
       market.tradableInstrument.instrument.product
-        .oracleSpecForTradingTermination?.id;
+        .dataSourceSpecForTradingTermination?.id;
 
     return (
       <section data-testid="expiry-tool-tip">

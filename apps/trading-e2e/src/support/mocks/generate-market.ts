@@ -38,9 +38,9 @@ export const generateMarket = (
             __typename: 'InstrumentMetadata',
           },
           product: {
-            oracleSpecForTradingTermination: {
+            dataSourceSpecForTradingTermination: {
               id: 'd253c16c6a17ab88e098479635c611ab503582a1079752d1a49ac15f656f7e7b',
-              __typename: 'OracleSpec',
+              __typename: 'DataSourceSpec',
             },
             quoteName: 'BTCUSD Monthly',
             settlementAsset: {

@@ -83,9 +83,9 @@ interface ProposalNewMarketTerms {
           settlementAsset: string;
           quoteName: string;
           settlementPriceDecimals: number;
-          oracleSpecForSettlementPrice: OracleSpecFor;
-          oracleSpecForTradingTermination: OracleSpecFor;
-          oracleSpecBinding: OracleSpecBinding;
+          dataSourceSpecForSettlementData: DataSourceSpec;
+          dataSourceSpecForTradingTermination: DataSourceSpec;
+          dataSourceSpecBinding: DataSourceSpecBinding;
         };
       };
       metadata?: string[];
@@ -120,9 +120,9 @@ interface ProposalUpdateMarketTerms {
         future: {
           quoteName: string;
           settlementPriceDecimals: number;
-          oracleSpecForSettlementPrice: OracleSpecFor;
-          oracleSpecForTradingTermination: OracleSpecFor;
-          oracleSpecBinding: OracleSpecBinding;
+          dataSourceSpecForSettlementPrice: DataSourceSpec;
+          dataSourceSpecForTradingTermination: DataSourceSpec;
+          dataSourceSpecBinding: DataSourceSpecBinding;
         };
       };
       priceMonitoringParameters?: PriceMonitoringParameters;
@@ -183,15 +183,25 @@ interface ProposalUpdateAssetTerms {
   enactmentTimestamp: number;
 }
 
-interface OracleSpecBinding {
+interface DataSourceSpecBinding {
   settlementPriceProperty: string;
   tradingTerminationProperty: string;
 }
 
-interface OracleSpecFor {
-  pubKeys: string[];
-  filters: Filter[];
+interface DataSourceSpec {
+  config: {
+    signers: Signer[];
+    filters: Filter[];
+  };
 }
+
+type Signer =
+  | {
+      address: string;
+    }
+  | {
+      key: string;
+    };
 
 interface Filter {
   key: {

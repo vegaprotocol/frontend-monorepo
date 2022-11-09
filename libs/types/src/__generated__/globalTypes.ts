@@ -56,6 +56,14 @@ export enum ConditionOperator {
 }
 
 /**
+ * Status describe the status of the data spec
+ */
+export enum DataSourceSpecStatus {
+  STATUS_ACTIVE = "STATUS_ACTIVE",
+  STATUS_DEACTIVATED = "STATUS_DEACTIVATED",
+}
+
+/**
  * The current state of a market
  */
 export enum MarketState {
@@ -90,15 +98,7 @@ export enum NodeStatus {
 }
 
 /**
- * Status describe the status of the oracle spec
- */
-export enum OracleSpecStatus {
-  STATUS_ACTIVE = "STATUS_ACTIVE",
-  STATUS_DEACTIVATED = "STATUS_DEACTIVATED",
-}
-
-/**
- * Type describes the type of properties that are supported by the oracle
+ * Type describes the type of properties that are supported by the data source
  * engine.
  */
 export enum PropertyKeyType {
