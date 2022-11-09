@@ -3,6 +3,10 @@ name: Cypress - explorer
 on:
   workflow_call:
     inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
       vega-version:
         required: true
         type: string
@@ -20,9 +24,14 @@ on:
         required: false
         type: boolean
         default: false
+      capsule-teardown:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   explorer-e2e:
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
@@ -94,7 +103,7 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: ${{ inputs.capsule-teardown }}
           CYPRESS_NIGHTLY_RUN: ${{ inputs.night-run }}
 
       ######

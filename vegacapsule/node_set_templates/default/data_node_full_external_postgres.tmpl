@@ -3,9 +3,12 @@ GatewayEnabled = true
 [SQLStore]
   Enabled = true
   [SQLStore.ConnectionConfig]
+    Database = "vega{{.NodeNumber}}"
+    Host = "localhost"
+    Password = "vega"
     Port = 5232
     UseTransactions = true
-    Database = "vega{{.NodeNumber}}"
+    Username = "vega"
 
 
 [API]
@@ -38,3 +41,6 @@ GatewayEnabled = true
   UseEventFile = false
   [Broker.SocketConfig]
     Port = 30{{.NodeNumber}}5
+
+[DeHistory]
+  Enabled = true
