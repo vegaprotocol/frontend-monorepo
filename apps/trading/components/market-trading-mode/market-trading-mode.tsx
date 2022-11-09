@@ -43,13 +43,15 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
   });
 
   const update = useCallback(
-    ({ data: marketData }: { data: MarketData }) => {
-      setTradingMode(marketData.marketTradingMode);
-      setTrigger(marketData.trigger);
-      setMarket({
-        ...data,
-        data: marketData,
-      } as TradingModeMarket);
+    ({ data: marketData }: { data: MarketData | null }) => {
+      if (marketData) {
+        setTradingMode(marketData.marketTradingMode);
+        setTrigger(marketData.trigger);
+        setMarket({
+          ...data,
+          data: marketData,
+        } as TradingModeMarket);
+      }
       return true;
     },
     [data]

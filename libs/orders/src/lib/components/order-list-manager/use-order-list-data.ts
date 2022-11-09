@@ -62,22 +62,29 @@ export const useOrderListData = ({
   }, [gridRef]);
 
   const update = useCallback(
-    ({ data, delta }: { data: (OrderEdge | null)[]; delta?: Order[] }) => {
-      if (dataRef.current?.length) {
-        if (!scrolledToTop.current) {
-          const createdAt = dataRef.current?.[0]?.node.createdAt;
-          if (createdAt) {
-            newRows.current += (delta || []).filter(
-              (trade) => trade.createdAt > createdAt
-            ).length;
-          }
+    ({
+      data,
+      delta,
+    }: {
+      data: (OrderEdge | null)[] | null;
+      delta?: Order[];
+    }) => {
+      if (dataRef.current?.length && delta?.length && !scrolledToTop.current) {
+        const createdAt = dataRef.current?.[0]?.node.createdAt;
+        if (createdAt) {
+          newRows.current += (delta || []).filter(
+            (trade) => trade.createdAt > createdAt
+          ).length;
         }
-        dataRef.current = data;
-        gridRef.current?.api?.refreshInfiniteCache();
-        return true;
       }
+      const avoidRerender = !!(
+        (dataRef.current?.length && data?.length) ||
+        (!dataRef.current?.length && !data?.length)
+      );
+      console.log('dataRef.current', data);
       dataRef.current = data;
-      return false;
+      gridRef.current?.api?.refreshInfiniteCache();
+      return avoidRerender;
     },
     [gridRef, scrolledToTop]
   );
@@ -87,7 +94,7 @@ export const useOrderListData = ({
       data,
       totalCount,
     }: {
-      data: (OrderEdge | null)[];
+      data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
       dataRef.current = data;

@@ -1,4 +1,5 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { useRef, useState } from 'react';
 import type {
   BodyScrollEvent,
@@ -41,7 +42,12 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   };
 
   const onFilterChanged = (event: FilterChangedEvent) => {
-    setFilter(event.api.getFilterModel() as Filter);
+    const updatedFilter = event.api.getFilterModel();
+    if (Object.keys(updatedFilter).length) {
+      setFilter(updatedFilter);
+    } else if (filter) {
+      setFilter(undefined);
+    }
   };
 
   const onSortChange = (event: SortChangedEvent) => {
@@ -58,18 +64,27 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     setSort(sort.length > 0 ? sort : undefined);
   };
 
+  console.log('render:', { data, error, loading });
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <>
       <OrderList
         ref={gridRef}
-        rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        rowData={data?.length ? undefined : []}
+        rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
         onFilterChanged={onFilterChanged}
         onSortChanged={onSortChange}
       />
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0 top-5">
+        <AsyncRenderer
+          loading={loading}
+          error={error}
+          data={data}
+          noDataMessage={t('No orders')}
+          noDataCondition={(data) => !(data && data.length)}
+        />
+      </div>
+    </>
   );
 };

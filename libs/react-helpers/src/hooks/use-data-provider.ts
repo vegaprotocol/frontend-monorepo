@@ -27,7 +27,7 @@ interface useDataProviderParams<
     variables,
   }: {
     delta?: Delta;
-    data: Data;
+    data: Data | null;
     variables?: Variables;
   }) => boolean;
   insert?: ({
@@ -36,7 +36,7 @@ interface useDataProviderParams<
     totalCount,
   }: {
     insertionData: Data;
-    data: Data;
+    data: Data | null;
     totalCount?: number;
   }) => boolean;
   variables?: Variables;
@@ -103,41 +103,46 @@ export const useDataProvider = <
       } = arg;
       setError(error);
       setLoading(loading);
-      if (!error && !loading) {
-        // if update or insert function returns true it means that component handles updates
-        // component can use flush() which will call callback without delta and cause data state update
-        if (initialized.current && data) {
-          if (
-            isUpdate &&
-            !noUpdate &&
-            update &&
-            hasDelta<Delta>(arg) &&
-            update({ delta: arg.delta, data, variables })
-          ) {
-            return;
-          }
-          if (
-            isInsert &&
-            insert &&
-            (!insertionData || insert({ insertionData, data, totalCount }))
-          ) {
-            return;
-          }
+      // if update or insert function returns true it means that component handles updates
+      // component can use flush() which will call callback without delta and cause data state update
+      if (initialized.current) {
+        console.log('UpdateCallback', 2);
+        if (
+          isUpdate &&
+          !noUpdate &&
+          update &&
+          hasDelta<Delta>(arg) &&
+          update({ delta: arg.delta, data, variables })
+        ) {
+          return;
         }
-        setTotalCount(totalCount);
-        setData(data);
-        if (updateOnInit && !initialized.current && update && data) {
-          update({ data });
+        if (
+          isInsert &&
+          insert &&
+          (!insertionData || insert({ insertionData, data, totalCount }))
+        ) {
+          return;
         }
-        initialized.current = true;
       }
+      setTotalCount(totalCount);
+      setData(data);
+      if (updateOnInit && !initialized.current && update) {
+        update({ data });
+      }
+      initialized.current = true;
     },
     [update, insert, noUpdate, updateOnInit, variables]
   );
   useEffect(() => {
+    setData(null);
+    setError(undefined);
+    setTotalCount(undefined);
     if (skip) {
+      setLoading(false);
       return;
     }
+    setLoading(true);
+    initialized.current = false;
     const { unsubscribe, flush, reload, load } = dataProvider(
       callback,
       client,
@@ -146,7 +151,6 @@ export const useDataProvider = <
     flushRef.current = flush;
     reloadRef.current = reload;
     loadRef.current = load;
-    initialized.current = false;
     return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables, skip]);
   return { data, loading, error, flush, reload, load, totalCount };

@@ -44,7 +44,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
       },
 
       setModel(model?: { value: Types.DateRange } | null) {
-        setValue(!model ? defaultFilterValue : model.value);
+        setValue(model?.value || defaultFilterValue);
       },
     };
   });
@@ -62,13 +62,12 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
     props.filterChangedCallback();
   }, [value]); //eslint-disable-line react-hooks/exhaustive-deps
 
-  const start = value.start && toInputValue(value.start);
-  const end = value.end && toInputValue(value.end);
-
+  const start = (value.start && toInputValue(value.start)) || '';
+  const end = (value.end && toInputValue(value.end)) || '';
   return (
     <div className="ag-filter-body-wrapper">
       <fieldset className="ag-simple-filter-body-wrapper">
-        <label className="block">
+        <label className="block" key="start">
           <span className="block">start</span>
           <input
             type="datetime-local"
@@ -77,7 +76,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
             onChange={onChange}
           />
         </label>
-        <label className="block">
+        <label className="block" key="end">
           <span className="block">end</span>
           <input
             type="datetime-local"

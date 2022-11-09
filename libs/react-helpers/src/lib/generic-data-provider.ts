@@ -244,14 +244,14 @@ function makeDataProviderInternal<
   };
 
   const load = async (start?: number, end?: number) => {
-    if (!pagination || !pageInfo || !(data instanceof Array)) {
+    if (!pagination) {
       return Promise.reject();
     }
     const paginationVariables: Pagination = {
       first: pagination.first,
-      after: pageInfo.endCursor,
+      after: pageInfo?.endCursor,
     };
-    if (start !== undefined) {
+    if (start !== undefined && data instanceof Array) {
       if (!start) {
         paginationVariables.after = undefined;
       } else if (data && data[start - 1]) {
@@ -268,7 +268,7 @@ function makeDataProviderInternal<
           paginationVariables.after = (data[start - 1 - skip] as Cursor).cursor;
         }
       }
-    } else if (!pageInfo.hasNextPage) {
+    } else if (!pageInfo?.hasNextPage) {
       return null;
     }
     const res = await client.query<QueryData>({
@@ -307,7 +307,6 @@ function makeDataProviderInternal<
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy: fetchPolicy || 'no-cache',
-        errorPolicy: 'ignore',
       });
       data = getData(res.data, variables);
       if (data && pagination) {
