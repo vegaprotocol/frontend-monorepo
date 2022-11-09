@@ -13,7 +13,7 @@ jobs:
     secrets: inherit
     with:
       project: '[console-lite-e2e, explorer-e2e, liquidity-provision-dashboard-e2e, stats-e2e, token-e2e, trading-e2e]'
-      vega-version: 'v0.58.0'
+      vega-version: 'v0.62.0'
       gobin: /home/runner/go/bin
       tags: --env.grepTags '[ @smoke, @regression, @slow ]'
       night-run: true

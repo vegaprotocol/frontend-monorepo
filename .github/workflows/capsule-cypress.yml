@@ -14,7 +14,7 @@ on:
 
 env:
   GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.58.0'
+  VEGA_VERSION: 'v0.62.0'
 
 jobs:
   pr:
