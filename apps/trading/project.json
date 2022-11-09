@@ -32,7 +32,7 @@
       }
     },
     "export": {
-      "executor": "@nrwl/next:export",
+      "executor": "./tools/executors/next:export",
       "options": {
         "buildTarget": "trading:build:production"
       }
