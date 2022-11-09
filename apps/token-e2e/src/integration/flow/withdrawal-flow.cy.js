@@ -40,7 +40,10 @@ context(
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
+      // needs to reload page for withdrawal form to be displayed in ci - not reproducible outside of ci
       cy.getByTestId(withdraw).should('be.visible').click();
+      cy.visit('/');
+      cy.ethereum_wallet_connect();
       cy.getByTestId(selectAsset)
         .find('option')
         .should('have.length.at.least', 2);
