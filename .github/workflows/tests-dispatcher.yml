@@ -20,54 +20,61 @@ on:
       night-run:
         required: false
         type: boolean
+      capsule-teardown:
+        required: false
+        type: boolean
 
 jobs:
   run-console-lite-e2e:
-    if: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
     uses: ./.github/workflows/cypress-console-lite-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
 
   run-explorer-e2e:
-    if: ${{ contains(inputs.project, 'explorer-e2e') || contains(inputs.project, 'explorer') }}
     uses: ./.github/workflows/cypress-explorer-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{ contains(inputs.project, 'explorer-e2e') || contains(inputs.project, 'explorer') }}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
       night-run: ${{ inputs.night-run }}
+      capsule-teardown: ${{ inputs.capsule-teardown }}
 
   run-liquidity-e2e:
-    if: ${{ contains(inputs.project, 'liquidity-provision-dashboard-e2e') || contains(inputs.project, 'liquidity-provision-dashboard') }}
     uses: ./.github/workflows/cypress-liquidity-provision-dashboard-e2e.yml
     secrets: inherit
+    with:
+      trigger: ${{ contains(inputs.project, 'liquidity-provision-dashboard-e2e') || contains(inputs.project, 'liquidity-provision-dashboard') }}
 
   run-stats-e2e:
-    if: ${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }}
     uses: ./.github/workflows/cypress-stats-e2e.yml
     secrets: inherit
+    with:
+      trigger: ${{ contains(inputs.project, 'stats-e2e') || contains(inputs.project, 'stats') }}
 
   run-token-e2e:
-    if: ${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }}
     uses: ./.github/workflows/cypress-token-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
+      capsule-teardown: ${{ inputs.capsule-teardown }}
 
   run-trading-e2e:
-    if: ${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }}
     uses: ./.github/workflows/cypress-trading-e2e.yml
     secrets: inherit
     with:
+      trigger: ${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }}
       vega-version: ${{ inputs.vega-version }}
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}

@@ -1,10 +1,17 @@
 name: Cypress - liquidity provision dashboard
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
 
 jobs:
   liquidity-provision-dashboard-e2e:
     timeout-minutes: 10
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     steps:
       # Checkout front ends

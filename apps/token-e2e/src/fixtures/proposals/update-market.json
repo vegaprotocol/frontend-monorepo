@@ -6,8 +6,15 @@
       "future": {
         "quoteName": "tEuro",
         "settlementDataDecimals": 5,
-        "oracleSpecForSettlementPrice": {
-          "pubKeys": ["0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"],
+        "dataSourceSpecForSettlementData": {
+          "signers": [
+            {
+              "signer": {
+                "__typename": "ETHAddress",
+                "address": "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"
+              }
+            }
+          ],
           "filters": [
             {
               "key": {
@@ -23,8 +30,15 @@
             }
           ]
         },
-        "oracleSpecForTradingTermination": {
-          "pubKeys": ["0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"],
+        "dataSourceSpecForTradingTermination": {
+          "signers": [
+            {
+              "signer": {
+                "__typename": "ETHAddress",
+                "address": "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC"
+              }
+            }
+          ],
           "filters": [
             {
               "key": {
@@ -40,7 +54,7 @@
             }
           ]
         },
-        "oracleSpecBinding": {
+        "dataSourceSpecBinding": {
           "settlementPriceProperty": "prices.BTC.value",
           "tradingTerminationProperty": "vegaprotocol.builtin.timestamp"
         }

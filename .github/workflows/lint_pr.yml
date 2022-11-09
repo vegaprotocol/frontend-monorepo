@@ -1,0 +1,21 @@
+---
+name: Verify PR title
+
+on:
+  pull_request:
+    types: [opened, edited]
+jobs:
+  lint_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+      - name: Install commitlint cli and config
+        run: npm install @commitlint/cli @commitlint/config-conventional
+      - name: Create config
+        run: echo "module.exports = {extends:['@commitlint/config-conventional']};" > commitlint.config.js
+      - name: Check PR title
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint

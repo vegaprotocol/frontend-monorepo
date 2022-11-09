@@ -108,13 +108,13 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
               name
               decimals
             }
-            oracleSpecForSettlementData {
+            dataSourceSpecForSettlementData {
               id
             }
-            oracleSpecForTradingTermination {
+            dataSourceSpecForTradingTermination {
               id
             }
-            oracleSpecBinding {
+            dataSourceSpecBinding {
               settlementDataProperty
               tradingTerminationProperty
             }
