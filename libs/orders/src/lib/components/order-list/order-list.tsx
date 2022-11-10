@@ -171,7 +171,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
-          sortable
           filter
           cellRenderer={({
             value,
@@ -224,7 +223,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="type"
-          sortable
           filter={SetFilter}
           filterParams={{
             set: OrderTypeMapping,
@@ -245,7 +243,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="status"
-          sortable
           filter={SetFilter}
           filterParams={{
             set: OrderStatusMapping,
@@ -313,7 +310,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="timeInForce"
-          sortable
           filter={SetFilter}
           filterParams={{
             set: OrderTimeInForceMapping,
@@ -345,7 +341,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="updatedAt"
-          sortable
           filter={DateRangeFilter}
           valueFormatter={({
             value,

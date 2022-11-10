@@ -5,8 +5,12 @@ import {
   makeInfiniteScrollGetRows,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { ordersWithMarketProvider } from '../';
-import type { OrderEdge, Order, OrdersQueryVariables } from '../';
+import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
+import type {
+  OrderEdge,
+  Order,
+} from '../order-data-provider/order-data-provider';
+import type { OrdersQueryVariables } from '../order-data-provider/__generated__/Orders';
 import type { Schema as Types } from '@vegaprotocol/types';
 export interface Sort {
   colId: string;
