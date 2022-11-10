@@ -1,86 +1,23 @@
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
-import { gql, useQuery } from '@apollo/client';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
 import { useEffect, useMemo } from 'react';
+import {
+  useWithdrawalsQuery,
+  WithdrawalEventDocument,
+} from './__generated__/Withdrawal';
 import type {
-  WithdrawalEvent,
-  WithdrawalEventVariables,
-  WithdrawalEvent_busEvents_event,
-  WithdrawalEvent_busEvents_event_Withdrawal,
-} from './__generated__/WithdrawalEvent';
-import type {
-  Withdrawals,
-  WithdrawalsVariables,
-  Withdrawals_party_withdrawalsConnection_edges,
-} from './__generated__/Withdrawals';
-
-const WITHDRAWAL_FRAGMENT = gql`
-  fragment WithdrawalFields on Withdrawal {
-    id
-    status
-    amount
-    asset {
-      id
-      name
-      symbol
-      decimals
-      status
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-      }
-    }
-    createdTimestamp
-    withdrawnTimestamp
-    txHash
-    details {
-      ... on Erc20WithdrawalDetails {
-        receiverAddress
-      }
-    }
-    pendingOnForeignChain @client
-  }
-`;
-
-export const WITHDRAWALS_QUERY = gql`
-  ${WITHDRAWAL_FRAGMENT}
-  query Withdrawals($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      withdrawalsConnection {
-        edges {
-          node {
-            ...WithdrawalFields
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const WITHDRAWAL_BUS_EVENT_SUB = gql`
-  ${WITHDRAWAL_FRAGMENT}
-  subscription WithdrawalEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Withdrawal]) {
-      event {
-        ... on Withdrawal {
-          ...WithdrawalFields
-        }
-      }
-    }
-  }
-`;
+  WithdrawalsQuery,
+  WithdrawalFieldsFragment,
+  WithdrawalEventSubscription,
+  WithdrawalEventSubscriptionVariables,
+} from './__generated__/Withdrawal';
 
 export const useWithdrawals = () => {
   const { pubKey } = useVegaWallet();
-  const { data, loading, error, subscribeToMore } = useQuery<
-    Withdrawals,
-    WithdrawalsVariables
-  >(WITHDRAWALS_QUERY, {
+  const { data, loading, error, subscribeToMore } = useWithdrawalsQuery({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
@@ -88,8 +25,11 @@ export const useWithdrawals = () => {
   useEffect(() => {
     if (!pubKey) return;
 
-    const unsub = subscribeToMore<WithdrawalEvent, WithdrawalEventVariables>({
-      document: WITHDRAWAL_BUS_EVENT_SUB,
+    const unsub = subscribeToMore<
+      WithdrawalEventSubscription,
+      WithdrawalEventSubscriptionVariables
+    >({
+      document: WithdrawalEventDocument,
       variables: { partyId: pubKey },
       updateQuery,
     });
@@ -142,9 +82,9 @@ export const useWithdrawals = () => {
 };
 
 export const updateQuery: UpdateQueryFn<
-  Withdrawals,
-  WithdrawalEventVariables,
-  WithdrawalEvent
+  WithdrawalsQuery,
+  WithdrawalEventSubscriptionVariables,
+  WithdrawalEventSubscription
 > = (prev, { subscriptionData, variables }) => {
   if (!subscriptionData.data.busEvents?.length) {
     return prev;
@@ -181,7 +121,7 @@ export const updateQuery: UpdateQueryFn<
           edges,
         },
       },
-    } as Withdrawals;
+    } as WithdrawalsQuery;
   }
 
   return {
@@ -197,8 +137,8 @@ export const updateQuery: UpdateQueryFn<
 };
 
 const isWithdrawalEvent = (
-  event: WithdrawalEvent_busEvents_event
-): event is WithdrawalEvent_busEvents_event_Withdrawal => {
+  event: WithdrawalFieldsFragment
+): event is WithdrawalFieldsFragment => {
   if (event.__typename === 'Withdrawal') {
     return true;
   }

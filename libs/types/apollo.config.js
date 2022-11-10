@@ -25,6 +25,10 @@ module.exports = {
       '../../libs/governance/**',
       '../../libs/ledger/**',
       '../../libs/liquidity/**',
+      // @TODO: uncomment these when migrated
+      // '../../libs/maket-depth/**',
+      // '../../libs/market-list/**',
+      // '../../libs/market-info/**',
       '../../libs/network-info/**',
       '../../libs/network-stats/**',
       '../../libs/orders/**',
