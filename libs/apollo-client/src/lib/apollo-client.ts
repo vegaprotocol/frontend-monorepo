@@ -1,18 +1,22 @@
+import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   ApolloClient,
-  ApolloLink,
-  split,
   from,
+  split,
+  ApolloLink,
   HttpLink,
   InMemoryCache,
 } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
-import { createClient as createWSClient } from 'graphql-ws';
+import ApolloLinkTimeout from 'apollo-link-timeout';
 
-export function createClient(base?: string) {
+const isBrowser = typeof window !== 'undefined';
+
+export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
@@ -20,55 +24,7 @@ export function createClient(base?: string) {
   const urlWS = new URL(base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
-
-  const cache = new InMemoryCache({
-    typePolicies: {
-      Account: {
-        keyFields: false,
-        fields: {
-          balanceFormatted: {},
-        },
-      },
-      Instrument: {
-        keyFields: false,
-      },
-      TradableInstrument: {
-        keyFields: ['instrument'],
-      },
-      Product: {
-        keyFields: ['settlementAsset', ['id']],
-      },
-      MarketData: {
-        keyFields: ['market', ['id']],
-      },
-      Node: {
-        keyFields: false,
-      },
-      Withdrawal: {
-        fields: {
-          pendingOnForeignChain: {
-            read: (isPending = false) => isPending,
-          },
-        },
-      },
-      ERC20: {
-        keyFields: ['contractAddress'],
-      },
-      PositionUpdate: {
-        keyFields: false,
-      },
-      AccountUpdate: {
-        keyFields: false,
-      },
-      Party: {
-        keyFields: false,
-      },
-      Fees: {
-        keyFields: false,
-      },
-    },
-  });
-
+  const timeoutLink = new ApolloLinkTimeout(10000);
   const retryLink = new RetryLink({
     delay: {
       initial: 300,
@@ -82,7 +38,7 @@ export function createClient(base?: string) {
     credentials: 'same-origin',
   });
 
-  const wsLink = process.browser
+  const wsLink = isBrowser
     ? new GraphQLWsLink(
         createWSClient({
           url: urlWS.href,
@@ -90,7 +46,7 @@ export function createClient(base?: string) {
       )
     : new ApolloLink((operation, forward) => forward(operation));
 
-  const splitLink = process.browser
+  const splitLink = isBrowser
     ? split(
         ({ query }) => {
           const definition = getMainDefinition(query);
@@ -105,13 +61,12 @@ export function createClient(base?: string) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    console.log(graphQLErrors);
-    console.log(networkError);
+    if (graphQLErrors) console.log(graphQLErrors);
+    if (networkError) console.log(networkError);
   });
 
   return new ApolloClient({
-    connectToDevTools: process.env['NODE_ENV'] === 'development',
-    link: from([errorLink, retryLink, splitLink]),
-    cache,
+    link: from([errorLink, timeoutLink, retryLink, splitLink]),
+    cache: new InMemoryCache(cacheConfig),
   });
 }
