@@ -5,13 +5,13 @@ import { CompleteCell } from './pending-withdrawals-table';
 import { PendingWithdrawalsTable } from './pending-withdrawals-table';
 import { getTimeFormat } from '@vegaprotocol/react-helpers';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
 }));
 
-const generateTable = (props: TypedDataAgGrid<WithdrawalFields>) => (
+const generateTable = (props: TypedDataAgGrid<WithdrawalFieldsFragment>) => (
   <MockedProvider>
     <PendingWithdrawalsTable {...props} />
   </MockedProvider>
