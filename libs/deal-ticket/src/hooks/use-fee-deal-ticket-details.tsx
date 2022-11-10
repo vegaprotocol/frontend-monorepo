@@ -100,10 +100,7 @@ export const getFeeDetailsValues = ({
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? normalizeFormatNumber(
-          value,
-          market.decimalPlaces
-        )
+      ? normalizeFormatNumber(value, market.decimalPlaces)
       : '-';
   };
   const formatValueWithAssetDp = (
