@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useOrderCloseOut } from './use-order-closeout';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),

@@ -11,8 +11,8 @@ import { useMemo } from 'react';
 import type {
   LedgerEntriesQuery,
   LedgerEntryFragment,
-} from './__generated___/LedgerEntries';
-import { LedgerEntriesDocument } from './__generated___/LedgerEntries';
+} from './__generated__/LedgerEntries';
+import { LedgerEntriesDocument } from './__generated__/LedgerEntries';
 
 export type LedgerEntry = LedgerEntryFragment & {
   id: number;

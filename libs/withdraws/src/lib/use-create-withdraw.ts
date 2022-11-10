@@ -6,8 +6,8 @@ import {
 import { useCallback, useState } from 'react';
 import { useWithdrawalApproval } from './use-withdrawal-approval';
 import { useWithdrawalEvent } from './use-withdrawal-event';
-import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 export interface WithdrawalArgs {
   amount: string;
@@ -18,9 +18,12 @@ export interface WithdrawalArgs {
 
 export const useCreateWithdraw = () => {
   const waitForWithdrawalApproval = useWithdrawalApproval();
-  const [approval, setApproval] =
-    useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
-  const [withdrawal, setWithdrawal] = useState<WithdrawalFields | null>(null);
+  const [approval, setApproval] = useState<
+    Erc20ApprovalQuery['erc20WithdrawalApproval'] | null
+  >(null);
+  const [withdrawal, setWithdrawal] = useState<WithdrawalFieldsFragment | null>(
+    null
+  );
   const [availableTimestamp, setAvailableTimestamp] = useState<number | null>(
     null
   );

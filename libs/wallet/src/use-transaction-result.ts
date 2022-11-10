@@ -5,8 +5,8 @@ import type { Subscription } from 'zen-observable-ts';
 import type {
   TransactionEventSubscription,
   TransactionEventSubscriptionVariables,
-} from './__generated___/TransactionResult';
-import { TransactionEventDocument } from './__generated___/TransactionResult';
+} from './__generated__/TransactionResult';
+import { TransactionEventDocument } from './__generated__/TransactionResult';
 
 export interface TransactionResult {
   partyId: string;

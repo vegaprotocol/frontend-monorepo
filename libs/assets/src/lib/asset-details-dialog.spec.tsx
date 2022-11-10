@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { AssetStatus } from '@vegaprotocol/types';
 import { AssetDetailsDialog } from './asset-details-dialog';
 import { AssetDetail, testId } from './asset-details-table';
-import { AssetsDocument } from './__generated___/Assets';
+import { AssetsDocument } from './__generated__/Assets';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
 
 const mockedData = {
