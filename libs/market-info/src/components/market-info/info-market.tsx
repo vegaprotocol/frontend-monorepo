@@ -332,15 +332,17 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       title: t('Oracle'),
       content: (
         <MarketInfoTable
-          data={market.tradableInstrument.instrument.product.oracleSpecBinding}
+          data={
+            market.tradableInstrument.instrument.product.dataSourceSpecBinding
+          }
         >
           <ExternalLink
-            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForSettlementData.id}`}
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id}`}
           >
             {t('View settlement data oracle specification')}
           </ExternalLink>
           <ExternalLink
-            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
+            href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.dataSourceSpecForTradingTermination.id}`}
           >
             {t('View termination oracle specification')}
           </ExternalLink>

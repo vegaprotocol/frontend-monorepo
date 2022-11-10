@@ -1,3 +1,5 @@
+import { connectVegaWallet } from '../support/vega-wallet';
+
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
@@ -9,8 +11,14 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockWeb3Provider();
     cy.mockGQLSubscription();
     cy.mockTradingPage();
-    cy.visit('/#/portfolio/deposit');
+    cy.visit('/#/portfolio');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.getByTestId('Deposits').click();
 
+    cy.getByTestId('tab-deposits').contains('Connect your Vega wallet');
+    connectVegaWallet();
+    // validateFillsDisplayed();
+    cy.getByTestId('deposit-button').click();
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
@@ -19,11 +27,11 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('handles empty fields', () => {
-    // Submit form to trigger any empty validaion messages
+    // Submit form to trigger any empty validation messages
     cy.getByTestId('deposit-submit').click();
 
     cy.getByTestId(formFieldError).should('contain.text', 'Required');
-    cy.getByTestId(formFieldError).should('have.length', 3);
+    cy.getByTestId(formFieldError).should('have.length', 2);
 
     // Invalid public key
     cy.get(toAddressField)
@@ -64,7 +72,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.get('#ethereum-address').should('have.value', ethWalletAddress).click();
     cy.getByTestId('dialog-content').within(() => {
       cy.get('p').should('have.text', `Connected with ${ethWalletAddress}`);
-      cy.get('button')
+      cy.getByTestId('disconnect-ethereum-wallet')
         .should('have.text', 'Disconnect Ethereum Wallet')
         .click();
     });

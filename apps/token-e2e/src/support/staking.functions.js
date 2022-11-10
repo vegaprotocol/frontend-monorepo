@@ -216,3 +216,13 @@ Cypress.Commands.add(
       });
   }
 );
+
+Cypress.Commands.add('close_staking_dialog', () => {
+  cy.getByTestId('dialog-title').should(
+    'contain.text',
+    'At the beginning of the next epoch'
+  );
+  cy.getByTestId('dialog-content').within(() => {
+    cy.get('a').should('have.text', 'Back to Staking').click();
+  });
+});

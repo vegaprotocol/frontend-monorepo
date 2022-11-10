@@ -4,7 +4,7 @@ import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList, TxsStatsInfo } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 
-const BE_TXS_PER_REQUEST = 100;
+const BE_TXS_PER_REQUEST = 20;
 
 export const TxsList = () => {
   const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
