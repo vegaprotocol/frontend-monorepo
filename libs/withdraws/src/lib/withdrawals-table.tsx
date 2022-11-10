@@ -16,7 +16,9 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { Schema } from '@vegaprotocol/types';
 
-export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFieldsFragment>) => {
+export const WithdrawalsTable = (
+  props: TypedDataAgGrid<WithdrawalFieldsFragment>
+) => {
   const { ETHERSCAN_URL } = useEnvironment();
 
   return (
@@ -114,7 +116,10 @@ export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
 };
 
 export interface RecipientCellProps
-  extends VegaICellRendererParams<WithdrawalFieldsFragment, 'details.receiverAddress'> {
+  extends VegaICellRendererParams<
+    WithdrawalFieldsFragment,
+    'details.receiverAddress'
+  > {
   ethUrl: string;
 }
 
