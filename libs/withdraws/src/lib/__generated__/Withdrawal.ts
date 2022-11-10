@@ -12,7 +12,7 @@ export type WithdrawalsQueryVariables = Types.Exact<{
 }>;
 
 
-export type WithdrawalsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawals?: Array<{ __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: string, withdrawnTimestamp?: string | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null }> | null } | null };
+export type WithdrawalsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawalsConnection?: { __typename?: 'WithdrawalsConnection', edges?: Array<{ __typename?: 'WithdrawalEdge', node: { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: string, withdrawnTimestamp?: string | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } } | null> | null } | null } | null };
 
 export type WithdrawalEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -59,8 +59,12 @@ export const WithdrawalsDocument = gql`
     query Withdrawals($partyId: ID!) {
   party(id: $partyId) {
     id
-    withdrawals {
-      ...WithdrawalFields
+    withdrawalsConnection {
+      edges {
+        node {
+          ...WithdrawalFields
+        }
+      }
     }
   }
 }
