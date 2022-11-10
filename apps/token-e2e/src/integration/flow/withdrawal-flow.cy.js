@@ -5,7 +5,6 @@ const amountInput = 'amount-input';
 const balanceAvailable = 'BALANCE_AVAILABLE_value';
 const withdrawalThreshold = 'WITHDRAWAL_THRESHOLD_value';
 const delayTime = 'DELAY_TIME_value';
-const useMaximum = 'use-maximum';
 const submitWithdrawalButton = 'submit-withdrawal';
 const dialogTitle = 'dialog-title';
 const dialogClose = 'dialog-close';
