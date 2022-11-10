@@ -16,7 +16,7 @@ import type {
   OrdersQuery,
   OrdersUpdateSubscription,
 } from './__generated__/orders';
-import { OrdersDocument, OrdersUpdateDocument } from './__generated__/orders';
+import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;
