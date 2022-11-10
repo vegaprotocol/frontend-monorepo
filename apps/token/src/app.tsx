@@ -33,10 +33,7 @@ import type {
   InMemoryCacheConfig,
   Reference,
 } from '@apollo/client';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
 
-import { deterministicShuffle } from './lib/deterministic-shuffle';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const formatUintToNumber = (amount: string, decimals = 18) =>
