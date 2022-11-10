@@ -1,6 +1,6 @@
 import { gql, useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,14 +12,10 @@ import type {
   PartyDelegations,
   PartyDelegationsVariables,
 } from './__generated__/PartyDelegations';
-import { StakeFailure } from './stake-failure';
-import { StakePending } from './stake-pending';
-import { StakeSuccess } from './stake-success';
+import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
   ButtonLink,
-  Dialog,
   FormGroup,
-  Intent,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -54,7 +50,7 @@ export const PARTY_DELEGATIONS_QUERY = gql`
   }
 `;
 
-enum FormState {
+export enum FormState {
   Default,
   Requested,
   Pending,
@@ -130,6 +126,7 @@ export const StakingForm = ({
 
   async function onSubmit() {
     setFormState(FormState.Requested);
+    setIsDialogVisible(true);
     const delegateInput: DelegateSubmissionBody = {
       delegateSubmission: {
         nodeId,
@@ -200,17 +197,6 @@ export const StakingForm = ({
   const toggleDialog = useCallback(() => {
     setIsDialogVisible(!isDialogVisible);
   }, [isDialogVisible]);
-
-  useEffect(() => {
-    if (
-      formState === FormState.Success ||
-      formState === FormState.Failure ||
-      formState === FormState.Pending ||
-      formState === FormState.Requested
-    ) {
-      setIsDialogVisible(true);
-    }
-  }, [formState]);
 
   return (
     <>
@@ -324,36 +310,15 @@ export const StakingForm = ({
           )}
         </>
       )}
-      {formState === FormState.Failure && <StakeFailure nodeName={nodeName} />}
-      {formState === FormState.Requested && (
-        <Dialog
-          title="Confirm transaction in wallet"
-          intent={Intent.Warning}
-          open={isDialogVisible}
-          onChange={toggleDialog}
-        >
-          <p>{t('stakingConfirm')}</p>
-        </Dialog>
-      )}
-      {formState === FormState.Pending && (
-        <StakePending
-          action={action}
-          amount={amount}
-          nodeName={nodeName}
-          isDialogVisible={isDialogVisible}
-          toggleDialog={toggleDialog}
-        />
-      )}
-      {formState === FormState.Success && (
-        <StakeSuccess
-          action={action}
-          amount={amount}
-          nodeName={nodeName}
-          removeType={removeType}
-          isDialogVisible={isDialogVisible}
-          toggleDialog={toggleDialog}
-        />
-      )}
+      <StakingFormTxStatuses
+        formState={formState}
+        nodeName={nodeName}
+        amount={amount}
+        action={action}
+        removeType={removeType}
+        isDialogVisible={isDialogVisible}
+        toggleDialog={toggleDialog}
+      />
     </>
   );
 };

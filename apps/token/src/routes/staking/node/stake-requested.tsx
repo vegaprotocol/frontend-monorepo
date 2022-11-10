@@ -1,30 +1,25 @@
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
+import React from 'react';
 
-interface StakeFailureProps {
-  nodeName: string;
+interface StakeRequestedProps {
   isDialogVisible: boolean;
   toggleDialog: () => void;
 }
 
-export const StakeFailure = ({
-  nodeName,
+export const StakeRequested = ({
   isDialogVisible,
   toggleDialog,
-}: StakeFailureProps) => {
+}: StakeRequestedProps) => {
   const { t } = useTranslation();
   return (
     <Dialog
-      intent={Intent.Danger}
-      title={t('Something went wrong')}
+      title={t('txRequested')}
+      intent={Intent.Warning}
       open={isDialogVisible}
       onChange={toggleDialog}
     >
-      <p>
-        {t('stakeFailed', {
-          node: nodeName,
-        })}
-      </p>
+      <p>{t('stakingConfirm')}</p>
     </Dialog>
   );
 };
