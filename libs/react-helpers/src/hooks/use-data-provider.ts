@@ -106,7 +106,6 @@ export const useDataProvider = <
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
       if (initialized.current) {
-        console.log('UpdateCallback', 2);
         if (
           isUpdate &&
           !noUpdate &&
