@@ -17,4 +17,4 @@ jobs:
       gobin: /home/runner/go/bin
       tags: --env.grepTags '[ @smoke, @regression, @slow ]'
       night-run: true
-      capsule-teardown: true
+      capsule-teardown: false

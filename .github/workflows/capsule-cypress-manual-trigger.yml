@@ -58,4 +58,4 @@ jobs:
       gobin: ${{needs.manual.outputs.gobin}}
       skip-cache: ${{needs.manual.outputs.skip-cache}}
       tags: ${{needs.manual.outputs.tags}}
-      capsule-teardown: true
+      capsule-teardown: false
