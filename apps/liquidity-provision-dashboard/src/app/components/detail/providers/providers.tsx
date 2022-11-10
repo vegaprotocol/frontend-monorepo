@@ -4,7 +4,10 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { GetRowIdParams } from 'ag-grid-community';
 import { t } from '@vegaprotocol/react-helpers';
 
-import type { LiquidityProvisionFieldsFragment } from '@vegaprotocol/liquidity';
+import type {
+  LiquidityProviderFeeShareFieldsFragment,
+  LiquidityProvisionFieldsFragment,
+} from '@vegaprotocol/liquidity';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
 import { Grid } from '../../grid';
@@ -24,7 +27,8 @@ export const LPProvidersGrid = ({
   liquidityProviders,
   settlementAsset,
 }: {
-  liquidityProviders: LiquidityProvisionFieldsFragment[];
+  liquidityProviders: LiquidityProvisionFieldsFragment &
+    LiquidityProviderFeeShareFieldsFragment[];
   settlementAsset: {
     decimals?: number;
     symbol?: string;
@@ -55,7 +59,14 @@ export const LPProvidersGrid = ({
         valueFormatter={formatToHours}
         field="createdAt"
       />
-      <AgGridColumn headerName={t('Galps')} field="Galps" />
+      <AgGridColumn
+        headerName={t('Equity-like share')}
+        field="equityLikeShare"
+        valueFormatter={({ value }: { value?: string | null }) => {
+          const valueOr0 = value ? value : '';
+          return `${parseInt(valueOr0) * 100}%`;
+        }}
+      />
       <AgGridColumn
         headerName={t('committed bond/stake')}
         field="commitmentAmount"
