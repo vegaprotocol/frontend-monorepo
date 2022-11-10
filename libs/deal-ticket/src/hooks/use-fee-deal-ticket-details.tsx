@@ -96,21 +96,38 @@ export const getFeeDetailsValues = ({
   estCloseOut,
   market,
 }: FeeDetails) => {
-  const formatValue = (value: string | number | null | undefined): string => {
+  const formatValueWithMarketDp = (
+    value: string | number | null | undefined
+  ): string => {
     return value && !isNaN(Number(value))
-      ? normalizeFormatNumber(value, market.decimalPlaces)
+      ? normalizeFormatNumber(
+          value,
+          market.tradableInstrument.instrument.product.settlementAsset.decimals
+        )
+      : '-';
+  };
+  const formatValueWithAssetDp = (
+    value: string | number | null | undefined
+  ): string => {
+    return value && !isNaN(Number(value))
+      ? normalizeFormatNumber(
+          value,
+          market.tradableInstrument.instrument.product.settlementAsset.decimals
+        )
       : '-';
   };
   return [
     {
       label: t('Notional'),
-      value: formatValue(notionalSize),
+      value: formatValueWithMarketDp(notionalSize),
       quoteName,
       labelDescription: NOTIONAL_SIZE_TOOLTIP_TEXT,
     },
     {
       label: t('Fees'),
-      value: estMargin?.totalFees && `~${formatValue(estMargin?.totalFees)}`,
+      value:
+        estMargin?.totalFees &&
+        `~${formatValueWithAssetDp(estMargin?.totalFees)}`,
       labelDescription: (
         <>
           <span>
@@ -129,13 +146,14 @@ export const getFeeDetailsValues = ({
     },
     {
       label: t('Margin'),
-      value: estMargin?.margin && `~${formatValue(estMargin?.margin)}`,
+      value:
+        estMargin?.margin && `~${formatValueWithAssetDp(estMargin?.margin)}`,
       quoteName,
       labelDescription: EST_MARGIN_TOOLTIP_TEXT,
     },
     {
       label: t('Liquidation'),
-      value: estCloseOut && `~${formatValue(estCloseOut)}`,
+      value: estCloseOut && `~${formatValueWithMarketDp(estCloseOut)}`,
       quoteName,
       labelDescription: EST_CLOSEOUT_TOOLTIP_TEXT,
     },
