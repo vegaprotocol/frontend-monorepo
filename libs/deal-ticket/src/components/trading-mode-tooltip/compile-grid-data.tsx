@@ -7,7 +7,7 @@ import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import { Link } from 'react-router-dom';
 
 export const compileGridData = (

@@ -10,14 +10,14 @@ import produce from 'immer';
 import {
   AccountEventsDocument,
   AccountsDocument,
-} from './__generated___/Accounts';
+} from './__generated__/Accounts';
 
 import type { IterableElement } from 'type-fest';
 import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
-} from './__generated___/Accounts';
+} from './__generated__/Accounts';
 import type { Market } from '@vegaprotocol/market-list';
 import type { Asset } from '@vegaprotocol/assets';
 

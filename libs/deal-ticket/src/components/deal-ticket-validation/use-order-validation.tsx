@@ -14,7 +14,7 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { MarketDataGrid } from '../trading-mode-tooltip';
 import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import { ValidateMargin } from './validate-margin';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { useOrderMarginValidation } from './use-order-margin-validation';

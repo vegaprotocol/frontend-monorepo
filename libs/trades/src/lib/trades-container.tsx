@@ -9,7 +9,7 @@ import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 import { MAX_TRADES, tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { Trade, TradeEdge } from './trades-data-provider';
-import type { TradesQueryVariables } from './__generated___/Trades';
+import type { TradesQueryVariables } from './__generated__/Trades';
 
 interface TradesContainerProps {
   marketId: string;

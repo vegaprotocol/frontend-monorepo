@@ -1,4 +1,4 @@
-export * from './__generated___/Accounts';
+export * from './__generated__/Accounts';
 export * from './accounts-data-provider';
 export * from './accounts-table';
 export * from './asset-balance';
