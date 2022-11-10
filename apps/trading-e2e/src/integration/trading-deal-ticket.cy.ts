@@ -202,6 +202,183 @@ describe('must submit order', { tags: '@smoke' }, () => {
   });
 });
 
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
 describe('deal ticket validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
