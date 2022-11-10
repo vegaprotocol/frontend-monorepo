@@ -19,7 +19,6 @@ export const TradingModeTooltip = ({
   compiledGrid,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
-  const vegaDocsUrl = VEGA_DOCS_URL || 'http://docs.vega.xyz/testnet';
   switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
@@ -39,11 +38,13 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <ExternalLink
-              href={createDocsLinks(vegaDocsUrl).AUCTION_TYPE_OPENING}
-            >
-              {t('Find out more')}
-            </ExternalLink>
+            {VEGA_DOCS_URL && (
+              <ExternalLink
+                href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
+              >
+                {t('Find out more')}
+              </ExternalLink>
+            )}
           </p>
           {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
         </section>
@@ -60,14 +61,16 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>{' '}
-                <ExternalLink
-                  href={
-                    createDocsLinks(vegaDocsUrl)
-                      .AUCTION_TYPE_LIQUIDITY_MONITORING
-                  }
-                >
-                  {t('Find out more')}
-                </ExternalLink>
+                {VEGA_DOCS_URL && (
+                  <ExternalLink
+                    href={
+                      createDocsLinks(VEGA_DOCS_URL)
+                        .AUCTION_TYPE_LIQUIDITY_MONITORING
+                    }
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
               </p>
               {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>
@@ -80,13 +83,16 @@ export const TradingModeTooltip = ({
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                <ExternalLink
-                  href={
-                    createDocsLinks(vegaDocsUrl).AUCTION_TYPE_PRICE_MONITORING
-                  }
-                >
-                  {t('Find out more')}
-                </ExternalLink>
+                {VEGA_DOCS_URL && (
+                  <ExternalLink
+                    href={
+                      createDocsLinks(VEGA_DOCS_URL)
+                        .AUCTION_TYPE_PRICE_MONITORING
+                    }
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
               </p>
               {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>

@@ -6,10 +6,12 @@ import {
   Intent,
   Link as UTLink,
 } from '@vegaprotocol/ui-toolkit';
-import { ExternalLinks as Links } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, ExternalLinks } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const StakingIntro = () => {
   const { t } = useTranslation();
+  const { VEGA_DOCS_URL } = useEnvironment();
 
   return (
     <section className="mb-8" data-testid="staking-intro">
@@ -32,7 +34,7 @@ export const StakingIntro = () => {
           <li>
             {t('stakingDescription2')}{' '}
             <UTLink
-              href={Links.VALIDATOR_FORUM}
+              href={ExternalLinks.VALIDATOR_FORUM}
               target="_blank"
               data-testid="validator-forum-link"
             >
@@ -43,13 +45,15 @@ export const StakingIntro = () => {
           <li>{t('stakingDescription4')}</li>
         </ol>
 
-        <UTLink
-          href={Links.STAKING_GUIDE}
-          target="_blank"
-          data-testid="staking-guide-link"
-        >
-          <Button>{t('readMoreStaking')}</Button>
-        </UTLink>
+        {VEGA_DOCS_URL && (
+          <UTLink
+            href={createDocsLinks(VEGA_DOCS_URL).STAKING_GUIDE}
+            target="_blank"
+            data-testid="staking-guide-link"
+          >
+            <Button>{t('readMoreStaking')}</Button>
+          </UTLink>
+        )}
       </Callout>
     </section>
   );
