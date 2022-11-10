@@ -20,8 +20,9 @@ export const PriceCell = React.memo(
       : [`${value}`];
     return (
       <span
-        className="font-mono relative text-black dark:text-white"
+        className="font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir"
         data-testid={testId || 'price'}
+        title={valueFormatted}
       >
         {valueSplit[0]}
         {valueSplit[1] ? decimalSeparator : null}

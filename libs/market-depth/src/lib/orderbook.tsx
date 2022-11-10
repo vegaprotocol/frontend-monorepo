@@ -595,7 +595,9 @@ export const Orderbook = ({
         <div>{t('Bid vol')}</div>
         <div>{t('Ask vol')}</div>
         <div>{t('Price')}</div>
-        <div className="pr-[2px]">{t('Cumulative vol')}</div>
+        <div className="pr-[2px] whitespace-nowrap overflow-hidden text-ellipsis">
+          {t('Cumulative vol')}
+        </div>
       </div>
       <div
         className={`h-full overflow-auto relative ${styles['scroll']} pt-[26px] pb-[17px]`}
@@ -637,7 +639,7 @@ export const Orderbook = ({
         ref={footerElement}
       >
         <div className="col-span-2">
-          <label className="flex items-center">
+          <label className="flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
             <input
               className="mr-1"
               type="checkbox"
@@ -661,7 +663,7 @@ export const Orderbook = ({
             ))}
           </select>
         </div>
-        <div className="col-start-4">
+        <div className="col-start-4 whitespace-nowrap overflow-hidden text-ellipsis">
           <button
             type="button"
             onClick={scrollToMidPrice}

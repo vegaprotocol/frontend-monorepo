@@ -28,8 +28,7 @@ on:
         default: false
 env:
   GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.58.0'
-  capsule-teardown: true
+  VEGA_VERSION: 'v0.62.0'
 
 jobs:
   manual:
@@ -58,5 +57,5 @@ jobs:
       vega-version: ${{needs.manual.outputs.vega-version}}
       gobin: ${{needs.manual.outputs.gobin}}
       skip-cache: ${{needs.manual.outputs.skip-cache}}
-      capsule-teardown: ${{needs.manual.capsule-teardown}}
       tags: ${{needs.manual.outputs.tags}}
+      capsule-teardown: false

@@ -40,6 +40,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.color-scheme-dark': {
       colorScheme: 'dark',
     },
+    '.rtl-dir': {
+      direction: 'rtl',
+    },
   });
 });
 
