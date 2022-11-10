@@ -17,9 +17,10 @@ const agGridDarkVariables = `
   .ag-theme-balham-dark .ag-root-wrapper {
     border: 0;
   }
-  
+
   .ag-theme-balham-dark .ag-row {
     border-width: 1px 0;
+    border-bottom: solid transparent;
   }
 
   .ag-theme-balham-dark .ag-react-container {
