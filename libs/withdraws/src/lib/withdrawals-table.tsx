@@ -13,10 +13,10 @@ import type {
 } from '@vegaprotocol/ui-toolkit';
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
-import { WithdrawalStatus } from '@vegaprotocol/types';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import { Schema } from '@vegaprotocol/types';
 
-export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
+export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFieldsFragment>) => {
   const { ETHERSCAN_URL } = useEnvironment();
 
   return (
@@ -37,7 +37,7 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
         valueFormatter={({
           value,
           data,
-        }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
+        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'amount'>) => {
           return isNumeric(value) && data?.asset
             ? addDecimalsFormatNumber(value, data.asset.decimals)
             : '';
@@ -51,7 +51,7 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
         valueFormatter={({
           value,
         }: VegaValueFormatterParams<
-          WithdrawalFields,
+          WithdrawalFieldsFragment,
           'details.receiverAddress'
         >) => {
           if (!value) return '-';
@@ -64,7 +64,7 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
         valueFormatter={({
           data,
         }: VegaValueFormatterParams<
-          WithdrawalFields,
+          WithdrawalFieldsFragment,
           'withdrawnTimestamp'
         >) => {
           const ts = data?.withdrawnTimestamp;
@@ -82,7 +82,7 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
         field="txHash"
         cellRenderer={({
           value,
-        }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
+        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
           if (!value) return '-';
           return (
             <Link
@@ -100,21 +100,21 @@ export const WithdrawalsTable = (props: TypedDataAgGrid<WithdrawalFields>) => {
   );
 };
 
-export const StatusCell = ({ data }: { data: WithdrawalFields }) => {
+export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
   if (data.pendingOnForeignChain || !data.txHash) {
     return <span>{t('Pending')}</span>;
   }
-  if (data.status === WithdrawalStatus.STATUS_FINALIZED) {
+  if (data.status === Schema.WithdrawalStatus.STATUS_FINALIZED) {
     return <span>{t('Completed')}</span>;
   }
-  if (data.status === WithdrawalStatus.STATUS_REJECTED) {
+  if (data.status === Schema.WithdrawalStatus.STATUS_REJECTED) {
     return <span>{t('Rejected')}</span>;
   }
   return <span>{t('Failed')}</span>;
 };
 
 export interface RecipientCellProps
-  extends VegaICellRendererParams<WithdrawalFields, 'details.receiverAddress'> {
+  extends VegaICellRendererParams<WithdrawalFieldsFragment, 'details.receiverAddress'> {
   ethUrl: string;
 }
 
