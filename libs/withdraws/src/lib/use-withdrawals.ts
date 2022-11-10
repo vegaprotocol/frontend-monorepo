@@ -15,7 +15,7 @@ import type {
   WithdrawalEventSubscriptionVariables,
 } from './__generated__/Withdrawal';
 
-type WithdrawalEdges = { node: WithdrawalFieldsFragment }[]
+type WithdrawalEdges = { node: WithdrawalFieldsFragment }[];
 
 export const useWithdrawals = () => {
   const { pubKey } = useVegaWallet();
@@ -93,18 +93,20 @@ export const updateQuery: UpdateQueryFn<
   }
 
   const curr = prev.party?.withdrawalsConnection?.edges || [];
-  const incoming = subscriptionData.data.busEvents
-    .reduce<WithdrawalEdges>((acc, event) => {
+  const incoming = subscriptionData.data.busEvents.reduce<WithdrawalEdges>(
+    (acc, event) => {
       if (event.event.__typename === 'Withdrawal') {
         acc.push({
           node: {
             ...event.event,
             pendingOnForeignChain: false,
-          }
+          },
         });
       }
       return acc;
-    }, [])
+    },
+    []
+  );
 
   const edges = uniqBy([...incoming, ...curr], 'node.id');
 
