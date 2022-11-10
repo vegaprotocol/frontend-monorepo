@@ -10,6 +10,8 @@ interface StakeSuccessProps {
   amount: string;
   nodeName: string;
   removeType: RemoveType;
+  isDialogVisible: boolean;
+  toggleDialog: () => void;
 }
 
 export const StakeSuccess = ({
@@ -17,6 +19,8 @@ export const StakeSuccess = ({
   amount,
   nodeName,
   removeType,
+  isDialogVisible,
+  toggleDialog,
 }: StakeSuccessProps) => {
   const { t } = useTranslation();
   const isAdd = action === Actions.Add;
@@ -34,7 +38,8 @@ export const StakeSuccess = ({
       icon={<Icon name="tick" />}
       intent={Intent.Success}
       title={title}
-      open={true}
+      open={isDialogVisible}
+      onChange={toggleDialog}
     >
       <div>
         <p>{message}</p>

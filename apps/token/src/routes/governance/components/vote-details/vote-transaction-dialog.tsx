@@ -10,7 +10,7 @@ interface VoteTransactionDialogProps {
 const dialogTitle = (voteState: VoteState): string | undefined => {
   switch (voteState) {
     case VoteState.Requested:
-      return t('voteRequested');
+      return t('txRequested');
     case VoteState.Pending:
       return t('votePending');
     default:

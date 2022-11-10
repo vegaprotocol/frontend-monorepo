@@ -1,6 +1,6 @@
 import { gql, useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,14 +12,10 @@ import type {
   PartyDelegations,
   PartyDelegationsVariables,
 } from './__generated__/PartyDelegations';
-import { StakeFailure } from './stake-failure';
-import { StakePending } from './stake-pending';
-import { StakeSuccess } from './stake-success';
+import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
   ButtonLink,
-  Dialog,
   FormGroup,
-  Intent,
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
@@ -54,7 +50,7 @@ export const PARTY_DELEGATIONS_QUERY = gql`
   }
 `;
 
-enum FormState {
+export enum FormState {
   Default,
   Requested,
   Pending,
@@ -93,6 +89,7 @@ export const StakingForm = ({
   const { appState } = useAppState();
   const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
   const [action, setAction] = React.useState<StakeAction>(
     params.action as StakeAction
@@ -129,6 +126,7 @@ export const StakingForm = ({
 
   async function onSubmit() {
     setFormState(FormState.Requested);
+    setIsDialogVisible(true);
     const delegateInput: DelegateSubmissionBody = {
       delegateSubmission: {
         nodeId,
@@ -196,43 +194,24 @@ export const StakingForm = ({
     return () => clearInterval(interval);
   }, [formState, client, pubKey, nodeId]);
 
-  if (formState === FormState.Failure) {
-    return <StakeFailure nodeName={nodeName} />;
-  } else if (formState === FormState.Requested) {
-    return (
-      <Dialog
-        title="Confirm transaction in wallet"
-        intent={Intent.Warning}
-        open={true}
-      >
-        <p>{t('stakingConfirm')}</p>
-      </Dialog>
-    );
-  } else if (formState === FormState.Pending) {
-    return <StakePending action={action} amount={amount} nodeName={nodeName} />;
-  } else if (formState === FormState.Success) {
-    return (
-      <StakeSuccess
-        action={action}
-        amount={amount}
-        nodeName={nodeName}
-        removeType={removeType}
-      />
-    );
-  } else if (
-    availableStakeToAdd.isEqualTo(0) &&
-    availableStakeToRemove.isEqualTo(0)
-  ) {
-    if (appState.lien.isGreaterThan(0)) {
-      return <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>;
-    } else {
-      return <span className="text-red">{t('stakeNodeNone')}</span>;
-    }
-  }
+  const toggleDialog = useCallback(() => {
+    setIsDialogVisible(!isDialogVisible);
+  }, [isDialogVisible]);
 
   return (
     <>
       <h2>{t('Manage your stake')}</h2>
+      {formState === FormState.Default &&
+        availableStakeToAdd.isEqualTo(0) &&
+        availableStakeToRemove.isEqualTo(0) && (
+          <div>
+            {appState.lien.isGreaterThan(0) ? (
+              <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>
+            ) : (
+              <span className="text-red">{t('stakeNodeNone')}</span>
+            )}
+          </div>
+        )}
       <FormGroup
         label={t('Select if you want to add or remove stake')}
         labelFor="radio-stake-options"
@@ -331,6 +310,15 @@ export const StakingForm = ({
           )}
         </>
       )}
+      <StakingFormTxStatuses
+        formState={formState}
+        nodeName={nodeName}
+        amount={amount}
+        action={action}
+        removeType={removeType}
+        isDialogVisible={isDialogVisible}
+        toggleDialog={toggleDialog}
+      />
     </>
   );
 };

@@ -10,7 +10,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   const submitWithdrawBtn = 'submit-withdrawal';
   const ethAddressValue = Cypress.env('ETHEREUM_WALLET_ADDRESS');
   const asset1Name = 'Sepolia tBTC';
-  const asset2Name = 'Sepolia tUSDC';
+  const asset2Name = 'Euro';
 
   beforeEach(() => {
     cy.mockWeb3Provider();
@@ -52,7 +52,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   });
   it('max amount', () => {
     selectAsset(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
-    cy.get(amountField).clear().type('1');
+    cy.get(amountField).clear().type('1001', { delay: 100 });
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
       'contain.text',
