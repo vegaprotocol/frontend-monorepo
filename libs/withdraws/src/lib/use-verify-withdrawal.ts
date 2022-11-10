@@ -97,7 +97,10 @@ export const useVerifyWithdrawal = () => {
           }
         }
 
-        const res = await client.query<Erc20ApprovalQuery, Erc20ApprovalQueryVariables>({
+        const res = await client.query<
+          Erc20ApprovalQuery,
+          Erc20ApprovalQueryVariables
+        >({
           query: Erc20ApprovalDocument,
           variables: { withdrawalId: withdrawal.id },
         });
