@@ -48,12 +48,6 @@ const createReadField = (fieldName: string) => ({
   },
 });
 
-// Create seed in memory. Validator list order will remain the same
-// until the page is refreshed.
-const VALIDATOR_RANDOMISER_SEED = (
-  Math.floor(Math.random() * 1000) + 1
-).toString();
-
 const cache: InMemoryCacheConfig = {
   typePolicies: {
     Account: {
