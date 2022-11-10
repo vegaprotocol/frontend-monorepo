@@ -1,13 +1,13 @@
 import { renderHook, act } from '@testing-library/react';
 import { ApolloClient } from '@apollo/client';
-import createClient from '../utils/apollo-client';
+import { createClient } from '@vegaprotocol/apollo-client';
 import { useNodes } from './use-nodes';
 import createMockClient, {
   getMockStatisticsResult,
 } from './mocks/apollo-client';
 import { waitFor } from '@testing-library/react';
 
-jest.mock('../utils/apollo-client');
+jest.mock('@vegaprotocol/apollo-client');
 
 const MOCK_DURATION = 1073;
 

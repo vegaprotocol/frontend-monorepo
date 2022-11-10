@@ -12,8 +12,8 @@ describe('fills', { tags: '@regression' }, () => {
   });
 
   it('renders fills on portfolio page', () => {
-    cy.visit('/portfolio');
-    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.visit('/#/portfolio');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
     connectVegaWallet();
@@ -22,7 +22,7 @@ describe('fills', { tags: '@regression' }, () => {
 
   it('renders fills on trading tab', () => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Please connect Vega wallet');
     connectVegaWallet();

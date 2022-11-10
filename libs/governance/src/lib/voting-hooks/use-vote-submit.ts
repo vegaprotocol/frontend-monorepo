@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useVoteEvent } from './use-vote-event';
 import type { VoteValue } from '@vegaprotocol/types';
-import type { VoteEventFieldsFragment } from './__generated___/VoteSubsciption';
+import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';
 
 export const useVoteSubmit = () => {
   const { pubKey } = useVegaWallet();

@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { OrderEventFieldsFragment } from '../../order-hooks/__generated___/OrderEvent';
+import type { OrderEventFieldsFragment } from '../../order-hooks/__generated__/OrderEvent';
 import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,

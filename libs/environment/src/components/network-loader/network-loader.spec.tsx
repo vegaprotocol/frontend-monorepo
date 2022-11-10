@@ -3,8 +3,11 @@ import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { render, screen } from '@testing-library/react';
 import { NetworkLoader } from './network-loader';
+import { createClient } from '@vegaprotocol/apollo-client';
+import { createMockClient } from 'mock-apollo-client';
 
 jest.mock('@apollo/client');
+jest.mock('@vegaprotocol/apollo-client');
 jest.mock('../../hooks');
 
 // @ts-ignore Typescript doesn't recognise mocked instances
@@ -15,15 +18,6 @@ ApolloProvider.mockImplementation(({ children }: { children: ReactNode }) => {
 const SKELETON_TEXT = 'LOADING';
 const SUCCESS_TEXT = 'LOADED';
 
-const createClient = jest.fn();
-
-beforeEach(() => {
-  createClient.mockReset();
-  createClient.mockImplementation(() => {
-    return jest.fn();
-  });
-});
-
 describe('Network loader', () => {
   it('renders a skeleton when there is no vega url in the environment', () => {
     // @ts-ignore Typescript doesn't recognise mocked instances
@@ -32,9 +26,7 @@ describe('Network loader', () => {
     }));
 
     render(
-      <NetworkLoader skeleton={SKELETON_TEXT} createClient={createClient}>
-        {SUCCESS_TEXT}
-      </NetworkLoader>
+      <NetworkLoader skeleton={SKELETON_TEXT}>{SUCCESS_TEXT}</NetworkLoader>
     );
 
     expect(screen.getByText(SKELETON_TEXT)).toBeInTheDocument();
@@ -42,20 +34,19 @@ describe('Network loader', () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it('renders the child components wrapped in an apollo provider when the environment has a vega url', () => {
+  it('renders the child components wrapped in an apollo provider when the environment has a vega url', async () => {
+    // @ts-ignore -- ts does not seem to infer this type correctly
+    createClient.mockReturnValueOnce(createMockClient());
+
     // @ts-ignore Typescript doesn't recognise mocked instances
     useEnvironment.mockImplementation(() => ({
       VEGA_URL: 'http://vega.node',
     }));
 
     render(
-      <NetworkLoader skeleton={SKELETON_TEXT} createClient={createClient}>
-        {SUCCESS_TEXT}
-      </NetworkLoader>
+      <NetworkLoader skeleton={SKELETON_TEXT}>{SUCCESS_TEXT}</NetworkLoader>
     );
-
-    expect(() => screen.getByText(SKELETON_TEXT)).toThrow();
-    expect(screen.getByText(SUCCESS_TEXT)).toBeInTheDocument();
-    expect(createClient).toHaveBeenCalledWith('http://vega.node');
+    expect(createClient).toHaveBeenCalledWith('http://vega.node', undefined);
+    expect(await screen.findByText(SUCCESS_TEXT)).toBeInTheDocument();
   });
 });

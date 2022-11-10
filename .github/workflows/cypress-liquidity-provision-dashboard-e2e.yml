@@ -1,9 +1,17 @@
 name: Cypress - liquidity provision dashboard
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
+
 jobs:
   liquidity-provision-dashboard-e2e:
     timeout-minutes: 10
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     steps:
       # Checkout front ends
@@ -22,6 +30,11 @@ jobs:
             /home/runner/.cache/Cypress
           key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
 
+      # Install frontend dependencies
+      - name: Install root dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: frontend-monorepo
+
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins
         run: yarn cypress install
@@ -32,4 +45,3 @@ jobs:
         working-directory: frontend-monorepo
         env:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false

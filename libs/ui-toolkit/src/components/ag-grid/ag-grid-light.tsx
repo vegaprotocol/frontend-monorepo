@@ -20,6 +20,7 @@ const agGridLightVariables = `
 
   .ag-theme-balham .ag-row {
     border-width: 1px 0;
+    border-bottom: solid transparent;
   }
 
   .ag-theme-balham .ag-react-container {

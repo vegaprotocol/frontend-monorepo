@@ -1,4 +1,4 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import {
@@ -7,19 +7,13 @@ import {
   useEthereumTransaction,
 } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
-  Erc20Approval,
-  Erc20ApprovalVariables,
+  Erc20ApprovalQuery,
+  Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
-import type { PendingWithdrawal } from './__generated__/PendingWithdrawal';
-
-export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
-  fragment PendingWithdrawal on Withdrawal {
-    pendingOnForeignChain @client
-    txHash
-  }
-`;
+import { PendingWithdrawalFragmentDoc } from './__generated__/Withdrawal';
+import type { PendingWithdrawalFragment } from './__generated__/Withdrawal';
 
 export const useCompleteWithdraw = () => {
   const { query, cache } = useApolloClient();
@@ -38,8 +32,11 @@ export const useCompleteWithdraw = () => {
         if (!contract) {
           return;
         }
-        const res = await query<Erc20Approval, Erc20ApprovalVariables>({
-          query: ERC20_APPROVAL_QUERY,
+        const res = await query<
+          Erc20ApprovalQuery,
+          Erc20ApprovalQueryVariables
+        >({
+          query: Erc20ApprovalDocument,
           variables: { withdrawalId },
         });
 
@@ -66,9 +63,9 @@ export const useCompleteWithdraw = () => {
 
   useEffect(() => {
     if (id && transaction.txHash) {
-      cache.writeFragment<PendingWithdrawal>({
+      cache.writeFragment<PendingWithdrawalFragment>({
         id: `Withdrawal:${id}`,
-        fragment: PENDING_WITHDRAWAL_FRAGMMENT,
+        fragment: PendingWithdrawalFragmentDoc,
         data: {
           __typename: 'Withdrawal',
           pendingOnForeignChain:

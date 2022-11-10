@@ -2,7 +2,7 @@
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketMarketFragment } from './__generated___/DealTicket';
+import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -84,6 +84,8 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
 }
 
 describe('DealTicket', () => {
+  beforeEach(() => window.localStorage.clear());
+  afterEach(() => window.localStorage.clear());
   it('should display ticket defaults', () => {
     render(generateJsx());
 
@@ -148,20 +150,20 @@ describe('DealTicket', () => {
   it('handles TIF select box dependent on order type', () => {
     render(generateJsx());
 
-    // Check only IOC and
+    // Only FOK and IOC should be present by default (type market order)
     expect(
       Array.from(screen.getByTestId('order-tif').children).map(
         (o) => o.textContent
       )
     ).toEqual(['Fill or Kill (FOK)', 'Immediate or Cancel (IOC)']);
 
-    // Switch to limit order and check all TIF options shown
+    // Switch to type limit order -> all TIF options should be shown
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
 
-    // Change to GTC
+    // Select GTC -> GTC should be selected
     fireEvent.change(screen.getByTestId('order-tif'), {
       target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC },
     });
@@ -169,24 +171,38 @@ describe('DealTicket', () => {
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
 
-    // Switch back to market order and TIF should now be IOC
+    // Switch to type market order -> IOC should be selected (default)
     fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
-    // Switch tif to FOK
+    // Select IOC -> IOC should be selected
     fireEvent.change(screen.getByTestId('order-tif'), {
-      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK },
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC },
     });
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
-    // Change back to limit and check we are still on FOK
+    // Switch to type limit order -> GTC should be selected
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+    );
+
+    // Select GTT -> GTT should be selected
+    fireEvent.change(screen.getByTestId('order-tif'), {
+      target: { value: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT },
+    });
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
+
+    // Switch to type market order -> IOC should be selected
+    fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    expect(screen.getByTestId('order-tif')).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
   });
 });

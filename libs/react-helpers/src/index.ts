@@ -12,4 +12,4 @@ export * from './lib/storage';
 export * from './lib/time';
 export * from './lib/validate';
 export * from './lib/links';
-export * from './lib/__generated___/ChainId';
+export * from './lib/__generated__/ChainId';

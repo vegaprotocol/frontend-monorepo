@@ -3,6 +3,10 @@ name: Cypress - explorer
 on:
   workflow_call:
     inputs:
+      trigger:
+        required: true
+        type: string
+        default: 'false'
       vega-version:
         required: true
         type: string
@@ -10,19 +14,30 @@ on:
         required: false
         type: string
         default: /home/runner/go/bin
+      skip-cache:
+        required: false
+        type: string
       tags:
         required: false
         type: string
+      night-run:
+        required: false
+        type: boolean
+        default: false
+      capsule-teardown:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   explorer-e2e:
-    name: Run Cypress tests - PR
+    if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
       # Add GOBIN to PATH
       - name: Add GOBIN to PATH
-        run: echo ${{ input.gobin }} >> $GITHUB_PATH
+        run: echo ${{ inputs.gobin }} >> $GITHUB_PATH
 
       # Checkout front ends
       - name: Checkout frontend mono repo
@@ -82,13 +97,14 @@ jobs:
         working-directory: frontend-monorepo
 
       - name: Run Cypress tests
-        run: npx nx explorer-e2e:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ inputs.tags }}
+        run: npx nx run explorer-e2e:e2e ${{ inputs.skip-cache }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ inputs.tags }}
         working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
+          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: ${{ inputs.capsule-teardown }}
+          CYPRESS_NIGHTLY_RUN: ${{ inputs.night-run }}
 
       ######
       ## Upload logs

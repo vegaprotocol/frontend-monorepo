@@ -21,7 +21,7 @@ fragment SingleMarketFields on Market {
       }
       product {
         ... on Future {
-          oracleSpecForTradingTermination {
+          dataSourceSpecForTradingTermination {
             id
           }
           settlementAsset {

@@ -121,12 +121,49 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
   cy.getByTestId('dialog-close').click();
 };
 
+const clearPersistedOrder = () => {
+  cy.clearLocalStorage().should((ls) => {
+    expect(ls.getItem('deal-ticket-order-market-0')).to.be.null;
+  });
+};
+
+beforeEach(() => clearPersistedOrder());
+afterEach(() => clearPersistedOrder());
+
+describe('time in force default values', () => {
+  before(() => {
+    cy.mockTradingPage();
+    cy.mockGQLSubscription();
+    cy.visit('/#/markets/market-0');
+    cy.wait('@Market');
+    connectVegaWallet();
+  });
+
+  it('must have market order set up to IOC by default', function () {
+    //7002-SORD-031
+    cy.getByTestId(toggleMarket).click();
+    cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+      'have.text',
+      TIFlist.filter((item) => item.code === 'IOC')[0].text
+    );
+  });
+
+  it('must have time in force set to GTC for limit order', function () {
+    //7002-SORD-031
+    cy.getByTestId(toggleLimit).click();
+    cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
+      'have.text',
+      TIFlist.filter((item) => item.code === 'GTC')[0].text
+    );
+  });
+});
+
 describe('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
@@ -181,13 +218,14 @@ describe('must submit order', { tags: '@smoke' }, () => {
 
   it('successfully places GTT limit buy order', () => {
     cy.mockVegaCommandSync(mockTx);
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
     const order: Order = {
       type: 'TYPE_LIMIT',
       side: 'SIDE_SELL',
       size: '100',
       price: '1.00',
       timeInForce: 'TIME_IN_FORCE_GTT',
-      expiresAt: '2022-01-01T00:00',
+      expiresAt: expiresAt.toISOString().substring(0, 16),
     };
     testOrder(order, {
       price: '100000',
@@ -202,10 +240,187 @@ describe('must submit order', { tags: '@smoke' }, () => {
   });
 });
 
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
+describe(
+  'must submit order for market in batch auction',
+  { tags: '@regression' },
+  () => {
+    before(() => {
+      cy.mockTradingPage(
+        MarketState.STATE_PENDING,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      );
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.wait('@Market');
+      connectVegaWallet();
+    });
+
+    it('successfully places limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_BUY',
+        size: '100',
+        price: '200',
+        timeInForce: 'TIME_IN_FORCE_GTC',
+      };
+      testOrder(order, { price: '20000000' });
+    });
+
+    it('successfully places limit sell order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '50000',
+        timeInForce: 'TIME_IN_FORCE_GFN',
+      };
+      testOrder(order, { price: '5000000000' });
+    });
+
+    it('successfully places GTT limit buy order', () => {
+      cy.mockVegaCommandSync(mockTx);
+      const order: Order = {
+        type: 'TYPE_LIMIT',
+        side: 'SIDE_SELL',
+        size: '100',
+        price: '1.00',
+        timeInForce: 'TIME_IN_FORCE_GTT',
+        expiresAt: '2022-01-01T00:00',
+      };
+      testOrder(order, {
+        price: '100000',
+        expiresAt:
+          new Date(order.expiresAt as string).getTime().toString() + '000000',
+      });
+    });
+  }
+);
+
 describe('deal ticket validation', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
   });
 
@@ -253,12 +468,13 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
 describe('deal ticket size validation', { tags: '@smoke' }, function () {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
   it('must warn if order size input has too many digits after the decimal place', function () {
     //7002-SORD-016
+    cy.getByTestId('order-type-TYPE_MARKET').click();
     cy.getByTestId(orderSizeField).clear().type('1.234');
     cy.getByTestId(placeOrderBtn).should('not.be.disabled');
     cy.getByTestId(placeOrderBtn).click();
@@ -270,6 +486,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
   });
 
   it('must warn if order size is set to 0', function () {
+    cy.getByTestId('order-type-TYPE_MARKET').click();
     cy.getByTestId(orderSizeField).clear().type('0');
     cy.getByTestId(placeOrderBtn).should('not.be.disabled');
     cy.getByTestId(placeOrderBtn).click();
@@ -284,7 +501,8 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
+    connectVegaWallet();
     cy.wait('@Market');
     cy.getByTestId(toggleLimit).click();
   });
@@ -296,9 +514,23 @@ describe('limit order validations', { tags: '@smoke' }, () => {
       .should('have.text', 'Price (BTC)');
   });
 
-  it.skip('must see warning when placing an order with expiry date in past', function () {
-    // Test to be created after the bug below is fixed
-    // https://github.com/vegaprotocol/frontend-monorepo/issues/1694
+  it('must see warning when placing an order with expiry date in past', function () {
+    const expiresAt = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expiresAtInputValue = expiresAt.toISOString().substring(0, 16);
+    cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderPriceField).clear().type('0.1');
+    cy.getByTestId(orderSizeField).clear().type('1');
+    cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTT');
+
+    cy.log('choosing yesterday');
+    cy.getByTestId('date-picker-field').type(expiresAtInputValue);
+
+    cy.getByTestId(placeOrderBtn).click();
+
+    cy.getByTestId('dealticket-error-message-force').should(
+      'have.text',
+      'The expiry date that you have entered appears to be in the past'
+    );
   });
 
   it.skip('must receive warning if price has too many digits after decimal place', function () {
@@ -307,14 +539,6 @@ describe('limit order validations', { tags: '@smoke' }, () => {
   });
 
   describe('time in force validations', function () {
-    it('must have limit order set to GTC by default', function () {
-      //7002-SORD-031
-      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
-        'have.text',
-        TIFlist.filter((item) => item.code === 'GTC')[0].text
-      );
-    });
-
     const validTIF = TIFlist;
     validTIF.forEach((tif) => {
       //7002-SORD-023
@@ -358,7 +582,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
 describe('market order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.getByTestId(toggleMarket).click();
   });
@@ -368,14 +592,6 @@ describe('market order validations', { tags: '@smoke' }, () => {
   });
 
   describe('time in force validations', function () {
-    it('must have market order set up to IOC by default', function () {
-      //7002-SORD-031
-      cy.get(`[data-testid=${orderTIFDropDown}] option:selected`).should(
-        'have.text',
-        TIFlist.filter((item) => item.code === 'IOC')[0].text
-      );
-    });
-
     const validTIF = TIFlist.filter((tif) => ['FOK', 'IOC'].includes(tif.code));
     const invalidTIF = TIFlist.filter(
       (tif) => !['FOK', 'IOC'].includes(tif.code)
@@ -413,7 +629,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
   });
@@ -430,6 +646,8 @@ describe('suspended market validation', { tags: '@regression' }, () => {
   });
   it('should show info for allowed TIF', function () {
     cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderPriceField).clear().type('0.1');
+    cy.getByTestId(orderSizeField).clear().type('1');
     cy.getByTestId(placeOrderBtn).should('be.enabled');
     cy.getByTestId(errorMessage).should(
       'have.text',
@@ -464,7 +682,7 @@ describe('margin required validation', { tags: '@regression' }, () => {
         })
       );
     });
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     connectVegaWallet();
     cy.wait('@Market');
   });

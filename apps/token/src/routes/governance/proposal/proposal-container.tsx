@@ -46,33 +46,87 @@ export const PROPOSAL_QUERY = gql`
                 }
                 quoteName
                 settlementDataDecimals
-                oracleSpecForSettlementData {
-                  pubKeys
-                  filters {
-                    key {
-                      name
-                      type
+                dataSourceSpecForSettlementData {
+                  sourceType {
+                    ... on DataSourceDefinitionInternal {
+                      sourceType {
+                        ... on DataSourceSpecConfigurationTime {
+                          conditions {
+                            operator
+                            value
+                          }
+                        }
+                      }
                     }
-                    conditions {
-                      operator
-                      value
+                    ... on DataSourceDefinitionExternal {
+                      sourceType {
+                        ... on DataSourceSpecConfiguration {
+                          signers {
+                            signer {
+                              ... on PubKey {
+                                key
+                              }
+                              ... on ETHAddress {
+                                address
+                              }
+                            }
+                          }
+                          filters {
+                            key {
+                              name
+                              type
+                            }
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
-                oracleSpecForTradingTermination {
-                  pubKeys
-                  filters {
-                    key {
-                      name
-                      type
+                dataSourceSpecForTradingTermination {
+                  sourceType {
+                    ... on DataSourceDefinitionInternal {
+                      sourceType {
+                        ... on DataSourceSpecConfigurationTime {
+                          conditions {
+                            operator
+                            value
+                          }
+                        }
+                      }
                     }
-                    conditions {
-                      operator
-                      value
+                    ... on DataSourceDefinitionExternal {
+                      sourceType {
+                        ... on DataSourceSpecConfiguration {
+                          signers {
+                            signer {
+                              ... on PubKey {
+                                key
+                              }
+                              ... on ETHAddress {
+                                address
+                              }
+                            }
+                          }
+                          filters {
+                            key {
+                              name
+                              type
+                            }
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
-                oracleSpecBinding {
+                dataSourceSpecBinding {
                   settlementDataProperty
                   tradingTerminationProperty
                 }
@@ -86,33 +140,87 @@ export const PROPOSAL_QUERY = gql`
                 code
                 product {
                   quoteName
-                  oracleSpecForSettlementData {
-                    pubKeys
-                    filters {
-                      key {
-                        name
-                        type
+                  dataSourceSpecForSettlementData {
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
                       }
-                      conditions {
-                        operator
-                        value
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
-                  oracleSpecForTradingTermination {
-                    pubKeys
-                    filters {
-                      key {
-                        name
-                        type
+                  dataSourceSpecForTradingTermination {
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
                       }
-                      conditions {
-                        operator
-                        value
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
-                  oracleSpecBinding {
+                  dataSourceSpecBinding {
                     settlementDataProperty
                     tradingTerminationProperty
                   }

@@ -9,4 +9,4 @@ export * from './vega-transaction-dialog';
 export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
-export * from './__generated___/TransactionResult';
+export * from './__generated__/TransactionResult';

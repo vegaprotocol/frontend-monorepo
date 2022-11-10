@@ -1,8 +1,8 @@
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
 import { t } from '@vegaprotocol/react-helpers';
-import { useDealTicketQuery } from './__generated___/DealTicket';
-import type { DealTicketQuery } from './__generated___/DealTicket';
+import { useDealTicketQuery } from './__generated__/DealTicket';
+import type { DealTicketQuery } from './__generated__/DealTicket';
 
 export interface DealTicketContainerProps {
   marketId: string;

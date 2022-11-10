@@ -10,150 +10,52 @@ on:
         required: true
         type: choice
         options:
-          - explorer-e2e
           - console-lite-e2e
+          - explorer-e2e
+          - liquidity-provision-dashboard-e2e
           - stats-e2e
           - token-e2e
           - trading-e2e
-      smokeOnly:
-        description: 'Run only smoke tests?'
+      tags:
+        description: 'Test tags to run'
         required: true
-        type: boolean
-        default: false
+        type: string
+        default: '@smoke, @regression, @slow'
       skip-nx-cache:
         description: 'Add --skip-nx-cache to cypress test'
         required: false
         type: boolean
         default: false
+env:
+  GOBIN: /home/runner/go/bin
+  VEGA_VERSION: 'v0.62.0'
 
 jobs:
   manual:
     name: Run Cypress tests -- manual trigger
-    runs-on: self-hosted
-    env:
-      GO111MODULE: 'on'
-      GOBIN: /home/runner/go/bin
-      VEGA_VERSION: 'v0.58.0'
+    runs-on: ubuntu-latest
     steps:
-      #######
-      ## Setup flags
-      #######
-
-      - name: Set smoke tag
-        if: ${{ github.event.inputs.smokeOnly == 'true' }}
-        run: echo TAGS="--env.grepTags @smoke" >> $GITHUB_ENV
+      - name: Set tags
+        run: echo TAGS="--env.grepTags '[ ${{ github.event.inputs.tags }} ]'" >> $GITHUB_ENV
 
       - name: Set --skip-nx-cache flag
         if: ${{ github.event.inputs.skip-nx-cache == 'true' }}
         run: echo SKIP_NX_CACHE="--skip-nx-cache" >> $GITHUB_ENV
 
-      # See if we capsule is needed for this project
-      - name: Set capsule flag
-        if: ${{  github.event.inputs.project == 'explorer-e2e' || github.event.inputs.project == 'token-e2e'}}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+    outputs:
+      vega-version: ${{env.VEGA_VERSION}}
+      gobin: ${{env.GOBIN}}
+      skip-cache: ${{env.SKIP_NX_CACHE}}
+      tags: ${{env.TAGS}}
 
-      #######
-      ## Setup langs
-      #######
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        id: go
-        with:
-          go-version: 1.19
-
-      - name: Set up Node 16
-        uses: actions/setup-node@v2
-        id: npm
-        with:
-          node-version: 16
-
-      #######
-      ## Install Yarn
-      #######
-      - name: Setup yarn
-        run: npm install -g yarn
-
-      #######
-      ## Checkout repos
-      #######
-
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          path: './frontend-monorepo'
-
-      # Restore node_modules from cache if possible
-      - name: Restore node_modules from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            frontend-monorepo/node_modules
-            /home/runner/.cache/Cypress
-          key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock') }}
-
-      # Install frontend dependencies
-      - name: Install root dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: frontend-monorepo
-
-      #######
-      ## Build and run Vegacapsule network
-      #######
-
-      - name: Install Vega binaries
-        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
-        with:
-          all: ${{ env.RUN_CAPSULE }}
-          version: ${{ env.VEGA_VERSION }}
-          gobin: ${{ env.GOBIN }}
-
-      - name: Build and run Vegacapsule network
-        if: ${{ env.RUN_CAPSULE }}
-        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
-        with:
-          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-
-      ######
-      ## Setup a Vega wallet for our user
-      ######
-
-      - name: Set up Vegawallet
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
-        with:
-          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
-          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: ${{ env.RUN_CAPSULE }}
-
-      ######
-      ## Run some tests
-      ######
-
-      # To make sure that all Cypress binaries are installed properly
-      - name: Install cypress bins
-        run: yarn cypress install
-        working-directory: frontend-monorepo
-
-      - name: Run Cypress tests
-        run: yarn nx run ${{ github.event.inputs.project }}:e2e ${{ env.SKIP_NX_CACHE }} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome ${{ env.TAGS }}
-        working-directory: frontend-monorepo
-        env:
-          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
-
-      ######
-      ## Upload logs
-      ######
-
-      - name: Logs
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegacapsule network logs > vega-capsule-logs.txt
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ env.RUN_CAPSULE }}
-        with:
-          name: logs
-          path: ./vega-capsule-logs.txt
+  dispatch:
+    needs: manual
+    uses: ./.github/workflows/tests-dispatcher.yml
+    secrets: inherit
+    with:
+      project: ${{ inputs.project }}
+      vega-version: ${{needs.manual.outputs.vega-version}}
+      gobin: ${{needs.manual.outputs.gobin}}
+      skip-cache: ${{needs.manual.outputs.skip-cache}}
+      tags: ${{needs.manual.outputs.tags}}
+      capsule-teardown: false

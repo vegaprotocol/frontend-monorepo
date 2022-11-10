@@ -24,7 +24,7 @@ describe('Market trading page', () => {
       AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.mockGQLSubscription();
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');
   });

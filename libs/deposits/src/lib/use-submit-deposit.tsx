@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/react';
 import type {
   DepositEventSubscription,
   DepositEventSubscriptionVariables,
-} from './__generated___/Deposit';
-import { DepositEventDocument } from './__generated___/Deposit';
+} from './__generated__/Deposit';
+import { DepositEventDocument } from './__generated__/Deposit';
 import { Schema } from '@vegaprotocol/types';
 import { useState } from 'react';
 import { remove0x, removeDecimal } from '@vegaprotocol/react-helpers';

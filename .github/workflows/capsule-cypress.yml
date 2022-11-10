@@ -1,4 +1,4 @@
-name: Cypress tests
+name: Cypress tests - PR
 
 on:
   push:
@@ -12,41 +12,14 @@ on:
       - synchronize
       - ready_for_review
 
+env:
+  GOBIN: /home/runner/go/bin
+  VEGA_VERSION: 'v0.62.0'
+
 jobs:
   pr:
-    name: Run Cypress tests - PR
-    runs-on: self-hosted
-    timeout-minutes: 30
-    env:
-      GO111MODULE: 'on'
-      GOBIN: /home/runner/go/bin
-      VEGA_VERSION: 'v0.58.0'
+    runs-on: ubuntu-latest
     steps:
-      #######
-      ## Setup langs
-      #######
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        id: go
-        with:
-          go-version: 1.19
-
-      - name: Set up Node 16
-        uses: actions/setup-node@v2
-        id: npm
-        with:
-          node-version: 16
-
-      #######
-      ## Install Yarn
-      #######
-      - name: Setup yarn
-        run: npm install -g yarn
-
-      #######
-      ## Checkout repos
-      #######
-
       # Checkout front ends
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
@@ -76,71 +49,22 @@ jobs:
           main-branch-name: ${{ github.base_ref || github.ref_name }}
           set-environment-variables-for-job: true
 
-      # See if we capsule is needed for this project
+      # See affected projects
       - name: See affected apps
         run: echo AFFECTED=$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects) >> $GITHUB_ENV
         working-directory: frontend-monorepo
 
-      - name: See if capsule is necessary
-        if: ${{ contains(env.AFFECTED, 'token') || contains(env.AFFECTED, 'token-e2e') || contains(env.AFFECTED, 'explorer') || contains(env.AFFECTED, 'explorer-e2e') }}
-        run: echo RUN_CAPSULE=true >> $GITHUB_ENV
+    outputs:
+      projects: ${{ env.AFFECTED }}
+      vega-version: ${{ env.VEGA_VERSION }}
+      gobin: ${{ env.GOBIN }}
 
-      #######
-      ## Build and run Vegacapsule network
-      #######
-
-      - name: Install Vega binaries
-        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
-        with:
-          all: ${{ env.RUN_CAPSULE }}
-          version: ${{ env.VEGA_VERSION }}
-          gobin: ${{ env.GOBIN }}
-
-      - name: Build and run Vegacapsule network
-        if: ${{ env.RUN_CAPSULE }}
-        uses: ./frontend-monorepo/.github/actions/run-vegacapsule
-        with:
-          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-
-      ######
-      ## Setup a Vega wallet for our user
-      ######
-
-      - name: Set up Vegawallet
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
-        with:
-          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
-          passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: ${{ env.RUN_CAPSULE }}
-
-      ######
-      ## Run some tests
-      ######
-
-      # To make sure that all Cypress binaries are installed properly
-      - name: Install cypress bins
-        run: yarn cypress install
-        working-directory: frontend-monorepo
-
-      - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.grepTags='@smoke' --browser chrome
-        working-directory: frontend-monorepo
-        env:
-          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
-          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: false
-
-      ######
-      ## Upload logs
-      ######
-
-      - name: Logs
-        if: ${{ env.RUN_CAPSULE }}
-        run: vegacapsule network logs > vega-capsule-logs.txt
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ env.RUN_CAPSULE }}
-        with:
-          name: logs
-          path: ./vega-capsule-logs.txt
+  dispatch:
+    needs: pr
+    uses: ./.github/workflows/tests-dispatcher.yml
+    secrets: inherit
+    with:
+      project: ${{ needs.pr.outputs.projects }}
+      vega-version: ${{needs.pr.outputs.vega-version}}
+      gobin: ${{needs.pr.outputs.gobin}}
+      tags: "--env.grepTags='@smoke'"

@@ -23,7 +23,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
     connectVegaWallet();
@@ -127,7 +127,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
     cy.mockGQLSubscription(subscriptionMocks);
-    cy.visit('/markets/market-0');
+    cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
     connectVegaWallet();

@@ -6,6 +6,7 @@ const vegaCustomClasses = require('../../libs/tailwindcss-config/src/vega-custom
 module.exports = {
   content: [
     join(__dirname, 'pages/**/*.{js,ts,jsx,tsx}'),
+    join(__dirname, 'client-pages/**/*.{js,ts,jsx,tsx}'),
     join(__dirname, 'components/**/*.{js,ts,jsx,tsx}'),
     'libs/ui-toolkit/src/utils/shared.ts',
     ...createGlobPatternsForDependencies(__dirname),
