@@ -102,7 +102,7 @@ export const getFeeDetailsValues = ({
     return value && !isNaN(Number(value))
       ? normalizeFormatNumber(
           value,
-          market.tradableInstrument.instrument.product.settlementAsset.decimals
+          market.decimalPlaces
         )
       : '-';
   };
