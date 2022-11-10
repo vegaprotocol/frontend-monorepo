@@ -1,28 +1,29 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
-import type { ApolloClient } from '@apollo/client';
+import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
+import { createClient } from '@vegaprotocol/apollo-client';
 
-type NetworkLoaderProps<T> = {
+type NetworkLoaderProps = {
   children?: ReactNode;
   skeleton?: ReactNode;
-  createClient: (url: string) => ApolloClient<T>;
+  cache?: InMemoryCacheConfig;
 };
 
-export function NetworkLoader<T>({
+export function NetworkLoader({
   skeleton,
   children,
-  createClient,
-}: NetworkLoaderProps<T>) {
+  cache,
+}: NetworkLoaderProps) {
   const { VEGA_URL } = useEnvironment();
 
   const client = useMemo(() => {
     if (VEGA_URL) {
-      return createClient(VEGA_URL);
+      return createClient(VEGA_URL, cache);
     }
     return undefined;
-  }, [VEGA_URL, createClient]);
+  }, [VEGA_URL, cache]);
 
   if (!client) {
     return (

@@ -1,3 +1,4 @@
+import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   ApolloClient,
   from,
@@ -11,10 +12,11 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import ApolloLinkTimeout from 'apollo-link-timeout';
 
 const isBrowser = typeof window !== 'undefined';
 
-export default function createClient(base?: string) {
+export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
@@ -22,7 +24,7 @@ export default function createClient(base?: string) {
   const urlWS = new URL(base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
-
+  const timeoutLink = new ApolloLinkTimeout(10000);
   const retryLink = new RetryLink({
     delay: {
       initial: 300,
@@ -64,7 +66,7 @@ export default function createClient(base?: string) {
   });
 
   return new ApolloClient({
-    link: from([errorLink, retryLink, splitLink]),
-    cache: new InMemoryCache(),
+    link: from([errorLink, timeoutLink, retryLink, splitLink]),
+    cache: new InMemoryCache(cacheConfig),
   });
 }

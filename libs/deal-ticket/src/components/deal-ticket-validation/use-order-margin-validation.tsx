@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { AccountType } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { usePartyBalanceQuery, useSettlementAccount } from '../../hooks';
 

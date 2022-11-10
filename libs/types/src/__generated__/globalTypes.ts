@@ -64,6 +64,18 @@ export enum DataSourceSpecStatus {
 }
 
 /**
+ * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
+ */
+export enum Interval {
+  INTERVAL_I15M = "INTERVAL_I15M",
+  INTERVAL_I1D = "INTERVAL_I1D",
+  INTERVAL_I1H = "INTERVAL_I1H",
+  INTERVAL_I1M = "INTERVAL_I1M",
+  INTERVAL_I5M = "INTERVAL_I5M",
+  INTERVAL_I6H = "INTERVAL_I6H",
+}
+
+/**
  * The current state of a market
  */
 export enum MarketState {
@@ -181,18 +193,15 @@ export enum StakeLinkingStatus {
   STATUS_REJECTED = "STATUS_REJECTED",
 }
 
+export enum ValidatorStatus {
+  VALIDATOR_NODE_STATUS_ERSATZ = "VALIDATOR_NODE_STATUS_ERSATZ",
+  VALIDATOR_NODE_STATUS_PENDING = "VALIDATOR_NODE_STATUS_PENDING",
+  VALIDATOR_NODE_STATUS_TENDERMINT = "VALIDATOR_NODE_STATUS_TENDERMINT",
+}
+
 export enum VoteValue {
   VALUE_NO = "VALUE_NO",
   VALUE_YES = "VALUE_YES",
-}
-
-/**
- * The status of a withdrawal
- */
-export enum WithdrawalStatus {
-  STATUS_FINALIZED = "STATUS_FINALIZED",
-  STATUS_OPEN = "STATUS_OPEN",
-  STATUS_REJECTED = "STATUS_REJECTED",
 }
 
 //==============================================================

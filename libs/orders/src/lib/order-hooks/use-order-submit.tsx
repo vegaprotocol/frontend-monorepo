@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { OrderEventFieldsFragment } from './__generated___/OrderEvent';
+import type { OrderEventFieldsFragment } from './__generated__/OrderEvent';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';

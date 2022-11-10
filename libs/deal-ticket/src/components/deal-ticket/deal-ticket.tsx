@@ -20,7 +20,7 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 
-import type { DealTicketMarketFragment } from './__generated___/DealTicket';
+import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
 

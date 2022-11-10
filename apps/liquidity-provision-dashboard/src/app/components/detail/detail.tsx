@@ -11,7 +11,7 @@ import {
   getFeeLevels,
   sumLiquidityCommitted,
   marketLiquidityDataProvider,
-  liquidityProvisionsDataProvider,
+  lpAggregatedDataProvider,
 } from '@vegaprotocol/liquidity';
 import type { MarketLpQuery } from '@vegaprotocol/liquidity';
 
@@ -34,10 +34,10 @@ const formatMarket = (data: MarketLpQuery) => {
 };
 
 export const lpDataProvider = makeDerivedDataProvider(
-  [marketLiquidityDataProvider, liquidityProvisionsDataProvider],
-  ([market, providers]) => ({
+  [marketLiquidityDataProvider, lpAggregatedDataProvider],
+  ([market, lpAggregatedData]) => ({
     market: { ...formatMarket(market) },
-    liquidityProviders: providers || [],
+    liquidityProviders: lpAggregatedData || [],
   })
 );
 
