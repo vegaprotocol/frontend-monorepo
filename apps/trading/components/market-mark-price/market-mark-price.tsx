@@ -33,9 +33,9 @@ export const MarketMarkPrice = ({ marketId }: { marketId: string }) => {
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
-    ({ data: marketData }: { data: MarketData }) => {
+    ({ data: marketData }: { data: MarketData | null }) => {
       throttledSetMarketPrice(
-        marketData.markPrice && data?.decimalPlaces
+        marketData?.markPrice && data?.decimalPlaces
           ? addDecimalsFormatNumber(marketData.markPrice, data.decimalPlaces)
           : '-'
       );

@@ -8,6 +8,7 @@ export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Typ
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
@@ -69,10 +70,10 @@ export const OrderUpdateFieldsFragmentDoc = gql`
 }
     `;
 export const OrdersDocument = gql`
-    query Orders($partyId: ID!, $pagination: Pagination) {
+    query Orders($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
   party(id: $partyId) {
     id
-    ordersConnection(pagination: $pagination) {
+    ordersConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...OrderFields
@@ -104,6 +105,7 @@ export const OrdersDocument = gql`
  *   variables: {
  *      partyId: // value for 'partyId'
  *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */
