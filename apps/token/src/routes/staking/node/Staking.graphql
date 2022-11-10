@@ -1,15 +1,49 @@
+fragment StakingNodeFields on Node {
+  id
+  name
+  pubkey
+  infoUrl
+  location
+  ethereumAddress
+  stakedByOperator
+  stakedByDelegates
+  stakedTotal
+  pendingStake
+  stakedByOperatorFormatted @client
+  stakedByDelegatesFormatted @client
+  stakedTotalFormatted @client
+  pendingStakeFormatted @client
+  epochData {
+    total
+    offline
+    online
+  }
+  status
+  rankingScore {
+    rankingScore
+    stakeScore
+    performanceScore
+    votingPower
+    stakeScore
+  }
+}
+
 query Staking($partyId: ID!) {
   party(id: $partyId) {
     id
     stakingSummary {
       currentStakeAvailable
     }
-    delegations {
-      amount
-      amountFormatted @client
-      epoch
-      node {
-        id
+    delegationsConnection {
+      edges {
+        node {
+          amount
+          amountFormatted @client
+          epoch
+          node {
+            id
+          }
+        }
       }
     }
   }
@@ -24,33 +58,7 @@ query Staking($partyId: ID!) {
   nodesConnection {
     edges {
       node {
-        id
-        name
-        pubkey
-        infoUrl
-        location
-        ethereumAddress
-        stakedByOperator
-        stakedByDelegates
-        stakedTotal
-        pendingStake
-        stakedByOperatorFormatted @client
-        stakedByDelegatesFormatted @client
-        stakedTotalFormatted @client
-        pendingStakeFormatted @client
-        epochData {
-          total
-          offline
-          online
-        }
-        status
-        rankingScore {
-          rankingScore
-          stakeScore
-          performanceScore
-          votingPower
-          stakeScore
-        }
+        ...StakingNodeFields
       }
     }
   }
