@@ -18,6 +18,7 @@ import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/Deal
 import { ValidateMargin } from './validate-margin';
 import type { OrderMargin } from '../../hooks/use-order-margin';
 import { useOrderMarginValidation } from './use-order-margin-validation';
+import { ERROR_EXPIRATION_IN_THE_PAST } from './validate-expiration';
 import { DEAL_TICKET_SECTION, ERROR_SIZE_DECIMAL } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
@@ -129,13 +130,28 @@ export const useOrderValidation = ({
         };
       }
     }
+
+    if (
+      fieldErrors?.expiresAt?.type === 'validate' &&
+      fieldErrors?.expiresAt.message === ERROR_EXPIRATION_IN_THE_PAST
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          'The expiry date that you have entered appears to be in the past'
+        ),
+        section: DEAL_TICKET_SECTION.EXPIRY,
+      };
+    }
     return null;
   }, [
     fieldErrors?.size?.type,
     fieldErrors?.size?.message,
     fieldErrors?.price?.type,
-    minSize,
+    fieldErrors?.expiresAt?.type,
+    fieldErrors?.expiresAt?.message,
     orderType,
+    minSize,
     market.positionDecimalPlaces,
   ]);
 
@@ -356,9 +372,9 @@ export const useOrderValidation = ({
     pubKey,
     market,
     fieldErrorChecking,
+    isInvalidOrderMargin,
     orderType,
     orderTimeInForce,
-    isInvalidOrderMargin,
   ]);
 
   return { message, isDisabled, section };

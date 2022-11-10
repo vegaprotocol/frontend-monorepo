@@ -14,12 +14,13 @@ interface TimeInForceSelectorProps {
   errorMessage?: DealTicketErrorMessage;
 }
 
-type PossibleOrderKeys = Exclude<
-  Schema.OrderType,
-  Schema.OrderType.TYPE_NETWORK
->;
-type PrevSelectedValue = {
-  [key in PossibleOrderKeys]: Schema.OrderTimeInForce;
+type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
+type PreviousTimeInForce = {
+  [key in OrderType]: Schema.OrderTimeInForce;
+};
+const DEFAULT_TIME_IN_FORCE: PreviousTimeInForce = {
+  [Schema.OrderType.TYPE_MARKET]: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+  [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
 };
 
 export const TimeInForceSelector = ({
@@ -28,10 +29,6 @@ export const TimeInForceSelector = ({
   onSelect,
   errorMessage,
 }: TimeInForceSelectorProps) => {
-  const [prevValue, setPrevValue] = useState<PrevSelectedValue>({
-    [Schema.OrderType.TYPE_LIMIT]: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-    [Schema.OrderType.TYPE_MARKET]: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  });
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
       ? Object.entries(Schema.OrderTimeInForce)
@@ -40,20 +37,40 @@ export const TimeInForceSelector = ({
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
             timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
         );
+  const [previousOrderType, setPreviousOrderType] = useState(
+    Schema.OrderType.TYPE_MARKET
+  );
+  const [previousTimeInForce, setPreviousTimeInForce] =
+    useState<PreviousTimeInForce>({
+      ...DEFAULT_TIME_IN_FORCE,
+      [orderType]: value,
+    });
+
   useEffect(() => {
-    onSelect(prevValue[orderType as PossibleOrderKeys]);
-  }, [onSelect, prevValue, orderType]);
+    if (previousOrderType !== orderType) {
+      setPreviousOrderType(orderType);
+      const prev = previousTimeInForce[orderType as OrderType];
+      onSelect(prev);
+    }
+  }, [
+    onSelect,
+    orderType,
+    previousTimeInForce,
+    previousOrderType,
+    setPreviousOrderType,
+  ]);
+
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
         id="select-time-in-force"
         value={value}
         onChange={(e) => {
-          const selectedValue = e.target.value as Schema.OrderTimeInForce;
-          setPrevValue({
-            ...prevValue,
-            [orderType]: selectedValue,
+          setPreviousTimeInForce({
+            ...previousTimeInForce,
+            [orderType]: e.target.value,
           });
+          onSelect(e.target.value as Schema.OrderTimeInForce);
         }}
         className="w-full"
         data-testid="order-tif"

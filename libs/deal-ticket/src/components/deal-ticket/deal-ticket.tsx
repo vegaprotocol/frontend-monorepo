@@ -7,7 +7,7 @@ import {
   getFeeDetailsValues,
   useFeeDealTicketDetails,
 } from '../../hooks/use-fee-deal-ticket-details';
-import { getDefaultOrder } from '../deal-ticket-validation';
+import { getDefaultOrder, usePersistedOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
   useOrderValidation,
@@ -23,6 +23,7 @@ import { TypeSelector } from './type-selector';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketErrorMessage } from './deal-ticket-error';
+import { DEAL_TICKET_SECTION } from '../constants';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -41,6 +42,7 @@ export const DealTicket = ({
   const [errorMessage, setErrorMessage] = useState<
     DealTicketErrorMessage | undefined
   >(undefined);
+  const [persistedOrder, setOrder] = usePersistedOrder(market);
   const {
     register,
     control,
@@ -52,16 +54,18 @@ export const DealTicket = ({
     formState: { errors, isSubmitted },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
-    defaultValues: getDefaultOrder(market),
+    defaultValues: persistedOrder || getDefaultOrder(market),
   });
   const order = watch();
 
   const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailsValues(feeDetails);
 
+  useEffect(() => setOrder(order), [order, setOrder]);
+
   const {
-    message,
     isDisabled: disabled,
+    message,
     section: errorSection,
   } = useOrderValidation({
     market,
@@ -80,7 +84,7 @@ export const DealTicket = ({
   }, [disabled, setError, clearErrors]);
 
   useEffect(() => {
-    if (isSubmitted) {
+    if (isSubmitted || errorSection === DEAL_TICKET_SECTION.SUMMARY) {
       setErrorMessage({ message, isDisabled: disabled, errorSection });
     } else {
       setErrorMessage(undefined);
@@ -180,6 +184,7 @@ export const DealTicket = ({
                 value={field.value}
                 onSelect={field.onChange}
                 errorMessage={errorMessage}
+                register={register}
               />
             )}
           />
