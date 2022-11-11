@@ -1,16 +1,9 @@
 import {
-  addDecimal,
   addDecimalsFormatNumber,
-  formatNumber,
   t,
   toDecimal,
 } from '@vegaprotocol/react-helpers';
-import {
-  FormGroup,
-  Input,
-  InputError,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
 import { validateAmount } from '../deal-ticket-validation/validate-amount';
@@ -52,59 +45,50 @@ export const DealTicketMarketAmount = ({
 
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-4 relative">
-        <div className="flex-1">
-          <FormGroup
-            label={t('Size')}
-            labelFor="input-order-size-market"
-            className="!mb-1"
-          >
-            <Input
-              id="input-order-size-market"
-              className="w-full"
-              type="number"
-              step={sizeStep}
-              min={sizeStep}
-              onWheel={(e) => e.currentTarget.blur()}
-              data-testid="order-size"
-              {...register('size', {
-                required: t('You need to provide a size'),
-                min: {
-                  value: sizeStep,
-                  message: t('Size cannot be lower than ' + sizeStep),
-                },
-                validate: validateAmount(sizeStep, 'size'),
-              })}
-            />
-          </FormGroup>
-        </div>
-        <div className="flex-0 items-center">
-          <div className="flex">&nbsp;</div>
-          <div className="flex">@</div>
-        </div>
-        <div className="flex-1" data-testid="last-price">
-          {isMarketInAuction(market) ? (
+      <div className="flex items-end gap-4 mb-2">
+        <div className="flex-1 text-sm">Size</div>
+        <div />
+        <div className="flex-1 text-sm text-right">
+          {isMarketInAuction(market) && (
             <Tooltip
               description={t(
                 'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
               )}
             >
-              <div className="absolute top-0 right-0 text-xs">
-                {t(`Estimated uncrossing price`)}
-              </div>
+              <div>{t(`Estimated uncrossing price`)}</div>
             </Tooltip>
-          ) : (
-            <div>&nbsp;</div>
           )}
-          <div className="text-sm text-right">
-            {priceFormatted && quoteName ? (
-              <>
-                ~{priceFormatted} {quoteName}
-              </>
-            ) : (
-              '-'
-            )}
-          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <Input
+            id="input-order-size-market"
+            className="w-full"
+            type="number"
+            step={sizeStep}
+            min={sizeStep}
+            onWheel={(e) => e.currentTarget.blur()}
+            data-testid="order-size"
+            {...register('size', {
+              required: t('You need to provide a size'),
+              min: {
+                value: sizeStep,
+                message: t('Size cannot be lower than ' + sizeStep),
+              },
+              validate: validateAmount(sizeStep, 'size'),
+            })}
+          />
+        </div>
+        <div>@</div>
+        <div className="flex-1 text-sm text-right">
+          {priceFormatted && quoteName ? (
+            <>
+              ~{priceFormatted} {quoteName}
+            </>
+          ) : (
+            '-'
+          )}
         </div>
       </div>
       {sizeError && (
