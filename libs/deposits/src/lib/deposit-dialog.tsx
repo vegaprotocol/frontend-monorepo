@@ -1,20 +1,33 @@
+import create from 'zustand';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { DepositContainer } from './deposit-container';
 
-export interface DepositDialogProps {
+interface State {
+  isOpen: boolean;
   assetId?: string;
-  depositDialog: boolean;
-  setDepositDialog: (open: boolean) => void;
 }
+
+interface Actions {
+  open: (assetId?: string) => void;
+  close: () => void;
+}
+
+export const useDepositDialog = create<State & Actions>((set) => ({
+  isOpen: false,
+  assetId: undefined,
+  open: (assetId) => set(() => ({ assetId, isOpen: true })),
+  close: () => set(() => ({ assetId: undefined, isOpen: false })),
+}));
 
 export type DepositDialogStyleProps = {
   title: string;
   icon?: JSX.Element;
   intent?: Intent;
 };
+
 export type DepositDialogStylePropsSetter = (
   props?: DepositDialogStyleProps
 ) => void;
@@ -25,11 +38,8 @@ const DEFAULT_STYLE: DepositDialogStyleProps = {
   icon: undefined,
 };
 
-export const DepositDialog = ({
-  assetId,
-  depositDialog,
-  setDepositDialog,
-}: DepositDialogProps) => {
+export const DepositDialog = () => {
+  const { assetId, isOpen, open, close } = useDepositDialog();
   const [dialogStyleProps, _setDialogStyleProps] = useState(DEFAULT_STYLE);
   const setDialogStyleProps: DepositDialogStylePropsSetter =
     useCallback<DepositDialogStylePropsSetter>(
@@ -41,8 +51,8 @@ export const DepositDialog = ({
     );
   return (
     <Dialog
-      open={depositDialog}
-      onChange={setDepositDialog}
+      open={isOpen}
+      onChange={(isOpen) => (isOpen ? open() : close())}
       {...dialogStyleProps}
     >
       <DepositContainer

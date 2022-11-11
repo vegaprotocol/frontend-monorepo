@@ -11,9 +11,13 @@ import { createConnectors } from './web3-connectors';
 
 interface Web3ContainerProps {
   children: ReactNode;
+  childrenOnly?: boolean;
 }
 
-export const Web3Container = ({ children }: Web3ContainerProps) => {
+export const Web3Container = ({
+  children,
+  childrenOnly,
+}: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
@@ -27,18 +31,25 @@ export const Web3Container = ({ children }: Web3ContainerProps) => {
     <AsyncRenderer data={config} loading={loading} error={error}>
       {Connectors && config && (
         <Web3Provider connectors={Connectors}>
-          <Web3Content
-            appChainId={Number(config.chain_id)}
-            setDialogOpen={setDialogOpen}
-          >
-            {children}
-          </Web3Content>
-          <Web3ConnectDialog
-            connectors={Connectors}
-            dialogOpen={dialogOpen}
-            setDialogOpen={setDialogOpen}
-            desiredChainId={Number(config.chain_id)}
-          />
+          {childrenOnly ? (
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <>{children}</>
+          ) : (
+            <>
+              <Web3Content
+                appChainId={Number(config.chain_id)}
+                setDialogOpen={setDialogOpen}
+              >
+                {children}
+              </Web3Content>
+              <Web3ConnectDialog
+                connectors={Connectors}
+                dialogOpen={dialogOpen}
+                setDialogOpen={setDialogOpen}
+                desiredChainId={Number(config.chain_id)}
+              />
+            </>
+          )}
         </Web3Provider>
       )}
     </AsyncRenderer>
