@@ -58,7 +58,7 @@ export function Dialog({
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay
-          className="fixed inset-0 bg-black/50 z-10"
+          className="fixed inset-0 bg-black/50 z-20"
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content
