@@ -14,9 +14,9 @@ describe('number react-helpers', () => {
   it.each([
     { v: new BigNumber(123000), d: 5, o: '1.23' },
     { v: new BigNumber(123000), d: 3, o: '123' },
-    { v: new BigNumber(123000), d: 1, o: '12,300.0' },
+    { v: new BigNumber(123000), d: 1, o: '12,300' },
     { v: new BigNumber(123001), d: 2, o: '1,230.01' },
-    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
+    { v: new BigNumber(123001000), d: 2, o: '1,230,010' },
   ])(
     'formats with addDecimalsNormalizeNumber given number correctly',
     ({ v, d, o }) => {

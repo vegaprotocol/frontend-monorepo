@@ -49,6 +49,15 @@ export const getNumberFormat = memoize((digits: number) => {
   });
 });
 
+export const getMaximumNumberFormat = memoize((digits: number) => {
+  if (isNil(digits) || digits < 0) {
+    return new Intl.NumberFormat(getUserLocale());
+  }
+  return new Intl.NumberFormat(getUserLocale(), {
+    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
+  });
+});
+
 export const getDecimalSeparator = memoize(
   () =>
     getNumberFormat(1)
@@ -75,13 +84,14 @@ export const normalizeFormatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ): string => {
-  const numberToFormat = getNumberFormat(formatDecimals).format(
-    Number(rawValue)
+  const numberToFormat = getMaximumNumberFormat(formatDecimals).format(
+    new BigNumber(rawValue).toNumber()
   );
   // Multiplying by 1 safely removes the insignificant trailing zeros from the formatted number
-  return !isNaN(Number(numberToFormat))
-    ? (Number(numberToFormat) * 1).toString()
-    : numberToFormat;
+  // return !isNaN(new BigNumber(numberToFormat).toNumber())
+  //   ? (new BigNumber(numberToFormat).toNumber() * 1).toString()
+  //   : numberToFormat;
+  return numberToFormat;
 };
 
 export const addDecimalsFormatNumber = (
