@@ -160,7 +160,7 @@ const Markets = () => {
       <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
       {data?.marketsConnection?.edges
-        ? data.marketsConnection.edges.map(e => (
+        ? data.marketsConnection.edges.map((e) => (
             <React.Fragment key={e.node.id}>
               <SubHeading data-testid="markets-header">
                 {e.node.tradableInstrument.instrument.name}

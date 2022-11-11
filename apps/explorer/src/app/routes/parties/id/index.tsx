@@ -98,7 +98,7 @@ const Party = () => {
     }
   );
 
-  const p = data?.partiesConnection?.edges[0].node
+  const p = data?.partiesConnection?.edges[0].node;
 
   const header = p?.id ? (
     <PageHeader
@@ -116,10 +116,10 @@ const Party = () => {
   const accounts = (
     <section>
       {p?.accountsConnection?.edges?.length ? (
-        p.accountsConnection?.edges?.map(a => {
-          const account = a?.node
+        p.accountsConnection?.edges?.map((a) => {
+          const account = a?.node;
           if (!account || !account.asset) {
-            return ''
+            return '';
           }
 
           return (
