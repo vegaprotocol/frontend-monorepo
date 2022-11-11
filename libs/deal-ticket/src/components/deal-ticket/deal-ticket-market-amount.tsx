@@ -81,7 +81,7 @@ export const DealTicketMarketAmount = ({
           />
         </div>
         <div>@</div>
-        <div className="flex-1 text-sm text-right">
+        <div className="flex-1 text-sm text-right" data-testid="last-price">
           {priceFormatted && quoteName ? (
             <>
               ~{priceFormatted} {quoteName}
