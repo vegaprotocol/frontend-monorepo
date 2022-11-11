@@ -63,45 +63,47 @@ export const FeesBreakdown = ({
     .plus(fees.liquidityFee)
     .toString();
   return (
-    <dl className="grid grid-cols-3 gap-x-3">
-      <dt>{t('Infrastructure fee')}</dt>
+    <dl className="grid grid-cols-5">
+      <dt className="col-span-2">{t('Infrastructure fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.infrastructureFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
+      <dd className="text-right col-span-2">
         {fees.infrastructureFee} {quoteName || ''}
       </dd>
-      <dt>{t('Liquidity fee')}</dt>
+      <dt className="col-span-2">{t('Liquidity fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.liquidityFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
+      <dd className="text-right col-span-2">
         {fees.liquidityFee} {quoteName || ''}
       </dd>
-      <dt>{t('Maker fee')}</dt>
+      <dt className="col-span-2">{t('Maker fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.makerFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
+      <dd className="text-right col-span-2">
         {fees.makerFee} {quoteName || ''}
       </dd>
-      <dt>{t('Total fees')}</dt>
+      <dt className="col-span-2">{t('Total fees')}</dt>
       {feeFactors && (
-        <dd className="text-right">{totalFeesPercentage(feeFactors)}</dd>
+        <dd className="text-right col-span-1">
+          {totalFeesPercentage(feeFactors)}
+        </dd>
       )}
-      <dd className="text-right">
+      <dd className="text-right col-span-2">
         {totalFees} {quoteName || ''}
       </dd>
     </dl>
