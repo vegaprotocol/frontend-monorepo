@@ -49,7 +49,7 @@ export const getNumberFormat = memoize((digits: number) => {
   });
 });
 
-export const getMaximumNumberFormat = memoize((digits: number) => {
+export const getMaximumDigitsNumberFormat = memoize((digits: number) => {
   if (isNil(digits) || digits < 0) {
     return new Intl.NumberFormat(getUserLocale());
   }
@@ -84,7 +84,7 @@ export const normalizeFormatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ): string => {
-  const numberToFormat = getMaximumNumberFormat(formatDecimals).format(
+  const numberToFormat = getMaximumDigitsNumberFormat(formatDecimals).format(
     new BigNumber(rawValue).toNumber()
   );
   return numberToFormat;
