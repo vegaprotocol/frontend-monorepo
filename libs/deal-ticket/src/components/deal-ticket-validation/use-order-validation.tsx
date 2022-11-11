@@ -32,15 +32,6 @@ export type ValidationProps = {
   estMargin: OrderMargin | null;
 };
 
-export const marketTranslations = (marketState: Schema.MarketState) => {
-  switch (marketState) {
-    case Schema.MarketState.STATE_TRADING_TERMINATED:
-      return t('terminated');
-    default:
-      return t(MarketStateMapping[marketState]).toLowerCase();
-  }
-};
-
 export type DealTicketSection =
   | ''
   | typeof DEAL_TICKET_SECTION[keyof typeof DEAL_TICKET_SECTION];

@@ -8,7 +8,6 @@ import {
   useFeeDealTicketDetails,
 } from '../../hooks/use-fee-deal-ticket-details';
 import { getDefaultOrder, usePersistedOrder } from '../deal-ticket-validation';
-import { marketTranslations } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -25,6 +24,8 @@ import { useOrderMarginValidation } from '../deal-ticket-validation/use-order-ma
 import { ValidateMargin } from '../deal-ticket-validation/validate-margin';
 import { validateType } from '../deal-ticket-validation/validate-type';
 import { validateTimeInForce } from '../deal-ticket-validation/validate-time-in-force';
+import { validateMarketState } from '../deal-ticket-validation/validate-market-state';
+import { validateMarketTradingMode } from '../deal-ticket-validation/validate-market-trading-mode';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -80,60 +81,22 @@ export const DealTicket = ({
         return;
       }
 
-      if (
-        [
-          Schema.MarketState.STATE_SETTLED,
-          Schema.MarketState.STATE_REJECTED,
-          Schema.MarketState.STATE_TRADING_TERMINATED,
-          Schema.MarketState.STATE_CANCELLED,
-          Schema.MarketState.STATE_CLOSED,
-        ].includes(market.state)
-      ) {
-        setError('summary', {
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and not accepting orders`
-          ),
-        });
-        return;
-      }
-
-      if (
-        [
-          Schema.MarketState.STATE_PROPOSED,
-          Schema.MarketState.STATE_PENDING,
-        ].includes(market.state)
-      ) {
-        setError('summary', {
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        });
+      const marketStateError = validateMarketState(market.state);
+      if (marketStateError !== true) {
+        setError('summary', { message: marketStateError });
         return;
       }
 
       if (isInvalidOrderMargin) {
-        setError('summary', {
-          message: 'margin',
-        });
+        setError('summary', { message: 'margin' });
         return;
       }
 
-      if (
-        [
-          Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-          Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-        ].includes(market.tradingMode)
-      ) {
-        setError('summary', {
-          message: t(
-            'Any orders placed now will not trade until the auction ends'
-          ),
-        });
+      const marketTradingModeError = validateMarketTradingMode(
+        market.tradingMode
+      );
+      if (marketTradingModeError !== true) {
+        setError('summary', { message: marketTradingModeError });
         return;
       }
 

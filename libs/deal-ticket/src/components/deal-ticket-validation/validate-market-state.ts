@@ -1,0 +1,42 @@
+import { t } from '@vegaprotocol/react-helpers';
+import { MarketStateMapping, Schema } from '@vegaprotocol/types';
+
+export const validateMarketState = (state: Schema.MarketState) => {
+  if (
+    [
+      Schema.MarketState.STATE_SETTLED,
+      Schema.MarketState.STATE_REJECTED,
+      Schema.MarketState.STATE_TRADING_TERMINATED,
+      Schema.MarketState.STATE_CANCELLED,
+      Schema.MarketState.STATE_CLOSED,
+    ].includes(state)
+  ) {
+    return t(
+      `This market is ${marketTranslations(state)} and not accepting orders`
+    );
+  }
+
+  if (
+    [
+      Schema.MarketState.STATE_PROPOSED,
+      Schema.MarketState.STATE_PENDING,
+    ].includes(state)
+  ) {
+    return t(
+      `This market is ${marketTranslations(
+        state
+      )} and only accepting liquidity commitment orders`
+    );
+  }
+
+  return true;
+};
+
+const marketTranslations = (marketState: Schema.MarketState) => {
+  switch (marketState) {
+    case Schema.MarketState.STATE_TRADING_TERMINATED:
+      return t('terminated');
+    default:
+      return t(MarketStateMapping[marketState]).toLowerCase();
+  }
+};
