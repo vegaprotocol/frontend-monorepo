@@ -33,10 +33,7 @@ import type {
   InMemoryCacheConfig,
   Reference,
 } from '@apollo/client';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
 
-import { deterministicShuffle } from './lib/deterministic-shuffle';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 const formatUintToNumber = (amount: string, decimals = 18) =>
@@ -51,35 +48,8 @@ const createReadField = (fieldName: string) => ({
   },
 });
 
-// Create seed in memory. Validator list order will remain the same
-// until the page is refreshed.
-const VALIDATOR_RANDOMISER_SEED = (
-  Math.floor(Math.random() * 1000) + 1
-).toString();
-
 const cache: InMemoryCacheConfig = {
   typePolicies: {
-    Query: {
-      fields: {
-        nodes: {
-          // Merge function to make the validator list random but remain consistent
-          // as the user navigates around the site. If the user refreshes the list
-          // will be randomised.
-          merge: (existing = [], incoming) => {
-            // uniqBy will take the first of any matches
-            const uniq = uniqBy([...incoming, ...existing], 'id');
-            // sort result so that the input is consistent
-            const sorted = sortBy(uniq, 'id');
-            // randomise based on seed string
-            const random = deterministicShuffle(
-              VALIDATOR_RANDOMISER_SEED,
-              sorted
-            );
-            return random;
-          },
-        },
-      },
-    },
     Account: {
       keyFields: false,
       fields: {
