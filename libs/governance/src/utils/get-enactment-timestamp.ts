@@ -1,22 +1,24 @@
-import { addHours, fromUnixTime, getTime } from 'date-fns';
-import { getClosingTimestamp } from './get-closing-timestamp';
+import { addHours, getTime } from 'date-fns';
+import { addTwoMinutes, subtractTwoSeconds } from './deadline-helpers';
+
+// If the enactment deadline is at its minimum, then we add 2 extra minutes to the
+// closing timestamp to ensure that there's time to confirm in the wallet.
+
+// If it's at its maximum, remove a couple of seconds to ensure rounding errors
+// and communication delays don't cause the deadline to be slightly
+// later than the API can accept.
 
 export const getEnactmentTimestamp = (
-  proposalVoteDeadline: string,
   enactmentDeadline: string,
-  minimumVoteDeadlineSelected: boolean
+  minimumDeadlineSelected: boolean,
+  maximumDeadlineSelected: boolean
 ) =>
   Math.floor(
     getTime(
       addHours(
-        new Date(
-          fromUnixTime(
-            getClosingTimestamp(
-              proposalVoteDeadline,
-              minimumVoteDeadlineSelected
-            )
-          )
-        ),
+        (minimumDeadlineSelected && addTwoMinutes()) ||
+          (maximumDeadlineSelected && subtractTwoSeconds()) ||
+          new Date(),
         Number(enactmentDeadline)
       )
     ) / 1000

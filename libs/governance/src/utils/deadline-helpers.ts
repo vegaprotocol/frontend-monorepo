@@ -1,10 +1,15 @@
 import { parse as ISO8601Parse, toSeconds } from 'iso8601-duration';
+import { addMinutes, subSeconds } from 'date-fns';
+
+const deadlineRegexChecker = (deadline: string) => {
+  // check that the deadline string matches the format "XhXmXs"
+  const regex = /^(\d+h)?(\d+m)?(\d+s)?$/;
+  return regex.test(deadline);
+};
 
 // Converts API deadlines ("XhXmXs") to seconds
 export const deadlineToSeconds = (deadline: string) => {
-  // check that the deadline string matches the format "XhXmXs"
-  const regex = /^(\d+h)?(\d+m)?(\d+s)?$/;
-  if (!regex.test(deadline)) {
+  if (!deadlineRegexChecker(deadline)) {
     throw new Error(
       `Invalid deadline format, expected format "XhXmXs", got "${deadline}"`
     );
@@ -20,3 +25,11 @@ export const secondsToRoundedHours = (seconds: number) => {
 
 export const deadlineToRoundedHours = (deadline: string) =>
   secondsToRoundedHours(deadlineToSeconds(deadline));
+
+export const doesValueEquateToParam = (value: string, param: string) =>
+  value === deadlineToRoundedHours(param).toString();
+
+export const addTwoMinutes = (date?: Date) => addMinutes(date || new Date(), 2);
+
+export const subtractTwoSeconds = (date?: Date) =>
+  subSeconds(date || new Date(), 2);

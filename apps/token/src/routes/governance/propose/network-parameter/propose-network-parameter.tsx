@@ -9,7 +9,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
   useProposalSubmit,
-  deadlineToRoundedHours,
+  doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -103,11 +103,22 @@ export const ProposeNetworkParameter = () => {
       .split('_')
       .join('.');
 
-    const isVoteDeadlineAtMinimum =
-      fields.proposalVoteDeadline ===
-      deadlineToRoundedHours(
-        params.governance_proposal_updateNetParam_minClose
-      ).toString();
+    const isVoteDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_updateNetParam_minClose
+    );
+    const isVoteDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_updateNetParam_maxClose
+    );
+    const isEnactmentDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_updateNetParam_minEnact
+    );
+    const isEnactmentDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_updateNetParam_maxEnact
+    );
 
     await submit({
       rationale: {
@@ -123,12 +134,13 @@ export const ProposeNetworkParameter = () => {
         },
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
         enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline,
-          isVoteDeadlineAtMinimum
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
       },
     });

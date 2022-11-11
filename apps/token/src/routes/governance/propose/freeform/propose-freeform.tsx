@@ -56,6 +56,12 @@ export const ProposeFreeform = () => {
         params.governance_proposal_freeform_minClose
       ).toString();
 
+    const isVoteDeadlineAtMaximum =
+      fields.proposalVoteDeadline ===
+      deadlineToRoundedHours(
+        params.governance_proposal_freeform_maxClose
+      ).toString();
+
     await submit({
       rationale: {
         title: fields.proposalTitle,
@@ -65,7 +71,8 @@ export const ProposeFreeform = () => {
         newFreeform: {},
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
       },
     });
