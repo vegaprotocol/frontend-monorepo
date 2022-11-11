@@ -2,6 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { StakingIntro } from './staking-intro';
 
+jest.mock('@vegaprotocol/environment', () => ({
+  useEnvironment: () => ({
+    VEGA_DOCS_URL: 'https://docs.vega.xyz',
+  }),
+}));
+
 describe('Staking', () => {
   it('should render the component', () => {
     render(
