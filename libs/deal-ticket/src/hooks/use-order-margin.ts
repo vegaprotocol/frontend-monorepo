@@ -6,7 +6,7 @@ import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];

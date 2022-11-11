@@ -17,7 +17,7 @@ export interface Delegations_epoch {
   id: string;
 }
 
-export interface Delegations_party_delegations_node {
+export interface Delegations_party_delegationsConnection_edges_node_node {
   __typename: "Node";
   /**
    * The node URL eg n01.vega.xyz
@@ -26,7 +26,7 @@ export interface Delegations_party_delegations_node {
   name: string;
 }
 
-export interface Delegations_party_delegations {
+export interface Delegations_party_delegationsConnection_edges_node {
   __typename: "Delegation";
   /**
    * The amount field formatted by the client
@@ -39,11 +39,27 @@ export interface Delegations_party_delegations {
   /**
    * URL of node you are delegating to
    */
-  node: Delegations_party_delegations_node;
+  node: Delegations_party_delegationsConnection_edges_node_node;
   /**
    * Epoch of delegation
    */
   epoch: number;
+}
+
+export interface Delegations_party_delegationsConnection_edges {
+  __typename: "DelegationEdge";
+  /**
+   * The delegation information
+   */
+  node: Delegations_party_delegationsConnection_edges_node;
+}
+
+export interface Delegations_party_delegationsConnection {
+  __typename: "DelegationsConnection";
+  /**
+   * The delegation information available on this connection
+   */
+  edges: (Delegations_party_delegationsConnection_edges | null)[] | null;
 }
 
 export interface Delegations_party_stakingSummary {
@@ -114,7 +130,7 @@ export interface Delegations_party {
    * Party identifier
    */
   id: string;
-  delegations: Delegations_party_delegations[] | null;
+  delegationsConnection: Delegations_party_delegationsConnection | null;
   /**
    * The staking information for this Party
    */

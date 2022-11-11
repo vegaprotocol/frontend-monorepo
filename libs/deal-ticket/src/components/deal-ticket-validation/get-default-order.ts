@@ -1,6 +1,6 @@
 import { toDecimal } from '@vegaprotocol/react-helpers';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 export const getDefaultOrder = (market: {
   id: string;

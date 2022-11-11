@@ -3,11 +3,11 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,
-} from './__generated___/Positions';
+} from './__generated__/Positions';
 import type {
   MarginsQuery,
   MarginsSubscriptionSubscription,
-} from './__generated___/Positions';
+} from './__generated__/Positions';
 
 const update = (
   data: MarginsQuery['party'],

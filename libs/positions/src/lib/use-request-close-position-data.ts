@@ -1,5 +1,6 @@
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { isOrderActive, ordersWithMarketProvider } from '@vegaprotocol/orders';
+import type { OrdersQueryVariables } from '@vegaprotocol/orders';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 
@@ -8,7 +9,10 @@ export const useRequestClosePositionData = (
   partyId?: string
 ) => {
   const marketVariables = useMemo(() => ({ marketId }), [marketId]);
-  const orderVariables = useMemo(() => ({ partyId }), [partyId]);
+  const orderVariables = useMemo<OrdersQueryVariables>(
+    () => ({ partyId: partyId || '' }),
+    [partyId]
+  );
   const { data: market, loading: marketLoading } = useDataProvider({
     dataProvider: marketProvider,
     variables: marketVariables,
@@ -21,6 +25,7 @@ export const useRequestClosePositionData = (
   const { data: orderData, loading: orderDataLoading } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables: orderVariables,
+    skip: !partyId,
   });
 
   const orders = useMemo(() => {

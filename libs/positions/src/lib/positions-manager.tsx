@@ -1,6 +1,11 @@
 import { useRef } from 'react';
 import { AsyncRenderer, Icon, Intent } from '@vegaprotocol/ui-toolkit';
-import { useClosePosition, usePositionsData, PositionsTable } from '../';
+import {
+  useClosePosition,
+  usePositionsData,
+  PositionsTable,
+  getSummaryRowData,
+} from '../';
 import type { AgGridReact } from 'ag-grid-react';
 import { Requested } from './close-position-dialog/requested';
 import { Complete } from './close-position-dialog/complete';
@@ -29,6 +34,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
         <PositionsTable
           ref={gridRef}
           rowData={data}
+          pinnedBottomRowData={data ? [getSummaryRowData(data)] : []}
           onClose={(position) => submit(position)}
         />
       </AsyncRenderer>

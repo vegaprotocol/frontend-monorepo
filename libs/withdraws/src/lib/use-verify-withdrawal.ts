@@ -1,17 +1,16 @@
 import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 import BigNumber from 'bignumber.js';
 import { addDecimal, t } from '@vegaprotocol/react-helpers';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
-  Erc20Approval,
-  Erc20ApprovalVariables,
+  Erc20ApprovalQuery,
+  Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
-import type { ERC20Asset } from '@vegaprotocol/assets';
 
 export enum ApprovalStatus {
   Idle = 'Idle',
@@ -58,7 +57,7 @@ export const useVerifyWithdrawal = () => {
   }, [setState]);
 
   const verify = useCallback(
-    async (withdrawal: WithdrawalFields) => {
+    async (withdrawal: WithdrawalFieldsFragment) => {
       try {
         setState({ dialogOpen: true });
 
@@ -81,7 +80,7 @@ export const useVerifyWithdrawal = () => {
           addDecimal(withdrawal.amount, withdrawal.asset.decimals)
         );
 
-        const threshold = await getThreshold(withdrawal.asset as ERC20Asset);
+        const threshold = await getThreshold(withdrawal.asset);
 
         if (threshold && amount.isGreaterThan(threshold)) {
           const delaySecs = await getDelay();
@@ -98,8 +97,11 @@ export const useVerifyWithdrawal = () => {
           }
         }
 
-        const res = await client.query<Erc20Approval, Erc20ApprovalVariables>({
-          query: ERC20_APPROVAL_QUERY,
+        const res = await client.query<
+          Erc20ApprovalQuery,
+          Erc20ApprovalQueryVariables
+        >({
+          query: Erc20ApprovalDocument,
           variables: { withdrawalId: withdrawal.id },
         });
 

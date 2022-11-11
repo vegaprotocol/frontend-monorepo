@@ -8,7 +8,12 @@
     "build": {
       "implementation": "./build/impl",
       "schema": "./build/schema.json",
-      "description": "Starts a next server with an optional explicit environment."
+      "description": "Builds a next app with an optional explicit environment."
+    },
+    "export": {
+      "implementation": "./export/impl",
+      "schema": "./serve/schema.json",
+      "description": "Exports a next app with an optional explicit environment."
     }
   }
 }

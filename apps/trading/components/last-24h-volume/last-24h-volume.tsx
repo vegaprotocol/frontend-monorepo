@@ -57,8 +57,10 @@ export const Last24hVolume = ({ marketId }: { marketId: string }) => {
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
-    ({ data }: { data: Candle[] }) => {
-      throttledSetCandles(data);
+    ({ data }: { data: Candle[] | null }) => {
+      if (data) {
+        throttledSetCandles(data);
+      }
       return true;
     },
     [throttledSetCandles]

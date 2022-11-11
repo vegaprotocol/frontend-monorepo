@@ -3,32 +3,42 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type StakingDelegationsFieldsFragment = { __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } };
+
 export type PartyDelegationsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type PartyDelegationsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, delegations?: Array<{ __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } }> | null } | null, epoch: { __typename?: 'Epoch', id: string } };
+export type PartyDelegationsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } } } | null> | null } | null } | null, epoch: { __typename?: 'Epoch', id: string } };
 
-
+export const StakingDelegationsFieldsFragmentDoc = gql`
+    fragment StakingDelegationsFields on Delegation {
+  amount
+  amountFormatted @client
+  node {
+    id
+  }
+  epoch
+}
+    `;
 export const PartyDelegationsDocument = gql`
     query PartyDelegations($partyId: ID!) {
   party(id: $partyId) {
     id
-    delegations {
-      amount
-      amountFormatted @client
-      node {
-        id
+    delegationsConnection {
+      edges {
+        node {
+          ...StakingDelegationsFields
+        }
       }
-      epoch
     }
   }
   epoch {
     id
   }
 }
-    `;
+    ${StakingDelegationsFieldsFragmentDoc}`;
 
 /**
  * __usePartyDelegationsQuery__

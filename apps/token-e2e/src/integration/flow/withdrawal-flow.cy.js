@@ -5,7 +5,6 @@ const amountInput = 'amount-input';
 const balanceAvailable = 'BALANCE_AVAILABLE_value';
 const withdrawalThreshold = 'WITHDRAWAL_THRESHOLD_value';
 const delayTime = 'DELAY_TIME_value';
-const useMaximum = 'use-maximum';
 const submitWithdrawalButton = 'submit-withdrawal';
 const dialogTitle = 'dialog-title';
 const dialogClose = 'dialog-close';
@@ -37,31 +36,33 @@ context(
       cy.navigate_to('withdrawals');
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
-      waitForAssetsDisplayed(usdtName);
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
+      // needs to reload page for withdrawal form to be displayed in ci - not reproducible outside of ci
+      cy.getByTestId(withdraw).should('be.visible').click();
+      cy.visit('/');
+      cy.navigate_to('withdrawals');
+      cy.ethereum_wallet_connect();
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset)
         .find('option')
-        .should('have.length.at.least', 5);
+        .should('have.length.at.least', 2);
       cy.getByTestId(ethAddressInput).should('be.visible');
       cy.getByTestId(amountInput).should('be.visible');
     });
 
     it('Unable to submit withdrawal with invalid fields', function () {
       cy.getByTestId(withdraw).should('be.visible').click();
-      cy.getByTestId(selectAsset).select('BTC (local)');
-      cy.getByTestId(balanceAvailable).should('have.text', '0.00000');
+      cy.getByTestId(selectAsset).select(usdtName);
       cy.getByTestId(submitWithdrawalButton).click();
       cy.getByTestId(formValidationError).should('have.length', 1);
-      cy.getByTestId(useMaximum).click();
+      cy.getByTestId(amountInput).clear().click().type('0.0000001');
       cy.getByTestId(submitWithdrawalButton).click();
       cy.getByTestId(formValidationError).should(
         'have.text',
         'Value is below minimum'
       );
-      cy.getByTestId(selectAsset).select(usdtName);
       cy.getByTestId(amountInput).clear().click().type('10');
       cy.getByTestId(ethAddressInput).click().type('123');
       cy.getByTestId(submitWithdrawalButton).click();

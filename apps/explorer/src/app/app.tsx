@@ -9,12 +9,12 @@ import {
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { NetworkInfo } from '@vegaprotocol/network-info';
-import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 import { ENV } from './config/env';
+import type { InMemoryCacheConfig } from '@apollo/client';
 
 function App() {
   const { VEGA_ENV } = useEnvironment();
@@ -36,10 +36,18 @@ function App() {
     });
   }, [VEGA_ENV]);
 
+  const cacheConfig: InMemoryCacheConfig = {
+    typePolicies: {
+      Node: {
+        keyFields: false,
+      },
+    },
+  };
+
   return (
     <ThemeContext.Provider value={theme}>
       <TendermintWebsocketProvider>
-        <NetworkLoader createClient={createClient}>
+        <NetworkLoader cache={cacheConfig}>
           <div
             className={`${
               menuOpen && 'h-[100vh] overflow-hidden'

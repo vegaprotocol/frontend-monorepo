@@ -10,13 +10,13 @@ import {
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo, Edge } from '@vegaprotocol/react-helpers';
-import { FillsDocument, FillsEventDocument } from './__generated___/Fills';
+import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
 import type {
   FillsQuery,
   FillFieldsFragment,
   FillEdgeFragment,
   FillsEventSubscription,
-} from './__generated___/Fills';
+} from './__generated__/Fills';
 
 const update = (
   data: FillEdgeFragment[] | null,

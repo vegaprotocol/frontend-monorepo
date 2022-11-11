@@ -3,7 +3,7 @@ name: Verify PR title
 
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, ready_for_review, reopened, edited, synchronize]
 jobs:
   lint_pr:
     runs-on: ubuntu-latest

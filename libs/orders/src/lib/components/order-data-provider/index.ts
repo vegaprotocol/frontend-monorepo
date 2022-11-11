@@ -1,2 +1,2 @@
-export * from './__generated___/orders';
+export * from './__generated__/Orders';
 export * from './order-data-provider';

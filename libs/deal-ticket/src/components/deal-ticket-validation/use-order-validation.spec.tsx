@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated___/DealTicket';
+import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import * as OrderMarginValidation from './use-order-margin-validation';
 import { ValidateMargin } from './validate-margin';
 import { ERROR_SIZE_DECIMAL } from '../constants';

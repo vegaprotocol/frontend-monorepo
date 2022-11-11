@@ -3,9 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
-import type { Asset } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
-import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 
 const asset = generateAsset();
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
@@ -15,11 +13,7 @@ jest.mock('@web3-react/core', () => ({
 }));
 
 jest.mock('./use-withdraw-asset', () => ({
-  useWithdrawAsset: (
-    assets: Asset[],
-    accounts: AccountFieldsFragment[],
-    assetId?: string
-  ) => ({
+  useWithdrawAsset: () => ({
     asset,
     balance: new BigNumber(1),
     min: new BigNumber(0.0000001),
@@ -62,7 +56,7 @@ describe('WithdrawManager', () => {
     await act(async () => {
       await submitValid();
     });
-    expect(await props.submit).toHaveBeenCalledWith({
+    expect(props.submit).toHaveBeenCalledWith({
       amount: '1000',
       asset: props.assets[0].id,
       receiverAddress: ethereumAddress,

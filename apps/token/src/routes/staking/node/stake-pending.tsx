@@ -7,12 +7,16 @@ interface StakePendingProps {
   action: StakeAction;
   amount: string;
   nodeName: string;
+  isDialogVisible: boolean;
+  toggleDialog: () => void;
 }
 
 export const StakePending = ({
   action,
   amount,
   nodeName,
+  isDialogVisible,
+  toggleDialog,
 }: StakePendingProps) => {
   const { t } = useTranslation();
   const titleArgs = { amount, node: nodeName };
@@ -22,7 +26,12 @@ export const StakePending = ({
     : t('stakeRemovePendingTitle', titleArgs);
 
   return (
-    <Dialog icon={<Loader size="small" />} title={title} open={true}>
+    <Dialog
+      icon={<Loader size="small" />}
+      title={title}
+      open={isDialogVisible}
+      onChange={toggleDialog}
+    >
       <p>{t('timeForConfirmation')}</p>
     </Dialog>
   );

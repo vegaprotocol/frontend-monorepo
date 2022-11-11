@@ -1,9 +1,9 @@
 import type { Dispatch } from 'react';
 import { useState, useEffect, useReducer } from 'react';
 import { produce } from 'immer';
-import type createClient from '../utils/apollo-client';
 import { initializeNode } from '../utils/initialize-node';
 import type { NodeData, Configuration } from '../types';
+import type { createClient } from '@vegaprotocol/apollo-client';
 
 type StatisticsPayload = {
   block: NodeData['block']['value'];

@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "accounts": "libs/accounts",
+    "apollo-client": "libs/apollo-client",
     "assets": "libs/assets",
     "candles-chart": "libs/candles-chart",
     "console-lite": "apps/console-lite",

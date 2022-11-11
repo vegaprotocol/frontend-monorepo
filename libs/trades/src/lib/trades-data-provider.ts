@@ -12,8 +12,8 @@ import type {
   TradesQuery,
   TradeFieldsFragment,
   TradesUpdateSubscription,
-} from './__generated___/Trades';
-import { TradesDocument, TradesUpdateDocument } from './__generated___/Trades';
+} from './__generated__/Trades';
+import { TradesDocument, TradesUpdateDocument } from './__generated__/Trades';
 import orderBy from 'lodash/orderBy';
 import produce from 'immer';
 
