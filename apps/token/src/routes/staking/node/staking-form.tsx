@@ -1,17 +1,15 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
+import compact from 'lodash/compact';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { usePartyDelegationsLazyQuery } from './__generated___/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
-import type {
-  PartyDelegations,
-  PartyDelegationsVariables,
-} from './__generated__/PartyDelegations';
 import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
   ButtonLink,
@@ -30,25 +28,6 @@ import {
   removeDecimal,
   addDecimal,
 } from '@vegaprotocol/react-helpers';
-
-export const PARTY_DELEGATIONS_QUERY = gql`
-  query PartyDelegations($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      delegations {
-        amount
-        amountFormatted @client
-        node {
-          id
-        }
-        epoch
-      }
-    }
-    epoch {
-      id
-    }
-  }
-`;
 
 export enum FormState {
   Default,
@@ -159,6 +138,13 @@ export const StakingForm = ({
     }
   }
 
+  const [delegationSearch, { data, error }] = usePartyDelegationsLazyQuery({
+    variables: {
+      partyId: pubKey,
+    },
+    fetchPolicy: 'network-only',
+  });
+
   React.useEffect(() => {
     // eslint-disable-next-line
     let interval: any;
@@ -166,33 +152,31 @@ export const StakingForm = ({
     if (formState === FormState.Pending) {
       // start polling for delegation
       interval = setInterval(() => {
-        client
-          .query<PartyDelegations, PartyDelegationsVariables>({
-            query: PARTY_DELEGATIONS_QUERY,
-            variables: { partyId: pubKey },
-            fetchPolicy: 'network-only',
-          })
-          .then((res) => {
-            const delegation = res.data.party?.delegations?.find((d) => {
-              return (
-                d.node.id === nodeId &&
-                d.epoch === Number(res.data.epoch.id) + 1
-              );
-            });
+        delegationSearch();
 
-            if (delegation) {
-              setFormState(FormState.Success);
-              clearInterval(interval);
-            }
-          })
-          .catch((err) => {
-            Sentry.captureException(err);
+        if (data) {
+          const delegation = compact(
+            data.party?.delegationsConnection?.edges?.map((edge) => edge?.node)
+          ).find((d) => {
+            return (
+              d.node.id === nodeId && d.epoch === Number(data.epoch.id) + 1
+            );
           });
+
+          if (delegation) {
+            setFormState(FormState.Success);
+            clearInterval(interval);
+          }
+        }
+
+        if (error) {
+          Sentry.captureException(error);
+        }
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [formState, client, pubKey, nodeId]);
+  }, [formState, client, pubKey, nodeId, delegationSearch, data, error]);
 
   const toggleDialog = useCallback(() => {
     setIsDialogVisible(!isDialogVisible);

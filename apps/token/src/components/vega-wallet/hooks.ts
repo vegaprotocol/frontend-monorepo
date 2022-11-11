@@ -4,6 +4,7 @@ import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import compact from 'lodash/compact';
 
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
@@ -11,7 +12,7 @@ import { BigNumber } from '../../lib/bignumber';
 import type { WalletCardAssetProps } from '../wallet-card';
 import type {
   Delegations,
-  Delegations_party_delegations,
+  Delegations_party_delegationsConnection_edges_node,
   DelegationsVariables,
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -30,14 +31,18 @@ const DELEGATIONS_QUERY = gql`
     }
     party(id: $partyId) {
       id
-      delegations {
-        amountFormatted @client
-        amount
-        node {
-          id
-          name
+      delegationsConnection {
+        edges {
+          node {
+            amountFormatted @client
+            amount
+            node {
+              id
+              name
+            }
+            epoch
+          }
         }
-        epoch
       }
       stakingSummary {
         currentStakeAvailable
@@ -72,7 +77,7 @@ export const usePollForDelegations = () => {
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
   const [delegations, setDelegations] = React.useState<
-    Delegations_party_delegations[]
+    Delegations_party_delegationsConnection_edges_node[]
   >([]);
   const [delegatedNodes, setDelegatedNodes] = React.useState<
     {
@@ -103,8 +108,11 @@ export const usePollForDelegations = () => {
           })
           .then((res) => {
             if (!mounted) return;
+            const canonisedDelegations = compact(
+              res.data.party?.delegationsConnection?.edges
+            ).map(({ node }) => node);
             const filter =
-              res.data.party?.delegations?.filter((d) => {
+              canonisedDelegations.filter((d) => {
                 return d.epoch.toString() === res.data.epoch.id;
               }) || [];
             const sortedDelegations = [...filter].sort((a, b) => {
@@ -164,13 +172,13 @@ export const usePollForDelegations = () => {
                 })
             );
             const delegatedNextEpoch = keyBy(
-              res.data.party?.delegations?.filter((d) => {
+              canonisedDelegations.filter((d) => {
                 return d.epoch === Number(res.data.epoch.id) + 1;
               }) || [],
               'node.id'
             );
             const delegatedThisEpoch = keyBy(
-              res.data.party?.delegations?.filter((d) => {
+              canonisedDelegations.filter((d) => {
                 return d.epoch === Number(res.data.epoch.id);
               }) || [],
               'node.id'

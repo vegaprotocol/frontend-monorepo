@@ -190,6 +190,7 @@ export const DepositForm = ({
             data-testid="view-asset-details"
             className="text-sm underline"
             onClick={(e) => {
+              e.preventDefault();
               openAssetDetailsDialog(selectedAsset, e.target as HTMLElement);
             }}
           >

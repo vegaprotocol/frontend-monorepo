@@ -3,14 +3,46 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type StakingNodeFieldsFragment = { __typename?: 'Node', id: string, name: string, pubkey: string, infoUrl: string, location: string, ethereumAddress: string, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, stakedByOperatorFormatted: string, stakedByDelegatesFormatted: string, stakedTotalFormatted: string, pendingStakeFormatted: string, status: Types.NodeStatus, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } };
+
 export type StakingQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type StakingQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, delegations?: Array<{ __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } }> | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: string | null, end?: string | null, expiry?: string | null } }, nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, pubkey: string, infoUrl: string, location: string, ethereumAddress: string, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, stakedByOperatorFormatted: string, stakedByDelegatesFormatted: string, stakedTotalFormatted: string, pendingStakeFormatted: string, status: Types.NodeStatus, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null }, nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string, totalNodes: number, inactiveNodes: number, validatingNodes: number, uptime: number } | null };
+export type StakingQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, amountFormatted: string, epoch: number, node: { __typename?: 'Node', id: string } } } | null> | null } | null } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: string | null, end?: string | null, expiry?: string | null } }, nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, pubkey: string, infoUrl: string, location: string, ethereumAddress: string, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, stakedByOperatorFormatted: string, stakedByDelegatesFormatted: string, stakedTotalFormatted: string, pendingStakeFormatted: string, status: Types.NodeStatus, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null, rankingScore: { __typename?: 'RankingScore', rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null }, nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string, totalNodes: number, inactiveNodes: number, validatingNodes: number, uptime: number } | null };
 
-
+export const StakingNodeFieldsFragmentDoc = gql`
+    fragment StakingNodeFields on Node {
+  id
+  name
+  pubkey
+  infoUrl
+  location
+  ethereumAddress
+  stakedByOperator
+  stakedByDelegates
+  stakedTotal
+  pendingStake
+  stakedByOperatorFormatted @client
+  stakedByDelegatesFormatted @client
+  stakedTotalFormatted @client
+  pendingStakeFormatted @client
+  epochData {
+    total
+    offline
+    online
+  }
+  status
+  rankingScore {
+    rankingScore
+    stakeScore
+    performanceScore
+    votingPower
+    stakeScore
+  }
+}
+    `;
 export const StakingDocument = gql`
     query Staking($partyId: ID!) {
   party(id: $partyId) {
@@ -18,12 +50,16 @@ export const StakingDocument = gql`
     stakingSummary {
       currentStakeAvailable
     }
-    delegations {
-      amount
-      amountFormatted @client
-      epoch
-      node {
-        id
+    delegationsConnection {
+      edges {
+        node {
+          amount
+          amountFormatted @client
+          epoch
+          node {
+            id
+          }
+        }
       }
     }
   }
@@ -38,33 +74,7 @@ export const StakingDocument = gql`
   nodesConnection {
     edges {
       node {
-        id
-        name
-        pubkey
-        infoUrl
-        location
-        ethereumAddress
-        stakedByOperator
-        stakedByDelegates
-        stakedTotal
-        pendingStake
-        stakedByOperatorFormatted @client
-        stakedByDelegatesFormatted @client
-        stakedTotalFormatted @client
-        pendingStakeFormatted @client
-        epochData {
-          total
-          offline
-          online
-        }
-        status
-        rankingScore {
-          rankingScore
-          stakeScore
-          performanceScore
-          votingPower
-          stakeScore
-        }
+        ...StakingNodeFields
       }
     }
   }
@@ -77,7 +87,7 @@ export const StakingDocument = gql`
     uptime
   }
 }
-    `;
+    ${StakingNodeFieldsFragmentDoc}`;
 
 /**
  * __useStakingQuery__

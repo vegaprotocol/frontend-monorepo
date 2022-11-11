@@ -6,7 +6,7 @@ import {
   getClosingTimestamp,
   getEnactmentTimestamp,
   useProposalSubmit,
-  deadlineToRoundedHours,
+  doesValueEquateToParam,
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -123,11 +123,22 @@ export const ProposeUpdateMarket = () => {
   const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const onSubmit = async (fields: UpdateMarketProposalFormFields) => {
-    const isVoteDeadlineAtMinimum =
-      fields.proposalVoteDeadline ===
-      deadlineToRoundedHours(
-        params.governance_proposal_updateMarket_minClose
-      ).toString();
+    const isVoteDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_updateMarket_minClose
+    );
+    const isVoteDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalVoteDeadline,
+      params.governance_proposal_updateMarket_maxClose
+    );
+    const isEnactmentDeadlineAtMinimum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_updateMarket_minEnact
+    );
+    const isEnactmentDeadlineAtMaximum = doesValueEquateToParam(
+      fields.proposalEnactmentDeadline,
+      params.governance_proposal_updateMarket_maxEnact
+    );
 
     await submit({
       rationale: {
@@ -143,12 +154,13 @@ export const ProposeUpdateMarket = () => {
         },
         closingTimestamp: getClosingTimestamp(
           fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum
+          isVoteDeadlineAtMinimum,
+          isVoteDeadlineAtMaximum
         ),
         enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalVoteDeadline,
           fields.proposalEnactmentDeadline,
-          isVoteDeadlineAtMinimum
+          isEnactmentDeadlineAtMinimum,
+          isEnactmentDeadlineAtMaximum
         ),
       },
     });

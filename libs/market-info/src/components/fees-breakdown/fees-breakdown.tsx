@@ -1,5 +1,9 @@
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
-import { formatNumberPercentage, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsNormalizeNumber,
+  formatNumberPercentage,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
@@ -48,6 +52,7 @@ export const FeesBreakdown = ({
   fees,
   feeFactors,
   quoteName,
+  decimals,
 }: {
   fees?: {
     infrastructureFee: string;
@@ -56,53 +61,61 @@ export const FeesBreakdown = ({
   };
   feeFactors?: Market['fees']['factors'];
   quoteName?: string;
+  decimals: number;
 }) => {
   if (!fees) return null;
   const totalFees = new BigNumber(fees.makerFee)
     .plus(fees.infrastructureFee)
     .plus(fees.liquidityFee)
     .toString();
+  const formatValue = (value: string | number | null | undefined): string => {
+    return value && !isNaN(Number(value))
+      ? addDecimalsNormalizeNumber(value, decimals)
+      : '-';
+  };
   return (
-    <dl className="grid grid-cols-3 gap-x-3">
-      <dt>{t('Infrastructure fee')}</dt>
+    <dl className="grid grid-cols-5">
+      <dt className="col-span-2">{t('Infrastructure fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.infrastructureFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
-        {fees.infrastructureFee} {quoteName || ''}
+      <dd className="text-right col-span-2">
+        {formatValue(fees.infrastructureFee)} {quoteName || ''}
       </dd>
-      <dt>{t('Liquidity fee')}</dt>
+      <dt className="col-span-2">{t('Liquidity fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.liquidityFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
-        {fees.liquidityFee} {quoteName || ''}
+      <dd className="text-right col-span-2">
+        {formatValue(fees.liquidityFee)} {quoteName || ''}
       </dd>
-      <dt>{t('Maker fee')}</dt>
+      <dt className="col-span-2">{t('Maker fee')}</dt>
       {feeFactors && (
-        <dd className="text-right">
+        <dd className="text-right col-span-1">
           {formatNumberPercentage(
             new BigNumber(feeFactors.makerFee).times(100)
           )}
         </dd>
       )}
-      <dd className="text-right">
-        {fees.makerFee} {quoteName || ''}
+      <dd className="text-right col-span-2">
+        {formatValue(fees.makerFee)} {quoteName || ''}
       </dd>
-      <dt>{t('Total fees')}</dt>
+      <dt className="col-span-2">{t('Total fees')}</dt>
       {feeFactors && (
-        <dd className="text-right">{totalFeesPercentage(feeFactors)}</dd>
+        <dd className="text-right col-span-1">
+          {totalFeesPercentage(feeFactors)}
+        </dd>
       )}
-      <dd className="text-right">
-        {totalFees} {quoteName || ''}
+      <dd className="text-right col-span-2">
+        {formatValue(totalFees)} {quoteName || ''}
       </dd>
     </dl>
   );

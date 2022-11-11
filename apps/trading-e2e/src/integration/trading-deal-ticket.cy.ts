@@ -77,6 +77,12 @@ const mockTx = {
   },
 };
 
+const displayTomorrow = () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().substring(0, 16);
+};
+
 const testOrder = (order: Order, expected?: Partial<Order>) => {
   const { type, side, size, price, timeInForce, expiresAt } = order;
 
@@ -288,7 +294,7 @@ describe(
         size: '100',
         price: '1.00',
         timeInForce: 'TIME_IN_FORCE_GTT',
-        expiresAt: '2022-01-01T00:00',
+        expiresAt: displayTomorrow(),
       };
       testOrder(order, {
         price: '100000',
@@ -347,7 +353,7 @@ describe(
         size: '100',
         price: '1.00',
         timeInForce: 'TIME_IN_FORCE_GTT',
-        expiresAt: '2022-01-01T00:00',
+        expiresAt: displayTomorrow(),
       };
       testOrder(order, {
         price: '100000',
@@ -406,7 +412,7 @@ describe(
         size: '100',
         price: '1.00',
         timeInForce: 'TIME_IN_FORCE_GTT',
-        expiresAt: '2022-01-01T00:00',
+        expiresAt: displayTomorrow(),
       };
       testOrder(order, {
         price: '100000',

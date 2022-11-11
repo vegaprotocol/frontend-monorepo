@@ -3,14 +3,26 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type WalletDelegationFieldsFragment = { __typename?: 'Delegation', amountFormatted: string, amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } };
+
 export type DelegationsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DelegationsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, party?: { __typename?: 'Party', id: string, delegations?: Array<{ __typename?: 'Delegation', amountFormatted: string, amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } }> | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } }> | null } | null };
+export type DelegationsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amountFormatted: string, amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } }> | null } | null };
 
-
+export const WalletDelegationFieldsFragmentDoc = gql`
+    fragment WalletDelegationFields on Delegation {
+  amountFormatted @client
+  amount
+  node {
+    id
+    name
+  }
+  epoch
+}
+    `;
 export const DelegationsDocument = gql`
     query Delegations($partyId: ID!) {
   epoch {
@@ -18,14 +30,12 @@ export const DelegationsDocument = gql`
   }
   party(id: $partyId) {
     id
-    delegations {
-      amountFormatted @client
-      amount
-      node {
-        id
-        name
+    delegationsConnection {
+      edges {
+        node {
+          ...WalletDelegationFields
+        }
       }
-      epoch
     }
     stakingSummary {
       currentStakeAvailable
@@ -48,7 +58,7 @@ export const DelegationsDocument = gql`
     }
   }
 }
-    `;
+    ${WalletDelegationFieldsFragmentDoc}`;
 
 /**
  * __useDelegationsQuery__
