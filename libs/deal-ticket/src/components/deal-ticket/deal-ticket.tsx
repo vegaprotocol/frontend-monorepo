@@ -44,7 +44,7 @@ export const DealTicket = ({
   transactionStatus,
 }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
-  const [persistedOrder, setOrder] = usePersistedOrder(market);
+  const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
   const {
     register,
     control,
@@ -57,11 +57,11 @@ export const DealTicket = ({
   });
 
   const order = watch();
-
   const feeDetails = useFeeDealTicketDetails(order, market);
   const details = getFeeDetailsValues(feeDetails);
 
-  useEffect(() => setOrder(order), [order, setOrder]);
+  // When order state changes persist it in local storage
+  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
   const isInvalidOrderMargin = useOrderMarginValidation({
     market,
