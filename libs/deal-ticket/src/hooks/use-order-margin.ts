@@ -45,15 +45,7 @@ export const useOrderMargin = ({
       price: order.price
         ? removeDecimal(order.price, market.decimalPlaces)
         : markPriceData?.market?.data?.markPrice || '',
-      size: removeDecimal(
-        BigNumber.maximum(
-          0,
-          new BigNumber(marketPositions?.openVolume || 0)
-            [order.side === Schema.Side.SIDE_BUY ? 'plus' : 'minus'](order.size)
-            .absoluteValue()
-        ).toString(),
-        market.positionDecimalPlaces
-      ),
+      size: removeDecimal(order.size, market.positionDecimalPlaces),
       side:
         order.side === Schema.Side.SIDE_BUY
           ? Schema.Side.SIDE_BUY
