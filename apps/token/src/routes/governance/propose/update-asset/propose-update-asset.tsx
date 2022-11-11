@@ -183,6 +183,7 @@ export const ProposeUpdateAsset = () => {
                   voteErrorMessage={errors?.proposalVoteDeadline?.message}
                   voteMinClose={params.governance_proposal_updateAsset_minClose}
                   voteMaxClose={params.governance_proposal_updateAsset_maxClose}
+                  onEnactMinMax={setValue}
                   enactmentRegister={register('proposalEnactmentDeadline', {
                     required: t('Required'),
                   })}
