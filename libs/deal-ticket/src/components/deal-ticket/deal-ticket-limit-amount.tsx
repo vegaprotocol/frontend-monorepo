@@ -1,7 +1,7 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
-import { validateAmount } from '../deal-ticket-validation';
+import { validateAmount } from '../../utils';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
@@ -18,6 +18,7 @@ export const DealTicketLimitAmount = ({
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const quoteName =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
+
   const renderError = () => {
     if (sizeError) {
       return (

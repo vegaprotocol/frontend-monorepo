@@ -1,6 +1,5 @@
 import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 import { useState } from 'react';
 import { DepositDialog } from '@vegaprotocol/deposits';
 

@@ -4,9 +4,7 @@ import {
   toDecimal,
 } from '@vegaprotocol/react-helpers';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-
-import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
-import { validateAmount } from '../deal-ticket-validation/validate-amount';
+import { isMarketInAuction, validateAmount } from '../../utils';
 
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 

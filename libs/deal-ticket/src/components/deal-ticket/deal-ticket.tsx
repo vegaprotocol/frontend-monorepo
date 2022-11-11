@@ -7,7 +7,6 @@ import {
   getFeeDetailsValues,
   useFeeDealTicketDetails,
 } from '../../hooks/use-fee-deal-ticket-details';
-import { getDefaultOrder, usePersistedOrder } from '../deal-ticket-validation';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -20,12 +19,16 @@ import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
-import { useOrderMarginValidation } from '../deal-ticket-validation/use-order-margin-validation';
+import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { ValidateMargin } from '../deal-ticket-validation/validate-margin';
-import { validateType } from '../deal-ticket-validation/validate-type';
-import { validateTimeInForce } from '../deal-ticket-validation/validate-time-in-force';
-import { validateMarketState } from '../deal-ticket-validation/validate-market-state';
-import { validateMarketTradingMode } from '../deal-ticket-validation/validate-market-trading-mode';
+import { validateMarketState } from '../../utils';
+import { usePersistedOrder } from '../../hooks/use-persisted-order';
+import {
+  getDefaultOrder,
+  validateMarketTradingMode,
+  validateTimeInForce,
+  validateType,
+} from '../../utils';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -212,7 +215,11 @@ const SummaryError = ({
   };
 }) => {
   if (errorMessage === 'margin' && marginErrorProps) {
-    return <ValidateMargin {...marginErrorProps} />;
+    return (
+      <InputError>
+        <ValidateMargin {...marginErrorProps} />
+      </InputError>
+    );
   }
 
   return <InputError>{errorMessage}</InputError>;

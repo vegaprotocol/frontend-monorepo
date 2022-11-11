@@ -1,6 +1,6 @@
 import { Schema } from '@vegaprotocol/types';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
-import { isMarketInAuction } from './use-order-validation';
+import type { DealTicketMarketFragment } from '../components';
+import { isMarketInAuction } from './is-market-in-auction';
 
 export const validateTimeInForce = (market: DealTicketMarketFragment) => {
   return (value: Schema.OrderTimeInForce) => {

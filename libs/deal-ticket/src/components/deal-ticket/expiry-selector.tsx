@@ -2,7 +2,7 @@ import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import type { UseFormRegister } from 'react-hook-form';
-import { validateExpiration } from '../deal-ticket-validation/validate-expiration';
+import { validateExpiration } from '../../utils/validate-expiration';
 import type { DealTicketFormFields } from '.';
 
 interface ExpirySelectorProps {

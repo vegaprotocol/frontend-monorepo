@@ -1,10 +1,8 @@
 import { t } from '@vegaprotocol/react-helpers';
 
-export const validateAmount = (
-  step: number,
-  field: string
-): ((val: string) => string | boolean) => {
+export const validateAmount = (step: number, field: string) => {
   const [, stepDecimals = ''] = String(step).split('.');
+
   return (value: string) => {
     const [, valueDecimals = ''] = value.split('.');
     if (stepDecimals.length < valueDecimals.length) {
