@@ -87,10 +87,6 @@ export const normalizeFormatNumber = (
   const numberToFormat = getMaximumNumberFormat(formatDecimals).format(
     new BigNumber(rawValue).toNumber()
   );
-  // Multiplying by 1 safely removes the insignificant trailing zeros from the formatted number
-  // return !isNaN(new BigNumber(numberToFormat).toNumber())
-  //   ? (new BigNumber(numberToFormat).toNumber() * 1).toString()
-  //   : numberToFormat;
   return numberToFormat;
 };
 
