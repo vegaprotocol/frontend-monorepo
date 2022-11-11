@@ -5,6 +5,7 @@ import { InfoBlock } from '../../components/info-block';
 import { Panel } from '../../components/panel';
 import type { TxsStats, TxsStats_statistics } from './__generated__/TxsStats';
 
+// No migration required
 const STATS_QUERY = gql`
   query TxsStats {
     statistics {

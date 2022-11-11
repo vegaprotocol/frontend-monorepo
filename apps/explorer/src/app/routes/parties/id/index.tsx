@@ -23,31 +23,50 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 
+// Migrated to query v2
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      stakingSummary {
-        currentStakeAvailable
-      }
-      accounts {
-        asset {
-          name
-          id
-          decimals
-          symbol
-          source {
-            __typename
-            ... on ERC20 {
-              contractAddress
+    partiesConnection(id: $partyId) {
+      node {
+        id
+        delegationsConnection {
+          edges {
+            node {
+              amount
+              node {
+                id
+                name
+              }
+              epoch    
             }
           }
         }
-        type
-        balance
+        stakingSummary {
+          currentStakeAvailable
+        }
+        accountsConnection {
+          edges {
+            node {
+              asset {
+                name
+                id
+                decimals
+                symbol
+                source {
+                  __typename
+                  ... on ERC20 {
+                    contractAddress
+                  }
+                }
+              }
+              type
+              balance
+            }
+        }
       }
     }
   }
+}
 `;
 
 const Party = () => {

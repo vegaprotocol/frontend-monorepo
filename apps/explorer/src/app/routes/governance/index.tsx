@@ -10,6 +10,7 @@ import type {
   ProposalsQuery_proposalsConnection_edges_node,
 } from './__generated__/ProposalsQuery';
 
+// Migrated to query v2
 const PROPOSALS_QUERY = gql`
   query ProposalsQuery {
     proposalsConnection {

@@ -9,6 +9,7 @@ import type {
   AssetsQuery_assetsConnection_edges_node,
 } from './__generated__/AssetsQuery';
 
+// Migrated to query v2
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
     assetsConnection {
