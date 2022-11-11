@@ -18,10 +18,36 @@ export const DealTicketLimitAmount = ({
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
 
+  const renderError = () => {
+    if (sizeError) {
+      return (
+        <InputError
+          intent="danger"
+          data-testid="deal-ticket-error-message-size-limit"
+        >
+          {sizeError}
+        </InputError>
+      );
+    }
+
+    if (priceError) {
+      return (
+        <InputError
+          intent="danger"
+          data-testid="deal-ticket-error-message-price-limit"
+        >
+          {priceError}
+        </InputError>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="mb-6">
-      <div className="grid grid-rows-[min-content] grid-cols-[1fr,min-content,1fr] gap-x-3 gap-y-1">
-        <div>
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
           <FormGroup
             label={t('Size')}
             labelFor="input-order-size-limit"
@@ -39,18 +65,18 @@ export const DealTicketLimitAmount = ({
                 required: t('You need to provide a size'),
                 min: {
                   value: sizeStep,
-                  message: t('Amount must be greater than ' + sizeStep),
+                  message: t('Size must be greater than ' + sizeStep),
                 },
-                validate: validateAmount(sizeStep),
+                validate: validateAmount(sizeStep, 'size'),
               })}
             />
           </FormGroup>
         </div>
-        <div>
+        <div className="flex-0 items-center">
           <div className="flex">&nbsp;</div>
           <div className="flex">@</div>
         </div>
-        <div>
+        <div className="flex-1">
           <FormGroup
             labelFor="input-price-quote"
             label={t(`Price (${quoteName})`)}
@@ -65,35 +91,23 @@ export const DealTicketLimitAmount = ({
               data-testid="order-price"
               onWheel={(e) => e.currentTarget.blur()}
               {...register('price', {
-                required: t('You need to provide a price'),
+                required: t('You need provide a price'),
                 min: {
                   value: priceStep,
                   message: t('Price cannot be lower than ' + priceStep),
                 },
-                validate: validateAmount(priceStep),
+                validate: validateAmount(priceStep, 'price'),
               })}
             />
           </FormGroup>
         </div>
-        <div>
-          {sizeError && (
-            <InputError intent="danger" data-testid="deal-ticket-error-message">
-              {sizeError}
-            </InputError>
-          )}
-        </div>
-        <div />
-        <div>
-          {priceError && (
-            <InputError
-              intent="danger"
-              data-testid="deal-ticket-error-message-price-limit"
-            >
-              {priceError}
-            </InputError>
-          )}
-        </div>
       </div>
+      {renderError()}
+      {/* <DealTicketError
+        errorMessage={errorMessage}
+        data-testid="dealticket-error-message-price-limit"
+        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
+      /> */}
     </div>
   );
 };

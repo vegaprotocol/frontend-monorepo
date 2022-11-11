@@ -1,7 +1,8 @@
 import { t } from '@vegaprotocol/react-helpers';
 
 export const validateAmount = (
-  step: number
+  step: number,
+  field: string
 ): ((val: string) => string | boolean) => {
   const [, stepDecimals = ''] = String(step).split('.');
   return (value: string) => {
@@ -11,9 +12,7 @@ export const validateAmount = (
       if (stepDecimals === '0') {
         return t('Order sizes must be in whole numbers for this market');
       }
-      return t(
-        `This field accepts up to ${stepDecimals.length} decimal places`
-      );
+      return t(`${field} accepts up to ${stepDecimals.length} decimal places`);
     }
     return true;
   };
