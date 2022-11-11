@@ -27,14 +27,6 @@ const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
     party(id: $partyId) {
       id
-      delegations {
-        amount
-        node {
-          id
-          name
-        }
-        epoch
-      }
       stakingSummary {
         currentStakeAvailable
       }

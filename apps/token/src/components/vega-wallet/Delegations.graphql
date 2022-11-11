@@ -1,17 +1,25 @@
+fragment WalletDelegationFields on Delegation {
+  amountFormatted @client
+  amount
+  node {
+    id
+    name
+  }
+  epoch
+}
+
 query Delegations($partyId: ID!) {
   epoch {
     id
   }
   party(id: $partyId) {
     id
-    delegations {
-      amountFormatted @client
-      amount
-      node {
-        id
-        name
+    delegationsConnection {
+      edges {
+        node {
+          ...WalletDelegationFields
+        }
       }
-      epoch
     }
     stakingSummary {
       currentStakeAvailable
