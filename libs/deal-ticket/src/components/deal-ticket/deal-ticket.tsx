@@ -1,6 +1,6 @@
-import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import {
@@ -10,7 +10,7 @@ import {
 import { getDefaultOrder, usePersistedOrder } from '../deal-ticket-validation';
 import {
   isMarketInAuction,
-  useOrderValidation,
+  marketTranslations,
 } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -22,8 +22,13 @@ import { TypeSelector } from './type-selector';
 
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { useOrderMarginValidation } from '../deal-ticket-validation/use-order-margin-validation';
+import { ValidateMargin } from '../deal-ticket-validation/validate-margin';
+import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
+import { validateType } from '../deal-ticket-validation/validate-type';
+import { validateTimeInForce } from '../deal-ticket-validation/validate-time-in-force';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -39,9 +44,7 @@ export const DealTicket = ({
   submit,
   transactionStatus,
 }: DealTicketProps) => {
-  const [errorMessage, setErrorMessage] = useState<
-    DealTicketErrorMessage | undefined
-  >(undefined);
+  const { pubKey } = useVegaWallet();
   const [persistedOrder, setOrder] = usePersistedOrder(market);
   const {
     register,
@@ -49,15 +52,11 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     setValue,
-    clearErrors,
     setError,
     formState: { errors },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
-    mode: 'onChange',
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
-
-  console.log(errors);
 
   const order = watch();
 
@@ -66,52 +65,95 @@ export const DealTicket = ({
 
   useEffect(() => setOrder(order), [order, setOrder]);
 
-  // const {
-  //   isDisabled: disabled,
-  //   message,
-  //   section: errorSection,
-  // } = useOrderValidation({
-  //   market,
-  //   orderType: order.type,
-  //   orderTimeInForce: order.timeInForce,
-  //   fieldErrors: errors,
-  //   estMargin: feeDetails.estMargin,
-  // });
-
-  // useEffect(() => {
-  //   if (disabled) {
-  //     setError('marketId', {});
-  //   } else {
-  //     clearErrors('marketId');
-  //   }
-  // }, [disabled, setError, clearErrors]);
-
-  // useEffect(() => {
-  //   if (isSubmitted || errorSection === DEAL_TICKET_SECTION.SUMMARY) {
-  //     setErrorMessage({ message, isDisabled: disabled, errorSection });
-  //   } else {
-  //     setErrorMessage(undefined);
-  //   }
-  // }, [disabled, message, errorSection, isSubmitted]);
-
-  // const isDisabled = transactionStatus === 'pending' || disabled;
+  const isInvalidOrderMargin = useOrderMarginValidation({
+    market,
+    estMargin: feeDetails.estMargin,
+  });
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
-      console.log('SUBMIT', JSON.stringify(order, null, 2));
-      // if (!isDisabled) {
-      // submit({
-      //   ...order,
-      //   price: order.price && removeDecimal(order.price, market.decimalPlaces),
-      //   size: removeDecimal(order.size, market.positionDecimalPlaces),
-      //   expiresAt:
-      //     order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-      //       ? order.expiresAt
-      //       : undefined,
-      // });
-      // }
+      if (!pubKey) {
+        setError('summary', { message: t('No public key selected') });
+        return;
+      }
+
+      if (
+        [
+          Schema.MarketState.STATE_SETTLED,
+          Schema.MarketState.STATE_REJECTED,
+          Schema.MarketState.STATE_TRADING_TERMINATED,
+          Schema.MarketState.STATE_CANCELLED,
+          Schema.MarketState.STATE_CLOSED,
+        ].includes(market.state)
+      ) {
+        setError('summary', {
+          message: t(
+            `This market is ${marketTranslations(
+              market.state
+            )} and not accepting orders`
+          ),
+        });
+        return;
+      }
+
+      if (
+        [
+          Schema.MarketState.STATE_PROPOSED,
+          Schema.MarketState.STATE_PENDING,
+        ].includes(market.state)
+      ) {
+        setError('summary', {
+          message: t(
+            `This market is ${marketTranslations(
+              market.state
+            )} and only accepting liquidity commitment orders`
+          ),
+        });
+        return;
+      }
+
+      if (isInvalidOrderMargin) {
+        setError('summary', {
+          message: <ValidateMargin {...isInvalidOrderMargin} />,
+        });
+        return;
+      }
+
+      if (
+        [
+          Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+          Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        ].includes(market.tradingMode)
+      ) {
+        setError('summary', {
+          message: t(
+            'Any orders placed now will not trade until the auction ends'
+          ),
+        });
+        return;
+      }
+
+      submit({
+        ...order,
+        price: order.price && removeDecimal(order.price, market.decimalPlaces),
+        size: removeDecimal(order.size, market.positionDecimalPlaces),
+        expiresAt:
+          order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+            ? order.expiresAt
+            : undefined,
+      });
     },
-    [/*isDisabled,*/ submit, market.decimalPlaces, market.positionDecimalPlaces]
+    [
+      submit,
+      pubKey,
+      market.positionDecimalPlaces,
+      market.decimalPlaces,
+      market.state,
+      market.tradingMode,
+      isInvalidOrderMargin,
+      setError,
+    ]
   );
 
   const getEstimatedMarketPrice = () => {
@@ -143,11 +185,14 @@ export const DealTicket = ({
       <Controller
         name="type"
         control={control}
+        rules={{
+          validate: validateType(market),
+        }}
         render={({ field }) => (
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
-            errorMessage={errorMessage}
+            errorMessage={errors.type?.message}
           />
         )}
       />
@@ -170,12 +215,15 @@ export const DealTicket = ({
       <Controller
         name="timeInForce"
         control={control}
+        rules={{
+          validate: validateTimeInForce(market),
+        }}
         render={({ field }) => (
           <TimeInForceSelector
             value={field.value}
             orderType={order.type}
             onSelect={field.onChange}
-            errorMessage={errorMessage}
+            errorMessage={errors.timeInForce?.message}
           />
         )}
       />
@@ -188,18 +236,16 @@ export const DealTicket = ({
               <ExpirySelector
                 value={field.value}
                 onSelect={field.onChange}
-                errorMessage={errorMessage}
+                errorMessage={errors.expiresAt?.message}
                 register={register}
               />
             )}
           />
         )}
-      <DealTicketButton
-        transactionStatus={transactionStatus}
-        // isDisabled={isSubmitted /*&& isDisabled*/}
-        isDisabled={false}
-        errorMessage={errorMessage}
-      />
+      <DealTicketButton transactionStatus={transactionStatus} />
+      {errors.summary?.message && (
+        <InputError>{errors.summary.message}</InputError>
+      )}
       <DealTicketFeeDetails details={details} />
     </form>
   );

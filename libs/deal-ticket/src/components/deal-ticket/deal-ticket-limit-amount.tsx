@@ -21,10 +21,7 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <InputError
-          intent="danger"
-          data-testid="deal-ticket-error-message-size-limit"
-        >
+        <InputError data-testid="deal-ticket-error-message-size-limit">
           {sizeError}
         </InputError>
       );
@@ -32,10 +29,7 @@ export const DealTicketLimitAmount = ({
 
     if (priceError) {
       return (
-        <InputError
-          intent="danger"
-          data-testid="deal-ticket-error-message-price-limit"
-        >
+        <InputError data-testid="deal-ticket-error-message-price-limit">
           {priceError}
         </InputError>
       );
@@ -103,11 +97,6 @@ export const DealTicketLimitAmount = ({
         </div>
       </div>
       {renderError()}
-      {/* <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-price-limit"
-        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
-      /> */}
     </div>
   );
 };

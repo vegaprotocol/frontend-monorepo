@@ -1,17 +1,15 @@
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, InputError, Select } from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  errorMessage?: DealTicketErrorMessage;
+  errorMessage?: ReactNode;
 }
 
 type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
@@ -81,11 +79,7 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
-      <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-force"
-        section={DEAL_TICKET_SECTION.FORCE}
-      />
+      {errorMessage && <InputError>{errorMessage}</InputError>}
     </FormGroup>
   );
 };

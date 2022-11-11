@@ -66,62 +66,62 @@ export const useOrderValidation = ({
     section: DealTicketSection;
   } | null>(() => {
     if (fieldErrors?.size?.type || fieldErrors?.price?.type) {
-      if (fieldErrors?.size?.type === 'required') {
-        return {
-          isDisabled: true,
-          message: t('You need to provide a size'),
-          section: DEAL_TICKET_SECTION.SIZE,
-        };
-      }
+      // if (fieldErrors?.size?.type === 'required') {
+      //   return {
+      //     isDisabled: true,
+      //     message: t('You need to provide a size'),
+      //     section: DEAL_TICKET_SECTION.SIZE,
+      //   };
+      // }
 
-      if (fieldErrors?.size?.type === 'min') {
-        return {
-          isDisabled: true,
-          message: t(`Size cannot be lower than "${minSize}"`),
-          section: DEAL_TICKET_SECTION.SIZE,
-        };
-      }
+      // if (fieldErrors?.size?.type === 'min') {
+      //   return {
+      //     isDisabled: true,
+      //     message: t(`Size cannot be lower than "${minSize}"`),
+      //     section: DEAL_TICKET_SECTION.SIZE,
+      //   };
+      // }
 
       if (
         fieldErrors?.price?.type === 'required' &&
         orderType !== Schema.OrderType.TYPE_MARKET
       ) {
-        return {
-          isDisabled: true,
-          message: t('You need to provide a price'),
-          section: DEAL_TICKET_SECTION.PRICE,
-        };
+        // return {
+        //   isDisabled: true,
+        //   message: t('You need to provide a price'),
+        //   section: DEAL_TICKET_SECTION.PRICE,
+        // };
       }
 
       if (
         fieldErrors?.price?.type === 'min' &&
         orderType !== Schema.OrderType.TYPE_MARKET
       ) {
-        return {
-          isDisabled: true,
-          message: t(`The price cannot be negative`),
-          section: DEAL_TICKET_SECTION.PRICE,
-        };
+        // return {
+        //   isDisabled: true,
+        //   message: t(`The price cannot be negative`),
+        //   section: DEAL_TICKET_SECTION.PRICE,
+        // };
       }
 
       if (
         fieldErrors?.size?.type === 'validate' &&
         fieldErrors?.size?.message === ERROR_SIZE_DECIMAL
       ) {
-        if (market.positionDecimalPlaces === 0) {
-          return {
-            isDisabled: true,
-            message: t('Order sizes must be in whole numbers for this market'),
-            section: DEAL_TICKET_SECTION.SIZE,
-          };
-        }
-        return {
-          isDisabled: true,
-          message: t(
-            `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
-          ),
-          section: DEAL_TICKET_SECTION.SIZE,
-        };
+        // if (market.positionDecimalPlaces === 0) {
+        //   return {
+        //     isDisabled: true,
+        //     message: t('Order sizes must be in whole numbers for this market'),
+        //     section: DEAL_TICKET_SECTION.SIZE,
+        //   };
+        // }
+        // return {
+        //   isDisabled: true,
+        //   message: t(
+        //     `The size field accepts up to ${market.positionDecimalPlaces} decimal places`
+        //   ),
+        //   section: DEAL_TICKET_SECTION.SIZE,
+        // };
       }
     }
 
@@ -129,13 +129,13 @@ export const useOrderValidation = ({
       fieldErrors?.expiresAt?.type === 'validate' &&
       fieldErrors?.expiresAt.message === ERROR_EXPIRATION_IN_THE_PAST
     ) {
-      return {
-        isDisabled: false,
-        message: t(
-          'The expiry date that you have entered appears to be in the past'
-        ),
-        section: DEAL_TICKET_SECTION.EXPIRY,
-      };
+      // return {
+      //   isDisabled: false,
+      //   message: t(
+      //     'The expiry date that you have entered appears to be in the past'
+      //   ),
+      //   section: DEAL_TICKET_SECTION.EXPIRY,
+      // };
     }
     return null;
   }, [
@@ -154,53 +154,52 @@ export const useOrderValidation = ({
     isDisabled: boolean;
     section: DealTicketSection;
   }>(() => {
-    if (!pubKey) {
-      return {
-        message: t('No public key selected'),
-        isDisabled: true,
-        section: DEAL_TICKET_SECTION.SUMMARY,
-      };
-    }
+    // if (!pubKey) {
+    //   return {
+    //     message: t('No public key selected'),
+    //     isDisabled: true,
+    //     section: DEAL_TICKET_SECTION.SUMMARY,
+    //   };
+    // }
 
-    if (
-      [
-        Schema.MarketState.STATE_SETTLED,
-        Schema.MarketState.STATE_REJECTED,
-        Schema.MarketState.STATE_TRADING_TERMINATED,
-        Schema.MarketState.STATE_CANCELLED,
-        Schema.MarketState.STATE_CLOSED,
-      ].includes(market.state)
-    ) {
-      return {
-        isDisabled: true,
-        message: t(
-          `This market is ${marketTranslations(
-            market.state
-          )} and not accepting orders`
-        ),
-        section: DEAL_TICKET_SECTION.SUMMARY,
-      };
-    }
+    // if (
+    //   [
+    //     MarketState.STATE_SETTLED,
+    //     MarketState.STATE_REJECTED,
+    //     MarketState.STATE_TRADING_TERMINATED,
+    //     MarketState.STATE_CANCELLED,
+    //     MarketState.STATE_CLOSED,
+    //   ].includes(market.state)
+    // ) {
+    //   return {
+    //     isDisabled: true,
+    //     message: t(
+    //       `This market is ${marketTranslations(
+    //         market.state
+    //       )} and not accepting orders`
+    //     ),
+    //     section: DEAL_TICKET_SECTION.SUMMARY,
+    //   };
+    // }
 
-    if (
-      [
-        Schema.MarketState.STATE_PROPOSED,
-        Schema.MarketState.STATE_PENDING,
-      ].includes(market.state)
-    ) {
-      if (fieldErrorChecking) {
-        return fieldErrorChecking;
-      }
-      return {
-        isDisabled: false,
-        message: t(
-          `This market is ${marketTranslations(
-            market.state
-          )} and only accepting liquidity commitment orders`
-        ),
-        section: DEAL_TICKET_SECTION.SUMMARY,
-      };
-    }
+    // if (
+    //   [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
+    //     market.state
+    //   )
+    // ) {
+    //   if (fieldErrorChecking) {
+    //     return fieldErrorChecking;
+    //   }
+    //   return {
+    //     isDisabled: false,
+    //     message: t(
+    //       `This market is ${marketTranslations(
+    //         market.state
+    //       )} and only accepting liquidity commitment orders`
+    //     ),
+    //     section: DEAL_TICKET_SECTION.SUMMARY,
+    //   };
+    // }
 
     if (isMarketInAuction(market)) {
       if (orderType === Schema.OrderType.TYPE_MARKET) {
@@ -210,56 +209,56 @@ export const useOrderValidation = ({
           market.data?.trigger ===
             Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
-          return {
-            isDisabled: true,
-            message: (
-              <span>
-                {t('This market is in auction until it reaches')}{' '}
-                <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
-                >
-                  <span>{t('sufficient liquidity')}</span>
-                </Tooltip>
-                {'. '}
-                {t('Only limit orders are permitted when market is in auction')}
-              </span>
-            ),
-            section: DEAL_TICKET_SECTION.TYPE,
-          };
+          // return {
+          //   isDisabled: true,
+          //   message: (
+          //     <span>
+          //       {t('This market is in auction until it reaches')}{' '}
+          //       <Tooltip
+          //         description={
+          //           <MarketDataGrid grid={compileGridData(market)} />
+          //         }
+          //       >
+          //         <span>{t('sufficient liquidity')}</span>
+          //       </Tooltip>
+          //       {'. '}
+          //       {t('Only limit orders are permitted when market is in auction')}
+          //     </span>
+          //   ),
+          //   section: DEAL_TICKET_SECTION.TYPE,
+          // };
         }
         if (
           market.tradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
           market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
-          return {
-            isDisabled: true,
-            message: (
-              <span>
-                {t('This market is in auction due to')}{' '}
-                <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
-                >
-                  <span>{t('high price volatility')}</span>
-                </Tooltip>
-                {'. '}
-                {t('Only limit orders are permitted when market is in auction')}
-              </span>
-            ),
-            section: DEAL_TICKET_SECTION.TYPE,
-          };
+          // return {
+          //   isDisabled: true,
+          //   message: (
+          //     <span>
+          //       {t('This market is in auction due to')}{' '}
+          //       <Tooltip
+          //         description={
+          //           <MarketDataGrid grid={compileGridData(market)} />
+          //         }
+          //       >
+          //         <span>{t('high price volatility')}</span>
+          //       </Tooltip>
+          //       {'. '}
+          //       {t('Only limit orders are permitted when market is in auction')}
+          //     </span>
+          //   ),
+          //   section: DEAL_TICKET_SECTION.TYPE,
+          // };
         }
-        return {
-          isDisabled: true,
-          message: t(
-            'Only limit orders are permitted when market is in auction'
-          ),
-          section: DEAL_TICKET_SECTION.SUMMARY,
-        };
+        // return {
+        //   isDisabled: true,
+        //   message: t(
+        //     'Only limit orders are permitted when market is in auction'
+        //   ),
+        //   section: DEAL_TICKET_SECTION.SUMMARY,
+        // };
       }
       if (
         orderType === Schema.OrderType.TYPE_LIMIT &&
@@ -275,74 +274,74 @@ export const useOrderValidation = ({
           market.data?.trigger ===
             Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
-          return {
-            isDisabled: true,
-            message: (
-              <span>
-                {t('This market is in auction until it reaches')}{' '}
-                <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
-                >
-                  <span>{t('sufficient liquidity')}</span>
-                </Tooltip>
-                {'. '}
-                {t(
-                  `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
-                )}
-              </span>
-            ),
-            section: DEAL_TICKET_SECTION.FORCE,
-          };
+          // return {
+          //   isDisabled: true,
+          //   message: (
+          //     <span>
+          //       {t('This market is in auction until it reaches')}{' '}
+          //       <Tooltip
+          //         description={
+          //           <MarketDataGrid grid={compileGridData(market)} />
+          //         }
+          //       >
+          //         <span>{t('sufficient liquidity')}</span>
+          //       </Tooltip>
+          //       {'. '}
+          //       {t(
+          //         `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          //       )}
+          //     </span>
+          //   ),
+          //   section: DEAL_TICKET_SECTION.FORCE,
+          // };
         }
         if (
           market.tradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
           market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
-          return {
-            isDisabled: true,
-            message: (
-              <span>
-                {t('This market is in auction due to')}{' '}
-                <Tooltip
-                  description={
-                    <MarketDataGrid grid={compileGridData(market)} />
-                  }
-                >
-                  <span>{t('high price volatility')}</span>
-                </Tooltip>
-                {'. '}
-                {t(
-                  `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
-                )}
-              </span>
-            ),
-            section: DEAL_TICKET_SECTION.FORCE,
-          };
+          // return {
+          //   isDisabled: true,
+          //   message: (
+          //     <span>
+          //       {t('This market is in auction due to')}{' '}
+          //       <Tooltip
+          //         description={
+          //           <MarketDataGrid grid={compileGridData(market)} />
+          //         }
+          //       >
+          //         <span>{t('high price volatility')}</span>
+          //       </Tooltip>
+          //       {'. '}
+          //       {t(
+          //         `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          //       )}
+          //     </span>
+          //   ),
+          //   section: DEAL_TICKET_SECTION.FORCE,
+          // };
         }
-        return {
-          isDisabled: true,
-          message: t(
-            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
-          ),
-          section: DEAL_TICKET_SECTION.FORCE,
-        };
+        // return {
+        //   isDisabled: true,
+        //   message: t(
+        //     `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+        //   ),
+        //   section: DEAL_TICKET_SECTION.FORCE,
+        // };
       }
     }
 
-    if (fieldErrorChecking) {
-      return fieldErrorChecking;
-    }
+    // if (fieldErrorChecking) {
+    //   return fieldErrorChecking;
+    // }
 
-    if (isInvalidOrderMargin) {
-      return {
-        isDisabled: true,
-        message: <ValidateMargin {...isInvalidOrderMargin} />,
-        section: DEAL_TICKET_SECTION.PRICE,
-      };
-    }
+    // if (isInvalidOrderMargin) {
+    //   return {
+    //     isDisabled: true,
+    //     message: <ValidateMargin {...isInvalidOrderMargin} />,
+    //     section: DEAL_TICKET_SECTION.PRICE,
+    //   };
+    // }
 
     if (
       [
