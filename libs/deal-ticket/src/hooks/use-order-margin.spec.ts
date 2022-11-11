@@ -76,7 +76,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('1');
+    expect(result.current?.margin).toEqual('100000');
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
@@ -94,7 +94,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.totalFees).toEqual('3');
+    expect(result.current?.totalFees).toEqual('300000');
   });
 
   it('should not subtract initialMargin if there is no position', () => {
@@ -106,7 +106,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('2');
+    expect(result.current?.margin).toEqual('200000');
 
     expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       order.size

@@ -1,10 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
-import {
-  addDecimalsNormalizeNumber,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -82,18 +79,13 @@ export const useOrderMargin = ({
     ).toString();
     const { makerFee, liquidityFee, infrastructureFee } =
       data.estimateOrder.fee;
-    const assetDecimals =
-      market.tradableInstrument.instrument.product.settlementAsset.decimals;
     return {
-      margin: addDecimalsNormalizeNumber(margin, assetDecimals),
-      totalFees: addDecimalsNormalizeNumber(fees, assetDecimals),
+      margin,
+      totalFees: fees,
       fees: {
-        makerFee: addDecimalsNormalizeNumber(makerFee, assetDecimals),
-        liquidityFee: addDecimalsNormalizeNumber(liquidityFee, assetDecimals),
-        infrastructureFee: addDecimalsNormalizeNumber(
-          infrastructureFee,
-          assetDecimals
-        ),
+        makerFee,
+        liquidityFee,
+        infrastructureFee,
       },
     };
   }

@@ -1,5 +1,9 @@
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
-import { formatNumberPercentage, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsNormalizeNumber,
+  formatNumberPercentage,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
@@ -48,6 +52,7 @@ export const FeesBreakdown = ({
   fees,
   feeFactors,
   quoteName,
+  decimals,
 }: {
   fees?: {
     infrastructureFee: string;
@@ -56,12 +61,18 @@ export const FeesBreakdown = ({
   };
   feeFactors?: Market['fees']['factors'];
   quoteName?: string;
+  decimals: number;
 }) => {
   if (!fees) return null;
   const totalFees = new BigNumber(fees.makerFee)
     .plus(fees.infrastructureFee)
     .plus(fees.liquidityFee)
     .toString();
+  const formatValue = (value: string | number | null | undefined): string => {
+    return value && !isNaN(Number(value))
+      ? addDecimalsNormalizeNumber(value, decimals)
+      : '-';
+  };
   return (
     <dl className="grid grid-cols-5">
       <dt className="col-span-2">{t('Infrastructure fee')}</dt>
@@ -73,7 +84,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {fees.infrastructureFee} {quoteName || ''}
+        {formatValue(fees.infrastructureFee)} {quoteName || ''}
       </dd>
       <dt className="col-span-2">{t('Liquidity fee')}</dt>
       {feeFactors && (
@@ -84,7 +95,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {fees.liquidityFee} {quoteName || ''}
+        {formatValue(fees.liquidityFee)} {quoteName || ''}
       </dd>
       <dt className="col-span-2">{t('Maker fee')}</dt>
       {feeFactors && (
@@ -95,7 +106,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {fees.makerFee} {quoteName || ''}
+        {formatValue(fees.makerFee)} {quoteName || ''}
       </dd>
       <dt className="col-span-2">{t('Total fees')}</dt>
       {feeFactors && (
@@ -104,7 +115,7 @@ export const FeesBreakdown = ({
         </dd>
       )}
       <dd className="text-right col-span-2">
-        {totalFees} {quoteName || ''}
+        {formatValue(totalFees)} {quoteName || ''}
       </dd>
     </dl>
   );

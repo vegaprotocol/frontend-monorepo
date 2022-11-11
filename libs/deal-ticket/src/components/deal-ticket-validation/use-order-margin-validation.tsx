@@ -25,13 +25,15 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
     partyBalance?.party?.accounts || [],
     AccountType.ACCOUNT_TYPE_GENERAL
   );
+  const assetDecimals =
+    market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const balance = settlementAccount
     ? toBigNum(
         settlementAccount.balance || 0,
         settlementAccount.asset.decimals || 0
       )
-    : toBigNum('0', 0);
-  const margin = toBigNum(estMargin?.margin || 0, 0);
+    : toBigNum('0', assetDecimals);
+  const margin = toBigNum(estMargin?.margin || 0, assetDecimals);
   const { id, symbol, decimals } =
     market.tradableInstrument.instrument.product.settlementAsset;
   const balanceString = balance.toString();

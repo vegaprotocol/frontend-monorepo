@@ -1,5 +1,9 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
-import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsNormalizeNumber,
+  normalizeFormatNumber,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
@@ -96,6 +100,8 @@ export const getFeeDetailsValues = ({
   estCloseOut,
   market,
 }: FeeDetails) => {
+  const assetDecimals =
+    market.tradableInstrument.instrument.product.settlementAsset.decimals;
   const formatValueWithMarketDp = (
     value: string | number | null | undefined
   ): string => {
@@ -107,10 +113,7 @@ export const getFeeDetailsValues = ({
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? normalizeFormatNumber(
-          value,
-          market.tradableInstrument.instrument.product.settlementAsset.decimals
-        )
+      ? addDecimalsNormalizeNumber(value, assetDecimals)
       : '-';
   };
   return [
@@ -136,6 +139,7 @@ export const getFeeDetailsValues = ({
             fees={estMargin?.fees}
             feeFactors={market.fees.factors}
             quoteName={quoteName}
+            decimals={assetDecimals}
           />
         </>
       ),
