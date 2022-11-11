@@ -85,9 +85,9 @@ export const Market = ({
 
   const marketName = data?.tradableInstrument.instrument.name;
   const updateProvider = useCallback(
-    ({ data: marketData }: { data: MarketData }) => {
+    ({ data: marketData }: { data: MarketData | null }) => {
       const marketPrice = calculatePrice(
-        marketData.markPrice,
+        marketData?.markPrice,
         data?.decimalPlaces
       );
       if (marketName) {

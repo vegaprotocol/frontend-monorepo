@@ -1,18 +1,18 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, render, screen } from '@testing-library/react';
 import { getTimeFormat } from '@vegaprotocol/react-helpers';
-import { WithdrawalStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { generateWithdrawal } from './test-helpers';
 import { StatusCell } from './withdrawals-table';
 import { WithdrawalsTable } from './withdrawals-table';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
 }));
 
-const generateJsx = (props: TypedDataAgGrid<WithdrawalFields>) => (
+const generateJsx = (props: TypedDataAgGrid<WithdrawalFieldsFragment>) => (
   <MockedProvider>
     <WithdrawalsTable {...props} />
   </MockedProvider>
@@ -54,7 +54,7 @@ describe('renders the correct columns', () => {
     const withdrawal = generateWithdrawal({
       txHash: '0x1234567891011121314',
       withdrawnTimestamp: '2022-04-21T00:00:00',
-      status: WithdrawalStatus.STATUS_FINALIZED,
+      status: Schema.WithdrawalStatus.STATUS_FINALIZED,
     });
 
     await act(async () => {
@@ -77,8 +77,8 @@ describe('renders the correct columns', () => {
 });
 
 describe('StatusCell', () => {
-  let props: { data: WithdrawalFields };
-  let withdrawal: WithdrawalFields;
+  let props: { data: WithdrawalFieldsFragment };
+  let withdrawal: WithdrawalFieldsFragment;
 
   beforeEach(() => {
     withdrawal = generateWithdrawal();
@@ -106,7 +106,7 @@ describe('StatusCell', () => {
   it('Completed', () => {
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
-    props.data.status = WithdrawalStatus.STATUS_FINALIZED;
+    props.data.status = Schema.WithdrawalStatus.STATUS_FINALIZED;
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Completed')).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe('StatusCell', () => {
   it('Rejected', () => {
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
-    props.data.status = WithdrawalStatus.STATUS_REJECTED;
+    props.data.status = Schema.WithdrawalStatus.STATUS_REJECTED;
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Rejected')).toBeInTheDocument();

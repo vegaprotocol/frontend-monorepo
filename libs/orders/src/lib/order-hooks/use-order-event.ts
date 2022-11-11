@@ -1,11 +1,11 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { OrderEventDocument } from './__generated___/OrderEvent';
+import { OrderEventDocument } from './__generated__/OrderEvent';
 import type {
   OrderEventSubscription,
   OrderEventSubscriptionVariables,
   OrderEventFieldsFragment,
-} from './__generated___/OrderEvent';
+} from './__generated__/OrderEvent';
 import type { Subscription } from 'zen-observable-ts';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';

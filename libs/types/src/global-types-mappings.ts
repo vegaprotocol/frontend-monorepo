@@ -92,7 +92,7 @@ export enum NodeStatusMapping {
 /**
  * Status describe the status of the oracle spec
  */
-export enum OracleSpecStatusMapping {
+export enum DataSourceSpecStatusMapping {
   STATUS_ACTIVE = 'Active',
   STATUS_DEACTIVATED = 'Deactivated',
 }
@@ -276,18 +276,6 @@ export enum WithdrawalStatusMapping {
   STATUS_FINALIZED = 'Finalized',
   STATUS_OPEN = 'Open',
   STATUS_REJECTED = 'Rejected',
-}
-
-/**
- * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
- */
-export enum Interval {
-  INTERVAL_I15M = 'INTERVAL_I15M',
-  INTERVAL_I1D = 'INTERVAL_I1D',
-  INTERVAL_I1H = 'INTERVAL_I1H',
-  INTERVAL_I1M = 'INTERVAL_I1M',
-  INTERVAL_I5M = 'INTERVAL_I5M',
-  INTERVAL_I6H = 'INTERVAL_I6H',
 }
 
 export enum ProposalUserAction {

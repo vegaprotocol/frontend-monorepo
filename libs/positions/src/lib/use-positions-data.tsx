@@ -9,7 +9,7 @@ import { t, toBigNum, useDataProvider } from '@vegaprotocol/react-helpers';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
-const getSummaryRowData = (positions: Position[]) => {
+export const getSummaryRowData = (positions: Position[]) => {
   const summaryRow = {
     notional: new BigNumber(0),
     realisedPNL: BigInt(0),

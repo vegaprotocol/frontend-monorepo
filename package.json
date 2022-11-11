@@ -44,6 +44,7 @@
     "allotment": "^1.14.5",
     "alpha-lyrae": "vegaprotocol/alpha-lyrae",
     "apollo": "^2.33.9",
+    "apollo-link-timeout": "^4.0.0",
     "bignumber.js": "^9.0.2",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",

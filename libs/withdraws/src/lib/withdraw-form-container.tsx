@@ -1,11 +1,10 @@
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
+import { useDataProvider, t, toBigNum } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { enabledAssetsProvider } from '@vegaprotocol/assets';
-import { accountsOnlyDataProvider } from '@vegaprotocol/accounts';
+import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
-import { useMemo } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { Schema as Types } from '@vegaprotocol/types';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
@@ -20,24 +19,23 @@ export const WithdrawFormContainer = ({
 }: WithdrawFormContainerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const { data, loading, error } = useDataProvider({
-    dataProvider: accountsOnlyDataProvider,
+    dataProvider: accountsDataProvider,
     variables,
-    noUpdate: true,
   });
 
-  const {
-    data: assets,
-    loading: assetsLoading,
-    error: assetsError,
-  } = useDataProvider({
-    dataProvider: enabledAssetsProvider,
-  });
-
+  const filteredAsset = data
+    ?.filter(
+      (account) =>
+        account.type === Types.AccountType.ACCOUNT_TYPE_GENERAL &&
+        toBigNum(account.balance, account.asset.decimals).isGreaterThan(0)
+    )
+    .map((account) => account.asset);
+  const assets = filteredAsset?.length ? filteredAsset : null;
   return (
     <AsyncRenderer
-      loading={loading && assetsLoading}
-      error={error && assetsError}
-      data={data}
+      loading={loading}
+      error={error}
+      data={assets}
       noDataMessage={t('You have no assets to withdraw')}
     >
       {assets && data && (

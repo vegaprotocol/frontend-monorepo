@@ -48,7 +48,7 @@ export const Liquidity = () => {
   });
 
   const update = useCallback(
-    ({ data }: { data: LiquidityProvisionData[] }) => {
+    ({ data }: { data: LiquidityProvisionData[] | null }) => {
       if (!gridRef.current?.api) {
         return false;
       }

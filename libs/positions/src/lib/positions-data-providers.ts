@@ -18,11 +18,11 @@ import type {
   PositionsSubscriptionSubscription,
   MarginsQuery,
   MarginFieldsFragment,
-} from './__generated___/Positions';
+} from './__generated__/Positions';
 import {
   PositionsDocument,
   PositionsSubscriptionDocument,
-} from './__generated___/Positions';
+} from './__generated__/Positions';
 import { marginsDataProvider } from './margin-data-provider';
 
 type PositionMarginLevel = Pick<

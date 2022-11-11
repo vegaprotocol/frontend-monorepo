@@ -26,9 +26,118 @@ import {
   EnvironmentProvider,
   NetworkLoader,
 } from '@vegaprotocol/environment';
-import { createClient } from './lib/apollo-client';
 import { createConnectors } from './lib/web3-connectors';
 import { ENV } from './config/env';
+import type {
+  FieldFunctionOptions,
+  InMemoryCacheConfig,
+  Reference,
+} from '@apollo/client';
+
+import { addDecimal } from '@vegaprotocol/react-helpers';
+
+const formatUintToNumber = (amount: string, decimals = 18) =>
+  addDecimal(amount, decimals).toString();
+
+const createReadField = (fieldName: string) => ({
+  [`${fieldName}Formatted`]: {
+    read(_: string, options: FieldFunctionOptions) {
+      const amount = options.readField(fieldName) as string;
+      return amount ? formatUintToNumber(amount) : '0';
+    },
+  },
+});
+
+const cache: InMemoryCacheConfig = {
+  typePolicies: {
+    Account: {
+      keyFields: false,
+      fields: {
+        balanceFormatted: {
+          read(_: string, options: FieldFunctionOptions) {
+            const balance = options.readField('balance');
+            const asset = options.readField('asset');
+            const decimals = options.readField('decimals', asset as Reference);
+            if (typeof balance !== 'string') return '0';
+            if (typeof decimals !== 'number') return '0';
+            return balance && decimals
+              ? formatUintToNumber(balance, decimals)
+              : '0';
+          },
+        },
+      },
+    },
+    Delegation: {
+      keyFields: false,
+      // Only get full updates
+      merge(_, incoming) {
+        return incoming;
+      },
+      fields: {
+        ...createReadField('amount'),
+      },
+    },
+    Reward: {
+      keyFields: false,
+      fields: {
+        ...createReadField('amount'),
+      },
+    },
+    RewardPerAssetDetail: {
+      keyFields: false,
+      fields: {
+        ...createReadField('totalAmount'),
+      },
+    },
+    Node: {
+      keyFields: false,
+      fields: {
+        ...createReadField('pendingStake'),
+        ...createReadField('stakedByOperator'),
+        ...createReadField('stakedByDelegates'),
+        ...createReadField('stakedTotal'),
+      },
+    },
+    NodeData: {
+      merge: (existing = {}, incoming) => {
+        return { ...existing, ...incoming };
+      },
+      fields: {
+        ...createReadField('stakedTotal'),
+      },
+    },
+    Party: {
+      fields: {
+        stake: {
+          merge(existing, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+            };
+          },
+          read(stake) {
+            if (stake) {
+              return {
+                ...stake,
+                currentStakeAvailableFormatted: formatUintToNumber(
+                  stake.currentStakeAvailable
+                ),
+              };
+            }
+            return stake;
+          },
+        },
+      },
+    },
+    Withdrawal: {
+      fields: {
+        pendingOnForeignChain: {
+          read: (isPending = false) => isPending,
+        },
+      },
+    },
+  },
+};
 
 const Web3Container = ({
   chainId,
@@ -129,7 +238,7 @@ const AppContainer = () => {
 function App() {
   return (
     <EnvironmentProvider>
-      <NetworkLoader createClient={createClient}>
+      <NetworkLoader cache={cache}>
         <AppContainer />
       </NetworkLoader>
     </EnvironmentProvider>

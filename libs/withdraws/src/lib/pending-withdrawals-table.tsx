@@ -22,12 +22,12 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
-import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import type { VerifyState } from './use-verify-withdrawal';
 import { ApprovalStatus, useVerifyWithdrawal } from './use-verify-withdrawal';
 
 export const PendingWithdrawalsTable = (
-  props: TypedDataAgGrid<WithdrawalFields>
+  props: TypedDataAgGrid<WithdrawalFieldsFragment>
 ) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const {
@@ -60,7 +60,7 @@ export const PendingWithdrawalsTable = (
           valueFormatter={({
             value,
             data,
-          }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
+          }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'amount'>) => {
             return isNumeric(value) && data?.asset
               ? addDecimalsFormatNumber(value, data.asset.decimals)
               : null;
@@ -74,7 +74,7 @@ export const PendingWithdrawalsTable = (
             value,
             valueFormatted,
           }: VegaICellRendererParams<
-            WithdrawalFields,
+            WithdrawalFieldsFragment,
             'details.receiverAddress'
           > & {
             ethUrl: string;
@@ -92,7 +92,7 @@ export const PendingWithdrawalsTable = (
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<
-            WithdrawalFields,
+            WithdrawalFieldsFragment,
             'details.receiverAddress'
           >) => {
             if (!value) return '-';
@@ -105,7 +105,7 @@ export const PendingWithdrawalsTable = (
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<
-            WithdrawalFields,
+            WithdrawalFieldsFragment,
             'createdTimestamp'
           >) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '';
@@ -116,7 +116,7 @@ export const PendingWithdrawalsTable = (
           field="status"
           flex={2}
           cellRendererParams={{
-            complete: async (withdrawal: WithdrawalFields) => {
+            complete: async (withdrawal: WithdrawalFieldsFragment) => {
               const verified = await verify(withdrawal);
 
               if (!verified) {
@@ -149,8 +149,8 @@ export const PendingWithdrawalsTable = (
 };
 
 export type CompleteCellProps = {
-  data: WithdrawalFields;
-  complete: (withdrawal: WithdrawalFields) => void;
+  data: WithdrawalFieldsFragment;
+  complete: (withdrawal: WithdrawalFieldsFragment) => void;
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => (
   <Button

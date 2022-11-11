@@ -3,9 +3,9 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AssetsDocument } from './__generated___/Assets';
+import { AssetsDocument } from './__generated__/Assets';
 import { AssetStatus } from '@vegaprotocol/types';
-import type { AssetsQuery } from './__generated___/Assets';
+import type { AssetsQuery } from './__generated__/Assets';
 import type { Asset } from './asset-data-provider';
 
 export interface ERC20AssetSource {

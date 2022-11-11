@@ -1,11 +1,23 @@
+fragment PendingWithdrawal on Withdrawal {
+  pendingOnForeignChain @client
+  txHash
+}
+
 fragment WithdrawalFields on Withdrawal {
   id
   status
   amount
   asset {
     id
+    name
     symbol
     decimals
+    status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
   }
   createdTimestamp
   withdrawnTimestamp
@@ -21,8 +33,12 @@ fragment WithdrawalFields on Withdrawal {
 query Withdrawals($partyId: ID!) {
   party(id: $partyId) {
     id
-    withdrawals {
-      ...WithdrawalFields
+    withdrawalsConnection {
+      edges {
+        node {
+          ...WithdrawalFields
+        }
+      }
     }
   }
 }

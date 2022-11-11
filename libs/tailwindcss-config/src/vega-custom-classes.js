@@ -7,6 +7,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.calt': {
       fontFeatureSettings: "'calt'",
     },
+    '.liga-0-calt-0': {
+      fontFeatureSettings: "'liga' 0, 'calt' 0",
+    },
     '.syntax-highlighter-wrapper .hljs': {
       fontSize: '1rem',
       fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
@@ -36,6 +39,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.color-scheme-dark': {
       colorScheme: 'dark',
+    },
+    '.rtl-dir': {
+      direction: 'rtl',
     },
   });
 });

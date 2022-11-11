@@ -17,17 +17,26 @@ export interface IUseTxsData {
   filters?: string;
 }
 
-export const getTxsDataUrl = ({ limit = 10, filters = '' }) => {
-  let url = `${DATA_SOURCES.blockExplorerUrl}/transactions?limit=${limit}`;
+interface IGetTxsDataUrl {
+  limit?: string;
+  filters?: string;
+}
+
+export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
+  const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+
+  if (limit) {
+    url.searchParams.append('limit', limit);
+  }
 
   if (filters) {
-    url = `${url}&${filters}`;
+    url.searchParams.append('filters', filters);
   }
 
   return url;
 };
 
-export const useTxsData = ({ limit = 10, filters }: IUseTxsData) => {
+export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   const [{ txsData, hasMoreTxs, lastCursor }, setTxsState] =
     useState<TxsStateProps>({
       txsData: [],
@@ -35,12 +44,12 @@ export const useTxsData = ({ limit = 10, filters }: IUseTxsData) => {
       lastCursor: '',
     });
 
-  const url = getTxsDataUrl({ limit, filters });
+  const url = getTxsDataUrl({ limit: limit?.toString(), filters });
 
   const {
     state: { data, error, loading },
     refetch,
-  } = useFetch<BlockExplorerTransactions>(url, {}, false);
+  } = useFetch<BlockExplorerTransactions>(url.href, {}, false);
 
   useEffect(() => {
     if (data?.transactions?.length) {

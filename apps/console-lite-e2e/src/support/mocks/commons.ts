@@ -138,7 +138,7 @@ export const singleMarket: SingleMarketFieldsFragment = {
           id: 'dai-id',
           name: 'DAI Name',
         },
-        oracleSpecForTradingTermination: {
+        dataSourceSpecForTradingTermination: {
           id: 'oid',
         },
       },

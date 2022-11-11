@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOrderListData } from './use-order-list-data';
 import type { Edge } from '@vegaprotocol/react-helpers';
-import type { OrderFieldsFragment } from '../order-data-provider/__generated___/orders';
+import type { OrderFieldsFragment } from '../order-data-provider/__generated__/Orders';
 import type { IGetRowsParams } from 'ag-grid-community';
 
 const loadMock = jest.fn();
@@ -94,8 +94,6 @@ describe('useOrderListData Hook', () => {
       addNewRows: expect.any(Function),
       getRows: expect.any(Function),
     });
-    updateMock({ data: mockData, delta: [] });
-    expect(mockRefreshAgGridApi).not.toHaveBeenCalled();
     updateMock({ data: mockData, delta: [] });
     expect(mockRefreshAgGridApi).toHaveBeenCalled();
   });
