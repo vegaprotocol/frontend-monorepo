@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
-import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
@@ -37,6 +37,7 @@ export const useOrderMargin = ({
 }: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
   const markPriceData = useMarketDataMarkPrice(market.id);
+
   const { data } = useEstimateOrderQuery({
     variables: {
       marketId: market.id,
@@ -79,12 +80,12 @@ export const useOrderMargin = ({
     const { makerFee, liquidityFee, infrastructureFee } =
       data.estimateOrder.fee;
     return {
-      margin: addDecimal(margin, market.decimalPlaces),
-      totalFees: addDecimal(fees, market.decimalPlaces),
+      margin,
+      totalFees: fees,
       fees: {
-        makerFee: addDecimal(makerFee, market.decimalPlaces),
-        liquidityFee: addDecimal(liquidityFee, market.decimalPlaces),
-        infrastructureFee: addDecimal(infrastructureFee, market.decimalPlaces),
+        makerFee,
+        liquidityFee,
+        infrastructureFee,
       },
     };
   }

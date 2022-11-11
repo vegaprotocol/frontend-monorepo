@@ -52,6 +52,15 @@ describe('useOrderMargin', () => {
         price: '1000000',
       },
     },
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            decimals: 5,
+          },
+        },
+      },
+    },
   };
   const partyId = 'partyId';
 
