@@ -76,7 +76,7 @@ export const DealTicketMarketAmount = ({
                 value: sizeStep,
                 message: t('Size cannot be lower than ' + sizeStep),
               },
-              validate: validateAmount(sizeStep, 'size'),
+              validate: validateAmount(sizeStep, 'Size'),
             })}
           />
         </div>

@@ -61,7 +61,7 @@ export const DealTicketLimitAmount = ({
                   value: sizeStep,
                   message: t('Size must be greater than ' + sizeStep),
                 },
-                validate: validateAmount(sizeStep, 'size'),
+                validate: validateAmount(sizeStep, 'Size'),
               })}
             />
           </FormGroup>
@@ -90,7 +90,7 @@ export const DealTicketLimitAmount = ({
                   value: priceStep,
                   message: t('Price cannot be lower than ' + priceStep),
                 },
-                validate: validateAmount(priceStep, 'price'),
+                validate: validateAmount(priceStep, 'Price'),
               })}
             />
           </FormGroup>
