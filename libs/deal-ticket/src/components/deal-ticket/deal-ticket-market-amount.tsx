@@ -1,4 +1,10 @@
-import { formatNumber, t, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  formatNumber,
+  t,
+  toDecimal,
+} from '@vegaprotocol/react-helpers';
 import {
   FormGroup,
   Input,
@@ -18,12 +24,32 @@ export type DealTicketMarketAmountProps = Omit<
 
 export const DealTicketMarketAmount = ({
   register,
-  price,
   market,
-  quoteName,
   sizeError,
 }: DealTicketMarketAmountProps) => {
+  const quoteName =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
+
+  let price;
+  if (isMarketInAuction(market)) {
+    // 0 can never be a valid uncrossing price
+    // as it would require there being orders on the book at that price.
+    if (
+      market.data?.indicativePrice &&
+      market.data.indicativePrice !== '0' &&
+      BigInt(market.data?.indicativePrice) !== BigInt(0)
+    ) {
+      price = market.data.indicativePrice;
+    }
+  } else {
+    price = market.depth.lastTrade?.price;
+  }
+
+  const priceFormatted = price
+    ? addDecimalsFormatNumber(price, market.decimalPlaces)
+    : undefined;
+
   return (
     <div className="mb-6">
       <div className="flex items-center gap-4 relative">
@@ -71,9 +97,9 @@ export const DealTicketMarketAmount = ({
             <div>&nbsp;</div>
           )}
           <div className="text-sm text-right">
-            {price && quoteName ? (
+            {priceFormatted && quoteName ? (
               <>
-                ~{formatNumber(price, market.decimalPlaces)} {quoteName}
+                ~{priceFormatted} {quoteName}
               </>
             ) : (
               '-'
@@ -86,11 +112,6 @@ export const DealTicketMarketAmount = ({
           {sizeError}
         </InputError>
       )}
-      {/* <DealTicketError
-        errorMessage={error}
-        data-testid="dealticket-error-message-price-market"
-        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
-      /> */}
     </div>
   );
 };

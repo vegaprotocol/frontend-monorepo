@@ -23,10 +23,9 @@ import { TypeSelector } from './type-selector';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../deal-ticket-validation/use-order-margin-validation';
 import { ValidateMargin } from '../deal-ticket-validation/validate-margin';
-import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
 import { validateType } from '../deal-ticket-validation/validate-type';
 import { validateTimeInForce } from '../deal-ticket-validation/validate-time-in-force';
 
@@ -51,7 +50,6 @@ export const DealTicket = ({
     control,
     handleSubmit,
     watch,
-    setValue,
     setError,
     formState: { errors },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
@@ -156,30 +154,6 @@ export const DealTicket = ({
     ]
   );
 
-  const getEstimatedMarketPrice = () => {
-    if (isMarketInAuction(market)) {
-      // 0 can never be a valid uncrossing price
-      // as it would require there being orders on the book at that price.
-      if (
-        market.data?.indicativePrice &&
-        BigInt(market.data?.indicativePrice) !== BigInt(0)
-      ) {
-        return market.data.indicativePrice;
-      }
-      return undefined;
-    }
-    return market.depth.lastTrade?.price;
-  };
-  const marketPrice = getEstimatedMarketPrice();
-  const marketPriceFormatted =
-    marketPrice && addDecimal(marketPrice, market.decimalPlaces);
-
-  useEffect(() => {
-    if (marketPriceFormatted && order.type === Schema.OrderType.TYPE_MARKET) {
-      setValue('price', marketPriceFormatted);
-    }
-  }, [marketPriceFormatted, order.type, setValue]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
       <Controller
@@ -207,8 +181,6 @@ export const DealTicket = ({
         orderType={order.type}
         market={market}
         register={register}
-        price={order.price}
-        quoteName={market.tradableInstrument.instrument.product.quoteName}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
       />

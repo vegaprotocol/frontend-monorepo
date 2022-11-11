@@ -11,13 +11,13 @@ export type DealTicketLimitAmountProps = Omit<
 export const DealTicketLimitAmount = ({
   register,
   market,
-  quoteName,
   sizeError,
   priceError,
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-
+  const quoteName =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
   const renderError = () => {
     if (sizeError) {
       return (
