@@ -34,9 +34,10 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
-    ({ data: marketData }: { data: MarketData }) => {
+    ({ data: marketData }: { data: MarketData | null }) => {
       throttledSetMarketVolume(
-        marketData.indicativeVolume && data?.positionDecimalPlaces !== undefined
+        marketData?.indicativeVolume &&
+          data?.positionDecimalPlaces !== undefined
           ? addDecimalsFormatNumber(
               marketData.indicativeVolume,
               data.positionDecimalPlaces

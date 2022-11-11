@@ -2,8 +2,8 @@ import type {
   ApolloClient,
   DocumentNode,
   FetchPolicy,
-  TypedDocumentNode,
   OperationVariables,
+  TypedDocumentNode,
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
@@ -35,6 +35,10 @@ export interface Load<Data> {
   (start?: number, end?: number): Promise<Data | null>;
 }
 
+export interface Reload {
+  (forceReset?: boolean): void;
+}
+
 type Pagination = Schema.Pagination & {
   skip?: number;
 };
@@ -56,7 +60,7 @@ export interface Subscribe<
     variables?: Variables
   ): {
     unsubscribe: () => void;
-    reload: (forceReset?: boolean) => void;
+    reload: Reload;
     flush: () => void;
     load?: Load<Data>;
   };
@@ -65,8 +69,12 @@ export interface Subscribe<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
-export interface Update<Data, Delta> {
-  (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
+export interface Update<
+  Data,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+> {
+  (data: Data, delta: Delta, reload: Reload, variables?: Variables): Data;
 }
 
 export interface Append<Data> {
@@ -82,8 +90,8 @@ export interface Append<Data> {
   };
 }
 
-interface GetData<QueryData, Data> {
-  (queryData: QueryData, variables?: OperationVariables): Data | null;
+interface GetData<QueryData, Data, Variables> {
+  (queryData: QueryData, variables?: Variables): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
@@ -94,8 +102,8 @@ interface GetTotalCount<QueryData> {
   (queryData: QueryData): number | undefined;
 }
 
-interface GetDelta<SubscriptionData, Delta> {
-  (subscriptionData: SubscriptionData, variables?: OperationVariables): Delta;
+interface GetDelta<SubscriptionData, Delta, Variables> {
+  (subscriptionData: SubscriptionData, variables?: Variables): Delta;
 }
 
 export type Node = { id: string };
@@ -146,12 +154,18 @@ export function defaultAppend<Data>(
   return { data, totalCount };
 }
 
-interface DataProviderParams<QueryData, Data, SubscriptionData, Delta> {
+interface DataProviderParams<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta,
+  Variables extends OperationVariables = OperationVariables
+> {
   query: Query<QueryData>;
   subscriptionQuery?: Query<SubscriptionData>;
-  update?: Update<Data, Delta>;
-  getData: GetData<QueryData, Data>;
-  getDelta?: GetDelta<SubscriptionData, Delta>;
+  update?: Update<Data, Delta, Variables>;
+  getData: GetData<QueryData, Data, Variables>;
+  getDelta?: GetDelta<SubscriptionData, Delta, Variables>;
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount?: GetTotalCount<QueryData>;
@@ -185,18 +199,20 @@ function makeDataProviderInternal<
   pagination,
   fetchPolicy,
   resetDelay,
-}: DataProviderParams<QueryData, Data, SubscriptionData, Delta>): Subscribe<
+}: DataProviderParams<
+  QueryData,
   Data,
+  SubscriptionData,
   Delta,
   Variables
-> {
+>): Subscribe<Data, Delta, Variables> {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
   let resetTimer: ReturnType<typeof setTimeout>;
-  let variables: OperationVariables | undefined;
+  let variables: Variables | undefined;
   let data: Data | null = null;
   let error: Error | undefined;
   let loading = true;
@@ -228,14 +244,14 @@ function makeDataProviderInternal<
   };
 
   const load = async (start?: number, end?: number) => {
-    if (!pagination || !pageInfo || !(data instanceof Array)) {
+    if (!pagination) {
       return Promise.reject();
     }
     const paginationVariables: Pagination = {
       first: pagination.first,
-      after: pageInfo.endCursor,
+      after: pageInfo?.endCursor,
     };
-    if (start !== undefined) {
+    if (start !== undefined && data instanceof Array) {
       if (!start) {
         paginationVariables.after = undefined;
       } else if (data && data[start - 1]) {
@@ -252,7 +268,7 @@ function makeDataProviderInternal<
           paginationVariables.after = (data[start - 1 - skip] as Cursor).cursor;
         }
       }
-    } else if (!pageInfo.hasNextPage) {
+    } else if (!pageInfo?.hasNextPage) {
       return null;
     }
     const res = await client.query<QueryData>({
@@ -291,7 +307,6 @@ function makeDataProviderInternal<
           ? { ...variables, pagination: { first: pagination.first } }
           : variables,
         fetchPolicy: fetchPolicy || 'no-cache',
-        errorPolicy: 'ignore',
       });
       data = getData(res.data, variables);
       if (data && pagination) {
@@ -317,7 +332,7 @@ function makeDataProviderInternal<
         while (updateQueue.length) {
           const delta = updateQueue.shift();
           if (delta) {
-            data = update(data, delta, reload);
+            data = update(data, delta, reload, variables);
           }
         }
       }
@@ -380,7 +395,7 @@ function makeDataProviderInternal<
             if (loading || !data) {
               updateQueue.push(delta);
             } else {
-              const updatedData = update(data, delta, reload);
+              const updatedData = update(data, delta, reload, variables);
               if (updatedData === data) {
                 return;
               }
@@ -484,7 +499,7 @@ const memoize = <
  * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
  *   query: gql`query MarketMidPrice($marketId: ID!) { market(id: $marketId) { data { midPrice } } }`,
  *   subscriptionQuery: gql`subscription MarketMidPriceSubscription($marketId: ID!) { marketDepthUpdate(marketId: $marketId) { market { data { midPrice } } } }`,
- *   update: (draft: Draft<Data>, delta: Delta, reload: (forceReset?: boolean) => void) => { draft.midPrice = delta.midPrice }
+ *   update: (draft: Draft<Data>, delta: Delta, reload: Reload) => { draft.midPrice = delta.midPrice }
  *   getData: (data:QueryData) => data.market.data.midPrice
  *   getDelta: (delta:SubscriptionData) => delta.marketData.market
  *  })
@@ -503,9 +518,15 @@ export function makeDataProvider<
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  params: DataProviderParams<QueryData, Data, SubscriptionData, Delta>
+  params: DataProviderParams<
+    QueryData,
+    Data,
+    SubscriptionData,
+    Delta,
+    Variables
+  >
 ): Subscribe<Data, Delta, Variables> {
-  const getInstance = memoize<Data, Delta>(() =>
+  const getInstance = memoize<Data, Delta, Variables>(() =>
     makeDataProviderInternal(params)
   );
   return (callback, client, variables) =>
@@ -516,13 +537,22 @@ export function makeDataProvider<
  * Dependency subscribe needs to use any as Data and Delta because it's unknown what dependencies will be used.
  * This effects in parts in combine function has any[] type
  */
-type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
-type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
-export type DerivedPart = Parameters<DependencyUpdateCallback>['0'];
+type DependencySubscribe<
+  Variables extends OperationVariables = OperationVariables
+> = Subscribe<any, any, Variables>; // eslint-disable-line @typescript-eslint/no-explicit-any
+type DependencyUpdateCallback<
+  Variables extends OperationVariables = OperationVariables
+> = Parameters<DependencySubscribe<Variables>>['0'];
+export type DerivedPart<
+  Variables extends OperationVariables = OperationVariables
+> = Parameters<DependencyUpdateCallback<Variables>>['0'];
 export type CombineDerivedData<
   Data,
   Variables extends OperationVariables = OperationVariables
-> = (data: DerivedPart['data'][], variables?: Variables) => Data | null;
+> = (
+  data: DerivedPart<Variables>['data'][],
+  variables?: Variables
+) => Data | null;
 
 export type CombineDerivedDelta<
   Data,
@@ -530,7 +560,7 @@ export type CombineDerivedDelta<
   Variables extends OperationVariables = OperationVariables
 > = (
   data: Data,
-  parts: DerivedPart[],
+  parts: DerivedPart<Variables>[],
   previousData: Data | null,
   variables?: Variables
 ) => Delta | undefined;
@@ -540,7 +570,7 @@ export type CombineInsertionData<
   Variables extends OperationVariables = OperationVariables
 > = (
   data: Data,
-  parts: DerivedPart[],
+  parts: DerivedPart<Variables>[],
   variables?: Variables
 ) => Data | undefined;
 
@@ -549,7 +579,7 @@ function makeDerivedDataProviderInternal<
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  dependencies: DependencySubscribe[],
+  dependencies: DependencySubscribe<Variables>[],
   combineData: CombineDerivedData<Data, Variables>,
   combineDelta?: CombineDerivedDelta<Data, Delta, Variables>,
   combineInsertionData?: CombineInsertionData<Data, Variables>
@@ -558,7 +588,7 @@ function makeDerivedDataProviderInternal<
   let client: ApolloClient<object>;
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   let variables: Variables | undefined;
-  const parts: DerivedPart[] = [];
+  const parts: DerivedPart<Variables>[] = [];
   let data: Data | null = null;
   let error: Error | undefined;
   let loading = true;
@@ -700,7 +730,7 @@ export function makeDerivedDataProvider<
   Delta,
   Variables extends OperationVariables = OperationVariables
 >(
-  dependencies: DependencySubscribe[],
+  dependencies: DependencySubscribe<Variables>[],
   combineData: CombineDerivedData<Data, Variables>,
   combineDelta?: CombineDerivedDelta<Data, Delta, Variables>,
   combineInsertionData?: CombineInsertionData<Data, Variables>

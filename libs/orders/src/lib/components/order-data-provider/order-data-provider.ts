@@ -15,6 +15,7 @@ import type {
   OrderFieldsFragment,
   OrdersQuery,
   OrdersUpdateSubscription,
+  OrdersQueryVariables,
 } from './__generated__/Orders';
 import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
 
@@ -24,7 +25,7 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 export type OrderEdge = Edge<Order>;
 
 const getData = (responseData: OrdersQuery) =>
-  responseData?.party?.ordersConnection?.edges || null;
+  responseData?.party?.ordersConnection?.edges || [];
 
 const getDelta = (subscriptionData: OrdersUpdateSubscription) =>
   subscriptionData.orders || [];
@@ -34,7 +35,9 @@ const getPageInfo = (responseData: OrdersQuery): PageInfo | null =>
 
 export const update = (
   data: ReturnType<typeof getData>,
-  delta: ReturnType<typeof getDelta>
+  delta: ReturnType<typeof getDelta>,
+  reload: () => void,
+  variables?: OrdersQueryVariables
 ) => {
   if (!data) {
     return data;
@@ -51,14 +54,36 @@ export const update = (
     incoming.reverse().forEach((node) => {
       const index = draft.findIndex((edge) => edge.node.id === node.id);
       const newer =
+        draft.length === 0 ||
         (node.updatedAt || node.createdAt) >=
-        (draft[0].node.updatedAt || draft[0].node.createdAt);
+          (draft[0].node.updatedAt || draft[0].node.createdAt);
+      let doesFilterPass = true;
+      if (
+        doesFilterPass &&
+        variables?.dateRange?.start &&
+        new Date(node.updatedAt || node.createdAt) <=
+          new Date(variables?.dateRange?.start)
+      ) {
+        doesFilterPass = false;
+      }
+      if (
+        doesFilterPass &&
+        variables?.dateRange?.end &&
+        new Date(node.updatedAt || node.createdAt) >=
+          new Date(variables?.dateRange?.end)
+      ) {
+        doesFilterPass = false;
+      }
       if (index !== -1) {
-        Object.assign(draft[index].node, node);
-        if (newer) {
-          draft.unshift(...draft.splice(index, 1));
+        if (doesFilterPass) {
+          Object.assign(draft[index].node, node);
+          if (newer) {
+            draft.unshift(...draft.splice(index, 1));
+          }
+        } else {
+          draft.splice(index, 1);
         }
-      } else if (newer) {
+      } else if (newer && doesFilterPass) {
         const { marketId, liquidityProvisionId, ...order } = node;
 
         // If there is a liquidity provision id add the object to the resulting order
@@ -103,7 +128,8 @@ export const ordersProvider = makeDataProvider({
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
   (OrderEdge | null)[],
-  Order[]
+  Order[],
+  OrdersQueryVariables
 >(
   [ordersProvider, marketsProvider],
   (partsData): OrderEdge[] =>

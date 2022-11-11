@@ -11,6 +11,7 @@ interface AsyncRendererProps<T> {
   noDataMessage?: string;
   children?: ReactNode | null;
   render?: (data: T) => ReactNode;
+  noDataCondition?(data: T): boolean;
 }
 
 export function AsyncRenderer<T = object>({
@@ -20,6 +21,7 @@ export function AsyncRenderer<T = object>({
   errorMessage,
   data,
   noDataMessage,
+  noDataCondition,
   children,
   render,
 }: AsyncRendererProps<T>) {
@@ -37,7 +39,7 @@ export function AsyncRenderer<T = object>({
     return <Splash>{loadingMessage ? loadingMessage : t('Loading...')}</Splash>;
   }
 
-  if (!data) {
+  if (!data || (noDataCondition && noDataCondition(data))) {
     return <Splash>{noDataMessage ? noDataMessage : t('No data')}</Splash>;
   }
   // eslint-disable-next-line react/jsx-no-useless-fragment
