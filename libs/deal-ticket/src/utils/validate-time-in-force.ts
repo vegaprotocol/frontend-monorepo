@@ -1,5 +1,6 @@
 import { Schema } from '@vegaprotocol/types';
 import type { DealTicketMarketFragment } from '../components';
+import { MarketModeValidationType } from '../constants';
 import { isMarketInAuction } from './is-market-in-auction';
 
 export const validateTimeInForce = (market: DealTicketMarketFragment) => {
@@ -21,14 +22,14 @@ export const validateTimeInForce = (market: DealTicketMarketFragment) => {
         ].includes(value)
       ) {
         if (isMonitoringAuction && isLiquidityTrigger) {
-          return 'liquidity';
+          return MarketModeValidationType.LiquidityMonitoringAuction;
         }
 
         if (isMonitoringAuction && isPriceTrigger) {
-          return 'price';
+          return MarketModeValidationType.PriceMonitoringAuction;
         }
 
-        return 'auction';
+        return MarketModeValidationType.Auction;
       }
     }
 

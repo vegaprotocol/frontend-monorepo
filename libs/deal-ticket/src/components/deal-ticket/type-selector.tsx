@@ -4,6 +4,7 @@ import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import { MarketModeValidationType } from '../../constants';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
@@ -23,12 +24,12 @@ export const TypeSelector = ({
   market,
   errorMessage,
 }: TypeSelectorProps) => {
-  const renderError = (errorType: string) => {
-    if (errorType === 'auction') {
+  const renderError = (errorType: MarketModeValidationType) => {
+    if (errorType === MarketModeValidationType.Auction) {
       return t('Only limit orders are permitted when market is in auction');
     }
 
-    if (errorType === 'liquidity') {
+    if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
       return (
         <span>
           {t('This market is in auction until it reaches')}{' '}
@@ -43,7 +44,7 @@ export const TypeSelector = ({
       );
     }
 
-    if (errorType === 'price') {
+    if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
       return (
         <span>
           {t('This market is in auction due to')}{' '}
@@ -70,7 +71,11 @@ export const TypeSelector = ({
         checkedValue={value}
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
-      {errorMessage && <InputError>{renderError(errorMessage)}</InputError>}
+      {errorMessage && (
+        <InputError>
+          {renderError(errorMessage as MarketModeValidationType)}
+        </InputError>
+      )}
     </FormGroup>
   );
 };
