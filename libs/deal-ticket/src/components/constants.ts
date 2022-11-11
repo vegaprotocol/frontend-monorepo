@@ -29,4 +29,6 @@ export const DEAL_TICKET_SECTION = {
   SUMMARY: 'sec-summary',
 };
 
-export const ERROR_SIZE_DECIMAL = 'step';
+export const ERROR_SIZE_DECIMAL = t(
+  'The size field accepts up to X decimal places'
+);

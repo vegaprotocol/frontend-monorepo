@@ -1,10 +1,13 @@
 import { formatNumber, t, toDecimal } from '@vegaprotocol/react-helpers';
-import { FormGroup, Input, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  Input,
+  InputError,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 
-import { DEAL_TICKET_SECTION } from '../constants';
 import { isMarketInAuction } from '../deal-ticket-validation/use-order-validation';
-import { validateSize } from '../deal-ticket-validation/validate-size';
-import { DealTicketError } from './deal-ticket-error';
+import { validateAmount } from '../deal-ticket-validation/validate-amount';
 
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
@@ -18,7 +21,7 @@ export const DealTicketMarketAmount = ({
   price,
   market,
   quoteName,
-  errorMessage,
+  sizeError,
 }: DealTicketMarketAmountProps) => {
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   return (
@@ -39,9 +42,12 @@ export const DealTicketMarketAmount = ({
               onWheel={(e) => e.currentTarget.blur()}
               data-testid="order-size"
               {...register('size', {
-                required: true,
-                min: sizeStep,
-                validate: validateSize(sizeStep),
+                required: t('You need to provide a size'),
+                min: {
+                  value: sizeStep,
+                  message: t('Size cannot be lower than ' + sizeStep),
+                },
+                validate: validateAmount(sizeStep),
               })}
             />
           </FormGroup>
@@ -75,11 +81,16 @@ export const DealTicketMarketAmount = ({
           </div>
         </div>
       </div>
-      <DealTicketError
-        errorMessage={errorMessage}
+      {sizeError && (
+        <InputError intent="danger" data-testid="deal-ticket-error-message">
+          {sizeError}
+        </InputError>
+      )}
+      {/* <DealTicketError
+        errorMessage={error}
         data-testid="dealticket-error-message-price-market"
         section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
-      />
+      /> */}
     </div>
   );
 };

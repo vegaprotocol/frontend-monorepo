@@ -51,11 +51,14 @@ export const DealTicket = ({
     setValue,
     clearErrors,
     setError,
-    formState: { errors, isSubmitted },
+    formState: { errors },
   } = useForm<OrderSubmissionBody['orderSubmission']>({
     mode: 'onChange',
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
+
+  console.log(errors);
+
   const order = watch();
 
   const feeDetails = useFeeDealTicketDetails(order, market);
@@ -63,52 +66,52 @@ export const DealTicket = ({
 
   useEffect(() => setOrder(order), [order, setOrder]);
 
-  const {
-    isDisabled: disabled,
-    message,
-    section: errorSection,
-  } = useOrderValidation({
-    market,
-    orderType: order.type,
-    orderTimeInForce: order.timeInForce,
-    fieldErrors: errors,
-    estMargin: feeDetails.estMargin,
-  });
+  // const {
+  //   isDisabled: disabled,
+  //   message,
+  //   section: errorSection,
+  // } = useOrderValidation({
+  //   market,
+  //   orderType: order.type,
+  //   orderTimeInForce: order.timeInForce,
+  //   fieldErrors: errors,
+  //   estMargin: feeDetails.estMargin,
+  // });
 
-  useEffect(() => {
-    if (disabled) {
-      setError('marketId', {});
-    } else {
-      clearErrors('marketId');
-    }
-  }, [disabled, setError, clearErrors]);
+  // useEffect(() => {
+  //   if (disabled) {
+  //     setError('marketId', {});
+  //   } else {
+  //     clearErrors('marketId');
+  //   }
+  // }, [disabled, setError, clearErrors]);
 
-  useEffect(() => {
-    if (isSubmitted || errorSection === DEAL_TICKET_SECTION.SUMMARY) {
-      setErrorMessage({ message, isDisabled: disabled, errorSection });
-    } else {
-      setErrorMessage(undefined);
-    }
-  }, [disabled, message, errorSection, isSubmitted]);
+  // useEffect(() => {
+  //   if (isSubmitted || errorSection === DEAL_TICKET_SECTION.SUMMARY) {
+  //     setErrorMessage({ message, isDisabled: disabled, errorSection });
+  //   } else {
+  //     setErrorMessage(undefined);
+  //   }
+  // }, [disabled, message, errorSection, isSubmitted]);
 
-  const isDisabled = transactionStatus === 'pending' || disabled;
+  // const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
-      if (!isDisabled) {
-        submit({
-          ...order,
-          price:
-            order.price && removeDecimal(order.price, market.decimalPlaces),
-          size: removeDecimal(order.size, market.positionDecimalPlaces),
-          expiresAt:
-            order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-              ? order.expiresAt
-              : undefined,
-        });
-      }
+      console.log('SUBMIT', JSON.stringify(order, null, 2));
+      // if (!isDisabled) {
+      // submit({
+      //   ...order,
+      //   price: order.price && removeDecimal(order.price, market.decimalPlaces),
+      //   size: removeDecimal(order.size, market.positionDecimalPlaces),
+      //   expiresAt:
+      //     order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+      //       ? order.expiresAt
+      //       : undefined,
+      // });
+      // }
     },
-    [isDisabled, submit, market.decimalPlaces, market.positionDecimalPlaces]
+    [/*isDisabled,*/ submit, market.decimalPlaces, market.positionDecimalPlaces]
   );
 
   const getEstimatedMarketPrice = () => {
@@ -128,6 +131,7 @@ export const DealTicket = ({
   const marketPrice = getEstimatedMarketPrice();
   const marketPriceFormatted =
     marketPrice && addDecimal(marketPrice, market.decimalPlaces);
+
   useEffect(() => {
     if (marketPriceFormatted && order.type === Schema.OrderType.TYPE_MARKET) {
       setValue('price', marketPriceFormatted);
@@ -160,7 +164,8 @@ export const DealTicket = ({
         register={register}
         price={order.price}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
-        errorMessage={errorMessage}
+        sizeError={errors.size?.message}
+        priceError={errors.price?.message}
       />
       <Controller
         name="timeInForce"
@@ -191,7 +196,8 @@ export const DealTicket = ({
         )}
       <DealTicketButton
         transactionStatus={transactionStatus}
-        isDisabled={isSubmitted && isDisabled}
+        // isDisabled={isSubmitted /*&& isDisabled*/}
+        isDisabled={false}
         errorMessage={errorMessage}
       />
       <DealTicketFeeDetails details={details} />

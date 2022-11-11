@@ -12,7 +12,8 @@ export interface DealTicketAmountProps {
   register: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
   quoteName: string;
   price?: string;
-  errorMessage?: DealTicketErrorMessage;
+  sizeError?: string;
+  priceError?: string;
 }
 
 export const DealTicketAmount = ({
