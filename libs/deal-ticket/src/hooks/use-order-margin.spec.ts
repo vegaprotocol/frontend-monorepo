@@ -52,6 +52,15 @@ describe('useOrderMargin', () => {
         price: '1000000',
       },
     },
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            decimals: 5,
+          },
+        },
+      },
+    },
   };
   const partyId = 'partyId';
 
@@ -67,7 +76,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('100000');
+    expect(result.current?.margin).toEqual('1');
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
@@ -85,7 +94,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.totalFees).toEqual('300000');
+    expect(result.current?.totalFees).toEqual('3');
   });
 
   it('should not subtract initialMargin if there is no position', () => {
@@ -97,7 +106,7 @@ describe('useOrderMargin', () => {
         partyId,
       })
     );
-    expect(result.current?.margin).toEqual('200000');
+    expect(result.current?.margin).toEqual('2');
 
     expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       order.size
