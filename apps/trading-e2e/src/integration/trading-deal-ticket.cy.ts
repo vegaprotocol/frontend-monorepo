@@ -80,10 +80,7 @@ const mockTx = {
 const displayTomorrow = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const dd = String(tomorrow.getDate()).padStart(2, '0');
-  const mm = String(tomorrow.getMonth() + 1).padStart(2, '0'); //January is 0!
-  const yyyy = tomorrow.getFullYear();
-  return `${yyyy}-${mm}-${dd}T00:00`;
+  return tomorrow.toISOString().substring(0, 16);
 };
 
 const testOrder = (order: Order, expected?: Partial<Order>) => {
