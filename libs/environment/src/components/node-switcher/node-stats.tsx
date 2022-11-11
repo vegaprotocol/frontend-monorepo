@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import type { NodeData } from '../../types';
-import type createClient from '../../utils/apollo-client';
 import { LayoutRow } from './layout-row';
 import { LayoutCell } from './layout-cell';
 import { NodeBlockHeight } from './node-block-height';
+import type { createClient } from '@vegaprotocol/apollo-client';
 
 type NodeStatsContentProps = {
   data?: NodeData;

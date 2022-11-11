@@ -8,9 +8,9 @@ import {
   useNetworkParams,
 } from './use-network-params';
 import type { ReactNode } from 'react';
-import type { NetworkParamsQuery } from './__generated___/NetworkParams';
-import { NetworkParamDocument } from './__generated___/NetworkParams';
-import { NetworkParamsDocument } from './__generated___/NetworkParams';
+import type { NetworkParamsQuery } from './__generated__/NetworkParams';
+import { NetworkParamDocument } from './__generated__/NetworkParams';
+import { NetworkParamsDocument } from './__generated__/NetworkParams';
 
 describe('useNetworkParam', () => {
   const setup = (arg: NetworkParamsKey) => {

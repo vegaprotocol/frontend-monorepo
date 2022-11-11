@@ -1,15 +1,14 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
-  Erc20Approval,
-  Erc20ApprovalVariables,
-  Erc20Approval_erc20WithdrawalApproval,
+  Erc20ApprovalQuery,
+  Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
 
 type WaitForApproval = (
   id: string
-) => Promise<Erc20Approval_erc20WithdrawalApproval>;
+) => Promise<Erc20ApprovalQuery['erc20WithdrawalApproval']>;
 
 export const useWithdrawalApproval = () => {
   const client = useApolloClient();
@@ -22,10 +21,10 @@ export const useWithdrawalApproval = () => {
         intervalRef.current = setInterval(async () => {
           try {
             const res = await client.query<
-              Erc20Approval,
-              Erc20ApprovalVariables
+              Erc20ApprovalQuery,
+              Erc20ApprovalQueryVariables
             >({
-              query: ERC20_APPROVAL_QUERY,
+              query: Erc20ApprovalDocument,
               variables: { withdrawalId: id },
               fetchPolicy: 'network-only',
             });

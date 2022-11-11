@@ -20,7 +20,6 @@ export const LedgerTable = ({ ...props }) => (
       flex: 1,
       resizable: true,
       sortable: true,
-      filter: true,
     }}
     {...props}
   >
@@ -89,6 +88,26 @@ export const LedgerTable = ({ ...props }) => (
       valueFormatter={({ value }: { value: string }) =>
         getDateTimeFormat().format(fromNanoSeconds(value))
       }
+      filter="agDateColumnFilter"
+      filterParams={{
+        comparator: (
+          filterLocalDateAtMidnight: number,
+          dateAsString: string
+        ) => {
+          if (dateAsString == null) {
+            return 0;
+          }
+          const filterDate = new Date(filterLocalDateAtMidnight)
+            .getTime()
+            .toString();
+          if (dateAsString < filterDate) {
+            return -1;
+          } else if (dateAsString > filterDate) {
+            return 1;
+          }
+          return 0;
+        },
+      }}
     />
   </AgGrid>
 );

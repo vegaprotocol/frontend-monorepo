@@ -278,18 +278,6 @@ export enum WithdrawalStatusMapping {
   STATUS_REJECTED = 'Rejected',
 }
 
-/**
- * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
- */
-export enum Interval {
-  INTERVAL_I15M = 'INTERVAL_I15M',
-  INTERVAL_I1D = 'INTERVAL_I1D',
-  INTERVAL_I1H = 'INTERVAL_I1H',
-  INTERVAL_I1M = 'INTERVAL_I1M',
-  INTERVAL_I5M = 'INTERVAL_I5M',
-  INTERVAL_I6H = 'INTERVAL_I6H',
-}
-
 export enum ProposalUserAction {
   CREATE = 'CREATE',
   VOTE = 'VOTE',

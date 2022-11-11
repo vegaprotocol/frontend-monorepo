@@ -219,7 +219,7 @@ describe('market states', { tags: '@smoke' }, function () {
 
   states.forEach((marketState) => {
     describe(marketState, function () {
-      before(function () {
+      beforeEach(function () {
         cy.mockTradingPage(marketState);
         cy.mockGQLSubscription();
         cy.visit('/#/markets/market-0');

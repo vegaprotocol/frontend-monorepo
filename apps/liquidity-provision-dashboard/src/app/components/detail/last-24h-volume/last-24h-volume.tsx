@@ -58,8 +58,10 @@ export const Last24hVolume = ({
   ).current;
 
   const update = useCallback(
-    ({ data }: { data: Candle[] }) => {
-      throttledSetCandles(data);
+    ({ data }: { data: Candle[] | null }) => {
+      if (data) {
+        throttledSetCandles(data);
+      }
       return true;
     },
     [throttledSetCandles]
@@ -80,8 +82,10 @@ export const Last24hVolume = ({
   ).current;
 
   const updateCandle24hAgo = useCallback(
-    ({ data }: { data: Candle[] }) => {
-      throttledSetVolumeChange(data);
+    ({ data }: { data: Candle[] | null }) => {
+      if (data) {
+        throttledSetVolumeChange(data);
+      }
       return true;
     },
     [throttledSetVolumeChange]
