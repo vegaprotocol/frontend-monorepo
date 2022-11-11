@@ -44,6 +44,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
 
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
+      console.log({ marketData });
       if (marketData) {
         setTradingMode(marketData.marketTradingMode);
         setTrigger(marketData.trigger);
@@ -83,8 +84,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
         {tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         trigger &&
         trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[tradingMode]}
-                     - ${AuctionTriggerMapping[trigger]}`
+          ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
           : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]}
       </div>
     </HeaderStat>

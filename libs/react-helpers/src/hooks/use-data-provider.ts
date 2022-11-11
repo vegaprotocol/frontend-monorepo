@@ -96,6 +96,7 @@ export const useDataProvider = <
         data,
         error,
         loading,
+        loaded,
         insertionData,
         totalCount,
         isInsert,
@@ -125,10 +126,12 @@ export const useDataProvider = <
       }
       setTotalCount(totalCount);
       setData(data);
-      if (updateOnInit && !initialized.current && update) {
+      if (loaded && updateOnInit && !initialized.current && update) {
         update({ data });
       }
-      initialized.current = true;
+      if (loaded) {
+        initialized.current = true;
+      }
     },
     [update, insert, noUpdate, updateOnInit, variables]
   );
