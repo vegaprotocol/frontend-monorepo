@@ -98,9 +98,11 @@ const Party = () => {
     }
   );
 
-  const header = data?.party?.id ? (
+  const p = data?.partiesConnection?.edges[0].node
+
+  const header = p?.id ? (
     <PageHeader
-      title={data.party.id}
+      title={p.id}
       copy
       truncateStart={visibleChars}
       truncateEnd={visibleChars}
@@ -113,8 +115,13 @@ const Party = () => {
 
   const accounts = (
     <section>
-      {data?.party?.accounts?.length ? (
-        data.party.accounts.map((account) => {
+      {p?.accountsConnection?.edges?.length ? (
+        p.accountsConnection?.edges?.map(a => {
+          const account = a?.node
+          if (!account || !account.asset) {
+            return ''
+          }
+
           return (
             <InfoPanel title={account.asset.name} id={account.asset.id}>
               <section>
@@ -143,10 +150,10 @@ const Party = () => {
 
   const staking = (
     <section>
-      {data?.party?.stakingSummary?.currentStakeAvailable ? (
+      {p?.stakingSummary?.currentStakeAvailable ? (
         <InfoPanel
           title={t('Current Stake Available')}
-          id={data?.party?.stakingSummary?.currentStakeAvailable}
+          id={p?.stakingSummary?.currentStakeAvailable}
           copy={false}
         />
       ) : (

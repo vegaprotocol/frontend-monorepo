@@ -159,13 +159,13 @@ const Markets = () => {
     <section>
       <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
-      {data?.markets
-        ? data.markets.map((m) => (
-            <React.Fragment key={m.id}>
+      {data?.marketsConnection?.edges
+        ? data.marketsConnection.edges.map(e => (
+            <React.Fragment key={e.node.id}>
               <SubHeading data-testid="markets-header">
-                {m.tradableInstrument.instrument.name}
+                {e.node.tradableInstrument.instrument.name}
               </SubHeading>
-              <SyntaxHighlighter data={m} />
+              <SyntaxHighlighter data={e.node} />
             </React.Fragment>
           ))
         : null}
