@@ -1,15 +1,22 @@
-import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { FormGroup, InputError, Select } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  InputError,
+  Select,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
+import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  errorMessage?: ReactNode;
+  market: DealTicketMarketFragment;
+  errorMessage?: string;
 }
 
 type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
@@ -25,6 +32,7 @@ export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
+  market,
   errorMessage,
 }: TimeInForceSelectorProps) => {
   const options =
@@ -58,6 +66,50 @@ export const TimeInForceSelector = ({
     setPreviousOrderType,
   ]);
 
+  const renderError = (errorType: string) => {
+    if (errorType === 'auction') {
+      return t(
+        `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+      );
+    }
+
+    if (errorType === 'liquidity') {
+      return (
+        <span>
+          {t('This market is in auction until it reaches')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('sufficient liquidity')}</span>
+          </Tooltip>
+          {'. '}
+          {t(
+            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          )}
+        </span>
+      );
+    }
+
+    if (errorType === 'price') {
+      return (
+        <span>
+          {t('This market is in auction due to')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('high price volatility')}</span>
+          </Tooltip>
+          {'. '}
+          {t(
+            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          )}
+        </span>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
@@ -79,7 +131,7 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
-      {errorMessage && <InputError>{errorMessage}</InputError>}
+      {errorMessage && <InputError>{renderError(errorMessage)}</InputError>}
     </FormGroup>
   );
 };

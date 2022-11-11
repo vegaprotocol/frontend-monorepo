@@ -1,4 +1,4 @@
-import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
+import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,10 +8,7 @@ import {
   useFeeDealTicketDetails,
 } from '../../hooks/use-fee-deal-ticket-details';
 import { getDefaultOrder, usePersistedOrder } from '../deal-ticket-validation';
-import {
-  isMarketInAuction,
-  marketTranslations,
-} from '../deal-ticket-validation/use-order-validation';
+import { marketTranslations } from '../deal-ticket-validation/use-order-validation';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -74,6 +71,8 @@ export const DealTicket = ({
     estMargin: feeDetails.estMargin,
   });
 
+  console.log(errors);
+
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
       if (!pubKey) {
@@ -118,7 +117,7 @@ export const DealTicket = ({
 
       if (isInvalidOrderMargin) {
         setError('summary', {
-          message: <ValidateMargin {...isInvalidOrderMargin} />,
+          message: 'margin',
         });
         return;
       }
@@ -172,6 +171,7 @@ export const DealTicket = ({
           <TypeSelector
             value={field.value}
             onSelect={field.onChange}
+            market={market}
             errorMessage={errors.type?.message}
           />
         )}
@@ -201,6 +201,7 @@ export const DealTicket = ({
             value={field.value}
             orderType={order.type}
             onSelect={field.onChange}
+            market={market}
             errorMessage={errors.timeInForce?.message}
           />
         )}
@@ -222,9 +223,34 @@ export const DealTicket = ({
         )}
       <DealTicketButton transactionStatus={transactionStatus} />
       {errors.summary?.message && (
-        <InputError>{errors.summary.message}</InputError>
+        <SummaryError
+          errorMessage={errors.summary.message}
+          marginErrorProps={
+            isInvalidOrderMargin ? isInvalidOrderMargin : undefined
+          }
+        />
       )}
       <DealTicketFeeDetails details={details} />
     </form>
   );
+};
+
+const SummaryError = ({
+  errorMessage,
+  marginErrorProps,
+}: {
+  errorMessage: string;
+  marginErrorProps?: {
+    balance: string;
+    margin: string;
+    id: string;
+    symbol: string;
+    decimals: number;
+  };
+}) => {
+  if (errorMessage === 'margin' && marginErrorProps) {
+    return <ValidateMargin {...marginErrorProps} />;
+  }
+
+  return <InputError>{errorMessage}</InputError>;
 };
