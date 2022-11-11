@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from '../../../components/connect-to-vega/connect-to-vega';
 import { StakingForm } from './staking-form';
 import { ValidatorTable } from './validator-table';
@@ -14,9 +13,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import compact from 'lodash/compact';
+import type { StakingQuery } from './__generated___/Staking';
 
 interface StakingNodeProps {
-  data?: StakingQueryResult;
+  data?: StakingQuery;
 }
 
 export const StakingNode = ({ data }: StakingNodeProps) => {
@@ -27,26 +27,32 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
   const nodeInfo = React.useMemo(() => {
-    return compact(data?.nodesConnection?.edges).find(
-      ({ node: { id } }) => id === node
-    )?.node;
+    const canonisedNodes =
+      compact(data?.nodesConnection?.edges?.map((edge) => edge?.node)) || [];
+    return canonisedNodes.find(({ id }) => id === node);
   }, [node, data]);
 
   const currentEpoch = React.useMemo(() => {
     return data?.epoch.id;
   }, [data?.epoch.id]);
 
+  const delegations = React.useMemo(
+    () =>
+      compact(
+        data?.party?.delegationsConnection?.edges?.map((edge) => edge?.node)
+      ) || [],
+    [data?.party?.delegationsConnection?.edges]
+  );
+
   const stakeThisEpoch = React.useMemo(() => {
-    const delegations = data?.party?.delegations || [];
     const amountsThisEpoch = delegations
       .filter((d) => d.node.id === node)
       .filter((d) => d.epoch === Number(currentEpoch))
       .map((d) => new BigNumber(d.amountFormatted));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsThisEpoch]);
-  }, [data?.party?.delegations, node, currentEpoch]);
+  }, [delegations, node, currentEpoch]);
 
   const stakeNextEpoch = React.useMemo(() => {
-    const delegations = data?.party?.delegations || [];
     const amountsNextEpoch = delegations
       .filter((d) => d.node.id === node)
       .filter((d) => d.epoch === Number(currentEpoch) + 1)
@@ -56,15 +62,15 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
       return stakeThisEpoch;
     }
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsNextEpoch]);
-  }, [currentEpoch, data?.party?.delegations, node, stakeThisEpoch]);
+  }, [currentEpoch, delegations, node, stakeThisEpoch]);
 
   const currentDelegationAmount = React.useMemo(() => {
-    if (!data?.party?.delegations) return new BigNumber(0);
-    const amounts = data.party.delegations
+    if (delegations.length < 1) return new BigNumber(0);
+    const amounts = delegations
       .filter((d) => d.epoch === Number(currentEpoch) + 1)
       .map((d) => new BigNumber(d.amountFormatted));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amounts]);
-  }, [currentEpoch, data?.party?.delegations]);
+  }, [currentEpoch, delegations]);
 
   const unstaked = React.useMemo(() => {
     const value = toBigNum(

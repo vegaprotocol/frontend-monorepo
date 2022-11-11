@@ -9,31 +9,6 @@ import { AccountType } from "@vegaprotocol/types";
 // GraphQL query operation: PartyAssetsQuery
 // ====================================================
 
-export interface PartyAssetsQuery_party_delegations_node {
-  __typename: "Node";
-  /**
-   * The node URL eg n01.vega.xyz
-   */
-  id: string;
-  name: string;
-}
-
-export interface PartyAssetsQuery_party_delegations {
-  __typename: "Delegation";
-  /**
-   * Amount delegated
-   */
-  amount: string;
-  /**
-   * URL of node you are delegating to
-   */
-  node: PartyAssetsQuery_party_delegations_node;
-  /**
-   * Epoch of delegation
-   */
-  epoch: number;
-}
-
 export interface PartyAssetsQuery_party_stakingSummary {
   __typename: "StakingSummary";
   /**
@@ -102,7 +77,6 @@ export interface PartyAssetsQuery_party {
    * Party identifier
    */
   id: string;
-  delegations: PartyAssetsQuery_party_delegations[] | null;
   /**
    * The staking information for this Party
    */

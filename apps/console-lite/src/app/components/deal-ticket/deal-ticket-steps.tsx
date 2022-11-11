@@ -26,6 +26,9 @@ import {
   toDecimal,
   removeDecimal,
   addDecimalsFormatNumber,
+  addDecimalsNormalizeNumber,
+  addDecimal,
+  formatNumber,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
@@ -142,6 +145,9 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     return null;
   }, [market.decimalPlaces, order.size, price]);
 
+  const assetDecimals =
+    market.tradableInstrument.instrument.product.settlementAsset.decimals;
+
   const fees = useMemo(() => {
     if (estMargin?.totalFees && notionalSize) {
       const percentage = new BigNumber(estMargin?.totalFees)
@@ -150,11 +156,14 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
         .decimalPlaces(2)
         .toString();
 
-      return `${estMargin.totalFees} (${percentage}%)`;
+      return `${addDecimalsNormalizeNumber(
+        estMargin.totalFees,
+        assetDecimals
+      )} (${formatNumber(addDecimal(percentage, assetDecimals), 2)}%)`;
     }
 
     return null;
-  }, [estMargin?.totalFees, notionalSize]);
+  }, [assetDecimals, estMargin?.totalFees, notionalSize]);
 
   const max = useMemo(() => {
     return new BigNumber(maxTrade)

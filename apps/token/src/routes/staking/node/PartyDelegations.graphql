@@ -1,13 +1,21 @@
+fragment StakingDelegationsFields on Delegation {
+  amount
+  amountFormatted @client
+  node {
+    id
+  }
+  epoch
+}
+
 query PartyDelegations($partyId: ID!) {
   party(id: $partyId) {
     id
-    delegations {
-      amount
-      amountFormatted @client
-      node {
-        id
+    delegationsConnection {
+      edges {
+        node {
+          ...StakingDelegationsFields
+        }
       }
-      epoch
     }
   }
   epoch {

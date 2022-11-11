@@ -52,6 +52,15 @@ describe('useOrderMargin', () => {
         price: '1000000',
       },
     },
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            decimals: 5,
+          },
+        },
+      },
+    },
   };
   const partyId = 'partyId';
 
@@ -68,12 +77,8 @@ describe('useOrderMargin', () => {
       })
     );
     expect(result.current?.margin).toEqual('100000');
-
-    const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
-      .plus(order.size)
-      .toString();
     expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
-      calledSize
+      order.size
     );
   });
 

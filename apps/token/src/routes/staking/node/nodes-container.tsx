@@ -1,96 +1,26 @@
-import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useStakingQuery } from './__generated___/Staking';
 import { SplashLoader } from '../../../components/splash-loader';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
+import type { StakingQuery } from './__generated___/Staking';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
-export const STAKING_QUERY = gql`
-  query Staking($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      stakingSummary {
-        currentStakeAvailable
-      }
-      delegations {
-        amount
-        amountFormatted @client
-        epoch
-        node {
-          id
-        }
-      }
-    }
-    epoch {
-      id
-      timestamps {
-        start
-        end
-        expiry
-      }
-    }
-    nodesConnection {
-      edges {
-        node {
-          id
-          name
-          pubkey
-          infoUrl
-          location
-          ethereumAddress
-          stakedByOperator
-          stakedByDelegates
-          stakedTotal
-          pendingStake
-          stakedByOperatorFormatted @client
-          stakedByDelegatesFormatted @client
-          stakedTotalFormatted @client
-          pendingStakeFormatted @client
-          epochData {
-            total
-            offline
-            online
-          }
-          status
-          rankingScore {
-            rankingScore
-            stakeScore
-            performanceScore
-            votingPower
-            stakeScore
-          }
-        }
-      }
-    }
-    nodeData {
-      stakedTotal
-      stakedTotalFormatted @client
-      totalNodes
-      inactiveNodes
-      validatingNodes
-      uptime
-    }
-  }
-`;
 
 const RPC_ERROR = 'rpc error: code = NotFound desc = NotFound error';
 
 export const NodeContainer = ({
   children,
 }: {
-  children: ({ data }: { data?: StakingQueryResult }) => React.ReactElement;
+  children: ({ data }: { data?: StakingQuery }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { data, loading, error, refetch } = useQuery<StakingQueryResult>(
-    STAKING_QUERY,
-    {
-      variables: { partyId: pubKey || '' },
-    }
-  );
+  const { data, loading, error, refetch } = useStakingQuery({
+    variables: { partyId: pubKey || '' },
+  });
 
   React.useEffect(() => {
     const interval = setInterval(() => {

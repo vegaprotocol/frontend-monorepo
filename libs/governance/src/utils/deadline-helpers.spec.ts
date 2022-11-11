@@ -1,4 +1,9 @@
-import { deadlineToSeconds, secondsToRoundedHours } from './deadline-helpers';
+import {
+  deadlineToSeconds,
+  secondsToRoundedHours,
+  addTwoMinutes,
+  subtractTwoSeconds,
+} from './deadline-helpers';
 
 describe('deadlineToSeconds', () => {
   it('should throw an error if the deadline does not match the format "XhXmXs"', () => {
@@ -37,5 +42,39 @@ describe('secondsToRoundedHours', () => {
     // 8999 seconds is 2 hours 29 minutes 59 seconds
     expect(secondsToRoundedHours(8999)).toEqual(2);
     expect(secondsToRoundedHours(9000)).toEqual(3);
+  });
+});
+
+describe('addTwoMinutes', () => {
+  it('should add two minutes to the current time', () => {
+    const now = new Date();
+    const twoMinutesLater = new Date(now.getTime() + 2 * 60 * 1000);
+    expect(addTwoMinutes(now)).toEqual(twoMinutesLater);
+  });
+
+  it('will use the current time if no date is provided', () => {
+    const now = new Date();
+    const twoMinutesLater = new Date(now.getTime() + 2 * 60 * 1000);
+    expect(addTwoMinutes()).toEqual(twoMinutesLater);
+  });
+
+  it('should add two minutes to a given time', () => {
+    const date = new Date(2020, 0, 1);
+    const twoMinutesLater = new Date(date.getTime() + 2 * 60 * 1000);
+    expect(addTwoMinutes(date)).toEqual(twoMinutesLater);
+  });
+});
+
+describe('subtractTwoSeconds', () => {
+  it('should subtract two seconds to the current time', () => {
+    const now = new Date();
+    const twoSecondsEarlier = new Date(now.getTime() - 2 * 1000);
+    expect(subtractTwoSeconds(now)).toEqual(twoSecondsEarlier);
+  });
+
+  it('should subtract two seconds from a given time', () => {
+    const date = new Date(2020, 0, 1);
+    const twoSecondsEarlier = new Date(date.getTime() - 2 * 1000);
+    expect(subtractTwoSeconds(date)).toEqual(twoSecondsEarlier);
   });
 });
