@@ -38,6 +38,12 @@ export interface DealTicketProps {
   defaultOrder?: OrderSubmissionBody['orderSubmission'];
 }
 
+export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
+  // This is not a field used in the form but allows us to set a
+  // summary error message
+  summary: string;
+};
+
 export const DealTicket = ({
   market,
   submit,
@@ -52,7 +58,7 @@ export const DealTicket = ({
     watch,
     setError,
     formState: { errors },
-  } = useForm<OrderSubmissionBody['orderSubmission']>({
+  } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
 

@@ -2,14 +2,14 @@ import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import type { UseFormRegister } from 'react-hook-form';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { validateExpiration } from '../deal-ticket-validation/validate-expiration';
+import type { DealTicketFormFields } from '.';
 
 interface ExpirySelectorProps {
   value?: string;
   onSelect: (expiration: string | null) => void;
   errorMessage?: string;
-  register?: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
+  register?: UseFormRegister<DealTicketFormFields>;
 }
 
 export const ExpirySelector = ({
