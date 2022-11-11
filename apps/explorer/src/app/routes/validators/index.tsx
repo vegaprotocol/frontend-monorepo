@@ -9,7 +9,6 @@ import { useFetch } from '@vegaprotocol/react-helpers';
 import type { TendermintValidatorsResponse } from './tendermint-validator-response';
 import type { NodesQuery } from './__generated__/NodesQuery';
 
-
 // Migrated to query v2
 const NODES_QUERY = gql`
   query NodesQuery {

@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NodeStatus } from "@vegaprotocol/types";
+import { NodeStatus } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: NodesQuery
 // ====================================================
 
-export interface NodesQuery_nodes_epochData {
+export interface NodesQuery_nodesConnection_edges_node_epochData {
   __typename: "EpochData";
   /**
    * Total number of epochs since node was created
@@ -25,7 +25,7 @@ export interface NodesQuery_nodes_epochData {
   online: number;
 }
 
-export interface NodesQuery_nodes {
+export interface NodesQuery_nodesConnection_edges_node {
   __typename: "Node";
   /**
    * The node URL eg n01.vega.xyz
@@ -72,16 +72,32 @@ export interface NodesQuery_nodes {
   /**
    * Summary of epoch data across all nodes
    */
-  epochData: NodesQuery_nodes_epochData | null;
+  epochData: NodesQuery_nodesConnection_edges_node_epochData | null;
   /**
    * Validator status of the node
    */
   status: NodeStatus;
 }
 
+export interface NodesQuery_nodesConnection_edges {
+  __typename: "NodeEdge";
+  /**
+   * The node
+   */
+  node: NodesQuery_nodesConnection_edges_node;
+}
+
+export interface NodesQuery_nodesConnection {
+  __typename: "NodesConnection";
+  /**
+   * List of nodes available for the connection
+   */
+  edges: (NodesQuery_nodesConnection_edges | null)[] | null;
+}
+
 export interface NodesQuery {
   /**
    * All known network nodes
    */
-  nodes: NodesQuery_nodes[] | null;
+  nodesConnection: NodesQuery_nodesConnection;
 }

@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "@vegaprotocol/types";
+import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: MarketsQuery
 // ====================================================
 
-export interface MarketsQuery_markets_fees_factors {
+export interface MarketsQuery_marketsConnection_edges_node_fees_factors {
   __typename: "FeeFactors";
   /**
    * The factor applied to calculate MakerFees, a non-negative float
@@ -25,15 +25,15 @@ export interface MarketsQuery_markets_fees_factors {
   liquidityFee: string;
 }
 
-export interface MarketsQuery_markets_fees {
+export interface MarketsQuery_marketsConnection_edges_node_fees {
   __typename: "Fees";
   /**
    * The factors used to calculate the different fees
    */
-  factors: MarketsQuery_markets_fees_factors;
+  factors: MarketsQuery_marketsConnection_edges_node_fees_factors;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_instrument_metadata {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_metadata {
   __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
@@ -41,7 +41,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_metadata {
   tags: string[] | null;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount {
   __typename: "AccountBalance";
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
@@ -49,7 +49,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
   balance: string;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -66,18 +66,18 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
   /**
    * The global reward pool account for this asset
    */
-  globalRewardPoolAccount: MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount | null;
+  globalRewardPoolAccount: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount | null;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_instrument_product {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product_settlementAsset;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_instrument {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
@@ -86,7 +86,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
   /**
    * Metadata for this instrument
    */
-  metadata: MarketsQuery_markets_tradableInstrument_instrument_metadata;
+  metadata: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_metadata;
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
    */
@@ -98,10 +98,10 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: MarketsQuery_markets_tradableInstrument_instrument_product;
+  product: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_product;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel_params {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_LogNormalRiskModel_params {
   __typename: "LogNormalModelParams";
   /**
    * R parameter
@@ -117,7 +117,7 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
   mu: number;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_LogNormalRiskModel {
   __typename: "LogNormalRiskModel";
   /**
    * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
@@ -130,10 +130,10 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
   /**
    * Parameters for the log normal risk model
    */
-  params: MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel_params;
+  params: MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_LogNormalRiskModel_params;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel_params {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_SimpleRiskModel_params {
   __typename: "SimpleRiskModelParams";
   /**
    * Risk factor for long
@@ -145,17 +145,17 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskMod
   factorShort: number;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_SimpleRiskModel {
   __typename: "SimpleRiskModel";
   /**
    * Params for the simple risk model
    */
-  params: MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel_params;
+  params: MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_SimpleRiskModel_params;
 }
 
-export type MarketsQuery_markets_tradableInstrument_riskModel = MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel | MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel;
+export type MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel = MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_LogNormalRiskModel | MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel_SimpleRiskModel;
 
-export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalingFactors {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_marginCalculator_scalingFactors {
   __typename: "ScalingFactors";
   /**
    * The scaling factor that determines the margin level at which Vega has to search for more money
@@ -171,31 +171,31 @@ export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalin
   collateralRelease: number;
 }
 
-export interface MarketsQuery_markets_tradableInstrument_marginCalculator {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_marginCalculator {
   __typename: "MarginCalculator";
   /**
    * The scaling factors that will be used for margin calculation
    */
-  scalingFactors: MarketsQuery_markets_tradableInstrument_marginCalculator_scalingFactors;
+  scalingFactors: MarketsQuery_marketsConnection_edges_node_tradableInstrument_marginCalculator_scalingFactors;
 }
 
-export interface MarketsQuery_markets_tradableInstrument {
+export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of, or reference to, a fully specified instrument.
    */
-  instrument: MarketsQuery_markets_tradableInstrument_instrument;
+  instrument: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument;
   /**
    * A reference to a risk model that is valid for the instrument
    */
-  riskModel: MarketsQuery_markets_tradableInstrument_riskModel;
+  riskModel: MarketsQuery_marketsConnection_edges_node_tradableInstrument_riskModel;
   /**
    * Margin calculation info, currently only the scaling factors (search, initial, release) for this tradable instrument
    */
-  marginCalculator: MarketsQuery_markets_tradableInstrument_marginCalculator | null;
+  marginCalculator: MarketsQuery_marketsConnection_edges_node_tradableInstrument_marginCalculator | null;
 }
 
-export interface MarketsQuery_markets_openingAuction {
+export interface MarketsQuery_marketsConnection_edges_node_openingAuction {
   __typename: "AuctionDuration";
   /**
    * Duration of the auction in seconds
@@ -207,7 +207,7 @@ export interface MarketsQuery_markets_openingAuction {
   volume: number;
 }
 
-export interface MarketsQuery_markets_priceMonitoringSettings_parameters_triggers {
+export interface MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings_parameters_triggers {
   __typename: "PriceMonitoringTrigger";
   /**
    * Price monitoring projection horizon τ in seconds (> 0).
@@ -225,23 +225,23 @@ export interface MarketsQuery_markets_priceMonitoringSettings_parameters_trigger
   auctionExtensionSecs: number;
 }
 
-export interface MarketsQuery_markets_priceMonitoringSettings_parameters {
+export interface MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings_parameters {
   __typename: "PriceMonitoringParameters";
   /**
    * The list of triggers for this price monitoring
    */
-  triggers: MarketsQuery_markets_priceMonitoringSettings_parameters_triggers[] | null;
+  triggers: MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings_parameters_triggers[] | null;
 }
 
-export interface MarketsQuery_markets_priceMonitoringSettings {
+export interface MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings {
   __typename: "PriceMonitoringSettings";
   /**
    * Specified a set of PriceMonitoringParameters to be use for price monitoring purposes
    */
-  parameters: MarketsQuery_markets_priceMonitoringSettings_parameters | null;
+  parameters: MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings_parameters | null;
 }
 
-export interface MarketsQuery_markets_liquidityMonitoringParameters_targetStakeParameters {
+export interface MarketsQuery_marketsConnection_edges_node_liquidityMonitoringParameters_targetStakeParameters {
   __typename: "TargetStakeParameters";
   /**
    * Specifies length of time window expressed in seconds for target stake calculation
@@ -253,7 +253,7 @@ export interface MarketsQuery_markets_liquidityMonitoringParameters_targetStakeP
   scalingFactor: number;
 }
 
-export interface MarketsQuery_markets_liquidityMonitoringParameters {
+export interface MarketsQuery_marketsConnection_edges_node_liquidityMonitoringParameters {
   __typename: "LiquidityMonitoringParameters";
   /**
    * Specifies the triggering ratio for entering liquidity auction
@@ -262,10 +262,10 @@ export interface MarketsQuery_markets_liquidityMonitoringParameters {
   /**
    * Specifies parameters related to target stake calculation
    */
-  targetStakeParameters: MarketsQuery_markets_liquidityMonitoringParameters_targetStakeParameters;
+  targetStakeParameters: MarketsQuery_marketsConnection_edges_node_liquidityMonitoringParameters_targetStakeParameters;
 }
 
-export interface MarketsQuery_markets_proposal {
+export interface MarketsQuery_marketsConnection_edges_node_proposal {
   __typename: "Proposal";
   /**
    * Proposal ID that is filled by Vega once proposal reaches the network
@@ -273,7 +273,7 @@ export interface MarketsQuery_markets_proposal {
   id: string | null;
 }
 
-export interface MarketsQuery_markets_accounts_asset {
+export interface MarketsQuery_marketsConnection_edges_node_accountsConnection_edges_node_asset {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -285,12 +285,12 @@ export interface MarketsQuery_markets_accounts_asset {
   name: string;
 }
 
-export interface MarketsQuery_markets_accounts {
+export interface MarketsQuery_marketsConnection_edges_node_accountsConnection_edges_node {
   __typename: "AccountBalance";
   /**
    * Asset, the 'currency'
    */
-  asset: MarketsQuery_markets_accounts_asset;
+  asset: MarketsQuery_marketsConnection_edges_node_accountsConnection_edges_node_asset;
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
@@ -301,7 +301,23 @@ export interface MarketsQuery_markets_accounts {
   type: AccountType;
 }
 
-export interface MarketsQuery_markets_data_priceMonitoringBounds_trigger {
+export interface MarketsQuery_marketsConnection_edges_node_accountsConnection_edges {
+  __typename: "AccountEdge";
+  /**
+   * The account
+   */
+  node: MarketsQuery_marketsConnection_edges_node_accountsConnection_edges_node;
+}
+
+export interface MarketsQuery_marketsConnection_edges_node_accountsConnection {
+  __typename: "AccountsConnection";
+  /**
+   * List of accounts available for the connection
+   */
+  edges: (MarketsQuery_marketsConnection_edges_node_accountsConnection_edges | null)[] | null;
+}
+
+export interface MarketsQuery_marketsConnection_edges_node_data_priceMonitoringBounds_trigger {
   __typename: "PriceMonitoringTrigger";
   /**
    * Price monitoring auction extension duration in seconds should the price
@@ -315,7 +331,7 @@ export interface MarketsQuery_markets_data_priceMonitoringBounds_trigger {
   probability: number;
 }
 
-export interface MarketsQuery_markets_data_priceMonitoringBounds {
+export interface MarketsQuery_marketsConnection_edges_node_data_priceMonitoringBounds {
   __typename: "PriceMonitoringBounds";
   /**
    * Minimum price that isn't currently breaching the specified price monitoring trigger
@@ -328,14 +344,14 @@ export interface MarketsQuery_markets_data_priceMonitoringBounds {
   /**
    * Price monitoring trigger associated with the bounds
    */
-  trigger: MarketsQuery_markets_data_priceMonitoringBounds_trigger;
+  trigger: MarketsQuery_marketsConnection_edges_node_data_priceMonitoringBounds_trigger;
   /**
    * Reference price used to calculate the valid price range
    */
   referencePrice: string;
 }
 
-export interface MarketsQuery_markets_data_liquidityProviderFeeShare_party {
+export interface MarketsQuery_marketsConnection_edges_node_data_liquidityProviderFeeShare_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -343,12 +359,12 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare_party {
   id: string;
 }
 
-export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
+export interface MarketsQuery_marketsConnection_edges_node_data_liquidityProviderFeeShare {
   __typename: "LiquidityProviderFeeShare";
   /**
    * The liquidity provider party ID
    */
-  party: MarketsQuery_markets_data_liquidityProviderFeeShare_party;
+  party: MarketsQuery_marketsConnection_edges_node_data_liquidityProviderFeeShare_party;
   /**
    * The share owned by this liquidity provider (float)
    */
@@ -359,7 +375,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
   averageEntryValuation: string;
 }
 
-export interface MarketsQuery_markets_data {
+export interface MarketsQuery_marketsConnection_edges_node_data {
   __typename: "MarketData";
   /**
    * The mark price (an unsigned integer)
@@ -448,7 +464,7 @@ export interface MarketsQuery_markets_data {
   /**
    * A list of valid price ranges per associated trigger
    */
-  priceMonitoringBounds: MarketsQuery_markets_data_priceMonitoringBounds[] | null;
+  priceMonitoringBounds: MarketsQuery_marketsConnection_edges_node_data_priceMonitoringBounds[] | null;
   /**
    * The market value proxy
    */
@@ -456,10 +472,10 @@ export interface MarketsQuery_markets_data {
   /**
    * The equity like share of liquidity fee for each liquidity provider
    */
-  liquidityProviderFeeShare: MarketsQuery_markets_data_liquidityProviderFeeShare[] | null;
+  liquidityProviderFeeShare: MarketsQuery_marketsConnection_edges_node_data_liquidityProviderFeeShare[] | null;
 }
 
-export interface MarketsQuery_markets {
+export interface MarketsQuery_marketsConnection_edges_node {
   __typename: "Market";
   /**
    * Market ID
@@ -468,11 +484,11 @@ export interface MarketsQuery_markets {
   /**
    * Fees related data
    */
-  fees: MarketsQuery_markets_fees;
+  fees: MarketsQuery_marketsConnection_edges_node_fees;
   /**
    * An instance of, or reference to, a tradable instrument.
    */
-  tradableInstrument: MarketsQuery_markets_tradableInstrument;
+  tradableInstrument: MarketsQuery_marketsConnection_edges_node_tradableInstrument;
   /**
    * The number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
@@ -494,15 +510,15 @@ export interface MarketsQuery_markets {
    * Auction duration specifies how long the opening auction will run (minimum
    * duration and optionally a minimum traded volume).
    */
-  openingAuction: MarketsQuery_markets_openingAuction;
+  openingAuction: MarketsQuery_marketsConnection_edges_node_openingAuction;
   /**
    * Price monitoring settings for the market
    */
-  priceMonitoringSettings: MarketsQuery_markets_priceMonitoringSettings;
+  priceMonitoringSettings: MarketsQuery_marketsConnection_edges_node_priceMonitoringSettings;
   /**
    * Liquidity monitoring parameters for the market
    */
-  liquidityMonitoringParameters: MarketsQuery_markets_liquidityMonitoringParameters;
+  liquidityMonitoringParameters: MarketsQuery_marketsConnection_edges_node_liquidityMonitoringParameters;
   /**
    * Current mode of execution of the market
    */
@@ -514,20 +530,36 @@ export interface MarketsQuery_markets {
   /**
    * The proposal that initiated this market
    */
-  proposal: MarketsQuery_markets_proposal | null;
+  proposal: MarketsQuery_marketsConnection_edges_node_proposal | null;
   /**
    * Get account for a party or market
    */
-  accounts: MarketsQuery_markets_accounts[] | null;
+  accountsConnection: MarketsQuery_marketsConnection_edges_node_accountsConnection | null;
   /**
    * marketData for the given market
    */
-  data: MarketsQuery_markets_data | null;
+  data: MarketsQuery_marketsConnection_edges_node_data | null;
+}
+
+export interface MarketsQuery_marketsConnection_edges {
+  __typename: "MarketEdge";
+  /**
+   * The market
+   */
+  node: MarketsQuery_marketsConnection_edges_node;
+}
+
+export interface MarketsQuery_marketsConnection {
+  __typename: "MarketConnection";
+  /**
+   * The markets in this connection
+   */
+  edges: MarketsQuery_marketsConnection_edges[];
 }
 
 export interface MarketsQuery {
   /**
-   * One or more instruments that are trading on the VEGA network
+   * One or more instruments that are trading on the Vega network
    */
-  markets: MarketsQuery_markets[] | null;
+  marketsConnection: MarketsQuery_marketsConnection | null;
 }

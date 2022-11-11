@@ -27,46 +27,48 @@ import { PageHeader } from '../../../components/page-header';
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
     partiesConnection(id: $partyId) {
-      node {
-        id
-        delegationsConnection {
-          edges {
-            node {
-              amount
+      edges {
+        node {
+          id
+          delegationsConnection {
+            edges {
               node {
-                id
-                name
+                amount
+                node {
+                  id
+                  name
+                }
+                epoch
               }
-              epoch    
             }
           }
-        }
-        stakingSummary {
-          currentStakeAvailable
-        }
-        accountsConnection {
-          edges {
-            node {
-              asset {
-                name
-                id
-                decimals
-                symbol
-                source {
-                  __typename
-                  ... on ERC20 {
-                    contractAddress
+          stakingSummary {
+            currentStakeAvailable
+          }
+          accountsConnection {
+            edges {
+              node {
+                asset {
+                  name
+                  id
+                  decimals
+                  symbol
+                  source {
+                    __typename
+                    ... on ERC20 {
+                      contractAddress
+                    }
                   }
                 }
+                type
+                balance
               }
-              type
-              balance
             }
+          }
         }
       }
     }
   }
-}
 `;
 
 const Party = () => {
