@@ -24,7 +24,7 @@ export const ERROR_SIZE_DECIMAL = t(
   'The size field accepts up to X decimal places'
 );
 
-export const enum MarketModeValidationType {
+export enum MarketModeValidationType {
   PriceMonitoringAuction = 'PriceMonitoringAuction',
   LiquidityMonitoringAuction = 'LiquidityMonitoringAuction',
   Auction = 'Auction',
