@@ -82,7 +82,6 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
     update,
     insert,
     variables,
-    updateOnInit: true,
   });
   totalCountRef.current = totalCount;
 

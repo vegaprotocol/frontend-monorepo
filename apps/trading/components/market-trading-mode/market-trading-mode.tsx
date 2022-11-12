@@ -63,7 +63,6 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

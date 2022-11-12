@@ -126,7 +126,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     loading: marketLoading,
   } = useDataProvider({
     dataProvider: marketProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables,
   });
 

@@ -85,7 +85,6 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     update,
     insert,
     variables,
-    updateOnInit: true,
   });
   totalCountRef.current = totalCount;
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(

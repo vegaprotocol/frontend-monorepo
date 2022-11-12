@@ -54,7 +54,6 @@ export const MarketVolume = ({ marketId }: { marketId: string }) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

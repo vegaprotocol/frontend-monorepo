@@ -20,11 +20,8 @@ const update = (data: MarketData, delta: MarketDataUpdateFieldsFragment) => {
   });
 };
 
-const getData = (responseData: MarketDataQuery): MarketData | null => {
-  const data = responseData?.marketsConnection?.edges[0].node.data || null;
-  console.log({ data });
-  return data;
-};
+const getData = (responseData: MarketDataQuery): MarketData | null =>
+  responseData?.marketsConnection?.edges[0].node.data || null;
 
 const getDelta = (
   subscriptionData: MarketDataUpdateSubscription
