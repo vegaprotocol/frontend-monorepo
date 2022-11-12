@@ -1,1 +1,1 @@
-export * from './validate-margin';
+export * from './margin-warning';

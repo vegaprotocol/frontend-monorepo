@@ -20,15 +20,18 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
-import { ValidateMargin } from '../deal-ticket-validation/validate-margin';
-import { validateMarketState } from '../../utils';
+import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import { usePersistedOrder } from '../../hooks/use-persisted-order';
 import {
   getDefaultOrder,
+  validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
   validateType,
 } from '../../utils';
+import type BigNumber from 'bignumber.js';
+import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
+import { AccountValidationType } from '../../constants';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -70,12 +73,10 @@ export const DealTicket = ({
   // When order state changes persist it in local storage
   useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
 
-  const isInvalidOrderMargin = useOrderMarginValidation({
+  const accountData = useOrderMarginValidation({
     market,
     estMargin: feeDetails.estMargin,
   });
-
-  console.log(errors);
 
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
@@ -90,8 +91,8 @@ export const DealTicket = ({
         return;
       }
 
-      if (isInvalidOrderMargin) {
-        setError('summary', { message: 'margin' });
+      if (accountData.balance.isZero()) {
+        setError('summary', { message: AccountValidationType.NoCollateral });
         return;
       }
 
@@ -116,11 +117,11 @@ export const DealTicket = ({
     [
       submit,
       pubKey,
+      accountData,
       market.positionDecimalPlaces,
       market.decimalPlaces,
       market.state,
       market.tradingMode,
-      isInvalidOrderMargin,
       setError,
     ]
   );
@@ -188,37 +189,65 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton transactionStatus={transactionStatus} />
-      {errors.summary?.message && (
-        <SummaryError
-          errorMessage={errors.summary.message}
-          marginErrorProps={
-            isInvalidOrderMargin ? isInvalidOrderMargin : undefined
-          }
+      {accountData.balance.isLessThan(accountData.margin) && (
+        <MarginWarning
+          balance={accountData.balance.toString()}
+          margin={accountData.margin.toString()}
+          asset={accountData.asset}
         />
       )}
+      <SummaryMessage
+        errorMessage={errors.summary?.message}
+        accountData={accountData}
+        market={market}
+      />
       <DealTicketFeeDetails details={details} />
     </form>
   );
 };
 
-const SummaryError = ({
+const SummaryMessage = ({
   errorMessage,
-  marginErrorProps,
+  accountData,
+  market,
 }: {
-  errorMessage: string;
-  marginErrorProps?: {
-    balance: string;
-    margin: string;
-    id: string;
-    symbol: string;
-    decimals: number;
+  errorMessage?: string;
+  accountData: {
+    balance: BigNumber;
+    margin: BigNumber;
+    asset: {
+      id: string;
+      decimals: number;
+      symbol: string;
+    };
   };
+  market: DealTicketMarketFragment;
 }) => {
-  if (errorMessage === 'margin' && marginErrorProps) {
+  // Specific error UI for if balance is so we can
+  // render a deposit dialog
+  if (errorMessage === AccountValidationType.NoCollateral) {
     return (
-      <InputError>
-        <ValidateMargin {...marginErrorProps} />
-      </InputError>
+      <ZeroBalanceError
+        asset={market.tradableInstrument.instrument.product.settlementAsset}
+      />
+    );
+  }
+
+  // If we have any other full error which prevents
+  // submission render that first
+  if (errorMessage) {
+    return <InputError>{errorMessage}</InputError>;
+  }
+
+  // If no blocking error render the maring warning error
+  // this should not block user from submitting an order
+  if (accountData.balance.isLessThan(accountData.margin)) {
+    return (
+      <MarginWarning
+        balance={accountData.balance.toString()}
+        margin={accountData.margin.toString()}
+        asset={accountData.asset}
+      />
     );
   }
 
