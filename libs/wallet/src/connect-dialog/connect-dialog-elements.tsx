@@ -1,4 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
+import type { DocsType } from '@vegaprotocol/react-helpers';
 import { createDocsLinks, ExternalLinks, t } from '@vegaprotocol/react-helpers';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
@@ -20,6 +21,8 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
 
 export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const vegaDocsUrl =
+    (VEGA_DOCS_URL as DocsType) || 'https://docs.vega.xyz/mainnet';
   return (
     <footer className="flex justify-center gap-4 px-4 md:px-8 pt-4 md:pt-6 -mx-4 md:-mx-8 border-t border-neutral-500 text-neutral-500 dark:text-neutral-400">
       {children ? (
@@ -31,9 +34,7 @@ export const ConnectDialogFooter = ({ children }: { children?: ReactNode }) => {
           </Link>
           {' | '}
           {VEGA_DOCS_URL && (
-            <Link
-              href={createDocsLinks(VEGA_DOCS_URL).VEGA_WALLET_CONCEPTS_URL}
-            >
+            <Link href={createDocsLinks(vegaDocsUrl).VEGA_WALLET_CONCEPTS_URL}>
               {t('Having trouble?')}
             </Link>
           )}
