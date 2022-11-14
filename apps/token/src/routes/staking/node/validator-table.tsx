@@ -8,7 +8,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { statusTranslationKey } from '../home/node-list';
 import type { StakingNodeFieldsFragment } from './__generated___/Staking';
-import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 const ValidatorTableCell = ({

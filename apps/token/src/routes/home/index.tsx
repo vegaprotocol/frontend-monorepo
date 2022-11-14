@@ -6,7 +6,6 @@ import { Heading } from '../../components/heading';
 import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { BigNumber } from '../../lib/bignumber';
 import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
