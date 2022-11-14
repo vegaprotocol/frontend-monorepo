@@ -16,6 +16,7 @@ import BigNumber from 'bignumber.js';
 import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
+import { getId } from './liquidity-data-provider';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -55,7 +56,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
-        getRowId={({ data }) => data.party.id}
+        getRowId={({ data }) => getId(data)}
         rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}
