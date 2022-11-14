@@ -235,7 +235,7 @@ describe('market states', { tags: '@smoke' }, function () {
       //7002-/SORD-/061 no state displayed
       it('must display that market is not accepting orders', function () {
         cy.getByTestId('place-order').click();
-        cy.getByTestId('dealticket-error-message').should(
+        cy.getByTestId('dealticket-error-message-summary').should(
           'have.text',
           `This market is ${marketState
             .split('_')

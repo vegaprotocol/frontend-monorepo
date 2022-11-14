@@ -1,6 +1,6 @@
 import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import {
@@ -61,7 +61,7 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     setError,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
@@ -206,11 +206,7 @@ export const DealTicket = ({
  * Renders an error message if errors.summary is present otherwise
  * renders warnings about current state of the market
  */
-const SummaryMessage = ({
-  errorMessage,
-  market,
-  accountData,
-}: {
+interface SummaryMessageProps {
   errorMessage?: string;
   market: DealTicketMarketFragment;
   accountData: {
@@ -223,60 +219,66 @@ const SummaryMessage = ({
       name: string;
     };
   };
-}) => {
-  // Specific error UI for if balance is so we can
-  // render a deposit dialog
-  if (errorMessage === AccountValidationType.NoCollateral) {
-    return (
-      <ZeroBalanceError
-        asset={market.tradableInstrument.instrument.product.settlementAsset}
-      />
-    );
-  }
+}
+const SummaryMessage = memo(
+  ({ errorMessage, market, accountData }: SummaryMessageProps) => {
+    // Specific error UI for if balance is so we can
+    // render a deposit dialog
+    if (errorMessage === AccountValidationType.NoCollateral) {
+      return (
+        <ZeroBalanceError
+          asset={market.tradableInstrument.instrument.product.settlementAsset}
+        />
+      );
+    }
 
-  // If we have any other full error which prevents
-  // submission render that first
-  if (errorMessage) {
-    return (
-      <div className="mb-4">
-        <InputError data-testid="dealticket-error-message-summary">
-          {errorMessage}
-        </InputError>
-      </div>
-    );
-  }
+    // If we have any other full error which prevents
+    // submission render that first
+    if (errorMessage) {
+      return (
+        <div className="mb-4">
+          <InputError data-testid="dealticket-error-message-summary">
+            {errorMessage}
+          </InputError>
+        </div>
+      );
+    }
 
-  // If there is no blocking error but user doesn't have enough
-  // balance render the margin warning, but still allow submission
-  if (accountData.balance.isLessThan(accountData.margin)) {
-    return (
-      <MarginWarning
-        balance={accountData.balance.toString()}
-        margin={accountData.margin.toString()}
-        asset={accountData.asset}
-      />
-    );
-  }
+    // If there is no blocking error but user doesn't have enough
+    // balance render the margin warning, but still allow submission
+    if (
+      accountData.balance.isGreaterThan(0) &&
+      accountData.balance.isLessThan(accountData.margin)
+    ) {
+      return (
+        <MarginWarning
+          balance={accountData.balance.toString()}
+          margin={accountData.margin.toString()}
+          asset={accountData.asset}
+        />
+      );
+    }
 
-  // Show auction mode warning
-  if (
-    [
-      Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-    ].includes(market.tradingMode)
-  ) {
-    return (
-      <div
-        className="text-sm text-vega-orange mb-4"
-        data-testid="dealticket-warning-auction"
-      >
-        <p>
-          {t('Any orders placed now will not trade until the auction ends')}
-        </p>
-      </div>
-    );
-  }
+    // Show auction mode warning
+    if (
+      [
+        Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      ].includes(market.tradingMode)
+    ) {
+      return (
+        <div
+          className="text-sm text-vega-orange mb-4"
+          data-testid="dealticket-warning-auction"
+        >
+          <p>
+            {t('Any orders placed now will not trade until the auction ends')}
+          </p>
+        </div>
+      );
+    }
 
-  return null;
-};
+    return null;
+  }
+);
