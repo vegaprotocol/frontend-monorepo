@@ -17,15 +17,15 @@ import type {
   CandlesEventsSubscriptionVariables,
 } from './__generated__/Candles';
 import type { Subscription } from 'zen-observable-ts';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const INTERVAL_TO_PENNANT_MAP = {
-  [PennantInterval.I1M]: Interval.INTERVAL_I1M,
-  [PennantInterval.I5M]: Interval.INTERVAL_I5M,
-  [PennantInterval.I15M]: Interval.INTERVAL_I15M,
-  [PennantInterval.I1H]: Interval.INTERVAL_I1H,
-  [PennantInterval.I6H]: Interval.INTERVAL_I6H,
-  [PennantInterval.I1D]: Interval.INTERVAL_I1D,
+  [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,
+  [PennantInterval.I5M]: Schema.Interval.INTERVAL_I5M,
+  [PennantInterval.I15M]: Schema.Interval.INTERVAL_I15M,
+  [PennantInterval.I1H]: Schema.Interval.INTERVAL_I1H,
+  [PennantInterval.I6H]: Schema.Interval.INTERVAL_I6H,
+  [PennantInterval.I1D]: Schema.Interval.INTERVAL_I1D,
 };
 
 const defaultConfig = {
