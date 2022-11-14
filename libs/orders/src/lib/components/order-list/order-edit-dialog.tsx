@@ -4,6 +4,7 @@ import {
   toDecimal,
   Size,
   getDateTimeFormat,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import {
@@ -36,20 +37,15 @@ export const OrderEditDialog = ({
   onSubmit,
 }: OrderEditDialogProps) => {
   const headerClassName = 'text-lg font-bold text-black dark:text-white';
+  console.log('order number ', order);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      limitPrice: addDecimalsFormatNumber(
-        order.price,
-        order.market?.decimalPlaces ?? 0
-      ),
-      size: addDecimalsFormatNumber(
-        order.size,
-        order.market?.positionDecimalPlaces ?? 0
-      ),
+      limitPrice: addDecimal(order.price, order.market?.decimalPlaces ?? 0),
+      size: addDecimal(order.size, order.market?.positionDecimalPlaces ?? 0),
     },
   });
 
