@@ -78,7 +78,7 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   },
 });
 
-function isLpProvision(
+function isLpFragment(
   entry:
     | LiquidityProvisionFieldsFragment
     | IterableElement<
@@ -99,7 +99,7 @@ export const getId = (
         LiquidityProvisionsUpdateSubscription['liquidityProvisions']
       >
 ) =>
-  isLpProvision(entry)
+  isLpFragment(entry)
     ? `${entry.party.id}${entry.status}${entry.createdAt}`
     : `${entry.partyID}${entry.status}${entry.createdAt}`;
 
