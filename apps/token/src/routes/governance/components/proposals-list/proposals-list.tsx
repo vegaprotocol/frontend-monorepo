@@ -8,7 +8,7 @@ import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
-import { ExternalLinks as Links } from '@vegaprotocol/react-helpers';
+import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
@@ -68,7 +68,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           )}{' '}
           <ExternalLink
             data-testid="proposal-documentation-link"
-            href={Links.GOVERNANCE_PAGE}
+            href={ExternalLinks.GOVERNANCE_PAGE}
             className="text-white"
           >
             {t(`Find out more about Vega governance`)}
