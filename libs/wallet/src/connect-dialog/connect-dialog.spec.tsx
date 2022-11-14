@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
@@ -82,81 +76,13 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(3);
+    expect(list.children).toHaveLength(2);
     expect(screen.getByTestId('connector-local')).toHaveTextContent(
       'Connect wallet (desktop/cli)'
     );
     expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
       'Hosted Fairground wallet'
     );
-  });
-
-  describe('RestConnector', () => {
-    it('connects', async () => {
-      render(generateJSX());
-      // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
-
-      // Client side validation
-      fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      await waitFor(() => {
-        expect(screen.getAllByText('Required')).toHaveLength(2);
-      });
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(mockCloseVegaDialog).toHaveBeenCalled();
-    });
-
-    it('handles failed connection', async () => {
-      const errMessage = 'Error message';
-      // Error from service
-
-      render(generateJSX());
-      // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
-
-      const fields = fillInForm();
-      fireEvent.submit(screen.getByTestId('rest-connector-form'));
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
-      expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(
-        `Wallet not running at ${mockHostedWalletUrl}`
-      );
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(
-        'Authentication failed'
-      );
-    });
-
-    const fillInForm = () => {
-      const walletValue = 'test-wallet';
-      fireEvent.change(screen.getByTestId('rest-wallet'), {
-        target: { value: walletValue },
-      });
-      const passphraseValue = 'test-passphrase';
-      fireEvent.change(screen.getByTestId('rest-passphrase'), {
-        target: { value: passphraseValue },
-      });
-      return { wallet: walletValue, passphrase: passphraseValue };
-    };
   });
 
   describe('JsonRpcConnector', () => {
