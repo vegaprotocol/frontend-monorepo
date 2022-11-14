@@ -46,7 +46,7 @@ describe('Proposal Votes Table', () => {
 
   it('should show vote breakdown fields, excluding custom update market fields', () => {
     renderComponent();
-    expect(screen.getByText('Will pass')).toBeInTheDocument();
+    expect(screen.getByText('Expected to pass')).toBeInTheDocument();
     expect(screen.getByText('Token majority met')).toBeInTheDocument();
     expect(screen.getByText('Token participation met')).toBeInTheDocument();
     expect(screen.getByText('Tokens for proposal')).toBeInTheDocument();
