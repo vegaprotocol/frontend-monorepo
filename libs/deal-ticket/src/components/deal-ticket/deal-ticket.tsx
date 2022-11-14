@@ -31,6 +31,7 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
+import type BigNumber from 'bignumber.js';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -188,30 +189,37 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton transactionStatus={transactionStatus} />
-      {errors.summary?.message && (
-        <SummaryMessage errorMessage={errors.summary.message} market={market} />
-      )}
-      {/* Only render summary message if there is no submissiong
-      blocking error  */}
-      {!errors.summary?.message &&
-        accountData.balance.isLessThan(accountData.margin) && (
-          <MarginWarning
-            balance={accountData.balance.toString()}
-            margin={accountData.margin.toString()}
-            asset={accountData.asset}
-          />
-        )}
+      <SummaryMessage
+        errorMessage={errors.summary?.message}
+        market={market}
+        accountData={accountData}
+      />
       <DealTicketFeeDetails details={details} />
     </form>
   );
 };
 
+/**
+ * Renders an error message if errors.summary is present otherwise
+ * renders warnings about current state of the market
+ */
 const SummaryMessage = ({
   errorMessage,
   market,
+  accountData,
 }: {
-  errorMessage: string;
+  errorMessage?: string;
   market: DealTicketMarketFragment;
+  accountData: {
+    balance: BigNumber;
+    margin: BigNumber;
+    asset: {
+      id: string;
+      symbol: string;
+      decimals: number;
+      name: string;
+    };
+  };
 }) => {
   // Specific error UI for if balance is so we can
   // render a deposit dialog
@@ -229,5 +237,37 @@ const SummaryMessage = ({
     return <InputError>{errorMessage}</InputError>;
   }
 
-  return <InputError>{errorMessage}</InputError>;
+  // If there is no blocking error but user doesn't have enough
+  // balance render the margin warning, but still allow submission
+  if (accountData.balance.isLessThan(accountData.margin)) {
+    return (
+      <MarginWarning
+        balance={accountData.balance.toString()}
+        margin={accountData.margin.toString()}
+        asset={accountData.asset}
+      />
+    );
+  }
+
+  // Show auction mode warning
+  if (
+    [
+      Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    ].includes(market.tradingMode)
+  ) {
+    return (
+      <div
+        className="text-sm text-vega-orange mb-4"
+        data-testid="deal-ticket-margin-invalidated"
+      >
+        <p>
+          {t('Any orders placed now will not trade until the auction ends')}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 };
