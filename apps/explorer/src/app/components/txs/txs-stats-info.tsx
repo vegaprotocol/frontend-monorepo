@@ -2,8 +2,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { InfoBlock } from '../../components/info-block';
 import { Panel } from '../../components/panel';
-import { useExplorerStatsQuery } from './__generated___/explorer-stats';
-import type { ExplorerStatsFieldsFragment } from './__generated___/explorer-stats';
+import { useExplorerStatsQuery } from './__generated__/explorer-stats';
+import type { ExplorerStatsFieldsFragment } from './__generated__/explorer-stats';
 
 interface StatsMap {
   field: keyof ExplorerStatsFieldsFragment;
@@ -57,7 +57,6 @@ export const TxsStatsInfo = ({ className }: TxsStatsInfoProps) => {
     <Panel className={className}>
       <section className={gridStyles}>
         {TXS_STATS_MAP.map((field) => {
-          const f = field.field;
           if (!data?.statistics) {
             return null;
           }
