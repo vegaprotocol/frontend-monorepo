@@ -1,0 +1,45 @@
+fragment ProposalListFields on Proposal {
+  id
+  reference
+  state
+  datetime
+  votes {
+    yes {
+      totalNumber
+      totalWeight
+    }
+    no {
+      totalNumber
+      totalWeight
+    }
+  }
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      ... on NewMarket {
+        instrument {
+          code
+          name
+          futureProduct {
+            settlementAsset {
+              id
+              name
+              symbol
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query ProposalsNewMarkets {
+  proposalsConnection(proposalType: TYPE_NEW_MARKET) {
+    edges {
+      node {
+        ...ProposalListFields
+      }
+    }
+  }
+}
