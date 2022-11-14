@@ -1,10 +1,5 @@
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
-import {
-  AccountType,
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -17,8 +12,8 @@ export const generateMarketInfoQuery = (
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       proposal: {
         __typename: 'Proposal',
         id: 'market-0',
@@ -30,7 +25,7 @@ export const generateMarketInfoQuery = (
       },
       accounts: [
         {
-          type: AccountType.ACCOUNT_TYPE_INSURANCE,
+          type: Schema.AccountType.ACCOUNT_TYPE_INSURANCE,
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             __typename: 'Asset',
@@ -39,7 +34,7 @@ export const generateMarketInfoQuery = (
           __typename: 'AccountBalance',
         },
         {
-          type: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+          type: Schema.AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             __typename: 'Asset',
@@ -95,7 +90,7 @@ export const generateMarketInfoQuery = (
         openInterest: '0',
         bestBidPrice: '681765',
         bestOfferPrice: '681769',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         priceMonitoringBounds: [
           {
             minValidPrice: '654701',

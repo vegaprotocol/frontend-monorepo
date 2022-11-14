@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode, Schema } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
@@ -16,8 +16,8 @@ const defaultMarket = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: Schema.MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {

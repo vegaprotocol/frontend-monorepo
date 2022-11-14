@@ -1,15 +1,11 @@
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage(
-      MarketState.STATE_ACTIVE,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.MarketState.STATE_ACTIVE,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.mockGQLSubscription();
     cy.visit('/');

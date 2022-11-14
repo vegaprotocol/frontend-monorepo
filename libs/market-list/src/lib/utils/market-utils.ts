@@ -1,8 +1,9 @@
 import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type { Market, Candle } from '../';
+const { MarketState, MarketTradingMode } = Schema;
 
 export const totalFees = (fees: Market['fees']['factors']) => {
   return fees

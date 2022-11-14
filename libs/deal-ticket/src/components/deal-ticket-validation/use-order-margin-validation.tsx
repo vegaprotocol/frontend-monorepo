@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import type { OrderMargin } from '../../hooks/use-order-margin';
@@ -23,7 +23,7 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
   const settlementAccount = useSettlementAccount(
     market.tradableInstrument.instrument.product.settlementAsset.id,
     partyBalance?.party?.accounts || [],
-    AccountType.ACCOUNT_TYPE_GENERAL
+    Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;

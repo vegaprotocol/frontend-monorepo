@@ -13,10 +13,9 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import {
-  AuctionTrigger,
   AuctionTriggerMapping,
-  MarketTradingMode,
   MarketTradingModeMapping,
+  Schema,
 } from '@vegaprotocol/types';
 import {
   Link as UILink,
@@ -51,9 +50,10 @@ const TradingMode = ({ market }: { market: Market }) => {
     >
       <span>
         {market.tradingMode ===
-          MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-        market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        market.data.trigger !==
+          Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode]}

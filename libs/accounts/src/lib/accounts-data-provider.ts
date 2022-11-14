@@ -4,7 +4,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import produce from 'immer';
 
 import {
@@ -20,6 +20,8 @@ import type {
 } from './__generated__/Accounts';
 import type { Market } from '@vegaprotocol/market-list';
 import type { Asset } from '@vegaprotocol/assets';
+
+const AccountType = Schema.AccountType;
 
 function isAccount(
   account:

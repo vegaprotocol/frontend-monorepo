@@ -9,8 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import type {
@@ -54,7 +53,7 @@ export interface Position {
   liquidationPrice: string;
   lowMarginLevel: boolean;
   marketId: string;
-  marketTradingMode: MarketTradingMode;
+  marketTradingMode: Schema.MarketTradingMode;
   markPrice: string;
   notional: string;
   openVolume: string;
@@ -96,7 +95,7 @@ export const getMetrics = (
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
-        account.type === AccountType.ACCOUNT_TYPE_GENERAL
+        account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
     );
     const decimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =

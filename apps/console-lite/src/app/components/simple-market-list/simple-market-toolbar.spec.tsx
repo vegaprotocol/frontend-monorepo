@@ -14,7 +14,7 @@ import {
   getAllByText,
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import { markets as filterData } from './mocks/market-filters.json';
@@ -113,7 +113,7 @@ describe('SimpleMarketToolbar', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
-        `/markets/${MarketState.STATE_ACTIVE}/Future`
+        `/markets/${Schema.MarketState.STATE_ACTIVE}/Future`
       );
     });
 
@@ -124,7 +124,7 @@ describe('SimpleMarketToolbar', () => {
     );
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
-        `/markets/${MarketState.STATE_ACTIVE}/Future/tEURO`
+        `/markets/${Schema.MarketState.STATE_ACTIVE}/Future/tEURO`
       );
     });
 
@@ -139,7 +139,7 @@ describe('SimpleMarketToolbar', () => {
     });
     await waitFor(() => {
       expect(mockedNavigate).toHaveBeenCalledWith(
-        `/markets/${MarketState.STATE_PENDING}/Future/tEURO`
+        `/markets/${Schema.MarketState.STATE_PENDING}/Future/tEURO`
       );
     });
   });
@@ -165,7 +165,7 @@ describe('SimpleMarketToolbar', () => {
     fireEvent.click(suspended);
 
     expect(mockedNavigate).toHaveBeenCalledWith(
-      `/markets/${MarketState.STATE_SUSPENDED}/product1/asset1`
+      `/markets/${Schema.MarketState.STATE_SUSPENDED}/product1/asset1`
     );
   });
 
@@ -186,7 +186,7 @@ describe('SimpleMarketToolbar', () => {
     fireEvent.click(closed);
 
     expect(mockedNavigate).toHaveBeenCalledWith(
-      `/markets/${MarketState.STATE_CLOSED}`
+      `/markets/${Schema.MarketState.STATE_CLOSED}`
     );
   });
 

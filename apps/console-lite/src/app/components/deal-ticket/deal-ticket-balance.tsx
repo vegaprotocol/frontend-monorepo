@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type {
   AccountFragment,
   DealTicketMarketFragment,
@@ -25,7 +25,7 @@ export const DealTicketBalance = ({
   const settlementAccount = useSettlementAccount(
     settlementAssetId,
     accounts,
-    AccountType.ACCOUNT_TYPE_GENERAL
+    Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
   const formattedNumber =
     settlementAccount?.balance &&
