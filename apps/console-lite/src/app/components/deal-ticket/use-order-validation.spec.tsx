@@ -11,13 +11,27 @@ import {
 } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
-import * as OrderMarginValidation from './use-order-margin-validation';
-import { ERROR_SIZE_DECIMAL } from '../constants';
-import type { DealTicketMarketFragment } from '../components';
-import { MarginWarning } from '../components';
+import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import * as DealTicket from '@vegaprotocol/deal-ticket';
 import BigNumber from 'bignumber.js';
 
 jest.mock('@vegaprotocol/wallet');
+jest.mock('@vegaprotocol/deal-ticket', () => {
+  return {
+    ...jest.requireActual('@vegaprotocol/deal-ticket'),
+    useOrderMarginValidation: jest.fn(),
+  };
+});
+
+type SettlementAsset =
+  DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
+const asset: SettlementAsset = {
+  __typename: 'Asset',
+  id: 'asset-id',
+  symbol: 'asset-symbol',
+  name: 'asset-name',
+  decimals: 2,
+};
 
 const market: DealTicketMarketFragment = {
   id: 'market-id',
@@ -34,13 +48,7 @@ const market: DealTicketMarketFragment = {
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
-        settlementAsset: {
-          __typename: 'Asset',
-          id: 'asset-id',
-          symbol: 'asset-symbol',
-          name: 'asset-name',
-          decimals: 2,
-        },
+        settlementAsset: asset,
       },
     },
   },
@@ -123,9 +131,11 @@ describe('useOrderValidation', () => {
   });
 
   it('Returns empty string when given valid data', () => {
-    jest
-      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
-      .mockReturnValue(false);
+    jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
+      balance: new BigNumber(0),
+      margin: new BigNumber(100),
+      asset,
+    });
 
     const { result } = setup();
     expect(result.current).toStrictEqual({
@@ -136,9 +146,11 @@ describe('useOrderValidation', () => {
   });
 
   it('Returns an error message when no keypair found', () => {
-    jest
-      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
-      .mockReturnValue(false);
+    jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
+      balance: new BigNumber(0),
+      margin: new BigNumber(100),
+      asset,
+    });
     const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({
       isDisabled: false,
@@ -175,9 +187,11 @@ describe('useOrderValidation', () => {
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
-      jest
-        .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
-        .mockReturnValue(false);
+      jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
+        balance: new BigNumber(0),
+        margin: new BigNumber(100),
+        asset,
+      });
       const { result } = setup({
         market: {
           ...defaultOrder.market,
@@ -265,7 +279,9 @@ describe('useOrderValidation', () => {
   it('Returns an error message when the order size incorrectly has decimal values', () => {
     const { result } = setup({
       market: { ...market, positionDecimalPlaces: 0 },
-      fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
+      fieldErrors: {
+        size: { type: `validate`, message: DealTicket.ERROR_SIZE_DECIMAL },
+      },
     });
     expect(result.current).toStrictEqual({
       isDisabled: true,
@@ -276,7 +292,9 @@ describe('useOrderValidation', () => {
 
   it('Returns an error message when the order size has more decimals than allowed', () => {
     const { result } = setup({
-      fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
+      fieldErrors: {
+        size: { type: `validate`, message: DealTicket.ERROR_SIZE_DECIMAL },
+      },
     });
     expect(result.current).toStrictEqual({
       isDisabled: true,
@@ -287,24 +305,21 @@ describe('useOrderValidation', () => {
 
   it('Returns an error message when the estimated margin is higher than collateral', async () => {
     const invalidatedMockValue = {
-      balance: new BigNumber('0000000,1'),
-      margin: new BigNumber('000,1'),
-      asset: {
-        id: 'instrument-id',
-        symbol: 'asset-symbol',
-        decimals: 5,
-        name: 'asset-name',
-      },
+      balance: new BigNumber(100),
+      margin: new BigNumber(200),
+      asset,
     };
+
     jest
-      .spyOn(OrderMarginValidation, 'useOrderMarginValidation')
+      .spyOn(DealTicket, 'useOrderMarginValidation')
       .mockReturnValue(invalidatedMockValue);
+
     const { result } = setup({});
 
-    expect(result.current.isDisabled).toBe(true);
+    expect(result.current.isDisabled).toBe(false);
 
     const testElement = (
-      <MarginWarning
+      <DealTicket.MarginWarning
         margin={invalidatedMockValue.margin.toString()}
         balance={invalidatedMockValue.balance.toString()}
         asset={invalidatedMockValue.asset}
@@ -327,7 +342,7 @@ describe('useOrderValidation', () => {
     ({ state }) => {
       const { result } = setup({
         fieldErrors: {
-          size: { type: `validate`, message: ERROR_SIZE_DECIMAL },
+          size: { type: `validate`, message: DealTicket.ERROR_SIZE_DECIMAL },
         },
         market: {
           ...market,

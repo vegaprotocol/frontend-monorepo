@@ -346,9 +346,12 @@ export const useOrderValidation = ({
       return fieldErrorChecking;
     }
 
-    if (isInvalidOrderMargin) {
+    if (
+      isInvalidOrderMargin.balance.isGreaterThan(0) &&
+      isInvalidOrderMargin.balance.isLessThan(isInvalidOrderMargin.margin)
+    ) {
       return {
-        isDisabled: true,
+        isDisabled: false,
         message: (
           <MarginWarning
             margin={isInvalidOrderMargin.margin.toString()}
