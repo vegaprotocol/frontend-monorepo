@@ -1,4 +1,4 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
@@ -10,11 +10,6 @@ import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
 import type { WalletCardAssetProps } from '../wallet-card';
-import type {
-  Delegations,
-  Delegations_party_delegationsConnection_edges_node,
-  DelegationsVariables,
-} from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
@@ -23,49 +18,12 @@ import { AccountType } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-
-const DELEGATIONS_QUERY = gql`
-  query Delegations($partyId: ID!) {
-    epoch {
-      id
-    }
-    party(id: $partyId) {
-      id
-      delegationsConnection {
-        edges {
-          node {
-            amountFormatted @client
-            amount
-            node {
-              id
-              name
-            }
-            epoch
-          }
-        }
-      }
-      stakingSummary {
-        currentStakeAvailable
-      }
-      accounts {
-        asset {
-          name
-          id
-          decimals
-          symbol
-          source {
-            __typename
-            ... on ERC20 {
-              contractAddress
-            }
-          }
-        }
-        type
-        balance
-      }
-    }
-  }
-`;
+import type {
+  DelegationsQuery,
+  DelegationsQueryVariables,
+  WalletDelegationFieldsFragment,
+} from './__generated___/Delegations';
+import { DelegationsDocument } from './__generated___/Delegations';
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
@@ -77,7 +35,7 @@ export const usePollForDelegations = () => {
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
   const [delegations, setDelegations] = React.useState<
-    Delegations_party_delegationsConnection_edges_node[]
+    WalletDelegationFieldsFragment[]
   >([]);
   const [delegatedNodes, setDelegatedNodes] = React.useState<
     {
@@ -101,8 +59,8 @@ export const usePollForDelegations = () => {
       // start polling for delegation
       interval = setInterval(() => {
         client
-          .query<Delegations, DelegationsVariables>({
-            query: DELEGATIONS_QUERY,
+          .query<DelegationsQuery, DelegationsQueryVariables>({
+            query: DelegationsDocument,
             variables: { partyId: pubKey },
             fetchPolicy: 'network-only',
           })
@@ -127,7 +85,9 @@ export const usePollForDelegations = () => {
                 decimals
               )
             );
-            const accounts = res.data.party?.accounts || [];
+            const accounts = compact(
+              res.data.party?.accountsConnection?.edges
+            ).map((e) => e.node);
             setAccounts(
               accounts
                 .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
