@@ -188,14 +188,19 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton transactionStatus={transactionStatus} />
-      <SummaryMessage errorMessage={errors.summary?.message} market={market} />
-      {accountData.balance.isLessThan(accountData.margin) && (
-        <MarginWarning
-          balance={accountData.balance.toString()}
-          margin={accountData.margin.toString()}
-          asset={accountData.asset}
-        />
+      {errors.summary?.message && (
+        <SummaryMessage errorMessage={errors.summary.message} market={market} />
       )}
+      {/* Only render summary message if there is no submissiong
+      blocking error  */}
+      {!errors.summary?.message &&
+        accountData.balance.isLessThan(accountData.margin) && (
+          <MarginWarning
+            balance={accountData.balance.toString()}
+            margin={accountData.margin.toString()}
+            asset={accountData.asset}
+          />
+        )}
       <DealTicketFeeDetails details={details} />
     </form>
   );
@@ -205,7 +210,7 @@ const SummaryMessage = ({
   errorMessage,
   market,
 }: {
-  errorMessage?: string;
+  errorMessage: string;
   market: DealTicketMarketFragment;
 }) => {
   // Specific error UI for if balance is so we can
