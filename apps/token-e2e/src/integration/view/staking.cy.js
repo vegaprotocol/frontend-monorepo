@@ -37,7 +37,7 @@ context('Staking Page - verify elements on page', function () {
           .and(
             'have.attr',
             'href',
-            'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega'
+            'https://docs.vega.xyz/mainnet/concepts/vega-chain/#staking-on-vega'
           );
       });
     });
