@@ -72,7 +72,7 @@ export const MarketInfoContainer = ({
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketInfoDataProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables,
   });
 

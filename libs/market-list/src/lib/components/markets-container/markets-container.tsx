@@ -11,7 +11,7 @@ interface MarketsContainerProps {
 export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const { data, error, loading } = useDataProvider<MarketWithData[], never>({
     dataProvider,
-    noUpdate: true,
+    skipUpdates: true,
   });
 
   return (

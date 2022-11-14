@@ -71,7 +71,6 @@ export const Last24hVolume = ({ marketId }: { marketId: string }) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

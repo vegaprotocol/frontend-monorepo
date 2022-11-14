@@ -101,7 +101,7 @@ export const useMarketList = () => {
   const { data, loading, error } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
-    noUpdate: true,
+    skipUpdates: true,
   });
 
   return {

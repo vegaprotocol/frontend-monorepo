@@ -44,7 +44,7 @@ const SimpleMarketList = () => {
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithCandlesProvider,
     variables,
-    noUpdate: true,
+    skipUpdates: true,
   });
   const localData = useMarketsFilterData(data, params);
 

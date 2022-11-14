@@ -69,7 +69,6 @@ export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

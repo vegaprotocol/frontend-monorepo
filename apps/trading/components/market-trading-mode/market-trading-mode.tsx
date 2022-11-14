@@ -62,7 +62,6 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (
@@ -83,8 +82,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
         {tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         trigger &&
         trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[tradingMode]}
-                     - ${AuctionTriggerMapping[trigger]}`
+          ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
           : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]}
       </div>
     </HeaderStat>

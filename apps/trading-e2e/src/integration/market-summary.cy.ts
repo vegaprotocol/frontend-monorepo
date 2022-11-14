@@ -90,6 +90,18 @@ describe('Market trading page', () => {
         });
       });
     });
+
+    it('must see market mode', () => {
+      cy.getByTestId(marketSummaryBlock).within(() => {
+        cy.getByTestId(marketMode).within(() => {
+          cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
+          cy.getByTestId(itemValue).should(
+            'have.text',
+            'Monitoring auction - liquidity'
+          );
+        });
+      });
+    });
   });
 
   describe('Market tooltips', { tags: '@regression' }, () => {
