@@ -74,8 +74,8 @@ export const usePollForDelegations = () => {
                 return d.epoch.toString() === res.data.epoch.id;
               }) || [];
             const sortedDelegations = [...filter].sort((a, b) => {
-              return new BigNumber(b.amountFormatted)
-                .minus(a.amountFormatted)
+              return toBigNum(b.amount, decimals)
+                .minus(toBigNum(a.amount, decimals))
                 .toNumber();
             });
             setDelegations(sortedDelegations);
@@ -157,18 +157,18 @@ export const usePollForDelegations = () => {
                   delegatedThisEpoch[d]?.node?.name ||
                   delegatedNextEpoch[d]?.node?.name,
                 hasStakePending: !!(
-                  (delegatedThisEpoch[d]?.amountFormatted ||
-                    delegatedNextEpoch[d]?.amountFormatted) &&
-                  delegatedThisEpoch[d]?.amountFormatted !==
-                    delegatedNextEpoch[d]?.amountFormatted &&
+                  (delegatedThisEpoch[d]?.amount ||
+                    delegatedNextEpoch[d]?.amount) &&
+                  delegatedThisEpoch[d]?.amount !==
+                    delegatedNextEpoch[d]?.amount &&
                   delegatedNextEpoch[d] !== undefined
                 ),
                 currentEpochStake:
                   delegatedThisEpoch[d] &&
-                  new BigNumber(delegatedThisEpoch[d].amountFormatted),
+                  toBigNum(delegatedThisEpoch[d].amount, decimals),
                 nextEpochStake:
                   delegatedNextEpoch[d] &&
-                  new BigNumber(delegatedNextEpoch[d].amountFormatted),
+                  toBigNum(delegatedNextEpoch[d].amount, decimals),
               }))
               .sort((a, b) => {
                 if (

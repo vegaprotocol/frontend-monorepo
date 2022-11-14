@@ -11,6 +11,7 @@ import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useNodeDataQuery } from './__generated___/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {
@@ -19,8 +20,8 @@ const Home = ({ name }: RouteChildProps) => {
   const { appState } = useAppState();
   const { data } = useNodeDataQuery();
   const totalAssociated = React.useMemo(() => {
-    return new BigNumber(data?.nodeData?.stakedTotalFormatted || '0');
-  }, [data]);
+    return toBigNum(data?.nodeData?.stakedTotal || '0', appState.decimals);
+  }, [appState.decimals, data?.nodeData?.stakedTotal]);
 
   return (
     <>
