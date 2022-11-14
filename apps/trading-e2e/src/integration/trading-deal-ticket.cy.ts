@@ -302,7 +302,7 @@ describe(
 );
 
 describe(
-  'must submit order for market in batch auction',
+  'must submit order for market in opening auction',
   { tags: '@regression' },
   () => {
     before(() => {
@@ -361,7 +361,7 @@ describe(
 );
 
 describe(
-  'must submit order for market in batch auction',
+  'must submit order for market in monitoring auction',
   { tags: '@regression' },
   () => {
     before(() => {
