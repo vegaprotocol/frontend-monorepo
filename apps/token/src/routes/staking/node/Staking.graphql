@@ -18,13 +18,12 @@ fragment StakingNodeFields on Node {
     offline
     online
   }
-  status
   rankingScore {
     rankingScore
     stakeScore
     performanceScore
     votingPower
-    stakeScore
+    status
   }
 }
 
