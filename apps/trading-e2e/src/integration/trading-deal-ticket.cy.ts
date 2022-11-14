@@ -627,9 +627,9 @@ describe('market order validations', { tags: '@smoke' }, () => {
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockTradingPage(
-      MarketState.STATE_SUSPENDED,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.MarketState.STATE_SUSPENDED,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
