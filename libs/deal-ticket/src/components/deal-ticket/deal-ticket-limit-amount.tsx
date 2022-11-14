@@ -22,7 +22,7 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <InputError data-testid="deal-ticket-error-message-size-limit">
+        <InputError data-testid="dealticket-error-message-size-limit">
           {sizeError}
         </InputError>
       );
@@ -30,7 +30,7 @@ export const DealTicketLimitAmount = ({
 
     if (priceError) {
       return (
-        <InputError data-testid="deal-ticket-error-message-price-limit">
+        <InputError data-testid="dealticket-error-message-price-limit">
           {priceError}
         </InputError>
       );
@@ -60,7 +60,7 @@ export const DealTicketLimitAmount = ({
                 required: t('You need to provide a size'),
                 min: {
                   value: sizeStep,
-                  message: t('Size must be greater than ' + sizeStep),
+                  message: t('Size cannot be lower than ' + sizeStep),
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               })}

@@ -61,7 +61,7 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     setError,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
@@ -188,7 +188,10 @@ export const DealTicket = ({
             )}
           />
         )}
-      <DealTicketButton transactionStatus={transactionStatus} />
+      <DealTicketButton
+        disabled={Object.keys(errors).length >= 1}
+        transactionStatus={transactionStatus}
+      />
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}
@@ -234,7 +237,13 @@ const SummaryMessage = ({
   // If we have any other full error which prevents
   // submission render that first
   if (errorMessage) {
-    return <InputError>{errorMessage}</InputError>;
+    return (
+      <div className="mb-4">
+        <InputError data-testid="dealticket-error-message-summary">
+          {errorMessage}
+        </InputError>
+      </div>
+    );
   }
 
   // If there is no blocking error but user doesn't have enough
@@ -260,7 +269,7 @@ const SummaryMessage = ({
     return (
       <div
         className="text-sm text-vega-orange mb-4"
-        data-testid="deal-ticket-margin-invalidated"
+        data-testid="dealticket-warning-auction"
       >
         <p>
           {t('Any orders placed now will not trade until the auction ends')}

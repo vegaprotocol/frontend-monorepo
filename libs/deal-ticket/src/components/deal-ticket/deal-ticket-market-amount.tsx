@@ -90,7 +90,10 @@ export const DealTicketMarketAmount = ({
         </div>
       </div>
       {sizeError && (
-        <InputError intent="danger" data-testid="deal-ticket-error-message">
+        <InputError
+          intent="danger"
+          data-testid="dealticket-error-message-size-market"
+        >
           {sizeError}
         </InputError>
       )}

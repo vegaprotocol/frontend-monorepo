@@ -10,6 +10,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
+import { MarketModeValidationType } from '../../constants';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
@@ -67,13 +68,13 @@ export const TimeInForceSelector = ({
   ]);
 
   const renderError = (errorType: string) => {
-    if (errorType === 'auction') {
+    if (errorType === MarketModeValidationType.Auction) {
       return t(
         `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
       );
     }
 
-    if (errorType === 'liquidity') {
+    if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
       return (
         <span>
           {t('This market is in auction until it reaches')}{' '}
@@ -90,7 +91,7 @@ export const TimeInForceSelector = ({
       );
     }
 
-    if (errorType === 'price') {
+    if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
       return (
         <span>
           {t('This market is in auction due to')}{' '}
@@ -131,7 +132,11 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
-      {errorMessage && <InputError>{renderError(errorMessage)}</InputError>}
+      {errorMessage && (
+        <InputError data-testid="dealticket-error-message-tif">
+          {renderError(errorMessage)}
+        </InputError>
+      )}
     </FormGroup>
   );
 };

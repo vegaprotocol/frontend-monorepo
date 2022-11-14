@@ -14,9 +14,9 @@ export const ZeroBalanceError = ({ asset }: ZeroBalanceErrorProps) => {
   const [depositDialog, setDepositDialog] = useState(false);
   return (
     <>
-      <InputError data-testid="deal-ticket-zero-balance">
+      <InputError data-testid="dealticket-error-message-zero-balance">
         <p className="mb-2">
-          {t('Insufficent balance. ')}
+          {t('Insufficient balance. ')}
           <ButtonLink
             data-testid="deal-ticket-deposit-dialog-button"
             onClick={() => setDepositDialog(true)}

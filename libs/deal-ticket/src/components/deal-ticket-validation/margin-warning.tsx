@@ -19,7 +19,7 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
     <>
       <div
         className="text-sm text-vega-orange mb-4"
-        data-testid="deal-ticket-margin-invalidated"
+        data-testid="dealticket-warning-margin"
       >
         <p className="mb-2">
           {t('You may not have enough margin available to open this position.')}{' '}
