@@ -5,14 +5,12 @@ import {
   FormGroup,
   Icon,
   Input,
-  Link,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector, WalletError } from '../connectors';
-import { JsonRpcConnector, RestConnector } from '../connectors';
-import { RestConnectorForm } from './rest-connector-form';
+import { JsonRpcConnector } from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -22,11 +20,10 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
-import * as constants from '../constants';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'gui' | 'cli' | 'hosted';
+type WalletType = 'cli' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -148,10 +145,7 @@ const ConnectDialogContainer = ({
   const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
 
   const handleSelect = (type: WalletType) => {
-    // Only cli is currently uses JsonRpc, this will need to be updated
-    // when gui does too
-    const connector =
-      type === 'cli' ? connectors['jsonRpc'] : connectors['rest'];
+    const connector = connectors['jsonRpc'];
 
     // If the user has selected hosted wallet ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
     // otherwise use the default walletUrl or what has been put in the input
@@ -244,39 +238,6 @@ const SelectedForm = ({
   reset: () => void;
   onConnect: () => void;
 }) => {
-  if (connector instanceof RestConnector) {
-    return (
-      <>
-        <ConnectDialogContent>
-          <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-          <div className="mb-2">
-            <RestConnectorForm connector={connector} onConnect={onConnect} />
-          </div>
-        </ConnectDialogContent>
-        {type === 'hosted' ? (
-          <ConnectDialogFooter>
-            <p className="text-center">
-              {t('For demo purposes get a ')}
-              <Link
-                href={constants.VEGA_WALLET_HOSTED_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t('hosted wallet')}
-              </Link>
-              {t(', or for the real experience create a wallet in the ')}
-              <Link href={constants.VEGA_WALLET_URL}>
-                {t('Vega wallet app')}
-              </Link>
-            </p>
-          </ConnectDialogFooter>
-        ) : (
-          <ConnectDialogFooter />
-        )}
-      </>
-    );
-  }
-
   if (connector instanceof JsonRpcConnector) {
     return (
       <>
