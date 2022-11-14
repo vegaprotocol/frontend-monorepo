@@ -1,5 +1,4 @@
 fragment WalletDelegationFields on Delegation {
-  amountFormatted @client
   amount
   node {
     id
