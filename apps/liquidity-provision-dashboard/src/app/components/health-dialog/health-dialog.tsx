@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import classNames from 'classnames';
 
 import { HealthBar } from '../health-bar';
@@ -16,7 +16,7 @@ const ROWS = [
     title: 'Continuous',
     copy: 'Markets that have committed liquidity equal or greater than the target stake are trading continuously.',
     data: {
-      status: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      status: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       target: '171320',
       decimals: 5,
       levels: [
@@ -31,7 +31,7 @@ const ROWS = [
     title: 'Monitoring auction (liquidity)',
     copy: 'Markets below the target stake will see trading suspended and go into liquidity auction.',
     data: {
-      status: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      status: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       target: '171320',
       decimals: 5,
       levels: [
@@ -45,7 +45,7 @@ const ROWS = [
     title: 'Opening auction',
     copy: 'A newly created market looking for a target liquidity amount to start trading.',
     data: {
-      status: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      status: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       target: '171320',
       decimals: 3,
       levels: [
