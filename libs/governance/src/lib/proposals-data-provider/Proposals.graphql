@@ -34,8 +34,8 @@ fragment ProposalListFields on Proposal {
   }
 }
 
-query ProposalsNewMarkets {
-  proposalsConnection(proposalType: TYPE_NEW_MARKET) {
+query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
+  proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
       node {
         ...ProposalListFields
