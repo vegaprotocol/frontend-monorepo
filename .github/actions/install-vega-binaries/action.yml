@@ -19,7 +19,7 @@ runs:
     - name: Checkout vegawallet-dummy
       uses: actions/checkout@v3
       with:
-        repository: 'https://github.com/vegaprotocol/vegawallet-dummy'
+        repository: 'vegaprotocol/vegawallet-dummy'
         path: './dummy'
 
     - name: Install vegawallet-dummy binaries
