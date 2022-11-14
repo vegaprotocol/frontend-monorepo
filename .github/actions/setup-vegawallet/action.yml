@@ -19,27 +19,29 @@ runs:
 
     - name: Initialize wallet
       shell: bash
-      run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
+      run: vega wallet init -f --home ~/.vegacapsule/testnet/wallet
 
     - name: Import wallet
       shell: bash
-      run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      if: ${{ inputs.capsule=='false' }}
+      run: vega wallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Create public key 2
       shell: bash
-      run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      if: ${{ inputs.capsule=='false' }}
+      run: vega wallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Import network
       shell: bash
       if: ${{ inputs.capsule=='false' }}
-      run: vegawallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
+      run: vega wallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
 
     - name: Start service using fairground network
       shell: bash
       if: ${{ inputs.capsule=='false' }}
-      run: vegawallet service run --network stagnet3 --automatic-consent --no-version-check --home ~/.vegacapsule/testnet/wallet &
+      run: vegawallet-dummy service run --network stagnet3 --wallet UI_Trading_Test --passphrase-file ./passphrase --automatic-consent --no-version-check --home ~/.vegacapsule/testnet/wallet &
 
     - name: Start service using capsule network
       shell: bash
       if: ${{ inputs.capsule=='true' }}
-      run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+      run: vegawallet-dummy service run --network DV --wallet capsule_wallet --passphrase-file ./passphrase --automatic-consent  --home ~/.vegacapsule/testnet/wallet &

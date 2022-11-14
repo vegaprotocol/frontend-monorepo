@@ -11,21 +11,18 @@ runs:
   using: 'composite'
   steps:
     - name: Install Vega binaries
-      if: ${{ inputs.all }}
       shell: bash
       run: |
         wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vega-linux-amd64.zip' -q
         unzip vega-linux-amd64.zip -d ${{ inputs.gobin }}
 
-    - name: Install date-node binaries
-      if: ${{ inputs.all  }}
-      shell: bash
-      run: |
-        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/data-node-linux-amd64.zip' -q
-        unzip data-node-linux-amd64.zip -d ${{ inputs.gobin }}
+    - name: Checkout vegawallet-dummy
+      uses: actions/checkout@v3
+      with:
+        repository: 'https://github.com/vegaprotocol/vegawallet-dummy'
+        path: './dummy'
 
-    - name: Install Vega wallet binaries
+    - name: Install vegawallet-dummy binaries
       shell: bash
-      run: |
-        wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vegawallet-linux-amd64.zip' -q
-        unzip vegawallet-linux-amd64.zip -d ${{ inputs.gobin }}
+      run: go install
+      working-directory: ./dummy
