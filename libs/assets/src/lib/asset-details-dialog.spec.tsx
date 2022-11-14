@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { AssetDetailsDialog } from './asset-details-dialog';
 import { AssetDetail, testId } from './asset-details-table';
 import { AssetsDocument } from './__generated__/Assets';
@@ -11,23 +11,23 @@ const mockedData = {
     assetsConnection: {
       edges: [
         {
-          node: generateERC20Asset(1, AssetStatus.STATUS_ENABLED),
+          node: generateERC20Asset(1, Schema.AssetStatus.STATUS_ENABLED),
           __typename: 'AssetEdge',
         },
         {
-          node: generateBuiltinAsset(1, AssetStatus.STATUS_ENABLED),
+          node: generateBuiltinAsset(1, Schema.AssetStatus.STATUS_ENABLED),
           __typename: 'AssetEdge',
         },
         {
-          node: generateBuiltinAsset(2, AssetStatus.STATUS_PENDING_LISTING),
+          node: generateBuiltinAsset(2, Schema.AssetStatus.STATUS_PENDING_LISTING),
           __typename: 'AssetEdge',
         },
         {
-          node: generateBuiltinAsset(3, AssetStatus.STATUS_PROPOSED),
+          node: generateBuiltinAsset(3, Schema.AssetStatus.STATUS_PROPOSED),
           __typename: 'AssetEdge',
         },
         {
-          node: generateBuiltinAsset(4, AssetStatus.STATUS_REJECTED),
+          node: generateBuiltinAsset(4, Schema.AssetStatus.STATUS_REJECTED),
           __typename: 'AssetEdge',
         },
       ],

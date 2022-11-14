@@ -4,7 +4,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AssetsDocument } from './__generated__/Assets';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { AssetsQuery } from './__generated__/Assets';
 import type { Asset } from './asset-data-provider';
 
@@ -54,7 +54,7 @@ export const enabledAssetsProvider = makeDerivedDataProvider<
   never
 >([assetsProvider], ([assets]) =>
   (assets as ReturnType<typeof getData>).filter(
-    (a) => a.status === AssetStatus.STATUS_ENABLED
+    (a) => a.status === Schema.AssetStatus.STATUS_ENABLED
   )
 );
 
