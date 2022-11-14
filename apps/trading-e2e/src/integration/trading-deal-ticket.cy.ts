@@ -537,7 +537,6 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
     cy.getByTestId(orderSizeField).clear().type('1');
     cy.getByTestId(orderPriceField).clear().type('1.123456');
-    cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId('dealticket-error-message-price-limit').should(
       'have.text',
       'Price accepts up to 5 decimal places'
