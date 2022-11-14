@@ -91,6 +91,7 @@ export const DealTicketLimitAmount = ({
                   value: priceStep,
                   message: t('Price cannot be lower than ' + priceStep),
                 },
+                // @ts-ignore this fulfills the interface but still errors
                 validate: validateAmount(priceStep, 'Price'),
               })}
             />
