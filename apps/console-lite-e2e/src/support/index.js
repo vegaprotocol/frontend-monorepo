@@ -27,7 +27,9 @@ before(() => {
     aliasQuery(req, 'ChainId', {
       statistics: {
         __typename: 'Statistics',
-        chainId: 'vega-fairground-202210041151',
+        chainId:
+          Cypress.env('VEGA_ENV').toLowerCase() ||
+          'vega-fairground-202210041151',
       },
     });
   });
