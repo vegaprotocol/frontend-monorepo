@@ -24,21 +24,25 @@ query Delegations($partyId: ID!) {
     stakingSummary {
       currentStakeAvailable
     }
-    accounts {
-      asset {
-        name
-        id
-        decimals
-        symbol
-        source {
-          __typename
-          ... on ERC20 {
-            contractAddress
+    accountsConnection {
+      edges {
+        node {
+          asset {
+            name
+            id
+            decimals
+            symbol
+            source {
+              __typename
+              ... on ERC20 {
+                contractAddress
+              }
+            }
           }
+          type
+          balance
         }
       }
-      type
-      balance
     }
   }
 }
