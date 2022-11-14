@@ -29,7 +29,6 @@ import {
   validateTimeInForce,
   validateType,
 } from '../../utils';
-import type BigNumber from 'bignumber.js';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
 
@@ -189,6 +188,7 @@ export const DealTicket = ({
           />
         )}
       <DealTicketButton transactionStatus={transactionStatus} />
+      <SummaryMessage errorMessage={errors.summary?.message} market={market} />
       {accountData.balance.isLessThan(accountData.margin) && (
         <MarginWarning
           balance={accountData.balance.toString()}
@@ -196,11 +196,6 @@ export const DealTicket = ({
           asset={accountData.asset}
         />
       )}
-      <SummaryMessage
-        errorMessage={errors.summary?.message}
-        accountData={accountData}
-        market={market}
-      />
       <DealTicketFeeDetails details={details} />
     </form>
   );
@@ -208,19 +203,9 @@ export const DealTicket = ({
 
 const SummaryMessage = ({
   errorMessage,
-  accountData,
   market,
 }: {
   errorMessage?: string;
-  accountData: {
-    balance: BigNumber;
-    margin: BigNumber;
-    asset: {
-      id: string;
-      decimals: number;
-      symbol: string;
-    };
-  };
   market: DealTicketMarketFragment;
 }) => {
   // Specific error UI for if balance is so we can
@@ -237,18 +222,6 @@ const SummaryMessage = ({
   // submission render that first
   if (errorMessage) {
     return <InputError>{errorMessage}</InputError>;
-  }
-
-  // If no blocking error render the maring warning error
-  // this should not block user from submitting an order
-  if (accountData.balance.isLessThan(accountData.margin)) {
-    return (
-      <MarginWarning
-        balance={accountData.balance.toString()}
-        margin={accountData.margin.toString()}
-        asset={accountData.asset}
-      />
-    );
   }
 
   return <InputError>{errorMessage}</InputError>;
