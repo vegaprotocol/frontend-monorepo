@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { AccountsQuery } from '@vegaprotocol/accounts';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 export const generateAccounts = (
@@ -13,7 +13,7 @@ export const generateAccounts = (
       accounts: [
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_GENERAL,
+          type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
           asset: {
@@ -23,7 +23,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_GENERAL,
+          type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: {
             id: 'market-1',
@@ -36,7 +36,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_MARGIN,
+          type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
             __typename: 'Market',
@@ -49,7 +49,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_MARGIN,
+          type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
             __typename: 'Market',
@@ -62,7 +62,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_GENERAL,
+          type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
           asset: {
@@ -73,7 +73,7 @@ export const generateAccounts = (
         // account to withdraw Sepolia tBTC
         {
           __typename: 'AccountBalance',
-          type: AccountType.ACCOUNT_TYPE_GENERAL,
+          type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
           asset: {
