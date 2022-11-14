@@ -63,8 +63,9 @@ export const LPProvidersGrid = ({
         headerName={t('Equity-like share')}
         field="equityLikeShare"
         valueFormatter={({ value }: { value?: string | null }) => {
-          const valueOr0 = value ? value : '';
-          return `${parseInt(valueOr0) * 100}%`;
+          return value
+            ? `${parseFloat(parseFloat(value).toFixed(2)) * 100}%`
+            : '';
         }}
       />
       <AgGridColumn
