@@ -61,7 +61,7 @@ export const ProposalVotesTable = ({
       headingLevel={4}
     >
       <KeyValueTableRow>
-        {t('willPass')}
+        {t('expectedToPass')}
         {isUpdateMarket ? (
           updateMarketWillPass ? (
             <Thumbs up={true} text={updateMarketVotePassMethod} />

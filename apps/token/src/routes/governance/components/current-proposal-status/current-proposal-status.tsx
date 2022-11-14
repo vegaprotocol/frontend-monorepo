@@ -27,6 +27,7 @@ const WillPass = ({
       <>
         {children}
         <StatusPass>{t('pass')}</StatusPass>
+        <span>{t('finalOutcomeMayDiffer')}</span>
       </>
     );
   } else {
@@ -34,6 +35,7 @@ const WillPass = ({
       <>
         {children}
         <StatusFail>{t('fail')}</StatusFail>
+        <span>{t('finalOutcomeMayDiffer')}</span>
       </>
     );
   }
