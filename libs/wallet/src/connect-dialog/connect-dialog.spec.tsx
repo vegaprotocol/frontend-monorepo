@@ -10,12 +10,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
 import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
-import {
-  ClientErrors,
-  JsonRpcConnector,
-  RestConnector,
-  WalletError,
-} from '../connectors';
+import { ClientErrors, JsonRpcConnector, WalletError } from '../connectors';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument } from '@vegaprotocol/react-helpers';
@@ -30,10 +25,8 @@ jest.mock('zustand', () => () => () => ({
 
 let defaultProps: VegaConnectDialogProps;
 
-const rest = new RestConnector();
 const jsonRpc = new JsonRpcConnector();
 const connectors = {
-  rest,
   jsonRpc,
 };
 beforeEach(() => {
@@ -90,11 +83,8 @@ describe('VegaConnectDialog', () => {
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
     expect(list.children).toHaveLength(3);
-    expect(screen.getByTestId('connector-gui')).toHaveTextContent(
-      'Desktop wallet app'
-    );
-    expect(screen.getByTestId('connector-cli')).toHaveTextContent(
-      'Command line wallet app'
+    expect(screen.getByTestId('connector-local')).toHaveTextContent(
+      'Connect wallet (desktop/cli)'
     );
     expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
       'Hosted Fairground wallet'
@@ -103,31 +93,20 @@ describe('VegaConnectDialog', () => {
 
   describe('RestConnector', () => {
     it('connects', async () => {
-      const spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        .mockImplementation(() =>
-          Promise.resolve({ success: true, error: null })
-        );
-
       render(generateJSX());
       // Switches to rest form
       fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
 
       // Client side validation
       fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      expect(spy).not.toHaveBeenCalled();
       await waitFor(() => {
         expect(screen.getAllByText('Required')).toHaveLength(2);
       });
-
-      const fields = fillInForm();
 
       // Wait for auth method to be called
       await act(async () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
-
-      expect(spy).toHaveBeenCalledWith(fields);
 
       expect(mockCloseVegaDialog).toHaveBeenCalled();
     });
@@ -135,11 +114,6 @@ describe('VegaConnectDialog', () => {
     it('handles failed connection', async () => {
       const errMessage = 'Error message';
       // Error from service
-      let spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        .mockImplementation(() =>
-          Promise.resolve({ success: false, error: errMessage })
-        );
 
       render(generateJSX());
       // Switches to rest form
@@ -153,18 +127,8 @@ describe('VegaConnectDialog', () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
 
-      expect(spy).toHaveBeenCalledWith(fields);
-
       expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
       expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
-
-      // Fetch failed due to wallet not running
-      spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        // @ts-ignore test fetch failed with typeerror
-        .mockImplementation(() =>
-          Promise.reject(new TypeError('fetch failed'))
-        );
 
       await act(async () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
@@ -173,13 +137,6 @@ describe('VegaConnectDialog', () => {
       expect(screen.getByTestId('form-error')).toHaveTextContent(
         `Wallet not running at ${mockHostedWalletUrl}`
       );
-
-      // Reject eg non 200 results
-      spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        // @ts-ignore test fetch failed with typeerror
-        .mockImplementation(() => Promise.reject(new Error('Error!')));
-
       await act(async () => {
         fireEvent.submit(screen.getByTestId('rest-connector-form'));
       });
@@ -379,7 +336,7 @@ describe('VegaConnectDialog', () => {
 
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
-      fireEvent.click(await screen.findByTestId('connector-cli'));
+      fireEvent.click(await screen.findByTestId('connector-local'));
     }
   });
 });

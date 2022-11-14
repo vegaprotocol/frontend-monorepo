@@ -23,7 +23,7 @@ import { useJsonRpcConnect } from '../use-json-rpc-connect';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'cli' | 'hosted';
+type WalletType = 'local' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -199,9 +199,9 @@ const ConnectorList = ({
         <ul data-testid="connectors-list" className="mb-6">
           <li className="mb-4 last:mb-0">
             <ConnectionOption
-              type="cli"
+              type="local"
               text={t('Connect wallet (desktop/cli)')}
-              onClick={() => onSelect('cli')}
+              onClick={() => onSelect('local')}
             />
           </li>
           {!isMainnet && (

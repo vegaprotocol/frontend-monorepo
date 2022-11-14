@@ -91,7 +91,7 @@ context(
 
       it('should have gui, cli and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-cli')
+          cy.getByTestId('connector-local')
             .should('be.visible')
             .and('have.text', 'Connect wallet (desktop/cli)');
           cy.getByTestId('connector-hosted')
