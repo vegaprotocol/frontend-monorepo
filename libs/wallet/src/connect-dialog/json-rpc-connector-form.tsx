@@ -1,5 +1,5 @@
 import capitalize from 'lodash/capitalize';
-import { t } from '@vegaprotocol/react-helpers';
+import { createDocsLinks, t } from '@vegaprotocol/react-helpers';
 import {
   ButtonLink,
   Cross,
@@ -14,7 +14,7 @@ import { ClientErrors } from '../connectors';
 import type { WalletError } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
-import { VEGA_WALLET_CONCEPTS_URL } from '../constants';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -169,6 +169,7 @@ const Error = ({
       <ButtonLink onClick={onTryAgain}>{t('Try again')}</ButtonLink>
     </p>
   );
+  const { VEGA_DOCS_URL } = useEnvironment();
 
   if (error) {
     if (error.code === ClientErrors.NO_SERVICE.code) {
@@ -186,9 +187,13 @@ const Error = ({
         <>
           {capitalize(error.data)}
           {'. '}
-          <Link href={VEGA_WALLET_CONCEPTS_URL}>
-            {t('Read the docs to troubleshoot')}
-          </Link>
+          {VEGA_DOCS_URL && (
+            <Link
+              href={createDocsLinks(VEGA_DOCS_URL).VEGA_WALLET_CONCEPTS_URL}
+            >
+              {t('Read the docs to troubleshoot')}
+            </Link>
+          )}
         </>
       );
     } else if (error.code === ServiceErrors.REQUEST_PROCESSING) {
