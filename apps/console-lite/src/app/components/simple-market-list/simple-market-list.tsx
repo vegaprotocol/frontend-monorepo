@@ -14,7 +14,7 @@ import SimpleMarketToolbar from './simple-market-toolbar';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import { ConsoleLiteGrid } from '../console-lite-grid';
 import type { Market } from '@vegaprotocol/market-list';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { marketsWithCandlesProvider } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {
@@ -38,7 +38,7 @@ const SimpleMarketList = () => {
   const variables = useMemo(() => {
     return {
       since: new Date(yesterday).toISOString(),
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
     };
   }, [yesterday]);
   const { data, error, loading } = useDataProvider({

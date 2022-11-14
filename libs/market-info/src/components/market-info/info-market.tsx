@@ -62,7 +62,11 @@ export const MarketInfoContainer = ({
     return new Date(yesterday).toISOString();
   }, [yesterday]);
   const variables = useMemo(
-    () => ({ marketId, since: yTimestamp, interval: Schema.Interval.INTERVAL_I1H }),
+    () => ({
+      marketId,
+      since: yTimestamp,
+      interval: Schema.Interval.INTERVAL_I1H,
+    }),
     [marketId, yTimestamp]
   );
 
