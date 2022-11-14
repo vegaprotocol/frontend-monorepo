@@ -479,7 +479,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.getByTestId(placeOrderBtn).should('be.disabled');
     cy.getByTestId('dealticket-error-message-size-market').should(
       'have.text',
-      'Size must be in whole numbers for this market'
+      'Size must be whole numbers for this market'
     );
   });
 
@@ -531,9 +531,17 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     );
   });
 
-  it.skip('must receive warning if price has too many digits after decimal place', function () {
-    //7002/-SORD-/059
-    // Skipped until https://github.com/vegaprotocol/frontend-monorepo/issues/1686 resolved
+  it('must see warning if price has too many digits after decimal place', function () {
+    //7002-SORD-059
+    cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
+    cy.getByTestId(orderSizeField).clear().type('1');
+    cy.getByTestId(orderPriceField).clear().type('1.123456');
+    cy.getByTestId(placeOrderBtn).click();
+    cy.getByTestId('dealticket-error-message-price-limit').should(
+      'have.text',
+      'Price accepts up to 5 decimal places'
+    );
   });
 
   describe('time in force validations', function () {
@@ -685,11 +693,11 @@ describe('account validation', { tags: '@regression' }, () => {
     cy.wait('@Market');
   });
 
-  // 7002-/SORD-/003
   it('should show an error if your balance is zero', () => {
     cy.getByTestId('place-order').should('not.be.disabled');
     cy.getByTestId('place-order').click();
     cy.getByTestId('place-order').should('be.disabled');
+    //7002-SORD-003
     cy.getByTestId('dealticket-error-message-zero-balance').should(
       'have.text',
       'Insufficient balance. Deposit ' + 'tBTC'
