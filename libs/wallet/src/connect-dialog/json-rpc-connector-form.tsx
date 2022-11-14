@@ -1,5 +1,4 @@
 import capitalize from 'lodash/capitalize';
-import type { DocsType } from '@vegaprotocol/react-helpers';
 import { createDocsLinks, t } from '@vegaprotocol/react-helpers';
 import {
   ButtonLink,
@@ -171,8 +170,6 @@ const Error = ({
     </p>
   );
   const { VEGA_DOCS_URL } = useEnvironment();
-  const vegaDocsUrl: DocsType =
-    (VEGA_DOCS_URL as DocsType) || 'https://docs.vega.xyz/mainnet';
 
   if (error) {
     if (error.code === ClientErrors.NO_SERVICE.code) {
@@ -190,10 +187,13 @@ const Error = ({
         <>
           {capitalize(error.data)}
           {'. '}
-
-          <Link href={createDocsLinks(vegaDocsUrl).VEGA_WALLET_CONCEPTS_URL}>
-            {t('Read the docs to troubleshoot')}
-          </Link>
+          {VEGA_DOCS_URL && (
+            <Link
+              href={createDocsLinks(VEGA_DOCS_URL).VEGA_WALLET_CONCEPTS_URL}
+            >
+              {t('Read the docs to troubleshoot')}
+            </Link>
+          )}
         </>
       );
     } else if (error.code === ServiceErrors.REQUEST_PROCESSING) {

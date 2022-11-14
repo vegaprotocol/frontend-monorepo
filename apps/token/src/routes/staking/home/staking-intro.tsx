@@ -12,7 +12,6 @@ import { useEnvironment } from '@vegaprotocol/environment';
 export const StakingIntro = () => {
   const { t } = useTranslation();
   const { VEGA_DOCS_URL } = useEnvironment();
-  const vegaDocsUrl = VEGA_DOCS_URL || 'https://docs.vega.xyz/mainnet';
 
   return (
     <section className="mb-8" data-testid="staking-intro">
@@ -45,13 +44,15 @@ export const StakingIntro = () => {
           <li>{t('stakingDescription3')}</li>
           <li>{t('stakingDescription4')}</li>
         </ol>
-        <UTLink
-          href={createDocsLinks(vegaDocsUrl).STAKING_GUIDE}
-          target="_blank"
-          data-testid="staking-guide-link"
-        >
-          <Button>{t('readMoreStaking')}</Button>
-        </UTLink>
+        {VEGA_DOCS_URL && (
+          <UTLink
+            href={createDocsLinks(VEGA_DOCS_URL).STAKING_GUIDE}
+            target="_blank"
+            data-testid="staking-guide-link"
+          >
+            <Button>{t('readMoreStaking')}</Button>
+          </UTLink>
+        )}
       </Callout>
     </section>
   );
