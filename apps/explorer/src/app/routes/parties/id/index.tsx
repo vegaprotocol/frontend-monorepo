@@ -1,5 +1,3 @@
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
 import {
   t,
   useFetch,
@@ -14,66 +12,15 @@ import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
 import { DATA_SOURCES } from '../../../config';
-import type {
-  PartyAssetsQuery,
-  PartyAssetsQueryVariables,
-} from './__generated__/PartyAssetsQuery';
 import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
-
-// Migrated to query v2
-const PARTY_ASSETS_QUERY = gql`
-  query PartyAssetsQuery($partyId: ID!) {
-    partiesConnection(id: $partyId) {
-      edges {
-        node {
-          id
-          delegationsConnection {
-            edges {
-              node {
-                amount
-                node {
-                  id
-                  name
-                }
-                epoch
-              }
-            }
-          }
-          stakingSummary {
-            currentStakeAvailable
-          }
-          accountsConnection {
-            edges {
-              node {
-                asset {
-                  name
-                  id
-                  decimals
-                  symbol
-                  source {
-                    __typename
-                    ... on ERC20 {
-                      contractAddress
-                    }
-                  }
-                }
-                type
-                balance
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
-  const partyId = party ? toNonHex(party) : '';
+  const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
   const filters = `filters[tx.submitter]=${partyId}`;
@@ -88,15 +35,12 @@ const Party = () => {
     `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${partyId}'"`
   );
 
-  const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
-    PARTY_ASSETS_QUERY,
-    {
-      // Don't cache data for this query, party information can move quite quickly
-      fetchPolicy: 'network-only',
-      variables: { partyId },
-      skip: !party,
-    }
-  );
+  const { data } = useExplorerPartyAssetsQuery({
+    // Don't cache data for this query, party information can move quite quickly
+    fetchPolicy: 'network-only',
+    variables: { partyId: partyId },
+    skip: !party,
+  });
 
   const p = data?.partiesConnection?.edges[0].node;
 

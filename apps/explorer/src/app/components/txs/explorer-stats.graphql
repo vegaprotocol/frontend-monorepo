@@ -1,0 +1,11 @@
+fragment ExplorerStatsFields on Statistics {
+  averageOrdersPerBlock
+  ordersPerSecond
+  txPerBlock
+  tradesPerSecond
+}
+query ExplorerStats {
+  statistics {
+    ...ExplorerStatsFields
+  }
+}
