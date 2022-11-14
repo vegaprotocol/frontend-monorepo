@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import {
-  addDecimalsFormatNumber,
+  addDecimalsNormalizeNumber,
   formatNumberPercentage,
   getDateTimeFormat,
   t,
@@ -20,7 +20,7 @@ import { getId } from './liquidity-data-provider';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
-  return formatNumberPercentage(new BigNumber(value).times(100), 4) || '-';
+  return formatNumberPercentage(new BigNumber(value).times(100), 2) || '-';
 };
 
 const dateValueFormatter = ({ value }: { value?: string | null }) => {
@@ -41,14 +41,18 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsNormalizeNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
         .times(stakeToCcySiskas ?? 1)
         .toString();
-      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsNormalizeNumber(
+        newValue,
+        assetDecimalPlaces ?? 0,
+        5
+      )}`;
     };
 
     if (!data) return null;

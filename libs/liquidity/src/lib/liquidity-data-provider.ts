@@ -85,11 +85,7 @@ function isLpFragment(
         LiquidityProvisionsUpdateSubscription['liquidityProvisions']
       >
 ): entry is LiquidityProvisionFieldsFragment {
-  return (
-    (entry as LiquidityProvisionFieldsFragment).__typename ===
-      'LiquidityProvision' ||
-    Boolean((entry as LiquidityProvisionFieldsFragment).party?.id)
-  );
+  return entry.__typename === 'LiquidityProvision';
 }
 
 export const getId = (
