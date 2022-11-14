@@ -19,8 +19,7 @@ describe('vega wallet', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
-    cy.contains('Desktop wallet app');
-    cy.contains('Command line wallet app');
+    cy.contains('Connect wallet (desktop/cli)');
     cy.contains('Hosted Fairground wallet');
 
     cy.getByTestId('connectors-list')

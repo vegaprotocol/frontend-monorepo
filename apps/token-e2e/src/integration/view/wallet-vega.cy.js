@@ -91,12 +91,9 @@ context(
 
       it('should have gui, cli and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-gui')
-            .should('be.visible')
-            .and('have.text', 'Desktop wallet app');
           cy.getByTestId('connector-cli')
             .should('be.visible')
-            .and('have.text', 'Command line wallet app');
+            .and('have.text', 'Connect wallet (desktop/cli)');
           cy.getByTestId('connector-hosted')
             .should('be.visible')
             .and('have.text', 'Hosted Fairground wallet');
@@ -111,14 +108,6 @@ context(
     });
 
     describe('when rest connector form opened', function () {
-      // Note using desktop wallet app link temporarily whilst its still on v1,
-      // tests will need to be updated to handle v2
-      before('click desktop wallet app link', function () {
-        cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-gui').click();
-        });
-      });
-
       it('should have wallet field visible', function () {
         cy.get(restConnectorForm).within(() => {
           cy.get(restWallet).should('be.visible');

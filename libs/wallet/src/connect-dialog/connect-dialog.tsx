@@ -203,17 +203,10 @@ const ConnectorList = ({
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
         <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
-          <li className="mb-4">
-            <ConnectionOption
-              type="gui"
-              text={t('Desktop wallet app')}
-              onClick={() => onSelect('gui')}
-            />
-          </li>
           <li className="mb-4 last:mb-0">
             <ConnectionOption
               type="cli"
-              text={t('Command line wallet app')}
+              text={t('Connect wallet (desktop/cli)')}
               onClick={() => onSelect('cli')}
             />
           </li>
