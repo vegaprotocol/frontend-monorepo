@@ -1,4 +1,4 @@
-import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
+import { Schema, MarketTradingModeMapping } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
@@ -210,11 +210,11 @@ describe('market states', { tags: '@smoke' }, function () {
   //7002-SORD-066
 
   const states = [
-    MarketState.STATE_REJECTED,
-    MarketState.STATE_CANCELLED,
-    MarketState.STATE_CLOSED,
-    MarketState.STATE_SETTLED,
-    MarketState.STATE_TRADING_TERMINATED,
+    Schema.MarketState.STATE_REJECTED,
+    Schema.MarketState.STATE_CANCELLED,
+    Schema.MarketState.STATE_CLOSED,
+    Schema.MarketState.STATE_SETTLED,
+    Schema.MarketState.STATE_TRADING_TERMINATED,
   ];
 
   states.forEach((marketState) => {
