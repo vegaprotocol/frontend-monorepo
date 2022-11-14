@@ -181,5 +181,6 @@ export const generateMarketInfoQuery = (
     },
   };
 
+  // @ts-ignore: added when markettype changed. No idea.
   return merge(defaultResult, override);
 };
