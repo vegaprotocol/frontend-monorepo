@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AgGridColumn } from 'ag-grid-react';
 import type {
   ValueFormatterParams,
@@ -25,6 +26,7 @@ import { Status } from '../../status';
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
@@ -39,11 +41,7 @@ export const MarketList = () => {
         <Grid
           gridOptions={{
             onRowClicked: ({ data }: RowClickedEvent) => {
-              window.open(
-                `/markets/${data.id}`,
-                '_blank',
-                'noopener,noreferrer'
-              );
+              navigate(`/markets/${data.id}`);
             },
           }}
           rowData={localData}

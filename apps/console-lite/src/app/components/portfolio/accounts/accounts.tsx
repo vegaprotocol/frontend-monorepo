@@ -32,7 +32,6 @@ const AccountsManager = () => {
     dataProvider: aggregatedAccountsDataProvider,
     update,
     variables,
-    updateOnInit: true,
   });
   const getRows = async ({
     successCallback,

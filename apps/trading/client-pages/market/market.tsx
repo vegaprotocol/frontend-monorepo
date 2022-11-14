@@ -106,7 +106,6 @@ export const Market = ({
     update: updateProvider,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   const tradeView = useMemo(() => {

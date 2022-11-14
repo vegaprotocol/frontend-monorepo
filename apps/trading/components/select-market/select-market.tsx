@@ -133,7 +133,7 @@ export const SelectMarketPopover = ({
   const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
   const { data: party, loading: positionsLoading } = useDataProvider({
     dataProvider: positionsDataProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables,
     skip: !pubKey,
   });

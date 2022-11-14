@@ -123,7 +123,7 @@ export const useMarketsLiquidity = () => {
   const { data, loading, error } = useDataProvider({
     dataProvider: liquidityProvisionProvider,
     variables,
-    noUpdate: true,
+    skipUpdates: true,
   });
 
   return {

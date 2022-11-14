@@ -96,7 +96,6 @@ export const Last24hVolume = ({
     update: updateCandle24hAgo,
     variables: variables24hAgo,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (
