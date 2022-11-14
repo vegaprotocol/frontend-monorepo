@@ -4,7 +4,7 @@ import { InView } from 'react-intersection-observer';
 import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 interface Props {
   candles: (Candle | null)[] | null;
@@ -73,7 +73,7 @@ const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
     dataProvider: marketCandlesProvider,
     variables: {
       marketId,
-      interval: Interval.INTERVAL_I1D,
+      interval: Schema.Interval.INTERVAL_I1D,
       since: new Date(yesterday).toISOString(),
     },
   });

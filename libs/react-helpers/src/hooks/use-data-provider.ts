@@ -6,42 +6,26 @@ import type {
   Subscribe,
   Load,
   UpdateCallback,
-  UpdateDelta,
 } from '../lib/generic-data-provider';
 
-function hasDelta<T>(
-  updateData: UpdateDelta<T>
-): updateData is Required<UpdateDelta<T>> {
-  return !!updateData.isUpdate;
-}
-
-interface useDataProviderParams<
+export interface useDataProviderParams<
   Data,
   Delta,
   Variables extends OperationVariables = OperationVariables
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({
-    delta,
-    data,
-    variables,
-  }: {
-    delta?: Delta;
-    data: Data | null;
-    variables?: Variables;
-  }) => boolean;
+  update?: ({ delta, data }: { delta?: Delta; data: Data | null }) => boolean;
   insert?: ({
     insertionData,
     data,
     totalCount,
   }: {
-    insertionData: Data;
+    insertionData?: Data | null;
     data: Data | null;
     totalCount?: number;
   }) => boolean;
   variables?: Variables;
-  updateOnInit?: boolean;
-  noUpdate?: boolean;
+  skipUpdates?: boolean;
   skip?: boolean;
 }
 
@@ -61,8 +45,7 @@ export const useDataProvider = <
   update,
   insert,
   variables,
-  updateOnInit,
-  noUpdate,
+  skipUpdates,
   skip,
 }: useDataProviderParams<Data, Delta, Variables>) => {
   const client = useApolloClient();
@@ -91,57 +74,53 @@ export const useDataProvider = <
     return Promise.reject();
   }, []);
   const callback = useCallback<UpdateCallback<Data, Delta>>(
-    (arg) => {
+    (args) => {
       const {
         data,
+        delta,
         error,
         loading,
         insertionData,
         totalCount,
         isInsert,
         isUpdate,
-      } = arg;
+      } = args;
       setError(error);
       setLoading(loading);
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
-      if (initialized.current) {
-        if (
-          isUpdate &&
-          !noUpdate &&
-          update &&
-          hasDelta<Delta>(arg) &&
-          update({ delta: arg.delta, data, variables })
-        ) {
+      if (!loading) {
+        if (isUpdate && !skipUpdates && update && update({ delta, data })) {
           return;
         }
-        if (
-          isInsert &&
-          insert &&
-          (!insertionData || insert({ insertionData, data, totalCount }))
-        ) {
+        if (isInsert && insert && insert({ insertionData, data, totalCount })) {
           return;
         }
       }
       setTotalCount(totalCount);
       setData(data);
-      if (updateOnInit && !initialized.current && update) {
-        update({ data });
+      if (!loading && !initialized.current) {
+        initialized.current = true;
+        if (update) {
+          update({ data });
+        }
       }
-      initialized.current = true;
     },
-    [update, insert, noUpdate, updateOnInit, variables]
+    [update, insert, skipUpdates]
   );
   useEffect(() => {
     setData(null);
     setError(undefined);
     setTotalCount(undefined);
+    initialized.current = false;
     if (skip) {
       setLoading(false);
+      if (update) {
+        update({ data: null });
+      }
       return;
     }
     setLoading(true);
-    initialized.current = false;
     const { unsubscribe, flush, reload, load } = dataProvider(
       callback,
       client,
@@ -150,8 +129,13 @@ export const useDataProvider = <
     flushRef.current = flush;
     reloadRef.current = reload;
     loadRef.current = load;
-    return unsubscribe;
-  }, [client, initialized, dataProvider, callback, variables, skip]);
+    return () => {
+      flushRef.current = undefined;
+      reloadRef.current = undefined;
+      loadRef.current = undefined;
+      return unsubscribe();
+    };
+  }, [client, initialized, dataProvider, callback, variables, skip, update]);
   return { data, loading, error, flush, reload, load, totalCount };
 };
 

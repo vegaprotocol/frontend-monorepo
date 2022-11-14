@@ -5,7 +5,7 @@ import {
   useDataProvider,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import {
   calcDayVolume,
   getChange,
@@ -36,7 +36,7 @@ export const Last24hVolume = ({
   const variables = useMemo(
     () => ({
       marketId: marketId,
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
       since: yTimestamp,
     }),
     [marketId, yTimestamp]
@@ -45,7 +45,7 @@ export const Last24hVolume = ({
   const variables24hAgo = useMemo(
     () => ({
       marketId: marketId,
-      interval: Interval.INTERVAL_I1D,
+      interval: Schema.Interval.INTERVAL_I1D,
       since: yTimestamp,
     }),
     [marketId, yTimestamp]
@@ -96,7 +96,6 @@ export const Last24hVolume = ({
     update: updateCandle24hAgo,
     variables: variables24hAgo,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

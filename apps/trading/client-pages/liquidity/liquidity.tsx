@@ -37,7 +37,7 @@ export const Liquidity = () => {
 
   const { data: marketProvision } = useDataProvider({
     dataProvider: marketLiquidityDataProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
   const dataRef = useRef<LiquidityProvisionData[] | null>(null);

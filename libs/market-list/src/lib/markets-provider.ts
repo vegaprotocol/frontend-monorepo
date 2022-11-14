@@ -13,7 +13,7 @@ import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
 import type { MarketCandles } from './markets-candles-provider';
 import { useMemo } from 'react';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { filterAndSortMarkets } from './utils';
 import { MarketsDocument } from './__generated___/markets';
 
@@ -95,13 +95,13 @@ export const useMarketList = () => {
   const variables = useMemo(() => {
     return {
       since: new Date(yesterday).toISOString(),
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
     };
   }, [yesterday]);
   const { data, loading, error } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
-    noUpdate: true,
+    skipUpdates: true,
   });
 
   return {

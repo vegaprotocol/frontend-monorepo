@@ -56,7 +56,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketsProvider,
-    noUpdate: true,
+    skipUpdates: true,
   });
 
   const outsideClickCb = useCallback(() => {
