@@ -141,11 +141,6 @@ context(
       beforeEach('visit governance tab', function () {
         cy.navigate_to('governance');
         cy.wait_for_spinner();
-        cy.intercept('POST', '/query', (req) => {
-          if (req.body.operationName === 'ProposalEvent') {
-            req.alias = 'proposalSubmissionCompletion';
-          }
-        });
       });
 
       it('Should be able to see that no proposals exist', function () {
@@ -184,7 +179,7 @@ context(
             'contain.text',
             'we add 2 minutes of extra time'
           );
-          cy.enter_unique_freeform_proposal_body('50');
+          cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
           cy.get(newProposalSubmitButton).should('be.visible').click();
           // 3002-PROP-012
           // 3002-PROP-016
@@ -206,16 +201,18 @@ context(
         cy.navigate_to('governance');
         cy.wait_for_spinner();
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
+        cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();
       });
 
       it('Newly created proposals list - able to filter by proposerID to show it in list', function () {
-        createFreeformProposal(this.minProposerBalance);
-        cy.wait('@proposalSubmissionCompletion').then((proposal) => {
-          let proposerId = proposal.request.body.variables.partyId;
-          let proposalId = proposal.response.body.data.busEvents[0].event.id;
+        const proposerId = Cypress.env('vegaWalletPublicKey');
+        const proposalTitle = generateProposalTitle();
+
+        createFreeformProposal(this.minProposerBalance, proposalTitle);
+        cy.get_proposal_id_from_list(proposalTitle);
+        cy.get('@proposalIdText').then((proposalId) => {
           cy.get('[data-testid="set-proposals-filter-visible"]').click();
           cy.get('[data-testid="filter-input"]').type(proposerId);
           cy.get(`#${proposalId}`).should('contain', proposalId);
@@ -224,50 +221,49 @@ context(
 
       it('Newly created proposals list - shows title and portion of summary', function () {
         createRawProposal(this.minProposerBalance); // 3001-VOTE-052
-        cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseProposalIdPath)
-          .then((proposalId) => {
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_proposal_id_from_list(rawProposal.rationale.title);
+          cy.get('@proposalIdText').then((proposalId) => {
             cy.get(openProposals).within(() => {
-              cy.get('@rawProposal').then((rawProposal) => {
-                // 3001-VOTE-008
-                // 3001-VOTE-034
-                cy.get(`#${proposalId}`)
-                  // 3001-VOTE-097
-                  .should('contain', rawProposal.rationale.title)
-                  .and('be.visible');
-                cy.get(`#${proposalId}`)
-                  .should(
-                    'contain',
-                    rawProposal.rationale.description.substring(0, 59)
-                  )
-                  .and('be.visible');
-              });
+              // 3001-VOTE-008
+              // 3001-VOTE-034
+              cy.get(`#${proposalId}`)
+                // 3001-VOTE-097
+                .should('contain', rawProposal.rationale.title)
+                .and('be.visible');
+              cy.get(`#${proposalId}`)
+                .should(
+                  'contain',
+                  rawProposal.rationale.description.substring(0, 59)
+                )
+                .and('be.visible');
             });
           });
+        });
       });
 
       it('Newly created proposals list - shows open proposals in an open state', function () {
         // 3001-VOTE-004
         // 3001-VOTE-035
         createRawProposal(this.minProposerBalance);
-        cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseProposalIdPath)
-          .then((proposalId) => {
-            cy.get(openProposals).within(() => {
-              cy.get(`#${proposalId}`).within(() => {
-                cy.get(viewProposalButton).should('be.visible').click();
-              });
-            });
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => {
+            cy.get(viewProposalButton).should('be.visible').click();
+          });
+          cy.get('@proposalIdText').then((proposalId) => {
             cy.get_proposal_information_from_table('ID')
               .contains(proposalId)
               .and('be.visible');
-            cy.get_proposal_information_from_table('State')
-              .contains('STATE_OPEN')
-              .and('be.visible');
-            cy.get_proposal_information_from_table('Type')
-              .contains('NewFreeform')
-              .and('be.visible');
           });
+          cy.get_proposal_information_from_table('State')
+            .contains('STATE_OPEN')
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Type')
+            .contains('NewFreeform')
+            .and('be.visible');
+        });
       });
 
       it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
@@ -352,51 +348,51 @@ context(
 
       it('Newly created raw proposal details - shows proposal title and full description', function () {
         createRawProposal(this.minProposerBalance);
-        cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseProposalIdPath)
-          .then((proposalId) => {
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_proposal_id_from_list(rawProposal.rationale.title);
+          cy.get('@proposalIdText').then((proposalId) => {
             cy.get(openProposals).within(() => {
               cy.get(`#${proposalId}`).within(() => {
                 cy.get(viewProposalButton).should('be.visible').click();
               });
             });
-            cy.get('@rawProposal').then((rawProposal) => {
-              // 3001-VOTE-054
-              cy.get(proposalDetailsTitle)
-                .should('contain', rawProposal.rationale.title)
-                .and('be.visible');
-              cy.get(proposalDetailsDescription)
-                .should('contain', rawProposal.rationale.description)
-                .and('be.visible');
-            });
-            // 3001-VOTE-052
-            cy.get('code.language-json')
-              .should('exist')
-              .within(() => {
-                cy.get('.hljs-string')
-                  .eq(0)
-                  .should('have.text', '"ProposalTerms"');
-              });
+          });
+          cy.get(proposalDetailsTitle)
+            .should('contain', rawProposal.rationale.title)
+            .and('be.visible');
+          cy.get(proposalDetailsDescription)
+            .should('contain', rawProposal.rationale.description)
+            .and('be.visible');
+        });
+        // 3001-VOTE-052
+        cy.get('code.language-json')
+          .should('exist')
+          .within(() => {
+            cy.get('.hljs-string').eq(0).should('have.text', '"ProposalTerms"');
           });
       });
 
       it('Newly created freeform proposal details - shows proposed and closing dates', function () {
         const closingVoteHrs = '72';
+        const proposalTitle = generateProposalTitle();
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
         cy.create_ten_digit_unix_timestamp_for_specified_days('3').then(
           (closingDateTimestamp) => {
-            cy.enter_unique_freeform_proposal_body(closingVoteHrs);
+            cy.enter_unique_freeform_proposal_body(
+              closingVoteHrs,
+              proposalTitle
+            );
             cy.get(newProposalSubmitButton).should('be.visible').click();
 
             cy.wait_for_proposal_submitted();
             cy.wait_for_proposal_sync();
             cy.navigate_to('governance');
             cy.wait_for_spinner();
-            cy.get_submitted_proposal_from_proposal_list().within(() =>
-              cy.get(viewProposalButton).click()
+            cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
+              () => cy.get(viewProposalButton).click()
             );
             cy.convert_unix_timestamp_to_governance_data_table_date_format(
               closingDateTimestamp
@@ -420,9 +416,11 @@ context(
         // 3001-VOTE-037
         // 3001-VOTE-040
         createRawProposal(this.minProposerBalance);
-        cy.get_submitted_proposal_from_proposal_list().within(() =>
-          cy.get(viewProposalButton).click()
-        );
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => cy.get(viewProposalButton).click());
+        });
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
@@ -431,10 +429,10 @@ context(
           .should('be.visible');
         // 3001-VOTE-062
         // 3001-VOTE-040
-        cy.get_proposal_information_from_table('Majority met')
+        cy.get_proposal_information_from_table('Token majority met')
           .contains('👎')
           .should('be.visible');
-        cy.get_proposal_information_from_table('Participation met')
+        cy.get_proposal_information_from_table('Token participation met')
           .contains('👎')
           .should('be.visible');
       });
@@ -442,9 +440,11 @@ context(
       // 3001-VOTE-080 3001-VOTE-090
       it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
         createRawProposal(this.minProposerBalance);
-        cy.get_submitted_proposal_from_proposal_list()
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => cy.get(viewProposalButton).click());
+        });
         // 3001-VOTE-080
         cy.get(voteButtons).contains('against').should('be.visible');
         cy.get(voteButtons).contains('for').should('be.visible');
@@ -511,14 +511,20 @@ context(
           .and('be.visible');
       });
 
-      it('Newly created proposal details - ability to increase associated tokens - so that vote sways result', function () {
+      // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
+      it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
         createRawProposal(this.minProposerBalance);
-        cy.get_submitted_proposal_from_proposal_list()
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          )
+            .as('submittedProposal')
+            .within(() => cy.get(viewProposalButton).click());
+        });
         cy.vote_for_proposal('for');
         // 3001-VOTE-079
         cy.contains('You voted: For').should('be.visible');
+        cy.get(proposalVoteProgressForTokens).contains('1').and('be.visible');
         cy.get_proposal_information_from_table('Total Supply')
           .invoke('text')
           .then((totalSupply) => {
@@ -539,6 +545,8 @@ context(
               .contains('0.00%')
               .and('be.visible');
             // 3001-VOTE-065
+            cy.get(changeVoteButton).should('be.visible').click();
+            cy.vote_for_proposal('for');
             cy.get(proposalVoteProgressForTokens)
               .contains(tokensRequiredToAchieveResult)
               .and('be.visible');
@@ -558,18 +566,15 @@ context(
               .contains('👍')
               .should('be.visible');
             // 3001-VOTE-062
-            cy.get_proposal_information_from_table('Majority met')
+            cy.get_proposal_information_from_table('Token majority met')
               .contains('👍')
               .should('be.visible');
-            cy.get_proposal_information_from_table('Participation met')
+            cy.get_proposal_information_from_table('Token participation met')
               .contains('👍')
               .should('be.visible');
-            // 3001-VOTE-042
-            // 3001-VOTE-057
-            // 3001-VOTE-058
-            // 3001-VOTE-059
-            // 3001-VOTE-060
-            cy.contains('Currently set to pass').should('be.visible');
+            cy.get_proposal_information_from_table('Tokens for proposal')
+              .contains(tokensRequiredToAchieveResult)
+              .and('be.visible');
           });
       });
 
@@ -578,7 +583,7 @@ context(
           this.minProposerBalance
         );
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('40');
+        cy.enter_unique_freeform_proposal_body('40', generateProposalTitle());
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'not.exist'
@@ -590,7 +595,10 @@ context(
           this.minProposerBalance
         );
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('100000');
+        cy.enter_unique_freeform_proposal_body(
+          '100000',
+          generateProposalTitle()
+        );
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.contains('Awaiting network confirmation', epochTimeout).should(
           'not.exist'
@@ -617,10 +625,14 @@ context(
         cy.navigate_to('governance');
         cy.wait_for_spinner();
         cy.get(rejectProposalsLink).click().wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list().within(() => {
-          cy.contains('Rejected').should('be.visible');
-          cy.contains('Close time too late').should('be.visible');
-          cy.get(viewProposalButton).click();
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => {
+            cy.contains('Rejected').should('be.visible');
+            cy.contains('Close time too late').should('be.visible');
+            cy.get(viewProposalButton).click();
+          });
         });
         cy.get_proposal_information_from_table('State')
           .contains('STATE_REJECTED')
@@ -651,6 +663,7 @@ context(
           'have.text',
           'party has insufficient associated governance tokens in their staking account to submit proposal request'
         );
+        cy.get(dialogCloseButton).click();
       });
 
       it('Unable to create a proposal - when some but not enough tokens are associated', function () {
@@ -669,6 +682,7 @@ context(
           'have.text',
           'party has insufficient associated governance tokens in their staking account to submit proposal request'
         );
+        cy.get(dialogCloseButton).click();
       });
 
       it('Unable to create a freeform proposal - when json parent section contains unexpected field', function () {
@@ -697,6 +711,7 @@ context(
           'have.text',
           '*: unknown field "unexpected" in vega.commands.v1.ProposalSubmission'
         );
+        cy.get(dialogCloseButton).click();
       });
 
       it('Unable to create a freeform proposal - when json terms section contains unexpected field', function () {
@@ -726,15 +741,18 @@ context(
           'have.text',
           '*: unknown field "unexpectedField" in vega.ProposalTerms'
         );
+        cy.get(dialogCloseButton).click();
       });
 
       // 1005-PROP-009
       it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+        const proposalTitle = generateProposalTitle();
+
         cy.ensure_specified_unstaked_tokens_are_associated(
           this.minProposerBalance
         );
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
+        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
@@ -747,9 +765,9 @@ context(
         });
         cy.navigate_to('governance');
         cy.wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list()
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
+        cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
+          cy.get(viewProposalButton).click()
+        );
         cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
         cy.get(voteButtons).should('not.exist');
         cy.getByTestId('min-proposal-requirements').should(
@@ -763,9 +781,11 @@ context(
         cy.wait_for_spinner();
         cy.get('[data-testid="manage-vega-wallet"]').click();
         cy.get('[data-testid="disconnect"]').click();
-        cy.get_submitted_proposal_from_proposal_list()
-          .as('submittedProposal')
-          .within(() => cy.get(viewProposalButton).click());
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => cy.get(viewProposalButton).click());
+        });
         // 3001-VOTE-075
         // 3001-VOTE-076
         cy.get(connectToVegaWalletButton)
@@ -806,15 +826,21 @@ context(
         cy.wait_for_spinner();
       }
 
-      function createFreeformProposal(proposerBalance) {
+      function createFreeformProposal(proposerBalance, proposalTitle) {
         cy.ensure_specified_unstaked_tokens_are_associated(proposerBalance);
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50');
+        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
+        cy.get(proposalDetailsTitle).invoke('text').as('proposalTitle');
         cy.navigate_to('governance');
         cy.wait_for_spinner();
+      }
+
+      function generateProposalTitle() {
+        const randomNum = Math.floor(Math.random() * 1000) + 1;
+        return 'Freeform e2e proposal with unique number of ' + randomNum;
       }
 
       after(
