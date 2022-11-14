@@ -1,3 +1,4 @@
+import type { DocsType } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -19,6 +20,8 @@ export const TradingModeTooltip = ({
   compiledGrid,
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
+  const vegaDocsUrl =
+    (VEGA_DOCS_URL as DocsType) || 'http://docs.vega.xyz/mainnet';
   switch (tradingMode) {
     case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
@@ -40,7 +43,7 @@ export const TradingModeTooltip = ({
             </span>{' '}
             {VEGA_DOCS_URL && (
               <ExternalLink
-                href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
+                href={createDocsLinks(vegaDocsUrl).AUCTION_TYPE_OPENING}
               >
                 {t('Find out more')}
               </ExternalLink>
@@ -64,7 +67,7 @@ export const TradingModeTooltip = ({
                 {VEGA_DOCS_URL && (
                   <ExternalLink
                     href={
-                      createDocsLinks(VEGA_DOCS_URL)
+                      createDocsLinks(vegaDocsUrl)
                         .AUCTION_TYPE_LIQUIDITY_MONITORING
                     }
                   >
@@ -86,8 +89,7 @@ export const TradingModeTooltip = ({
                 {VEGA_DOCS_URL && (
                   <ExternalLink
                     href={
-                      createDocsLinks(VEGA_DOCS_URL)
-                        .AUCTION_TYPE_PRICE_MONITORING
+                      createDocsLinks(vegaDocsUrl).AUCTION_TYPE_PRICE_MONITORING
                     }
                   >
                     {t('Find out more')}

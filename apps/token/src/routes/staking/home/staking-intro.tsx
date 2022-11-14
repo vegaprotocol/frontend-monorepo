@@ -6,13 +6,15 @@ import {
   Intent,
   Link as UTLink,
 } from '@vegaprotocol/ui-toolkit';
+import type { DocsType } from '@vegaprotocol/react-helpers';
 import { createDocsLinks, ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 export const StakingIntro = () => {
   const { t } = useTranslation();
   const { VEGA_DOCS_URL } = useEnvironment();
-  const vegaDocsUrl = VEGA_DOCS_URL || 'https://docs.vega.xyz/mainnet';
+  const vegaDocsUrl =
+    (VEGA_DOCS_URL as DocsType) || 'https://docs.vega.xyz/mainnet';
 
   return (
     <section className="mb-8" data-testid="staking-intro">
