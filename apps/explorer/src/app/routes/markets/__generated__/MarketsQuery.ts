@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
+import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketsQuery
@@ -87,10 +87,6 @@ export interface MarketsQuery_marketsConnection_edges_node_tradableInstrument_in
    * Metadata for this instrument
    */
   metadata: MarketsQuery_marketsConnection_edges_node_tradableInstrument_instrument_metadata;
-  /**
-   * Uniquely identify an instrument across all instruments available on Vega (string)
-   */
-  id: string;
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */

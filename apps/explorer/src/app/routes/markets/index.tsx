@@ -6,6 +6,7 @@ import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { t } from '@vegaprotocol/react-helpers';
+import { consoleSandbox } from '@sentry/utils';
 
 // Migrated to query v2
 const MARKETS_QUERY = gql`
@@ -27,7 +28,6 @@ const MARKETS_QUERY = gql`
               metadata {
                 tags
               }
-              id
               code
               product {
                 ... on Future {
@@ -155,12 +155,14 @@ const MARKETS_QUERY = gql`
 const Markets = () => {
   const { data } = useQuery<MarketsQuery>(MARKETS_QUERY);
 
+  const m = data?.marketsConnection?.edges;
+
   return (
-    <section>
+    <section key="markets">
       <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
-      {data?.marketsConnection?.edges
-        ? data.marketsConnection.edges.map((e) => (
+      {m
+        ? m.map((e) => (
             <React.Fragment key={e.node.id}>
               <SubHeading data-testid="markets-header">
                 {e.node.tradableInstrument.instrument.name}
