@@ -14,25 +14,15 @@ export interface useDataProviderParams<
   Variables extends OperationVariables = OperationVariables
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({
-    delta,
-    data,
-    variables,
-  }: {
-    delta?: Delta;
-    data: Data | null;
-    variables?: Variables;
-  }) => boolean;
+  update?: ({ delta, data }: { delta?: Delta; data: Data | null }) => boolean;
   insert?: ({
     insertionData,
     data,
     totalCount,
-    variables,
   }: {
     insertionData?: Data | null;
     data: Data | null;
     totalCount?: number;
-    variables?: Variables;
   }) => boolean;
   variables?: Variables;
   skipUpdates?: boolean;
@@ -100,19 +90,10 @@ export const useDataProvider = <
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
       if (!loading) {
-        if (
-          isUpdate &&
-          !skipUpdates &&
-          update &&
-          update({ delta, data, variables })
-        ) {
+        if (isUpdate && !skipUpdates && update && update({ delta, data })) {
           return;
         }
-        if (
-          isInsert &&
-          insert &&
-          insert({ insertionData, data, totalCount, variables })
-        ) {
+        if (isInsert && insert && insert({ insertionData, data, totalCount })) {
           return;
         }
       }
@@ -121,11 +102,11 @@ export const useDataProvider = <
       if (!loading && !initialized.current) {
         initialized.current = true;
         if (update) {
-          update({ data, variables });
+          update({ data });
         }
       }
     },
-    [update, insert, skipUpdates, variables]
+    [update, insert, skipUpdates]
   );
   useEffect(() => {
     setData(null);
@@ -135,7 +116,7 @@ export const useDataProvider = <
     if (skip) {
       setLoading(false);
       if (update) {
-        update({ data: null, variables });
+        update({ data: null });
       }
       return;
     }

@@ -64,7 +64,6 @@ describe('useDataProvider hook', () => {
     expect(result.current.loading).toEqual(false);
     expect(update).toBeCalledTimes(1);
     expect(update.mock.calls[0][0].data).toEqual(updateCallbackPayload.data);
-    expect(update.mock.calls[0][0].variables).toEqual(variables);
   });
 
   it('calls update on error', async () => {
@@ -80,7 +79,6 @@ describe('useDataProvider hook', () => {
     expect(result.current.loading).toEqual(false);
     expect(update).toBeCalledTimes(1);
     expect(update.mock.calls[0][0].data).toEqual(updateCallbackPayload.data);
-    expect(update.mock.calls[0][0].variables).toEqual(variables);
   });
 
   it('calls update if isUpdate and skip setting state if update returns true', async () => {
@@ -104,7 +102,6 @@ describe('useDataProvider hook', () => {
     expect(update).toBeCalledTimes(2);
     expect(update.mock.calls[1][0].data).toEqual(data);
     expect(update.mock.calls[1][0].delta).toEqual(delta);
-    expect(update.mock.calls[1][0].variables).toEqual(variables);
     update.mockReturnValueOnce(true);
     await act(async () => {
       callback({
@@ -118,7 +115,6 @@ describe('useDataProvider hook', () => {
     expect(update).toBeCalledTimes(3);
     expect(update.mock.calls[2][0].data).toEqual(data);
     expect(update.mock.calls[2][0].delta).toEqual(delta);
-    expect(update.mock.calls[2][0].variables).toEqual(variables);
   });
 
   it('calls insert if isInsert and skip setting state if update returns true', async () => {
@@ -141,7 +137,6 @@ describe('useDataProvider hook', () => {
     expect(insert).toBeCalledTimes(1);
     expect(insert.mock.calls[0][0].data).toEqual(data);
     expect(insert.mock.calls[0][0].insertionData).toEqual(insertionData);
-    expect(insert.mock.calls[0][0].variables).toEqual(variables);
     insert.mockReturnValueOnce(true);
     await act(async () => {
       callback({
@@ -155,7 +150,6 @@ describe('useDataProvider hook', () => {
     expect(insert).toBeCalledTimes(2);
     expect(insert.mock.calls[1][0].data).toEqual(data);
     expect(insert.mock.calls[1][0].insertionData).toEqual(insertionData);
-    expect(insert.mock.calls[1][0].variables).toEqual(variables);
   });
 
   it('change data provider instance on variables change', async () => {
