@@ -19,7 +19,10 @@ const mockedData = {
           __typename: 'AssetEdge',
         },
         {
-          node: generateBuiltinAsset(2, Schema.AssetStatus.STATUS_PENDING_LISTING),
+          node: generateBuiltinAsset(
+            2,
+            Schema.AssetStatus.STATUS_PENDING_LISTING
+          ),
           __typename: 'AssetEdge',
         },
         {

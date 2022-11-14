@@ -80,7 +80,8 @@ export const ListAsset = ({
     return null;
   }
   if (data.asset.source.__typename !== 'ERC20') return null;
-  if (data.asset.status !== Schema.AssetStatus.STATUS_PENDING_LISTING) return null;
+  if (data.asset.status !== Schema.AssetStatus.STATUS_PENDING_LISTING)
+    {return null;}
   if (errorAsset || errorBundle) return null;
   const { assetSource, signatures, vegaAssetId, nonce } =
     assetData.erc20ListAssetBundle;
