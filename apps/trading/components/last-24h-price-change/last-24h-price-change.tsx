@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
 import { t, useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   SingleMarketFieldsFragment,
@@ -34,7 +34,7 @@ export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
   const variables = useMemo(
     () => ({
       marketId: marketId,
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
       since: yTimestamp,
     }),
     [marketId, yTimestamp]

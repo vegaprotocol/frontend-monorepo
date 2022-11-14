@@ -2,7 +2,7 @@ import { waitFor, fireEvent, render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
@@ -18,7 +18,7 @@ function generateAsset(): AssetFieldsFragment {
     name: 'asset-name',
     decimals: 2,
     quantum: '',
-    status: AssetStatus.STATUS_ENABLED,
+    status: Schema.AssetStatus.STATUS_ENABLED,
     source: {
       __typename: 'ERC20',
       contractAddress: 'contract-address',

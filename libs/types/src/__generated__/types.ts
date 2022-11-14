@@ -534,7 +534,7 @@ export type DataSourceSpec = {
 };
 
 /**
- * A data spec describes the source data that an instrument wants to get from the
+ * DataSourceSpecConfiguration describes the source data that an instrument wants to get from the
  * sourcing engine.
  */
 export type DataSourceSpecConfiguration = {
@@ -715,7 +715,7 @@ export type ERC20 = {
   lifetimeLimit: Scalars['String'];
   /**
    * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There’s no limit on the size of a withdrawal
+   * There is no limit on the size of a withdrawal
    * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: Scalars['String'];
@@ -4693,7 +4693,7 @@ export type UpdateERC20 = {
   lifetimeLimit: Scalars['String'];
   /**
    * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There’s no limit on the size of a withdrawal
+   * There is no limit on the size of a withdrawal
    * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: Scalars['String'];

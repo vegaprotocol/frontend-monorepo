@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Asset } from './asset-data-provider';
 import {
   AssetDetail,
@@ -13,7 +13,7 @@ describe('AssetDetailsTable', () => {
   const cases: [string, Asset, { key: AssetDetail; value: string }[]][] = [
     [
       'ERC20 asset',
-      generateERC20Asset(1, AssetStatus.STATUS_ENABLED),
+      generateERC20Asset(1, Schema.AssetStatus.STATUS_ENABLED),
       [
         { key: AssetDetail.ID, value: 'E-01' },
         { key: AssetDetail.TYPE, value: 'ERC20' },
@@ -47,7 +47,7 @@ describe('AssetDetailsTable', () => {
     ],
     [
       'Builtin asset',
-      generateBuiltinAsset(1, AssetStatus.STATUS_ENABLED),
+      generateBuiltinAsset(1, Schema.AssetStatus.STATUS_ENABLED),
       [
         { key: AssetDetail.ID, value: 'B-01' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },

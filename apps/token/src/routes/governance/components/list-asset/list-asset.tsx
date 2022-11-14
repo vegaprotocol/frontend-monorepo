@@ -1,5 +1,5 @@
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
-import { AssetStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useTranslation } from 'react-i18next';
@@ -80,7 +80,9 @@ export const ListAsset = ({
     return null;
   }
   if (data.asset.source.__typename !== 'ERC20') return null;
-  if (data.asset.status !== AssetStatus.STATUS_PENDING_LISTING) return null;
+  if (data.asset.status !== Schema.AssetStatus.STATUS_PENDING_LISTING) {
+    return null;
+  }
   if (errorAsset || errorBundle) return null;
   const { assetSource, signatures, vegaAssetId, nonce } =
     assetData.erc20ListAssetBundle;

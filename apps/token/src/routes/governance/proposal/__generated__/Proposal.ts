@@ -702,7 +702,7 @@ export interface Proposal_proposal_terms_change_NewAsset_source_ERC20 {
   lifetimeLimit: string;
   /**
    * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There’s no limit on the size of a withdrawal
+   * There is no limit on the size of a withdrawal
    * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;
@@ -760,7 +760,7 @@ export interface Proposal_proposal_terms_change_UpdateAsset_source {
   lifetimeLimit: string;
   /**
    * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There’s no limit on the size of a withdrawal
+   * There is no limit on the size of a withdrawal
    * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;

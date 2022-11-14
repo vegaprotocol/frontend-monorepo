@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import {
   AccountType,
-  Interval,
+  Schema,
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
@@ -62,7 +62,11 @@ export const MarketInfoContainer = ({
     return new Date(yesterday).toISOString();
   }, [yesterday]);
   const variables = useMemo(
-    () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
+    () => ({
+      marketId,
+      since: yTimestamp,
+      interval: Schema.Interval.INTERVAL_I1H,
+    }),
     [marketId, yTimestamp]
   );
 

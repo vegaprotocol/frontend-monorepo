@@ -13,7 +13,7 @@ module.exports = {
     ],
     excludes: [
       '**/generic-data-provider.ts',
-      '**/__generated__/*',
+      '**/__generated___/*',
       '../../libs/accounts/**',
       '../../libs/assets/**',
       '../../libs/candles-chart/**',
