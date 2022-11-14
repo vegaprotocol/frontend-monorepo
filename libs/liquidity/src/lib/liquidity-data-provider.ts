@@ -25,6 +25,8 @@ import type {
   LiquidityProvisionsUpdateSubscription,
 } from './__generated__/MarketLiquidity';
 import type { Account } from '@vegaprotocol/accounts';
+import type { IterableElement } from 'type-fest';
+
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
   LiquidityProvisionFieldsFragment[],
@@ -39,8 +41,8 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   ) => {
     return produce(data, (draft) => {
       deltas?.forEach((delta) => {
-        const id = delta.partyID;
-        const index = draft.findIndex((a) => a.party.id === id);
+        const id = getId(delta);
+        const index = draft.findIndex((a) => getId(a) === id);
         if (index !== -1) {
           draft[index].commitmentAmount = delta.commitmentAmount;
           draft[index].fee = delta.fee;
@@ -75,6 +77,31 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
     return subscriptionData.liquidityProvisions;
   },
 });
+
+function isLpProvision(
+  entry:
+    | LiquidityProvisionFieldsFragment
+    | IterableElement<
+        LiquidityProvisionsUpdateSubscription['liquidityProvisions']
+      >
+): entry is LiquidityProvisionFieldsFragment {
+  return (
+    (entry as LiquidityProvisionFieldsFragment).__typename ===
+      'LiquidityProvision' ||
+    Boolean((entry as LiquidityProvisionFieldsFragment).party?.id)
+  );
+}
+
+export const getId = (
+  entry:
+    | LiquidityProvisionFieldsFragment
+    | IterableElement<
+        LiquidityProvisionsUpdateSubscription['liquidityProvisions']
+      >
+) =>
+  isLpProvision(entry)
+    ? `${entry.party.id}${entry.status}${entry.createdAt}`
+    : `${entry.partyID}${entry.status}${entry.createdAt}`;
 
 export const marketLiquidityDataProvider = makeDataProvider<
   MarketLpQuery,
