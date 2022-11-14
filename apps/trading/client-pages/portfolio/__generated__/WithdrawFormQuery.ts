@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { Schema } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: WithdrawFormQuery
@@ -38,7 +38,7 @@ export interface WithdrawFormQuery_party_accounts {
   /**
    * Account type (General, Margin, etc)
    */
-  type: AccountType;
+  type: Schema.AccountType;
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */

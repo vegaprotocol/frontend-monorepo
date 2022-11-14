@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';
@@ -8,8 +8,8 @@ import type { ReactNode } from 'react';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 type TradingModeTooltipProps = {
-  tradingMode: MarketTradingMode | null;
-  trigger: AuctionTrigger | null;
+  tradingMode: Schema.MarketTradingMode | null;
+  trigger: Schema.AuctionTrigger | null;
   compiledGrid?: { label: ReactNode; value?: ReactNode }[];
 };
 
@@ -20,7 +20,7 @@ export const TradingModeTooltip = ({
 }: TradingModeTooltipProps) => {
   const { VEGA_DOCS_URL } = useEnvironment();
   switch (tradingMode) {
-    case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
+    case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <section data-testid="trading-mode-tooltip">
           {t(
@@ -29,7 +29,7 @@ export const TradingModeTooltip = ({
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
+    case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <section data-testid="trading-mode-tooltip">
           <p className="mb-4">
@@ -50,9 +50,9 @@ export const TradingModeTooltip = ({
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
+    case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
-        case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
+        case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <section data-testid="trading-mode-tooltip">
               <p className="mb-4">
@@ -76,7 +76,7 @@ export const TradingModeTooltip = ({
             </section>
           );
         }
-        case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
+        case Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <section data-testid="trading-mode-tooltip">
               <p className="mb-4">
@@ -103,14 +103,14 @@ export const TradingModeTooltip = ({
         }
       }
     }
-    case MarketTradingMode.TRADING_MODE_NO_TRADING: {
+    case Schema.MarketTradingMode.TRADING_MODE_NO_TRADING: {
       return (
         <section data-testid="trading-mode-tooltip">
           {t('No trading enabled for this market.')}
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
+    case Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
     default: {
       return null;
     }

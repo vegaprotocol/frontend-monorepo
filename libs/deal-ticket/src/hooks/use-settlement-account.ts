@@ -1,11 +1,11 @@
-import type { AccountType } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { useMemo } from 'react';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 export const useSettlementAccount = (
   settlementAssetId: string,
   accounts: Account[],
-  type?: AccountType
+  type?: Schema.AccountType
 ): Account | null => {
   const callback = () =>
     accounts.find((account) => {

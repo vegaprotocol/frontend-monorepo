@@ -1,10 +1,10 @@
 import type { ChangeEvent } from 'react';
-import type { Schema as Types } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { isValidDate } from '../format/date';
 
-const defaultFilterValue: Types.DateRange = {};
+const defaultFilterValue: Schema.DateRange = {};
 
 const toInputValue = (value: string) => {
   const date = new Date(value);
@@ -21,7 +21,7 @@ const toInputValue = (value: string) => {
 };
 
 export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
-  const [value, setValue] = useState<Types.DateRange>(defaultFilterValue);
+  const [value, setValue] = useState<Schema.DateRange>(defaultFilterValue);
 
   // expose AG Grid Filter Lifecycle callbacks
   useImperativeHandle(ref, () => {
@@ -68,7 +68,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
         return { value };
       },
 
-      setModel(model?: { value: Types.DateRange } | null) {
+      setModel(model?: { value: Schema.DateRange } | null) {
         setValue(model?.value || defaultFilterValue);
       },
     };
