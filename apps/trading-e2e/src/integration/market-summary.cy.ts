@@ -100,7 +100,7 @@ describe('Market trading page', () => {
     });
   });
 
-  describe('Market tooltips', { tags: '@regression' }, () => {
+  describe('Market tooltips', { tags: '@smoke' }, () => {
     it('should see expiry tooltip', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketExpiry).within(() => {
