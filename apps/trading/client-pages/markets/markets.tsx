@@ -11,7 +11,7 @@ export const Markets = () => {
       update({ marketId });
       navigate(`/markets/${marketId}`);
     },
-    [update]
+    [update, navigate]
   );
 
   return <MarketsContainer onSelect={handleOnSelect} />;
