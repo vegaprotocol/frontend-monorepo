@@ -20,12 +20,16 @@ query MarketInfo($marketId: ID!, $interval: Interval!, $since: String!) {
       durationSecs
       volume
     }
-    accounts {
-      type
-      asset {
-        id
+    accountsConnection {
+      edges {
+        node {
+          type
+          asset {
+            id
+          }
+          balance
+        }
       }
-      balance
     }
     tradingMode
     fees {

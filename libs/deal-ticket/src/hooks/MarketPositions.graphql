@@ -1,14 +1,18 @@
 query MarketPositions($partyId: ID!) {
   party(id: $partyId) {
     id
-    accounts {
-      type
-      balance
-      asset {
-        decimals
-      }
-      market {
-        id
+    accountsConnection {
+      edges {
+        node {
+          type
+          balance
+          asset {
+            decimals
+          }
+          market {
+            id
+          }
+        }
       }
     }
     positionsConnection {
