@@ -1,10 +1,22 @@
 import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/react-helpers';
-import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
+import {
+  t,
+  NetworkParams,
+  useNetworkParams,
+  addDecimal,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated___/Proposals';
+import { VoteProgress } from '../voting-progress';
 
 type NewMarket = {
   __typename?: 'NewMarket';
@@ -32,18 +44,31 @@ const instrumentGuard = (
 
 export const useColumnDefs = () => {
   const { VEGA_TOKEN_URL } = useEnvironment();
+  const { params } = useNetworkParams([
+    NetworkParams.governance_proposal_market_requiredMajority,
+  ]);
+  const requiredMajority =
+    params?.governance_proposal_market_requiredMajority ?? 0.5;
+  const requiredMajorityPercentage = requiredMajority
+    ? new BigNumber(requiredMajority).times(100)
+    : new BigNumber(100);
+
   const cellCss = 'grid h-full items-center';
   const columnDefs: ColDef[] = [
     {
       colId: 'market',
       headerName: t('Market'),
       field: 'terms.change.instrument.code',
-      width: 100,
+      width: 150,
+      cellStyle: { lineHeight: '14px' },
       cellRenderer: ({
         data,
-      }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+      }: VegaICellRendererParams<
+        ProposalListFieldsFragment,
+        'terms.change.instrument.code'
+      >) => {
         const { change } = data?.terms || {};
-        if (instrumentGuard(change)) {
+        if (instrumentGuard(change) && VEGA_TOKEN_URL) {
           if (data?.id) {
             const link = `${VEGA_TOKEN_URL}/governance/${data.id}`;
             return (
@@ -69,22 +94,63 @@ export const useColumnDefs = () => {
       colId: 'state',
       headerName: t('State'),
       field: 'state',
+      valueFormatter: ({
+        value,
+      }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) =>
+        value ? ProposalStateMapping[value] : '-',
+    },
+    {
+      colId: 'voting',
+      headerName: t('Voting'),
+      cellClass: 'flex justify-between leading-tight font-mono',
+      cellRenderer: ({
+        data,
+      }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+        if (data) {
+          const yesTokens = new BigNumber(data.votes.yes.totalTokens);
+          const noTokens = new BigNumber(data.votes.no.totalTokens);
+          const totalTokensVoted = yesTokens.plus(noTokens);
+          const yesPercentage = totalTokensVoted.isZero()
+            ? new BigNumber(0)
+            : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
+          return (
+            <div className="uppercase flex h-full items-center justify-center">
+              <VoteProgress
+                threshold={requiredMajorityPercentage}
+                progress={yesPercentage}
+              />
+            </div>
+          );
+        }
+        return '-';
+      },
     },
     {
       colId: 'closing-date',
       headerName: t('Closing date'),
       field: 'terms.closingDatetime',
+      valueFormatter: ({
+        value,
+      }: VegaValueFormatterParams<
+        ProposalListFieldsFragment,
+        'terms.closingDatetime'
+      >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
     },
     {
       colId: 'enactment-date',
       headerName: t('Enactment date'),
       field: 'terms.enactmentDatetime',
+      valueFormatter: ({
+        value,
+      }: VegaValueFormatterParams<
+        ProposalListFieldsFragment,
+        'terms.enactmentDatetime'
+      >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
     },
   ];
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: false,
-      unSortIcon: false,
       cellClass: cellCss,
     };
   }, []);

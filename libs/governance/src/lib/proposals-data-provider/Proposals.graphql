@@ -5,10 +5,12 @@ fragment ProposalListFields on Proposal {
   datetime
   votes {
     yes {
+      totalTokens
       totalNumber
       totalWeight
     }
     no {
+      totalTokens
       totalNumber
       totalWeight
     }

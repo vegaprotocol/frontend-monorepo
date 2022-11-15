@@ -3,37 +3,50 @@ import {
   AsyncRenderer,
 } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { Schema as Types } from '@vegaprotocol/types';
 import { proposalsListDataProvider } from '../proposals-data-provider';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
+import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated___/Proposals';
+
+export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
+  data.filter((proposal) =>
+    [
+      Types.ProposalState.STATE_OPEN,
+      Types.ProposalState.STATE_PASSED,
+      Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
+      Types.ProposalState.STATE_ENACTED,
+    ].includes(proposal.state)
+  );
 
 export const ProposalsList = () => {
-  const { data, loading, error } = useDataProvider({
-    dataProvider: proposalsListDataProvider,
-  });
   const gridRef = useRef<AgGridReact | null>(null);
   const handleOnGridReady = useCallback(() => {
     gridRef.current?.api?.sizeColumnsToFit();
   }, [gridRef]);
-
-  const { columnDefs, defaultColDef } = useColumnDefs();
-  const handleRowClicked = useCallback(() => {
-    console.log('soon');
+  const variables = useMemo(() => {
+    return {
+      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    };
   }, []);
+  const { data, loading, error } = useDataProvider({
+    dataProvider: proposalsListDataProvider,
+    variables,
+  });
+  const filteredData = data ? getNewMarketProposals(data) : null;
+  const { columnDefs, defaultColDef } = useColumnDefs();
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={error} data={filteredData}>
       <AgGrid
         ref={gridRef}
         domLayout="autoHeight"
         className="min-w-full"
         columnDefs={columnDefs}
-        rowData={data}
+        rowData={filteredData}
         defaultColDef={defaultColDef}
-        onRowClicked={handleRowClicked}
         onGridReady={handleOnGridReady}
-        overlayNoRowsTemplate="No data"
       />
     </AsyncRenderer>
   );

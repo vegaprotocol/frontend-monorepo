@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
-import { VoteProgress } from './vote-progress';
+import { VoteProgress } from './voting-progress';
 
 it('Renders with data-testid', () => {
   render(
