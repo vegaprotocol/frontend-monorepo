@@ -373,6 +373,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             {t('View governance proposal')}
           </ExternalLink>
           <ExternalLink
+            data-testid="propose-a-change-to-market-link"
             className="mt-2"
             href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
               tokenUrl: VEGA_TOKEN_URL,

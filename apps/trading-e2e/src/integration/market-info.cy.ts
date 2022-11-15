@@ -182,6 +182,10 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .should('have.text', 'View governance proposal')
       .and('have.attr', 'href')
       .and('contain', '/governance/market-0');
+    cy.getByTestId('propose-a-change-to-market-link')
+      .should('have.text', 'Propose a change to this market ')
+      .and('have.attr', 'href')
+      .and('contain', '/governance/propose/update-market');
   });
 
   afterEach('close toggle', () => {
