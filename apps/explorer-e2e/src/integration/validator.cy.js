@@ -87,7 +87,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         });
     });
 
-    it('should be able to see relevant node information in vega data section', function () {
+    xit('should be able to see relevant node information in vega data section', function () {
       cy.get(vegaDataHeader)
         .contains('Vega data')
         .next()
@@ -97,7 +97,7 @@ context('Validator page', { tags: '@smoke' }, function () {
             .convert_string_json_to_js_object()
             .then((nodesInJson) => {
               this.nodes.forEach((node, index) => {
-                const nodeInJson = nodesInJson.nodes[index];
+                const nodeInJson = nodesInJson.edges[index].node;
 
                 // Vegacapsule shows no info or null for following fields:
                 // name, infoURL, avatarUrl, location, epoch data
