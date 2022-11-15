@@ -16,7 +16,6 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
       Types.ProposalState.STATE_OPEN,
       Types.ProposalState.STATE_PASSED,
       Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
-      Types.ProposalState.STATE_ENACTED,
     ].includes(proposal.state)
   );
 

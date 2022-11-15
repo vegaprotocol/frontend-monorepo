@@ -14,7 +14,7 @@ export const VoteProgress = ({
     >
       <div
         data-testid="vote-progress-indicator"
-        className="absolute -top-1 w-[1px] h-3 bg-white z-1"
+        className="absolute -top-1 w-[1px] h-3 bg-neutral-300 dark:bg-white z-1"
         style={{ left: `${threshold}%` }}
       />
       <div className="w-full h-2">
