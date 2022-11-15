@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading } from '../../components/heading';
-import { Links } from '../../config';
+import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { BigNumber } from '../../lib/bignumber';
@@ -92,7 +92,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <a
             data-testid="get-vega-wallet-link"
-            href={Links.WALLET_PAGE}
+            href={ExternalLinks.VEGA_WALLET_URL}
             className="underline text-white"
             target="_blank"
             rel="nofollow noreferrer"

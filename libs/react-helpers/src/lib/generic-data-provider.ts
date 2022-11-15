@@ -8,13 +8,9 @@ import type {
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import type { Schema } from '@vegaprotocol/types';
-
-export interface UpdateDelta<Delta> {
+interface UpdateData<Data, Delta> {
   delta?: Delta;
   isUpdate?: boolean;
-}
-
-interface UpdateData<Data, Delta> extends UpdateDelta<Delta> {
   insertionData?: Data | null;
   isInsert?: boolean;
 }

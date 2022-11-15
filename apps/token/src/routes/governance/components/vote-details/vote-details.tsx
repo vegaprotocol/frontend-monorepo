@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next';
+import { formatDistanceToNow } from 'date-fns';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { ProposalState } from '@vegaprotocol/types';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
 import { useUserVote } from './use-user-vote';
+import { CurrentProposalStatus } from '../current-proposal-status';
 import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalType } from '../proposal/proposal';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 
@@ -45,12 +48,22 @@ export const VoteDetails = ({
     proposal.votes.no.votes
   );
   const defaultDecimals = 2;
+  const daysLeft = t('daysLeft', {
+    daysLeft: formatDistanceToNow(new Date(proposal.terms.closingDatetime)),
+  });
 
   return (
     <>
       {proposalType === ProposalType.PROPOSAL_UPDATE_MARKET && (
         <section>
           <h3 className="text-xl mb-2">{t('liquidityVotes')}</h3>
+          <p>
+            <span>
+              <CurrentProposalStatus proposal={proposal} />
+            </span>
+            {'. '}
+            {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
+          </p>
           <table className="w-full mb-8">
             <thead>
               <tr>
@@ -93,6 +106,13 @@ export const VoteDetails = ({
       )}
       <section>
         <h3 className="text-xl mb-2">{t('tokenVotes')}</h3>
+        <p>
+          <span>
+            <CurrentProposalStatus proposal={proposal} />
+          </span>
+          {'. '}
+          {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
+        </p>
         <table className="w-full mb-4">
           <thead>
             <tr>

@@ -1,7 +1,3 @@
-import {
-  connectVegaWallet,
-  disconnectVegaWallet,
-} from '../support/connect-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generatePositions,
@@ -18,22 +14,31 @@ import {
   generatePositionsMarkets,
 } from '../support/mocks/generate-markets';
 
-describe('Portfolio page', { tags: '@smoke' }, () => {
-  afterEach(() => {
-    disconnectVegaWallet();
-  });
-
+describe('Portfolio page - wallet', { tags: '@smoke' }, () => {
   it('button for wallet connect should work', () => {
     cy.visit('/');
     cy.get('[href="/portfolio"]').eq(0).click();
     cy.getByTestId('trading-connect-wallet').should('be.visible');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     cy.getByTestId('trading-connect-wallet').should('not.exist');
+  });
+});
+
+describe('Portfolio page tabs', { tags: '@smoke' }, () => {
+  before(() => {
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'Positions', generatePositions());
+      aliasQuery(req, 'Margins', generateMargins());
+      aliasQuery(req, 'Markets', generatePositionsMarkets());
+      aliasQuery(req, 'MarketsData', generateMarketsData());
+      aliasQuery(req, 'Accounts', generateAccounts());
+      aliasQuery(req, 'Assets', generateAssets());
+    });
   });
 
   it('certain tabs should exist', () => {
     cy.visit('/portfolio');
-    connectVegaWallet();
+    cy.connectVegaWallet();
 
     cy.getByTestId('assets').click();
     cy.location('pathname').should('eq', '/portfolio/assets');
@@ -52,7 +57,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
   });
 
   describe('Assets view', () => {
-    beforeEach(() => {
+    before(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'Positions', generatePositions());
         aliasQuery(req, 'Margins', generateMargins());
@@ -62,7 +67,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/assets');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -91,7 +96,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Assets', generateAssets());
       });
       cy.visit('/portfolio/positions');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -106,7 +111,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/orders');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -121,7 +126,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         aliasQuery(req, 'Markets', generateFillsMarkets());
       });
       cy.visit('/portfolio/fills');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
@@ -144,7 +149,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
         });
       });
       cy.visit('/portfolio');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('"No data to display" should be always displayed', () => {

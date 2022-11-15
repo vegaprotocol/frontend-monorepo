@@ -14,6 +14,7 @@ import { addContainsExactly } from './lib/commands/contains-exactly';
 import { addRestartVegacapsuleNetwork } from './lib/commands/restart-vegacapsule-network';
 import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
 import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multisig';
+import { addVegaWalletConnect } from './lib/commands/vega-wallet-connect';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -29,6 +30,7 @@ addContainsExactly();
 addRestartVegacapsuleNetwork();
 addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
+addVegaWalletConnect();
 
 export * from './lib/graphql-test-utils';
 export type { onMessage } from './lib/commands/mock-gql';

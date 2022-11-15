@@ -1,5 +1,5 @@
-import { t } from '@vegaprotocol/react-helpers';
-import { Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLinks, t } from '@vegaprotocol/react-helpers';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 export const tooltipMapping: Record<string, ReactNode> = {
@@ -65,24 +65,18 @@ export const tooltipMapping: Record<string, ReactNode> = {
   tau: (
     <span>
       {t('Projection horizon measured as a year fraction used in ')}
-      <Link
-        href="https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7"
-        target="__blank"
-      >
+      <ExternalLink href={ExternalLinks.MARGIN_CREDIT_RISK}>
         {t('Expected Shortfall')}
-      </Link>
+      </ExternalLink>
       {t(' calculation when obtaining Risk Factor Long and Risk Factor Short')}
     </span>
   ),
   riskAversionParameter: (
     <span>
       {t('Probability level used in ')}
-      <Link
-        href="https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7"
-        target="__blank"
-      >
+      <ExternalLink href={ExternalLinks.MARGIN_CREDIT_RISK}>
         {t('Expected Shortfall')}
-      </Link>
+      </ExternalLink>
       {t(' calculation when obtaining Risk Factor Long and Risk Factor Short')}
     </span>
   ),

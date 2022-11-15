@@ -28,7 +28,7 @@ export const useCalculateSlippage = ({ marketId, order }: Props) => {
   );
   const { data: market } = useDataProvider<SingleMarketFieldsFragment, never>({
     dataProvider: marketProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables,
   });
   const volPriceArr =

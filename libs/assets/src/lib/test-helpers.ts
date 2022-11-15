@@ -1,7 +1,10 @@
-import type { AssetStatus } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import type { Asset } from './asset-data-provider';
 
-export const generateERC20Asset = (i: number, status: AssetStatus): Asset => ({
+export const generateERC20Asset = (
+  i: number,
+  status: Schema.AssetStatus
+): Asset => ({
   id: `E-0${i}`,
   name: `ERC20 0${i}`,
   symbol: `EA0${i}`,
@@ -43,7 +46,7 @@ export const generateERC20Asset = (i: number, status: AssetStatus): Asset => ({
 
 export const generateBuiltinAsset = (
   i: number,
-  status: AssetStatus
+  status: Schema.AssetStatus
 ): Asset => ({
   id: `B-0${i}`,
   name: `Builtin 0${i}`,

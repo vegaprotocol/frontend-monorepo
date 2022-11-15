@@ -44,7 +44,7 @@ export const lpDataProvider = makeDerivedDataProvider(
 const useMarketDetails = (marketId: string | undefined) => {
   const { data, loading, error } = useDataProvider({
     dataProvider: lpDataProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 

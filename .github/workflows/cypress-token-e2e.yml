@@ -63,7 +63,6 @@ jobs:
       - name: Install Vega binaries
         uses: ./frontend-monorepo/.github/actions/install-vega-binaries
         with:
-          all: true
           version: ${{ inputs.vega-version }}
           gobin: ${{ inputs.gobin }}
 

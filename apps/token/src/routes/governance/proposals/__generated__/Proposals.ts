@@ -142,7 +142,7 @@ export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAss
   lifetimeLimit: string;
   /**
    * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There’s no limit on the size of a withdrawal
+   * There is no limit on the size of a withdrawal
    * Note: this is a temporary measure that can be changed by governance
    */
   withdrawThreshold: string;

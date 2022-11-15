@@ -96,7 +96,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     loading: marketLoading,
   } = useDataProvider({
     dataProvider: marketProvider,
-    noUpdate: true,
+    skipUpdates: true,
     variables,
   });
 

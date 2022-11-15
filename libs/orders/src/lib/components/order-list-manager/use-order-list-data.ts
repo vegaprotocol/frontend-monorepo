@@ -112,7 +112,6 @@ export const useOrderListData = ({
     update,
     insert,
     variables,
-    updateOnInit: true,
   });
   totalCountRef.current = totalCount;
 

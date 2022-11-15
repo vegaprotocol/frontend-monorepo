@@ -9,7 +9,7 @@ import {
   useDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
-import { Interval } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import throttle from 'lodash/throttle';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
@@ -39,7 +39,7 @@ export const Last24hVolume = ({ marketId }: { marketId: string }) => {
   const variables = useMemo(
     () => ({
       marketId: marketId,
-      interval: Interval.INTERVAL_I1H,
+      interval: Schema.Interval.INTERVAL_I1H,
       since: yTimestamp,
     }),
     [marketId, yTimestamp]
@@ -71,7 +71,6 @@ export const Last24hVolume = ({ marketId }: { marketId: string }) => {
     update,
     variables,
     skip: !marketId || !data,
-    updateOnInit: true,
   });
 
   return (

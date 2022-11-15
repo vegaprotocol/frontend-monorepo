@@ -10,7 +10,7 @@ export type DelegationsQueryVariables = Types.Exact<{
 }>;
 
 
-export type DelegationsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amountFormatted: string, amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } }> | null } | null };
+export type DelegationsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amountFormatted: string, amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } } } | null> | null } | null } | null };
 
 export const WalletDelegationFieldsFragmentDoc = gql`
     fragment WalletDelegationFields on Delegation {
@@ -40,21 +40,25 @@ export const DelegationsDocument = gql`
     stakingSummary {
       currentStakeAvailable
     }
-    accounts {
-      asset {
-        name
-        id
-        decimals
-        symbol
-        source {
-          __typename
-          ... on ERC20 {
-            contractAddress
+    accountsConnection {
+      edges {
+        node {
+          asset {
+            name
+            id
+            decimals
+            symbol
+            source {
+              __typename
+              ... on ERC20 {
+                contractAddress
+              }
+            }
           }
+          type
+          balance
         }
       }
-      type
-      balance
     }
   }
 }
