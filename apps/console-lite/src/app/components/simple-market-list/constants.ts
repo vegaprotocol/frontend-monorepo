@@ -1,21 +1,24 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import colors from 'tailwindcss/colors';
 import type { Market } from '@vegaprotocol/market-list';
 import { IS_MARKET_TRADABLE } from '../../constants';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
-  { value: MarketState.STATE_ACTIVE, text: t('Active') },
-  { value: MarketState.STATE_CANCELLED, text: t('Cancelled') },
-  { value: MarketState.STATE_CLOSED, text: t('Closed') },
-  { value: MarketState.STATE_PENDING, text: t('Pending') },
-  { value: MarketState.STATE_PROPOSED, text: t('Proposed') },
-  { value: MarketState.STATE_REJECTED, text: t('Rejected') },
-  { value: MarketState.STATE_SETTLED, text: t('Settled') },
-  { value: MarketState.STATE_SUSPENDED, text: t('Suspended') },
-  { value: MarketState.STATE_TRADING_TERMINATED, text: t('TradingTerminated') },
+  { value: Schema.MarketState.STATE_ACTIVE, text: t('Active') },
+  { value: Schema.MarketState.STATE_CANCELLED, text: t('Cancelled') },
+  { value: Schema.MarketState.STATE_CLOSED, text: t('Closed') },
+  { value: Schema.MarketState.STATE_PENDING, text: t('Pending') },
+  { value: Schema.MarketState.STATE_PROPOSED, text: t('Proposed') },
+  { value: Schema.MarketState.STATE_REJECTED, text: t('Rejected') },
+  { value: Schema.MarketState.STATE_SETTLED, text: t('Settled') },
+  { value: Schema.MarketState.STATE_SUSPENDED, text: t('Suspended') },
+  {
+    value: Schema.MarketState.STATE_TRADING_TERMINATED,
+    text: t('TradingTerminated'),
+  },
 ];
 
 export const agGridLightVariables = `

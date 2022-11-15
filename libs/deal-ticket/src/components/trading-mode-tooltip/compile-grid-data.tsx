@@ -3,7 +3,7 @@ import {
   getDateTimeFormat,
   addDecimalsNormalizeNumber,
 } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';
@@ -16,8 +16,9 @@ export const compileGridData = (
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: MarketDataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+    market.tradingMode ===
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsNormalizeNumber(

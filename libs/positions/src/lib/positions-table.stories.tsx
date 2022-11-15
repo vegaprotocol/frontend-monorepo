@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import type { Story, Meta } from '@storybook/react';
 import { PositionsTable } from './positions-table';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 export default {
   component: PositionsTable,
@@ -29,12 +29,12 @@ const longPosition: Position = {
   // leverageSearch: '0',
   liquidationPrice: '1129935',
   lowMarginLevel: false,
-  marginAccountBalance: new BigNumber('0'),
+  marginAccountBalance: new BigNumber('0').toString(),
   // marginMaintenance: '0',
   // marginSearch: '0',
   // marginInitial: '0',
   marketId: 'marketId1',
-  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '1131894',
   notional: '46667989',
   openVolume: '4123',
@@ -61,12 +61,12 @@ const shortPosition: Position = {
   // leverageSearch: '0',
   liquidationPrice: '23734',
   lowMarginLevel: false,
-  marginAccountBalance: new BigNumber('0'),
+  marginAccountBalance: new BigNumber('0').toString(),
   // marginMaintenance: '0',
   // marginSearch: '0',
   // marginInitial: '0',
   marketId: 'marketId2',
-  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '24123',
   notional: '836344',
   openVolume: '-3467',

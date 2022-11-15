@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
@@ -25,7 +25,7 @@ export const useWithdrawAsset = (
       const asset = assets.find((a) => a.id === id);
       const account = accounts.find(
         (a) =>
-          a.type === AccountType.ACCOUNT_TYPE_GENERAL &&
+          a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL &&
           a.asset.id === asset?.id
       );
       const balance =

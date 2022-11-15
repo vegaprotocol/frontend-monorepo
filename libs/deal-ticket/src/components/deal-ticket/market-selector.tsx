@@ -23,7 +23,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { IconNames } from '@blueprintjs/icons';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 
@@ -246,7 +246,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     setResults(
       data?.filter(
         (item) =>
-          item.state === MarketState.STATE_ACTIVE &&
+          item.state === Schema.MarketState.STATE_ACTIVE &&
           item.tradableInstrument.instrument.name.match(
             new RegExp(escapeRegExp(lookup), 'i')
           )

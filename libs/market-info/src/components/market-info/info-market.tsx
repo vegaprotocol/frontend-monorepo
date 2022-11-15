@@ -8,7 +8,6 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import {
-  AccountType,
   Schema,
   MarketStateMapping,
   MarketTradingModeMapping,
@@ -156,7 +155,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     ...(market.accounts || [])
-      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
+      .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((a) => ({
         title: t(`Insurance pool`),
         content: (

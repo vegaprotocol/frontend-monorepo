@@ -3,13 +3,7 @@ import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketStateMapping,
-  MarketTradingMode,
-  Schema,
-} from '@vegaprotocol/types';
+import { MarketStateMapping, Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { MarketDataGrid } from '../trading-mode-tooltip';
@@ -23,9 +17,9 @@ import { DEAL_TICKET_SECTION, ERROR_SIZE_DECIMAL } from '../constants';
 
 export const isMarketInAuction = (market: DealTicketMarketFragment) => {
   return [
-    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
   ].includes(market.tradingMode);
 };
 
@@ -38,9 +32,9 @@ export type ValidationProps = {
   estMargin: OrderMargin | null;
 };
 
-export const marketTranslations = (marketState: MarketState) => {
+export const marketTranslations = (marketState: Schema.MarketState) => {
   switch (marketState) {
-    case MarketState.STATE_TRADING_TERMINATED:
+    case Schema.MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
       return t(MarketStateMapping[marketState]).toLowerCase();
@@ -170,11 +164,11 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_REJECTED,
-        MarketState.STATE_TRADING_TERMINATED,
-        MarketState.STATE_CANCELLED,
-        MarketState.STATE_CLOSED,
+        Schema.MarketState.STATE_SETTLED,
+        Schema.MarketState.STATE_REJECTED,
+        Schema.MarketState.STATE_TRADING_TERMINATED,
+        Schema.MarketState.STATE_CANCELLED,
+        Schema.MarketState.STATE_CLOSED,
       ].includes(market.state)
     ) {
       return {
@@ -189,9 +183,10 @@ export const useOrderValidation = ({
     }
 
     if (
-      [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
-        market.state
-      )
+      [
+        Schema.MarketState.STATE_PROPOSED,
+        Schema.MarketState.STATE_PENDING,
+      ].includes(market.state)
     ) {
       if (fieldErrorChecking) {
         return fieldErrorChecking;
@@ -211,8 +206,9 @@ export const useOrderValidation = ({
       if (orderType === Schema.OrderType.TYPE_MARKET) {
         if (
           market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+            Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger ===
+            Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
           return {
             isDisabled: true,
@@ -235,8 +231,8 @@ export const useOrderValidation = ({
         }
         if (
           market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE
+            Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
           return {
             isDisabled: true,
@@ -275,8 +271,9 @@ export const useOrderValidation = ({
       ) {
         if (
           market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+            Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger ===
+            Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
           return {
             isDisabled: true,
@@ -301,8 +298,8 @@ export const useOrderValidation = ({
         }
         if (
           market.tradingMode ===
-            MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_PRICE
+            Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+          market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
           return {
             isDisabled: true,
@@ -349,9 +346,9 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(market.tradingMode)
     ) {
       return {

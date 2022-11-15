@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -17,7 +17,7 @@ const singleRow: Position = {
   liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
-  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123',
   notional: '12300',
   openVolume: '100',
@@ -120,7 +120,8 @@ it('displays mark price', async () => {
         rowData={[
           {
             ...singleRow,
-            marketTradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+            marketTradingMode:
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
           },
         ]}
       />

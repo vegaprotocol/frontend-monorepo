@@ -1,5 +1,5 @@
 import type { DealTicketQuery } from '@vegaprotocol/deal-ticket';
-import { MarketTradingMode, MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -11,8 +11,8 @@ export const generateDealTicket = (
       id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       tradableInstrument: {
         instrument: {
           id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',

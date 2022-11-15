@@ -1,6 +1,8 @@
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { AccountFields, Account } from './accounts-data-provider';
 import { getAccountData, getId } from './accounts-data-provider';
+
+const AccountType = Schema.AccountType;
 
 describe('getAccountData', () => {
   it('should return the correct aggregated data', () => {

@@ -28,7 +28,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
 
@@ -229,7 +229,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueGetterParams<Position, 'markPrice'>) => {
             return !data ||
               data.marketTradingMode ===
-                MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ? undefined
               : toBigNum(data.markPrice, data.marketDecimalPlaces).toNumber();
           }}
@@ -242,7 +242,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             if (
               data.marketTradingMode ===
-              MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
             ) {
               return '-';
             }

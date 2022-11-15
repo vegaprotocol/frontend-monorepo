@@ -1,8 +1,4 @@
-import {
-  MarketState,
-  MarketTradingMode,
-  AuctionTrigger,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
@@ -252,9 +248,9 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_PENDING,
+        Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -311,9 +307,9 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_PENDING,
+        Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -370,9 +366,9 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_PENDING,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -631,9 +627,9 @@ describe('market order validations', { tags: '@smoke' }, () => {
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockTradingPage(
-      MarketState.STATE_SUSPENDED,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.MarketState.STATE_SUSPENDED,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');

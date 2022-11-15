@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
@@ -7,33 +6,7 @@ import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { TendermintValidatorsResponse } from './tendermint-validator-response';
-import type { NodesQuery } from './__generated__/NodesQuery';
-
-const NODES_QUERY = gql`
-  query NodesQuery {
-    nodes {
-      id
-      name
-      infoUrl
-      avatarUrl
-      pubkey
-      tmPubkey
-      ethereumAddress
-      location
-      stakedByOperator
-      stakedByDelegates
-      stakedTotal
-      pendingStake
-      epochData {
-        total
-        offline
-        online
-      }
-      status
-      name
-    }
-  }
-`;
+import { useExplorerNodesQuery } from './__generated__/nodes';
 
 const Validators = () => {
   const {
@@ -41,7 +14,7 @@ const Validators = () => {
   } = useFetch<TendermintValidatorsResponse>(
     `${DATA_SOURCES.tendermintUrl}/validators`
   );
-  const { data } = useQuery<NodesQuery>(NODES_QUERY);
+  const { data } = useExplorerNodesQuery();
 
   return (
     <section>

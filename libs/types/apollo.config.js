@@ -12,6 +12,7 @@ module.exports = {
       '../../apps/trading/client.graphql',
     ],
     excludes: [
+      '../../apps/explorer/**',
       '**/generic-data-provider.ts',
       '**/__generated___/*',
       '../../libs/accounts/**',
