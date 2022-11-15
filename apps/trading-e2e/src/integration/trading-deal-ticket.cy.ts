@@ -1,6 +1,5 @@
 import { Schema } from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
-import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 
 const orderSizeField = 'order-size';
@@ -138,7 +137,7 @@ describe('time in force default values', () => {
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
-    connectVegaWallet();
+    cy.connectVegaWallet();
   });
 
   it('must have market order set up to IOC by default', function () {
@@ -167,7 +166,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
-    connectVegaWallet();
+    cy.connectVegaWallet();
   });
 
   it('successfully places market buy order', () => {
@@ -250,7 +249,7 @@ describe(
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -309,7 +308,7 @@ describe(
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -368,7 +367,7 @@ describe(
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
-      connectVegaWallet();
+      cy.connectVegaWallet();
     });
 
     it('successfully places limit buy order', () => {
@@ -467,7 +466,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
-    connectVegaWallet();
+    cy.connectVegaWallet();
   });
 
   it('must warn if order size input has too many digits after the decimal place', function () {
@@ -501,7 +500,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     cy.wait('@Market');
     cy.getByTestId(toggleLimit).click();
   });
@@ -638,7 +637,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
-    connectVegaWallet();
+    cy.connectVegaWallet();
   });
 
   it('should show warning for market order', function () {
@@ -694,7 +693,7 @@ describe('account validation', { tags: '@regression' }, () => {
     });
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     cy.wait('@Market');
   });
 

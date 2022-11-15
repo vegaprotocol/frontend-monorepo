@@ -1,5 +1,3 @@
-import { connectVegaWallet } from '../support/vega-wallet';
-
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
@@ -16,7 +14,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.getByTestId('Deposits').click();
 
     cy.getByTestId('tab-deposits').contains('Connect your Vega wallet');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     // validateFillsDisplayed();
     cy.getByTestId('deposit-button').click();
     cy.wait('@Assets');

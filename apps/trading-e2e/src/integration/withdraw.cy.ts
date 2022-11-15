@@ -1,5 +1,4 @@
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { connectVegaWallet } from '../support/vega-wallet';
 
 describe('withdraw', { tags: '@smoke' }, () => {
   const formFieldError = 'input-error-text';
@@ -21,7 +20,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     cy.getByTestId('Withdrawals').click();
 
     // Withdraw page requires vega wallet connection
-    connectVegaWallet();
+    cy.connectVegaWallet();
 
     // It also requires connection Ethereum wallet
     connectEthereumWallet();

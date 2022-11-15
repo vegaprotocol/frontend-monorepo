@@ -1,5 +1,4 @@
 import { Schema } from '@vegaprotocol/types';
-import { connectVegaWallet } from '../support/vega-wallet';
 import {
   updateOrder,
   getSubscriptionMocks,
@@ -26,7 +25,7 @@ describe('orders list', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
@@ -130,7 +129,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });

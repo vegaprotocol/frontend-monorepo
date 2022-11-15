@@ -34,8 +34,24 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  aliasQuery(req, 'ChainId', generateChainId());
-  aliasQuery(req, 'Statistics', generateStatistics());
+  aliasQuery(
+    req,
+    'ChainId',
+    generateChainId({
+      statistics: {
+        chainId: Cypress.env('VEGA_ENV')?.toLowerCase(),
+      },
+    })
+  );
+  aliasQuery(
+    req,
+    'Statistics',
+    generateStatistics({
+      statistics: {
+        chainId: Cypress.env('VEGA_ENV')?.toLowerCase(),
+      },
+    })
+  );
   aliasQuery(
     req,
     'Market',
