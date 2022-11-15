@@ -23,6 +23,16 @@ export const generateMarketInfoQuery = (
           description: '',
         },
       },
+      marketTimestamps: {
+        __typename: 'MarketTimestamps',
+        open: '2022-11-15T02:15:24.543614154Z',
+        close: null,
+      },
+      openingAuction: {
+        __typename: 'AuctionDuration',
+        durationSecs: 210,
+        volume: 0,
+      },
       accountsConnection: {
         __typename: 'AccountsConnection',
         edges: [
