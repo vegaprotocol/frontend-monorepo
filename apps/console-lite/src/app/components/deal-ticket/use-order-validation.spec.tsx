@@ -3,12 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import {
-  MarketState,
-  MarketStateMapping,
-  MarketTradingMode,
-  Schema,
-} from '@vegaprotocol/types';
+import { MarketStateMapping, Schema } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
@@ -37,8 +32,8 @@ const market: DealTicketMarketFragment = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: Schema.MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -161,11 +156,11 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.STATE_SETTLED}
-    ${MarketState.STATE_REJECTED}
-    ${MarketState.STATE_TRADING_TERMINATED}
-    ${MarketState.STATE_CLOSED}
-    ${MarketState.STATE_CANCELLED}
+    ${Schema.MarketState.STATE_SETTLED}
+    ${Schema.MarketState.STATE_REJECTED}
+    ${Schema.MarketState.STATE_TRADING_TERMINATED}
+    ${Schema.MarketState.STATE_CLOSED}
+    ${Schema.MarketState.STATE_CANCELLED}
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {
@@ -182,8 +177,8 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.STATE_PENDING}
-    ${MarketState.STATE_PROPOSED}
+    ${Schema.MarketState.STATE_PENDING}
+    ${Schema.MarketState.STATE_PROPOSED}
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
@@ -196,7 +191,7 @@ describe('useOrderValidation', () => {
         market: {
           ...defaultOrder.market,
           state,
-          tradingMode: MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+          tradingMode: Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         },
         orderType: Schema.OrderType.TYPE_LIMIT,
         orderTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
@@ -204,7 +199,7 @@ describe('useOrderValidation', () => {
       expect(result.current).toStrictEqual({
         isDisabled: false,
         message: `This market is ${MarketStateMapping[
-          state as MarketState
+          state as Schema.MarketState
         ].toLowerCase()} and only accepting liquidity commitment orders`,
         section: 'sec-summary',
       });
@@ -212,10 +207,10 @@ describe('useOrderValidation', () => {
   );
 
   it.each`
-    tradingMode                                          | errorMessage
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${ERROR.MARKET_CONTINUOUS_LIMIT}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${ERROR.MARKET_CONTINUOUS_LIMIT}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    tradingMode                                                 | errorMessage
+    ${Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    ${Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    ${Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${ERROR.MARKET_CONTINUOUS_LIMIT}
   `(
     `Returns an error message when trying to submit a non-limit order for a "$tradingMode" market`,
     ({ tradingMode, errorMessage }) => {
@@ -229,16 +224,16 @@ describe('useOrderValidation', () => {
   );
 
   it.each`
-    tradingMode                                          | orderTimeInForce                             | errorMessage
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    tradingMode                                                 | orderTimeInForce                             | errorMessage
+    ${Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${Schema.OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
   `(
     `Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market`,
     ({ tradingMode, orderTimeInForce, errorMessage }) => {
@@ -335,8 +330,8 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.STATE_PENDING}
-    ${MarketState.STATE_PROPOSED}
+    ${Schema.MarketState.STATE_PENDING}
+    ${Schema.MarketState.STATE_PROPOSED}
   `(
     'Returns error when market state is pending and size is wrong',
     ({ state }) => {
