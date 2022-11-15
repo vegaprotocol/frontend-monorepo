@@ -3,26 +3,32 @@ import { useMarketPositions } from './use-market-positions';
 
 let mockNotEmptyData = {
   party: {
-    accounts: [
-      {
-        balance: '50001000000',
-        asset: {
-          decimals: 5,
+    accountsConnection: {
+      edges: [
+        {
+          node: {
+            balance: '50001000000',
+            asset: {
+              decimals: 5,
+            },
+            market: {
+              id: 'marketId',
+            },
+          },
         },
-        market: {
-          id: 'marketId',
+        {
+          node: {
+            balance: '700000000000000000000000000000',
+            asset: {
+              decimals: 5,
+            },
+            market: {
+              id: 'someOtherMarketId',
+            },
+          },
         },
-      },
-      {
-        balance: '700000000000000000000000000000',
-        asset: {
-          decimals: 5,
-        },
-        market: {
-          id: 'someOtherMarketId',
-        },
-      },
-    ],
+      ],
+    },
     positionsConnection: {
       edges: [
         {
@@ -66,17 +72,21 @@ describe('useOrderPosition Hook', () => {
   it('if balance equal 0 return null', () => {
     mockNotEmptyData = {
       party: {
-        accounts: [
-          {
-            balance: '0',
-            asset: {
-              decimals: 5,
+        accountsConnection: {
+          edges: [
+            {
+              node: {
+                balance: '0',
+                asset: {
+                  decimals: 5,
+                },
+                market: {
+                  id: 'marketId',
+                },
+              },
             },
-            market: {
-              id: 'marketId',
-            },
-          },
-        ],
+          ],
+        },
         positionsConnection: {
           edges: [
             {
@@ -100,17 +110,21 @@ describe('useOrderPosition Hook', () => {
   it('if no markets return null', () => {
     mockNotEmptyData = {
       party: {
-        accounts: [
-          {
-            balance: '33330',
-            asset: {
-              decimals: 5,
+        accountsConnection: {
+          edges: [
+            {
+              node: {
+                balance: '33330',
+                asset: {
+                  decimals: 5,
+                },
+                market: {
+                  id: 'otherMarketId',
+                },
+              },
             },
-            market: {
-              id: 'otherMarketId',
-            },
-          },
-        ],
+          ],
+        },
         positionsConnection: {
           edges: [
             {
