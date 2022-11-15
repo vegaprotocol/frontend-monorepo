@@ -22,6 +22,7 @@ import { useOrderMargin } from './use-order-margin';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { DealTicketMarketFragment } from '../components';
 import type { OrderMargin } from './use-order-margin';
+
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
   market: DealTicketMarketFragment

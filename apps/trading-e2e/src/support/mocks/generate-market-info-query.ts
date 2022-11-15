@@ -6,7 +6,7 @@ import type { PartialDeep } from 'type-fest';
 export const generateMarketInfoQuery = (
   override?: PartialDeep<MarketInfoQuery>
 ): MarketInfoQuery => {
-  const defaultResult = {
+  const defaultResult: MarketInfoQuery = {
     market: {
       __typename: 'Market',
       id: 'market-0',
@@ -23,26 +23,35 @@ export const generateMarketInfoQuery = (
           description: '',
         },
       },
-      accounts: [
-        {
-          type: Schema.AccountType.ACCOUNT_TYPE_INSURANCE,
-          asset: {
-            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-            __typename: 'Asset',
+      accountsConnection: {
+        __typename: 'AccountsConnection',
+        edges: [
+          {
+            __typename: 'AccountEdge',
+            node: {
+              type: Schema.AccountType.ACCOUNT_TYPE_INSURANCE,
+              asset: {
+                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                __typename: 'Asset',
+              },
+              balance: '0',
+              __typename: 'AccountBalance',
+            },
           },
-          balance: '0',
-          __typename: 'AccountBalance',
-        },
-        {
-          type: Schema.AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-          asset: {
-            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-            __typename: 'Asset',
+          {
+            __typename: 'AccountEdge',
+            node: {
+              type: Schema.AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              asset: {
+                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                __typename: 'Asset',
+              },
+              balance: '0',
+              __typename: 'AccountBalance',
+            },
           },
-          balance: '0',
-          __typename: 'AccountBalance',
-        },
-      ],
+        ],
+      },
       fees: {
         __typename: 'Fees',
         factors: {

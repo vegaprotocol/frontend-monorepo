@@ -97,7 +97,6 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
   );
-  const;
   const { data: asset } = useAssetDataProvider(assetId ?? '');
 
   if (!market) return null;

@@ -50,7 +50,11 @@ export const useOrderCloseOut = ({
       market.decimalPlaces
     )
   );
-  const positionAccount = data?.party?.accounts?.find(
+
+  const dataAccounts = compact(data?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
+  const positionAccount = dataAccounts.find(
     (account) => account.market?.id === market.id
   );
   const positionAccountBalance = new BigNumber(
