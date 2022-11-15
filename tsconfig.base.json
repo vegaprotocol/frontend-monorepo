@@ -48,5 +48,9 @@
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "files": [
+    "node_modules/@nrwl/react/typings/cssmodule.d.ts",
+    "node_modules/@nrwl/react/typings/image.d.ts"
+  ]
 }

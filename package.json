@@ -113,6 +113,7 @@
     "@nrwl/workspace": "14.5.10",
     "@sentry/webpack-plugin": "^1.18.8",
     "@storybook/addon-a11y": "^6.4.19",
+    "@storybook/addon-docs": "^6.5.13",
     "@storybook/addon-essentials": "6.5.10",
     "@storybook/builder-webpack5": "6.5.10",
     "@storybook/core-server": "6.5.10",
