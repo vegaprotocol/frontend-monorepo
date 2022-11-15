@@ -5,10 +5,11 @@ import type { OrderEventFieldsFragment } from './';
 import * as Sentry from '@sentry/react';
 import type { Order } from '../components';
 import { useOrderEvent } from './use-order-event';
+import BigNumber from 'bignumber.js';
 
-// Can only edit price for now
 export interface EditOrderArgs {
   price: string;
+  size?: string;
 }
 
 export const useOrderEdit = (order: Order | null) => {
@@ -47,7 +48,13 @@ export const useOrderEdit = (order: Order | null) => {
             marketId: order.market.id,
             price: removeDecimal(args.price, order.market.decimalPlaces),
             timeInForce: order.timeInForce,
-            sizeDelta: 0,
+            sizeDelta: args.size
+              ? new BigNumber(
+                  removeDecimal(args.size, order.market.positionDecimalPlaces)
+                )
+                  .minus(order.size)
+                  .toNumber()
+              : 0,
             expiresAt: order.expiresAt
               ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
               : undefined,

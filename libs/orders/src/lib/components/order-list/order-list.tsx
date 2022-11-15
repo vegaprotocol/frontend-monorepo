@@ -136,7 +136,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={editOrder}
             onSubmit={(fields) => {
               setEditOrder(null);
-              orderEdit.edit({ price: fields.limitPrice });
+              orderEdit.edit({ price: fields.limitPrice, size: fields.size });
             }}
           />
         )}
@@ -356,6 +356,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           colId="amend"
           headerName=""
           field="status"
+          minWidth={150}
           cellRenderer={({ data, node }: VegaICellRendererParams<Order>) => {
             if (node?.rowPinned) {
               return (
