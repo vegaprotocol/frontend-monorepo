@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { AsyncRenderer, Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Web3Provider } from './web3-provider';
 import { useEthereumConfig } from './use-ethereum-config';
-import { Web3ConnectDialog } from './web3-connect-dialog';
+import { useWeb3ConnectDialog } from './web3-connect-dialog';
 import { createConnectors } from './web3-connectors';
 
 interface Web3ContainerProps {
@@ -18,10 +18,9 @@ export const Web3Container = ({
   children,
   childrenOnly,
 }: Web3ContainerProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
-  const Connectors = useMemo(() => {
+  const connectors = useMemo(() => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config?.chain_id));
     }
@@ -29,27 +28,15 @@ export const Web3Container = ({
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   return (
     <AsyncRenderer data={config} loading={loading} error={error}>
-      {Connectors && config && (
-        <Web3Provider connectors={Connectors}>
-          {childrenOnly ? (
-            // eslint-disable-next-line react/jsx-no-useless-fragment
-            <>{children}</>
-          ) : (
-            <>
-              <Web3Content
-                appChainId={Number(config.chain_id)}
-                setDialogOpen={setDialogOpen}
-              >
-                {children}
-              </Web3Content>
-              <Web3ConnectDialog
-                connectors={Connectors}
-                dialogOpen={dialogOpen}
-                setDialogOpen={setDialogOpen}
-                desiredChainId={Number(config.chain_id)}
-              />
-            </>
-          )}
+      {connectors && config && (
+        <Web3Provider connectors={connectors}>
+          <Web3Content
+            childrenOnly={childrenOnly}
+            appChainId={Number(config.chain_id)}
+            connectors={connectors}
+          >
+            {children}
+          </Web3Content>
         </Web3Provider>
       )}
     </AsyncRenderer>
@@ -58,16 +45,19 @@ export const Web3Container = ({
 
 interface Web3ContentProps {
   children: ReactNode;
+  childrenOnly?: boolean;
   appChainId: number;
-  setDialogOpen: (isOpen: boolean) => void;
+  connectors: ReturnType<typeof createConnectors>;
 }
 
 export const Web3Content = ({
   children,
+  childrenOnly,
   appChainId,
-  setDialogOpen,
+  connectors,
 }: Web3ContentProps) => {
   const { isActive, error, connector, chainId } = useWeb3React();
+  const openDialog = useWeb3ConnectDialog((state) => state.open);
 
   useEffect(() => {
     if (connector?.connectEagerly && !('Cypress' in window)) {
@@ -79,7 +69,7 @@ export const Web3Content = ({
   }, []);
 
   if (error) {
-    return (
+    return childrenOnly ? null : (
       <SplashWrapper>
         <p className="mb-4">{t(`Something went wrong: ${error.message}`)}</p>
         <Button onClick={() => connector.deactivate()}>
@@ -90,13 +80,13 @@ export const Web3Content = ({
   }
 
   if (!isActive) {
-    return (
+    return childrenOnly ? null : (
       <SplashWrapper>
         <p data-testid="connect-eth-wallet-msg" className="mb-4">
           {t('Connect your Ethereum wallet')}
         </p>
         <Button
-          onClick={() => setDialogOpen(true)}
+          onClick={() => openDialog(connectors, chainId)}
           data-testid="connect-eth-wallet-btn"
         >
           {t('Connect')}
@@ -106,7 +96,7 @@ export const Web3Content = ({
   }
 
   if (chainId !== appChainId) {
-    return (
+    return childrenOnly ? null : (
       <SplashWrapper>
         <p className="mb-4">
           {t(`This app only works on chain ID: ${appChainId}`)}

@@ -4,6 +4,7 @@ import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
 import { DepositContainer } from './deposit-container';
+import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
 
 interface State {
   isOpen: boolean;
@@ -40,6 +41,9 @@ const DEFAULT_STYLE: DepositDialogStyleProps = {
 
 export const DepositDialog = () => {
   const { assetId, isOpen, open, close } = useDepositDialog();
+  const connectWalletDialogIsOpen = useWeb3ConnectDialog(
+    (state) => state.isOpen
+  );
   const [dialogStyleProps, _setDialogStyleProps] = useState(DEFAULT_STYLE);
   const setDialogStyleProps: DepositDialogStylePropsSetter =
     useCallback<DepositDialogStylePropsSetter>(
@@ -51,7 +55,7 @@ export const DepositDialog = () => {
     );
   return (
     <Dialog
-      open={isOpen}
+      open={isOpen && !connectWalletDialogIsOpen}
       onChange={(isOpen) => (isOpen ? open() : close())}
       {...dialogStyleProps}
     >

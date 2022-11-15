@@ -8,6 +8,7 @@ import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import { WithdrawalDialog } from '@vegaprotocol/withdraws';
 import { DepositDialog } from '@vegaprotocol/deposits';
 import { Web3Container } from '@vegaprotocol/web3';
+import { Web3ConnectDialog } from '@vegaprotocol/web3';
 
 const DialogsContainer = () => {
   const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
@@ -21,10 +22,11 @@ const DialogsContainer = () => {
         onChange={setOpen}
       />
       <RiskNoticeDialog />
+      <DepositDialog />
+      <Web3ConnectDialog />
       <Web3Container childrenOnly={true}>
         <WithdrawalDialog />
       </Web3Container>
-      <DepositDialog />
     </>
   );
 };

@@ -1,27 +1,39 @@
+import create from 'zustand';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
+import type { createConnectors } from './web3-connectors';
 
-interface Web3ConnectDialogProps {
-  dialogOpen: boolean;
-  setDialogOpen: (isOpen: boolean) => void;
-  connectors: [Connector, Web3ReactHooks][];
+interface State {
+  isOpen: boolean;
+  connectors: ReturnType<typeof createConnectors>;
   desiredChainId?: number;
 }
+interface Actions {
+  open: (connectors: State['connectors'], desiredChainId?: number) => void;
+  close: () => void;
+}
 
-export const Web3ConnectDialog = ({
-  dialogOpen,
-  setDialogOpen,
-  connectors,
-  desiredChainId,
-}: Web3ConnectDialogProps) => {
+export const useWeb3ConnectDialog = create<State & Actions>((set) => ({
+  isOpen: false,
+  connectors: [],
+  open: (connectors, desiredChainId) =>
+    set(() => ({ isOpen: true, connectors, desiredChainId })),
+  close: () =>
+    set(() => ({ isOpen: false, connectors: [], desiredChainId: undefined })),
+}));
+
+export const Web3ConnectDialog = () => {
+  const { isOpen, connectors, desiredChainId, open, close } =
+    useWeb3ConnectDialog();
   return (
     <Dialog
-      open={dialogOpen}
-      onChange={setDialogOpen}
+      open={isOpen}
+      onChange={(isOpen) =>
+        isOpen ? open(connectors, desiredChainId) : close()
+      }
       intent={Intent.Primary}
       title={t('Connect to your Ethereum wallet')}
     >
@@ -35,7 +47,7 @@ export const Web3ConnectDialog = ({
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);
-                  setDialogOpen(false);
+                  close();
                 }}
               >
                 {info.text}
