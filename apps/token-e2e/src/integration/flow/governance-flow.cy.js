@@ -13,8 +13,6 @@ const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const openProposals = '[data-testid="open-proposals"]';
-const proposalResponseProposalIdPath =
-  'response.body.data.busEvents.0.event.id';
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
 const proposalVoteProgressAgainstPercentage =
@@ -187,6 +185,51 @@ context(
         }
       );
 
+      it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
+        // 3001-VOTE-005
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        let proposalDays = [
+          this.minCloseDays + 1,
+          this.maxCloseDays,
+          this.minCloseDays + 3,
+          this.minCloseDays + 2,
+        ];
+        for (var index = 0; index < proposalDays.length; index++) {
+          cy.go_to_make_new_proposal(governanceProposalType.RAW);
+          cy.create_ten_digit_unix_timestamp_for_specified_days(
+            proposalDays[index]
+          ).then((closingDateTimestamp) => {
+            cy.enter_raw_proposal_body(closingDateTimestamp);
+          });
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.contains('Awaiting network confirmation', epochTimeout).should(
+            'be.visible'
+          );
+          cy.contains('Proposal submitted', proposalTimeout).should(
+            'be.visible'
+          );
+          cy.get(dialogCloseButton).click();
+          cy.wait_for_proposal_sync();
+        }
+
+        let arrayOfProposals = [];
+
+        cy.navigate_to('governance');
+        cy.wait_for_spinner();
+        cy.get(proposalDetailsTitle)
+          .each((proposalTitleElement) => {
+            arrayOfProposals.push(proposalTitleElement.text());
+          })
+          .then(() => {
+            cy.get_sort_order_of_supplied_array(arrayOfProposals).should(
+              'equal',
+              'descending'
+            );
+          });
+      });
+
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated('2');
         cy.navigate_to_page_if_not_already_loaded('governance');
@@ -264,51 +307,6 @@ context(
             .contains('NewFreeform')
             .and('be.visible');
         });
-      });
-
-      it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
-        // 3001-VOTE-005
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        let proposalDays = [
-          this.minCloseDays + 1,
-          this.maxCloseDays,
-          this.minCloseDays + 3,
-          this.minCloseDays + 2,
-        ];
-        for (var index = 0; index < proposalDays.length; index++) {
-          cy.go_to_make_new_proposal(governanceProposalType.RAW);
-          cy.create_ten_digit_unix_timestamp_for_specified_days(
-            proposalDays[index]
-          ).then((closingDateTimestamp) => {
-            cy.enter_raw_proposal_body(closingDateTimestamp);
-          });
-          cy.get(newProposalSubmitButton).should('be.visible').click();
-          cy.contains('Awaiting network confirmation', epochTimeout).should(
-            'be.visible'
-          );
-          cy.contains('Proposal submitted', proposalTimeout).should(
-            'be.visible'
-          );
-          cy.get(dialogCloseButton).click();
-          cy.wait_for_proposal_sync();
-        }
-
-        let arrayOfProposals = [];
-
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get(proposalDetailsTitle)
-          .each((proposalTitleElement) => {
-            arrayOfProposals.push(proposalTitleElement.text());
-          })
-          .then(() => {
-            cy.get_sort_order_of_supplied_array(arrayOfProposals).should(
-              'equal',
-              'descending'
-            );
-          });
       });
 
       // Skipping test due to bug: #1320
@@ -424,7 +422,7 @@ context(
         cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
           'be.visible'
         );
-        cy.get_proposal_information_from_table('Will pass')
+        cy.get_proposal_information_from_table('Expected to pass')
           .contains('👎')
           .should('be.visible');
         // 3001-VOTE-062
@@ -562,7 +560,7 @@ context(
             cy.get_proposal_information_from_table('Number of voting parties')
               .should('have.text', '1')
               .and('be.visible');
-            cy.get_proposal_information_from_table('Will pass')
+            cy.get_proposal_information_from_table('Expected to pass')
               .contains('👍')
               .should('be.visible');
             // 3001-VOTE-062
@@ -840,7 +838,7 @@ context(
 
       function generateProposalTitle() {
         const randomNum = Math.floor(Math.random() * 1000) + 1;
-        return 'Freeform e2e proposal with unique number of ' + randomNum;
+        return randomNum + ': Freeform e2e proposal';
       }
 
       after(
