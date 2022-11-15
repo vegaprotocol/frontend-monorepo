@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import {
-  addDecimalsFormatNumber,
+  addDecimalsNormalizeNumber,
   formatNumberPercentage,
   getDateTimeFormat,
   t,
@@ -16,10 +16,11 @@ import BigNumber from 'bignumber.js';
 import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
+import { getId } from './liquidity-data-provider';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
-  return formatNumberPercentage(new BigNumber(value).times(100), 4) || '-';
+  return formatNumberPercentage(new BigNumber(value).times(100), 2) || '-';
 };
 
 const dateValueFormatter = ({ value }: { value?: string | null }) => {
@@ -40,14 +41,18 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsNormalizeNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
         .times(stakeToCcySiskas ?? 1)
         .toString();
-      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsNormalizeNumber(
+        newValue,
+        assetDecimalPlaces ?? 0,
+        5
+      )}`;
     };
 
     if (!data) return null;
@@ -55,7 +60,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
-        getRowId={({ data }) => data.party.id}
+        getRowId={({ data }) => getId(data)}
         rowHeight={34}
         ref={ref}
         tooltipShowDelay={500}

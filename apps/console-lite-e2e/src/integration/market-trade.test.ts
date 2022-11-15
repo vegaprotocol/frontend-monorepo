@@ -13,7 +13,6 @@ import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
-import { connectVegaWallet } from '../support/connect-wallet';
 import type { MarketsQuery, Market } from '@vegaprotocol/market-list';
 
 describe('Market trade', { tags: '@smoke' }, () => {
@@ -59,7 +58,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('side selector should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').should(
         'have.text',
         'Long'
@@ -78,7 +77,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.getByTestId('next-button').scrollIntoView().click();
 
       cy.get('button[aria-label="Open long position"]').should(
@@ -110,7 +109,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('size slider should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -132,7 +131,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('percentage selection should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -159,7 +158,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('size input should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -187,7 +186,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('slippage value should be displayed', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -203,7 +202,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('allow slippage value to be adjusted', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -231,7 +230,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('notional position size should be present', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -258,7 +257,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('total fees should be displayed', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -273,7 +272,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-3-control').click();
 
       cy.getByTestId('review-trade')
@@ -300,7 +299,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('#step-3-control').click();
 
       // Start from the bottom tooltip to ensure the tooltip above

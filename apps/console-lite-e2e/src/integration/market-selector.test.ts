@@ -1,4 +1,3 @@
-import { connectVegaWallet } from '../support/connect-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateMarketsCandles,
@@ -46,7 +45,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it('should be properly rendered', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('input[placeholder="Search"]').should(
         'have.value',
         markets[0].tradableInstrument.instrument.name
@@ -70,7 +69,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it('typing should change list', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.getByTestId('market-pane')
         .children()
@@ -106,7 +105,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it.skip('keyboard navigation should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.get('input[placeholder="Search"]').clear();
       cy.focused().realPress('ArrowDown');
@@ -128,7 +127,7 @@ describe('market selector', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.get('[role="dialog"]').should('not.exist');
       cy.getByTestId('arrow-button').click();
       cy.get('[role="dialog"]').should('be.visible');
