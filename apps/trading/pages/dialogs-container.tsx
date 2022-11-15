@@ -24,7 +24,7 @@ const DialogsContainer = () => {
       <RiskNoticeDialog />
       <DepositDialog />
       <Web3ConnectDialog />
-      <Web3Container childrenOnly={true}>
+      <Web3Container childrenOnly connectEagerly>
         <WithdrawalDialog />
       </Web3Container>
     </>

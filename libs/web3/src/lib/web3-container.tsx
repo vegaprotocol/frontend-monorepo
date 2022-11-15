@@ -12,11 +12,13 @@ import { createConnectors } from './web3-connectors';
 interface Web3ContainerProps {
   children: ReactNode;
   childrenOnly?: boolean;
+  connectEagerly?: boolean;
 }
 
 export const Web3Container = ({
   children,
   childrenOnly,
+  connectEagerly,
 }: Web3ContainerProps) => {
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
@@ -31,6 +33,7 @@ export const Web3Container = ({
       {connectors && config && (
         <Web3Provider connectors={connectors}>
           <Web3Content
+            connectEagerly={connectEagerly}
             childrenOnly={childrenOnly}
             appChainId={Number(config.chain_id)}
             connectors={connectors}
@@ -46,6 +49,7 @@ export const Web3Container = ({
 interface Web3ContentProps {
   children: ReactNode;
   childrenOnly?: boolean;
+  connectEagerly?: boolean;
   appChainId: number;
   connectors: ReturnType<typeof createConnectors>;
 }
@@ -53,6 +57,7 @@ interface Web3ContentProps {
 export const Web3Content = ({
   children,
   childrenOnly,
+  connectEagerly,
   appChainId,
   connectors,
 }: Web3ContentProps) => {
@@ -60,7 +65,10 @@ export const Web3Content = ({
   const openDialog = useWeb3ConnectDialog((state) => state.open);
 
   useEffect(() => {
-    if (connector?.connectEagerly && !('Cypress' in window)) {
+    if (
+      connector?.connectEagerly &&
+      (!('Cypress' in window) || connectEagerly)
+    ) {
       connector.connectEagerly();
     }
     // wallet connect doesnt handle connectEagerly being called when connector is also in the
