@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
-import { useOrderValidation } from './use-order-validation';
 import {
+  getDefaultOrder,
   useOrderCloseOut,
   useOrderMargin,
+  useOrderValidation,
   usePartyBalanceQuery,
   useMaximumPositionSize,
   useCalculateSlippage,
+  validateAmount,
 } from '@vegaprotocol/deal-ticket';
-import { getDefaultOrder, validateAmount } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
@@ -88,9 +90,12 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     skip: !pubKey,
   });
 
+  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
   const maxTrade = useMaximumPositionSize({
     partyId: pubKey || '',
-    accounts: partyBalance?.party?.accounts || [],
+    accounts: accounts,
     marketId: market.id,
     settlementAssetId:
       market.tradableInstrument.instrument.product.settlementAsset.id,
@@ -177,8 +182,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       const newVal = new BigNumber(value)
         .decimalPlaces(market.positionDecimalPlaces)
         .toString();
-      // @ts-ignore validateAmount ts problem here
-      const isValid = validateAmount(step)(newVal);
+      const isValid = validateAmount(step, 'Size')(newVal);
       if (isValid !== 'step') {
         setValue('size', newVal);
       }
