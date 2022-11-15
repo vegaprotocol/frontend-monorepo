@@ -1,4 +1,4 @@
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 import { getColorForStatus } from '../../lib/utils';
 
@@ -6,7 +6,7 @@ export const Indicator = ({
   status,
   opacity,
 }: {
-  status?: MarketTradingMode;
+  status?: Schema.MarketTradingMode;
   opacity?: number;
 }) => {
   const backgroundColor = status ? getColorForStatus(status) : undefined;

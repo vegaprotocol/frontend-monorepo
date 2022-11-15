@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { BigNumber } from 'bignumber.js';
 import type { ReactNode } from 'react';
@@ -122,7 +122,7 @@ export const HealthBar = ({
   size = 'small',
   isExpanded = false,
 }: {
-  status: MarketTradingMode;
+  status: Schema.MarketTradingMode;
   target: string;
   decimals: number;
   levels: Levels[];

@@ -1,5 +1,5 @@
 import type { DealTicketQuery } from '@vegaprotocol/deal-ticket';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -12,8 +12,8 @@ export const generateDealTicketQuery = (
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       fees: {
         factors: {
           makerFee: '0.0002',

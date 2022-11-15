@@ -9,7 +9,7 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState } from 'react';
-import { t, useChainIdQuery } from '@vegaprotocol/react-helpers';
+import { ExternalLinks, t, useChainIdQuery } from '@vegaprotocol/react-helpers';
 import type { VegaConnector, WalletError } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
@@ -22,7 +22,6 @@ import {
 } from './connect-dialog-elements';
 import type { Status } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
-import * as constants from '../constants';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -265,14 +264,14 @@ const SelectedForm = ({
             <p className="text-center">
               {t('For demo purposes get a ')}
               <Link
-                href={constants.VEGA_WALLET_HOSTED_URL}
+                href={ExternalLinks.VEGA_WALLET_HOSTED_URL}
                 target="_blank"
                 rel="noreferrer"
               >
                 {t('hosted wallet')}
               </Link>
               {t(', or for the real experience create a wallet in the ')}
-              <Link href={constants.VEGA_WALLET_URL}>
+              <Link href={ExternalLinks.VEGA_WALLET_URL}>
                 {t('Vega wallet app')}
               </Link>
             </p>

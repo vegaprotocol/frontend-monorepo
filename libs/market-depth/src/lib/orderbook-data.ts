@@ -3,7 +3,7 @@ import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
 import { VolumeType } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
 import type { PriceLevelFieldsFragment } from './__generated___/MarketDepth';
 export interface CumulativeVol {
@@ -352,8 +352,8 @@ export const generateMockData = ({
     indicativeVolume: indicativeVolume?.toString(),
     marketTradingMode:
       overlap > 0
-        ? MarketTradingMode.TRADING_MODE_BATCH_AUCTION
-        : MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        ? Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+        : Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     ...mapMarketData(
       {
         staticMidPrice: '',

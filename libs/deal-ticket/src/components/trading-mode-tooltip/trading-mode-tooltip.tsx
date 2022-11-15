@@ -1,13 +1,15 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-
+import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';
 
 import type { ReactNode } from 'react';
+import { useEnvironment } from '@vegaprotocol/environment';
+
 type TradingModeTooltipProps = {
-  tradingMode: MarketTradingMode | null;
-  trigger: AuctionTrigger | null;
+  tradingMode: Schema.MarketTradingMode | null;
+  trigger: Schema.AuctionTrigger | null;
   compiledGrid?: { label: ReactNode; value?: ReactNode }[];
 };
 
@@ -16,8 +18,9 @@ export const TradingModeTooltip = ({
   trigger,
   compiledGrid,
 }: TradingModeTooltipProps) => {
+  const { VEGA_DOCS_URL } = useEnvironment();
   switch (tradingMode) {
-    case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
+    case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <section data-testid="trading-mode-tooltip">
           {t(
@@ -26,7 +29,7 @@ export const TradingModeTooltip = ({
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
+    case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <section data-testid="trading-mode-tooltip">
           <p className="mb-4">
@@ -35,17 +38,21 @@ export const TradingModeTooltip = ({
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
               )}
             </span>{' '}
-            <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-opening">
-              {t('Find out more')}
-            </ExternalLink>
+            {VEGA_DOCS_URL && (
+              <ExternalLink
+                href={createDocsLinks(VEGA_DOCS_URL).AUCTION_TYPE_OPENING}
+              >
+                {t('Find out more')}
+              </ExternalLink>
+            )}
           </p>
           {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
+    case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
-        case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
+        case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <section data-testid="trading-mode-tooltip">
               <p className="mb-4">
@@ -54,24 +61,38 @@ export const TradingModeTooltip = ({
                     'This market is in auction until it reaches sufficient liquidity.'
                   )}
                 </span>{' '}
-                <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring">
-                  {t('Find out more')}
-                </ExternalLink>
+                {VEGA_DOCS_URL && (
+                  <ExternalLink
+                    href={
+                      createDocsLinks(VEGA_DOCS_URL)
+                        .AUCTION_TYPE_LIQUIDITY_MONITORING
+                    }
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
               </p>
               {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>
           );
         }
-        case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
+        case Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <section data-testid="trading-mode-tooltip">
               <p className="mb-4">
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
-                <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring">
-                  {t('Find out more')}
-                </ExternalLink>
+                {VEGA_DOCS_URL && (
+                  <ExternalLink
+                    href={
+                      createDocsLinks(VEGA_DOCS_URL)
+                        .AUCTION_TYPE_PRICE_MONITORING
+                    }
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
               </p>
               {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
             </section>
@@ -82,14 +103,14 @@ export const TradingModeTooltip = ({
         }
       }
     }
-    case MarketTradingMode.TRADING_MODE_NO_TRADING: {
+    case Schema.MarketTradingMode.TRADING_MODE_NO_TRADING: {
       return (
         <section data-testid="trading-mode-tooltip">
           {t('No trading enabled for this market.')}
         </section>
       );
     }
-    case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
+    case Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
     default: {
       return null;
     }

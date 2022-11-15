@@ -7,7 +7,6 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { MarketState } from '@vegaprotocol/types';
 import useMarketsFilterData from './use-markets-filter-data';
 import useColumnDefinitions from './use-column-definitions';
 import SimpleMarketToolbar from './simple-market-toolbar';
@@ -31,7 +30,7 @@ const SimpleMarketList = () => {
   const { isMobile } = useScreenDimensions();
   const navigate = useNavigate();
   const params = useParams<RouterParams>();
-  const statusesRef = useRef<Record<string, MarketState | ''>>({});
+  const statusesRef = useRef<Record<string, Schema.MarketState | ''>>({});
   const gridRef = useRef<AgGridReact | null>(null);
 
   const yesterday = useYesterday();
@@ -53,7 +52,7 @@ const SimpleMarketList = () => {
   }, [gridRef]);
 
   useEffect(() => {
-    const statuses: Record<string, MarketState | ''> = {};
+    const statuses: Record<string, Schema.MarketState | ''> = {};
     data?.forEach((market) => {
       statuses[market.id] = market.state || '';
     });

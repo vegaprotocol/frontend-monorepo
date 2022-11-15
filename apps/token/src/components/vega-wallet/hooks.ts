@@ -14,7 +14,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
@@ -90,7 +90,9 @@ export const usePollForDelegations = () => {
             ).map((e) => e.node);
             setAccounts(
               accounts
-                .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+                .filter(
+                  (a) => a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
+                )
                 .map((a) => {
                   const isVega =
                     isAssetTypeERC20(a.asset as ERC20Asset) &&
