@@ -37,7 +37,6 @@ export const OrderEditDialog = ({
   onSubmit,
 }: OrderEditDialogProps) => {
   const headerClassName = 'text-lg font-bold text-black dark:text-white';
-  console.log('order number ', order);
   const {
     register,
     formState: { errors },

@@ -43,18 +43,19 @@ export const useOrderEdit = (order: Order | null) => {
       setUpdatedOrder(null);
 
       try {
-        console.log('edit order args', args);
         await send(pubKey, {
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
             price: removeDecimal(args.price, order.market.decimalPlaces),
             timeInForce: order.timeInForce,
-            sizeDelta: new BigNumber(
-              removeDecimal(args.size, order.market.positionDecimalPlaces)
-            )
-              .minus(order.size)
-              .toNumber(),
+            sizeDelta: args.size
+              ? new BigNumber(
+                  removeDecimal(args.size, order.market.positionDecimalPlaces)
+                )
+                  .minus(order.size)
+                  .toNumber()
+              : 0,
             expiresAt: order.expiresAt
               ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
               : undefined,
