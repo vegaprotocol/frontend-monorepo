@@ -33,9 +33,8 @@ export const ProposalsList = () => {
     dataProvider: proposalsListDataProvider,
     variables,
   });
-  const filteredData = data ? getNewMarketProposals(data) : null;
+  const filteredData = getNewMarketProposals(data || []);
   const { columnDefs, defaultColDef } = useColumnDefs();
-
   return (
     <AsyncRenderer loading={loading} error={error} data={filteredData}>
       <AgGrid
