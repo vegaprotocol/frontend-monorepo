@@ -87,6 +87,9 @@ context('Validator page', { tags: '@smoke' }, function () {
         });
     });
 
+    // Test disabled 2022/11/15 during the 0.62.1 upgrade. The JSON structure changed, and
+    // this test failed. Rather than fix it, it will be replaced when the validator view displays
+    // something useful rather than just dumping out the JSON.
     xit('should be able to see relevant node information in vega data section', function () {
       cy.get(vegaDataHeader)
         .contains('Vega data')
