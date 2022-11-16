@@ -16,7 +16,6 @@ const assetsInTest = Object.keys(assetData);
 
 context('Parties page', { tags: '@regression' }, function () {
   before('send-faucet assets to connected vega wallet', function () {
-    cy.vega_wallet_import();
     assetsInTest.forEach((asset) => {
       cy.vega_wallet_receive_fauceted_asset(
         assetData[asset].name,
