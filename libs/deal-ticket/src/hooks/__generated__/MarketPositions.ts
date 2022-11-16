@@ -8,21 +8,25 @@ export type MarketPositionsQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketPositionsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', decimals: number }, market?: { __typename?: 'Market', id: string } | null }> | null, positionsConnection?: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', openVolume: string, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };
+export type MarketPositionsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', decimals: number }, market?: { __typename?: 'Market', id: string } | null } } | null> | null } | null, positionsConnection?: { __typename?: 'PositionConnection', edges?: Array<{ __typename?: 'PositionEdge', node: { __typename?: 'Position', openVolume: string, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };
 
 
 export const MarketPositionsDocument = gql`
     query MarketPositions($partyId: ID!) {
   party(id: $partyId) {
     id
-    accounts {
-      type
-      balance
-      asset {
-        decimals
-      }
-      market {
-        id
+    accountsConnection {
+      edges {
+        node {
+          type
+          balance
+          asset {
+            decimals
+          }
+          market {
+            id
+          }
+        }
       }
     }
     positionsConnection {

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import compact from 'lodash/compact';
 import { useMarketPositionsQuery } from './__generated__/MarketPositions';
 interface Props {
   marketId: string;
@@ -21,9 +22,10 @@ export const useMarketPositions = ({
     fetchPolicy: 'no-cache',
   });
 
-  const account = data?.party?.accounts?.find(
-    (nodes) => nodes.market?.id === marketId
+  const accounts = compact(data?.party?.accountsConnection?.edges).map(
+    (e) => e.node
   );
+  const account = accounts.find((nodes) => nodes.market?.id === marketId);
 
   if (account) {
     const positionConnectionNode =

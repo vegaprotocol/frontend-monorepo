@@ -47,20 +47,26 @@ export const generateMarkPrice = () => {
 const partyBalanceMock: PartyBalanceQuery = {
   party: {
     __typename: 'Party',
-    accounts: [
-      {
-        __typename: 'AccountBalance',
-        type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-        balance: '100',
-        asset: {
-          __typename: 'Asset',
-          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-          symbol: 'tBTC',
-          name: 'BTC',
-          decimals: 5,
+    accountsConnection: {
+      __typename: 'AccountsConnection',
+      edges: [
+        {
+          __typename: 'AccountEdge',
+          node: {
+            __typename: 'AccountBalance',
+            type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+            balance: '100',
+            asset: {
+              __typename: 'Asset',
+              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              symbol: 'tBTC',
+              name: 'BTC',
+              decimals: 5,
+            },
+          },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -72,25 +78,34 @@ export const generatePartyMarketData = (): PartyMarketDataQuery => {
   return {
     party: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),
-      accounts: [
-        {
-          type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-          balance: '1200000',
-          asset: { id: 'fBTC', decimals: 5, __typename: 'Asset' },
-          market: null,
-          __typename: 'AccountBalance',
-        },
-        {
-          __typename: 'AccountBalance',
-          type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-          balance: '100',
-          asset: {
-            __typename: 'Asset',
-            id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-            decimals: 5,
+      accountsConnection: {
+        __typename: 'AccountsConnection',
+        edges: [
+          {
+            __typename: 'AccountEdge',
+            node: {
+              type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+              balance: '1200000',
+              asset: { id: 'fBTC', decimals: 5, __typename: 'Asset' },
+              market: null,
+              __typename: 'AccountBalance',
+            },
           },
-        },
-      ],
+          {
+            __typename: 'AccountEdge',
+            node: {
+              __typename: 'AccountBalance',
+              type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
+              balance: '100',
+              asset: {
+                __typename: 'Asset',
+                id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+                decimals: 5,
+              },
+            },
+          },
+        ],
+      },
       marginsConnection: { edges: null, __typename: 'MarginConnection' },
       __typename: 'Party',
     },
