@@ -1,7 +1,6 @@
 import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
-import { DepositDialog } from '@vegaprotocol/deposits';
+import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
 
 interface Props {
   margin: string;
@@ -14,7 +13,7 @@ interface Props {
 }
 
 export const MarginWarning = ({ margin, balance, asset }: Props) => {
-  const [depositDialog, setDepositDialog] = useState(false);
+  const openDepositDialog = useDepositDialog((state) => state.open);
   return (
     <>
       <div
@@ -25,7 +24,7 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
           {t('You may not have enough margin available to open this position.')}{' '}
           <ButtonLink
             data-testid="deal-ticket-deposit-dialog-button"
-            onClick={() => setDepositDialog(true)}
+            onClick={() => openDepositDialog(asset.id)}
           >
             {t(`Deposit ${asset.symbol}`)}
           </ButtonLink>
@@ -39,11 +38,7 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
           )} ${asset.symbol} ${t('available')}`}
         </p>
       </div>
-      <DepositDialog
-        depositDialog={depositDialog}
-        setDepositDialog={setDepositDialog}
-        assetId={asset.id}
-      />
+      <DepositDialog />
     </>
   );
 };

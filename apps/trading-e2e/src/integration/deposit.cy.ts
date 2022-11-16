@@ -19,10 +19,6 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     connectVegaWallet();
     // validateFillsDisplayed();
     cy.getByTestId('deposit-button').click();
-    // Deposit page requires connection Ethereum wallet first
-    cy.getByTestId(connectEthWalletBtn).click();
-    cy.getByTestId('web3-connector-MetaMask').click();
-
     cy.wait('@Assets');
   });
 
