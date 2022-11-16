@@ -8,7 +8,6 @@ import {
   getDefaultOrder,
   useOrderCloseOut,
   useOrderMargin,
-  useOrderValidation,
   usePartyBalanceQuery,
   useMaximumPositionSize,
   useCalculateSlippage,
@@ -42,6 +41,7 @@ import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import { Schema } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
+import { useOrderValidation } from './use-order-validation';
 
 interface DealTicketMarketProps {
   market: DealTicketMarketFragment;
