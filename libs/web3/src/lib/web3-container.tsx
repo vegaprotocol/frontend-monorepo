@@ -76,8 +76,13 @@ export const Web3Content = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (childrenOnly) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{children}</>;
+  }
+
   if (error) {
-    return childrenOnly ? null : (
+    return (
       <SplashWrapper>
         <p className="mb-4">{t(`Something went wrong: ${error.message}`)}</p>
         <Button onClick={() => connector.deactivate()}>
@@ -88,7 +93,7 @@ export const Web3Content = ({
   }
 
   if (!isActive) {
-    return childrenOnly ? null : (
+    return (
       <SplashWrapper>
         <p data-testid="connect-eth-wallet-msg" className="mb-4">
           {t('Connect your Ethereum wallet')}
@@ -104,7 +109,7 @@ export const Web3Content = ({
   }
 
   if (chainId !== appChainId) {
-    return childrenOnly ? null : (
+    return (
       <SplashWrapper>
         <p className="mb-4">
           {t(`This app only works on chain ID: ${appChainId}`)}
