@@ -14,7 +14,7 @@ export function addVegaWalletConnect() {
     cy.highlight(`Connecting Vega Wallet`);
     cy.get('[data-testid=connect-vega-wallet]').click();
     cy.get('[data-testid=connectors-list]')
-      .find('[data-testid="connector-cli"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.get('[data-testid=dialog-content]').should(
       'contain.text',
