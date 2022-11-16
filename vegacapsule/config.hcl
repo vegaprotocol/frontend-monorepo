@@ -17,21 +17,6 @@ network "testnet" {
 EOT
   }
 
-  wallet "wallet-1" {
-    template = <<-EOT
-Name = "DV"
-Level = "info"
-TokenExpiry = "168h0m0s"
-Port = 1789
-Host = "0.0.0.0"
-
-[API]
-  [API.GRPC]
-    Hosts = [{{range $i, $v := .Validators}}{{if ne $i 0}},{{end}}"127.0.0.1:30{{$i}}2"{{end}}]
-    Retries = 5
-EOT
-  }
-
   pre_start {
     docker_service "ganache-1" {
       image = "vegaprotocol/ganache:latest"

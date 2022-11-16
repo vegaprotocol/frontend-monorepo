@@ -1,0 +1,25 @@
+inputs:
+  passphrase:
+    description: 'Wallet password'
+runs:
+  using: 'composite'
+  steps:
+    - name: Create passphrase
+      shell: bash
+      run: echo "${{ inputs.passphrase }}" > ./passphrase
+
+    - name: Initialize wallet
+      shell: bash
+      run: vega wallet init -f --home ~/.vegacapsule/testnet/wallet
+
+    - name: Import wallet
+      shell: bash
+      run: vega wallet import -w capsule_wallet --recovery-phrase-file ./frontend-monorepo/vegacapsule/recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+
+    - name: Import network
+      shell: bash
+      run: vega wallet network import --force --from-file ./frontend-monorepo/vegacapsule/wallet-config.toml --home ~/.vegacapsule/testnet/wallet
+
+    - name: Start service using capsule network
+      shell: bash
+      run: vegawallet-dummy service run --network DV --wallet capsule_wallet --passphrase-file ./passphrase --home ~/.vegacapsule/testnet/wallet &
