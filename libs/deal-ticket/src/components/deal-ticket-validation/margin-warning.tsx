@@ -1,52 +1,48 @@
 import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 import { useState } from 'react';
 import { DepositDialog } from '@vegaprotocol/deposits';
 
 interface Props {
   margin: string;
-  symbol: string;
-  id: string;
   balance: string;
-  decimals: number;
+  asset: {
+    id: string;
+    symbol: string;
+    decimals: number;
+  };
 }
 
-export const ValidateMargin = ({
-  margin,
-  symbol,
-  id,
-  balance,
-  decimals,
-}: Props) => {
+export const MarginWarning = ({ margin, balance, asset }: Props) => {
   const [depositDialog, setDepositDialog] = useState(false);
   return (
     <>
       <div
-        className="flex flex-col center pb-3"
-        data-testid="deal-ticket-margin-invalidated"
+        className="text-sm text-vega-orange mb-4"
+        data-testid="dealticket-warning-margin"
       >
         <p className="mb-2">
-          {t("You don't have enough margin available to open this position.")}{' '}
+          {t('You may not have enough margin available to open this position.')}{' '}
           <ButtonLink
             data-testid="deal-ticket-deposit-dialog-button"
             onClick={() => setDepositDialog(true)}
           >
-            {t(`Deposit ${symbol}`)}
+            {t(`Deposit ${asset.symbol}`)}
           </ButtonLink>
         </p>
         <p>
-          {`${normalizeFormatNumber(margin, decimals)} ${symbol} ${t(
-            'currently required'
-          )}, ${normalizeFormatNumber(balance, decimals)} ${symbol} ${t(
-            'available'
-          )}`}
+          {`${normalizeFormatNumber(margin, asset.decimals)} ${
+            asset.symbol
+          } ${t('currently required')}, ${normalizeFormatNumber(
+            balance,
+            asset.decimals
+          )} ${asset.symbol} ${t('available')}`}
         </p>
       </div>
       <DepositDialog
         depositDialog={depositDialog}
         setDepositDialog={setDepositDialog}
-        assetId={id}
+        assetId={asset.id}
       />
     </>
   );

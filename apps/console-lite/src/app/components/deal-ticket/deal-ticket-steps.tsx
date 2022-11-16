@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import { useOrderValidation } from './use-order-validation';
 import {
   useOrderCloseOut,
   useOrderMargin,
@@ -10,11 +11,7 @@ import {
   useMaximumPositionSize,
   useCalculateSlippage,
 } from '@vegaprotocol/deal-ticket';
-import {
-  getDefaultOrder,
-  useOrderValidation,
-  validateSize,
-} from '@vegaprotocol/deal-ticket';
+import { getDefaultOrder, validateAmount } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { MarketSelector } from '@vegaprotocol/deal-ticket';
@@ -180,7 +177,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       const newVal = new BigNumber(value)
         .decimalPlaces(market.positionDecimalPlaces)
         .toString();
-      const isValid = validateSize(step)(newVal);
+      // @ts-ignore validateAmount ts problem here
+      const isValid = validateAmount(step)(newVal);
       if (isValid !== 'step') {
         setValue('size', newVal);
       }

@@ -6,22 +6,29 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MarketStateMapping, Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { MarketDataGrid } from '../trading-mode-tooltip';
-import { compileGridData } from '../trading-mode-tooltip/compile-grid-data';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
-import { ValidateMargin } from './validate-margin';
-import type { OrderMargin } from '../../hooks/use-order-margin';
-import { useOrderMarginValidation } from './use-order-margin-validation';
-import { ERROR_EXPIRATION_IN_THE_PAST } from './validate-expiration';
-import { DEAL_TICKET_SECTION, ERROR_SIZE_DECIMAL } from '../constants';
+import type {
+  DealTicketMarketFragment,
+  OrderMargin,
+} from '@vegaprotocol/deal-ticket';
+import {
+  MarketDataGrid,
+  compileGridData,
+  MarginWarning,
+  isMarketInAuction,
+  ERROR_SIZE_DECIMAL,
+  useOrderMarginValidation,
+} from '@vegaprotocol/deal-ticket';
 
-export const isMarketInAuction = (market: DealTicketMarketFragment) => {
-  return [
-    Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-  ].includes(market.tradingMode);
+export const DEAL_TICKET_SECTION = {
+  TYPE: 'sec-type',
+  SIZE: 'sec-size',
+  PRICE: 'sec-price',
+  FORCE: 'sec-force',
+  EXPIRY: 'sec-expiry',
+  SUMMARY: 'sec-summary',
 };
+
+export const ERROR_EXPIRATION_IN_THE_PAST = 'ERROR_EXPIRATION_IN_THE_PAST';
 
 export type ValidationProps = {
   step?: number;
@@ -336,10 +343,19 @@ export const useOrderValidation = ({
       return fieldErrorChecking;
     }
 
-    if (isInvalidOrderMargin) {
+    if (
+      isInvalidOrderMargin.balance.isGreaterThan(0) &&
+      isInvalidOrderMargin.balance.isLessThan(isInvalidOrderMargin.margin)
+    ) {
       return {
-        isDisabled: true,
-        message: <ValidateMargin {...isInvalidOrderMargin} />,
+        isDisabled: false,
+        message: (
+          <MarginWarning
+            margin={isInvalidOrderMargin.margin.toString()}
+            balance={isInvalidOrderMargin.balance.toString()}
+            asset={isInvalidOrderMargin.asset}
+          />
+        ),
         section: DEAL_TICKET_SECTION.PRICE,
       };
     }
