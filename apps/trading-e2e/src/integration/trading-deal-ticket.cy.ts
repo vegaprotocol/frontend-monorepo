@@ -243,7 +243,7 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        Schema.MarketState.STATE_PENDING,
+        Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
@@ -302,7 +302,7 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        Schema.MarketState.STATE_PENDING,
+        Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
@@ -361,7 +361,7 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        Schema.MarketState.STATE_PENDING,
+        Schema.MarketState.STATE_SUSPENDED,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
@@ -512,7 +512,7 @@ describe('limit order validations', { tags: '@smoke' }, () => {
       .should('have.text', 'Price (tBTC)');
   });
 
-  it('must see warning when placing an order with expiry date in past', function () {
+  it('must see warning when placing an order with expiry date in past', () => {
     const expiresAt = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const expiresAtInputValue = expiresAt.toISOString().substring(0, 16);
     cy.getByTestId(toggleLimit).click();
