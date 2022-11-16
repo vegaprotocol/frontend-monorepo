@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Icon, Tooltip, TrafficLight } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
-import * as constants from './constants';
+import * as constants from '../constants';
 
 interface DealTicketEstimatesProps {
   quoteName?: string;
