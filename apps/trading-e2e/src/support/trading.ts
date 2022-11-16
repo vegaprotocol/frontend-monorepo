@@ -62,6 +62,7 @@ const mockTradingPage = (
   );
   aliasQuery(req, 'MarketsData', generateMarketsData());
   aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
+  aliasQuery(req, 'MarketCandles', generateMarketsCandles());
 
   aliasQuery(req, 'MarketDepth', generateMarketDepth());
   aliasQuery(req, 'Orders', generateOrders());
