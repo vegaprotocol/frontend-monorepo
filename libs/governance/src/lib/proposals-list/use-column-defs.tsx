@@ -14,30 +14,15 @@ import type {
 } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import type { ProposalListFieldsFragment } from '../proposals-data-provider/__generated___/Proposals';
+import type {
+  ProposalListFieldsFragment,
+  NewMarketFieldsFragment,
+} from '../proposals-data-provider/__generated___/Proposals';
 import { VoteProgress } from '../voting-progress';
-
-type NewMarket = {
-  __typename?: 'NewMarket';
-  instrument: {
-    __typename?: 'InstrumentConfiguration';
-    code: string;
-    name: string;
-    futureProduct?: {
-      __typename?: 'FutureProduct';
-      settlementAsset: {
-        __typename?: 'Asset';
-        id: string;
-        name: string;
-        symbol: string;
-      };
-    } | null;
-  };
-};
 
 const instrumentGuard = (
   change?: ProposalListFieldsFragment['terms']['change']
-): change is NewMarket => {
+): change is NewMarketFieldsFragment => {
   return change?.__typename === 'NewMarket';
 };
 

@@ -1,3 +1,17 @@
+fragment NewMarketFields on NewMarket {
+  instrument {
+    code
+    name
+    futureProduct {
+      settlementAsset {
+        id
+        name
+        symbol
+      }
+    }
+  }
+}
+
 fragment ProposalListFields on Proposal {
   id
   reference
@@ -20,17 +34,7 @@ fragment ProposalListFields on Proposal {
     enactmentDatetime
     change {
       ... on NewMarket {
-        instrument {
-          code
-          name
-          futureProduct {
-            settlementAsset {
-              id
-              name
-              symbol
-            }
-          }
-        }
+        ...NewMarketFields
       }
     }
   }

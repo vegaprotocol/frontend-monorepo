@@ -3,6 +3,8 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type NewMarketFieldsFragment = { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', code: string, name: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string } } | null } };
+
 export type ProposalListFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: string, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalWeight: string } }, terms: { __typename?: 'ProposalTerms', closingDatetime: string, enactmentDatetime?: string | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', code: string, name: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string } } | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter' } } };
 
 export type ProposalsListQueryVariables = Types.Exact<{
@@ -13,6 +15,21 @@ export type ProposalsListQueryVariables = Types.Exact<{
 
 export type ProposalsListQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: string, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalWeight: string } }, terms: { __typename?: 'ProposalTerms', closingDatetime: string, enactmentDatetime?: string | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', code: string, name: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string } } | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter' } } } } | null> | null } | null };
 
+export const NewMarketFieldsFragmentDoc = gql`
+    fragment NewMarketFields on NewMarket {
+  instrument {
+    code
+    name
+    futureProduct {
+      settlementAsset {
+        id
+        name
+        symbol
+      }
+    }
+  }
+}
+    `;
 export const ProposalListFieldsFragmentDoc = gql`
     fragment ProposalListFields on Proposal {
   id
@@ -36,22 +53,12 @@ export const ProposalListFieldsFragmentDoc = gql`
     enactmentDatetime
     change {
       ... on NewMarket {
-        instrument {
-          code
-          name
-          futureProduct {
-            settlementAsset {
-              id
-              name
-              symbol
-            }
-          }
-        }
+        ...NewMarketFields
       }
     }
   }
 }
-    `;
+    ${NewMarketFieldsFragmentDoc}`;
 export const ProposalsListDocument = gql`
     query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
