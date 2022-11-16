@@ -419,7 +419,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('order-connect-wallet').click();
     cy.getByTestId('dialog-content').should('be.visible');
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     const form = 'rest-connector-form';
     const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');

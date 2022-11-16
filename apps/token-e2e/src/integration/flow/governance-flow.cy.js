@@ -794,7 +794,7 @@ context(
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet')
           .click();
-        cy.getByTestId('connector-gui').click();
+        cy.getByTestId('connector-jsonRpc').click();
         cy.get(restConnectorForm).within(() => {
           cy.get('#wallet').click().type(vegaWalletName);
           cy.get('#passphrase').click().type(vegaWalletPassphrase);

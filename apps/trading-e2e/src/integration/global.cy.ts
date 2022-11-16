@@ -20,12 +20,11 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
-    cy.contains('Desktop wallet app');
-    cy.contains('Command line wallet app');
+    cy.contains('Connect Vega wallet');
     cy.contains('Hosted Fairground wallet');
 
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.getByTestId(form).find('#wallet').click().type(walletName);
     cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
@@ -36,7 +35,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
   it('doesnt connect with invalid credentials', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.getByTestId(form).find('#wallet').click().type('invalid name');
     cy.getByTestId(form).find('#passphrase').click().type('invalid password');
@@ -47,7 +46,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
   it('doesnt connect with invalid fields', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
 
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();

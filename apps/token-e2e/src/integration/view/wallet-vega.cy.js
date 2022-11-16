@@ -91,12 +91,9 @@ context(
 
       it('should have gui, cli and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-gui')
+          cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
-            .and('have.text', 'Desktop wallet app');
-          cy.getByTestId('connector-cli')
-            .should('be.visible')
-            .and('have.text', 'Command line wallet app');
+            .and('have.text', 'Connect Vega wallet');
           cy.getByTestId('connector-hosted')
             .should('be.visible')
             .and('have.text', 'Hosted Fairground wallet');
@@ -115,7 +112,7 @@ context(
       // tests will need to be updated to handle v2
       before('click desktop wallet app link', function () {
         cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-gui').click();
+          cy.getByTestId('connector-jsonRpc').click();
         });
       });
 
