@@ -51,6 +51,8 @@ export const Home = () => {
       else {
         navigate('/markets');
       }
+    } else {
+      update({ welcomeNoticeDialog: true });
     }
   }, [data, navigate, riskNoticeDialog, update, pageTitle, updateTitle]);
 
