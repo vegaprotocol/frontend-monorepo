@@ -1,4 +1,4 @@
-import type { BigNumber } from '../../../../lib/bignumber';
+import type BigNumber from 'bignumber.js';
 
 export const VoteProgress = ({
   progress,
@@ -14,7 +14,7 @@ export const VoteProgress = ({
     >
       <div
         data-testid="vote-progress-indicator"
-        className="absolute -top-1 w-[1px] h-3 bg-white z-1"
+        className="absolute -top-1 w-[1px] h-3 bg-neutral-300 dark:bg-white z-1"
         style={{ left: `${threshold}%` }}
       />
       <div className="w-full h-2">
@@ -26,7 +26,7 @@ export const VoteProgress = ({
           }}
         />
         <div
-          className="absolute left-0 bg-vega-red h-1"
+          className="absolute right-0 bg-vega-red h-1"
           data-testid="vote-progress-bar-against"
           style={{
             width: `${100 - progress.toNumber()}%`,

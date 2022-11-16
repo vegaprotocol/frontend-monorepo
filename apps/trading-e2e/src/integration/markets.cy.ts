@@ -60,6 +60,37 @@ describe('markets table', { tags: '@smoke' }, () => {
         .should('have.text', ExpectedSortedMarkets[i]);
     }
   });
+
+  it('proposed markets tab should be rendered properly', () => {
+    cy.getByTestId('view-market-list-link')
+      .should('have.attr', 'href', '#/markets')
+      .click();
+    cy.get('[data-testid="Active markets"]').should(
+      'have.attr',
+      'data-state',
+      'active'
+    );
+    cy.get('[data-testid="Proposed markets"]').should(
+      'have.attr',
+      'data-state',
+      'inactive'
+    );
+    cy.get('[data-testid="Proposed markets"]').click();
+    cy.get('[data-testid="Proposed markets"]').should(
+      'have.attr',
+      'data-state',
+      'active'
+    );
+    cy.getByTestId('tab-proposed-markets').should('be.visible');
+    cy.get('.ag-body-viewport .ag-center-cols-container .ag-row').should(
+      'have.length',
+      10
+    );
+    cy.getByTestId('external-link').should('have.length', 11);
+    cy.getByTestId('external-link')
+      .eq(10)
+      .should('have.text', 'Propose a new market');
+  });
 });
 
 function openMarketDropDown() {

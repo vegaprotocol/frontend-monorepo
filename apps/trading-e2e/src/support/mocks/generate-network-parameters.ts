@@ -34,6 +34,14 @@ export const generateNetworkParameters = (
             }),
           },
         },
+        {
+          node: {
+            key: 'governance.proposal.market.requiredMajority',
+            value: '0.66',
+            __typename: 'NetworkParameter',
+          },
+          __typename: 'NetworkParameterEdge',
+        },
       ],
     },
   };
