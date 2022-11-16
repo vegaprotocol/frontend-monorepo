@@ -41,7 +41,7 @@ export const WithdrawalDialog = () => {
         onChange={(isOpen) => (isOpen ? open() : close())}
         size="small"
       >
-        <Web3Container>
+        <Web3Container connectEagerly>
           <WithdrawFormContainer
             assetId={assetId}
             partyId={pubKey ? pubKey : undefined}

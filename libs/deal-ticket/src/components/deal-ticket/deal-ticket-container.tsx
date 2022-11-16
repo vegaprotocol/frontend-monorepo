@@ -27,7 +27,6 @@ export const DealTicketContainer = ({
         )
       ) : (
         <Splash>
-          {JSON.stringify(data)}
           <p>{t('Could not load market')}</p>
         </Splash>
       )}

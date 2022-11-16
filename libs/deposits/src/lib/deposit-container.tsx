@@ -24,7 +24,7 @@ export const DepositContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
       {data && data.length ? (
-        <Web3Container>
+        <Web3Container connectEagerly>
           <DepositManager
             assetId={assetId}
             assets={data}
