@@ -421,12 +421,6 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    const form = 'rest-connector-form';
-    const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-    const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-    cy.getByTestId(form).find('#wallet').click().type(walletName);
-    cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-    cy.getByTestId(form).find('button[type=submit]').click();
     cy.getByTestId(placeOrderBtn).should('be.visible');
     cy.getByTestId(toggleLimit).children('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');

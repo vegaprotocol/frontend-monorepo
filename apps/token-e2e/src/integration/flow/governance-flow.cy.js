@@ -6,8 +6,6 @@ const vegaWalletStakedBalances =
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletNameElement = '[data-testid="wallet-name"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
-const vegaWalletName = Cypress.env('vegaWalletName');
-const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
 const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
@@ -33,7 +31,6 @@ const voteTwoMinExtraNote = '[data-testid="voting-2-mins-extra"]';
 const voteStatus = '[data-testid="vote-status"]';
 const rejectProposalsLink = '[href="/governance/rejected"]';
 const feedbackError = '[data-testid="Error"]';
-const restConnectorForm = '[data-testid="rest-connector-form"]';
 const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
 const txTimeout = Cypress.env('txTimeout');
@@ -795,11 +792,6 @@ context(
           .and('have.text', 'Connect Vega wallet')
           .click();
         cy.getByTestId('connector-jsonRpc').click();
-        cy.get(restConnectorForm).within(() => {
-          cy.get('#wallet').click().type(vegaWalletName);
-          cy.get('#passphrase').click().type(vegaWalletPassphrase);
-          cy.get('button').contains('Connect').click();
-        });
         cy.get(vegaWalletNameElement).should('be.visible');
         cy.get(connectToVegaWalletButton).should('not.exist');
         // 3001-VOTE-100
