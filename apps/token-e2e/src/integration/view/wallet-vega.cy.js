@@ -89,7 +89,7 @@ context(
         });
       });
 
-      it('should have gui, cli and hosted connection options visible on list', function () {
+      it('should have jsonRpc and hosted connection options visible on list', function () {
         cy.get(connectorsList).within(() => {
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
@@ -110,9 +110,9 @@ context(
     describe('when rest connector form opened', function () {
       // Note using desktop wallet app link temporarily whilst its still on v1,
       // tests will need to be updated to handle v2
-      before('click desktop wallet app link', function () {
+      before('click hosted wallet app button', function () {
         cy.get(connectorsList).within(() => {
-          cy.getByTestId('connector-jsonRpc').click();
+          cy.getByTestId('connector-hosted').click();
         });
       });
 
