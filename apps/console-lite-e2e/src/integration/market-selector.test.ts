@@ -1,3 +1,4 @@
+import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateMarketsCandles,
@@ -14,11 +15,15 @@ import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-p
 import { generateMarketNames } from '../support/mocks/generate-market-names';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import type { Market, MarketsQuery } from '@vegaprotocol/market-list';
+import { generateChainId } from '../support/mocks/generate-chain-id';
+import { generateStatistics } from '../support/mocks/generate-statistics';
 
 describe('market selector', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
+      aliasQuery(req, 'ChainId', generateChainId());
+      aliasQuery(req, 'Statistics', generateStatistics());
       aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());
@@ -45,7 +50,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it('should be properly rendered', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('input[placeholder="Search"]').should(
         'have.value',
         markets[0].tradableInstrument.instrument.name
@@ -69,7 +74,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it('typing should change list', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.getByTestId('market-pane')
         .children()
@@ -105,7 +110,7 @@ describe('market selector', { tags: '@smoke' }, () => {
   it.skip('keyboard navigation should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.get('input[placeholder="Search"]').clear();
       cy.focused().realPress('ArrowDown');
@@ -127,11 +132,13 @@ describe('market selector', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('[role="dialog"]').should('not.exist');
       cy.getByTestId('arrow-button').click();
       cy.get('[role="dialog"]').should('be.visible');
-      cy.get('input[placeholder="Search"]').clear();
+      cy.get('input[placeholder="Search"]').then((search) => {
+        cy.wrap(search).clear();
+      });
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')

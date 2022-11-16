@@ -1,20 +1,16 @@
-import { useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { DepositDialog } from '@vegaprotocol/deposits';
+import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
 
 /**
  *  Fetches data required for the Deposit page
  */
 export const DepositContainer = () => {
-  const [depositDialog, setDepositDialog] = useState(false);
+  const openDepositDialog = useDepositDialog((state) => state.open);
   return (
     <div>
-      <DepositDialog
-        depositDialog={depositDialog}
-        setDepositDialog={setDepositDialog}
-      />
-      <Button size="sm" onClick={() => setDepositDialog(true)}>
+      <DepositDialog />
+      <Button size="sm" onClick={() => openDepositDialog()}>
         {t('Make deposit')}
       </Button>
     </div>
