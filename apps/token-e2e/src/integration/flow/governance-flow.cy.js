@@ -54,7 +54,7 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_import();
+      // cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
@@ -96,12 +96,7 @@ context(
           )[0]
         ).as('maxCloseHours');
       });
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.wait_for_spinner();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -137,8 +132,11 @@ context(
       );
 
       beforeEach('visit governance tab', function () {
-        cy.navigate_to('governance');
+        cy.reload();
         cy.wait_for_spinner();
+        cy.vega_wallet_connect();
+        cy.ethereum_wallet_connect();
+        cy.navigate_to('governance');
       });
 
       it('Should be able to see that no proposals exist', function () {

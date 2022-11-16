@@ -24,7 +24,8 @@ export function addVegaWalletImport() {
       `vega wallet key generate -w ${walletName} -p ./src/fixtures/wallet/passphrase --home ${walletLocation}`
     );
     cy.exec(
-      `vega wallet service run --network DV --automatic-consent  --home ${walletLocation}`
+      `vegawallet-dummy service run --network DV -w ${walletName}  -p ./src/fixtures/wallet/passphrase --home ${walletLocation}`,
+      { failOnNonZeroExit: false }
     );
   });
 }
