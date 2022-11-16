@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import compact from 'lodash/compact';
 import {
   DealTicketManager,
   DealTicketContainer as Container,
@@ -34,13 +35,16 @@ export const DealTicketContainer = () => {
           return null as unknown as JSX.Element;
         }
 
+        const accounts = compact(
+          partyData?.party?.accountsConnection?.edges
+        ).map((e) => e.node);
         const balance = (
           <DealTicketBalance
             className="mb-4"
             settlementAsset={
               data.market.tradableInstrument.instrument.product?.settlementAsset
             }
-            accounts={partyData?.party?.accounts || []}
+            accounts={accounts || []}
             isWalletConnected={!!pubKey}
           />
         );

@@ -8,20 +8,24 @@ export type PartyBalanceQueryQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyBalanceQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } }> | null } | null };
+export type PartyBalanceQueryQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number } } } | null> | null } | null } | null };
 
 
 export const PartyBalanceQueryDocument = gql`
     query PartyBalanceQuery($partyId: ID!) {
   party(id: $partyId) {
-    accounts {
-      type
-      balance
-      asset {
-        id
-        symbol
-        name
-        decimals
+    accountsConnection {
+      edges {
+        node {
+          type
+          balance
+          asset {
+            id
+            symbol
+            name
+            decimals
+          }
+        }
       }
     }
   }

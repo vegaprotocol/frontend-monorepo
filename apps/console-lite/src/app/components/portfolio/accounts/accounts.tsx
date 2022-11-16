@@ -45,12 +45,13 @@ const AccountsManager = () => {
     successCallback(rowsThisBlock, lastRow);
   };
   const { columnDefs, defaultColDef } = useAccountColumnDefinitions();
+  console.log(data, loading);
   return (
     <>
       <AsyncRenderer
         loading={loading}
         error={error}
-        data={data}
+        data={data?.length ? data : null}
         noDataMessage={NO_DATA_MESSAGE}
       >
         <ConsoleLiteGrid<AccountFields>

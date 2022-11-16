@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import compact from 'lodash/compact';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
@@ -21,9 +22,12 @@ export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
     fetchPolicy: 'no-cache',
   });
 
+  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
   const settlementAccount = useSettlementAccount(
     market.tradableInstrument.instrument.product.settlementAsset.id,
-    partyBalance?.party?.accounts || [],
+    accounts,
     Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
   const assetDecimals =
