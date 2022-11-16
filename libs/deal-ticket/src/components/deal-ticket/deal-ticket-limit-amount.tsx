@@ -1,9 +1,7 @@
-import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
-import { validateSize } from '../deal-ticket-validation';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { validateAmount } from '../../utils';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
@@ -13,11 +11,33 @@ export type DealTicketLimitAmountProps = Omit<
 export const DealTicketLimitAmount = ({
   register,
   market,
-  quoteName,
-  errorMessage,
+  sizeError,
+  priceError,
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const quoteName =
+    market.tradableInstrument.instrument.product.settlementAsset.symbol;
+
+  const renderError = () => {
+    if (sizeError) {
+      return (
+        <InputError data-testid="dealticket-error-message-size-limit">
+          {sizeError}
+        </InputError>
+      );
+    }
+
+    if (priceError) {
+      return (
+        <InputError data-testid="dealticket-error-message-price-limit">
+          {priceError}
+        </InputError>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div className="mb-6">
@@ -37,9 +57,12 @@ export const DealTicketLimitAmount = ({
               data-testid="order-size"
               onWheel={(e) => e.currentTarget.blur()}
               {...register('size', {
-                required: true,
-                min: sizeStep,
-                validate: validateSize(sizeStep),
+                required: t('You need to provide a size'),
+                min: {
+                  value: sizeStep,
+                  message: t('Size cannot be lower than ' + sizeStep),
+                },
+                validate: validateAmount(sizeStep, 'Size'),
               })}
             />
           </FormGroup>
@@ -63,18 +86,19 @@ export const DealTicketLimitAmount = ({
               data-testid="order-price"
               onWheel={(e) => e.currentTarget.blur()}
               {...register('price', {
-                required: true,
-                min: 0,
+                required: t('You need provide a price'),
+                min: {
+                  value: priceStep,
+                  message: t('Price cannot be lower than ' + priceStep),
+                },
+                // @ts-ignore this fulfills the interface but still errors
+                validate: validateAmount(priceStep, 'Price'),
               })}
             />
           </FormGroup>
         </div>
       </div>
-      <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-price-limit"
-        section={[DEAL_TICKET_SECTION.SIZE, DEAL_TICKET_SECTION.PRICE]}
-      />
+      {renderError()}
     </div>
   );
 };

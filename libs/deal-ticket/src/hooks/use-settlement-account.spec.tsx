@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useSettlementAccount } from './use-settlement-account';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 describe('useSettlementAccount Hook', () => {
@@ -8,7 +8,7 @@ describe('useSettlementAccount Hook', () => {
     const accounts: Account[] = [
       {
         __typename: 'AccountBalance',
-        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '2000000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -20,7 +20,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'AccountBalance',
-        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '1000000000',
         asset: {
           __typename: 'Asset',
@@ -32,7 +32,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'AccountBalance',
-        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '5000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -44,7 +44,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'AccountBalance',
-        type: AccountType.ACCOUNT_TYPE_MARGIN,
+        type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
         balance: '5000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -67,7 +67,11 @@ describe('useSettlementAccount Hook', () => {
     expect(resultDai.current?.asset).toEqual(accounts[1].asset);
 
     const { result: resultVega } = renderHook(() =>
-      useSettlementAccount(vega, accounts, AccountType.ACCOUNT_TYPE_MARGIN)
+      useSettlementAccount(
+        vega,
+        accounts,
+        Schema.AccountType.ACCOUNT_TYPE_MARGIN
+      )
     );
 
     expect(resultVega.current?.balance).toBe(accounts[3].balance);

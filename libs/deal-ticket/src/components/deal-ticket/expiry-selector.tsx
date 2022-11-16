@@ -1,18 +1,15 @@
-import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import type { UseFormRegister } from 'react-hook-form';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { validateExpiration } from '../deal-ticket-validation/validate-expiration';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { validateExpiration } from '../../utils/validate-expiration';
+import type { DealTicketFormFields } from '.';
 
 interface ExpirySelectorProps {
   value?: string;
   onSelect: (expiration: string | null) => void;
-  errorMessage?: DealTicketErrorMessage;
-  register?: UseFormRegister<OrderSubmissionBody['orderSubmission']>;
+  errorMessage?: string;
+  register?: UseFormRegister<DealTicketFormFields>;
 }
 
 export const ExpirySelector = ({
@@ -37,11 +34,11 @@ export const ExpirySelector = ({
           validate: validateExpiration,
         })}
       />
-      <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-force"
-        section={DEAL_TICKET_SECTION.EXPIRY}
-      />
+      {errorMessage && (
+        <InputError data-testid="dealticket-error-message-expiry">
+          {errorMessage}
+        </InputError>
+      )}
     </FormGroup>
   );
 };

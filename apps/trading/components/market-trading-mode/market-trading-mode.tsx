@@ -4,10 +4,9 @@ import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import type { Schema as Types } from '@vegaprotocol/types';
 import {
-  AuctionTrigger,
   AuctionTriggerMapping,
   MarketTradingModeMapping,
-  MarketTradingMode,
+  Schema,
 } from '@vegaprotocol/types';
 import type {
   MarketData,
@@ -79,9 +78,10 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
       testId="market-trading-mode"
     >
       <div>
-        {tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+        {tradingMode ===
+          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         trigger &&
-        trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+        trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
           : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]}
       </div>

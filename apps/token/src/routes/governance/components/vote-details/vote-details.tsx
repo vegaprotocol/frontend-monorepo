@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
+import { VoteProgress } from '@vegaprotocol/governance';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
 import { useUserVote } from './use-user-vote';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { VoteButtonsContainer } from './vote-buttons';
-import { VoteProgress } from './vote-progress';
 import { ProposalType } from '../proposal/proposal';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 

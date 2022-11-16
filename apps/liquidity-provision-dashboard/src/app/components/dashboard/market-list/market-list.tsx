@@ -16,7 +16,7 @@ import {
   formatWithAsset,
   displayChange,
 } from '@vegaprotocol/liquidity';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 
 import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
@@ -110,7 +110,7 @@ export const MarketList = () => {
               value,
               data,
             }: {
-              value: MarketTradingMode;
+              value: Schema.MarketTradingMode;
               data: Market;
             }) => {
               return (
@@ -138,7 +138,7 @@ export const MarketList = () => {
               value,
               data,
             }: {
-              value: MarketTradingMode;
+              value: Schema.MarketTradingMode;
               data: Market;
             }) => (
               <HealthBar

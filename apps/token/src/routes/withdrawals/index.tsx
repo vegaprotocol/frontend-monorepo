@@ -7,10 +7,9 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
   PendingWithdrawalsTable,
   useWithdrawals,
-  WithdrawalDialogs,
+  useWithdrawalDialog,
   WithdrawalsTable,
 } from '@vegaprotocol/withdraws';
-import { useState } from 'react';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '../index';
 
@@ -29,7 +28,7 @@ const Withdrawals = ({ name }: RouteChildProps) => {
 };
 
 const WithdrawPendingContainer = () => {
-  const [withdrawDialog, setWithdrawDialog] = useState(false);
+  const openWithdrawalDialog = useWithdrawalDialog((state) => state.open);
   const { t } = useTranslation();
   const { pending, completed, loading, error } = useWithdrawals();
 
@@ -54,7 +53,7 @@ const WithdrawPendingContainer = () => {
     <>
       <header className="flex items-start justify-between">
         <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
-        <Button data-testid="withdraw" onClick={() => setWithdrawDialog(true)}>
+        <Button data-testid="withdraw" onClick={() => openWithdrawalDialog()}>
           Withdraw
         </Button>
       </header>
@@ -67,10 +66,6 @@ const WithdrawPendingContainer = () => {
         <h4 className="pt-3 pb-1">{t('Withdrawal history')}</h4>
         <WithdrawalsTable rowData={completed} />
       </div>
-      <WithdrawalDialogs
-        withdrawDialog={withdrawDialog}
-        setWithdrawDialog={setWithdrawDialog}
-      />
     </>
   );
 };

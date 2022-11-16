@@ -16,7 +16,7 @@ import type {
   GroupCellRendererParams,
   ColDef,
 } from 'ag-grid-community';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { Intent, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 
@@ -109,7 +109,7 @@ const useColumnDefinitions = () => {
             value &&
             node?.rowPinned &&
             data.marketTradingMode ===
-              MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
           ) {
             return addDecimalsFormatNumber(
               value.toString(),

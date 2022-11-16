@@ -124,7 +124,7 @@ function setup(order: Order, context?: Partial<VegaWalletContextShape>) {
 }
 
 describe('useOrderEdit', () => {
-  it('should edit a correctly formatted order', async () => {
+  it('should edit a correctly formatted order if there is no size', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
     const pubKeyObj = { publicKey: '0x123', name: 'test key 1' };
     const order = generateOrder({
@@ -149,6 +149,36 @@ describe('useOrderEdit', () => {
         timeInForce: order.timeInForce,
         price: '123456789', // Decimal removed
         sizeDelta: 0,
+        expiresAt: undefined,
+      },
+    });
+  });
+
+  it('should edit a correctly formatted order', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
+    const pubKeyObj = { publicKey: '0x123', name: 'test key 1' };
+    const order = generateOrder({
+      price: '123456789',
+      market: { decimalPlaces: 2 },
+    });
+    const { result } = setup(order, {
+      sendTx: mockSendTx,
+      pubKeys: [pubKeyObj],
+      pubKey: pubKeyObj.publicKey,
+    });
+
+    act(() => {
+      result.current.edit({ price: '1234567.89', size: '20' });
+    });
+
+    expect(mockSendTx).toHaveBeenCalledWith(pubKeyObj.publicKey, {
+      orderAmendment: {
+        orderId: order.id,
+        // eslint-disable-next-line
+        marketId: order.market!.id,
+        timeInForce: order.timeInForce,
+        price: '123456789', // Decimal removed
+        sizeDelta: 1990,
         expiresAt: undefined,
       },
     });

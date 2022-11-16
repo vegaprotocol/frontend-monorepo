@@ -3,9 +3,8 @@ import classNames from 'classnames';
 
 import {
   MarketTradingModeMapping,
-  MarketTradingMode,
-  AuctionTrigger,
   AuctionTriggerMapping,
+  Schema,
 } from '@vegaprotocol/types';
 
 import { Indicator } from '../indicator';
@@ -15,14 +14,19 @@ export const Status = ({
   trigger,
   size = 'small',
 }: {
-  tradingMode?: MarketTradingMode;
-  trigger?: AuctionTrigger;
+  tradingMode?: Schema.MarketTradingMode;
+  trigger?: Schema.AuctionTrigger;
   size?: 'small' | 'large';
 }) => {
   const getStatus = () => {
     if (!tradingMode) return '';
-    if (tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION) {
-      if (trigger && trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED) {
+    if (
+      tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    ) {
+      if (
+        trigger &&
+        trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+      ) {
         return `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`;
       }
     }

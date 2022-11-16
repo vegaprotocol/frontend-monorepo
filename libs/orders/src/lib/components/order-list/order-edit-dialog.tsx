@@ -4,6 +4,7 @@ import {
   toDecimal,
   Size,
   getDateTimeFormat,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import {
@@ -26,6 +27,7 @@ interface OrderEditDialogProps {
 
 interface FormFields {
   limitPrice: string;
+  size: string;
 }
 
 export const OrderEditDialog = ({
@@ -41,15 +43,13 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      limitPrice: addDecimalsFormatNumber(
-        order.price,
-        order.market?.decimalPlaces ?? 0
-      ),
+      limitPrice: addDecimal(order.price, order.market?.decimalPlaces ?? 0),
+      size: addDecimal(order.size, order.market?.positionDecimalPlaces ?? 0),
     },
   });
 
   const step = toDecimal(order.market?.decimalPlaces ?? 0);
-
+  const stepSize = toDecimal(order.market?.positionDecimalPlaces ?? 0);
   return (
     <Dialog
       open={isOpen}
@@ -96,25 +96,48 @@ export const OrderEditDialog = ({
       <form
         onSubmit={handleSubmit(onSubmit)}
         data-testid="edit-order"
-        className="w-1/2 mt-4"
+        className="w-full mt-4"
       >
-        <FormGroup label={t('Price')} labelFor="limitPrice">
-          <Input
-            type="number"
-            step={step}
-            {...register('limitPrice', {
-              required: t('You need to provide a price'),
-              validate: {
-                min: (value) =>
-                  Number(value) > 0 ? true : t('The price cannot be negative'),
-              },
-            })}
-            id="limitPrice"
-          />
-          {errors.limitPrice?.message && (
-            <InputError intent="danger">{errors.limitPrice.message}</InputError>
-          )}
-        </FormGroup>
+        <div className="flex flex-col md:flex-row gap-4">
+          <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
+            <Input
+              type="number"
+              step={step}
+              {...register('limitPrice', {
+                required: t('You need to provide a price'),
+                validate: {
+                  min: (value) =>
+                    Number(value) > 0
+                      ? true
+                      : t('The price cannot be negative'),
+                },
+              })}
+              id="limitPrice"
+            />
+            {errors.limitPrice?.message && (
+              <InputError intent="danger">
+                {errors.limitPrice.message}
+              </InputError>
+            )}
+          </FormGroup>
+          <FormGroup label={t('Size')} labelFor="size" className="grow">
+            <Input
+              type="number"
+              step={stepSize}
+              {...register('size', {
+                required: t('You need to provide a size'),
+                validate: {
+                  min: (value) =>
+                    Number(value) > 0 ? true : t('The size cannot be negative'),
+                },
+              })}
+              id="size"
+            />
+            {errors.size?.message && (
+              <InputError intent="danger">{errors.size.message}</InputError>
+            )}
+          </FormGroup>
+        </div>
         <Button variant="primary" size="md" type="submit">
           {t('Update')}
         </Button>

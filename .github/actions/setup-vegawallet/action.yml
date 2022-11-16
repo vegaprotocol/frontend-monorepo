@@ -3,9 +3,6 @@ inputs:
     description: 'Recovery phrase'
   passphrase:
     description: 'Wallet password'
-  capsule:
-    description: 'Is Capsule network used'
-    default: 'false'
 runs:
   using: 'composite'
   steps:
@@ -23,25 +20,16 @@ runs:
 
     - name: Import wallet
       shell: bash
-      if: ${{ inputs.capsule=='false' }}
       run: vega wallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Create public key 2
       shell: bash
-      if: ${{ inputs.capsule=='false' }}
       run: vega wallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Import network
       shell: bash
-      if: ${{ inputs.capsule=='false' }}
       run: vega wallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
 
-    - name: Start service using fairground network
+    - name: Start service using stagnet3 network
       shell: bash
-      if: ${{ inputs.capsule=='false' }}
       run: vegawallet-dummy service run --network stagnet3 --wallet UI_Trading_Test --passphrase-file ./passphrase --home ~/.vegacapsule/testnet/wallet &
-
-    - name: Start service using capsule network
-      shell: bash
-      if: ${{ inputs.capsule=='true' }}
-      run: vegawallet-dummy service run --network DV --wallet capsule_wallet --passphrase-file ./passphrase --home ~/.vegacapsule/testnet/wallet &

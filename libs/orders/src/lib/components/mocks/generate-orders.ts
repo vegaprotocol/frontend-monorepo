@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { MarketState, MarketTradingMode, Schema } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Order } from '../';
 import type { PartialDeep } from 'type-fest';
 
@@ -26,7 +26,7 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
         open: '',
       },
       positionDecimalPlaces: 2,
-      state: MarketState.STATE_ACTIVE,
+      state: Schema.MarketState.STATE_ACTIVE,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -49,7 +49,7 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           },
         },
       },
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     size: '10',
     type: Schema.OrderType.TYPE_MARKET,

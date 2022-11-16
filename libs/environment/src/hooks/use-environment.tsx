@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react';
-import { useEffect, useState, createContext, useContext } from 'react';
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+} from 'react';
 
 import { NodeSwitcherDialog } from '../components/node-switcher-dialog';
 import { useConfig } from './use-config';
@@ -49,10 +55,15 @@ export const EnvironmentProvider = ({
   children,
 }: EnvironmentProviderProps) => {
   const [networkError, setNetworkError] = useState<undefined | ErrorType>();
-  const [isNodeSwitcherOpen, setNodeSwitcherOpen] = useState(false);
+  const [isNodeSwitcherOpen, setNodeSwitcherIsOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
+  const setNodeSwitcherOpen = useCallback((isOpen: boolean) => {
+    if (!('Cypress' in window)) {
+      setNodeSwitcherIsOpen(isOpen);
+    }
+  }, []);
   const { loading, config } = useConfig(
     { environment, defaultConfig },
     (errorType) => {
@@ -126,7 +137,7 @@ export const EnvironmentProvider = ({
       }}
     >
       <NodeSwitcherDialog
-        dialogOpen={isNodeSwitcherOpen}
+        dialogOpen={isNodeSwitcherOpen && !('Cypress' in window)}
         initialErrorType={networkError}
         setDialogOpen={setNodeSwitcherOpen}
         loading={loading}

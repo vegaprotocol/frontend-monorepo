@@ -13,7 +13,7 @@ import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
   EST_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
-} from '../components/constants';
+} from '../constants';
 import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';

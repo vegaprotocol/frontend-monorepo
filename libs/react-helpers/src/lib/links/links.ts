@@ -23,3 +23,8 @@ export const ExternalLinks = {
   VEGA_WALLET_URL: 'https://vega.xyz/wallet',
   VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
 };
+
+export const TokenLinks = {
+  PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
+  UPDATE_PROPOSAL_PAGE: ':tokenUrl/governance/propose/update-market',
+};

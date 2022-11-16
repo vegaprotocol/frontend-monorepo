@@ -1,23 +1,12 @@
-import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { InfoBlock } from '../../components/info-block';
 import { Panel } from '../../components/panel';
-import type { TxsStats, TxsStats_statistics } from './__generated__/TxsStats';
-
-const STATS_QUERY = gql`
-  query TxsStats {
-    statistics {
-      averageOrdersPerBlock
-      ordersPerSecond
-      txPerBlock
-      tradesPerSecond
-    }
-  }
-`;
+import { useExplorerStatsQuery } from './__generated__/explorer-stats';
+import type { ExplorerStatsFieldsFragment } from './__generated__/explorer-stats';
 
 interface StatsMap {
-  field: keyof TxsStats_statistics;
+  field: keyof ExplorerStatsFieldsFragment;
   label: string;
   info: string;
 }
@@ -54,7 +43,7 @@ interface TxsStatsInfoProps {
 }
 
 export const TxsStatsInfo = ({ className }: TxsStatsInfoProps) => {
-  const { data, startPolling, stopPolling } = useQuery<TxsStats>(STATS_QUERY);
+  const { data, startPolling, stopPolling } = useExplorerStatsQuery();
 
   useEffect(() => {
     startPolling(1000);
@@ -67,13 +56,21 @@ export const TxsStatsInfo = ({ className }: TxsStatsInfoProps) => {
   return (
     <Panel className={className}>
       <section className={gridStyles}>
-        {TXS_STATS_MAP.map((field) => (
-          <InfoBlock
-            subtitle={field.label}
-            tooltipInfo={field.info}
-            title={data?.statistics[field.field] || ''}
-          />
-        ))}
+        {TXS_STATS_MAP.map((field) => {
+          if (!data?.statistics) {
+            return null;
+          }
+
+          // Workaround for awkward typing
+          const title = data.statistics[field.field] || '';
+          return (
+            <InfoBlock
+              subtitle={field.label}
+              tooltipInfo={field.info}
+              title={title}
+            />
+          );
+        })}
       </section>
     </Panel>
   );

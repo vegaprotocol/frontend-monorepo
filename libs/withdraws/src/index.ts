@@ -1,4 +1,4 @@
-export * from './lib/withdrawal-dialogs';
+export * from './lib/withdrawal-dialog';
 export * from './lib/withdraw-form';
 export * from './lib/withdraw-form-container';
 export * from './lib/withdraw-manager';

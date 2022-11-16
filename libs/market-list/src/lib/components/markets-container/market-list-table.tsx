@@ -15,13 +15,14 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import {
-  MarketTradingMode,
-  AuctionTrigger,
+  Schema,
   MarketTradingModeMapping,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
 import type { MarketWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+
+const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 

@@ -1,6 +1,7 @@
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Market } from '../markets-provider';
 import { filterAndSortMarkets, totalFeesPercentage } from './market-utils';
+const { MarketState, MarketTradingMode } = Schema;
 
 const MARKET_A: Partial<Market> = {
   id: '1',

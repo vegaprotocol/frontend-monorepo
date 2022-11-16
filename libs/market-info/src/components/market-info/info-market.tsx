@@ -8,7 +8,6 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import {
-  AccountType,
   Schema,
   MarketStateMapping,
   MarketTradingModeMapping,
@@ -28,11 +27,9 @@ import { generatePath, Link } from 'react-router-dom';
 import { getMarketExpiryDateFormatted } from '../market-expires';
 import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
+import { TokenLinks } from '@vegaprotocol/react-helpers';
 
 import type { MarketInfoQuery } from './__generated___/MarketInfo';
-const Links = {
-  PROPOSAL_PAGE: ':tokenUrl/governance/:proposalId',
-};
 
 export interface InfoProps {
   market: MarketInfoQuery['market'];
@@ -158,7 +155,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
       ),
     },
     ...(market.accounts || [])
-      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
+      .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((a) => ({
         title: t(`Insurance pool`),
         content: (
@@ -359,19 +356,35 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     {
       title: t('Proposal'),
       content: (
-        <ExternalLink
-          href={generatePath(Links.PROPOSAL_PAGE, {
-            tokenUrl: VEGA_TOKEN_URL,
-            proposalId: market.proposal?.id || '',
-          })}
-          title={
-            market.proposal?.rationale.title ||
-            market.proposal?.rationale.description ||
-            ''
-          }
-        >
-          {t('View governance proposal')}
-        </ExternalLink>
+        <div className="">
+          <ExternalLink
+            className="mb-2"
+            href={generatePath(TokenLinks.PROPOSAL_PAGE, {
+              tokenUrl: VEGA_TOKEN_URL,
+              proposalId: market.proposal?.id || '',
+            })}
+            title={
+              market.proposal?.rationale.title ||
+              market.proposal?.rationale.description ||
+              ''
+            }
+          >
+            {t('View governance proposal')}
+          </ExternalLink>
+          <ExternalLink
+            className="mt-2"
+            href={generatePath(TokenLinks.UPDATE_PROPOSAL_PAGE, {
+              tokenUrl: VEGA_TOKEN_URL,
+            })}
+            title={
+              market.proposal?.rationale.title ||
+              market.proposal?.rationale.description ||
+              ''
+            }
+          >
+            {t('Propose a change to this market')}
+          </ExternalLink>
+        </div>
       ),
     },
   ];

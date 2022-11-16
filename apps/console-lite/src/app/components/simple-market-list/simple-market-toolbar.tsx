@@ -13,7 +13,7 @@ import {
   DropdownMenuItemIndicator,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { HorizontalMenu } from '../horizontal-menu';
 import type { HorizontalMenuItem } from '../horizontal-menu';
@@ -36,7 +36,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         params.asset && params.asset !== 'all' ? `/${params.asset}` : '';
       const product = params.product ? `/${params.product}` : '';
       const state =
-        activeState !== MarketState.STATE_ACTIVE || product
+        activeState !== Schema.MarketState.STATE_ACTIVE || product
           ? `/${activeState}`
           : '';
       navigate(`/markets${state}${product}${asset}`);
@@ -45,8 +45,8 @@ const SimpleMarketToolbar = ({ data }: Props) => {
   );
 
   const productItems = useMemo(() => {
-    const currentState = params.state || MarketState.STATE_ACTIVE;
-    const noStateSkip = currentState !== MarketState.STATE_ACTIVE;
+    const currentState = params.state || Schema.MarketState.STATE_ACTIVE;
+    const noStateSkip = currentState !== Schema.MarketState.STATE_ACTIVE;
     const items: HorizontalMenuItem[] = [
       {
         ...constants.ALL_PRODUCTS_ITEM,
@@ -83,7 +83,8 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                 {constants.STATES_FILTER.find(
                   (state) =>
                     state.value === params.state ||
-                    (!params.state && state.value === MarketState.STATE_ACTIVE)
+                    (!params.state &&
+                      state.value === Schema.MarketState.STATE_ACTIVE)
                 )?.text || params.state}
                 <Icon
                   name={IconNames.ARROW_DOWN}
@@ -103,7 +104,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                   key={value}
                   checked={
                     value === params.state ||
-                    (!params.state && value === MarketState.STATE_ACTIVE)
+                    (!params.state && value === Schema.MarketState.STATE_ACTIVE)
                   }
                   onCheckedChange={() => onStateChange(value)}
                 >

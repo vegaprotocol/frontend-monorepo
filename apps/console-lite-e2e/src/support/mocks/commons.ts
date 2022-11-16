@@ -1,5 +1,5 @@
 import type { Market } from '@vegaprotocol/market-list';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 
 export const protoCandles = [
@@ -79,8 +79,8 @@ export const protoCandles = [
 
 export const protoMarket: Market = {
   id: 'ca7768f6de84bf86a21bbb6b0109d9659c81917b0e0339b2c262566c9b581a15',
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: Schema.MarketState.STATE_ACTIVE,
   decimalPlaces: 5,
   positionDecimalPlaces: 0,
   marketTimestamps: {
