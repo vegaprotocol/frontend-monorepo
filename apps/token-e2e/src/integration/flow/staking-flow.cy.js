@@ -55,65 +55,61 @@ context(
         }
       );
 
-      it(
-        'Able to stake against a validator - using vega from wallet',
-        { tags: '@smoke' },
-        function () {
-          cy.staking_page_associate_tokens('3');
+      it('Able to stake against a validator - using vega from wallet', function () {
+        cy.staking_page_associate_tokens('3');
 
-          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-            'contain',
-            3.0,
-            txTimeout
-          );
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain',
+          3.0,
+          txTimeout
+        );
 
-          cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-            .contains('3.0', txTimeout)
-            .should('be.visible');
+        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
+          .contains('3.0', txTimeout)
+          .should('be.visible');
 
-          cy.get(ethWalletAssociatedBalances, txTimeout)
-            .contains(vegaWalletPublicKeyShort, txTimeout)
-            .parent()
-            .should('contain', 3.0, txTimeout);
+        cy.get(ethWalletAssociatedBalances, txTimeout)
+          .contains(vegaWalletPublicKeyShort, txTimeout)
+          .parent()
+          .should('contain', 3.0, txTimeout);
 
-          cy.get('button').contains('Select a validator to nominate').click();
+        cy.get('button').contains('Select a validator to nominate').click();
 
-          // 2001-STKE-031
-          cy.click_on_validator_from_list(0);
+        // 2001-STKE-031
+        cy.click_on_validator_from_list(0);
 
-          // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
-          cy.staking_validator_page_add_stake('2');
+        // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
+        cy.staking_validator_page_add_stake('2');
 
-          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-            'contain',
-            1.0,
-            txTimeout
-          );
-          // 2001-STKE-039
-          cy.get(vegaWalletStakedBalances, txTimeout)
-            .should('contain', 2.0, txTimeout)
-            .and('contain', partValidatorId);
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain',
+          1.0,
+          txTimeout
+        );
+        // 2001-STKE-039
+        cy.get(vegaWalletStakedBalances, txTimeout)
+          .should('contain', 2.0, txTimeout)
+          .and('contain', partValidatorId);
 
-          cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016 2001-STKE-038
-            .contains(2.0, epochTimeout)
-            .should('be.visible');
+        cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016 2001-STKE-038
+          .contains(2.0, epochTimeout)
+          .should('be.visible');
 
-          cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
-            .contains(2.0, epochTimeout)
-            .should('be.visible');
+        cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
+          .contains(2.0, epochTimeout)
+          .should('be.visible');
 
-          cy.get(nominatedStake).should('have.text', '2.000000000000000000'); // 2001-STKE-017 2002-SINC-007
+        cy.get(nominatedStake).should('have.text', '2.000000000000000000'); // 2001-STKE-017 2002-SINC-007
 
-          cy.navigate_to('staking');
+        cy.navigate_to('staking');
 
-          cy.validate_validator_list_total_stake_and_share(
-            '0',
-            '',
-            '2.00',
-            '100%'
-          );
-        }
-      );
+        cy.validate_validator_list_total_stake_and_share(
+          '0',
+          '',
+          '2.00',
+          '100%'
+        );
+      });
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
         cy.staking_page_associate_tokens('3', { type: 'contract' });
