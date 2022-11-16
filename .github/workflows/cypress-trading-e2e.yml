@@ -71,7 +71,6 @@ jobs:
         with:
           recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: false
 
       # To make sure that all Cypress binaries are installed properly
       - name: Install cypress bins

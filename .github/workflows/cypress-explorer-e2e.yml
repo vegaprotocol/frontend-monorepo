@@ -79,12 +79,10 @@ jobs:
       ## Setup a Vega wallet for our user
       ######
 
-      - name: Set up Vegawallet
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+      - name: Set up Vegawallet for docker
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet-docker
         with:
-          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: true
 
       ######
       ## Run some tests
