@@ -554,7 +554,14 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Position,
       value: (
-        <p className={signedNumberCssClass(openVolume || '')}>{openVolume}</p>
+        // TODO add decimals to open volume
+        <p className={signedNumberCssClass(openVolume || '')}>
+          {openVolume &&
+            addDecimalsNormalizeNumber(
+              openVolume,
+              market.positionDecimalPlaces
+            )}
+        </p>
       ),
       className: `${cellClassNames} hidden xxl:table-cell font-mono`,
       onlyOnDetailed: true,
