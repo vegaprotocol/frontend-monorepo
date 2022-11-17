@@ -8,7 +8,12 @@ import type {
 } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import {
   Icon,
   AsyncRenderer,
@@ -126,6 +131,21 @@ export const MarketList = () => {
             headerTooltip={t(
               'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
             )}
+          />
+
+          <AgGridColumn
+            headerName={t('% Target stake met')}
+            valueFormatter={({ data }: ValueFormatterParams) => {
+              const roundedPercentage =
+                parseInt(
+                  (data.liquidityCommitted / parseFloat(data.target)).toFixed(0)
+                ) * 100;
+              const display = Number.isNaN(roundedPercentage)
+                ? 'N/A'
+                : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+              return display;
+            }}
+            headerTooltip={t('% Target stake met')}
           />
 
           <AgGridColumn
