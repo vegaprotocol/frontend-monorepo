@@ -391,7 +391,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
               ''
             }
           >
-            {t('Propose a change to this market')}
+            {t('Propose a change to market')}
           </ExternalLink>
         </div>
       ),

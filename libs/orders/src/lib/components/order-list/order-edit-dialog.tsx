@@ -1,10 +1,10 @@
 import {
   t,
-  addDecimalsFormatNumber,
   toDecimal,
   Size,
   getDateTimeFormat,
   addDecimal,
+  addDecimalsNormalizeNumber,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import {
@@ -57,22 +57,25 @@ export const OrderEditDialog = ({
       title={t('Edit order')}
       icon={<Icon name="edit" />}
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {order.market && (
-          <div>
+          <div className="md:col-span-2">
             <p className={headerClassName}>{t(`Market`)}</p>
             <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
-          <div>
-            <p className={headerClassName}>{t(`Current price`)}</p>
+          <div className="md:col-span-1">
+            <p className={headerClassName}>{t(`Price`)}</p>
             <p>
-              {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
+              {addDecimalsNormalizeNumber(
+                order.price,
+                order.market.decimalPlaces
+              )}
             </p>
           </div>
         )}
-        <div>
+        <div className="md:col-span-1">
           <p className={headerClassName}>{t(`Size`)}</p>
           <p>
             {order.market && (
