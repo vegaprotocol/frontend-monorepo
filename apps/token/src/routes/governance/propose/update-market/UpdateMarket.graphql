@@ -1,0 +1,15 @@
+query ProposalMarketsQuery {
+  marketsConnection {
+    edges {
+      node {
+        id
+        tradableInstrument {
+          instrument {
+            name
+            code
+          }
+        }
+      }
+    }
+  }
+}
