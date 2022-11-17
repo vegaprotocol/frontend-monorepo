@@ -137,23 +137,13 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
   });
   let cells = screen.getAllByRole('gridcell');
   const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
-  // const liquidationPrice =
-  //   cells[6].firstElementChild?.lastElementChild?.textContent;
-  // const progressBarTrack = cells[6].lastElementChild;
-  // let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
-  // const progressBarWidth = progressBar?.style?.width;
   expect(entryPrice).toEqual('13.3');
-  // expect(liquidationPrice).toEqual('8.3');
-  // expect(progressBar.classList.contains('bg-warning')).toEqual(false);
-  // expect(progressBarWidth).toEqual('20%');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
     );
   });
   cells = screen.getAllByRole('gridcell');
-  // progressBar = cells[6].lastElementChild?.firstElementChild as HTMLElement;
-  // expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
 });
 
 it('displays leverage', async () => {
