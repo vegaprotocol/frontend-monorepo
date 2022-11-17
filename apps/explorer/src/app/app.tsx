@@ -52,7 +52,7 @@ function App() {
     'bg-white dark:bg-black',
     'antialiased text-black dark:text-white',
     {
-      'overflow-hidden': menuOpen,
+      'h-[100vh] min-h-auto overflow-hidden': menuOpen,
     }
   );
 
