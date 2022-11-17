@@ -136,6 +136,7 @@ context(
         cy.vega_wallet_connect();
         cy.ethereum_wallet_connect();
         cy.navigate_to('governance');
+        cy.wait_for_spinner();
       });
 
       it('Should be able to see that no proposals exist', function () {
