@@ -5,6 +5,7 @@ import {
   ExternalLink,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
+import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
@@ -32,9 +33,11 @@ export const ProposalFormTerms = ({
         <div className="mt-[-4px] mb-2 text-sm font-light">
           <span className="mr-1">{t('ProposalTermsText')}</span>
           <ExternalLink
-            href={`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}
+            href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
             target="_blank"
-          >{`${VEGA_DOCS_URL}/tutorials/proposals${docsLink}`}</ExternalLink>
+          >
+            {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+          </ExternalLink>
         </div>
       )}
 

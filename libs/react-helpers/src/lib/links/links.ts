@@ -9,6 +9,7 @@ export const createDocsLinks = (docsUrl: string) => ({
   AUCTION_TYPE_CLOSING: `${docsUrl}/concepts/trading-on-vega/trading-modes#auction-type-closing`,
   STAKING_GUIDE: `${docsUrl}/concepts/vega-chain/#staking-on-vega`,
   VEGA_WALLET_CONCEPTS_URL: `${docsUrl}/concepts/vega-wallet`,
+  PROPOSALS_GUIDE: `${docsUrl}/tutorials/proposals`,
 });
 
 export const ExternalLinks = {
@@ -16,7 +17,6 @@ export const ExternalLinks = {
   GITHUB: 'https://github.com/vegaprotocol/token-frontend',
   DISCORD: 'https://vega.xyz/discord',
   GOVERNANCE_PAGE: 'https://vega.xyz/governance',
-  PROPOSALS_GUIDE: 'https://docs.vega.xyz/mainnet/tutorials/proposals',
   VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
