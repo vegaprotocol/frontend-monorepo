@@ -2,7 +2,6 @@ import compact from 'lodash/compact';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
