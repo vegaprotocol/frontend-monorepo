@@ -34,6 +34,7 @@ export const TxDetailsChainEvent = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
   const cmd = txData.command as ChainEvent;
+  console.dir(cmd.chainEvent.erc20);
   const assetId = cmd.chainEvent.erc20.deposit.vegaAssetId;
   const sender = cmd.chainEvent.erc20.deposit.sourceEthereumAddress;
   const recipient = cmd.chainEvent.erc20.deposit.targetPartyId;

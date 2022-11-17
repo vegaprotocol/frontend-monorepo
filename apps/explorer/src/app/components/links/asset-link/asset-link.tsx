@@ -3,9 +3,7 @@ import { Routes } from '../../../routes/route-names';
 import { useExplorerAssetQuery } from './__generated__/Asset';
 import { Link } from 'react-router-dom';
 
-import type { ComponentProps } from 'react';
-
-export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
+export type AssetLinkProps = {
   id: string;
 };
 
@@ -26,7 +24,7 @@ const AssetLink = ({ id, ...props }: AssetLinkProps) => {
   }
 
   return (
-    <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
+    <Link className="underline" to={`/${Routes.MARKETS}#${id}`} {...props}>
       {label}
     </Link>
   );

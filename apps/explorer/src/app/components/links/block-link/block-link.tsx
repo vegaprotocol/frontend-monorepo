@@ -2,15 +2,13 @@ import React from 'react';
 import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 
-import type { ComponentProps } from 'react';
-
-export type BlockLinkProps = Partial<ComponentProps<typeof Link>> & {
+export type BlockLinkProps = {
   height: string;
 };
 
 const BlockLink = ({ height, ...props }: BlockLinkProps) => {
   return (
-    <Link className="underline" {...props} to={`/${Routes.BLOCKS}/${height}`}>
+    <Link className="underline" to={`/${Routes.BLOCKS}/${height}`} {...props}>
       {height}
     </Link>
   );

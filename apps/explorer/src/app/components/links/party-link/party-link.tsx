@@ -2,15 +2,13 @@ import React from 'react';
 import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
 
-import type { ComponentProps } from 'react';
-
-export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
+export type PartyLinkProps = {
   id: string;
 };
 
 const PartyLink = ({ id, ...props }: PartyLinkProps) => {
   return (
-    <Link className="underline" {...props} to={`/${Routes.PARTIES}/${id}`}>
+    <Link className="underline" to={`/${Routes.PARTIES}/${id}`} {...props}>
       {id}
     </Link>
   );
