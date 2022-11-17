@@ -31,6 +31,7 @@ import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
+import BigNumber from 'bignumber.js';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -171,9 +172,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           valueGetter={({
             data,
           }: VegaValueGetterParams<Position, 'notional'>) => {
+            console.log(data);
             return data?.notional === undefined
               ? undefined
-              : toBigNum(data?.notional, data.decimals).toNumber();
+              : new BigNumber(data?.notional).toNumber();
           }}
           valueFormatter={({
             data,
