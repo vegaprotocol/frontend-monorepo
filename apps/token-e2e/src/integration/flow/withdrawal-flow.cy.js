@@ -27,15 +27,17 @@ context(
   function () {
     before('visit withdrawals and connect vega wallet', function () {
       cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
-      cy.vega_wallet_import();
       cy.deposit_asset(usdcEthAddress);
     });
 
     beforeEach('Navigate to withdrawal page', function () {
+      cy.reload();
       cy.visit('/');
       cy.navigate_to('withdrawals');
+      cy.wait_for_spinner();
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
+      cy.vega_wallet_teardown();
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {

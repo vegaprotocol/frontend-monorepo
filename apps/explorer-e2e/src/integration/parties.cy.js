@@ -202,15 +202,6 @@ context('Parties page', { tags: '@regression' }, function () {
         .and('include', darkThemeSideMenuBackgroundColor);
     });
 
-    after(
-      'teardown environment to prevent test data bleeding into other tests',
-      function () {
-        if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-          cy.restart_vegacapsule_network();
-        }
-      }
-    );
-
     Cypress.Commands.add('get_asset_decimals', (assetID) => {
       cy.get_asset_information().then((assetsInfo) => {
         const assetDecimals = assetsInfo[assetData[assetID].name].decimals;
