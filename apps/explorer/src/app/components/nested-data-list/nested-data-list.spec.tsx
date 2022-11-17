@@ -41,10 +41,10 @@ describe('NestedDataList', () => {
     const parent = getAllByRole('listitem', { name: 'Validator Heartbeat' });
     const nestedContainer = parent[0].querySelector('[aria-hidden]');
     const expandBtn = parent[0].querySelector('button');
-    expect(nestedContainer).toHaveAttribute('aria-hidden', 'true');
+    expect(nestedContainer).toHaveAttribute('aria-hidden', 'false');
     await user.click(expandBtn as HTMLButtonElement);
     await waitFor(() => nestedContainer);
-    expect(nestedContainer).toHaveAttribute('aria-hidden', 'false');
+    expect(nestedContainer).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('add border to the title of the parent', () => {

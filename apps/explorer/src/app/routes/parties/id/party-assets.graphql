@@ -35,6 +35,9 @@ query ExplorerPartyAssets($partyId: ID!) {
               }
               type
               balance
+              market {
+                id
+              }
             }
           }
         }

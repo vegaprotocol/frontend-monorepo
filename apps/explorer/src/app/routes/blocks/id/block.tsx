@@ -15,8 +15,8 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
-import { HighlightedLink } from '../../../components/highlighted-link';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { NodeLink } from '../../../components/links';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -60,9 +60,8 @@ const Block = () => {
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
                   <TableCell modifier="bordered">
-                    <HighlightedLink
-                      to={`/${Routes.VALIDATORS}`}
-                      text={blockData.result.block.header.proposer_address}
+                    <NodeLink
+                      id={blockData.result.block.header.proposer_address}
                       data-testid="block-validator"
                     />
                   </TableCell>
@@ -78,6 +77,12 @@ const Block = () => {
                     {getDateTimeFormat().format(
                       new Date(blockData.result.block.header.time)
                     )}
+                  </TableCell>
+                </TableRow>
+                <TableRow modifier="bordered">
+                  <TableHeader scope="row">Transactions</TableHeader>
+                  <TableCell modifier="bordered">
+                    <span>{blockData.result.block.data.txs.length}</span>
                   </TableCell>
                 </TableRow>
               </TableWithTbody>
