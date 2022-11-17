@@ -54,7 +54,6 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      // cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
@@ -844,15 +843,6 @@ context(
         const randomNum = Math.floor(Math.random() * 1000) + 1;
         return randomNum + ': Freeform e2e proposal';
       }
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );
