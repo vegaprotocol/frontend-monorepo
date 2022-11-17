@@ -41,11 +41,6 @@ describe('positions', { tags: '@smoke' }, () => {
       cy.getByTestId('flash-cell').each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
-
-      cy.get('[col-id="liquidationPrice"]')
-        .should('contain.text', '85,093.38') // entry price
-        .should('contain.text', '0.00'); // liquidation price
-
       cy.get('[col-id="currentLeverage"]').should('contain.text', '0.8');
 
       cy.get('[col-id="marginAccountBalance"]') // margin allocated
