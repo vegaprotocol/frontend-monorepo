@@ -1,5 +1,8 @@
 import merge from 'lodash/merge';
-import type { V1TransactionResponse } from '@vegaprotocol/wallet';
+import type {
+  V1TransactionResponse,
+  TransactionResponse,
+} from '@vegaprotocol/wallet';
 import type { PartialDeep } from 'type-fest';
 
 declare global {
@@ -8,6 +11,9 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       mockVegaCommandSync(override: PartialDeep<V1TransactionResponse>): void;
+      mockVegaWalletTransaction(
+        override?: PartialDeep<TransactionResponse>
+      ): void;
     }
   }
 }
@@ -43,6 +49,22 @@ export function addMockVegaWalletCommands() {
       cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', {
         body: merge(defaultTransactionResponse, override),
       }).as('VegaCommandSync');
+    }
+  );
+
+  Cypress.Commands.add(
+    'mockVegaWalletTransaction',
+    (override?: PartialDeep<TransactionResponse>) => {
+      const defaultTransactionResponse = {
+        transactionHash: 'tx-hash',
+        signature: 'signature',
+        sentAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
+      };
+
+      cy.intercept('POST', 'http://localhost:1789/api/v2/requests', {
+        body: merge(defaultTransactionResponse, override),
+      }).as('VegaWalletTransaction');
     }
   );
 }
