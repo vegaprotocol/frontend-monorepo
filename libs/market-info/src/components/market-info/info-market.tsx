@@ -48,7 +48,7 @@ export const calcCandleVolume = (
 
 export interface MarketInfoContainerProps {
   marketId: string;
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
 }
 export const MarketInfoContainer = ({
   marketId,
@@ -76,7 +76,7 @@ export const MarketInfoContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <Info market={data.market} onSelect={onSelect} />
+        <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

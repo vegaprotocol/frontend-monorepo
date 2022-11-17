@@ -20,7 +20,7 @@ import type {
   SingleMarketFieldsFragment,
   Candle,
 } from '@vegaprotocol/market-list';
-export const Last24hVolume = ({ marketId }: { marketId: string }) => {
+export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
   const [candleVolume, setCandleVolume] = useState<string>();
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when

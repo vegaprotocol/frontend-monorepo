@@ -5,6 +5,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { EMPTY_MARKET_ID } from 'apps/trading/components/constants';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
@@ -27,9 +28,8 @@ export const Home = () => {
   }));
 
   useEffect(() => {
-    update({ landingDialog: true });
-
     if (data) {
+      update({ landingDialog: data.length > 0 });
       const marketId = data[0]?.id;
       const marketName = data[0]?.tradableInstrument.instrument.name;
       const marketPrice = data[0]?.data?.markPrice
@@ -46,13 +46,9 @@ export const Home = () => {
         if (pageTitle !== newPageTitle) {
           updateTitle(newPageTitle);
         }
+      } else {
+        navigate(`/markets/${EMPTY_MARKET_ID}`);
       }
-      // Fallback to the markets list page
-      else {
-        navigate('/markets');
-      }
-    } else {
-      update({ welcomeNoticeDialog: true });
     }
   }, [data, navigate, riskNoticeDialog, update, pageTitle, updateTitle]);
 

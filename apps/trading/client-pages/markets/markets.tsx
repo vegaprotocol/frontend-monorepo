@@ -1,23 +1,13 @@
-import { useCallback, useEffect } from 'react';
-import {
-  MarketsContainer,
-  marketsWithDataProvider,
-} from '@vegaprotocol/market-list';
+import { useCallback } from 'react';
+import { MarketsContainer } from '@vegaprotocol/market-list';
 import { useGlobalStore } from '../../stores';
 import { useNavigate } from 'react-router-dom';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { useWelcomeNoticeDialog } from '../../components/welcome-notice';
 
 export const Markets = () => {
   const navigate = useNavigate();
-  const { data } = useDataProvider({
-    dataProvider: marketsWithDataProvider,
-  });
   const { update } = useGlobalStore((store) => ({ update: store.update }));
-  useEffect(() => {
-    if (!data) {
-      update({ welcomeNoticeDialog: true });
-    }
-  }, [data, update]);
+  useWelcomeNoticeDialog();
   const handleOnSelect = useCallback(
     (marketId: string) => {
       update({ marketId, welcomeNoticeDialog: false });

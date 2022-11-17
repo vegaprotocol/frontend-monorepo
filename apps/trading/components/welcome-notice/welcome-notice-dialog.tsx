@@ -1,12 +1,13 @@
-import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { Dialog, ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
 import { proposalsListDataProvider } from '@vegaprotocol/governance';
 import { Schema as Types } from '@vegaprotocol/types';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useGlobalStore } from '../../stores';
 import take from 'lodash/take';
-import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import { useLinks } from '../../lib/use-links';
+import { GOVERNANCE_LINK, NEW_PROPOSAL_LINK } from '../constants';
+import { activeMarketsProvider } from '@vegaprotocol/market-list';
 
 export const WelcomeNoticeDialog = () => {
   const [welcomeNoticeDialog, update] = useGlobalStore((store) => [
@@ -33,11 +34,9 @@ export const WelcomeNoticeDialog = () => {
     skipUpdates: true,
   });
 
-  console.log(data);
   const newMarkets = take(
     (data || []).filter((proposal) =>
       [
-        Types.ProposalState.STATE_ENACTED,
         Types.ProposalState.STATE_OPEN,
         Types.ProposalState.STATE_PASSED,
         Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
@@ -51,14 +50,8 @@ export const WelcomeNoticeDialog = () => {
       proposal.terms.change.instrument.code,
   }));
 
-  const { VEGA_TOKEN_URL, VEGA_NETWORKS } = useEnvironment();
-
-  const consoleFairgroundLink = `${VEGA_NETWORKS[Networks.TESTNET]}`;
-  const governanceLink = useCallback(
-    (proposal?: string | null) =>
-      `${VEGA_TOKEN_URL}/governance/${proposal || ''}`,
-    [VEGA_TOKEN_URL]
-  );
+  const tokenLink = useLinks('token');
+  const consoleFairgroundLink = useLinks('console-fairground');
 
   const proposedMarkets = useMemo(
     () =>
@@ -72,17 +65,19 @@ export const WelcomeNoticeDialog = () => {
               <div className="pt-1 flex justify-between" key={i}>
                 <dl>{displayName}</dl>
                 <dt>
-                  <Link target="_blank" href={governanceLink(id)}>
+                  <ExternalLink href={tokenLink(`${GOVERNANCE_LINK}/${id}`)}>
                     {t('View or vote')}
-                  </Link>
+                  </ExternalLink>
                 </dt>
               </div>
             ))}
           </dl>
-          <Link href={governanceLink()}>{t('View all proposed markets')}</Link>
+          <ExternalLink href={tokenLink(GOVERNANCE_LINK)}>
+            {t('View all proposed markets')}
+          </ExternalLink>
         </div>
       ),
-    [governanceLink, newMarkets]
+    [newMarkets, tokenLink]
   );
 
   return (
@@ -97,28 +92,40 @@ export const WelcomeNoticeDialog = () => {
       </p>
       <ul className="list-[square] pl-7">
         <li>
-          <Link target="_blank" href={consoleFairgroundLink}>
+          <ExternalLink target="_blank" href={consoleFairgroundLink()}>
             {t('Try out Console')}
-          </Link>
+          </ExternalLink>
           {t(' on Fairground, our Testnet')}
         </li>
         <li>
-          <Link target="_blank" href={governanceLink()}>
+          <ExternalLink target="_blank" href={tokenLink(GOVERNANCE_LINK)}>
             {t('View and vote for proposed markets')}
-          </Link>
+          </ExternalLink>
         </li>
         <li>
-          <Link target="_blank" href={governanceLink('propose')}>
+          <ExternalLink target="_blank" href={tokenLink(NEW_PROPOSAL_LINK)}>
             {t('Propose your own markets')}
-          </Link>
+          </ExternalLink>
         </li>
         <li>
-          <Link target="_blank" href={governanceLink()}>
+          <ExternalLink target="_blank" href={tokenLink()}>
             {t('Read about the mainnet launch')}
-          </Link>
+          </ExternalLink>
         </li>
       </ul>
       {proposedMarkets}
     </Dialog>
   );
+};
+
+export const useWelcomeNoticeDialog = () => {
+  const { update } = useGlobalStore((store) => ({ update: store.update }));
+  const { data } = useDataProvider({
+    dataProvider: activeMarketsProvider,
+  });
+  useEffect(() => {
+    if (data?.length === 0) {
+      update({ welcomeNoticeDialog: true });
+    }
+  }, [data, update]);
 };
