@@ -36,6 +36,6 @@ export const progressBarCellRendererSelector = (
   params: ICellRendererParams
 ): CellRendererSelectorResult => {
   return {
-    component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+    component: ProgressBarCell,
   };
 };
