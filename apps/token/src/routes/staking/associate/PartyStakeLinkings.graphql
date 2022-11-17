@@ -1,3 +1,9 @@
+fragment LinkingsFields on StakeLinking {
+  id
+  txHash
+  status
+}
+
 query PartyStakeLinkings($partyId: ID!) {
   party(id: $partyId) {
     id
@@ -5,9 +11,7 @@ query PartyStakeLinkings($partyId: ID!) {
       linkings {
         edges {
           node {
-            id
-            txHash
-            status
+            ...LinkingsFields
           }
         }
       }

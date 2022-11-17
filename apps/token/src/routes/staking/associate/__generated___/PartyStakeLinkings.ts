@@ -3,6 +3,8 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type LinkingsFieldsFragment = { __typename?: 'StakeLinking', id: string, txHash: string, status: Types.StakeLinkingStatus };
+
 export type PartyStakeLinkingsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -10,7 +12,13 @@ export type PartyStakeLinkingsQueryVariables = Types.Exact<{
 
 export type PartyStakeLinkingsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', linkings: { __typename?: 'StakesConnection', edges?: Array<{ __typename?: 'StakeLinkingEdge', node: { __typename?: 'StakeLinking', id: string, txHash: string, status: Types.StakeLinkingStatus } } | null> | null } } } | null };
 
-
+export const LinkingsFieldsFragmentDoc = gql`
+    fragment LinkingsFields on StakeLinking {
+  id
+  txHash
+  status
+}
+    `;
 export const PartyStakeLinkingsDocument = gql`
     query PartyStakeLinkings($partyId: ID!) {
   party(id: $partyId) {
@@ -19,16 +27,14 @@ export const PartyStakeLinkingsDocument = gql`
       linkings {
         edges {
           node {
-            id
-            txHash
-            status
+            ...LinkingsFields
           }
         }
       }
     }
   }
 }
-    `;
+    ${LinkingsFieldsFragmentDoc}`;
 
 /**
  * __usePartyStakeLinkingsQuery__
