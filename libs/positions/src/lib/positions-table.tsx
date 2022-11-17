@@ -6,7 +6,6 @@ import type {
   CellRendererSelectorResult,
 } from 'ag-grid-community';
 import type {
-  ValueProps as PriceCellProps,
   VegaValueFormatterParams,
   VegaValueGetterParams,
   TypedDataAgGrid,
@@ -29,7 +28,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
 
 interface Props extends TypedDataAgGrid<Position> {
@@ -100,27 +99,6 @@ const ButtonCell = ({
       {t('Close')}
     </Button>
   );
-};
-
-const progressBarValueFormatter = ({
-  data,
-  node,
-}: VegaValueFormatterParams<Position, 'liquidationPrice'>):
-  | PriceCellProps['valueFormatted']
-  | undefined => {
-  if (!data || node?.rowPinned) {
-    return undefined;
-  }
-  const min = BigInt(data.averageEntryPrice);
-  const max = BigInt(data.liquidationPrice);
-  const mid = BigInt(data.markPrice);
-  const range = max - min;
-  return {
-    low: addDecimalsNormalizeNumber(min.toString(), data.marketDecimalPlaces),
-    high: addDecimalsNormalizeNumber(max.toString(), data.marketDecimalPlaces),
-    value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-    intent: data.lowMarginLevel ? Intent.Warning : undefined,
-  };
 };
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
