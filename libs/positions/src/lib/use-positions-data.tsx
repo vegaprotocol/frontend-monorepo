@@ -33,6 +33,8 @@ export const getSummaryRowData = (positions: Position[]) => {
     realisedPNL: summaryRow.realisedPNL.toString(),
     unrealisedPNL: summaryRow.unrealisedPNL.toString(),
     decimals,
+    marketDecimalPlaces: positions[0]?.marketDecimalPlaces || 0,
+    positionDecimalPlaces: positions[0]?.positionDecimalPlaces || 0,
   };
 };
 
