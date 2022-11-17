@@ -43,7 +43,7 @@ it('Render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(12);
+  expect(headers).toHaveLength(11);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
@@ -53,7 +53,6 @@ it('Render correct columns', async () => {
     'Mark price',
     'Settlement asset',
     'Entry price',
-    'Liquidation price (est)',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -138,23 +137,23 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
   });
   let cells = screen.getAllByRole('gridcell');
   const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
-  const liquidationPrice =
-    cells[6].firstElementChild?.lastElementChild?.textContent;
-  const progressBarTrack = cells[6].lastElementChild;
-  let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
-  const progressBarWidth = progressBar?.style?.width;
+  // const liquidationPrice =
+  //   cells[6].firstElementChild?.lastElementChild?.textContent;
+  // const progressBarTrack = cells[6].lastElementChild;
+  // let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
+  // const progressBarWidth = progressBar?.style?.width;
   expect(entryPrice).toEqual('13.3');
-  expect(liquidationPrice).toEqual('8.3');
-  expect(progressBar.classList.contains('bg-warning')).toEqual(false);
-  expect(progressBarWidth).toEqual('20%');
+  // expect(liquidationPrice).toEqual('8.3');
+  // expect(progressBar.classList.contains('bg-warning')).toEqual(false);
+  // expect(progressBarWidth).toEqual('20%');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
     );
   });
   cells = screen.getAllByRole('gridcell');
-  progressBar = cells[6].lastElementChild?.firstElementChild as HTMLElement;
-  expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
+  // progressBar = cells[6].lastElementChild?.firstElementChild as HTMLElement;
+  // expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
 });
 
 it('displays leverage', async () => {
@@ -162,7 +161,7 @@ it('displays leverage', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[7].textContent).toEqual('1.1');
+  expect(cells[6].textContent).toEqual('1.1');
 });
 
 it('displays allocated margin', async () => {
@@ -170,7 +169,7 @@ it('displays allocated margin', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[8];
+  const cell = cells[7];
   expect(cell.textContent).toEqual('123,456');
 });
 
@@ -179,6 +178,6 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[9].textContent).toEqual('1.23');
-  expect(cells[10].textContent).toEqual('4.56');
+  expect(cells[8].textContent).toEqual('1.23');
+  expect(cells[9].textContent).toEqual('4.56');
 });
