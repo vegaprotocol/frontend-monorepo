@@ -15,11 +15,7 @@ export const Proposed = () => {
   return (
     <>
       <ProposalsList />
-      <ExternalLink
-        className="py-4 px-[11px] text-sm"
-        href={externalLink}
-        data-testid="new-market-propose-link"
-      >
+      <ExternalLink className="py-4 px-[11px] text-sm" href={externalLink}>
         {t('Propose a new market')}
       </ExternalLink>
     </>
