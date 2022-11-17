@@ -123,7 +123,7 @@ const testOrder = (order: Order, expected?: Partial<Order>) => {
 };
 
 const clearPersistedOrder = () => {
-  cy.clearLocalStorage().should((ls) => {
+  cy.clearLocalStorage(/^deal-ticket-order-/).should((ls) => {
     expect(ls.getItem('deal-ticket-order-market-0')).to.be.null;
   });
 };
