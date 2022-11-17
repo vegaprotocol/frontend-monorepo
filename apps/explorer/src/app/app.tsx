@@ -47,7 +47,7 @@ function App() {
 
   const layoutClasses = classnames(
     'grid grid-rows-[auto_1fr_auto] grid-cols-[1fr] md:grid-rows-[auto_minmax(700px,_1fr)_auto] md:grid-cols-[300px_1fr]',
-    'h-[100vh] mx-auto my-0',
+    'min-h-[100vh] mx-auto my-0',
     'border-neutral-700 dark:border-neutral-300 lg:border-l lg:border-r',
     'bg-white dark:bg-black',
     'antialiased text-black dark:text-white',
