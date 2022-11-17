@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import compact from 'lodash/compact';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
@@ -47,17 +48,20 @@ interface CanonisedNodeProps {
   [VOTING_POWER]: string;
 }
 
-export const translateStatus = (status: Schema.ValidatorStatus) =>
-  t(
-    `${
-      (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
-        'Standby') ||
-      (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
-        'Pending') ||
-      (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
-        'Consensus')
-    }`
-  );
+export const translateStatus = (status: Schema.ValidatorStatus) => {
+  const statuses = {
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: t('Standby'),
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: t('Pending'),
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]: t('Consensus'),
+  };
+
+  if (!(status in statuses)) {
+    Sentry.captureException('Unknown validator status');
+    return t('Unknown');
+  }
+
+  return statuses[status];
+};
 
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
