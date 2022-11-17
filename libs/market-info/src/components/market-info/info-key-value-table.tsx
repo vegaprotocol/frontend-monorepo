@@ -1,5 +1,6 @@
 import {
   addDecimalsFormatNumber,
+  addDecimalsNormalizeNumber,
   formatNumber,
   formatNumberPercentage,
   t,
@@ -40,8 +41,9 @@ const Row = ({
       return value;
     }
     if (decimalPlaces) {
-      return `${parseFloat(
-        addDecimalsFormatNumber(value, decimalPlaces)
+      return `${addDecimalsNormalizeNumber(
+        value,
+        decimalPlaces
       )} ${assetSymbol}`;
     }
     if (asPercentage) {
