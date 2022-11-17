@@ -187,7 +187,7 @@ export const NodeList = () => {
     );
 
     return removeTopThirdOfStakeScores.remaining;
-  }, [data, t, hideTopThird]);
+  }, [data, hideTopThird]);
 
   const gridRef = useRef<AgGridReact | null>(null);
 
