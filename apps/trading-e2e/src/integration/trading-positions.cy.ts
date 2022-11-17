@@ -42,6 +42,8 @@ describe('positions', { tags: '@smoke' }, () => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
 
+      cy.get('[col-id="liquidationPrice"]').should('contain.text', '0'); // liquidation price
+
       cy.get('[col-id="currentLeverage"]').should('contain.text', '0.8');
 
       cy.get('[col-id="marginAccountBalance"]') // margin allocated

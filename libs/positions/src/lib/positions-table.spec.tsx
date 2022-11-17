@@ -43,7 +43,7 @@ it('Render correct columns', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(11);
+  expect(headers).toHaveLength(12);
   expect(
     headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
   ).toEqual([
@@ -53,6 +53,7 @@ it('Render correct columns', async () => {
     'Mark price',
     'Settlement asset',
     'Entry price',
+    'Liquidation price (est)',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -151,7 +152,7 @@ it('displays leverage', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[6].textContent).toEqual('1.1');
+  expect(cells[7].textContent).toEqual('1.1');
 });
 
 it('displays allocated margin', async () => {
@@ -159,7 +160,7 @@ it('displays allocated margin', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const cell = cells[7];
+  const cell = cells[8];
   expect(cell.textContent).toEqual('123,456');
 });
 
@@ -168,6 +169,6 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[8].textContent).toEqual('1.23');
-  expect(cells[9].textContent).toEqual('4.56');
+  expect(cells[9].textContent).toEqual('1.23');
+  expect(cells[10].textContent).toEqual('4.56');
 });

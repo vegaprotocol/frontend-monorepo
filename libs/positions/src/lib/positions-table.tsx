@@ -238,9 +238,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Entry price')}
           field="averageEntryPrice"
           type="rightAligned"
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
+          cellRendererSelector={(): CellRendererSelectorResult => {
             return {
               component: PriceFlashCell,
             };
@@ -267,6 +265,40 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             return addDecimalsNormalizeNumber(
               data.averageEntryPrice,
+              data.marketDecimalPlaces
+            );
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Liquidation price (est)')}
+          field="liquidationPrice"
+          type="rightAligned"
+          cellRendererSelector={(): CellRendererSelectorResult => {
+            return {
+              component: PriceFlashCell,
+            };
+          }}
+          filter="agNumberColumnFilter"
+          valueGetter={({
+            data,
+          }: VegaValueGetterParams<Position, 'liquidationPrice'>) => {
+            return data?.liquidationPrice === undefined || !data
+              ? undefined
+              : toBigNum(
+                  data.liquidationPrice,
+                  data.marketDecimalPlaces
+                ).toNumber();
+          }}
+          valueFormatter={({
+            data,
+          }: VegaValueFormatterParams<Position, 'liquidationPrice'>):
+            | string
+            | undefined => {
+            if (!data) {
+              return undefined;
+            }
+            return addDecimalsNormalizeNumber(
+              data.liquidationPrice,
               data.marketDecimalPlaces
             );
           }}
@@ -389,9 +421,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         {onClose ? (
           <AgGridColumn
-            cellRendererSelector={(
-              params: ICellRendererParams
-            ): CellRendererSelectorResult => {
+            cellRendererSelector={(): CellRendererSelectorResult => {
               return {
                 component: ButtonCell,
               };
