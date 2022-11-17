@@ -115,6 +115,29 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Target stake')}
+            field="target"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              formatWithAsset(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+              )
+            }
+            headerTooltip={t(
+              'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
+            )}
+          />
+
+          <AgGridColumn
+            headerName={t('Fee levels')}
+            field="fees"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              `${value.factors.liquidityFee}%`
+            }
+            headerTooltip={t('Fee level for this market')}
+          />
+
+          <AgGridColumn
             headerName={t('Status')}
             field="tradingMode"
             cellRenderer={({
