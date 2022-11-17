@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 
-// More detail in https://docs.vega.xyz/docs/mainnet/graphql/enums/order-time-in-force
+// More detail in https://docs.vega.xyz/mainnet/graphql/enums/order-time-in-force
 export const timeInForceLabel = (tif: string) => {
   switch (tif) {
     case Schema.OrderTimeInForce.TIME_IN_FORCE_GTC:
