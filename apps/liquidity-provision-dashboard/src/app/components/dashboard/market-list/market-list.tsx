@@ -211,13 +211,6 @@ export const MarketList = () => {
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
           />
-          <AgGridColumn
-            headerName={t('Est. return / APY')}
-            field="apy"
-            headerTooltip={t(
-              'An annualised estimate based on the total liquidity provision fees and maker fees collected by liquidity providers, the maximum margin needed and maximum commitment (bond) over the course of 7 epochs'
-            )}
-          />
         </Grid>
 
         <HealthDialog
