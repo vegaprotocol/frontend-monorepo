@@ -1,10 +1,7 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
-import type {
-  ICellRendererParams,
-  CellRendererSelectorResult,
-} from 'ag-grid-community';
+import type { CellRendererSelectorResult } from 'ag-grid-community';
 import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
@@ -197,9 +194,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Mark price')}
           field="markPrice"
           type="rightAligned"
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
+          cellRendererSelector={(): CellRendererSelectorResult => {
             return {
               component: PriceFlashCell,
             };
@@ -308,9 +303,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="currentLeverage"
           type="rightAligned"
           filter="agNumberColumnFilter"
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
+          cellRendererSelector={(): CellRendererSelectorResult => {
             return {
               component: PriceFlashCell,
             };
@@ -326,9 +319,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           field="marginAccountBalance"
           type="rightAligned"
           filter="agNumberColumnFilter"
-          cellRendererSelector={(
-            params: ICellRendererParams
-          ): CellRendererSelectorResult => {
+          cellRendererSelector={(): CellRendererSelectorResult => {
             return {
               component: PriceFlashCell,
             };
