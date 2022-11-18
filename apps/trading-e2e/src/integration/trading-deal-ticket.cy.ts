@@ -1,15 +1,13 @@
 import { Schema } from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { encodeTransaction } from '@vegaprotocol/wallet';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { testOrder } from '../support/deal-ticket-transaction';
+import type { Order } from '../support/deal-ticket-transaction';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
 const orderTIFDropDown = 'order-tif';
 const placeOrderBtn = 'place-order';
-const dialogTitle = 'dialog-title';
-const orderTransactionHash = 'tx-block-explorer';
 const toggleShort = 'order-side-SIDE_SELL';
 const toggleLong = 'order-side-SIDE_BUY';
 const toggleLimit = 'order-type-TYPE_LIMIT';
@@ -49,89 +47,11 @@ const TIFlist = [
   },
 ];
 
-interface Order {
-  marketId: string;
-  type: Schema.OrderType;
-  side: Schema.Side;
-  size: string;
-  price?: string;
-  timeInForce: Schema.OrderTimeInForce;
-  expiresAt?: string;
-}
-
-// const mockTx = {
-//   txHash: 'test-tx-hash',
-//   tx: {
-//     signature: {
-//       value:
-//         'd86138bba739bbc1069b3dc975d20b3a1517c2b9bdd401c70eeb1a0ecbc502ec268cf3129824841178b8b506b0b7d650c76644dbd96f524a6cb2158fb7121800',
-//     },
-//   },
-// };
-
 const displayTomorrow = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow.toISOString().substring(0, 16);
 };
-
-const testOrder = (order: Order, expected?: Partial<Order>) => {
-  const { type, side, size, price, timeInForce, expiresAt } = order;
-
-  cy.getByTestId(`order-type-${type}`).click();
-  cy.getByTestId(`order-side-${side}`).click();
-  cy.getByTestId(orderSizeField).clear().type(size);
-  if (price) {
-    cy.getByTestId(orderPriceField).clear().type(price);
-  }
-  cy.getByTestId(orderTIFDropDown).select(timeInForce);
-  if (timeInForce === 'TIME_IN_FORCE_GTT') {
-    if (!expiresAt) {
-      throw new Error('Specify expiresAt if using GTT');
-    }
-    // select expiry
-    cy.getByTestId('date-picker-field').type(expiresAt);
-  }
-  cy.getByTestId(placeOrderBtn).click();
-
-  const expectedOrder = {
-    ...order,
-    ...expected,
-  };
-
-  const transaction: OrderSubmissionBody = {
-    orderSubmission: {
-      ...expectedOrder,
-    },
-  };
-
-  cy.wait('@VegaWalletTransaction')
-    .its('request.body')
-    .should('deep.equal', {
-      // token: cfg.token,
-      pubKey: Cypress.env('VEGA_PUBLIC_KEY'),
-      // propagate: true,
-      // sendingMode: 'TYPE_SYNC',
-      encodedTransaction: encodeTransaction(transaction),
-    });
-  cy.getByTestId(dialogTitle).should(
-    'have.text',
-    'Awaiting network confirmation'
-  );
-  cy.getByTestId(orderTransactionHash)
-    .invoke('attr', 'href')
-    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
-  cy.getByTestId('dialog-close').click();
-};
-
-const clearPersistedOrder = () => {
-  cy.clearLocalStorage(/^deal-ticket-order-/).should((ls) => {
-    expect(ls.getItem('deal-ticket-order-market-0')).to.be.null;
-  });
-};
-
-beforeEach(() => clearPersistedOrder());
-afterEach(() => clearPersistedOrder());
 
 describe('time in force default values', () => {
   before(() => {
@@ -169,6 +89,15 @@ describe('must submit order', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     cy.connectVegaWallet();
+    cy.window().then(function (window) {
+      cy.wrap(window.localStorage.getItem('vega_wallet_config')).as('cfg');
+    });
+  });
+
+  beforeEach(() => {
+    cy.window().then(function (window) {
+      window.localStorage.setItem('vega_wallet_config', this.cfg);
+    });
   });
 
   it('successfully places market buy order', () => {
@@ -178,8 +107,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_BUY,
-      size: '100',
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      size: '100',
     };
     testOrder(order);
   });
@@ -190,8 +119,8 @@ describe('must submit order', { tags: '@smoke' }, () => {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_SELL,
-      size: '100',
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+      size: '100',
     };
     testOrder(order);
   });
@@ -203,9 +132,9 @@ describe('must submit order', { tags: '@smoke' }, () => {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_BUY,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       size: '100',
       price: '200',
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     };
     testOrder(order, { price: '20000000' });
   });
@@ -216,9 +145,9 @@ describe('must submit order', { tags: '@smoke' }, () => {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
       size: '100',
       price: '50000',
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
     };
     testOrder(order, { price: '5000000000' });
   });
@@ -230,9 +159,9 @@ describe('must submit order', { tags: '@smoke' }, () => {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
       size: '100',
       price: '1.00',
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
       expiresAt: expiresAt.toISOString().substring(0, 16),
     };
     testOrder(order, {
@@ -257,6 +186,15 @@ describe(
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
+      cy.window().then(function (window) {
+        cy.wrap(window.localStorage.getItem('vega_wallet_config')).as('cfg');
+      });
+    });
+
+    beforeEach(() => {
+      cy.window().then(function (window) {
+        window.localStorage.setItem('vega_wallet_config', this.cfg);
+      });
     });
 
     it('successfully places limit buy order', () => {
@@ -265,9 +203,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '200',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '20000000' });
     });
@@ -278,9 +216,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '50000',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -291,9 +229,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         size: '100',
         price: '1.00',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         expiresAt: displayTomorrow(),
       };
       testOrder(order, {
@@ -319,6 +257,15 @@ describe(
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
+      cy.window().then(function (window) {
+        cy.wrap(window.localStorage.getItem('vega_wallet_config')).as('cfg');
+      });
+    });
+
+    beforeEach(() => {
+      cy.window().then(function (window) {
+        window.localStorage.setItem('vega_wallet_config', this.cfg);
+      });
     });
 
     it('successfully places limit buy order', () => {
@@ -327,9 +274,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '200',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '20000000' });
     });
@@ -340,9 +287,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '50000',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -353,9 +300,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         size: '100',
         price: '1.00',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         expiresAt: displayTomorrow(),
       };
       testOrder(order, {
@@ -381,6 +328,15 @@ describe(
       cy.visit('/#/markets/market-0');
       cy.wait('@Market');
       cy.connectVegaWallet();
+      cy.window().then(function (window) {
+        cy.wrap(window.localStorage.getItem('vega_wallet_config')).as('cfg');
+      });
+    });
+
+    beforeEach(() => {
+      cy.window().then(function (window) {
+        window.localStorage.setItem('vega_wallet_config', this.cfg);
+      });
     });
 
     it('successfully places limit buy order', () => {
@@ -389,9 +345,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_BUY,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '200',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '20000000' });
     });
@@ -402,9 +358,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
         size: '100',
         price: '50000',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -415,9 +371,9 @@ describe(
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
+        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         size: '100',
         price: '1.00',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
         expiresAt: displayTomorrow(),
       };
       testOrder(order, {
@@ -713,19 +669,8 @@ describe('account validation', { tags: '@regression' }, () => {
     cy.wait('@Market');
   });
 
-  it('should show an error if your balance is zero', () => {
-    cy.getByTestId('place-order').should('not.be.disabled');
-    cy.getByTestId('place-order').click();
-    cy.getByTestId('place-order').should('be.disabled');
+  it('should display info and button for deposit if balance is zero', () => {
     //7002-SORD-003
-    cy.getByTestId('dealticket-error-message-zero-balance').should(
-      'have.text',
-      'Insufficient balance. Deposit ' + 'tBTC'
-    );
-    cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
-  });
-
-  it('should display info and button for deposit', () => {
     // warning should show immediately
     cy.getByTestId('dealticket-warning-margin').should(
       'contain.text',
