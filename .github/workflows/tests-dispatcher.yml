@@ -20,9 +20,6 @@ on:
       night-run:
         required: false
         type: boolean
-      capsule-teardown:
-        required: false
-        type: boolean
 
 jobs:
   run-console-lite-e2e:
@@ -45,7 +42,6 @@ jobs:
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
       night-run: ${{ inputs.night-run }}
-      capsule-teardown: ${{ inputs.capsule-teardown }}
 
   run-liquidity-e2e:
     uses: ./.github/workflows/cypress-liquidity-provision-dashboard-e2e.yml
@@ -68,7 +64,6 @@ jobs:
       gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
-      capsule-teardown: ${{ inputs.capsule-teardown }}
 
   run-trading-e2e:
     uses: ./.github/workflows/cypress-trading-e2e.yml

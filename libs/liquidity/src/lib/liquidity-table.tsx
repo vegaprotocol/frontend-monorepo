@@ -5,6 +5,7 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   TooltipCellComponent,
@@ -13,7 +14,6 @@ import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 import { getId } from './liquidity-data-provider';
@@ -141,9 +141,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="status"
           valueFormatter={({
             value,
-          }: {
-            value: Schema.LiquidityProvisionStatus;
-          }) => {
+          }: VegaValueFormatterParams<LiquidityProvisionData, 'status'>) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

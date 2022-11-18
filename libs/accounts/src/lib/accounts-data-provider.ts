@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { assetsProvider } from '@vegaprotocol/assets';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import {
@@ -74,7 +75,10 @@ const update = (
 const getData = (
   responseData: AccountsQuery
 ): AccountFieldsFragment[] | null => {
-  return responseData.party?.accounts ?? null;
+  return (
+    compact(responseData.party?.accountsConnection?.edges).map((e) => e.node) ??
+    null
+  );
 };
 
 const getDelta = (

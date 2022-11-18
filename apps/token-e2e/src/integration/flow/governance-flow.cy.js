@@ -54,7 +54,6 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
@@ -96,12 +95,7 @@ context(
           )[0]
         ).as('maxCloseHours');
       });
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.wait_for_spinner();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -137,6 +131,10 @@ context(
       );
 
       beforeEach('visit governance tab', function () {
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.vega_wallet_connect();
+        cy.ethereum_wallet_connect();
         cy.navigate_to('governance');
         cy.wait_for_spinner();
       });
@@ -162,28 +160,24 @@ context(
       });
 
       // 3002-PROP-011
-      it(
-        'Able to submit a valid freeform proposal - with minimum required tokens associated',
-        { tags: '@smoke' },
-        function () {
-          cy.ensure_specified_unstaked_tokens_are_associated(
-            this.minProposerBalance
-          );
-          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-          cy.get(minVoteButton).should('be.visible'); // 3002-PROP-008
-          cy.get(maxVoteButton).should('be.visible');
-          cy.get(votingDate).should('not.be.empty');
-          cy.get(voteTwoMinExtraNote).should(
-            'contain.text',
-            'we add 2 minutes of extra time'
-          );
-          cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
-          cy.get(newProposalSubmitButton).should('be.visible').click();
-          // 3002-PROP-012
-          // 3002-PROP-016
-          cy.wait_for_proposal_submitted();
-        }
-      );
+      it('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.get(minVoteButton).should('be.visible'); // 3002-PROP-008
+        cy.get(maxVoteButton).should('be.visible');
+        cy.get(votingDate).should('not.be.empty');
+        cy.get(voteTwoMinExtraNote).should(
+          'contain.text',
+          'we add 2 minutes of extra time'
+        );
+        cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
+        cy.get(newProposalSubmitButton).should('be.visible').click();
+        // 3002-PROP-012
+        // 3002-PROP-016
+        cy.wait_for_proposal_submitted();
+      });
 
       it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
         // 3001-VOTE-005
@@ -436,78 +430,82 @@ context(
       });
 
       // 3001-VOTE-080 3001-VOTE-090
-      it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
-        createRawProposal(this.minProposerBalance);
-        cy.get('@rawProposal').then((rawProposal) => {
-          cy.get_submitted_proposal_from_proposal_list(
-            rawProposal.rationale.title
-          ).within(() => cy.get(viewProposalButton).click());
-        });
-        // 3001-VOTE-080
-        cy.get(voteButtons).contains('against').should('be.visible');
-        cy.get(voteButtons).contains('for').should('be.visible');
-        cy.vote_for_proposal('for');
-        cy.get_governance_proposal_date_format_for_specified_days(
-          '0',
-          'shortMonth'
-        ).then((votedDate) => {
-          // 3001-VOTE-051
-          // 3001-VOTE-093
-          cy.contains('You voted:')
-            .siblings()
-            .contains('For')
-            .siblings()
-            .contains(votedDate)
+      it(
+        'Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated',
+        { tags: '@smoke' },
+        function () {
+          createRawProposal(this.minProposerBalance);
+          cy.get('@rawProposal').then((rawProposal) => {
+            cy.get_submitted_proposal_from_proposal_list(
+              rawProposal.rationale.title
+            ).within(() => cy.get(viewProposalButton).click());
+          });
+          // 3001-VOTE-080
+          cy.get(voteButtons).contains('against').should('be.visible');
+          cy.get(voteButtons).contains('for').should('be.visible');
+          cy.vote_for_proposal('for');
+          cy.get_governance_proposal_date_format_for_specified_days(
+            '0',
+            'shortMonth'
+          ).then((votedDate) => {
+            // 3001-VOTE-051
+            // 3001-VOTE-093
+            cy.contains('You voted:')
+              .siblings()
+              .contains('For')
+              .siblings()
+              .contains(votedDate)
+              .should('be.visible');
+          });
+          cy.get(proposalVoteProgressForPercentage)
+            .contains('100.00%')
+            .and('be.visible');
+          cy.get(proposalVoteProgressAgainstPercentage)
+            .contains('0.00%')
+            .and('be.visible');
+          cy.get(proposalVoteProgressForTokens)
+            .contains('1.00')
+            .and('be.visible');
+          cy.get(proposalVoteProgressAgainstTokens)
+            .contains('0.00')
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Tokens for proposal')
+            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Tokens against proposal')
+            .should('have.text', '0.00')
+            .and('be.visible');
+          // 3001-VOTE-061
+          cy.get_proposal_information_from_table('Participation required')
+            .contains(`${this.requiredParticipation}%`)
             .should('be.visible');
-        });
-        cy.get(proposalVoteProgressForPercentage)
-          .contains('100.00%')
-          .and('be.visible');
-        cy.get(proposalVoteProgressAgainstPercentage)
-          .contains('0.00%')
-          .and('be.visible');
-        cy.get(proposalVoteProgressForTokens)
-          .contains('1.00')
-          .and('be.visible');
-        cy.get(proposalVoteProgressAgainstTokens)
-          .contains('0.00')
-          .and('be.visible');
-        cy.get_proposal_information_from_table('Tokens for proposal')
-          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-          .and('be.visible');
-        cy.get_proposal_information_from_table('Tokens against proposal')
-          .should('have.text', '0.00')
-          .and('be.visible');
-        // 3001-VOTE-061
-        cy.get_proposal_information_from_table('Participation required')
-          .contains(`${this.requiredParticipation}%`)
-          .should('be.visible');
-        // 3001-VOTE-066
-        cy.get_proposal_information_from_table('Majority Required')
-          .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
-          .should('be.visible');
-        cy.get_proposal_information_from_table('Number of voting parties')
-          .should('have.text', '1')
-          .and('be.visible');
-        cy.get(changeVoteButton).should('be.visible').click();
-        cy.vote_for_proposal('for');
-        // 3001-VOTE-064
-        cy.get_proposal_information_from_table('Tokens for proposal')
-          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-          .and('be.visible');
-        cy.wait_for_spinner();
-        cy.get(changeVoteButton).should('be.visible').click();
-        cy.vote_for_proposal('against');
-        cy.get(proposalVoteProgressAgainstPercentage)
-          .contains('100.00%')
-          .and('be.visible');
-        cy.get_proposal_information_from_table('Tokens against proposal')
-          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-          .and('be.visible');
-        cy.get_proposal_information_from_table('Number of voting parties')
-          .should('have.text', '1')
-          .and('be.visible');
-      });
+          // 3001-VOTE-066
+          cy.get_proposal_information_from_table('Majority Required')
+            .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
+            .should('be.visible');
+          cy.get_proposal_information_from_table('Number of voting parties')
+            .should('have.text', '1')
+            .and('be.visible');
+          cy.get(changeVoteButton).should('be.visible').click();
+          cy.vote_for_proposal('for');
+          // 3001-VOTE-064
+          cy.get_proposal_information_from_table('Tokens for proposal')
+            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+            .and('be.visible');
+          cy.wait_for_spinner();
+          cy.get(changeVoteButton).should('be.visible').click();
+          cy.vote_for_proposal('against');
+          cy.get(proposalVoteProgressAgainstPercentage)
+            .contains('100.00%')
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Tokens against proposal')
+            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Number of voting parties')
+            .should('have.text', '1')
+            .and('be.visible');
+        }
+      );
 
       // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
       it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
@@ -743,36 +741,42 @@ context(
       });
 
       // 1005-PROP-009
-      it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
-        const proposalTitle = generateProposalTitle();
+      it(
+        'Unable to vote on a freeform proposal - when some but not enough vega associated',
+        { tags: '@smoke' },
+        function () {
+          const proposalTitle = generateProposalTitle();
 
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.wait_for_proposal_submitted();
-        cy.wait_for_proposal_sync();
-        cy.staking_page_disassociate_tokens('0.0001');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-            'contain',
-            '0.999900000000000000'
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
           );
-        });
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
-          cy.get(viewProposalButton).click()
-        );
-        cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
-        cy.get(voteButtons).should('not.exist');
-        cy.getByTestId('min-proposal-requirements').should(
-          'have.text',
-          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
-        );
-      });
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50', proposalTitle);
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.wait_for_proposal_submitted();
+          cy.wait_for_proposal_sync();
+          cy.staking_page_disassociate_tokens('0.0001');
+          cy.get(vegaWallet).within(() => {
+            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+              'contain',
+              '0.999900000000000000'
+            );
+          });
+          cy.navigate_to('governance');
+          cy.wait_for_spinner();
+          cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
+            () => cy.get(viewProposalButton).click()
+          );
+          cy.contains('Vote breakdown').should('be.visible', {
+            timeout: 10000,
+          });
+          cy.get(voteButtons).should('not.exist');
+          cy.getByTestId('min-proposal-requirements').should(
+            'have.text',
+            `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
+          );
+        }
+      );
 
       it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
         createRawProposal(this.minProposerBalance);
@@ -840,15 +844,6 @@ context(
         const randomNum = Math.floor(Math.random() * 1000) + 1;
         return randomNum + ': Freeform e2e proposal';
       }
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );
