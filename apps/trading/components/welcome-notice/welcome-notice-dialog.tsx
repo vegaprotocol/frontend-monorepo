@@ -60,7 +60,7 @@ export const WelcomeNoticeDialog = () => {
           <h2 className="font-alpha uppercase text-2xl">
             {t('Proposed markets')}
           </h2>
-          <dl className="py-5">
+          <dl data-testid="welcome-notice-proposed-markets" className="py-5">
             {newMarkets.map(({ displayName, id }, i) => (
               <div className="pt-1 flex justify-between" key={i}>
                 <dl>{displayName}</dl>
@@ -82,7 +82,10 @@ export const WelcomeNoticeDialog = () => {
 
   return (
     <Dialog open={welcomeNoticeDialog} onChange={onOpenChange}>
-      <h1 className="font-alpha uppercase text-4xl mb-7 mt-5">
+      <h1
+        data-testid="welcome-notice-title"
+        className="font-alpha uppercase text-4xl mb-7 mt-5"
+      >
         {t('Welcome to Console')}
       </h1>
       <p className="leading-6 mb-7">
