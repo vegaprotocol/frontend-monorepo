@@ -81,8 +81,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'Contract address',
       '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
     );
-    validateMarketDataRow(8, 'Withdrawal threshold', '0.00050');
-    validateMarketDataRow(9, 'Lifetime limit', '1,230.00000');
+    validateMarketDataRow(8, 'Withdrawal threshold', '0.0005');
+    validateMarketDataRow(9, 'Lifetime limit', '1,230');
   });
 
   it('metadata displayed', () => {
