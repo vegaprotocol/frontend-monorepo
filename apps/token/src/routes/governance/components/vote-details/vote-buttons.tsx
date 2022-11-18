@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +15,7 @@ import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
 import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
-import type {
-  VoteButtonsQuery as VoteButtonsQueryResult,
-  VoteButtonsQueryVariables,
-} from './__generated__/VoteButtonsQuery';
+import { useVoteButtonsQuery } from './__generated___/Stake';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -31,26 +27,12 @@ interface VoteButtonsContainerProps {
   className?: string;
 }
 
-export const VOTE_BUTTONS_QUERY = gql`
-  query VoteButtonsQuery($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      stakingSummary {
-        currentStakeAvailable
-      }
-    }
-  }
-`;
-
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   const { pubKey } = useVegaWallet();
   const {
     appState: { decimals },
   } = useAppState();
-  const { data, loading, error } = useQuery<
-    VoteButtonsQueryResult,
-    VoteButtonsQueryVariables
-  >(VOTE_BUTTONS_QUERY, {
+  const { data, loading, error } = useVoteButtonsQuery({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });

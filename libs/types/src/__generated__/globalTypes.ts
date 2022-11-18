@@ -93,15 +93,6 @@ export enum ProposalState {
   STATE_WAITING_FOR_NODE_VOTE = "STATE_WAITING_FOR_NODE_VOTE",
 }
 
-/**
- * The status of the stake linking
- */
-export enum StakeLinkingStatus {
-  STATUS_ACCEPTED = "STATUS_ACCEPTED",
-  STATUS_PENDING = "STATUS_PENDING",
-  STATUS_REJECTED = "STATUS_REJECTED",
-}
-
 export enum VoteValue {
   VALUE_NO = "VALUE_NO",
   VALUE_YES = "VALUE_YES",
