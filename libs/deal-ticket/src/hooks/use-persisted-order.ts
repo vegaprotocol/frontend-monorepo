@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 type OrderData = OrderSubmissionBody['orderSubmission'] | null;
 
@@ -9,8 +9,12 @@ export const usePersistedOrder = (market: {
 }): [OrderData, (value: OrderData) => void] => {
   const [value, setValue] = useLocalStorage(`deal-ticket-order-${market.id}`);
   const order = value != null ? (JSON.parse(value) as OrderData) : null;
+  const setOrder = useCallback(
+    (order: OrderData) => setValue(JSON.stringify(order)),
+    [setValue]
+  );
   return useMemo<[OrderData, (value: OrderData) => void]>(
-    () => [order, (order: OrderData) => setValue(JSON.stringify(order))],
-    [order, setValue]
+    () => [order, setOrder],
+    [order, setOrder]
   );
 };

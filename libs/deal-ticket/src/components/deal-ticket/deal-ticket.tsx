@@ -1,6 +1,6 @@
 import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -50,7 +50,6 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
   const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
-  const setPersistedOrderRef = useRef(setPersistedOrder);
   const {
     register,
     control,
@@ -64,9 +63,7 @@ export const DealTicket = ({
 
   const order = watch();
   // When order state changes persist it in local storage
-  useEffect(() => {
-    setPersistedOrderRef.current(order);
-  }, [order]);
+  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
