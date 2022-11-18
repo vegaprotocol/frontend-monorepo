@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DATA_SOURCES } from '../../../config';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { TxDetailsOrder } from './tx-order';
@@ -11,8 +11,10 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxContent } from '../../../routes/txs/id/tx-content';
 
+type resultOrNull = BlockExplorerTransactionResult | undefined;
+
 interface TxDetailsWrapperProps {
-  txData: BlockExplorerTransactionResult | undefined;
+  txData: resultOrNull;
   pubKey: string | undefined;
   height: string;
 }
@@ -28,53 +30,15 @@ export const TxDetailsWrapper = ({
     `${DATA_SOURCES.tendermintUrl}/block?height=${height}`
   );
 
+  const child = useMemo(() => getTransactionComponent(txData), [txData]);
+
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  let child;
-
-  if (txData.type === 'Submit Order') {
-    child = (
-      <TxDetailsOrder txData={txData} blockData={blockData} pubKey={pubKey} />
-    );
-  } else if (txData.type === 'Validator Heartbeat') {
-    child = (
-      <TxDetailsHeartbeat
-        txData={txData}
-        blockData={blockData}
-        pubKey={pubKey}
-      />
-    );
-  } else if (txData.type === 'Amend LiquidityProvision Order') {
-    child = (
-      <TxDetailsLPAmend txData={txData} blockData={blockData} pubKey={pubKey} />
-    );
-  } else if (txData.type === 'Batch Market Instructions') {
-    child = (
-      <TxDetailsBatch txData={txData} blockData={blockData} pubKey={pubKey} />
-    );
-  } else if (txData.type === 'Chain Event') {
-    child = (
-      <TxDetailsChainEvent
-        txData={txData}
-        blockData={blockData}
-        pubKey={pubKey}
-      />
-    );
-  } else {
-    child = (
-      <TxDetailsGeneric txData={txData} blockData={blockData} pubKey={pubKey} />
-    );
-  }
-
-  if (!child) {
-    return null;
-  }
-
   return (
     <>
-      <section>{child}</section>
+      <section>{child({ txData, pubKey, blockData })}</section>
 
       <details title={t('Decoded transaction')} className="mt-3">
         <summary className="cursor-pointer">{t('Decoded transaction')}</summary>
@@ -90,3 +54,30 @@ export const TxDetailsWrapper = ({
     </>
   );
 };
+
+/**
+ * Chooses the appropriate component to render the full details of a transaction
+ *
+ * @param txData
+ * @returns JSX.Element
+ */
+function getTransactionComponent(txData: resultOrNull) {
+  if (!txData) {
+    return TxDetailsGeneric;
+  }
+
+  switch (txData.type) {
+    case 'Submit Order':
+      return TxDetailsOrder;
+    case 'Validator Heartbeat':
+      return TxDetailsHeartbeat;
+    case 'Amend LiquidityProvision Order':
+      return TxDetailsLPAmend;
+    case 'Batch Market Instructions':
+      return TxDetailsBatch;
+    case 'Chain Event':
+      return TxDetailsChainEvent;
+    default:
+      return TxDetailsGeneric;
+  }
+}
