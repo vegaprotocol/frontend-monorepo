@@ -120,15 +120,9 @@ export const getMetrics = (
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
-    const marginMaintenance = toBigNum(
-      marginLevel.maintenanceLevel,
-      marketDecimalPlaces
-    );
-    const marginSearch = toBigNum(marginLevel.searchLevel, marketDecimalPlaces);
-    const marginInitial = toBigNum(
-      marginLevel.initialLevel,
-      marketDecimalPlaces
-    );
+    const marginMaintenance = toBigNum(marginLevel.maintenanceLevel, decimals);
+    const marginSearch = toBigNum(marginLevel.searchLevel, decimals);
+    const marginInitial = toBigNum(marginLevel.initialLevel, decimals);
 
     const searchPrice = marginSearch
       .minus(marginAccountBalance)
