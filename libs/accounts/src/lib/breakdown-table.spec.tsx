@@ -51,9 +51,9 @@ describe('BreakdownTable', () => {
     const expectedValues = [
       'Margin',
       'BTCUSD Monthly (30 Jun 2022)',
-      '1,256.00001,256.0000',
-      '1,256.00000',
-      '1,256.00000',
+      '1,2561,256',
+      '1,256',
+      '1,256',
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
