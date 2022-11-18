@@ -18,7 +18,11 @@ import { ProposalMinRequirements } from '../../components/shared';
 import { AsyncRenderer, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
+import {
+  createDocsLinks,
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/react-helpers';
 import { ProposalUserAction } from '../../components/shared';
 
 export interface FreeformProposalFormFields {
@@ -29,7 +33,7 @@ export interface FreeformProposalFormFields {
   proposalReference: string;
 }
 
-const DOCS_LINK = 'freeform-proposal';
+const DOCS_LINK = '/freeform-proposal';
 
 export const ProposeFreeform = () => {
   const { params, loading, error } = useNetworkParams([
@@ -96,9 +100,13 @@ export const ProposeFreeform = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <ExternalLink
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals/${DOCS_LINK}`}
+                  href={`${
+                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                  }${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals/${DOCS_LINK}`}</ExternalLink>
+                >{`${
+                  createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                }${DOCS_LINK}`}</ExternalLink>
               </p>
             )}
 
