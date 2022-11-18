@@ -25,9 +25,7 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
-import type {
-  MarketDealTicket,
-} from '@vegaprotocol/market-list';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 export type TransactionStatus = 'default' | 'pending';
 
