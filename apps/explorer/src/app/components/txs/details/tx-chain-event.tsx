@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type {
-  BlockExplorerTransactionResult,
-  ChainEvent,
-} from '../../../routes/types/block-explorer-response';
-import { AssetLink, PartyLink } from '../../links';
-import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
-import { TableCell, TableRow, TableWithTbody } from '../../table';
+import { TableWithTbody } from '../../table';
+import { TxDetailsChainEventDeposit } from './chain-events/tx-erc20-deposit';
+import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import { TxDetailsChainMultisigThreshold } from './chain-events/tx-erc20-threshold';
+import { TxDetailsChainMultisigSigner } from './chain-events/tx-erc20-signer';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -30,35 +29,41 @@ export const TxDetailsChainEvent = ({
   pubKey,
   blockData,
 }: TxDetailsChainEventProps) => {
+  const child = useMemo(() => getChainEventComponent(txData), [txData]);
+
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
-  const cmd = txData.command as ChainEvent;
-  const assetId = cmd.chainEvent.erc20.deposit.vegaAssetId;
-  const sender = cmd.chainEvent.erc20.deposit.sourceEthereumAddress;
-  const recipient = cmd.chainEvent.erc20.deposit.targetPartyId;
 
   return (
     <TableWithTbody>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Asset')}</TableCell>
-        <TableCell>
-          <AssetLink id={assetId} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Sender')}</TableCell>
-        <TableCell>
-          <span>{sender}</span>
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Recipient')}</TableCell>
-        <TableCell>
-          <PartyLink id={recipient} />
-        </TableCell>
-      </TableRow>
+      {child}
     </TableWithTbody>
   );
 };
+
+function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
+  const deposit = txData?.command.chainEvent?.erc20?.deposit;
+  if (deposit) {
+    return <TxDetailsChainEventDeposit deposit={deposit} />;
+  }
+
+  const multisigEvent = txData?.command.chainEvent?.erc20Multisig;
+  if (multisigEvent?.thresholdSet) {
+    return <TxDetailsChainMultisigThreshold multisigEvent={multisigEvent} />;
+  }
+
+  const signerAdded = txData?.command.chainEvent?.erc20Multisig?.signerAdded;
+  if (signerAdded) {
+    return <TxDetailsChainMultisigSigner signer={signerAdded} />;
+  }
+
+  const signerRemoved =
+    txData?.command.chainEvent?.erc20Multisig?.signerRemoved;
+  if (signerRemoved) {
+    return <TxDetailsChainMultisigSigner signer={signerRemoved} />;
+  }
+
+  return null;
+}

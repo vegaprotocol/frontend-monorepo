@@ -1,9 +1,6 @@
 import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type {
-  BlockExplorerTransactionResult,
-  ValidatorHeartbeat,
-} from '../../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { BlockLink, NodeLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
@@ -56,11 +53,12 @@ export const TxDetailsHeartbeat = ({
   pubKey,
   blockData,
 }: TxDetailsHeartbeatProps) => {
-  if (!txData) {
+  if (!txData || !txData.command.validatorHeartbeat) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd = txData.command as ValidatorHeartbeat;
+  const nodeId = txData.command.validatorHeartbeat.nodeId || '';
+  const blockHeight = txData.command.blockHeight || '';
 
   return (
     <TableWithTbody>
@@ -68,18 +66,18 @@ export const TxDetailsHeartbeat = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Node')}</TableCell>
         <TableCell>
-          <NodeLink id={cmd.validatorHeartbeat.nodeId} />
+          <NodeLink id={nodeId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Signed block height')}</TableCell>
         <TableCell>
-          <BlockLink height={cmd.blockHeight} />
+          <BlockLink height={blockHeight} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Freshness (lower is better)')}</TableCell>
-        <TableCell>{scoreFreshness(txData.block, cmd.blockHeight)}</TableCell>
+        <TableCell>{scoreFreshness(txData.block, blockHeight)}</TableCell>
       </TableRow>
     </TableWithTbody>
   );

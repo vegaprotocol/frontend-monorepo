@@ -11,10 +11,8 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxContent } from '../../../routes/txs/id/tx-content';
 
-type resultOrNull = BlockExplorerTransactionResult | undefined;
-
 interface TxDetailsWrapperProps {
-  txData: resultOrNull;
+  txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   height: string;
 }
@@ -61,7 +59,7 @@ export const TxDetailsWrapper = ({
  * @param txData
  * @returns JSX.Element
  */
-function getTransactionComponent(txData: resultOrNull) {
+function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
   if (!txData) {
     return TxDetailsGeneric;
   }

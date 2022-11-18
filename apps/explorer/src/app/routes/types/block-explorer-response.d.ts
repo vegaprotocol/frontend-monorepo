@@ -1,3 +1,4 @@
+import type { components } from '../../../types/explorer';
 import type { UnknownObject } from '../../components/nested-data-list';
 
 export interface BlockExplorerTransactionResult {
@@ -8,13 +9,7 @@ export interface BlockExplorerTransactionResult {
   type: string;
   code: number;
   cursor: string;
-  command:
-    | ValidatorHeartbeat
-    | SubmitOrder
-    | StateVariableProposal
-    | AmendLiquidityProvisionOrder
-    | BatchMarketInstructions
-    | ChainEvent;
+  command: components['schemas']['v1InputData'];
 }
 
 export interface BlockExplorerTransactions {
@@ -103,16 +98,23 @@ export interface BatchCancellationInstruction {
 export interface ChainEvent {
   blockHeight: string;
   nonce: string;
-  chainEvent: {
-    erc20: {
-      deposit: ERC20Deposit;
-    };
+  chainEvent: components['schemas']['v1ChainEvent'];
+}
+
+export interface ChainEventErc20Multisig {
+  erc20Multisig: {
+    block: string;
+    index: string;
   };
 }
 
-export interface ERC20Deposit {
-  vegaAssetId: string;
-  sourceEthereumAddress: string;
-  targetPartyId: string;
-  amount: string;
+export interface ChainEventErc20Deposit {
+  erc20: {
+    deposit: {
+      vegaAssetId: string;
+      sourceEthereumAddress: string;
+      targetPartyId: string;
+      amount: string;
+    };
+  };
 }

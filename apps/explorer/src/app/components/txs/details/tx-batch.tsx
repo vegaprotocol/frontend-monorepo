@@ -1,9 +1,6 @@
 import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type {
-  BlockExplorerTransactionResult,
-  BatchMarketInstructions,
-} from '../../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody, TableRow, TableCell } from '../../table';
@@ -26,16 +23,17 @@ export const TxDetailsBatch = ({
   pubKey,
   blockData,
 }: TxDetailsBatchProps) => {
-  if (!txData) {
+  if (!txData || !txData.command.batchMarketInstructions) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd = txData.command as BatchMarketInstructions;
-
-  const batchSubmissions = cmd.batchMarketInstructions.submissions.length;
-  const batchAmendments = cmd.batchMarketInstructions.amendments.length;
-  const batchCancellations = cmd.batchMarketInstructions.cancellations.length;
-  const batchTotal = batchSubmissions + batchAmendments + batchCancellations;
+  const countSubmissions =
+    txData.command.batchMarketInstructions.submissions?.length || 0;
+  const countAmendments =
+    txData.command.batchMarketInstructions.amendments?.length || 0;
+  const countCancellations =
+    txData.command.batchMarketInstructions.cancellations?.length || 0;
+  const countTotal = countSubmissions + countAmendments + countCancellations;
 
   return (
     <TableWithTbody>
@@ -43,7 +41,7 @@ export const TxDetailsBatch = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Batch size')}</TableCell>
         <TableCell>
-          <span>{batchTotal}</span>
+          <span>{countTotal}</span>
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -51,7 +49,7 @@ export const TxDetailsBatch = ({
           <span className="ml-5">{t('Submissions')}</span>
         </TableCell>
         <TableCell>
-          <span>{batchSubmissions}</span>
+          <span>{countSubmissions}</span>
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -59,7 +57,7 @@ export const TxDetailsBatch = ({
           <span className="ml-5">{t('Amendments')}</span>
         </TableCell>
         <TableCell>
-          <span>{batchAmendments}</span>
+          <span>{countAmendments}</span>
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -67,7 +65,7 @@ export const TxDetailsBatch = ({
           <span className="ml-5">{t('Cancellations')}</span>
         </TableCell>
         <TableCell>
-          <span>{batchCancellations}</span>
+          <span>{countCancellations}</span>
         </TableCell>
       </TableRow>
     </TableWithTbody>
