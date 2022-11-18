@@ -108,7 +108,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           valueFormatter={percentageFormatter}
         />
         <AgGridColumn
-          headerName={t('Market Valuation at Entry')}
+          headerName={t('Market valuation at entry')}
           field="averageEntryValuation"
           type="rightAligned"
           headerTooltip={t(
