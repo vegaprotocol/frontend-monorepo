@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxDetails } from './tx-details';
