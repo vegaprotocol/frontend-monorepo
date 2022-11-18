@@ -33,10 +33,12 @@ export const ProposalFormTerms = ({
         <div className="mt-[-4px] mb-2 text-sm font-light">
           <span className="mr-1">{t('ProposalTermsText')}</span>
           <ExternalLink
-            href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+            href={`${
+              createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+            }${docsLink}`}
             target="_blank"
           >
-            {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+            {`${createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}${docsLink}`}
           </ExternalLink>
         </div>
       )}
