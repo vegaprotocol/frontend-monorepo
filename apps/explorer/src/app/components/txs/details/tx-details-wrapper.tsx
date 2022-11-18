@@ -9,6 +9,7 @@ import { TxDetailsLPAmend } from './tx-lp-amend';
 import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
+import { TxContent } from '../../../routes/txs/id/tx-content';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -71,5 +72,21 @@ export const TxDetailsWrapper = ({
     return null;
   }
 
-  return <section>{child}</section>;
+  return (
+    <>
+      <section>{child}</section>
+
+      <details title={t('Decoded transaction')} className="mt-3">
+        <summary className="cursor-pointer">{t('Decoded transaction')}</summary>
+        <TxContent data={txData} />
+      </details>
+
+      <details title={t('Raw transaction')} className="mt-3">
+        <summary className="cursor-pointer">{t('Raw transaction')}</summary>
+        <code className="break-all font-mono text-xs">
+          {blockData?.result.block.data.txs[txData.index]}
+        </code>
+      </details>
+    </>
+  );
 };

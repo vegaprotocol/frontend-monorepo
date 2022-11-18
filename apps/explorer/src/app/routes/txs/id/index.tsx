@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
 import { RenderFetched } from '../../../components/render-fetched';
-import { TxContent } from './tx-content';
 import { TxDetails } from './tx-details';
 import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
 import { toNonHex } from '../../../components/search/detect-search';
@@ -43,18 +42,11 @@ const Tx = () => {
       />
 
       <RenderFetched error={tTxError} loading={tTxLoading}>
-        <>
-          <TxDetails
-            className="mb-28"
-            txData={data?.transaction}
-            pubKey={data?.transaction.submitter}
-          />
-
-          <details title={t('Decoded transaction')}>
-            <summary>{t('Decoded transaction')}</summary>
-            <TxContent data={data?.transaction} />
-          </details>
-        </>
+        <TxDetails
+          className="mb-28"
+          txData={data?.transaction}
+          pubKey={data?.transaction.submitter}
+        />
       </RenderFetched>
     </section>
   );
