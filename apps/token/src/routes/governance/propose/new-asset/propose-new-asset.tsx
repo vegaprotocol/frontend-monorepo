@@ -9,6 +9,7 @@ import {
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
+  createDocsLinks,
   NetworkParams,
   useNetworkParams,
   validateJson,
@@ -135,9 +136,13 @@ export const ProposeNewAsset = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <ExternalLink
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
+                  href={`${
+                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                  }${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</ExternalLink>
+                >{`${
+                  createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                }${DOCS_LINK}`}</ExternalLink>
               </p>
             )}
 

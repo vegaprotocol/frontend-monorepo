@@ -1,4 +1,4 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 
@@ -8,15 +8,16 @@ import { TxState } from '../../../hooks/transaction-reducer';
 import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-breakdown';
 import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
-import type {
-  PartyStakeLinkings,
-  PartyStakeLinkingsVariables,
-  PartyStakeLinkings_party_stakingSummary_linkings_edges_node,
-} from './__generated__/PartyStakeLinkings';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
-import { StakeLinkingStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import compact from 'lodash/compact';
+import type {
+  LinkingsFieldsFragment,
+  PartyStakeLinkingsQuery,
+  PartyStakeLinkingsQueryVariables,
+} from './__generated___/PartyStakeLinkings';
+import { PartyStakeLinkingsDocument } from './__generated___/PartyStakeLinkings';
 
 export const useAddStake = (
   address: string,
@@ -68,34 +69,14 @@ export const useAddStake = (
   }, [contractAdd, stakingMethod, walletAdd]);
 };
 
-const PARTY_STAKE_LINKINGS = gql`
-  query PartyStakeLinkings($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      stakingSummary {
-        linkings {
-          edges {
-            node {
-              id
-              txHash
-              status
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const usePollForStakeLinking = (
   partyId: string,
   txHash: string | null
 ) => {
   const client = useApolloClient();
-  const [linking, setLinking] =
-    React.useState<PartyStakeLinkings_party_stakingSummary_linkings_edges_node | null>(
-      null
-    );
+  const [linking, setLinking] = React.useState<LinkingsFieldsFragment | null>(
+    null
+  );
 
   // Query for linkings under current connected party (vega key)
   React.useEffect(() => {
@@ -103,8 +84,8 @@ export const usePollForStakeLinking = (
       if (!txHash || !partyId) return;
 
       client
-        .query<PartyStakeLinkings, PartyStakeLinkingsVariables>({
-          query: PARTY_STAKE_LINKINGS,
+        .query<PartyStakeLinkingsQuery, PartyStakeLinkingsQueryVariables>({
+          query: PartyStakeLinkingsDocument,
           variables: { partyId },
           // 'network-only' doesn't work here. no-cache just means its network only plus
           // the result is not stored in the cache
@@ -123,7 +104,7 @@ export const usePollForStakeLinking = (
           const matchingLinking = linkings?.find((l) => {
             return (
               l.txHash === txHash &&
-              l.status === StakeLinkingStatus.STATUS_ACCEPTED
+              l.status === Schema.StakeLinkingStatus.STATUS_ACCEPTED
             );
           });
 

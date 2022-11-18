@@ -113,9 +113,7 @@ const Wrapper = () => {
   return (
     <EnvironmentProvider>
       <NetworkLoader cache={cache}>
-        <ContractsProvider>
-          <App />
-        </ContractsProvider>
+        <App />
       </NetworkLoader>
     </EnvironmentProvider>
   );
