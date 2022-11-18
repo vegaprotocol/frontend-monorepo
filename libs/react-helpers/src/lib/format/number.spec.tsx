@@ -12,10 +12,10 @@ import {
 describe('number react-helpers', () => {
   it.each([
     { v: new BigNumber(123000), d: 5, o: '1.23' },
-    { v: new BigNumber(123000), d: 3, o: '123' },
-    { v: new BigNumber(123000), d: 1, o: '12,300' },
+    { v: new BigNumber(123000), d: 3, o: '123.00' },
+    { v: new BigNumber(123000), d: 1, o: '12,300.0' },
     { v: new BigNumber(123001), d: 2, o: '1,230.01' },
-    { v: new BigNumber(123001000), d: 2, o: '1,230,010' },
+    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
   ])(
     'formats with addDecimalsFormatNumber given number correctly',
     ({ v, d, o }) => {
@@ -24,10 +24,10 @@ describe('number react-helpers', () => {
   );
 
   it.each([
-    { v: new BigNumber(123), d: 3, o: '123.000' },
+    { v: new BigNumber(123), d: 3, o: '123.00' },
     { v: new BigNumber(123.123), d: 3, o: '123.123' },
     { v: new BigNumber(123.6666), d: 3, o: '123.667' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123000' },
+    { v: new BigNumber(123.123), d: 6, o: '123.123' },
     { v: new BigNumber(123.123), d: 0, o: '123' },
     { v: new BigNumber(123), d: undefined, o: '123' },
     { v: new BigNumber(30000), d: undefined, o: '30,000' },
@@ -37,9 +37,9 @@ describe('number react-helpers', () => {
   });
 
   it.each([
-    { v: new BigNumber(123), d: 3, o: '123.000%' },
+    { v: new BigNumber(123), d: 3, o: '123.00%' },
     { v: new BigNumber(123.123), d: 3, o: '123.123%' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123000%' },
+    { v: new BigNumber(123.123), d: 6, o: '123.123%' },
     { v: new BigNumber(123.123), d: 0, o: '123%' },
     { v: new BigNumber(123), d: undefined, o: '123.00%' }, // it default to 2 decimal places
     { v: new BigNumber(30000), d: undefined, o: '30,000.00%' },
@@ -53,15 +53,15 @@ describe('toNumberParts', () => {
   it.each([
     { v: null, d: 3, o: ['0', '000'] },
     { v: undefined, d: 3, o: ['0', '000'] },
-    { v: new BigNumber(123), d: 3, o: ['123', '000'] },
+    { v: new BigNumber(123), d: 3, o: ['123', '00'] },
     { v: new BigNumber(123.123), d: 3, o: ['123', '123'] },
-    { v: new BigNumber(123.123), d: 6, o: ['123', '123000'] },
+    { v: new BigNumber(123.123), d: 6, o: ['123', '123'] },
     { v: new BigNumber(123.123), d: 0, o: ['123', ''] },
-    { v: new BigNumber(123), d: undefined, o: ['123', '000000000000000000'] },
+    { v: new BigNumber(123), d: undefined, o: ['123', '00'] },
     {
       v: new BigNumber(30000),
       d: undefined,
-      o: ['30,000', '000000000000000000'],
+      o: ['30,000', '00'],
     },
   ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
     expect(toNumberParts(v, d)).toStrictEqual(o);

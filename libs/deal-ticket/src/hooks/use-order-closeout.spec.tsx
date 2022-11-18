@@ -82,7 +82,7 @@ describe('useOrderCloseOut', () => {
         ),
       }
     );
-    expect(result.current).toEqual('1.00000');
+    expect(result.current).toEqual('1.00');
   });
 
   it('should return proper empty value', () => {
@@ -101,6 +101,6 @@ describe('useOrderCloseOut', () => {
         ),
       }
     );
-    expect(result.current).toEqual('0.00000');
+    expect(result.current).toEqual('0.00');
   });
 });

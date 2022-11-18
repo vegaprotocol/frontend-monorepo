@@ -92,7 +92,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeTruthy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
-  expect(cells[1].textContent).toEqual('1,230');
+  expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
@@ -102,7 +102,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeFalsy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
-  expect(cells[1].textContent).toEqual('1,230');
+  expect(cells[1].textContent).toEqual('1,230.0');
 });
 
 it('displays mark price', async () => {
@@ -162,7 +162,7 @@ it('displays allocated margin', async () => {
   });
   const cells = screen.getAllByRole('gridcell');
   const cell = cells[8];
-  expect(cell.textContent).toEqual('123,456');
+  expect(cell.textContent).toEqual('123,456.00');
 });
 
 it('displays realised and unrealised PNL', async () => {
