@@ -7,6 +7,7 @@ import { TxDetailsChainEventDeposit } from './chain-events/tx-erc20-deposit';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsChainMultisigThreshold } from './chain-events/tx-erc20-threshold';
 import { TxDetailsChainMultisigSigner } from './chain-events/tx-erc20-signer';
+import { TxDetailsChainEventBuiltinDeposit } from './chain-events/tx-builtin-deposit';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -47,6 +48,11 @@ function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
   const deposit = txData?.command.chainEvent?.erc20?.deposit;
   if (deposit) {
     return <TxDetailsChainEventDeposit deposit={deposit} />;
+  }
+
+  const internalDeposit = txData?.command.chainEvent?.builtin?.deposit;
+  if (internalDeposit) {
+    return <TxDetailsChainEventBuiltinDeposit deposit={internalDeposit} />;
   }
 
   const multisigEvent = txData?.command.chainEvent?.erc20Multisig;

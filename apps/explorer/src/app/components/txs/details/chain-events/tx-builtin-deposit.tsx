@@ -4,16 +4,18 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink, PartyLink } from '../../../links';
 
-interface TxDetailsChainEventProps {
-  deposit: components['schemas']['vegaERC20Deposit'];
+interface TxDetailsChainEventBuiltinDepositProps {
+  deposit: components['schemas']['vegaBuiltinAssetDeposit'];
 }
 
 /**
- * Someone deposited some erc20
+ * Someone deposited some of a builtin asset. Builtin assets
+ * have no value outside the Vega chain and should appear only
+ * on Test networks.
  */
-export const TxDetailsChainEventDeposit = ({
+export const TxDetailsChainEventBuiltinDeposit = ({
   deposit,
-}: TxDetailsChainEventProps) => {
+}: TxDetailsChainEventBuiltinDepositProps) => {
   if (!deposit) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
@@ -21,15 +23,9 @@ export const TxDetailsChainEventDeposit = ({
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Source')}</TableCell>
-        <TableCell>
-          {deposit.sourceEthereumAddress || ''}
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
-          <PartyLink id={deposit.targetPartyId || ''} />
+          <PartyLink id={deposit.partyId || ''} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

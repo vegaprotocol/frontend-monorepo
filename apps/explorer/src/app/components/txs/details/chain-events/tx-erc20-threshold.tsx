@@ -2,6 +2,7 @@ import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
+import { isNumber } from 'lodash';
 
 /**
  * Returns a reasonably formatted time from unix timestamp of block height
@@ -26,7 +27,7 @@ interface TxDetailsChainMultisigThresholdProps {
 
 /**
  * Someone updated multsig threshold value on the smart contract.
- * It's a percentage
+ * It's a percentage, with 1000 being 100% and 0 being 0%.
  */
 export const TxDetailsChainMultisigThreshold = ({
   multisigEvent,
@@ -37,12 +38,13 @@ export const TxDetailsChainMultisigThreshold = ({
 
   if (multisigEvent.thresholdSet) {
     const blockTime = getBlockTime(multisigEvent.thresholdSet.blockTime);
+    const threshold = isNumber(multisigEvent.thresholdSet.newThreshold) ? multisigEvent.thresholdSet.newThreshold / 100 : '-'
 
     return (
       <>
         <TableRow modifier="bordered">
           <TableCell>{t('Threshold')}</TableCell>
-          <TableCell>{multisigEvent.thresholdSet.newThreshold}</TableCell>
+          <TableCell>{threshold}%</TableCell>
         </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Threshold set from')}</TableCell>
