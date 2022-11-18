@@ -28,6 +28,6 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="deposited"]')
-      .should('have.text', '1,000');
+      .should('have.text', '1,000.00');
   });
 });
