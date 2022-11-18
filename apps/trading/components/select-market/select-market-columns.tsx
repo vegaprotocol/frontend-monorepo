@@ -554,7 +554,6 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Position,
       value: (
-        // TODO add decimals to open volume
         <p className={signedNumberCssClass(openVolume || '')}>
           {openVolume &&
             addDecimalsNormalizeNumber(
