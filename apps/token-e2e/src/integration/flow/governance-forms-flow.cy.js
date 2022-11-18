@@ -40,30 +40,22 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.wait_for_spinner();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
     });
 
     beforeEach('visit governance tab', function () {
+      cy.reload();
+      cy.wait_for_spinner();
+      cy.vega_wallet_connect();
+      cy.ethereum_wallet_connect();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.intercept('POST', '/query', (req) => {
-        if (req.body.operationName === 'ProposalEvent') {
-          req.alias = 'proposalSubmissionCompletion';
-        }
-      });
-      cy.ensure_specified_unstaked_tokens_are_associated('1');
     });
 
     it('Able to submit valid update network parameter proposal', function () {
-      cy.navigate_to_page_if_not_already_loaded('governance');
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       // 3002-PROP-006
       cy.get(newProposalTitle).type('Test update network parameter proposal');

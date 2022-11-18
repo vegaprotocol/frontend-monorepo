@@ -7,9 +7,9 @@ import { AppStateProvider } from '../../../../contexts/app-state/app-state-provi
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import { MARKETS_QUERY } from './propose-update-market';
-import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
 import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
+import type { ProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
+import { ProposalMarketsQueryDocument } from './__generated___/UpdateMarket';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -67,9 +67,9 @@ const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const marketQueryMock: MockedResponse<ProposalMarketsQuery> = {
+const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
   request: {
-    query: MARKETS_QUERY,
+    query: ProposalMarketsQueryDocument,
   },
   result: {
     data: {

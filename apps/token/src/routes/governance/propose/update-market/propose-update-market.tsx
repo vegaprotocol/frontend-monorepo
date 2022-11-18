@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -10,6 +9,7 @@ import {
 } from '@vegaprotocol/governance';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
+  createDocsLinks,
   NetworkParams,
   useNetworkParams,
   validateJson,
@@ -35,26 +35,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
 import { ProposalUserAction } from '../../components/shared';
-
-export const MARKETS_QUERY = gql`
-  query ProposalMarketsQuery {
-    marketsConnection {
-      edges {
-        node {
-          id
-          tradableInstrument {
-            instrument {
-              name
-              code
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
@@ -86,7 +68,7 @@ export const ProposeUpdateMarket = () => {
     data: marketsData,
     loading: marketsLoading,
     error: marketsError,
-  } = useQuery<ProposalMarketsQuery>(MARKETS_QUERY);
+  } = useProposalMarketsQueryQuery();
   const sortedMarkets = useMemo(() => {
     if (!marketsData?.marketsConnection?.edges.length) {
       return [];
@@ -188,9 +170,13 @@ export const ProposeUpdateMarket = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <ExternalLink
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}
+                  href={`${
+                    createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                  }${DOCS_LINK}`}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals${DOCS_LINK}`}</ExternalLink>
+                >{`${
+                  createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE
+                }${DOCS_LINK}`}</ExternalLink>
               </p>
             )}
 

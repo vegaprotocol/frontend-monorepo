@@ -11,6 +11,7 @@ import {
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  createDocsLinks,
   NetworkParams,
   useNetworkParams,
   validateJson,
@@ -88,9 +89,11 @@ export const ProposeRaw = () => {
               <p className="text-sm" data-testid="proposal-docs-link">
                 <span className="mr-1">{t('ProposalTermsText')}</span>
                 <ExternalLink
-                  href={`${VEGA_DOCS_URL}/tutorials/proposals`}
+                  href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
                   target="_blank"
-                >{`${VEGA_DOCS_URL}/tutorials/proposals`}</ExternalLink>
+                >
+                  {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+                </ExternalLink>
               </p>
             )}
 

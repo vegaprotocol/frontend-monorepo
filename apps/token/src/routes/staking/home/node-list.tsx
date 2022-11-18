@@ -1,19 +1,19 @@
+import { useTranslation } from 'react-i18next';
+import compact from 'lodash/compact';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
+import { useNavigate } from 'react-router-dom';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
   Button,
 } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import type { ColDef } from 'ag-grid-community';
-import compact from 'lodash/compact';
 import { useNodesQuery } from './__generated___/Nodes';
+import type { ColDef } from 'ag-grid-community';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -46,6 +46,18 @@ interface CanonisedNodeProps {
   [PERFORMANCE_SCORE]: string;
   [VOTING_POWER]: string;
 }
+
+export const statusTranslationKey = (status: Schema.ValidatorStatus) => {
+  // Returns a key for translation
+  const statuses = {
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: 'status-pending',
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]:
+      'status-tendermint',
+  };
+
+  return statuses[status];
+};
 
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
@@ -125,17 +137,7 @@ export const NodeList = () => {
             ? '-'
             : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
               '%';
-        const statusTranslated = t(
-          `${
-            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ &&
-              'Ersatz') ||
-            (status === Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING &&
-              'Pending') ||
-            (status ===
-              Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT &&
-              'Consensus')
-          }`
-        );
+        const translatedStatus = t(statusTranslationKey(status));
 
         return {
           id,
@@ -143,7 +145,7 @@ export const NodeList = () => {
             avatarUrl,
             name,
           },
-          [STATUS]: statusTranslated,
+          [STATUS]: translatedStatus,
           [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
@@ -187,7 +189,12 @@ export const NodeList = () => {
     );
 
     return removeTopThirdOfStakeScores.remaining;
-  }, [data, t, hideTopThird]);
+  }, [
+    data?.nodeData?.stakedTotalFormatted,
+    data?.nodesConnection.edges,
+    hideTopThird,
+    t,
+  ]);
 
   const gridRef = useRef<AgGridReact | null>(null);
 

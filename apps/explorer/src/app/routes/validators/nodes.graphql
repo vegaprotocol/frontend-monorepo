@@ -10,6 +10,7 @@ query ExplorerNodes {
         tmPubkey
         ethereumAddress
         location
+        status
         stakedByOperator
         stakedByDelegates
         stakedTotal
@@ -19,8 +20,6 @@ query ExplorerNodes {
           offline
           online
         }
-        status
-        name
       }
     }
   }

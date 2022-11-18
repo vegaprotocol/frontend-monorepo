@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
 import { RenderFetched } from '../../../components/render-fetched';
-import { TxContent } from './tx-content';
 import { TxDetails } from './tx-details';
 import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
 import { toNonHex } from '../../../components/search/detect-search';
@@ -36,24 +35,18 @@ const Tx = () => {
       </Link>
 
       <PageHeader
-        title={hash}
-        prefix="Transaction"
-        copy
+        title="transaction"
         truncateStart={5}
         truncateEnd={9}
         className="mb-5"
       />
 
       <RenderFetched error={tTxError} loading={tTxLoading}>
-        <>
-          <TxDetails
-            className="mb-28"
-            txData={data?.transaction}
-            pubKey={data?.transaction.submitter}
-          />
-
-          <TxContent data={data?.transaction} />
-        </>
+        <TxDetails
+          className="mb-28"
+          txData={data?.transaction}
+          pubKey={data?.transaction.submitter}
+        />
       </RenderFetched>
     </section>
   );

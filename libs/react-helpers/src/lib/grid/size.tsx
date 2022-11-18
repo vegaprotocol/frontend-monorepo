@@ -1,7 +1,7 @@
 import { Schema } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
-import { addDecimalsFormatNumber } from '../format';
+import { addDecimalsNormalizeNumber } from '../format';
 
 export const Size = ({
   value,
@@ -26,7 +26,7 @@ export const Size = ({
         : side === Schema.Side.SIDE_SELL
         ? '-'
         : ''}
-      {addDecimalsFormatNumber(value, positionDecimalPlaces)}
+      {addDecimalsNormalizeNumber(value, positionDecimalPlaces)}
     </span>
   );
 };

@@ -23,8 +23,8 @@ describe('AssetDetailsTable', () => {
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Enabled' },
         { key: AssetDetail.CONTRACT_ADDRESS, value: '0x123' },
-        { key: AssetDetail.WITHDRAWAL_THRESHOLD, value: '0.050' },
-        { key: AssetDetail.LIFETIME_LIMIT, value: '123,000.000' },
+        { key: AssetDetail.WITHDRAWAL_THRESHOLD, value: '0.05' },
+        { key: AssetDetail.LIFETIME_LIMIT, value: '123,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
           value: '0.001',
@@ -56,10 +56,10 @@ describe('AssetDetailsTable', () => {
         { key: AssetDetail.DECIMALS, value: '5' },
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Enabled' },
-        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000.00000' },
+        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-          value: '0.00000',
+          value: '0',
         },
       ],
     ],

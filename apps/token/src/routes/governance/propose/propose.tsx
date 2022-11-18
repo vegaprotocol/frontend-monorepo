@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../../components/heading';
+import { createDocsLinks } from '@vegaprotocol/react-helpers';
 
 export const Propose = () => {
   const { VEGA_DOCS_URL, VEGA_EXPLORER_URL } = useEnvironment();
@@ -18,9 +19,11 @@ export const Propose = () => {
             <p>
               <span className="mr-1">{t('ProposalTermsText')}</span>
               <ExternalLink
-                href={`${VEGA_DOCS_URL}/tutorials/proposals`}
+                href={createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
                 target="_blank"
-              >{`${VEGA_DOCS_URL}/tutorials/proposals`}</ExternalLink>
+              >
+                {createDocsLinks(VEGA_DOCS_URL).PROPOSALS_GUIDE}
+              </ExternalLink>
             </p>
           )}
           {VEGA_EXPLORER_URL && (

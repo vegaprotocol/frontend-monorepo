@@ -137,7 +137,6 @@ context('Staking Page - verify elements on page', function () {
     { tags: '@smoke' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.vega_wallet_import();
         cy.vega_wallet_connect();
         cy.click_on_validator_from_list(0);
       });

@@ -45,22 +45,21 @@ yarn nx run explorer:serve --env={env} # e.g. stagnet3
 
 There are a few different configuration options offered for this app:
 
-| **Flag**                         | **Purpose**                                                                                          |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------- | --- |
-| `NX_CHAIN_EXPLORER_URL`          | The URL of the chain explorer service for decoding transactions                                      |
-| `NX_TENDERMINT_URL`              | The Tendermint REST URL for the Vega consesus engine                                                 |
-| `NX_TENDERMINT_WEBSOCKET_URL`    | The Tendermint Websocket URL for the Vega consensus engine                                           |
-| `NX_VEGA_URL`                    | The GraphQl query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node) |
-| `NX_VEGA_ENV`                    | The name of the currently connected vega environment                                                 |     |
-| `NX_EXPLORER_ASSETS`             | Enable the assets page for the explorer                                                              |
-| `NX_EXPLORER_GENESIS`            | Enable the genesis page for the explorer                                                             |
-| `NX_EXPLORER_GOVERNANCE`         | Enable the governance page for the explorer                                                          |
-| `NX_EXPLORER_MARKETS`            | Enable the markets page for the explorer                                                             |
-| `NX_EXPLORER_ORACLES`            | Enable the oracles page for the explorer                                                             |
-| `NX_EXPLORER_TXS_LIST`           | Enable the transactions list page for the explorer                                                   |
-| `NX_EXPLORER_NETWORK_PARAMETERS` | Enable the network parameters page for the explorer                                                  |
-| `NX_EXPLORER_PARTIES`            | Enable the parties page for the explorer                                                             |
-| `NX_EXPLORER_VALIDATORS`         | Enable the validators page for the explorer                                                          |
+| **Flag**                         | **Purpose**                                                     |
+| -------------------------------- | --------------------------------------------------------------- | --- |
+| `NX_CHAIN_EXPLORER_URL`          | The URL of the chain explorer service for decoding transactions |
+| `NX_TENDERMINT_URL`              | The Tendermint REST URL for the Vega consesus engine            |
+| `NX_TENDERMINT_WEBSOCKET_URL`    | The Tendermint Websocket URL for the Vega consensus engine      |
+| `NX_VEGA_ENV`                    | The name of the currently connected vega environment            |     |
+| `NX_EXPLORER_ASSETS`             | Enable the assets page for the explorer                         |
+| `NX_EXPLORER_GENESIS`            | Enable the genesis page for the explorer                        |
+| `NX_EXPLORER_GOVERNANCE`         | Enable the governance page for the explorer                     |
+| `NX_EXPLORER_MARKETS`            | Enable the markets page for the explorer                        |
+| `NX_EXPLORER_ORACLES`            | Enable the oracles page for the explorer                        |
+| `NX_EXPLORER_TXS_LIST`           | Enable the transactions list page for the explorer              |
+| `NX_EXPLORER_NETWORK_PARAMETERS` | Enable the network parameters page for the explorer             |
+| `NX_EXPLORER_PARTIES`            | Enable the parties page for the explorer                        |
+| `NX_EXPLORER_VALIDATORS`         | Enable the validators page for the explorer                     |
 
 ## Testing
 
