@@ -1,5 +1,5 @@
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   t,
@@ -40,10 +40,7 @@ const Row = ({
       return value;
     }
     if (decimalPlaces) {
-      return `${addDecimalsNormalizeNumber(
-        value,
-        decimalPlaces
-      )} ${assetSymbol}`;
+      return `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`;
     }
     if (asPercentage) {
       return formatNumberPercentage(new BigNumber(value).times(100));

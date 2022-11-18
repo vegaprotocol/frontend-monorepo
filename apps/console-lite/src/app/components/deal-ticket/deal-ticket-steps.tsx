@@ -24,7 +24,6 @@ import {
   toDecimal,
   removeDecimal,
   addDecimalsFormatNumber,
-  addDecimalsNormalizeNumber,
   addDecimal,
   formatNumber,
 } from '@vegaprotocol/react-helpers';
@@ -158,7 +157,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
         .decimalPlaces(2)
         .toString();
 
-      return `${addDecimalsNormalizeNumber(
+      return `${addDecimalsFormatNumber(
         estMargin.totalFees,
         assetDecimals
       )} (${formatNumber(addDecimal(percentage, assetDecimals), 2)}%)`;

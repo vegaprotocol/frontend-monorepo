@@ -1,4 +1,4 @@
-import { addDecimalsNormalizeNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { Schema } from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
 import {
@@ -43,7 +43,7 @@ type Mapping = { [key in string]: { value: string; tooltip: string } };
 
 const num = (asset: Asset, n: string | undefined | null) => {
   if (typeof n === 'undefined' || n == null) return '';
-  return addDecimalsNormalizeNumber(n, asset.decimals);
+  return addDecimalsFormatNumber(n, asset.decimals);
 };
 
 export const rows: Rows = [
