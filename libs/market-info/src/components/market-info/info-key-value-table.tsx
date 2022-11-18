@@ -1,5 +1,4 @@
 import {
-  addDecimalsFormatNumber,
   addDecimalsNormalizeNumber,
   formatNumber,
   formatNumberPercentage,
