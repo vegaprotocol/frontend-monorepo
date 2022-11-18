@@ -153,7 +153,7 @@ export const NodeList = () => {
             name,
           },
           [STATUS]: translatedStatus,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(toBigNum(stakedTotal, decimals), 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
           [PENDING_STAKE]: formatNumber(toBigNum(pendingStake, decimals), 2),
