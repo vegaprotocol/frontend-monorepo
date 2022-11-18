@@ -96,7 +96,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-          cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
+        cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
 
         cy.navigate_to('staking');
 
