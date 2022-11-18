@@ -644,7 +644,7 @@ context(
       it('Unable to create a proposal - when no tokens are associated', function () {
         cy.vega_wallet_teardown();
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
-          '0.000000000000000000',
+          '0.00',
           txTimeout
         );
         cy.go_to_make_new_proposal(governanceProposalType.RAW);
@@ -759,7 +759,7 @@ context(
           cy.get(vegaWallet).within(() => {
             cy.get(vegaWalletAssociatedBalance, txTimeout).should(
               'contain',
-              '0.999900000000000000'
+              '0.9999'
             );
           });
           cy.navigate_to('governance');
@@ -804,7 +804,7 @@ context(
         cy.get(connectToVegaWalletButton).should('not.exist');
         // 3001-VOTE-100
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
-          '1.000000000000000000',
+          '1.00',
           txTimeout
         );
         cy.vote_for_proposal('against');

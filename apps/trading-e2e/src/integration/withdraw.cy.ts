@@ -63,7 +63,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   it('can set amount using use maximum button', () => {
     selectAsset(asset1Name);
     cy.getByTestId(useMaximumAmount).click();
-    cy.get(amountField).should('have.value', '1000.00000');
+    cy.get(amountField).should('have.value', '1000.00');
   });
 
   it('triggers transaction when submitted', () => {
@@ -81,17 +81,14 @@ describe('withdraw', { tags: '@smoke' }, () => {
       'contain.text',
       'Balance available'
     );
-    cy.getByTestId('BALANCE_AVAILABLE_value').should(
-      'have.text',
-      '1,000.00000'
-    );
+    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '1,000.00');
     cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
       'contain.text',
       'Delayed withdrawal threshold'
     );
     cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
       'contain.text',
-      '100.00000'
+      '100.00'
     );
     cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
     cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');
