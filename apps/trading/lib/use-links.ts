@@ -8,8 +8,9 @@ export const useLinks = (dapp: DApp) => {
     useEnvironment();
 
   const urls: { [k in DApp]: string } = {
-    console: VEGA_NETWORKS[VEGA_ENV] || '',
-    'console-fairground': VEGA_NETWORKS[Networks.TESTNET] || '',
+    console: (VEGA_NETWORKS && VEGA_NETWORKS[VEGA_ENV]) || '',
+    'console-fairground':
+      (VEGA_NETWORKS && VEGA_NETWORKS[Networks.TESTNET]) || '',
     token: VEGA_TOKEN_URL || '',
     explorer: VEGA_EXPLORER_URL || '',
   };
