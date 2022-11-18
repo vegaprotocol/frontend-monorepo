@@ -1,4 +1,4 @@
-import { Dialog, ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
+import { Dialog, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { proposalsListDataProvider } from '@vegaprotocol/governance';
 import { Schema as Types } from '@vegaprotocol/types';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';

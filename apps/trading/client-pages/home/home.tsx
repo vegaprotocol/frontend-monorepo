@@ -5,7 +5,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { EMPTY_MARKET_ID } from 'apps/trading/components/constants';
+import { EMPTY_MARKET_ID } from '../../components/constants';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
