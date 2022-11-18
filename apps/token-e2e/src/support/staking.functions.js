@@ -98,7 +98,7 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   );
   cy.get(ethWalletDissociateButton).first().click();
 
-  cy.get(vegaKeySelector)
+  cy.get(vegaKeySelector, txTimeout)
     .invoke('attr', 'disabled')
     .then((disabled) => {
       if (!disabled) {

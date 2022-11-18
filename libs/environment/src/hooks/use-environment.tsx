@@ -137,7 +137,7 @@ export const EnvironmentProvider = ({
       }}
     >
       <NodeSwitcherDialog
-        dialogOpen={isNodeSwitcherOpen && !('Cypress' in window)}
+        dialogOpen={isNodeSwitcherOpen}
         initialErrorType={networkError}
         setDialogOpen={setNodeSwitcherOpen}
         loading={loading}

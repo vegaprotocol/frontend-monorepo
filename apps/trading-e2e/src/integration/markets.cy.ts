@@ -86,10 +86,15 @@ describe('markets table', { tags: '@smoke' }, () => {
       'have.length',
       10
     );
-    cy.getByTestId('external-link').should('have.length', 11);
     cy.getByTestId('external-link')
-      .eq(10)
-      .should('have.text', 'Propose a new market');
+      .should('have.length', 11)
+      .last()
+      .should('have.text', 'Propose a new market')
+      .and(
+        'have.attr',
+        'href',
+        'https://token.fairground.wtf/governance/propose/new-market'
+      );
   });
 });
 

@@ -17,7 +17,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const [contracts, setContracts] = useState<ContractsContextShape | null>(
     null
   );
-  console.log(activeProvider);
 
   // Create instances of contract classes. If we have an account use a signer for the
   // contracts so that we can sign transactions, otherwise use the provider for just

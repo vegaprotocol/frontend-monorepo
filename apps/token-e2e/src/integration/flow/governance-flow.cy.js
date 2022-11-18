@@ -54,7 +54,6 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
@@ -96,12 +95,7 @@ context(
           )[0]
         ).as('maxCloseHours');
       });
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.wait_for_spinner();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -137,6 +131,10 @@ context(
       );
 
       beforeEach('visit governance tab', function () {
+        cy.reload();
+        cy.wait_for_spinner();
+        cy.vega_wallet_connect();
+        cy.ethereum_wallet_connect();
         cy.navigate_to('governance');
         cy.wait_for_spinner();
       });
@@ -846,15 +844,6 @@ context(
         const randomNum = Math.floor(Math.random() * 1000) + 1;
         return randomNum + ': Freeform e2e proposal';
       }
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );

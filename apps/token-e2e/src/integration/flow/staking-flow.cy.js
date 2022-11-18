@@ -33,22 +33,19 @@ context(
   function () {
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
-      cy.navigate_to('staking');
-      cy.wait_for_spinner();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
+          cy.reload();
+          cy.wait_for_spinner();
+          cy.vega_wallet_connect();
+          cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('staking');
           cy.wait_for_spinner();
@@ -870,15 +867,6 @@ context(
 
         cy.get(stakeTokenSubmitButton).should('contain', 'Add 1 $VEGA tokens');
       });
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );

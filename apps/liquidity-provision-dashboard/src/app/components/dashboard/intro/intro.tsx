@@ -6,15 +6,15 @@ const LINKS = {
   testnet: [
     {
       label: 'Learn about liquidity fees',
-      url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#resources',
+      url: 'https://docs.vega.xyz/testnet/tutorials/providing-liquidity#resources',
     },
     {
       label: 'Provide liquidity',
-      url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#overview',
+      url: 'https://docs.vega.xyz/testnet/tutorials/providing-liquidity#overview',
     },
     {
       label: 'View your liquidity provisions',
-      url: 'https://docs.vega.xyz/docs/testnet/tutorials/providing-liquidity#viewing-existing-liquidity-provisions',
+      url: 'https://docs.vega.xyz/testnet/tutorials/providing-liquidity#viewing-existing-liquidity-provisions',
     },
     {
       label: 'Amend or remove liquidity',

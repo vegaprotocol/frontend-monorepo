@@ -7,22 +7,22 @@ import {
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
+import type { Schema } from '@vegaprotocol/types';
 import {
   AccountTypeMapping,
   DescriptionTransferTypeMapping,
   TransferTypeMapping,
 } from '@vegaprotocol/types';
 import type { LedgerEntry } from './ledger-entries-data-provider';
-import type { ITooltipParams } from 'ag-grid-community';
 
-export const TransferTooltipCellComponent = ({ value }: ITooltipParams) => {
+export const TransferTooltipCellComponent = ({
+  value,
+}: {
+  value: Schema.TransferType;
+}) => {
   return (
     <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
-      {value
-        ? DescriptionTransferTypeMapping[
-            value as keyof typeof TransferTypeMapping
-          ]
-        : ''}
+      {value ? DescriptionTransferTypeMapping[value] : ''}
     </p>
   );
 };
@@ -48,9 +48,7 @@ export const LedgerTable = ({ ...props }) => (
       valueFormatter={({
         value,
       }: VegaValueFormatterParams<LedgerEntry, 'accountType'>) =>
-        value
-          ? AccountTypeMapping[value as keyof typeof AccountTypeMapping]
-          : ''
+        value ? AccountTypeMapping[value] : ''
       }
     />
     <AgGridColumn
