@@ -29,7 +29,7 @@ export const useAccountBalance = (assetId: string) => {
   useDataProvider({
     dataProvider: accountsDataProvider,
     variables,
-    skip: !pubKey,
+    skip: !pubKey || !assetId,
     update,
   });
 

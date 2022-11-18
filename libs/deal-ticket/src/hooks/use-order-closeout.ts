@@ -10,10 +10,11 @@ import { Schema } from '@vegaprotocol/types';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useSettlementAccount } from './use-settlement-account';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   partyData?: PartyBalanceQuery;
 }
 

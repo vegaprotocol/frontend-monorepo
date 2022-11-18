@@ -1,30 +1,50 @@
+import { useMemo } from 'react';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import type {
+  MarketDataUpdateFieldsFragment,
+  MarketDealTicket,
+  SingleMarketFieldsFragment,
+} from '@vegaprotocol/market-list';
+import { marketDealTicketProvider } from '@vegaprotocol/market-list';
 import { DealTicketManager } from './deal-ticket-manager';
-import { t } from '@vegaprotocol/react-helpers';
-import { useDealTicketQuery } from './__generated__/DealTicket';
-import type { DealTicketQuery } from './__generated__/DealTicket';
 
 export interface DealTicketContainerProps {
   marketId: string;
-  children?(props: DealTicketQuery): JSX.Element;
+  children?(props: SingleMarketFieldsFragment): JSX.Element;
 }
 
 export const DealTicketContainer = ({
   marketId,
   children,
 }: DealTicketContainerProps) => {
-  const { data, loading, error } = useDealTicketQuery({
-    variables: { marketId },
-    pollInterval: 5000,
+  const variables = useMemo(
+    () => ({
+      marketId: marketId || '',
+    }),
+    [marketId]
+  );
+
+  const { data, error, loading } = useDataProvider<
+    MarketDealTicket,
+    MarketDataUpdateFieldsFragment
+  >({
+    dataProvider: marketDealTicketProvider,
+    variables,
+    skip: !marketId,
   });
 
   return (
-    <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
-      {data && data.market ? (
+    <AsyncRenderer<MarketDealTicket>
+      data={data || undefined}
+      loading={loading}
+      error={error}
+    >
+      {data ? (
         children ? (
           children(data)
         ) : (
-          <DealTicketManager market={data.market} />
+          <DealTicketManager market={data} />
         )
       ) : (
         <Splash>

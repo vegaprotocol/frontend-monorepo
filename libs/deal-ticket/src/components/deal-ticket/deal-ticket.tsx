@@ -1,6 +1,6 @@
-import { removeDecimal, t } from '@vegaprotocol/react-helpers';
+import { removeDecimal, t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
@@ -9,8 +9,6 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
@@ -27,11 +25,14 @@ import {
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
+import type {
+  MarketDealTicket,
+} from '@vegaprotocol/market-list';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
   transactionStatus: TransactionStatus;
   defaultOrder?: OrderSubmissionBody['orderSubmission'];
@@ -197,7 +198,7 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   order: OrderSubmissionBody['orderSubmission'];
 }
 const SummaryMessage = memo(

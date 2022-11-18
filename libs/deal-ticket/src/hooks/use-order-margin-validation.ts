@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 import type { OrderMargin } from './use-order-margin';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderMargin } from './use-order-margin';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 interface Props {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   order: OrderSubmissionBody['orderSubmission'];
 }
 

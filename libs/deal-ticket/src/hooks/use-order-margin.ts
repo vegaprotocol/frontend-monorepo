@@ -2,15 +2,15 @@ import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   partyId: string;
 }
 

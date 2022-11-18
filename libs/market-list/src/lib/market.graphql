@@ -46,3 +46,14 @@ query Market($marketId: ID!) {
     ...SingleMarketFields
   }
 }
+
+query MarketLastTrade($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    depth {
+      lastTrade {
+        price
+      }
+    }
+  }
+}
