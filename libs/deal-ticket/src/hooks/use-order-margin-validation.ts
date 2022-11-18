@@ -1,53 +1,43 @@
 import { useMemo } from 'react';
-import compact from 'lodash/compact';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Schema } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 import type { OrderMargin } from './use-order-margin';
-import { usePartyBalanceQuery } from './__generated__/PartyBalance';
-import { useSettlementAccount } from './use-settlement-account';
+import { useAccountBalance} from '@vegaprotocol/accounts';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { useOrderMargin } from './use-order-margin';
 
 interface Props {
   market: DealTicketMarketFragment;
-  estMargin: OrderMargin | null;
+  order: OrderSubmissionBody['orderSubmission'];
 }
 
-export const useOrderMarginValidation = ({ market, estMargin }: Props) => {
+export const useOrderMarginValidation = ({ market, order }: Props) => {
   const { pubKey } = useVegaWallet();
-
-  const { data: partyBalance } = usePartyBalanceQuery({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-    fetchPolicy: 'no-cache',
+  const estMargin: OrderMargin | null = useOrderMargin({
+    order,
+    market,
+    partyId: pubKey || '',
   });
+  const { id: assetId, decimals: assetDecimals } =
+    market.tradableInstrument.instrument.product.settlementAsset;
 
-  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
-    (e) => e.node
-  );
-  const settlementAccount = useSettlementAccount(
-    market.tradableInstrument.instrument.product.settlementAsset.id,
-    accounts,
-    Schema.AccountType.ACCOUNT_TYPE_GENERAL
-  );
-  const assetDecimals =
-    market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const balance = settlementAccount
-    ? toBigNum(
-        settlementAccount.balance || 0,
-        settlementAccount.asset.decimals || 0
-      )
-    : toBigNum('0', assetDecimals);
+  const { accountBalance, accountDecimals } = useAccountBalance(assetId);
+  const balance =
+    accountBalance && accountDecimals !== null
+      ? toBigNum(accountBalance, accountDecimals)
+      : toBigNum('0', assetDecimals);
   const margin = toBigNum(estMargin?.margin || 0, assetDecimals);
-  const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
-  const memoizedValue = useMemo(() => {
+  // return only simple types (bool, string) for make memo sensible, no BigNumber please :-)
+  const balanceError = balance.isGreaterThan(0) && balance.isLessThan(margin);
+  const balanceAsString = balance.toString();
+  const marginAsString = margin.toString();
+  return useMemo(() => {
     return {
-      balance,
-      margin,
-      asset,
+      balance: balanceAsString,
+      margin: marginAsString,
+      balanceError,
     };
-  }, [balance, margin, asset]);
-
-  return memoizedValue;
+  }, [balanceAsString, marginAsString, balanceError]);
 };

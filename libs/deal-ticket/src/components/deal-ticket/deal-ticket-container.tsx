@@ -15,6 +15,7 @@ export const DealTicketContainer = ({
 }: DealTicketContainerProps) => {
   const { data, loading, error } = useDealTicketQuery({
     variables: { marketId },
+    pollInterval: 5000,
   });
 
   return (

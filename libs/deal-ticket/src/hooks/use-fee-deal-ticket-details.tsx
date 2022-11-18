@@ -72,7 +72,18 @@ export const useFeeDealTicketDetails = (
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
-  return {
+  return useMemo(() => {
+    return {
+      market,
+      quoteName,
+      notionalSize,
+      estMargin,
+      estCloseOut,
+      slippage,
+      price,
+      partyData: partyBalance,
+    };
+  }, [
     market,
     quoteName,
     notionalSize,
@@ -80,8 +91,8 @@ export const useFeeDealTicketDetails = (
     estCloseOut,
     slippage,
     price,
-    partyData: partyBalance,
-  };
+    partyBalance,
+  ]);
 };
 
 export interface FeeDetails {
