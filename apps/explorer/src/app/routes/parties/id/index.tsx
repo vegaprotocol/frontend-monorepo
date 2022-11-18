@@ -69,9 +69,11 @@ const Party = () => {
           return (
             <InfoPanel title={account.asset.name} id={account.asset.id}>
               <section>
-                <dl className="flex gap-2">
+                <dl className="flex gap-2 flex-wrap">
                   <dt className="text-zinc-500 dark:text-zinc-400 text-md">
-                    {t('Balance')} ({account.asset.symbol})
+                    <p>
+                      {t('Balance')} ({account.asset.symbol})
+                    </p>
                   </dt>
                   <dd className="text-md">
                     {addDecimalsFormatNumber(

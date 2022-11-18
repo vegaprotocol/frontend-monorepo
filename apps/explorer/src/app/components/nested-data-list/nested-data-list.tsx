@@ -55,7 +55,7 @@ const NestedDataListItem = ({
   value,
   index,
 }: NestedDataListItemProps) => {
-  const [isCollapsed, setCollapsed] = useState(true);
+  const [isCollapsed, setCollapsed] = useState(false);
   const toggleVisible = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.stopPropagation();
