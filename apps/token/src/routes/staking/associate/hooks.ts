@@ -10,7 +10,7 @@ import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
-import { StakeLinkingStatus } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import compact from 'lodash/compact';
 import type {
   LinkingsFieldsFragment,
@@ -104,7 +104,7 @@ export const usePollForStakeLinking = (
           const matchingLinking = linkings?.find((l) => {
             return (
               l.txHash === txHash &&
-              l.status === StakeLinkingStatus.STATUS_ACCEPTED
+              l.status === Schema.StakeLinkingStatus.STATUS_ACCEPTED
             );
           });
 
