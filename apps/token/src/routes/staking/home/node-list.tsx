@@ -1,9 +1,8 @@
-import * as Sentry from '@sentry/react';
+import { useTranslation } from 'react-i18next';
 import compact from 'lodash/compact';
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { useNavigate } from 'react-router-dom';
-import { t } from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
@@ -48,17 +47,14 @@ interface CanonisedNodeProps {
   [VOTING_POWER]: string;
 }
 
-export const translateStatus = (status: Schema.ValidatorStatus) => {
+export const statusTranslationKey = (status: Schema.ValidatorStatus) => {
+  // Returns a key for translation
   const statuses = {
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: t('Standby'),
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: t('Pending'),
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]: t('Consensus'),
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: 'status-pending',
+    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]:
+      'status-tendermint',
   };
-
-  if (!(status in statuses)) {
-    Sentry.captureException('Unknown validator status');
-    return t('Unknown');
-  }
 
   return statuses[status];
 };
@@ -89,6 +85,7 @@ const nodeListGridStyles = `
 `;
 
 export const NodeList = () => {
+  const { t } = useTranslation();
   // errorPolicy due to vegaprotocol/vega issue 5898
   const { data, error, loading, refetch } = useNodesQuery();
   const navigate = useNavigate();
@@ -140,6 +137,7 @@ export const NodeList = () => {
             ? '-'
             : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
               '%';
+        const translatedStatus = t(statusTranslationKey(status));
 
         return {
           id,
@@ -147,7 +145,7 @@ export const NodeList = () => {
             avatarUrl,
             name,
           },
-          [STATUS]: translateStatus(status),
+          [STATUS]: translatedStatus,
           [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
@@ -191,7 +189,12 @@ export const NodeList = () => {
     );
 
     return removeTopThirdOfStakeScores.remaining;
-  }, [data, hideTopThird]);
+  }, [
+    data?.nodeData?.stakedTotalFormatted,
+    data?.nodesConnection.edges,
+    hideTopThird,
+    t,
+  ]);
 
   const gridRef = useRef<AgGridReact | null>(null);
 

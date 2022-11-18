@@ -6,7 +6,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
-import { translateStatus } from '../home/node-list';
+import { statusTranslationKey } from '../home/node-list';
 import type { StakingNodeFieldsFragment } from './__generated___/Staking';
 
 const ValidatorTableCell = ({
@@ -66,7 +66,7 @@ export const ValidatorTable = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('STATUS')}</span>
-        <span>{translateStatus(node.rankingScore.status)}</span>
+        <span>{t(statusTranslationKey(node.rankingScore.status))}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('IP ADDRESS')}</span>

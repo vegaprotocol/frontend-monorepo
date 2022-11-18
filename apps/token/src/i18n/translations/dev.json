@@ -587,7 +587,6 @@
   "status-tendermint": "Consensus",
   "status-ersatz": "Standby",
   "status-pending": "Pending",
-  "status-unspecified": "Unspecified",
   "Set to": "Set to",
   "pass": "pass",
   "fail": "fail",
