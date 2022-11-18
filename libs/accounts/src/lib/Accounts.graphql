@@ -7,6 +7,9 @@ fragment AccountFields on AccountBalance {
   asset {
     id
   }
+  party {
+    id
+  }
 }
 
 query Accounts($partyId: ID!) {
