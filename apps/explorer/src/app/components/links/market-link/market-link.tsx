@@ -3,7 +3,9 @@ import { Routes } from '../../../routes/route-names';
 import { useExplorerMarketQuery } from './__generated__/Market';
 import { Link } from 'react-router-dom';
 
-export type MarketLinkProps = {
+import type { ComponentProps } from 'react';
+
+export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
 };
 
@@ -24,7 +26,7 @@ const MarketLink = ({ id, ...props }: MarketLinkProps) => {
   }
 
   return (
-    <Link className="underline" to={`/${Routes.MARKETS}#${id}`} {...props}>
+    <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
       {label}
     </Link>
   );
