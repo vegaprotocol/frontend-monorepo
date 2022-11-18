@@ -14,7 +14,7 @@ export const InputError = ({
   ...props
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
-    'text-sm flex items-center',
+    'text-sm flex items-center first-letter:uppercase',
     'mt-2',
     {
       'border-danger': intent === 'danger',

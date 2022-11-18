@@ -1,14 +1,34 @@
+import create from 'zustand';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import type { Web3ReactHooks } from '@web3-react/core';
-import type { Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
+import type { Web3ReactHooks } from '@web3-react/core';
+import type { Connector } from '@web3-react/types';
+
+interface State {
+  isOpen: boolean;
+  connectors: [Connector, Web3ReactHooks][];
+  desiredChainId?: number;
+}
+interface Actions {
+  open: (connectors: State['connectors'], desiredChainId?: number) => void;
+  close: () => void;
+}
+
+export const useWeb3ConnectDialog = create<State & Actions>((set) => ({
+  isOpen: false,
+  connectors: [],
+  open: (connectors, desiredChainId) =>
+    set(() => ({ isOpen: true, connectors, desiredChainId })),
+  close: () =>
+    set(() => ({ isOpen: false, connectors: [], desiredChainId: undefined })),
+}));
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
-  connectors: [Connector, Web3ReactHooks][];
+  connectors: State['connectors'];
   desiredChainId?: number;
 }
 
@@ -45,6 +65,22 @@ export const Web3ConnectDialog = ({
         })}
       </ul>
     </Dialog>
+  );
+};
+
+export const Web3ConnectUncontrolledDialog = () => {
+  const { isOpen, connectors, desiredChainId, open, close } =
+    useWeb3ConnectDialog();
+
+  const onChange = (isOpen: boolean) =>
+    isOpen ? open(connectors, desiredChainId) : close();
+
+  return (
+    <Web3ConnectDialog
+      dialogOpen={isOpen}
+      setDialogOpen={onChange}
+      connectors={connectors}
+    />
   );
 };
 

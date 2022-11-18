@@ -1,7 +1,7 @@
 import { useMarketPositions } from './use-market-positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useSettlementAccount } from './use-settlement-account';
-import { AccountType, Schema } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { BigNumber } from 'bignumber.js';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
@@ -28,7 +28,7 @@ export const useMaximumPositionSize = ({
   const settlementAccount = useSettlementAccount(
     settlementAssetId,
     accounts,
-    AccountType.ACCOUNT_TYPE_GENERAL
+    Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
 
   const marketPositions = useMarketPositions({ marketId: marketId, partyId });

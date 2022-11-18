@@ -1,24 +1,19 @@
 import type { MarketInfoQuery } from '@vegaprotocol/market-info';
-import {
-  AccountType,
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
 export const generateMarketInfoQuery = (
   override?: PartialDeep<MarketInfoQuery>
 ): MarketInfoQuery => {
-  const defaultResult = {
+  const defaultResult: MarketInfoQuery = {
     market: {
       __typename: 'Market',
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       proposal: {
         __typename: 'Proposal',
         id: 'market-0',
@@ -28,26 +23,45 @@ export const generateMarketInfoQuery = (
           description: '',
         },
       },
-      accounts: [
-        {
-          type: AccountType.ACCOUNT_TYPE_INSURANCE,
-          asset: {
-            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-            __typename: 'Asset',
+      marketTimestamps: {
+        __typename: 'MarketTimestamps',
+        open: '2022-11-15T02:15:24.543614154Z',
+        close: null,
+      },
+      openingAuction: {
+        __typename: 'AuctionDuration',
+        durationSecs: 210,
+        volume: 0,
+      },
+      accountsConnection: {
+        __typename: 'AccountsConnection',
+        edges: [
+          {
+            __typename: 'AccountEdge',
+            node: {
+              type: Schema.AccountType.ACCOUNT_TYPE_INSURANCE,
+              asset: {
+                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                __typename: 'Asset',
+              },
+              balance: '0',
+              __typename: 'AccountBalance',
+            },
           },
-          balance: '0',
-          __typename: 'AccountBalance',
-        },
-        {
-          type: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
-          asset: {
-            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-            __typename: 'Asset',
+          {
+            __typename: 'AccountEdge',
+            node: {
+              type: Schema.AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
+              asset: {
+                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                __typename: 'Asset',
+              },
+              balance: '0',
+              __typename: 'AccountBalance',
+            },
           },
-          balance: '0',
-          __typename: 'AccountBalance',
-        },
-      ],
+        ],
+      },
       fees: {
         __typename: 'Fees',
         factors: {
@@ -95,7 +109,7 @@ export const generateMarketInfoQuery = (
         openInterest: '0',
         bestBidPrice: '681765',
         bestOfferPrice: '681769',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         priceMonitoringBounds: [
           {
             minValidPrice: '654701',

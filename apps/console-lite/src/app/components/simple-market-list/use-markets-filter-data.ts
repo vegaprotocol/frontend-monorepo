@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { MarketWithCandles } from '@vegaprotocol/market-list';
 import type { RouterParams } from './simple-market-list';
 
@@ -30,7 +30,7 @@ const useMarketsFilterData = (
             ? ''
             : params.state
             ? params.state
-            : MarketState.STATE_ACTIVE;
+            : Schema.MarketState.STATE_ACTIVE;
         if (state && state !== item.state) {
           return false;
         }

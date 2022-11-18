@@ -20,7 +20,7 @@ import {
   ThemeContext,
   useResizeObserver,
 } from '@vegaprotocol/react-helpers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
 import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
@@ -545,7 +545,8 @@ export const Orderbook = ({
             cumulativeAsk={data.cumulativeVol.ask}
             cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
             indicativeVolume={
-              marketTradingMode !== MarketTradingMode.TRADING_MODE_CONTINUOUS &&
+              marketTradingMode !==
+                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS &&
               indicativePrice === data.price
                 ? indicativeVolume
                 : undefined

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 import {
   SelectAllMarketsTableBody,
@@ -22,7 +22,7 @@ const MARKET_A: PartialMarket = {
   __typename: 'Market',
   id: '1',
   decimalPlaces: 2,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -61,7 +61,7 @@ const MARKET_A: PartialMarket = {
       id: '1',
     },
     markPrice: '90',
-    trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
     indicativeVolume: '1000',
   },
   candles: [
@@ -90,7 +90,7 @@ const MARKET_B: PartialMarket = {
   __typename: 'Market',
   id: '2',
   decimalPlaces: 2,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -129,7 +129,7 @@ const MARKET_B: PartialMarket = {
       id: '2',
     },
     markPrice: '123.123',
-    trigger: AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
     indicativeVolume: '2000',
   },
   candles: [

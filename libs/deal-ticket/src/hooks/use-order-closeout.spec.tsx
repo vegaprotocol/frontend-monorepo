@@ -32,15 +32,19 @@ describe('useOrderCloseOut', () => {
   };
   const partyData = {
     party: {
-      accounts: [
-        {
-          balance: '200000',
-          asset: {
-            id: 'assetId',
-            decimals: 5,
+      accountsConnection: {
+        edges: [
+          {
+            node: {
+              balance: '200000',
+              asset: {
+                id: 'assetId',
+                decimals: 5,
+              },
+            },
           },
-        },
-      ],
+        ],
+      },
     },
   };
 

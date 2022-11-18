@@ -1,8 +1,4 @@
-import {
-  MarketState,
-  MarketTradingMode,
-  AuctionTrigger,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
@@ -239,11 +235,6 @@ describe('must submit order', { tags: '@smoke' }, () => {
         new Date(order.expiresAt as string).getTime().toString() + '000000',
     });
   });
-
-  it.skip('must not allow to place an order if balance is 0 (no collateral)', function () {
-    //7002-/SORD-/003
-    // it will be covered in https://github.com/vegaprotocol/frontend-monorepo/issues/1660
-  });
 });
 
 describe(
@@ -252,9 +243,9 @@ describe(
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_SUSPENDED,
+        Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -281,7 +272,7 @@ describe(
         side: 'SIDE_SELL',
         size: '100',
         price: '50000',
-        timeInForce: 'TIME_IN_FORCE_GFN',
+        timeInForce: 'TIME_IN_FORCE_GTC',
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -306,14 +297,14 @@ describe(
 );
 
 describe(
-  'must submit order for market in batch auction',
+  'must submit order for market in opening auction',
   { tags: '@regression' },
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_SUSPENDED,
+        Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -340,7 +331,7 @@ describe(
         side: 'SIDE_SELL',
         size: '100',
         price: '50000',
-        timeInForce: 'TIME_IN_FORCE_GFN',
+        timeInForce: 'TIME_IN_FORCE_GTC',
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -365,14 +356,14 @@ describe(
 );
 
 describe(
-  'must submit order for market in batch auction',
+  'must submit order for market in monitoring auction',
   { tags: '@regression' },
   () => {
     before(() => {
       cy.mockTradingPage(
-        MarketState.STATE_PENDING,
-        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-        AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+        Schema.MarketState.STATE_SUSPENDED,
+        Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
       );
       cy.mockGQLSubscription();
       cy.visit('/#/markets/market-0');
@@ -399,7 +390,7 @@ describe(
         side: 'SIDE_SELL',
         size: '100',
         price: '50000',
-        timeInForce: 'TIME_IN_FORCE_GFN',
+        timeInForce: 'TIME_IN_FORCE_GTC',
       };
       testOrder(order, { price: '5000000000' });
     });
@@ -478,6 +469,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.wait('@Market');
     connectVegaWallet();
   });
+
   it('must warn if order size input has too many digits after the decimal place', function () {
     //7002-SORD-016
     cy.getByTestId('order-type-TYPE_MARKET').click();
@@ -485,9 +477,9 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.getByTestId(placeOrderBtn).should('not.be.disabled');
     cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId('dealticket-error-message-price-market').should(
+    cy.getByTestId('dealticket-error-message-size-market').should(
       'have.text',
-      'Order sizes must be in whole numbers for this market'
+      'Size must be whole numbers for this market'
     );
   });
 
@@ -497,9 +489,9 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
     cy.getByTestId(placeOrderBtn).should('not.be.disabled');
     cy.getByTestId(placeOrderBtn).click();
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId('dealticket-error-message-price-market').should(
+    cy.getByTestId('dealticket-error-message-size-market').should(
       'have.text',
-      'Size cannot be lower than "1"'
+      'Size cannot be lower than 1'
     );
   });
 });
@@ -517,10 +509,10 @@ describe('limit order validations', { tags: '@smoke' }, () => {
     //7002-SORD-018
     cy.getByTestId(orderPriceField)
       .siblings('label')
-      .should('have.text', 'Price (BTC)');
+      .should('have.text', 'Price (tBTC)');
   });
 
-  it('must see warning when placing an order with expiry date in past', function () {
+  it('must see warning when placing an order with expiry date in past', () => {
     const expiresAt = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const expiresAtInputValue = expiresAt.toISOString().substring(0, 16);
     cy.getByTestId(toggleLimit).click();
@@ -533,15 +525,22 @@ describe('limit order validations', { tags: '@smoke' }, () => {
 
     cy.getByTestId(placeOrderBtn).click();
 
-    cy.getByTestId('dealticket-error-message-force').should(
+    cy.getByTestId('dealticket-error-message-expiry').should(
       'have.text',
       'The expiry date that you have entered appears to be in the past'
     );
   });
 
-  it.skip('must receive warning if price has too many digits after decimal place', function () {
-    //7002/-SORD-/059
-    // Skipped until https://github.com/vegaprotocol/frontend-monorepo/issues/1686 resolved
+  it('must see warning if price has too many digits after decimal place', function () {
+    //7002-SORD-059
+    cy.getByTestId(toggleLimit).click();
+    cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
+    cy.getByTestId(orderSizeField).clear().type('1');
+    cy.getByTestId(orderPriceField).clear().type('1.123456');
+    cy.getByTestId('dealticket-error-message-price-limit').should(
+      'have.text',
+      'Price accepts up to 5 decimal places'
+    );
   });
 
   describe('time in force validations', function () {
@@ -631,9 +630,9 @@ describe('market order validations', { tags: '@smoke' }, () => {
 describe('suspended market validation', { tags: '@regression' }, () => {
   before(() => {
     cy.mockTradingPage(
-      MarketState.STATE_SUSPENDED,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.MarketState.STATE_SUSPENDED,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
@@ -655,7 +654,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
     cy.getByTestId(orderPriceField).clear().type('0.1');
     cy.getByTestId(orderSizeField).clear().type('1');
     cy.getByTestId(placeOrderBtn).should('be.enabled');
-    cy.getByTestId(errorMessage).should(
+    cy.getByTestId('dealticket-warning-auction').should(
       'have.text',
       'Any orders placed now will not trade until the auction ends'
     );
@@ -667,15 +666,15 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       TIFlist.filter((item) => item.code === 'FOK')[0].value
     );
     cy.getByTestId(placeOrderBtn).should('be.disabled');
-    cy.getByTestId('dealticket-error-message-force').should(
+    cy.getByTestId('dealticket-error-message-tif').should(
       'have.text',
       'This market is in auction until it reaches sufficient liquidity. Until the auction ends, you can only place GFA, GTT, or GTC limit orders'
     );
   });
 });
 
-describe('margin required validation', { tags: '@regression' }, () => {
-  before(() => {
+describe('account validation', { tags: '@regression' }, () => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.mockGQL((req) => {
       aliasQuery(
@@ -693,15 +692,25 @@ describe('margin required validation', { tags: '@regression' }, () => {
     cy.wait('@Market');
   });
 
-  it('should display info and button for deposit', () => {
+  it('should show an error if your balance is zero', () => {
     cy.getByTestId('place-order').should('not.be.disabled');
     cy.getByTestId('place-order').click();
     cy.getByTestId('place-order').should('be.disabled');
-    cy.getByTestId('deal-ticket-margin-invalidated').should(
-      'contain.text',
-      "You don't have enough margin available to open this position"
+    //7002-SORD-003
+    cy.getByTestId('dealticket-error-message-zero-balance').should(
+      'have.text',
+      'Insufficient balance. Deposit ' + 'tBTC'
     );
-    cy.getByTestId('deal-ticket-margin-invalidated').should(
+    cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
+  });
+
+  it('should display info and button for deposit', () => {
+    // warning should show immediately
+    cy.getByTestId('dealticket-warning-margin').should(
+      'contain.text',
+      'You may not have enough margin available to open this position'
+    );
+    cy.getByTestId('dealticket-warning-margin').should(
       'contain.text',
       '0.01 tBTC currently required, 0.001 tBTC available'
     );

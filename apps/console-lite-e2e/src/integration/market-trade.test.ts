@@ -1,3 +1,4 @@
+import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateSimpleMarkets,
@@ -13,13 +14,16 @@ import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
-import { connectVegaWallet } from '../support/connect-wallet';
 import type { MarketsQuery, Market } from '@vegaprotocol/market-list';
+import { generateChainId } from '../support/mocks/generate-chain-id';
+import { generateStatistics } from '../support/mocks/generate-statistics';
 
 describe('Market trade', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
+      aliasQuery(req, 'ChainId', generateChainId());
+      aliasQuery(req, 'Statistics', generateStatistics());
       aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());

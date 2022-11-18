@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { Web3Container } from './web3-container';
+import { Web3ConnectUncontrolledDialog } from './web3-connect-dialog';
 import type { useWeb3React } from '@web3-react/core';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
 import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
@@ -73,6 +74,7 @@ function setup(mock = networkParamsQueryMock) {
           </div>
         </Web3Container>
       </MockedProvider>
+      <Web3ConnectUncontrolledDialog />
     </EnvironmentProvider>
   );
 }

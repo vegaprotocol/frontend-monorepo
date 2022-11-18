@@ -1,15 +1,16 @@
-import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
+import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import { MarketModeValidationType } from '../../constants';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
   onSelect: (type: Schema.OrderType) => void;
-  errorMessage?: DealTicketErrorMessage;
+  market: DealTicketMarketFragment;
+  errorMessage?: string;
 }
 
 const toggles = [
@@ -20,8 +21,47 @@ const toggles = [
 export const TypeSelector = ({
   value,
   onSelect,
+  market,
   errorMessage,
 }: TypeSelectorProps) => {
+  const renderError = (errorType: MarketModeValidationType) => {
+    if (errorType === MarketModeValidationType.Auction) {
+      return t('Only limit orders are permitted when market is in auction');
+    }
+
+    if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
+      return (
+        <span>
+          {t('This market is in auction until it reaches')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('sufficient liquidity')}</span>
+          </Tooltip>
+          {'. '}
+          {t('Only limit orders are permitted when market is in auction')}
+        </span>
+      );
+    }
+
+    if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
+      return (
+        <span>
+          {t('This market is in auction due to')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('high price volatility')}</span>
+          </Tooltip>
+          {'. '}
+          {t('Only limit orders are permitted when market is in auction')}
+        </span>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <FormGroup label={t('Order type')} labelFor="order-type">
       <Toggle
@@ -31,11 +71,11 @@ export const TypeSelector = ({
         checkedValue={value}
         onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
       />
-      <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-type"
-        section={DEAL_TICKET_SECTION.TYPE}
-      />
+      {errorMessage && (
+        <InputError data-testid="dealticket-error-message-type">
+          {renderError(errorMessage as MarketModeValidationType)}
+        </InputError>
+      )}
     </FormGroup>
   );
 };

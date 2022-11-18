@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -17,7 +17,7 @@ const singleRow: Position = {
   liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
-  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123',
   notional: '12300',
   openVolume: '100',
@@ -92,7 +92,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeTruthy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
-  expect(cells[1].textContent).toEqual('123.00');
+  expect(cells[1].textContent).toEqual('1,230');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
@@ -102,7 +102,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeFalsy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
-  expect(cells[1].textContent).toEqual('123.00');
+  expect(cells[1].textContent).toEqual('1,230');
 });
 
 it('displays mark price', async () => {
@@ -120,7 +120,8 @@ it('displays mark price', async () => {
         rowData={[
           {
             ...singleRow,
-            marketTradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+            marketTradingMode:
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
           },
         ]}
       />
@@ -138,23 +139,13 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
   });
   let cells = screen.getAllByRole('gridcell');
   const entryPrice = cells[5].firstElementChild?.firstElementChild?.textContent;
-  const liquidationPrice =
-    cells[6].firstElementChild?.lastElementChild?.textContent;
-  const progressBarTrack = cells[6].lastElementChild;
-  let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
-  const progressBarWidth = progressBar?.style?.width;
   expect(entryPrice).toEqual('13.3');
-  expect(liquidationPrice).toEqual('8.3');
-  expect(progressBar.classList.contains('bg-warning')).toEqual(false);
-  expect(progressBarWidth).toEqual('20%');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
     );
   });
   cells = screen.getAllByRole('gridcell');
-  progressBar = cells[6].lastElementChild?.firstElementChild as HTMLElement;
-  expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
 });
 
 it('displays leverage', async () => {
@@ -171,7 +162,7 @@ it('displays allocated margin', async () => {
   });
   const cells = screen.getAllByRole('gridcell');
   const cell = cells[8];
-  expect(cell.textContent).toEqual('123,456.00');
+  expect(cell.textContent).toEqual('123,456');
 });
 
 it('displays realised and unrealised PNL', async () => {

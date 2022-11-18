@@ -242,6 +242,16 @@ export class JsonRpcConnector implements VegaConnector {
       encodedTransaction: encodeTransaction(transaction),
     });
 
+    if ('error' in result) {
+      // In the case of sending a tx, error code 3001 indicates that the
+      // user rejected the tx. Returning null will allow the dialog to close immediately
+      if (result.error.code === 3001) {
+        return null;
+      } else {
+        throw this.wrapError(result.error);
+      }
+    }
+
     const parsedResult = SendTransactionSchema.safeParse(result);
 
     if (parsedResult.success) {
@@ -252,12 +262,6 @@ export class JsonRpcConnector implements VegaConnector {
         signature: parsedResult.data.result.transaction.signature.value,
       };
     } else {
-      // In the case of sending a tx, return null instead of throwing
-      // this indicates to the app that the user rejected the tx rather
-      // than it being a true error
-      if ('error' in result && result.error.code === 3001) {
-        return null;
-      }
       throw ClientErrors.INVALID_RESPONSE;
     }
   }

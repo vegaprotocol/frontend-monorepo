@@ -152,7 +152,6 @@ context(
 
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
-        cy.vega_wallet_import();
         cy.visit('/');
         cy.vega_wallet_connect();
       });
@@ -400,15 +399,6 @@ context(
             .contains(currency.name);
         });
       });
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );

@@ -1,4 +1,4 @@
-import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import type { PositionsQuery, MarginsQuery } from './__generated__/Positions';
@@ -7,7 +7,7 @@ import { getMetrics, rejoinPositionData } from './positions-data-providers';
 const accounts = [
   {
     __typename: 'AccountBalance',
-    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     asset: {
       __typename: 'Asset',
       symbol: 'tDAI',
@@ -19,7 +19,7 @@ const accounts = [
   },
   {
     __typename: 'AccountBalance',
-    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
     asset: {
       __typename: 'Asset',
       symbol: 'tDAI',
@@ -41,7 +41,7 @@ const accounts = [
   },
   {
     __typename: 'AccountBalance',
-    type: AccountType.ACCOUNT_TYPE_MARGIN,
+    type: Schema.AccountType.ACCOUNT_TYPE_MARGIN,
     asset: {
       __typename: 'Asset',
       symbol: 'tDAI',
@@ -110,7 +110,7 @@ const marketsData = [
     __typename: 'Market',
     id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
     decimalPlaces: 5,
-    tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
     positionDecimalPlaces: 0,
     tradableInstrument: {
       __typename: 'TradableInstrument',
@@ -137,7 +137,7 @@ const marketsData = [
     __typename: 'Market',
     id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
     decimalPlaces: 5,
-    tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     positionDecimalPlaces: 0,
     tradableInstrument: {
       __typename: 'TradableInstrument',

@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import MarketNameRenderer from './simple-market-renderer';
 import type { Market } from '@vegaprotocol/market-list';
 
 describe('SimpleMarketRenderer', () => {
   const market = {
     id: 'MARKET_A',
-    state: MarketState.STATE_ACTIVE,
+    state: Schema.MarketState.STATE_ACTIVE,
     tradableInstrument: {
       instrument: {
         code: 'MARKET_A_CODE',

@@ -1,3 +1,3 @@
-import { Markets } from './markets';
+import { MarketsPage } from './markets-page';
 
-export default Markets;
+export default MarketsPage;

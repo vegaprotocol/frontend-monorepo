@@ -11,8 +11,8 @@ import { InputSetter } from '../../components/input-setter';
 import { IconNames } from '@blueprintjs/icons';
 import {
   DataTitle,
-  EST_SLIPPAGE,
   ValueTooltipRow,
+  EST_SLIPPAGE,
 } from '@vegaprotocol/deal-ticket';
 
 interface DealTicketSlippageProps {

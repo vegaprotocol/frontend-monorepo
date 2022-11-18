@@ -12,8 +12,12 @@ fragment AccountFields on AccountBalance {
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
-    accounts {
-      ...AccountFields
+    accountsConnection {
+      edges {
+        node {
+          ...AccountFields
+        }
+      }
     }
   }
 }

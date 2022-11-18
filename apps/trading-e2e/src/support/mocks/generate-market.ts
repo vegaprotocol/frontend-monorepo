@@ -1,9 +1,5 @@
 import merge from 'lodash/merge';
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
   MarketData,
@@ -17,8 +13,8 @@ export const generateMarket = (
   const defaultResult: MarketQuery = {
     market: {
       id: 'market-0',
-      tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      state: MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      state: Schema.MarketState.STATE_ACTIVE,
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       tradableInstrument: {
@@ -90,7 +86,7 @@ export const generateMarketData = (
     auctionEnd: '2022-06-21T17:18:43.484055236Z',
     targetStake: '1000000',
     suppliedStake: '1000',
-    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     staticMidPrice: '0',
     indicativePrice: '0',
     bestStaticBidPrice: '0',
@@ -99,7 +95,7 @@ export const generateMarketData = (
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',
-    trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
   };
 
   const marketsConnectionWrapper = (

@@ -5,7 +5,7 @@ import type {
   DealTicketMarketFragment,
 } from '@vegaprotocol/deal-ticket';
 import { DealTicketBalance } from './deal-ticket-balance';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const tDAI: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'] =
   {
@@ -19,7 +19,7 @@ const tDAI: DealTicketMarketFragment['tradableInstrument']['instrument']['produc
 const accounts: AccountFragment[] = [
   {
     __typename: 'AccountBalance',
-    type: AccountType.ACCOUNT_TYPE_GENERAL,
+    type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '1000000',
     asset: tDAI,
   },
