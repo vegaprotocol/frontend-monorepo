@@ -26,16 +26,16 @@ const WillPass = ({
     return (
       <>
         {children}
-        <StatusPass>{t('pass')}</StatusPass>
-        <span>{t('finalOutcomeMayDiffer')}</span>
+        <StatusPass>{t('pass')}.</StatusPass>
+        <span className="ml-2">{t('finalOutcomeMayDiffer')}</span>
       </>
     );
   } else {
     return (
       <>
         {children}
-        <StatusFail>{t('fail')}</StatusFail>
-        <span>{t('finalOutcomeMayDiffer')}</span>
+        <StatusFail>{t('fail')}.</StatusFail>
+        <span className="ml-2">{t('finalOutcomeMayDiffer')}</span>
       </>
     );
   }
