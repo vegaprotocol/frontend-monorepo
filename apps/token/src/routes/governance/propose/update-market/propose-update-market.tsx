@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -35,26 +34,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../../../components/heading';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
-import type { ProposalMarketsQuery } from './__generated__/ProposalMarketsQuery';
 import { ProposalUserAction } from '../../components/shared';
-
-export const MARKETS_QUERY = gql`
-  query ProposalMarketsQuery {
-    marketsConnection {
-      edges {
-        node {
-          id
-          tradableInstrument {
-            instrument {
-              name
-              code
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { useProposalMarketsQueryQuery } from './__generated___/UpdateMarket';
 
 export interface UpdateMarketProposalFormFields {
   proposalVoteDeadline: string;
@@ -86,7 +67,7 @@ export const ProposeUpdateMarket = () => {
     data: marketsData,
     loading: marketsLoading,
     error: marketsError,
-  } = useQuery<ProposalMarketsQuery>(MARKETS_QUERY);
+  } = useProposalMarketsQueryQuery();
   const sortedMarkets = useMemo(() => {
     if (!marketsData?.marketsConnection?.edges.length) {
       return [];
