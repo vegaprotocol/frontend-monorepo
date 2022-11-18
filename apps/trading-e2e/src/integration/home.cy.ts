@@ -1,6 +1,52 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
+import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import { Schema } from '@vegaprotocol/types';
 
 const selectMarketOverlay = 'select-market-list';
+
+const generateProposal = (code: string): ProposalListFieldsFragment => ({
+  __typename: 'Proposal',
+  reference: '',
+  state: Schema.ProposalState.STATE_OPEN,
+  datetime: '',
+  votes: {
+    __typename: undefined,
+    yes: {
+      __typename: undefined,
+      totalTokens: '',
+      totalNumber: '',
+      totalWeight: '',
+    },
+    no: {
+      __typename: undefined,
+      totalTokens: '',
+      totalNumber: '',
+      totalWeight: '',
+    },
+  },
+  terms: {
+    __typename: 'ProposalTerms',
+    closingDatetime: '',
+    enactmentDatetime: undefined,
+    change: {
+      __typename: 'NewMarket',
+      instrument: {
+        __typename: 'InstrumentConfiguration',
+        code: code,
+        name: code,
+        futureProduct: {
+          __typename: 'FutureProduct',
+          settlementAsset: {
+            __typename: 'Asset',
+            id: 'A',
+            name: 'A',
+            symbol: 'A',
+          },
+        },
+      },
+    },
+  },
+});
 
 describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
@@ -51,9 +97,8 @@ describe('home', { tags: '@regression' }, () => {
     });
   });
 
-  describe('no default found', () => {
-    it('redirects to a the market list page if no sensible default is found', () => {
-      // Mock markets query that is triggered by home page to find default market
+  describe('no markets found', () => {
+    it('redirects to a the empty market page and displays welcome notice', () => {
       cy.mockGQL((req) => {
         const data = {
           marketsConnection: {
@@ -61,13 +106,30 @@ describe('home', { tags: '@regression' }, () => {
             edges: [],
           },
         };
+        const proposalA: ProposalListFieldsFragment =
+          generateProposal('AAAZZZ');
+
         aliasQuery(req, 'Markets', data);
         aliasQuery(req, 'MarketsData', data);
+        aliasQuery(req, 'ProposalsList', {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: [{ __typename: 'ProposalEdge', node: proposalA }],
+          },
+        });
       });
       cy.visit('/');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
-      cy.url().should('eq', Cypress.config().baseUrl + '/#/markets');
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/empty`);
+      cy.getByTestId('welcome-notice-title').should(
+        'contain.text',
+        'Welcome to Console'
+      );
+      cy.getByTestId('welcome-notice-proposed-markets').should(
+        'contain.text',
+        'AAAZZZ'
+      );
     });
   });
 });

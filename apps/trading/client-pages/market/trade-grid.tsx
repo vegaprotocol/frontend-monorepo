@@ -9,7 +9,7 @@ import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { memo, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, ComponentProps } from 'react';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
@@ -19,6 +19,7 @@ import {
   ResizableGridPanel,
   ButtonLink,
   Link,
+  Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -36,13 +37,32 @@ import { MarketMarkPrice } from '../../components/market-mark-price';
 import { MarketTradingModeComponent } from '../../components/market-trading-mode';
 import { Last24hVolume } from '../../components/last-24h-volume';
 
+const NO_MARKET = t('No market');
+
+type MarketDependantView =
+  | typeof CandlesChartContainer
+  | typeof DepthChartContainer
+  | typeof DealTicketContainer
+  | typeof MarketInfoContainer
+  | typeof OrderbookContainer
+  | typeof TradesContainer;
+
+type MarketDependantViewProps = ComponentProps<MarketDependantView>;
+
+const requiresMarket = (View: MarketDependantView) => {
+  const WrappedComponent = (props: MarketDependantViewProps) =>
+    props.marketId ? <View {...props} /> : <Splash>{NO_MARKET}</Splash>;
+  WrappedComponent.displayName = `RequiresMarket(${View.name})`;
+  return WrappedComponent;
+};
+
 const TradingViews = {
-  Candles: CandlesChartContainer,
-  Depth: DepthChartContainer,
-  Ticket: DealTicketContainer,
-  Info: MarketInfoContainer,
-  Orderbook: OrderbookContainer,
-  Trades: TradesContainer,
+  Candles: requiresMarket(CandlesChartContainer),
+  Depth: requiresMarket(DepthChartContainer),
+  Ticket: requiresMarket(DealTicketContainer),
+  Info: requiresMarket(MarketInfoContainer),
+  Orderbook: requiresMarket(OrderbookContainer),
+  Trades: requiresMarket(TradesContainer),
   Positions: PositionsContainer,
   Orders: OrderListContainer,
   Collateral: AccountsContainer,
@@ -52,11 +72,11 @@ const TradingViews = {
 type TradingView = keyof typeof TradingViews;
 
 type ExpiryLabelProps = {
-  market: SingleMarketFieldsFragment;
+  market: SingleMarketFieldsFragment | null;
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const content = getExpiryDate(market);
+  const content = market ? getExpiryDate(market) : '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
@@ -69,7 +89,7 @@ const ExpiryTooltipContent = ({
   market,
   explorerUrl,
 }: ExpiryTooltipContentProps) => {
-  if (market.marketTimestamps.close === null) {
+  if (market?.marketTimestamps.close === null) {
     const oracleId =
       market.tradableInstrument.instrument.product
         .dataSourceSpecForTradingTermination?.id;
@@ -94,7 +114,7 @@ const ExpiryTooltipContent = ({
 };
 
 interface TradeMarketHeaderProps {
-  market: SingleMarketFieldsFragment;
+  market: SingleMarketFieldsFragment | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -106,7 +126,7 @@ export const TradeMarketHeader = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const symbol =
-    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
+    market?.tradableInstrument.instrument.product?.settlementAsset?.symbol;
 
   const onCellClick: OnCellClickHandler = (e, kind, value) => {
     if (value && kind === ColumnKind.Asset) {
@@ -118,7 +138,7 @@ export const TradeMarketHeader = ({
     <Header
       title={
         <SelectMarketPopover
-          marketName={market.tradableInstrument.instrument.name}
+          marketName={market?.tradableInstrument.instrument.name || NO_MARKET}
           onSelect={onSelect}
           onCellClick={onCellClick}
         />
@@ -127,19 +147,21 @@ export const TradeMarketHeader = ({
       <HeaderStat
         heading={t('Expiry')}
         description={
-          <ExpiryTooltipContent
-            market={market}
-            explorerUrl={VEGA_EXPLORER_URL}
-          />
+          market && (
+            <ExpiryTooltipContent
+              market={market}
+              explorerUrl={VEGA_EXPLORER_URL}
+            />
+          )
         }
         testId="market-expiry"
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <MarketMarkPrice marketId={market.id} />
-      <Last24hPriceChange marketId={market.id} />
-      <Last24hVolume marketId={market.id} />
-      <MarketTradingModeComponent marketId={market.id} onSelect={onSelect} />
+      <MarketMarkPrice marketId={market?.id} />
+      <Last24hPriceChange marketId={market?.id} />
+      <Last24hVolume marketId={market?.id} />
+      <MarketTradingModeComponent marketId={market?.id} onSelect={onSelect} />
       {symbol ? (
         <HeaderStat
           heading={t('Settlement asset')}
@@ -161,7 +183,7 @@ export const TradeMarketHeader = ({
 };
 
 interface TradeGridProps {
-  market: SingleMarketFieldsFragment;
+  market: SingleMarketFieldsFragment | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -170,7 +192,7 @@ const MainGrid = ({
   onSelect,
 }: {
   marketId: string;
-  onSelect: (marketId: string) => void;
+  onSelect?: (marketId: string) => void;
 }) => (
   <ResizableGrid vertical>
     <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
@@ -205,7 +227,7 @@ const MainGrid = ({
                 <TradingViews.Info
                   marketId={marketId}
                   onSelect={(id: string) => {
-                    onSelect(id);
+                    onSelect?.(id);
                   }}
                 />
               </Tab>
@@ -260,7 +282,7 @@ export const TradeGrid = ({ market, onSelect }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} onSelect={onSelect} />
-      <MainGridWrapped marketId={market.id} onSelect={onSelect} />
+      <MainGridWrapped marketId={market?.id || ''} onSelect={onSelect} />
     </div>
   );
 };
@@ -280,7 +302,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
 };
 
 interface TradePanelsProps {
-  market: SingleMarketFieldsFragment;
+  market: SingleMarketFieldsFragment | null;
   onSelect: (marketId: string) => void;
 }
 
@@ -297,7 +319,9 @@ export const TradePanels = ({ market, onSelect }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component marketId={market.id} onSelect={onSelect} />;
+    if (!market) return <Splash>{NO_MARKET}</Splash>;
+
+    return <Component marketId={market?.id} onSelect={onSelect} />;
   };
 
   return (
