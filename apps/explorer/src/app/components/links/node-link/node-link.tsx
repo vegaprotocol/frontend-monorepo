@@ -3,7 +3,9 @@ import { Routes } from '../../../routes/route-names';
 import { useExplorerNodeQuery } from './__generated__/Node';
 import { Link } from 'react-router-dom';
 
-export type NodeLinkProps = {
+import type { ComponentProps } from 'react';
+
+export type NodeLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
 };
 
@@ -19,7 +21,7 @@ const NodeLink = ({ id, ...props }: NodeLinkProps) => {
   }
 
   return (
-    <Link className="underline" to={`/${Routes.VALIDATORS}#${id}`} {...props}>
+    <Link className="underline" {...props} to={`/${Routes.VALIDATORS}#${id}`}>
       {label}
     </Link>
   );
