@@ -22,9 +22,7 @@ export const TxDetailsChainEventDeposit = ({
     <>
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
-        <TableCell>
-          {deposit.sourceEthereumAddress || ''}
-        </TableCell>
+        <TableCell>{deposit.sourceEthereumAddress || ''}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>

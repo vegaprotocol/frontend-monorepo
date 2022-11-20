@@ -10,6 +10,7 @@ import { TxDetailsGeneric } from './tx-generic';
 import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxContent } from '../../../routes/txs/id/tx-content';
+import { TxDetailsNodeVote } from './tx-node-vote';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -75,6 +76,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsBatch;
     case 'Chain Event':
       return TxDetailsChainEvent;
+    case 'Node Vote':
+      return TxDetailsNodeVote;
     default:
       return TxDetailsGeneric;
   }

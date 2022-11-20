@@ -38,7 +38,9 @@ export const TxDetailsChainMultisigThreshold = ({
 
   if (multisigEvent.thresholdSet) {
     const blockTime = getBlockTime(multisigEvent.thresholdSet.blockTime);
-    const threshold = isNumber(multisigEvent.thresholdSet.newThreshold) ? multisigEvent.thresholdSet.newThreshold / 100 : '-'
+    const threshold = isNumber(multisigEvent.thresholdSet.newThreshold)
+      ? multisigEvent.thresholdSet.newThreshold / 100
+      : '-';
 
     return (
       <>
