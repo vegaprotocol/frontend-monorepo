@@ -3,7 +3,6 @@ import merge from 'lodash/merge';
 import { NodeList } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { PartialDeep } from 'type-fest';
 import type { NodesFragmentFragment } from './__generated___/Nodes';
 import { NodesDocument } from './__generated___/Nodes';
