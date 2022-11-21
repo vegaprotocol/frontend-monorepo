@@ -31,6 +31,7 @@ import { marketInfoDataProvider } from './market-info-data-provider';
 import { TokenLinks } from '@vegaprotocol/react-helpers';
 
 import type { MarketInfoQuery } from './__generated___/MarketInfo';
+import { MarketProposalNotification } from '@vegaprotocol/governance';
 
 export interface InfoProps {
   market: MarketInfoQuery['market'];
@@ -405,6 +406,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <Accordion panels={marketDataPanels} />
       </div>
       <div className="mb-8">
+        <MarketProposalNotification marketId={market.id} />
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>
