@@ -6,14 +6,13 @@ const defaultOptions = {} as const;
 export type NodeDataQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NodeDataQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string, stakedTotalFormatted: string } | null };
+export type NodeDataQuery = { __typename?: 'Query', nodeData?: { __typename?: 'NodeData', stakedTotal: string } | null };
 
 
 export const NodeDataDocument = gql`
     query NodeData {
   nodeData {
     stakedTotal
-    stakedTotalFormatted @client
   }
 }
     `;

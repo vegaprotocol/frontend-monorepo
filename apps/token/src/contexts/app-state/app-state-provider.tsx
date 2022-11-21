@@ -6,6 +6,7 @@ import type { AppState, AppStateAction } from './app-state-context';
 
 interface AppStateProviderProps {
   children: React.ReactNode;
+  initialState?: Partial<AppState>;
 }
 
 const initialAppState: AppState = {
@@ -149,8 +150,14 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
   }
 }
 
-export function AppStateProvider({ children }: AppStateProviderProps) {
-  const [state, dispatch] = React.useReducer(appStateReducer, initialAppState);
+export function AppStateProvider({
+  children,
+  initialState,
+}: AppStateProviderProps) {
+  const [state, dispatch] = React.useReducer(appStateReducer, {
+    ...initialAppState,
+    ...initialState,
+  });
 
   return (
     <AppStateContext.Provider

@@ -9,10 +9,6 @@ fragment StakingNodeFields on Node {
   stakedByDelegates
   stakedTotal
   pendingStake
-  stakedByOperatorFormatted @client
-  stakedByDelegatesFormatted @client
-  stakedTotalFormatted @client
-  pendingStakeFormatted @client
   epochData {
     total
     offline
@@ -37,7 +33,6 @@ query Staking($partyId: ID!) {
       edges {
         node {
           amount
-          amountFormatted @client
           epoch
           node {
             id
@@ -63,7 +58,6 @@ query Staking($partyId: ID!) {
   }
   nodeData {
     stakedTotal
-    stakedTotalFormatted @client
     totalNodes
     inactiveNodes
     validatingNodes
