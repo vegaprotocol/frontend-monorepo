@@ -12,9 +12,7 @@ import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { useNodesQuery } from './__generated___/Nodes';
 import type { ColDef } from 'ag-grid-community';
-import compact from 'lodash/compact';
 import { useNodesQuery } from './__generated___/Nodes';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
@@ -153,7 +151,10 @@ export const NodeList = () => {
             name,
           },
           [STATUS]: translatedStatus,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(toBigNum(stakedTotal, decimals), 2),
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(
+            toBigNum(stakedTotal, decimals),
+            2
+          ),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
           [PENDING_STAKE]: formatNumber(toBigNum(pendingStake, decimals), 2),
@@ -197,8 +198,9 @@ export const NodeList = () => {
 
     return removeTopThirdOfStakeScores.remaining;
   }, [
-    data?.nodeData?.stakedTotalFormatted,
+    data?.nodeData?.stakedTotal,
     data?.nodesConnection.edges,
+    decimals,
     hideTopThird,
     t,
   ]);
