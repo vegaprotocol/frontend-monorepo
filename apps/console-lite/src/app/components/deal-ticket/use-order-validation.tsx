@@ -6,10 +6,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MarketStateMapping, Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import type {
-  DealTicketMarketFragment,
-  OrderMargin,
-} from '@vegaprotocol/deal-ticket';
 import {
   MarketDataGrid,
   compileGridData,
@@ -18,6 +14,7 @@ import {
   ERROR_SIZE_DECIMAL,
   useOrderMarginValidation,
 } from '@vegaprotocol/deal-ticket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 export const DEAL_TICKET_SECTION = {
   TYPE: 'sec-type',
@@ -32,11 +29,9 @@ export const ERROR_EXPIRATION_IN_THE_PAST = 'ERROR_EXPIRATION_IN_THE_PAST';
 
 export type ValidationProps = {
   step?: number;
-  market: DealTicketMarketFragment;
-  orderType: Schema.OrderType;
-  orderTimeInForce: Schema.OrderTimeInForce;
+  market: MarketDealTicket;
+  order: OrderSubmissionBody['orderSubmission'];
   fieldErrors?: FieldErrors<OrderSubmissionBody['orderSubmission']>;
-  estMargin: OrderMargin | null;
 };
 
 export const marketTranslations = (marketState: Schema.MarketState) => {
@@ -55,9 +50,7 @@ export type DealTicketSection =
 export const useOrderValidation = ({
   market,
   fieldErrors,
-  orderType,
-  orderTimeInForce,
-  estMargin,
+  order,
 }: ValidationProps): {
   message: ReactNode | string;
   isDisabled: boolean;
@@ -65,7 +58,7 @@ export const useOrderValidation = ({
 } => {
   const { pubKey } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
-  const isInvalidOrderMargin = useOrderMarginValidation({ market, estMargin });
+  const isInvalidOrderMargin = useOrderMarginValidation({ market, order });
 
   const fieldErrorChecking = useMemo<{
     message: ReactNode | string;
@@ -91,7 +84,7 @@ export const useOrderValidation = ({
 
       if (
         fieldErrors?.price?.type === 'required' &&
-        orderType !== Schema.OrderType.TYPE_MARKET
+        order.type !== Schema.OrderType.TYPE_MARKET
       ) {
         return {
           isDisabled: true,
@@ -102,7 +95,7 @@ export const useOrderValidation = ({
 
       if (
         fieldErrors?.price?.type === 'min' &&
-        orderType !== Schema.OrderType.TYPE_MARKET
+        order.type !== Schema.OrderType.TYPE_MARKET
       ) {
         return {
           isDisabled: true,
@@ -151,7 +144,7 @@ export const useOrderValidation = ({
     fieldErrors?.price?.type,
     fieldErrors?.expiresAt?.type,
     fieldErrors?.expiresAt?.message,
-    orderType,
+    order.type,
     minSize,
     market.positionDecimalPlaces,
   ]);
@@ -210,7 +203,7 @@ export const useOrderValidation = ({
     }
 
     if (isMarketInAuction(market)) {
-      if (orderType === Schema.OrderType.TYPE_MARKET) {
+      if (order.type === Schema.OrderType.TYPE_MARKET) {
         if (
           market.tradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
@@ -269,12 +262,12 @@ export const useOrderValidation = ({
         };
       }
       if (
-        orderType === Schema.OrderType.TYPE_LIMIT &&
+        order.type === Schema.OrderType.TYPE_LIMIT &&
         [
           Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
           Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
           Schema.OrderTimeInForce.TIME_IN_FORCE_GFN,
-        ].includes(orderTimeInForce)
+        ].includes(order.timeInForce)
       ) {
         if (
           market.tradingMode ===
@@ -343,17 +336,14 @@ export const useOrderValidation = ({
       return fieldErrorChecking;
     }
 
-    if (
-      isInvalidOrderMargin.balance.isGreaterThan(0) &&
-      isInvalidOrderMargin.balance.isLessThan(isInvalidOrderMargin.margin)
-    ) {
+    if (isInvalidOrderMargin.balanceError) {
       return {
         isDisabled: false,
         message: (
           <MarginWarning
-            margin={isInvalidOrderMargin.margin.toString()}
-            balance={isInvalidOrderMargin.balance.toString()}
-            asset={isInvalidOrderMargin.asset}
+            margin={isInvalidOrderMargin.margin}
+            balance={isInvalidOrderMargin.balance}
+            asset={market.tradableInstrument.instrument.product.settlementAsset}
           />
         ),
         section: DEAL_TICKET_SECTION.PRICE,
@@ -386,8 +376,8 @@ export const useOrderValidation = ({
     market,
     fieldErrorChecking,
     isInvalidOrderMargin,
-    orderType,
-    orderTimeInForce,
+    order.type,
+    order.timeInForce,
   ]);
 
   return { message, isDisabled, section };

@@ -4,27 +4,21 @@ import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketDataUpdateFieldsFragment,
   MarketDealTicket,
-  SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
 import { marketDealTicketProvider } from '@vegaprotocol/market-list';
 import { DealTicketManager } from './deal-ticket-manager';
 
 export interface DealTicketContainerProps {
   marketId: string;
-  children?(props: SingleMarketFieldsFragment): JSX.Element;
 }
 
-export const DealTicketContainer = ({
-  marketId,
-  children,
-}: DealTicketContainerProps) => {
+export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
   const variables = useMemo(
     () => ({
       marketId: marketId || '',
     }),
     [marketId]
   );
-
   const { data, error, loading } = useDataProvider<
     MarketDealTicket,
     MarketDataUpdateFieldsFragment
@@ -41,11 +35,7 @@ export const DealTicketContainer = ({
       error={error}
     >
       {data ? (
-        children ? (
-          children(data)
-        ) : (
-          <DealTicketManager market={data} />
-        )
+        <DealTicketManager market={data} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
