@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import {
   getDefaultOrder,
   useOrderCloseOut,

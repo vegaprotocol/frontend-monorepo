@@ -1,6 +1,6 @@
-import { removeDecimal, t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';

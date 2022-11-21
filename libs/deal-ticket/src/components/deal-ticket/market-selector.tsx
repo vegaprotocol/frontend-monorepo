@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
-import type { DealTicketMarketFragment } from './';
 import {
   ButtonLink,
   Icon,

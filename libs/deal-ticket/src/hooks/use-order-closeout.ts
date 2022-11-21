@@ -7,7 +7,6 @@ import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
 import { Schema } from '@vegaprotocol/types';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useSettlementAccount } from './use-settlement-account';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
