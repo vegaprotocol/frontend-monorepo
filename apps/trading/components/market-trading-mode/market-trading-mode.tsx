@@ -17,8 +17,8 @@ import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 
 interface Props {
-  marketId: string;
-  onSelect: (marketId: string) => void;
+  marketId?: string;
+  onSelect?: (marketId: string) => void;
 }
 
 type TradingModeMarket = Omit<DealTicketMarketFragment, 'depth'>;
@@ -63,6 +63,13 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
     skip: !marketId || !data,
   });
 
+  const content =
+    tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    trigger &&
+    trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+      ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
+      : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode];
+
   return (
     <HeaderStat
       heading={t('Trading mode')}
@@ -77,14 +84,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
       }
       testId="market-trading-mode"
     >
-      <div>
-        {tradingMode ===
-          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        trigger &&
-        trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
-          : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]}
-      </div>
+      <div>{content || '-'}</div>
     </HeaderStat>
   );
 };

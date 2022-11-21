@@ -14,7 +14,7 @@ import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const MarketMarkPrice = ({ marketId }: { marketId: string }) => {
+export const MarketMarkPrice = ({ marketId }: { marketId?: string }) => {
   const [marketPrice, setMarketPrice] = useState<string | null>(null);
   const variables = useMemo(
     () => ({

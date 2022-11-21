@@ -77,7 +77,7 @@ describe('Close position dialog - Request', () => {
     );
     const closingOrderRow = closingOrderTable.getAllByRole('row');
     expect(closingOrderRow[0].children[0]).toHaveTextContent('test market');
-    expect(closingOrderRow[0].children[1]).toHaveTextContent('+0.10');
+    expect(closingOrderRow[0].children[1]).toHaveTextContent('+0.1');
     expect(closingOrderRow[0].children[2]).toHaveTextContent('~1.00 SYM');
 
     // orders
@@ -87,13 +87,13 @@ describe('Close position dialog - Request', () => {
     );
     const orderRows = ordersTable.getAllByRole('row');
     expect(orderRows).toHaveLength(orders.length);
-    expect(orderRows[0].children[0]).toHaveTextContent('+2.00');
+    expect(orderRows[0].children[0]).toHaveTextContent('+2');
     expect(orderRows[0].children[1]).toHaveTextContent('9.99 SYM');
     expect(orderRows[0].children[2]).toHaveTextContent(
       "Good 'til Cancelled (GTC)"
     );
 
-    expect(orderRows[1].children[0]).toHaveTextContent('-3.00');
+    expect(orderRows[1].children[0]).toHaveTextContent('-3');
     expect(orderRows[1].children[1]).toHaveTextContent('8.88 SYM');
     expect(orderRows[1].children[2]).toHaveTextContent(
       "Good 'til Cancelled (GTC)"
