@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import type { Schema as Types } from '@vegaprotocol/types';
 import {
@@ -21,7 +21,7 @@ interface Props {
   onSelect?: (marketId: string) => void;
 }
 
-type TradingModeMarket = Omit<DealTicketMarketFragment, 'depth'>;
+type TradingModeMarket = Omit<MarketDealTicket, 'depth'>;
 
 export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
   const [tradingMode, setTradingMode] =

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 export const compileGridData = (
-  market: MarketDealTicket,
+  market: Omit<MarketDealTicket, 'depth'>,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: MarketDataGridProps['grid'] = [];
