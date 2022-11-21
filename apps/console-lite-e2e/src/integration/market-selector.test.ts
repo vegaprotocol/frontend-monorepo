@@ -3,7 +3,6 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateMarket,
   generateMarketData,
-  generateMarketLastTrade,
   generateMarketsCandles,
   generateMarketsData,
   generateSimpleMarkets,
@@ -31,7 +30,6 @@ describe('market selector', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'MarketData', generateMarketData());
       aliasQuery(req, 'Market', generateMarket());
-      aliasQuery(req, 'MarketLastTrade', generateMarketLastTrade());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());

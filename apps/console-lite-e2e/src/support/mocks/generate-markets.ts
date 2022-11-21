@@ -13,7 +13,6 @@ import type { PartialDeep } from 'type-fest';
 import type { MarketQuery } from '@vegaprotocol/market-list';
 import type {
   MarketDataQuery,
-  MarketLastTradeQuery,
 } from '@vegaprotocol/market-list';
 
 export const generateSimpleMarkets = (): MarketsQuery => {
@@ -1413,19 +1412,6 @@ export const generateMarketData = (): MarketDataQuery => {
           },
         },
       ],
-    },
-  };
-};
-
-export const generateMarketLastTrade = (): MarketLastTradeQuery => {
-  return {
-    market: {
-      __typename: 'Market',
-      id: protoMarket.id,
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: { price: '9893006', __typename: 'Trade' },
-      },
     },
   };
 };

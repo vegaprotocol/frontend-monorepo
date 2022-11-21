@@ -5,7 +5,6 @@ import type {
   MarketData,
   MarketQuery,
   MarketsDataQuery,
-  MarketLastTradeQuery,
 } from '@vegaprotocol/market-list';
 
 export const generateMarket = (
@@ -68,6 +67,10 @@ export const generateMarket = (
         },
       },
       __typename: 'Market',
+      depth: {
+        __typename: 'MarketDepth',
+        lastTrade: { price: '100', __typename: 'Trade' },
+      },
     },
   };
 
@@ -119,17 +122,4 @@ export const generateMarketData = (
   };
 
   return marketsConnectionWrapper(merge(defaultMarket, override));
-};
-
-export const generateMarketLastTrade = (): MarketLastTradeQuery => {
-  return {
-    market: {
-      __typename: 'Market',
-      id: 'market-0',
-      depth: {
-        __typename: 'MarketDepth',
-        lastTrade: { price: '100', __typename: 'Trade' },
-      },
-    },
-  };
 };

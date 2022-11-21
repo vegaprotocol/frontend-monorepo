@@ -9,7 +9,6 @@ import { generateChart } from './mocks/generate-chart';
 import {
   generateMarket,
   generateMarketData,
-  generateMarketLastTrade,
 } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
@@ -100,7 +99,6 @@ const mockTradingPage = (
   aliasQuery(req, 'MarketPositions', generatePositions());
   aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
   aliasQuery(req, 'ProposalsList', generateMarketProposals());
-  aliasQuery(req, 'MarketLastTrade', generateMarketLastTrade());
 };
 
 declare global {
