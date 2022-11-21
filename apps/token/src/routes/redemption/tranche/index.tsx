@@ -1,9 +1,9 @@
+import { useBalances } from '../../../lib/balances/balances-store';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import {
   TransactionActionType,
@@ -25,9 +25,8 @@ export const RedeemFromTranche = () => {
   }>();
   const { vesting } = useContracts();
   const { t } = useTranslation();
-  const {
-    appState: { lien, totalVestedBalance, trancheBalances, totalLockedBalance },
-  } = useAppState();
+  const { lien, totalVestedBalance, trancheBalances, totalLockedBalance } =
+    useBalances();
   const refreshBalances = useRefreshBalances(address);
   const getUserTrancheBalances = useGetUserTrancheBalances(address, vesting);
   const { id } = useParams<{ id: string }>();

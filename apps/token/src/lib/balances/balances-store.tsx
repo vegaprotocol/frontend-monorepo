@@ -18,14 +18,11 @@ export type BalancesStore = {
   lien: BigNumber;
   walletAssociatedBalance: BigNumber;
   vestingAssociatedBalance: BigNumber;
+  updateBalances: (balances: Partial<RefreshBalances>) => void;
+  setAllowance: (allowance: BigNumber) => void;
+  setAssociationBreakdown: (associationBreakdown: AssociationBreakdown) => void;
+  setTranchesBalances: (trancheBalances: UserTrancheBalance[]) => void;
 };
-
-export interface UpdateBalances {
-  balanceFormatted: BigNumber;
-  walletBalance: BigNumber;
-  allowance: BigNumber;
-  lien: BigNumber;
-}
 
 export interface RefreshBalances {
   balanceFormatted: BigNumber;
@@ -50,11 +47,10 @@ export const useBalances = create<BalancesStore>((set) => ({
   lien: new BigNumber(0),
   walletAssociatedBalance: new BigNumber(0),
   vestingAssociatedBalance: new BigNumber(0),
-  updateBalances: (balances: UpdateBalances) =>
+  updateBalances: (balances: Partial<RefreshBalances>) =>
     set({
       ...balances,
     }),
-  refreshBalances: (balances: RefreshBalances) => set({ ...balances }),
   setAllowance: (allowance: BigNumber) => set({ allowance }),
   setAssociationBreakdown: (associationBreakdown: AssociationBreakdown) =>
     set({ associationBreakdown }),

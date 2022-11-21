@@ -5,7 +5,6 @@ import { Select } from '@vegaprotocol/ui-toolkit';
 import { StakingMethod } from '../../../../../components/staking-method-radio';
 import { TokenInput } from '../../../../../components/token-input';
 import { TxState } from '../../../../../hooks/transaction-reducer';
-import { useAppState } from '../../../../../contexts/app-state/app-state-context';
 import { useRefreshAssociatedBalances } from '../../../../../hooks/use-refresh-associated-balances';
 import { useRemoveStake } from '../../hooks';
 import type { RemoveStakePayload } from '../../hooks';
@@ -14,6 +13,7 @@ import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BigNumber } from '../../../../../lib/bignumber';
 import { truncateMiddle } from '../../../../../lib/truncate-middle';
+import { useBalances } from '../../../../../lib/balances/balances-store';
 
 type Association = {
   /**
@@ -55,11 +55,9 @@ export const DisassociatePage = ({
 }) => {
   const { t } = useTranslation();
 
-  const {
-    appState: {
-      associationBreakdown: { stakingAssociations, vestingAssociations },
-    },
-  } = useAppState();
+  const { stakingAssociations, vestingAssociations } = useBalances(
+    (state) => state.associationBreakdown
+  );
 
   const associations = useMemo(
     () =>

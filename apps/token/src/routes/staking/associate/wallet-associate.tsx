@@ -2,10 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TokenInput } from '../../../components/token-input';
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../../contexts/app-state/app-state-context';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { TxState } from '../../../hooks/transaction-reducer';
 import { useTransaction } from '../../../hooks/use-transaction';
@@ -13,6 +10,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import { removeDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 import type { EthereumConfig } from '@vegaprotocol/web3';
+import { useBalances } from '../../../lib/balances/balances-store';
 
 export const WalletAssociate = ({
   perform,
@@ -31,9 +29,10 @@ export const WalletAssociate = ({
 }) => {
   const { t } = useTranslation();
   const {
-    appDispatch,
-    appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
+    appState: { decimals },
   } = useAppState();
+  const { walletBalance, allowance, walletAssociatedBalance, setAllowance } =
+    useBalances();
   const { token } = useContracts();
 
   const {
@@ -56,20 +55,17 @@ export const WalletAssociate = ({
           ethereumConfig.staking_bridge_contract.address
         );
         const allowance = toBigNum(a, decimals);
-        appDispatch({
-          type: AppStateActionType.SET_ALLOWANCE,
-          allowance,
-        });
+        setAllowance(allowance);
       }
     };
     run();
   }, [
     address,
-    appDispatch,
     approveState.txState,
     token,
     decimals,
     ethereumConfig,
+    setAllowance,
   ]);
 
   let pageContent = null;

@@ -25,6 +25,7 @@ import {
 } from '../wallet-card';
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import colors from 'tailwindcss/colors';
+import { useBalances } from '../../lib/balances/balances-store';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -92,31 +93,31 @@ const AssociatedAmounts = ({
 
 const ConnectedKey = () => {
   const { t } = useTranslation();
-  const { appState } = useAppState();
-  const { walletBalance, totalLockedBalance, totalVestedBalance } = appState;
+  const {
+    appState: { decimals },
+  } = useAppState();
+  const {
+    walletBalance,
+    totalLockedBalance,
+    totalVestedBalance,
+    associationBreakdown,
+  } = useBalances();
 
   const totalInVestingContract = React.useMemo(() => {
     return totalLockedBalance.plus(totalVestedBalance);
   }, [totalLockedBalance, totalVestedBalance]);
 
   const notAssociatedInContract = React.useMemo(() => {
-    const totals = Object.values(
-      appState.associationBreakdown.vestingAssociations
-    );
+    const totals = Object.values(associationBreakdown.vestingAssociations);
     const associated = BigNumber.sum.apply(null, [new BigNumber(0), ...totals]);
     return totalInVestingContract.minus(associated);
-  }, [
-    appState.associationBreakdown.vestingAssociations,
-    totalInVestingContract,
-  ]);
+  }, [associationBreakdown.vestingAssociations, totalInVestingContract]);
 
   const walletWithAssociations = React.useMemo(() => {
-    const totals = Object.values(
-      appState.associationBreakdown.stakingAssociations
-    );
+    const totals = Object.values(associationBreakdown.stakingAssociations);
     const associated = BigNumber.sum.apply(null, [new BigNumber(0), ...totals]);
     return walletBalance.plus(associated);
-  }, [appState.associationBreakdown.stakingAssociations, walletBalance]);
+  }, [associationBreakdown.stakingAssociations, walletBalance]);
 
   return (
     <>
@@ -125,7 +126,7 @@ const ConnectedKey = () => {
           <section>
             <WalletCardAsset
               image={vegaVesting}
-              decimals={appState.decimals}
+              decimals={decimals}
               name="VEGA"
               symbol="In vesting contract"
               balance={totalInVestingContract}
@@ -139,10 +140,10 @@ const ConnectedKey = () => {
             />
           </section>
         )}
-        {!Object.keys(appState.associationBreakdown.vestingAssociations)
+        {!Object.keys(associationBreakdown.vestingAssociations)
           .length ? null : (
           <AssociatedAmounts
-            associations={appState.associationBreakdown.vestingAssociations}
+            associations={associationBreakdown.vestingAssociations}
             notAssociated={notAssociatedInContract}
           />
         )}
@@ -150,16 +151,14 @@ const ConnectedKey = () => {
       <section data-testid="vega-in-wallet">
         <WalletCardAsset
           image={vegaWhite}
-          decimals={appState.decimals}
+          decimals={decimals}
           name="VEGA"
           symbol="In Wallet"
           balance={walletWithAssociations}
         />
-        {!Object.keys(
-          appState.associationBreakdown.stakingAssociations
-        ) ? null : (
+        {!Object.keys(associationBreakdown.stakingAssociations) ? null : (
           <AssociatedAmounts
-            associations={appState.associationBreakdown.stakingAssociations}
+            associations={associationBreakdown.stakingAssociations}
             notAssociated={walletBalance}
           />
         )}

@@ -31,15 +31,6 @@ export interface UserTrancheBalance {
 }
 
 export interface AppState {
-  /** Users vesting balance across all tranches */
-  balanceFormatted: BigNumber;
-
-  /** Users balance of VEGA in Metamask */
-  walletBalance: BigNumber;
-
-  /** Amount of tokens associated for a given eth address  */
-  lien: BigNumber;
-
   /** Array of tranche objects */
   tranches: Tranche[] | null;
 
@@ -52,18 +43,6 @@ export interface AppState {
   /** Total number of VEGA Tokens, both vesting and unlocked, associated for staking */
   totalAssociated: BigNumber;
 
-  /** Users total unlocked tokens */
-  totalVestedBalance: BigNumber;
-
-  /** Users total locked (vesting) tokens */
-  totalLockedBalance: BigNumber;
-
-  /** Breakdown of users vesting/vested balances across tranches */
-  trancheBalances: UserTrancheBalance[];
-
-  /** Approved amount of VEGA to be associated for staking */
-  allowance: BigNumber;
-
   /** Whether or not the connect to VEGA wallet overlay is open */
   vegaWalletOverlay: boolean;
 
@@ -73,26 +52,11 @@ export interface AppState {
   /** Whether or not the connect to Ethereum wallet overlay is open */
   ethConnectOverlay: boolean;
 
-  /** Amount of tokens associated with the current Vega key from wallet*/
-  walletAssociatedBalance: BigNumber | null;
-
-  /** Amount of tokens associated with the current Vega key from vesting contract*/
-  vestingAssociatedBalance: BigNumber | null;
-
   /** The error if one was thrown during retrieval of tranche data */
   trancheError: Error | null;
 
   /** Whether or not the mobile drawer is open. Only relevant on screens smaller than 960 */
   drawerOpen: boolean;
-
-  /**
-   * A breakdown of associations by Vega key. An object where each key is the vega key and
-   * the value is the total amount associated (staking and vesting combined) to that key.
-   */
-  associationBreakdown: {
-    stakingAssociations: { [vegaKey: string]: BigNumber };
-    vestingAssociations: { [vegaKey: string]: BigNumber };
-  };
 
   /**  Whether or not the transaction modal is open */
   transactionOverlay: boolean;
@@ -121,34 +85,13 @@ export enum AppStateActionType {
 
 export type AppStateAction =
   | {
-      type: AppStateActionType.UPDATE_ACCOUNT_BALANCES;
-      balance: BigNumber;
-      walletBalance: BigNumber;
-      lien: BigNumber;
-      allowance: BigNumber;
-    }
-  | {
       type: AppStateActionType.SET_TOKEN;
       decimals: number;
       totalSupply: BigNumber;
       totalAssociated: BigNumber;
     }
   | {
-      type: AppStateActionType.SET_ALLOWANCE;
-      allowance: BigNumber;
-    }
-  | {
-      type: AppStateActionType.REFRESH_BALANCES;
-      balance: BigNumber;
-      walletBalance: BigNumber;
-      lien: BigNumber;
-      allowance: BigNumber;
-      walletAssociatedBalance: BigNumber | null;
-      vestingAssociatedBalance: BigNumber | null;
-    }
-  | {
       type: AppStateActionType.SET_TRANCHE_DATA;
-      trancheBalances: UserTrancheBalance[];
       tranches: Tranche[];
     }
   | {
@@ -170,18 +113,6 @@ export type AppStateAction =
   | {
       type: AppStateActionType.SET_DRAWER;
       isOpen: boolean;
-    }
-  | {
-      type: AppStateActionType.REFRESH_ASSOCIATED_BALANCES;
-      walletAssociatedBalance: BigNumber;
-      vestingAssociatedBalance: BigNumber;
-    }
-  | {
-      type: AppStateActionType.SET_ASSOCIATION_BREAKDOWN;
-      breakdown: {
-        stakingAssociations: { [vegaKey: string]: BigNumber };
-        vestingAssociations: { [vegaKey: string]: BigNumber };
-      };
     }
   | {
       type: AppStateActionType.SET_TRANSACTION_OVERLAY;
