@@ -43,7 +43,7 @@ describe('LiquidityTable', () => {
       'Commitment ()',
       'Share',
       'Proposed fee',
-      'Average entry valuation',
+      'Market valuation at entry',
       'Obligation',
       'Supplied',
       'Status',

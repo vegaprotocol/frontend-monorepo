@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { StatusMessage } from '../../../components/status-message';
 import { NestedDataList } from '../../../components/nested-data-list';
+import type { UnknownObject } from '../../../components/nested-data-list';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 
 interface TxContentProps {
@@ -16,5 +17,5 @@ export const TxContent = ({ data }: TxContentProps) => {
     );
   }
 
-  return <NestedDataList data={data.command} />;
+  return <NestedDataList data={data.command as unknown as UnknownObject} />;
 };

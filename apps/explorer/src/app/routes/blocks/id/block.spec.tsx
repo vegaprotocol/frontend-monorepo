@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Routes as RouteNames } from '../../route-names';
 import { useFetch } from '@vegaprotocol/react-helpers';
+import { MockedProvider } from '@apollo/client/testing';
 
 jest.mock('@vegaprotocol/react-helpers', () => {
   const original = jest.requireActual('@vegaprotocol/react-helpers');
@@ -121,11 +122,13 @@ const createBlockResponse = (id: number = blockId) => {
 
 const renderComponent = (id: number = blockId) => {
   return (
-    <MemoryRouter initialEntries={[`/${RouteNames.BLOCKS}/${id}`]}>
-      <Routes>
-        <Route path={`/${RouteNames.BLOCKS}/:block`} element={<Block />} />
-      </Routes>
-    </MemoryRouter>
+    <MockedProvider>
+      <MemoryRouter initialEntries={[`/${RouteNames.BLOCKS}/${id}`]}>
+        <Routes>
+          <Route path={`/${RouteNames.BLOCKS}/:block`} element={<Block />} />
+        </Routes>
+      </MemoryRouter>
+    </MockedProvider>
   );
 };
 
@@ -168,11 +171,13 @@ describe('Block', () => {
     expect(screen.getByTestId('block-header')).toHaveTextContent(
       `BLOCK ${blockId}`
     );
+    const expectedValidator = '1C9B6E2708F8217F8D5BFC8D8734ED9A5BC19B21';
     const proposer = screen.getByTestId('block-validator');
-    expect(proposer).toHaveTextContent(
-      '1C9B6E2708F8217F8D5BFC8D8734ED9A5BC19B21'
+    expect(proposer).toHaveTextContent(expectedValidator);
+    expect(proposer).toHaveAttribute(
+      'href',
+      `/${RouteNames.VALIDATORS}#${expectedValidator}`
     );
-    expect(proposer).toHaveAttribute('href', `/${RouteNames.VALIDATORS}`);
     expect(screen.getByTestId('block-time')).toHaveTextContent(
       '59 minutes ago'
     );

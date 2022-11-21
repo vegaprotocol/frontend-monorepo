@@ -1,0 +1,7 @@
+query ExplorerNode($id: ID!) {
+  node(id: $id) {
+    id
+    name
+    status
+  }
+}
