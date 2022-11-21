@@ -6,7 +6,6 @@ import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChainId } from './mocks/generate-chain-id';
 import { generateChart } from './mocks/generate-chart';
-import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
 import {
   generateMarket,
   generateMarketData,
@@ -74,19 +73,6 @@ const mockTradingPage = (
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
   aliasQuery(req, 'Margins', generateMargins());
-  aliasQuery(
-    req,
-    'DealTicket',
-    generateDealTicketQuery({
-      market: {
-        state,
-        tradingMode: tradingMode,
-        data: {
-          trigger: trigger,
-        },
-      },
-    })
-  );
   aliasQuery(req, 'Assets', generateAssets());
   aliasQuery(req, 'Asset', generateAsset());
 
