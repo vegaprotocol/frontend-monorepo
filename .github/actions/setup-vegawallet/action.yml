@@ -28,7 +28,7 @@ runs:
 
     - name: Import network
       shell: bash
-      run: vega wallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/master/stagnet3/stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
+      run: vega wallet network import --from-url="https://raw.githubusercontent.com/vegaprotocol/networks-internal/main/stagnet3/vegawallet-stagnet3.toml" --force --home ~/.vegacapsule/testnet/wallet
 
     - name: Start service using stagnet3 network
       shell: bash
