@@ -8,6 +8,9 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsChainMultisigThreshold } from './chain-events/tx-erc20-threshold';
 import { TxDetailsChainMultisigSigner } from './chain-events/tx-erc20-signer';
 import { TxDetailsChainEventBuiltinDeposit } from './chain-events/tx-builtin-deposit';
+import { TxDetailsChainEventStakeDeposit } from './chain-events/tx-stake-deposit';
+import { TxDetailsChainEventStakeRemove } from './chain-events/tx-stake-remove';
+import { TxDetailsChainEventStakeTotalSupply } from './chain-events/tx-stake-totalsupply';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -69,6 +72,23 @@ function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
     txData?.command.chainEvent?.erc20Multisig?.signerRemoved;
   if (signerRemoved) {
     return <TxDetailsChainMultisigSigner signer={signerRemoved} />;
+  }
+
+  const stakeDeposited =
+    txData?.command.chainEvent?.stakingEvent?.stakeDeposited;
+  if (stakeDeposited) {
+    return <TxDetailsChainEventStakeDeposit deposit={stakeDeposited} />;
+  }
+
+  const stakeRemoved = txData?.command.chainEvent?.stakingEvent?.stakeRemoved;
+  if (stakeRemoved) {
+    return <TxDetailsChainEventStakeRemove remove={stakeRemoved} />;
+  }
+
+  const stakeTotalSupply =
+    txData?.command.chainEvent?.stakingEvent?.totalSupply;
+  if (stakeTotalSupply) {
+    return <TxDetailsChainEventStakeTotalSupply update={stakeTotalSupply} />;
   }
 
   return null;

@@ -2,7 +2,7 @@ import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
-import { isNumber } from 'lodash';
+import isNumber from 'lodash/isNumber';
 
 /**
  * Returns a reasonably formatted time from unix timestamp of block height
@@ -39,11 +39,15 @@ export const TxDetailsChainMultisigThreshold = ({
   if (multisigEvent.thresholdSet) {
     const blockTime = getBlockTime(multisigEvent.thresholdSet.blockTime);
     const threshold = isNumber(multisigEvent.thresholdSet.newThreshold)
-      ? multisigEvent.thresholdSet.newThreshold / 100
+      ? multisigEvent.thresholdSet.newThreshold / 10
       : '-';
 
     return (
       <>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Chain Event type')}</TableCell>
+          <TableCell>{t('ERC20 multisig threshold set')}</TableCell>
+        </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Threshold')}</TableCell>
           <TableCell>{threshold}%</TableCell>

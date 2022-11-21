@@ -42,7 +42,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
               </TableRow>
             </thead>
             <tbody>
-              {decodedBlockData.map(({ TxHash, PubKey, Type }) => {
+              {decodedBlockData.map(({ TxHash, PubKey, Type, Command }) => {
                 return (
                   <TableRow
                     modifier="bordered"
@@ -66,7 +66,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                       />
                     </TableCell>
                     <TableCell modifier="bordered">
-                      <TxOrderType orderType={Type} />
+                      <TxOrderType orderType={Type} command={Command} />
                     </TableCell>
                   </TableRow>
                 );

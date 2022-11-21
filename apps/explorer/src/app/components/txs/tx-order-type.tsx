@@ -1,5 +1,9 @@
+import type { components } from '../../../types/explorer';
+
 interface TxOrderTypeProps {
   orderType: string;
+  command?: string;
+  decodedCommand?: components['schemas']['v1InputData'];
   className?: string;
 }
 
@@ -32,13 +36,43 @@ const displayString: StringMap = {
   ValidatorHeartbeat: 'Validator Heartbeat',
 };
 
-export const TxOrderType = ({ orderType }: TxOrderTypeProps) => {
+export const TxOrderType = ({
+  orderType,
+  command,
+  decodedCommand,
+}: TxOrderTypeProps) => {
+  let type = displayString[orderType] || orderType;
+
+  let colours = 'text-white dark:text-white bg-zinc-800 dark:bg-zinc-800';
+
+  // This will get unwieldy and should probably produce a different colour of tag
+  if (type === 'Chain Event' && (!!command || !!decodedCommand)) {
+    const cmd = decodedCommand ? decodedCommand : JSON.parse(command || '');
+    colours =
+      'text-white dark-text-white bg-vega-pink-dark dark:bg-vega-pink-dark';
+
+    // The double check is due to decodedCommand being slightly different to command
+    // Remove when we no longer use chainExplorer api
+    if (cmd?.builtin || cmd?.chainEvent?.builtin) {
+      if (cmd?.builtin?.deposit) {
+        type = 'Built-in deposit';
+      } else {
+        type = 'Built-in event';
+      }
+    } else if (cmd?.erc20 || cmd?.chainEvent?.erc20) {
+      type = 'ERC20 event';
+    } else if (cmd?.stakingEvent || cmd?.chainEvent?.stakingEvent) {
+      type = 'Staking event';
+    } else if (cmd?.erc20Multisig) {
+      type = 'Multisig update';
+    }
+  }
   return (
     <div
       data-testid="tx-type"
-      className="text-sm rounded-md leading-none px-2 py-2 inline-block text-white dark:text-white bg-zinc-800	dark:bg-zinc-800	"
+      className={`text-sm rounded-md leading-none px-2 py-2 inline-block ${colours}`}
     >
-      {displayString[orderType] || orderType}
+      {type}
     </div>
   );
 };

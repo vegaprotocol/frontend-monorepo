@@ -31,6 +31,12 @@ export const TxDetailsChainMultisigSigner = ({
   return (
     <>
       <TableRow modifier="bordered">
+        <TableCell>{t('Chain Event type')}</TableCell>
+        {'newSigner' in signer
+          ? t('Add ERC20 bridge multisig signer')
+          : t('Remove ERC20 bridge multsig signer')}
+      </TableRow>
+      <TableRow modifier="bordered">
         <TableCell>
           {'newSigner' in signer ? t('Add signer') : t('Remove signer')}
         </TableCell>

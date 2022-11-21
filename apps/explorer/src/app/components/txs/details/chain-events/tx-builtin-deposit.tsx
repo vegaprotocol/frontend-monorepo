@@ -23,6 +23,10 @@ export const TxDetailsChainEventBuiltinDeposit = ({
   return (
     <>
       <TableRow modifier="bordered">
+        <TableCell>{t('Chain Event type')}</TableCell>
+        <TableCell>{t('Built-in asset deposit')}</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
           <PartyLink id={deposit.partyId || ''} />
@@ -31,7 +35,7 @@ export const TxDetailsChainEventBuiltinDeposit = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={deposit.vegaAssetId || ''} />
+          <AssetLink id={deposit.vegaAssetId || ''} /> ({t('built in asset')})
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

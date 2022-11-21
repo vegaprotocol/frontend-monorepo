@@ -13,6 +13,7 @@ export const TxsInfiniteListItem = ({
   type,
   block,
   index,
+  command,
 }: Partial<BlockExplorerTransactionResult>) => {
   if (
     !hash ||
@@ -54,7 +55,7 @@ export const TxsInfiniteListItem = ({
         />
       </div>
       <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
-        <TxOrderType orderType={type} />
+        <TxOrderType orderType={type} decodedCommand={command} />
       </div>
       <div
         className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"

@@ -6,6 +6,7 @@ import { TimeAgo } from '../../../time-ago';
 
 import type { BlockExplorerTransactionResult } from '../../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../../routes/blocks/tendermint-blocks-response';
+import { Time } from '../../../time';
 
 interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -29,11 +30,6 @@ export const TxDetailsShared = ({
 
   const time: string = blockData?.result.block.header.time || '';
   const height: string = blockData?.result.block.header.height || '';
-  let timeFormatted = '';
-
-  if (time) {
-    timeFormatted = new Date(time).toLocaleString();
-  }
 
   return (
     <>
@@ -56,7 +52,9 @@ export const TxDetailsShared = ({
         <TableCell>
           {time ? (
             <div>
-              <span className="mr-5">{timeFormatted} </span>
+              <span className="mr-5">
+                <Time date={time} />
+              </span>
               <span>
                 <TimeAgo date={time} />
               </span>

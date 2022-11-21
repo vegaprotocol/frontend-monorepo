@@ -21,6 +21,10 @@ export const TxDetailsChainEventDeposit = ({
   return (
     <>
       <TableRow modifier="bordered">
+        <TableCell>{t('Chain event type')}</TableCell>
+        <TableCell>{t('ERC20 deposit')}</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
         <TableCell>{deposit.sourceEthereumAddress || ''}</TableCell>
       </TableRow>

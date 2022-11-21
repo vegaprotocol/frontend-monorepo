@@ -26,7 +26,7 @@ const AssetLink = ({ id, ...props }: AssetLinkProps) => {
   }
 
   return (
-    <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
+    <Link className="underline" {...props} to={`/${Routes.ASSETS}#${id}`}>
       {label}
     </Link>
   );

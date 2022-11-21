@@ -3,10 +3,11 @@ import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
-import { TableWithTbody } from '../../table';
+import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { ExplorerNodeVoteQueryResult } from './__generated___/node-vote';
 import { useExplorerNodeVoteQuery } from './__generated___/node-vote';
 import { PartyLink } from '../../links';
+import { Time } from '../../time';
 
 interface TxDetailsNodeVoteProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -38,22 +39,14 @@ export const TxDetailsNodeVote = ({
   }
 
   return (
-    <>
-      <TableWithTbody>
-        <TxDetailsShared
-          txData={txData}
-          pubKey={pubKey}
-          blockData={blockData}
-        />
-      </TableWithTbody>
-
-      <h2>{t('Node witnessed chain event:')}</h2>
+    <TableWithTbody>
+      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       {data && !!data.deposit
         ? TxDetailsNodeVoteDeposit({ deposit: data })
         : data && !!data.withdrawal
         ? TxDetailsNodeVoteWithdrawal({ withdrawal: data })
         : null}
-    </>
+    </TableWithTbody>
   );
 };
 
@@ -68,22 +61,38 @@ export function TxDetailsNodeVoteDeposit({
     return null;
   }
   return (
-    <dl>
-      <dt>Deposit from eth:</dt>
-      <dd>{deposit?.deposit?.party?.id}</dd>
-      <dt>To party:</dt>
-      <dd>
-        <PartyLink id={deposit?.deposit?.party?.id || ''} />
-      </dd>
-      <dt>Credited on:</dt>
-      <dd>{deposit?.deposit?.creditedTimestamp}</dd>
-    </dl>
+    <>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Witnessed Event type')}</TableCell>
+        {deposit?.deposit?.txHash ? (
+          <TableCell>{t('ERC20 deposit')}</TableCell>
+        ) : (
+          <TableCell>{t('Built-in asset deposit')}</TableCell>
+        )}
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('To party')}:</TableCell>
+        <TableCell>
+          <PartyLink id={deposit?.deposit?.party?.id || ''} />
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Credited on')}:</TableCell>
+        <TableCell>
+          <Time date={deposit?.deposit?.creditedTimestamp} />
+        </TableCell>
+        {deposit?.deposit?.txHash ? (
+          <TxHash hash={deposit?.deposit?.txHash} />
+        ) : null}
+      </TableRow>
+    </>
   );
 }
 
 interface TxDetailsNodeVoteWithdrawalProps {
   withdrawal: ExplorerNodeVoteQueryResult['data'];
 }
+
 export function TxDetailsNodeVoteWithdrawal({
   withdrawal,
 }: TxDetailsNodeVoteWithdrawalProps) {
@@ -91,15 +100,46 @@ export function TxDetailsNodeVoteWithdrawal({
     return null;
   }
   return (
-    <dl>
-      <dt>Withdrawal to eth:</dt>
-      <dd>{withdrawal?.withdrawal?.party?.id}</dd>
-      <dt>To party:</dt>
-      <dd>
-        <PartyLink id={withdrawal?.deposit?.party?.id || ''} />
-      </dd>
-      <dt>Withdrawn on:</dt>
-      <dd>{withdrawal?.withdrawal?.withdrawnTimestamp}</dd>
-    </dl>
+    <>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Witnessed Event type')}</TableCell>
+        {withdrawal?.withdrawal?.txHash ? (
+          <TableCell>{t('ERC20 withdrawal')}</TableCell>
+        ) : (
+          <TableCell>{t('Built-in asset withdrawal')}</TableCell>
+        )}
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('From party')}:</TableCell>
+        <TableCell>
+          <PartyLink id={withdrawal?.deposit?.party?.id || ''} />
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Withdrawn on')}:</TableCell>
+        <TableCell>
+          <Time date={withdrawal?.withdrawal?.withdrawnTimestamp} />
+        </TableCell>
+        {withdrawal?.withdrawal?.txHash ? (
+          <TxHash hash={withdrawal?.withdrawal?.txHash} />
+        ) : null}
+      </TableRow>
+    </>
+  );
+}
+
+interface TxDetailsEthTxHashProps {
+  hash: string;
+}
+
+export function TxHash({ hash }: TxDetailsEthTxHashProps) {
+  if (!hash) {
+    return null;
+  }
+  return (
+    <TableRow modifier="bordered">
+      <TableCell>Ethereum TX:</TableCell>
+      <TableCell>{hash}</TableCell>
+    </TableRow>
   );
 }

@@ -19,6 +19,7 @@ query ExplorerNodeVote($id: ID!) {
     status
     createdTimestamp
     creditedTimestamp
+    txHash
     asset {
       id
       name
