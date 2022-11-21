@@ -6,10 +6,7 @@ import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChainId } from './mocks/generate-chain-id';
 import { generateChart } from './mocks/generate-chart';
-import {
-  generateMarket,
-  generateMarketData,
-} from './mocks/generate-market';
+import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import {

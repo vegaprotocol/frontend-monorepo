@@ -11,9 +11,7 @@ import type {
 import { protoMarket, protoCandles, singleMarket } from './commons';
 import type { PartialDeep } from 'type-fest';
 import type { MarketQuery } from '@vegaprotocol/market-list';
-import type {
-  MarketDataQuery,
-} from '@vegaprotocol/market-list';
+import type { MarketDataQuery } from '@vegaprotocol/market-list';
 
 export const generateSimpleMarkets = (): MarketsQuery => {
   const markets: Market[] = [
