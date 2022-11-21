@@ -52,6 +52,7 @@ const mockTradingPage = (
           },
         },
         state: state,
+        tradingMode: tradingMode,
       },
     })
   );
