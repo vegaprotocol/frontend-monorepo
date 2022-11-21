@@ -10,10 +10,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
-import { formatNumber } from '@vegaprotocol/react-helpers';
+import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import { useNodesQuery } from './__generated___/Nodes';
 import type { ColDef } from 'ag-grid-community';
+import { useNodesQuery } from './__generated___/Nodes';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -89,6 +90,9 @@ export const NodeList = () => {
   // errorPolicy due to vegaprotocol/vega issue 5898
   const { data, error, loading, refetch } = useNodesQuery();
   const navigate = useNavigate();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const [hideTopThird, setHideTopThird] = useState(true);
 
   useEffect(() => {
@@ -117,7 +121,7 @@ export const NodeList = () => {
           id,
           name,
           avatarUrl,
-          stakedTotalFormatted,
+          stakedTotal,
           rankingScore: {
             rankingScore,
             stakeScore,
@@ -125,18 +129,22 @@ export const NodeList = () => {
             performanceScore,
             votingPower,
           },
-          pendingStakeFormatted,
+          pendingStake,
         },
       }) => {
-        const stakedTotal = new BigNumber(
-          data?.nodeData?.stakedTotalFormatted || 0
+        const stakedTotalNum = toBigNum(
+          data?.nodeData?.stakedTotal || 0,
+          decimals
         );
-        const stakedOnNode = new BigNumber(stakedTotalFormatted);
+        const stakedOnNode = toBigNum(stakedTotal, decimals);
         const stakedTotalPercentage =
-          stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
+          stakedTotalNum.isEqualTo(0) || stakedOnNode.isEqualTo(0)
             ? '-'
-            : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-              '%';
+            : stakedOnNode
+                .dividedBy(stakedTotalNum)
+                .times(100)
+                .dp(2)
+                .toString() + '%';
         const translatedStatus = t(statusTranslationKey(status));
 
         return {
@@ -146,10 +154,13 @@ export const NodeList = () => {
             name,
           },
           [STATUS]: translatedStatus,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(
+            toBigNum(stakedTotal, decimals),
+            2
+          ),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-          [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
+          [PENDING_STAKE]: formatNumber(toBigNum(pendingStake, decimals), 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
           [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
@@ -190,8 +201,9 @@ export const NodeList = () => {
 
     return removeTopThirdOfStakeScores.remaining;
   }, [
-    data?.nodeData?.stakedTotalFormatted,
+    data?.nodeData?.stakedTotal,
     data?.nodesConnection.edges,
+    decimals,
     hideTopThird,
     t,
   ]);

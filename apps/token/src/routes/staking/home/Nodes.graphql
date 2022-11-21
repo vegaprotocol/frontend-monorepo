@@ -4,9 +4,7 @@ fragment NodesFragment on Node {
   name
   pubkey
   stakedTotal
-  stakedTotalFormatted @client
   pendingStake
-  pendingStakeFormatted @client
   rankingScore {
     rankingScore
     stakeScore
@@ -34,6 +32,5 @@ query Nodes {
   }
   nodeData {
     stakedTotal
-    stakedTotalFormatted @client
   }
 }
