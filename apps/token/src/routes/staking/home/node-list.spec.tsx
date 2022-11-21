@@ -176,7 +176,6 @@ describe('Nodes list', () => {
       },
       nodeData: {
         stakedTotal: '9618711883996159534058',
-        stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
         totalNodes: 1,
         inactiveNodes: 0,
         validatingNodes: 1,

@@ -140,8 +140,11 @@ export const NodeList = () => {
         const stakedTotalPercentage =
           stakedTotalNum.isEqualTo(0) || stakedOnNode.isEqualTo(0)
             ? '-'
-            : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-              '%';
+            : stakedOnNode
+                .dividedBy(stakedTotalNum)
+                .times(100)
+                .dp(2)
+                .toString() + '%';
         const translatedStatus = t(statusTranslationKey(status));
 
         return {
