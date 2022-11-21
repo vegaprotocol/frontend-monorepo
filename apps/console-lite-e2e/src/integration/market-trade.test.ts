@@ -5,8 +5,9 @@ import {
   generateMarketsCandles,
   generateMarketsData,
   generateMarket,
+  generateMarketData,
+  generateMarketLastTrade,
 } from '../support/mocks/generate-markets';
-import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
@@ -28,7 +29,6 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-      aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
@@ -37,6 +37,8 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
       aliasQuery(req, 'Market', generateMarket());
+      aliasQuery(req, 'MarketData', generateMarketData());
+      aliasQuery(req, 'MarketLastTrade', generateMarketLastTrade());
     });
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
