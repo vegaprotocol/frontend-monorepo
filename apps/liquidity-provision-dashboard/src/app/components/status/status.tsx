@@ -6,6 +6,7 @@ import {
   AuctionTriggerMapping,
   Schema,
 } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
 
 import { Indicator } from '../indicator';
 
@@ -34,7 +35,7 @@ export const Status = ({
   };
 
   const status = getStatus();
-  const tooltipDescription = getTooltipDescription(status);
+  const tooltipDescription = t(getTooltipDescription(status));
 
   return (
     <div>
