@@ -8,8 +8,17 @@ import type {
 } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
-import { Icon, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import {
+  t,
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
+import {
+  Icon,
+  AsyncRenderer,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/liquidity';
 import {
   useMarketsLiquidity,
@@ -50,9 +59,11 @@ export const MarketList = () => {
             sortable: true,
             unSortIcon: true,
             cellClass: ['flex', 'flex-col', 'justify-center'],
+            tooltipComponent: TooltipCellComponent,
           }}
           getRowId={getRowId}
           isRowClickable
+          tooltipShowDelay={500}
         >
           <AgGridColumn
             headerName={t('Market (futures)')}
@@ -78,6 +89,7 @@ export const MarketList = () => {
             }}
             minWidth={100}
             flex="1"
+            headerTooltip={t('The market name and settlement asset')}
           />
 
           <AgGridColumn
@@ -90,10 +102,11 @@ export const MarketList = () => {
                   .decimals
               )} (${displayChange(data.volumeChange)})`
             }
+            headerTooltip={t('The trade volume over the last 24h')}
           />
 
           <AgGridColumn
-            headerName={t('Committed bond/stake')}
+            headerName={t('Committed bond')}
             field="liquidityCommitted"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
               formatWithAsset(
@@ -101,6 +114,47 @@ export const MarketList = () => {
                 data.tradableInstrument.instrument.product.settlementAsset
               )
             }
+            headerTooltip={t(
+              'The amount of funds allocated to provide liquidity'
+            )}
+          />
+
+          <AgGridColumn
+            headerName={t('Target stake')}
+            field="target"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              formatWithAsset(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+              )
+            }
+            headerTooltip={t(
+              'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
+            )}
+          />
+
+          <AgGridColumn
+            headerName={t('% Target stake met')}
+            valueFormatter={({ data }: ValueFormatterParams) => {
+              const roundedPercentage =
+                parseInt(
+                  (data.liquidityCommitted / parseFloat(data.target)).toFixed(0)
+                ) * 100;
+              const display = Number.isNaN(roundedPercentage)
+                ? 'N/A'
+                : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+              return display;
+            }}
+            headerTooltip={t('% Target stake met')}
+          />
+
+          <AgGridColumn
+            headerName={t('Fee levels')}
+            field="fees"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              `${value.factors.liquidityFee}%`
+            }
+            headerTooltip={t('Fee level for this market')}
           />
 
           <AgGridColumn
@@ -117,6 +171,9 @@ export const MarketList = () => {
                 <Status trigger={data.data?.trigger} tradingMode={value} />
               );
             }}
+            headerTooltip={t(
+              'The current market status - those below the target stake mark are most in need of liquidity'
+            )}
           />
 
           <AgGridColumn
@@ -154,7 +211,6 @@ export const MarketList = () => {
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
           />
-          <AgGridColumn headerName={t('Est. return / APY')} field="apy" />
         </Grid>
 
         <HealthDialog
