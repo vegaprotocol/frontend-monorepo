@@ -71,7 +71,12 @@ Cypress.Commands.add(
 Cypress.Commands.add('convert_number_to_max_eighteen_decimal', (number) => {
   // this will take a number like this   : 700000000000000000001
   // and convert it to a number like this: 700.000000000000000001
-  return new BigNumber(number).dividedBy(Math.pow(10, 18)).toString();
+  return new Intl.NumberFormat(
+    new Intl.NumberFormat('default', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 18,
+    })
+  ).format(BigNumber((number / 1000000000000000000).toNumber()));
 });
 
 Cypress.Commands.add('convert_number_to_four_decimal', (number) => {
