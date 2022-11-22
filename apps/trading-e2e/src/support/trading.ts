@@ -34,24 +34,9 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  aliasQuery(
-    req,
-    'ChainId',
-    generateChainId({
-      statistics: {
-        chainId: Cypress.env('VEGA_ENV')?.toLowerCase(),
-      },
-    })
-  );
-  aliasQuery(
-    req,
-    'Statistics',
-    generateStatistics({
-      statistics: {
-        chainId: Cypress.env('VEGA_ENV')?.toLowerCase(),
-      },
-    })
-  );
+  // Skipped, to allow v2 wallet connection in tests
+  // aliasQuery(req, 'ChainId', generateChainId());
+  // aliasQuery(req, 'Statistics', generateStatistics());
   aliasQuery(
     req,
     'Market',
