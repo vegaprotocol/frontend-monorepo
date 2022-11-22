@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js';
+import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 
 Cypress.Commands.add(
   'common_validate_blocks_data_displayed',
@@ -68,10 +68,10 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('convert_number_to_eighteen_decimal', (number) => {
-  // this will take a number like this   : 700000000000000000000
-  // and convert it to a number like this: 700.000000000000000000
-  return BigNumber((number / 1000000000000000000).toString()).toFixed(18);
+Cypress.Commands.add('convert_number_to_max_eighteen_decimal', (number) => {
+  // this will take a number like this   : 700000000000000000001
+  // and convert it to a number like this: 700.000000000000000001
+  return addDecimalsFormatNumber(number, 18);
 });
 
 Cypress.Commands.add('convert_number_to_four_decimal', (number) => {

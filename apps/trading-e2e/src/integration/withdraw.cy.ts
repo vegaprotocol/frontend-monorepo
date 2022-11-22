@@ -51,7 +51,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
-    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
+    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesn't have any collateral
     cy.get(amountField).clear().type('1001', { delay: 100 });
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -63,7 +63,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
   it('can set amount using use maximum button', () => {
     selectAsset(asset1Name);
     cy.getByTestId(useMaximumAmount).click();
-    cy.get(amountField).should('have.value', '1000.00');
+    cy.get(amountField).should('have.value', '1000.00000');
   });
 
   it('triggers transaction when submitted', () => {
