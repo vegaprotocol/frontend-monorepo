@@ -9,6 +9,7 @@ import {
 import { BigNumber } from '../lib/bignumber';
 import { useTranches } from './use-tranches';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useBalances } from '../lib/balances/balances-store';
 
 export const useGetUserTrancheBalances = (
   address: string,
@@ -18,6 +19,7 @@ export const useGetUserTrancheBalances = (
     appState: { decimals },
     appDispatch,
   } = useAppState();
+  const { setTranchesBalances } = useBalances();
   const { tranches } = useTranches();
   return React.useCallback(async () => {
     appDispatch({
@@ -52,9 +54,9 @@ export const useGetUserTrancheBalances = (
       });
 
       const trancheBalances = await Promise.all(promises);
+      setTranchesBalances(trancheBalances);
       appDispatch({
         type: AppStateActionType.SET_TRANCHE_DATA,
-        trancheBalances,
         tranches,
       });
     } catch (e) {
@@ -64,5 +66,5 @@ export const useGetUserTrancheBalances = (
         error: e as Error,
       });
     }
-  }, [address, decimals, appDispatch, tranches, vesting]);
+  }, [appDispatch, tranches, setTranchesBalances, address, vesting, decimals]);
 };

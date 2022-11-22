@@ -1,9 +1,9 @@
 import { Schema } from '@vegaprotocol/types';
-import type { DealTicketMarketFragment } from '../components';
 import { MarketModeValidationType } from '../constants';
 import { isMarketInAuction } from './is-market-in-auction';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
-export const validateType = (market: DealTicketMarketFragment) => {
+export const validateType = (market: MarketDealTicket) => {
   return (value: Schema.OrderType) => {
     if (isMarketInAuction(market) && value === Schema.OrderType.TYPE_MARKET) {
       const isMonitoringAuction =

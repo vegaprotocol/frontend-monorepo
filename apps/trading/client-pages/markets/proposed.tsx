@@ -1,17 +1,15 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/environment';
+import {
+  DApp,
+  TOKEN_NEW_MARKET_PROPOSAL,
+  useLinks,
+} from '@vegaprotocol/environment';
 import { ProposalsList } from '@vegaprotocol/governance';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import {
-  NEW_PROPOSAL_LINK,
-  TOKEN_DEFAULT_DOMAIN,
-} from '../../components/constants';
 
 export const Proposed = () => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
-  const externalLink = `${
-    VEGA_TOKEN_URL || TOKEN_DEFAULT_DOMAIN
-  }${NEW_PROPOSAL_LINK}`;
+  const tokenLink = useLinks(DApp.Token);
+  const externalLink = tokenLink(TOKEN_NEW_MARKET_PROPOSAL);
   return (
     <>
       <ProposalsList />

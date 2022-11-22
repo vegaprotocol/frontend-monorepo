@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import type { Schema as Types } from '@vegaprotocol/types';
 import {
@@ -21,13 +21,11 @@ interface Props {
   onSelect?: (marketId: string) => void;
 }
 
-type TradingModeMarket = Omit<DealTicketMarketFragment, 'depth'>;
-
 export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
   const [tradingMode, setTradingMode] =
     useState<Types.MarketTradingMode | null>(null);
   const [trigger, setTrigger] = useState<Types.AuctionTrigger | null>(null);
-  const [market, setMarket] = useState<TradingModeMarket | null>(null);
+  const [market, setMarket] = useState<MarketDealTicket | null>(null);
   const variables = useMemo(
     () => ({
       marketId: marketId,
@@ -49,7 +47,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
         setMarket({
           ...data,
           data: marketData,
-        } as TradingModeMarket);
+        } as MarketDealTicket);
       }
       return true;
     },

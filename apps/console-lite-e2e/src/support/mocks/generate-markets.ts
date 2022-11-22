@@ -11,6 +11,7 @@ import type {
 import { protoMarket, protoCandles, singleMarket } from './commons';
 import type { PartialDeep } from 'type-fest';
 import type { MarketQuery } from '@vegaprotocol/market-list';
+import type { MarketDataQuery } from '@vegaprotocol/market-list';
 
 export const generateSimpleMarkets = (): MarketsQuery => {
   const markets: Market[] = [
@@ -1139,52 +1140,51 @@ export const generateFillsMarkets = () => {
   };
 };
 
+const markets = [
+  {
+    data: {
+      market: {
+        id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        __typename: 'Market',
+      },
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '17588787',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
+    },
+    __typename: 'Market',
+  },
+  {
+    data: {
+      market: {
+        id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        __typename: 'Market',
+      },
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '84377569',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
+    },
+    __typename: 'Market',
+  },
+];
 export const generateMarketsData = (
   override?: PartialDeep<MarketsDataQuery>
 ): MarketsDataQuery => {
-  const markets = [
-    {
-      data: {
-        market: {
-          id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
-          __typename: 'Market',
-        },
-        marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '17588787',
-        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
-    },
-    {
-      data: {
-        market: {
-          id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
-          __typename: 'Market',
-        },
-        marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '84377569',
-        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
-    },
-  ];
-
   const defaultResult: MarketsDataQuery = {
     marketsConnection: {
       __typename: 'MarketConnection',
@@ -1379,6 +1379,37 @@ export const generateMarket = (): MarketQuery => {
   return {
     market: {
       ...singleMarket,
+    },
+  };
+};
+
+export const generateMarketData = (): MarketDataQuery => {
+  return {
+    marketsConnection: {
+      edges: [
+        {
+          node: {
+            data: {
+              market: {
+                id: protoMarket.id,
+                __typename: 'Market',
+              },
+              marketTradingMode:
+                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+              staticMidPrice: '0',
+              indicativePrice: '0',
+              bestStaticBidPrice: '0',
+              bestStaticOfferPrice: '0',
+              indicativeVolume: '0',
+              bestBidPrice: '0',
+              bestOfferPrice: '0',
+              markPrice: '17588787',
+              trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+              __typename: 'MarketData',
+            },
+          },
+        },
+      ],
     },
   };
 };

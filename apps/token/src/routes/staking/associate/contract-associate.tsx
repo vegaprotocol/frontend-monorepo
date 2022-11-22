@@ -1,9 +1,9 @@
 import { Callout } from '@vegaprotocol/ui-toolkit';
+import { useBalances } from '../../../lib/balances/balances-store';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TokenInput } from '../../../components/token-input';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 
@@ -19,9 +19,7 @@ export const ContractAssociate = ({
   vegaKey: string | null;
 }) => {
   const { t } = useTranslation();
-  const {
-    appState: { balanceFormatted, lien },
-  } = useAppState();
+  const { balanceFormatted, lien } = useBalances();
 
   const maximum = React.useMemo(() => {
     return new BigNumber(balanceFormatted).minus(lien);

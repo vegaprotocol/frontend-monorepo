@@ -7,11 +7,9 @@ import type {
   TokenVesting,
 } from '@vegaprotocol/smart-contracts';
 
-import {
-  AppStateActionType,
-  useAppState,
-} from '../contexts/app-state/app-state-context';
+import { useAppState } from '../contexts/app-state/app-state-context';
 import BigNumber from 'bignumber.js';
+import { useBalances } from '../lib/balances/balances-store';
 
 export function useGetAssociationBreakdown(
   ethAddress: string,
@@ -20,8 +18,8 @@ export function useGetAssociationBreakdown(
 ): () => Promise<void> {
   const {
     appState: { decimals },
-    appDispatch,
   } = useAppState();
+  const { setAssociationBreakdown } = useBalances();
 
   const getAssociationBreakdown = React.useCallback(async () => {
     try {
@@ -30,17 +28,14 @@ export function useGetAssociationBreakdown(
         userTotalStakedByVegaKey(vesting, ethAddress, decimals),
       ]);
 
-      appDispatch({
-        type: AppStateActionType.SET_ASSOCIATION_BREAKDOWN,
-        breakdown: {
-          stakingAssociations,
-          vestingAssociations,
-        },
+      setAssociationBreakdown({
+        stakingAssociations,
+        vestingAssociations,
       });
     } catch (err) {
       Sentry.captureException(err);
     }
-  }, [ethAddress, staking, vesting, decimals, appDispatch]);
+  }, [ethAddress, staking, vesting, decimals, setAssociationBreakdown]);
 
   return getAssociationBreakdown;
 }

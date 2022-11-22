@@ -164,6 +164,30 @@ export const generateAssets = (override?: PartialDeep<AssetsQuery>) => {
             __typename: 'Asset',
           },
         },
+        {
+          node: {
+            id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+            symbol: 'tBTC',
+            decimals: 5,
+            name: 'tBTC TEST',
+            source: {
+              maxFaucetAmountMint: '5000000000',
+              __typename: 'BuiltinAsset',
+            },
+            quantum: '1',
+            status: Types.AssetStatus.STATUS_ENABLED,
+            infrastructureFeeAccount: {
+              balance: '0',
+              __typename: 'AccountBalance',
+            },
+            globalRewardPoolAccount: null,
+            takerFeeRewardAccount: null,
+            makerFeeRewardAccount: null,
+            lpFeeRewardAccount: null,
+            marketProposerRewardAccount: null,
+            __typename: 'Asset',
+          },
+        },
         // NOTE: These assets ids and contract addresses are real assets on Sepolia, this is needed
         // because we don't currently mock our seplia infura provider. If we change network these will
         // need to be updated

@@ -1,6 +1,5 @@
 fragment StakingDelegationsFields on Delegation {
   amount
-  amountFormatted @client
   node {
     id
   }

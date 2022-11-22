@@ -101,6 +101,19 @@ export const generateAccounts = (
               },
             },
           },
+          {
+            __typename: 'AccountEdge',
+            node: {
+              __typename: 'AccountBalance',
+              type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+              balance: '100000000',
+              market: null,
+              asset: {
+                __typename: 'Asset',
+                id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              },
+            },
+          },
         ],
       },
     },

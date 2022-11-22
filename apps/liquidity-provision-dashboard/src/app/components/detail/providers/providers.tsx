@@ -11,6 +11,7 @@ import type {
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
 import { Grid } from '../../grid';
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 
 const formatToHours = ({ value }: { value?: string | null }) => {
   if (!value) {
@@ -39,11 +40,14 @@ export const LPProvidersGrid = ({
   return (
     <Grid
       rowData={liquidityProviders}
+      tooltipShowDelay={500}
       defaultColDef={{
         resizable: true,
         sortable: true,
         unSortIcon: true,
         cellClass: ['flex', 'flex-col', 'justify-center'],
+        tooltipComponent: TooltipCellComponent,
+        minWidth: 100,
       }}
       getRowId={getRowId}
       rowHeight={92}
@@ -53,11 +57,13 @@ export const LPProvidersGrid = ({
         field="party.id"
         flex="1"
         minWidth={100}
+        headerTooltip={t('Liquidity providers')}
       />
       <AgGridColumn
-        headerName={t('Time in market')}
+        headerName={t('Duration')}
         valueFormatter={formatToHours}
         field="createdAt"
+        headerTooltip={t('Time in market')}
       />
       <AgGridColumn
         headerName={t('Equity-like share')}
@@ -67,23 +73,50 @@ export const LPProvidersGrid = ({
             ? `${parseFloat(parseFloat(value).toFixed(2)) * 100}%`
             : '';
         }}
+        headerTooltip={t(
+          'The share of the markets liquidity held - the earlier you commit liquidity the greater % fees you earn'
+        )}
+        minWidth={140}
       />
       <AgGridColumn
-        headerName={t('committed bond/stake')}
+        headerName={t('committed bond')}
         field="commitmentAmount"
         valueFormatter={({ value }: { value?: string | null }) =>
           value ? formatWithAsset(value, settlementAsset) : '0'
         }
+        headerTooltip={t('The amount of funds allocated to provide liquidity')}
+        minWidth={140}
       />
-      <AgGridColumn headerName={t('Margin Req.')} field="margin" />
-      <AgGridColumn headerName={t('24h Fees')} field="fees" />
+      <AgGridColumn
+        headerName={t('Margin Req.')}
+        field="margin"
+        headerTooltip={t(
+          'Margin required for arising positions based on liquidity commitment'
+        )}
+      />
+      <AgGridColumn
+        headerName={t('24h Fees')}
+        field="fees"
+        headerTooltip={t(
+          'Total fees earned by the liquidity provider in the last 24 hours'
+        )}
+      />
       <AgGridColumn
         headerName={t('Fee level')}
         valueFormatter={({ value }: { value?: string | null }) => `${value}%`}
         field="fee"
+        headerTooltip={t(
+          "The market's liquidity fee, or the percentage of a trade's value which is collected from the price taker for every trade"
+        )}
       />
 
-      <AgGridColumn headerName={t('APY')} field="apy" />
+      <AgGridColumn
+        headerName={t('APY')}
+        field="apy"
+        headerTooltip={t(
+          'An annualised estimate based on the total liquidity provision fees and maker fees collected by liquidity providers, the maximum margin needed and maximum commitment (bond) over the course of 7 epochs'
+        )}
+      />
     </Grid>
   );
 };
