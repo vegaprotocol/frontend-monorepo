@@ -2,7 +2,7 @@ import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 
-interface TxDetailsChainEventErc20BridgePause {
+interface TxDetailsChainEventErc20BridgePauseProps {
   isPaused: boolean;
 }
 
@@ -13,7 +13,7 @@ interface TxDetailsChainEventErc20BridgePause {
  */
 export const TxDetailsChainEventErc20BridgePause = ({
   isPaused,
-}: TxDetailsChainEventErc20BridgePause) => {
+}: TxDetailsChainEventErc20BridgePauseProps) => {
   const event = isPaused ? 'pause' : 'unpaused';
 
   return (
