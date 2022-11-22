@@ -1,4 +1,4 @@
-import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge, Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 
 import {
@@ -33,17 +33,46 @@ export const Status = ({
     return MarketTradingModeMapping[tradingMode];
   };
 
+  const status = getStatus();
+  const tooltipDescription = getTooltipDescription(status);
+
   return (
-    <div
-      className={classNames('inline-flex whitespace-normal', {
-        'text-base': size === 'large',
-        'text-sm': size === 'small',
-      })}
-    >
-      <Lozenge className="border border-greys-light-300 bg-greys-light-100 flex items-center">
-        <Indicator status={tradingMode} />
-        {getStatus()}
-      </Lozenge>
+    <div>
+      <Tooltip description={tooltipDescription}>
+        <div
+          className={classNames('inline-flex whitespace-normal', {
+            'text-base': size === 'large',
+            'text-sm': size === 'small',
+          })}
+        >
+          <Lozenge className="border border-greys-light-300 bg-greys-light-100 flex items-center">
+            <Indicator status={tradingMode} />
+            {status}
+          </Lozenge>
+        </div>
+      </Tooltip>
     </div>
   );
+};
+
+const getTooltipDescription = (status: string) => {
+  let tooltipDescription = '';
+  switch (status) {
+    case MarketTradingModeMapping.TRADING_MODE_CONTINUOUS:
+      tooltipDescription =
+        'This is the standard trading mode where trades are executed whenever orders are received';
+      break;
+    case `${MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION} - ${AuctionTriggerMapping.AUCTION_TRIGGER_LIQUIDITY}`:
+      tooltipDescription =
+        'This market is in auction until it reaches sufficient liquidity';
+      break;
+    case MarketTradingModeMapping.TRADING_MODE_OPENING_AUCTION:
+      tooltipDescription =
+        'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.';
+      break;
+    default:
+      break;
+  }
+
+  return tooltipDescription;
 };
