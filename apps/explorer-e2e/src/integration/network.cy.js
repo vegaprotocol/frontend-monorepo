@@ -148,7 +148,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
           if (this.networkParameterFormat.fiveDecimal.includes(parameterName)) {
-            cy.convert_number_to_four_decimal(parameterValue)
+            cy.convert_number_to_max_four_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
                 cy.get(tableRows)
@@ -179,7 +179,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
           if (
             this.networkParameterFormat.eighteenDecimal.includes(parameterName)
           ) {
-            cy.convert_number_to_eighteen_decimal(parameterValue)
+            cy.convert_number_to_max_eighteen_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
                 cy.get(tableRows)
@@ -212,7 +212,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
       const jsonFields = '.hljs';
       const sideMenuBackground = '.absolute';
 
-      // Engage dark mode if not allready set
+      // Engage dark mode if not already set
       cy.get(sideMenuBackground)
         .should('have.css', 'background-color')
         .then((background_color) => {

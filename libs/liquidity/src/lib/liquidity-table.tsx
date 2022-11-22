@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
   t,
@@ -41,18 +41,14 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsNormalizeNumber(value, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
         .times(stakeToCcySiskas ?? 1)
         .toString();
-      return `${addDecimalsNormalizeNumber(
-        newValue,
-        assetDecimalPlaces ?? 0,
-        5
-      )}`;
+      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
 
     if (!data) return null;

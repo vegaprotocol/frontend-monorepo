@@ -4,17 +4,11 @@ export interface SummaryRow {
   __summaryRow?: boolean;
 }
 
-export function addSummaryRows<T>(
+export function addSummaryRows<T extends SummaryRow>(
   api: GridApi,
   columnApi: ColumnApi,
-  getGroupId: (
-    data: T & SummaryRow,
-    columnApi: ColumnApi
-  ) => string | null | undefined,
-  getGroupSummaryRow: (
-    data: (T & SummaryRow)[],
-    columnApi: ColumnApi
-  ) => Partial<T & SummaryRow> | null
+  getGroupId: (data: T, columnApi: ColumnApi) => string | null | undefined,
+  getGroupSummaryRow: (data: T[], columnApi: ColumnApi) => Partial<T> | null
 ) {
   let currentGroupId: string | null | undefined = undefined;
   let group: T[] = [];

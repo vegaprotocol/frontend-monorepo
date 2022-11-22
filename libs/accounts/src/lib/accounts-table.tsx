@@ -2,7 +2,7 @@ import { forwardRef, useState } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/assets';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   isNumeric,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -38,8 +38,8 @@ export const progressBarValueFormatter = ({
   const max = BigInt(data.deposited);
   const range = max > min ? max : min;
   return {
-    low: addDecimalsNormalizeNumber(min.toString(), data.asset.decimals, 4),
-    high: addDecimalsNormalizeNumber(mid.toString(), data.asset.decimals, 4),
+    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 4),
+    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 4),
     value: range ? Number((min * BigInt(100)) / range) : 0,
     intent: Intent.Warning,
   };
@@ -125,7 +125,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               data &&
               data.asset &&
               isNumeric(value) &&
-              addDecimalsNormalizeNumber(value, data.asset.decimals)
+              addDecimalsFormatNumber(value, data.asset.decimals)
             }
             maxWidth={300}
           />

@@ -197,18 +197,14 @@ context(
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
-            cy.get(currencyValue)
-              .should('be.visible')
-              .and('have.text', `0.000000000000000000`);
+            cy.get(currencyValue).should('be.visible').and('have.text', `0.00`);
           });
         }
       );
 
       it('should have Unstaked value visible', { tags: '@smoke' }, function () {
         cy.get(walletContainer).within(() => {
-          cy.get(vegaUnstaked)
-            .should('be.visible')
-            .and('have.text', `0.000000000000000000`);
+          cy.get(vegaUnstaked).should('be.visible').and('have.text', `0.00`);
         });
       });
 
@@ -331,7 +327,7 @@ context(
             .contains(currency.id)
             .parent()
             .siblings()
-            .within(() => cy.contains_exactly('10.00000').should('be.visible'));
+            .within(() => cy.contains_exactly('10.00').should('be.visible'));
 
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id)
@@ -351,7 +347,7 @@ context(
             .contains(currency.id)
             .parent()
             .siblings()
-            .within(() => cy.contains_exactly('6.00000').should('be.visible'));
+            .within(() => cy.contains_exactly('6.00').should('be.visible'));
 
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id)
@@ -371,7 +367,7 @@ context(
             .contains(currency.id)
             .parent()
             .siblings()
-            .within(() => cy.contains_exactly('8.00000').should('be.visible'));
+            .within(() => cy.contains_exactly('8.00').should('be.visible'));
 
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id)
@@ -391,7 +387,7 @@ context(
             .contains(currency.id)
             .parent()
             .siblings()
-            .within(() => cy.contains_exactly('2.00000').should('be.visible'));
+            .within(() => cy.contains_exactly('2.00').should('be.visible'));
 
           cy.get(vegaWalletCurrencyTitle)
             .contains(currency.id)

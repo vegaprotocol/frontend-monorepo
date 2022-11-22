@@ -89,7 +89,7 @@ describe('FillsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.name || '',
-      '+3.00000',
+      '+3.00',
       '1.00 BTC',
       '3.00 BTC',
       'Maker',
@@ -126,7 +126,7 @@ describe('FillsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.name || '',
-      '-3.00000',
+      '-3.00',
       '1.00 BTC',
       '3.00 BTC',
       'Taker',

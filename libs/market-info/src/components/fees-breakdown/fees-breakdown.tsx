@@ -1,6 +1,6 @@
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   formatNumberPercentage,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -70,7 +70,7 @@ export const FeesBreakdown = ({
     .toString();
   const formatValue = (value: string | number | null | undefined): string => {
     return value && !isNaN(Number(value))
-      ? addDecimalsNormalizeNumber(value, decimals)
+      ? addDecimalsFormatNumber(value, decimals)
       : '-';
   };
   return (

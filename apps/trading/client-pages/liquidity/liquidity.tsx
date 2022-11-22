@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/liquidity';
 import { tooltipMapping } from '@vegaprotocol/market-info';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   NetworkParams,
   t,
   useDataProvider,
@@ -148,7 +148,7 @@ export const Liquidity = () => {
           >
             <div>
               {targetStake
-                ? `${addDecimalsNormalizeNumber(
+                ? `${addDecimalsFormatNumber(
                     targetStake,
                     assetDecimalPlaces ?? 0
                   )} ${symbol}`
@@ -161,7 +161,7 @@ export const Liquidity = () => {
           >
             <div>
               {suppliedStake
-                ? `${addDecimalsNormalizeNumber(
+                ? `${addDecimalsFormatNumber(
                     suppliedStake,
                     assetDecimalPlaces ?? 0
                   )} ${symbol}`
