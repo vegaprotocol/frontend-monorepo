@@ -55,7 +55,7 @@ export const TxsInfiniteListItem = ({
         />
       </div>
       <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
-        <TxOrderType orderType={type} decodedCommand={command} />
+        <TxOrderType orderType={type} chainEvent={command?.chainEvent} />
       </div>
       <div
         className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"

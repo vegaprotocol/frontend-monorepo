@@ -43,6 +43,8 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
             </thead>
             <tbody>
               {decodedBlockData.map(({ TxHash, PubKey, Type, Command }) => {
+                const chainEvent = JSON.parse(Command || '');
+
                 return (
                   <TableRow
                     modifier="bordered"
@@ -66,7 +68,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                       />
                     </TableCell>
                     <TableCell modifier="bordered">
-                      <TxOrderType orderType={Type} command={Command} />
+                      <TxOrderType orderType={Type} chainEvent={chainEvent} />
                     </TableCell>
                   </TableRow>
                 );
