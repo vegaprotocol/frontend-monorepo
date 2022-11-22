@@ -586,7 +586,7 @@
   "Nodes": "Nodes",
   "status-tendermint": "Consensus",
   "status-ersatz": "Standby",
-  "status-pending": "Pending",
+  "status-pending": "Candidate",
   "Set to": "Set to",
   "pass": "pass",
   "fail": "fail",
