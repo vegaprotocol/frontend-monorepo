@@ -1,5 +1,3 @@
-import { connectEthereumWallet } from '../support/ethereum-wallet';
-
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
@@ -13,7 +11,6 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('Collateral').click();
 
     cy.connectVegaWallet();
-    connectEthereumWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')
