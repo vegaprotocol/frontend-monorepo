@@ -55,8 +55,8 @@ describe('AccountsTable', () => {
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
       'tBTC',
-      '1,256',
-      '1,2561,256',
+      '1,256.00',
+      '1,256.001,256.00',
       'Breakdown',
       'Deposit',
     ];

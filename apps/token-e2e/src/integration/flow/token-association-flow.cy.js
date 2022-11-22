@@ -109,7 +109,7 @@ context(
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
           .parent()
-          .should('contain', '1,001.000000000000000000', txTimeout);
+          .should('contain', '1,001.00', txTimeout);
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
           .contains('1,001.00', txTimeout)
@@ -118,7 +118,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '1,001.000000000000000000'
+            '1,001.00'
           );
         });
       });

@@ -240,11 +240,11 @@ describe('Nodes list', () => {
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="stakeScore"]')
-    ).toHaveTextContent('0.23010');
+    ).toHaveTextContent('0.2301');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="performanceScore"]')
-    ).toHaveTextContent('1.00000');
+    ).toHaveTextContent('1.00');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="votingPower"]')
