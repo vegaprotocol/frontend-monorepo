@@ -12,6 +12,8 @@ import { TxDetailsChainEventStakeDeposit } from './chain-events/tx-stake-deposit
 import { TxDetailsChainEventStakeRemove } from './chain-events/tx-stake-remove';
 import { TxDetailsChainEventStakeTotalSupply } from './chain-events/tx-stake-totalsupply';
 import { TxDetailsChainEventBuiltinWithdrawal } from './chain-events/tx-builtin-withdrawal';
+import { TxDetailsChainEventErc20AssetList } from './chain-events/tx-erc20-asset-list';
+import { TxDetailsChainEventErc20AssetLimitsUpdated } from './chain-events/tx-erc20-asset-limits-updated';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -72,6 +74,21 @@ function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
   const withdrawal = txData?.command.chainEvent?.erc20?.withdrawal;
   if (withdrawal) {
     return <TxDetailsChainEventBuiltinWithdrawal withdrawal={withdrawal} />;
+  }
+
+  const assetList = txData?.command.chainEvent?.erc20?.assetList;
+  if (assetList) {
+    return <TxDetailsChainEventErc20AssetList assetList={assetList} />;
+  }
+
+  const assetLimitsUpdated =
+    txData?.command.chainEvent?.erc20?.assetLimitsUpdated;
+  if (assetLimitsUpdated) {
+    return (
+      <TxDetailsChainEventErc20AssetLimitsUpdated
+        assetLimitsUpdated={assetLimitsUpdated}
+      />
+    );
   }
 
   // ERC20 multisig events
