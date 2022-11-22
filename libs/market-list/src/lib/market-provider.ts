@@ -27,6 +27,8 @@ export const marketProvider = makeDataProvider<
 export type MarketDealTicket = SingleMarketFieldsFragment & {
   data: MarketData;
 };
+export type MarketDealTicketAsset =
+  MarketDealTicket['tradableInstrument']['instrument']['product']['settlementAsset'];
 
 export const marketDealTicketProvider = makeDerivedDataProvider<
   MarketDealTicket,

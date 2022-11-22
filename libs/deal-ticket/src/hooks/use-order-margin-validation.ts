@@ -29,7 +29,7 @@ export const useOrderMarginValidation = ({ market, order }: Props) => {
       : toBigNum('0', assetDecimals);
   const margin = toBigNum(estMargin?.margin || 0, assetDecimals);
 
-  // return only simple types (bool, string) for make memo sensible, no BigNumber please :-)
+  // return only simple types (bool, string) for make memo sensible
   const balanceError = balance.isGreaterThan(0) && balance.isLessThan(margin);
   const balanceAsString = balance.toString();
   const marginAsString = margin.toString();
