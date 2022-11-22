@@ -100,9 +100,9 @@ const getPriceForEstimate = (
     price = removeDecimal(order.price, market.decimalPlaces);
   } else {
     if (isMarketInAuction(market)) {
-      price = market.data?.indicativePrice;
+      price = market.data.indicativePrice;
     } else {
-      price = market.data?.markPrice;
+      price = market.data.markPrice;
     }
   }
 
