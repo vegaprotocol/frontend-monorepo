@@ -5,7 +5,16 @@ import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
   VegaWalletProvider,
+  useVegaTransactionManager,
+  useVegaTransactionUpdater,
 } from '@vegaprotocol/wallet';
+import {
+  useEagerConnect as useEthereumEagerConnect,
+  useEthTransactionManager,
+  useEthTransactionUpdater,
+  useEthWithdrawApprovalsManager,
+  Web3Container,
+} from '@vegaprotocol/web3';
 import {
   EnvironmentProvider,
   envTriggerMapping,
@@ -18,9 +27,9 @@ import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
+import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
-import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -43,6 +52,15 @@ const Title = () => {
       <title>{title}</title>
     </Head>
   );
+};
+
+const TransactionsHandler = () => {
+  useVegaTransactionManager();
+  useVegaTransactionUpdater();
+  useEthTransactionManager();
+  useEthTransactionUpdater();
+  useEthWithdrawApprovalsManager();
+  return null;
 };
 
 function AppBody({ Component }: AppProps) {
@@ -71,6 +89,10 @@ function AppBody({ Component }: AppProps) {
               </main>
               <Footer />
               <DialogsContainer />
+              <ToastsManager />
+              <Web3Container connectEagerly childrenOnly>
+                <TransactionsHandler />
+              </Web3Container>
               <MaybeConnectEagerly />
             </div>
           </Web3Provider>

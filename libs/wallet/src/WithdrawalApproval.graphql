@@ -1,0 +1,11 @@
+query WithdrawalApproval($withdrawalId: ID!) {
+  erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
+    assetSource
+    amount
+    nonce
+    signatures
+    targetAddress
+    expiry
+    creation
+  }
+}

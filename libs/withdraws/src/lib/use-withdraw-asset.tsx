@@ -5,8 +5,10 @@ import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
-import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
+import {
+  useGetWithdrawDelay,
+  useGetWithdrawThreshold,
+} from '@vegaprotocol/web3';
 import { useWithdrawStore } from './withdraw-store';
 
 export const useWithdrawAsset = (

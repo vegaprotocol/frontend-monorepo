@@ -2,8 +2,10 @@ import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
 import BigNumber from 'bignumber.js';
 import { addDecimal, t } from '@vegaprotocol/react-helpers';
-import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
-import { useGetWithdrawDelay } from './use-get-withdraw-delay';
+import {
+  useGetWithdrawThreshold,
+  useGetWithdrawDelay,
+} from '@vegaprotocol/web3';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import type {
@@ -22,10 +24,10 @@ export enum ApprovalStatus {
 
 export interface VerifyState {
   status: ApprovalStatus;
-  message: string;
-  threshold: BigNumber;
-  completeTimestamp: number | null;
-  dialogOpen: boolean;
+  message?: string;
+  threshold?: BigNumber;
+  completeTimestamp?: number | null;
+  dialogOpen?: boolean;
 }
 
 const initialState = {

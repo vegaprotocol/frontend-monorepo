@@ -76,7 +76,7 @@ export const getTransactionContent = ({
   };
 };
 
-const TransactionContent = ({
+export const TransactionContent = ({
   status,
   error,
   txHash,

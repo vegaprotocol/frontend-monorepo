@@ -5,7 +5,7 @@ import {
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
 import { RiskNoticeDialog } from '../components/risk-notice-dialog';
-import { WithdrawalDialog } from '@vegaprotocol/withdraws';
+import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { DepositDialog } from '@vegaprotocol/deposits';
 import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
 import { WelcomeNoticeDialog } from '../components/welcome-notice';
@@ -24,7 +24,7 @@ const DialogsContainer = () => {
       <RiskNoticeDialog />
       <DepositDialog />
       <Web3ConnectUncontrolledDialog />
-      <WithdrawalDialog />
+      <CreateWithdrawalDialog />
       <WelcomeNoticeDialog />
     </>
   );

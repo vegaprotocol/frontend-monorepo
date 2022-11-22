@@ -1,12 +1,111 @@
+fragment TransactionEventFields on TransactionResult {
+  partyId
+  hash
+  status
+  error
+}
+
 subscription TransactionEvent($partyId: ID!) {
   busEvents(partyId: $partyId, batchSize: 0, types: [TransactionResult]) {
     type
     event {
       ... on TransactionResult {
-        partyId
-        hash
-        status
-        error
+        ...TransactionEventFields
+      }
+    }
+  }
+}
+
+fragment WithdrawalBusEventFields on Withdrawal {
+  id
+  status
+  amount
+  asset {
+    id
+    name
+    symbol
+    decimals
+    status
+    source {
+      ... on ERC20 {
+        contractAddress
+      }
+    }
+  }
+  createdTimestamp
+  withdrawnTimestamp
+  txHash
+  details {
+    ... on Erc20WithdrawalDetails {
+      receiverAddress
+    }
+  }
+  pendingOnForeignChain @client
+}
+
+subscription WithdrawalBusEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Withdrawal]) {
+    event {
+      ... on Withdrawal {
+        ...WithdrawalBusEventFields
+      }
+    }
+  }
+}
+
+fragment OrderBusEventFields on Order {
+  type
+  id
+  status
+  rejectionReason
+  createdAt
+  size
+  price
+  timeInForce
+  expiresAt
+  side
+  market {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+  }
+}
+
+subscription OrderBusEvents($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
+    type
+    event {
+      ... on Order {
+        ...OrderBusEventFields
+      }
+    }
+  }
+}
+
+fragment DepositBusEventFields on Deposit {
+  id
+  status
+  amount
+  asset {
+    id
+    symbol
+    decimals
+  }
+  createdTimestamp
+  creditedTimestamp
+  txHash
+}
+
+subscription DepositBusEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
+    event {
+      ... on Deposit {
+        ...DepositBusEventFields
       }
     }
   }

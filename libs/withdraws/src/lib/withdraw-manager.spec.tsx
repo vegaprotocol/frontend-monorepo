@@ -23,13 +23,11 @@ jest.mock('./use-withdraw-asset', () => ({
   }),
 }));
 
-jest.mock('./use-get-withdraw-threshold', () => ({
+jest.mock('@vegaprotocol/web3', () => ({
+  ...jest.requireActual('@vegaprotocol/web3'),
   useGetWithdrawThreshold: () => {
     return () => Promise.resolve(new BigNumber(100));
   },
-}));
-
-jest.mock('./use-get-withdraw-delay', () => ({
   useGetWithdrawDelay: () => {
     return () => Promise.resolve(10000);
   },

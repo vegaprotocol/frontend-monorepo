@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { useBridgeContract } from '@vegaprotocol/web3';
+import { useBridgeContract } from './use-bridge-contract';
 import { useCallback } from 'react';
 
 /**
