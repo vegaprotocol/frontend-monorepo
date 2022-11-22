@@ -71,19 +71,16 @@ Cypress.Commands.add(
 Cypress.Commands.add('convert_number_to_max_eighteen_decimal', (number) => {
   // this will take a number like this   : 700000000000000000001
   // and convert it to a number like this: 700.000000000000000001
-  return new Intl.NumberFormat(
-    new Intl.NumberFormat(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 18,
-    })
-  ).format(parseFloat(BigNumber(number / 1000000000000000000).toString()));
+  const value = BigNumber(number / 1000000000000000000).toString();
+  return parseFloat(value).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 18,
+  });
 });
 
 Cypress.Commands.add('convert_number_to_max_four_decimal', (number) => {
-  return new Intl.NumberFormat(
-    new Intl.NumberFormat(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    })
-  ).format(parseFloat(number));
+  return parseFloat(number).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+  });
 });
