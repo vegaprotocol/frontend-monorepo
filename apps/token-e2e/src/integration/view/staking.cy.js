@@ -164,8 +164,8 @@ context('Staking Page - verify elements on page', function () {
       // TODO validators missing url for more information about them 2001-STKE-09
 
       it('Should be able to see validator status', function () {
-        cy.get(validatorStatus).should('have.text', 'Consensus')
-      })
+        cy.get(validatorStatus).should('have.text', 'Consensus');
+      });
 
       // 2001-STKE-012
       it('Should be able to see total stake', function () {
