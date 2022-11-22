@@ -3,6 +3,10 @@ import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink } from '../../../links';
+import {
+  EthExplorerLink,
+  EthExplorerLinkTypes,
+} from '../../../links/eth-explorer-link/eth-explorer-link';
 
 interface TxDetailsChainEventErc20AssetListProps {
   assetList: components['schemas']['vegaERC20AssetList'];
@@ -26,10 +30,17 @@ export const TxDetailsChainEventErc20AssetList = ({
         <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('ERC20 asset added')}</TableCell>
       </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Source')}</TableCell>
-        <TableCell>{assetList.assetSource || ''}</TableCell>
-      </TableRow>
+      {assetList.assetSource ? (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Source')}</TableCell>
+          <TableCell>
+            <EthExplorerLink
+              id={assetList.assetSource}
+              type={EthExplorerLinkTypes.address}
+            />
+          </TableCell>
+        </TableRow>
+      ) : null}
       <TableRow modifier="bordered">
         <TableCell>{t('Added Vega asset')}</TableCell>
         <TableCell>

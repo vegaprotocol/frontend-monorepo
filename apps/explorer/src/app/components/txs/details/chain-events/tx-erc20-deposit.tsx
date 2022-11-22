@@ -3,6 +3,10 @@ import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink, PartyLink } from '../../../links';
+import {
+  EthExplorerLink,
+  EthExplorerLinkTypes,
+} from '../../../links/eth-explorer-link/eth-explorer-link';
 
 interface TxDetailsChainEventProps {
   deposit: components['schemas']['vegaERC20Deposit'];
@@ -28,6 +32,17 @@ export const TxDetailsChainEventDeposit = ({
         <TableCell>{t('Source')}</TableCell>
         <TableCell>{deposit.sourceEthereumAddress || ''}</TableCell>
       </TableRow>
+      {deposit.sourceEthereumAddress ? (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Source')}</TableCell>
+          <TableCell>
+            <EthExplorerLink
+              id={deposit.sourceEthereumAddress}
+              type={EthExplorerLinkTypes.address}
+            />
+          </TableCell>
+        </TableRow>
+      ) : null}
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>

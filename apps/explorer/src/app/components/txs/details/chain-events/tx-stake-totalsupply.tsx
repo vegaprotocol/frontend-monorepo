@@ -2,6 +2,10 @@ import React from 'react';
 import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
+import {
+  EthExplorerLink,
+  EthExplorerLinkTypes,
+} from '../../../links/eth-explorer-link/eth-explorer-link';
 
 interface TxDetailsChainEventStakeTotalSupplyProps {
   update: components['schemas']['vegaStakeTotalSupply'];
@@ -30,10 +34,18 @@ export const TxDetailsChainEventStakeTotalSupply = ({
         <TableCell>{t('Chain Event type')}</TableCell>
         <TableCell>{t('Stake total supply update')}</TableCell>
       </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Source')}</TableCell>
-        <TableCell>{update.tokenAddress || ''}</TableCell>
-      </TableRow>
+
+      {update.tokenAddress ? (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Source')}</TableCell>
+          <TableCell>
+            <EthExplorerLink
+              id={update.tokenAddress}
+              type={EthExplorerLinkTypes.address}
+            />
+          </TableCell>
+        </TableRow>
+      ) : null}
       <TableRow modifier="bordered">
         <TableCell>{t('Total supply')}</TableCell>
         <TableCell>{totalSupply}</TableCell>
