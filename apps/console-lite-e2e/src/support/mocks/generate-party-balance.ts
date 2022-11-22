@@ -17,7 +17,7 @@ export const generatePartyBalance = (
               balance: '88474051',
               type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
               asset: {
-                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                id: 'dai-id',
                 symbol: 'tDAI',
                 name: 'tDAI TEST',
                 decimals: 5,
@@ -47,7 +47,7 @@ export const generatePartyBalance = (
               balance: '3412867',
               type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
               asset: {
-                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                id: 'dai-id',
                 symbol: 'tDAI',
                 name: 'tDAI TEST',
                 decimals: 5,
@@ -62,7 +62,7 @@ export const generatePartyBalance = (
               balance: '70007',
               type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
               asset: {
-                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+                id: 'dai-id',
                 symbol: 'tDAI',
                 name: 'tDAI TEST',
                 decimals: 5,

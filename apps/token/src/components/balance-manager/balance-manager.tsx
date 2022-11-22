@@ -4,13 +4,11 @@ import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
-import {
-  AppStateActionType,
-  useAppState,
-} from '../../contexts/app-state/app-state-context';
+import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
+import { useBalances } from '../../lib/balances/balances-store';
 
 interface BalanceManagerProps {
   children: React.ReactElement;
@@ -21,8 +19,8 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const { account } = useWeb3React();
   const {
     appState: { decimals },
-    appDispatch,
   } = useAppState();
+  const { updateBalances: updateStoreBalances } = useBalances();
   const { config } = useEthereumConfig();
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
@@ -55,9 +53,8 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
         const lien = toBigNum(stats.lien, decimals);
         const allowance = toBigNum(a, decimals);
 
-        appDispatch({
-          type: AppStateActionType.UPDATE_ACCOUNT_BALANCES,
-          balance,
+        updateStoreBalances({
+          balanceFormatted: balance,
           walletBalance,
           lien,
           allowance,
@@ -70,11 +67,11 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     updateBalances();
   }, [
     decimals,
-    appDispatch,
-    contracts?.token,
-    contracts?.vesting,
+    contracts.token,
+    contracts.vesting,
     account,
     config,
+    updateStoreBalances,
   ]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.

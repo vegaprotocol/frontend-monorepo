@@ -8,7 +8,7 @@ import {
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 
@@ -16,7 +16,7 @@ interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   errorMessage?: string;
 }
 

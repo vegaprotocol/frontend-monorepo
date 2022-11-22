@@ -21,8 +21,6 @@ export type AccountBalance = {
   asset: Asset;
   /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
   balance: Scalars['String'];
-  /** The balance field formatted by the client */
-  balanceFormatted: Scalars['String'];
   /** Market (only relevant to margin accounts) */
   market?: Maybe<Market>;
   /** Owner of the account */
@@ -596,8 +594,6 @@ export type Delegation = {
   __typename?: 'Delegation';
   /** Amount delegated */
   amount: Scalars['String'];
-  /** The amount field formatted by the client */
-  amountFormatted: Scalars['String'];
   /** Epoch of delegation */
   epoch: Scalars['Int'];
   /** URL of node you are delegating to */
@@ -1906,8 +1902,6 @@ export type Node = {
   name: Scalars['String'];
   /** Amount of stake on the next epoch */
   pendingStake: Scalars['String'];
-  /** The pending staked field formatted by the client */
-  pendingStakeFormatted: Scalars['String'];
   /** Public key of the node operator */
   pubkey: Scalars['String'];
   /** Ranking scores and status for the validator for the current epoch */
@@ -1916,16 +1910,10 @@ export type Node = {
   rewardScore?: Maybe<RewardScore>;
   /** The amount of stake that has been delegated by token holders */
   stakedByDelegates: Scalars['String'];
-  /** The stakes by delegates field formatted by the client */
-  stakedByDelegatesFormatted: Scalars['String'];
   /** The amount of stake the node has put up themselves */
   stakedByOperator: Scalars['String'];
-  /** The stakes by operator field formatted by the client */
-  stakedByOperatorFormatted: Scalars['String'];
   /** Total amount staked on node */
   stakedTotal: Scalars['String'];
-  /** The total staked field formatted by the client */
-  stakedTotalFormatted: Scalars['String'];
   /** Validator status of the node */
   status: NodeStatus;
   /** Tendermint public key of the node */
@@ -1955,8 +1943,6 @@ export type NodeData = {
   inactiveNodes: Scalars['Int'];
   /** Total staked amount across all nodes */
   stakedTotal: Scalars['String'];
-  /** The total staked field formatted by the client */
-  stakedTotalFormatted: Scalars['String'];
   /** Total number of nodes */
   totalNodes: Scalars['Int'];
   /** Total uptime for all epochs across all nodes. Or specify a number of epochs */
@@ -3916,8 +3902,6 @@ export type Reward = {
   __typename?: 'Reward';
   /** Amount received for this reward */
   amount: Scalars['String'];
-  /** The amount field formatted by the client */
-  amountFormatted: Scalars['String'];
   /** The asset this reward is paid in */
   asset: Asset;
   /** Epoch for which this reward was distributed */
@@ -3957,8 +3941,6 @@ export type RewardPerAssetDetail = {
   rewards?: Maybe<Array<Maybe<Reward>>>;
   /** The total amount of rewards received for this asset. */
   totalAmount: Scalars['String'];
-  /** The total amount field formatted by the client */
-  totalAmountFormatted: Scalars['String'];
 };
 
 export type RewardScore = {

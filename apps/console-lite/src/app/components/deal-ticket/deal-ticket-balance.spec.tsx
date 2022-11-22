@@ -1,20 +1,17 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type {
-  AccountFragment,
-  DealTicketMarketFragment,
-} from '@vegaprotocol/deal-ticket';
+import type { AccountFragment } from '@vegaprotocol/deal-ticket';
 import { DealTicketBalance } from './deal-ticket-balance';
 import { Schema } from '@vegaprotocol/types';
+import type { MarketDealTicketAsset } from '@vegaprotocol/market-list';
 
-const tDAI: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'] =
-  {
-    __typename: 'Asset',
-    id: '1',
-    symbol: 'tDAI',
-    name: 'TDAI',
-    decimals: 2,
-  };
+const tDAI: MarketDealTicketAsset = {
+  __typename: 'Asset',
+  id: '1',
+  symbol: 'tDAI',
+  name: 'TDAI',
+  decimals: 2,
+};
 
 const accounts: AccountFragment[] = [
   {

@@ -24,10 +24,6 @@ export const StakingNodeFieldsFragmentDoc = gql`
   stakedByDelegates
   stakedTotal
   pendingStake
-  stakedByOperatorFormatted @client
-  stakedByDelegatesFormatted @client
-  stakedTotalFormatted @client
-  pendingStakeFormatted @client
   epochData {
     total
     offline
@@ -53,7 +49,6 @@ export const StakingDocument = gql`
       edges {
         node {
           amount
-          amountFormatted @client
           epoch
           node {
             id
@@ -79,7 +74,6 @@ export const StakingDocument = gql`
   }
   nodeData {
     stakedTotal
-    stakedTotalFormatted @client
     totalNodes
     inactiveNodes
     validatingNodes
