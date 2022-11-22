@@ -141,7 +141,7 @@ context(
             cy.get(currencyValue)
               .should('be.visible')
               .invoke('text')
-              .should('match', /\d{0,3}(,\d{3})*\.\d{18}$/);
+              .should('match', /\d{0,3}(,\d{3})*\.\d{2}$/);
           });
         });
 
@@ -210,7 +210,7 @@ context(
             cy.get(currencyValue)
               .should('be.visible')
               .invoke('text')
-              .should('match', /\d{0,3}(,\d{3})*\.\d{18}$/);
+              .should('match', /\d{0,3}(,\d{3})*\.\d{2}$/);
           });
         });
 
