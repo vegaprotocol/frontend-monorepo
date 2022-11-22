@@ -22,7 +22,7 @@ function getBlockTime(date?: string) {
 }
 
 interface TxDetailsChainMultisigThresholdProps {
-  multisigEvent: components['schemas']['vegaERC20MultiSigEvent'];
+  thresholdSet: components['schemas']['vegaERC20MultiSigEvent']['thresholdSet'];
 }
 
 /**
@@ -30,35 +30,31 @@ interface TxDetailsChainMultisigThresholdProps {
  * It's a percentage, with 1000 being 100% and 0 being 0%.
  */
 export const TxDetailsChainMultisigThreshold = ({
-  multisigEvent,
+  thresholdSet,
 }: TxDetailsChainMultisigThresholdProps) => {
-  if (!multisigEvent) {
+  if (!thresholdSet) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  if (multisigEvent.thresholdSet) {
-    const blockTime = getBlockTime(multisigEvent.thresholdSet.blockTime);
-    const threshold = isNumber(multisigEvent.thresholdSet.newThreshold)
-      ? multisigEvent.thresholdSet.newThreshold / 10
-      : '-';
+  const blockTime = getBlockTime(thresholdSet.blockTime);
+  const threshold = isNumber(thresholdSet.newThreshold)
+    ? thresholdSet.newThreshold / 10
+    : '-';
 
-    return (
-      <>
-        <TableRow modifier="bordered">
-          <TableCell>{t('Chain Event type')}</TableCell>
-          <TableCell>{t('ERC20 multisig threshold set')}</TableCell>
-        </TableRow>
-        <TableRow modifier="bordered">
-          <TableCell>{t('Threshold')}</TableCell>
-          <TableCell>{threshold}%</TableCell>
-        </TableRow>
-        <TableRow modifier="bordered">
-          <TableCell>{t('Threshold set from')}</TableCell>
-          <TableCell>{blockTime}</TableCell>
-        </TableRow>
-      </>
-    );
-  }
-
-  return null;
+  return (
+    <>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Chain Event type')}</TableCell>
+        <TableCell>{t('ERC20 multisig threshold set')}</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Threshold')}</TableCell>
+        <TableCell>{threshold}%</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Threshold set from')}</TableCell>
+        <TableCell>{blockTime}</TableCell>
+      </TableRow>
+    </>
+  );
 };
