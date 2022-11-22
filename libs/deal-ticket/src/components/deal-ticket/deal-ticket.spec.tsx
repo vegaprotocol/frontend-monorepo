@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { fireEvent, render, screen, act } from '@testing-library/react';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { Schema } from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -10,7 +10,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
 
-const market: DealTicketMarketFragment = {
+const market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
@@ -50,7 +50,7 @@ const market: DealTicketMarketFragment = {
       price: '100',
     },
   },
-};
+} as MarketDealTicket;
 const submit = jest.fn();
 const transactionStatus = 'default';
 
@@ -109,7 +109,7 @@ describe('DealTicket', () => {
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(market.depth.lastTrade!.price, market.decimalPlaces)} ${
+      `~${addDecimal(market!.depth!.lastTrade!.price, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.settlementAsset.symbol
       }`
     );

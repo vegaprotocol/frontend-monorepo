@@ -1,11 +1,12 @@
 import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
+  generateMarket,
+  generateMarketData,
   generateMarketsCandles,
   generateMarketsData,
   generateSimpleMarkets,
 } from '../support/mocks/generate-markets';
-import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
@@ -27,7 +28,8 @@ describe('market selector', { tags: '@smoke' }, () => {
       aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());
-      aliasQuery(req, 'DealTicket', generateDealTicket());
+      aliasQuery(req, 'MarketData', generateMarketData());
+      aliasQuery(req, 'Market', generateMarket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());

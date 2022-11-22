@@ -499,6 +499,7 @@ describe('deal ticket size validation', { tags: '@smoke' }, function () {
 describe('limit order validations', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
+    cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     connectVegaWallet();
     cy.wait('@Market');
@@ -634,6 +635,7 @@ describe('suspended market validation', { tags: '@regression' }, () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
+    cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Market');
     connectVegaWallet();
@@ -682,11 +684,15 @@ describe('account validation', { tags: '@regression' }, () => {
         'EstimateOrder',
         generateEstimateOrder({
           estimateOrder: {
-            marginLevels: { __typename: 'MarginLevels', initialLevel: '1000' },
+            marginLevels: {
+              __typename: 'MarginLevels',
+              initialLevel: '1000000000',
+            },
           },
         })
       );
     });
+    cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
     connectVegaWallet();
     cy.wait('@Market');
@@ -712,7 +718,7 @@ describe('account validation', { tags: '@regression' }, () => {
     );
     cy.getByTestId('dealticket-warning-margin').should(
       'contain.text',
-      '0.01 tBTC currently required, 0.001 tBTC available'
+      '10,000 tBTC currently required, 1,000 tBTC available'
     );
     cy.getByTestId('deal-ticket-deposit-dialog-button').click();
     cy.getByTestId('dialog-content')

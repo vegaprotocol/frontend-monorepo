@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import {
   getDefaultOrder,
   useOrderCloseOut,
@@ -42,9 +41,10 @@ import ReviewTrade from './review-trade';
 import { Schema } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
 import { useOrderValidation } from './use-order-validation';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 interface DealTicketMarketProps {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
 }
 
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
@@ -78,10 +78,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   });
   const { message: invalidText, isDisabled } = useOrderValidation({
     market,
-    orderType: order.type,
-    orderTimeInForce: order.timeInForce,
+    order,
     fieldErrors: errors,
-    estMargin,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
