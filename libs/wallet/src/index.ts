@@ -2,6 +2,7 @@ export * from './context';
 export * from './use-vega-wallet';
 export * from './connectors';
 export * from './use-vega-transaction';
+export * from './use-vega-transaction-store';
 export * from './use-transaction-result';
 export * from './use-eager-connect';
 export * from './manage-dialog';
