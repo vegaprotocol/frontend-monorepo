@@ -76,7 +76,6 @@ export const StakingDocument = gql`
     stakedTotal
     totalNodes
     inactiveNodes
-    validatingNodes
     uptime
   }
 }
