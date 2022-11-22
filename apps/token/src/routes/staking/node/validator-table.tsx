@@ -71,7 +71,7 @@ export const ValidatorTable = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('STATUS')}</span>
-        <span>{t(statusTranslationKey(node.rankingScore.status))}</span>
+        <span data-testid='validator-status'>{t(statusTranslationKey(node.rankingScore.status))}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('IP ADDRESS')}</span>
