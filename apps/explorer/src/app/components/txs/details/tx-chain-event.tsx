@@ -5,12 +5,13 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody } from '../../table';
 import { TxDetailsChainEventDeposit } from './chain-events/tx-erc20-deposit';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
-import { TxDetailsChainMultisigThreshold } from './chain-events/tx-erc20-threshold';
-import { TxDetailsChainMultisigSigner } from './chain-events/tx-erc20-signer';
+import { TxDetailsChainMultisigThreshold } from './chain-events/tx-multisig-threshold';
+import { TxDetailsChainMultisigSigner } from './chain-events/tx-multisig-signer';
 import { TxDetailsChainEventBuiltinDeposit } from './chain-events/tx-builtin-deposit';
 import { TxDetailsChainEventStakeDeposit } from './chain-events/tx-stake-deposit';
 import { TxDetailsChainEventStakeRemove } from './chain-events/tx-stake-remove';
 import { TxDetailsChainEventStakeTotalSupply } from './chain-events/tx-stake-totalsupply';
+import { TxDetailsChainEventBuiltinWithdrawal } from './chain-events/tx-builtin-withdrawal';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -47,17 +48,33 @@ export const TxDetailsChainEvent = ({
   );
 };
 
+// TODO: extract
 function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
-  const deposit = txData?.command.chainEvent?.erc20?.deposit;
-  if (deposit) {
-    return <TxDetailsChainEventDeposit deposit={deposit} />;
-  }
-
+  // Builtin Asset events
   const internalDeposit = txData?.command.chainEvent?.builtin?.deposit;
   if (internalDeposit) {
     return <TxDetailsChainEventBuiltinDeposit deposit={internalDeposit} />;
   }
 
+  const internalWithdrawal = txData?.command.chainEvent?.builtin?.withdrawal;
+  if (internalWithdrawal) {
+    return (
+      <TxDetailsChainEventBuiltinWithdrawal withdrawal={internalWithdrawal} />
+    );
+  }
+
+  // ERC20 asset events
+  const deposit = txData?.command.chainEvent?.erc20?.deposit;
+  if (deposit) {
+    return <TxDetailsChainEventDeposit deposit={deposit} />;
+  }
+
+  const withdrawal = txData?.command.chainEvent?.erc20?.withdrawal;
+  if (withdrawal) {
+    return <TxDetailsChainEventBuiltinWithdrawal withdrawal={withdrawal} />;
+  }
+
+  // ERC20 multisig events
   const multisigEvent = txData?.command.chainEvent?.erc20Multisig;
   if (multisigEvent?.thresholdSet) {
     return <TxDetailsChainMultisigThreshold multisigEvent={multisigEvent} />;
@@ -74,6 +91,7 @@ function getChainEventComponent(txData?: BlockExplorerTransactionResult) {
     return <TxDetailsChainMultisigSigner signer={signerRemoved} />;
   }
 
+  // Staking events
   const stakeDeposited =
     txData?.command.chainEvent?.stakingEvent?.stakeDeposited;
   if (stakeDeposited) {
