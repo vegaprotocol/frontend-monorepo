@@ -1,7 +1,6 @@
 import create from 'zustand';
 import produce from 'immer';
 import type { ethers } from 'ethers';
-import { useCallback } from 'react';
 import type { EthereumError } from './ethereum-error';
 import { isExpectedEthereumError } from './ethereum-error';
 import { isEthereumError } from './ethereum-error';
@@ -14,12 +13,18 @@ import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
 
-type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
+type Contract = MultisigControl & CollateralBridge & Token & TokenFaucetable;
+type ContractMethod =
+  | keyof MultisigControl
+  | keyof CollateralBridge
+  | keyof Token
+  | keyof TokenFaucetable;
 
 interface EthStoredTxState extends EthTxState {
   id: number;
   contract: Contract;
-  methodName: string;
+  methodName: ContractMethod;
+  args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
 }
@@ -28,7 +33,8 @@ export const useEthTransactionStore = create<{
   transactions: (EthStoredTxState | undefined)[];
   create: (
     contract: Contract,
-    methodName: string,
+    methodName: ContractMethod,
+    args: string[],
     requiredConfirmations: number,
     requiresConfirmation: boolean
   ) => number;
@@ -53,7 +59,8 @@ export const useEthTransactionStore = create<{
     get().transactions.find((transaction) => transaction?.id === id),
   create: (
     contract: Contract,
-    methodName: string,
+    methodName: ContractMethod,
+    args: string[] = [],
     requiredConfirmations: number,
     requiresConfirmation: boolean
   ) => {
@@ -62,6 +69,7 @@ export const useEthTransactionStore = create<{
       id: transactions.length,
       contract,
       methodName,
+      args,
       status: EthTxStatus.Default,
       error: null,
       txHash: null,
@@ -76,43 +84,41 @@ export const useEthTransactionStore = create<{
   },
 }));
 
-export const useStoredEthereumTransaction = <T, K extends keyof T>(
-  contract: Contract & T,
-  methodName: string & K,
-  requiredConfirmations = 1,
-  requiresConfirmation = false
-) => {
+export const useEthTransactionManager = () => {
   const update = useEthTransactionStore((state) => state.update);
-  const create = useEthTransactionStore((state) => state.create);
-  const id = create(
-    contract,
-    methodName,
-    requiredConfirmations,
-    requiresConfirmation
+  const transaction = useEthTransactionStore((state) =>
+    state.transactions.find(
+      (transaction) => transaction?.status === EthTxStatus.Default
+    )
   );
 
-  const perform = useCallback(
-    // @ts-ignore TS errors here as TMethod doesn't satisfy the constraints on TContract
-    // its a tricky one to fix but does enforce the correct types when calling perform
-    async (...args: Parameters<T[K]>) => {
-      update(id, {
+  if (transaction) {
+    (async () => {
+      update(transaction.id, {
         status: EthTxStatus.Requested,
         error: null,
         confirmations: 0,
         dialogOpen: true,
       });
-
+      const {
+        contract,
+        methodName,
+        args,
+        requiredConfirmations,
+        requiresConfirmation,
+      } = transaction;
       try {
         if (
           !contract ||
-          typeof contract[methodName] !== 'function' ||
+          (typeof methodName in contract &&
+            contract[methodName] !== 'function') ||
           typeof contract.contract.callStatic[methodName] !== 'function'
         ) {
           throw new Error('method not found on contract');
         }
         await contract.contract.callStatic[methodName as string](...args);
       } catch (err) {
-        update(id, {
+        update(transaction.id, {
           status: EthTxStatus.Error,
           error: err as EthereumError,
         });
@@ -126,15 +132,19 @@ export const useStoredEthereumTransaction = <T, K extends keyof T>(
           throw new Error('method not found on contract');
         }
 
+        // @ts-ignore args will vary depends on contract and method
         const tx = await method.call(contract, ...args);
 
         let receipt: ethers.ContractReceipt | null = null;
 
-        update(id, { status: EthTxStatus.Pending, txHash: tx.hash });
+        update(transaction.id, {
+          status: EthTxStatus.Pending,
+          txHash: tx.hash,
+        });
 
         for (let i = 1; i <= requiredConfirmations; i++) {
           receipt = await tx.wait(i);
-          update(id, {
+          update(transaction.id, {
             confirmations: receipt
               ? receipt.confirmations
               : requiredConfirmations,
@@ -146,39 +156,25 @@ export const useStoredEthereumTransaction = <T, K extends keyof T>(
         }
 
         if (requiresConfirmation) {
-          update(id, { status: EthTxStatus.Complete, receipt });
+          update(transaction.id, { status: EthTxStatus.Complete, receipt });
         } else {
-          update(id, { status: EthTxStatus.Confirmed, receipt });
+          update(transaction.id, { status: EthTxStatus.Confirmed, receipt });
         }
       } catch (err) {
         if (err instanceof Error || isEthereumError(err)) {
           if (isExpectedEthereumError(err)) {
-            update(id, { dialogOpen: false });
+            update(transaction.id, { dialogOpen: false });
           } else {
-            update(id, { status: EthTxStatus.Error, error: err });
+            update(transaction.id, { status: EthTxStatus.Error, error: err });
           }
         } else {
-          update(id, {
+          update(transaction.id, {
             status: EthTxStatus.Error,
             error: new Error('Something went wrong'),
           });
         }
         return;
       }
-    },
-    [
-      contract,
-      methodName,
-      requiredConfirmations,
-      requiresConfirmation,
-      update,
-      id,
-    ]
-  );
-
-  const setConfirmed = useCallback(() => {
-    update(id, { status: EthTxStatus.Confirmed });
-  }, [update, id]);
-
-  return { perform, id, setConfirmed };
+    })();
+  }
 };

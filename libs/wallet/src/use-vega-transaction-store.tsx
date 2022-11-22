@@ -16,7 +16,7 @@ interface VegaStoredTxState extends VegaTxState {
 
 export const useVegaTransactionStore = create<{
   transactions: (VegaStoredTxState | undefined)[];
-  send: (pubKey: string, tx: Transaction) => number;
+  create: (pubKey: string, tx: Transaction) => number;
   update: (
     id: VegaStoredTxState['id'],
     update?: Partial<VegaStoredTxState>
@@ -39,7 +39,7 @@ export const useVegaTransactionStore = create<{
   },
   get: (id: number) =>
     get().transactions.find((transaction) => transaction?.id === id),
-  send: (pubKey: string, body: Transaction) => {
+  create: (pubKey: string, body: Transaction) => {
     const transactions = get().transactions;
     const transaction: VegaStoredTxState = {
       id: transactions.length,
@@ -58,22 +58,22 @@ export const useVegaTransactionStore = create<{
 
 export const useVegaWalletTransactionManager = () => {
   const { sendTx } = useVegaWallet();
-  const requestedTransaction = useVegaTransactionStore((state) =>
+  const transaction = useVegaTransactionStore((state) =>
     state.transactions.find(
       (transaction) => transaction?.status === VegaTxStatus.Requested
     )
   );
   const update = useVegaTransactionStore((state) => state.update);
-  if (requestedTransaction) {
-    sendTx(requestedTransaction.pubKey, requestedTransaction.body)
+  if (transaction) {
+    sendTx(transaction.pubKey, transaction.body)
       .then((res) => {
         if (res === null) {
           // User rejected
-          update(requestedTransaction.id);
+          update(transaction.id);
           return;
         }
         if (res.signature && res.transactionHash) {
-          update(requestedTransaction.id, {
+          update(transaction.id, {
             status: VegaTxStatus.Pending,
             txHash: res.transactionHash,
             signature: res.signature,
@@ -81,10 +81,15 @@ export const useVegaWalletTransactionManager = () => {
         }
       })
       .catch((err) => {
-        update(requestedTransaction.id, {
+        update(transaction.id, {
           error: err instanceof WalletError ? err : ClientErrors.UNKNOWN,
           status: VegaTxStatus.Error,
         });
       });
   }
+};
+
+const TransactionsManager = () => {
+  useVegaWalletTransactionManager();
+  return null;
 };
