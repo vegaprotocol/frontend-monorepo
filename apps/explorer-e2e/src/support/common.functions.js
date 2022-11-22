@@ -76,9 +76,14 @@ Cypress.Commands.add('convert_number_to_max_eighteen_decimal', (number) => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 18,
     })
-  ).format(BigNumber((number / 1000000000000000000).toNumber()));
+  ).format(BigNumber(number / 1000000000000000000).toNumber());
 });
 
-Cypress.Commands.add('convert_number_to_four_decimal', (number) => {
-  return parseFloat(number).toFixed(4);
+Cypress.Commands.add('convert_number_to_max_four_decimal', (number) => {
+  return new Intl.NumberFormat(
+    new Intl.NumberFormat('default', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    })
+  ).format(parseFloat(number));
 });
