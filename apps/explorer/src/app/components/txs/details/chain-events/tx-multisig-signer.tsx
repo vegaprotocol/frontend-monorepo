@@ -15,8 +15,8 @@ interface TxDetailsChainMultisigSignerProps {
 export const TxDetailsChainMultisigSigner = ({
   signer,
 }: TxDetailsChainMultisigSignerProps) => {
-  if (!signer) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!signer || !signer.blockTime) {
+    return null;
   }
 
   const blockTime = getBlockTime(signer.blockTime);
@@ -30,10 +30,12 @@ export const TxDetailsChainMultisigSigner = ({
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Chain Event type')}</TableCell>
-        {'newSigner' in signer
-          ? t('Add ERC20 bridge multisig signer')
-          : t('Remove ERC20 bridge multsig signer')}
+        <TableCell>{t('Chain event type')}</TableCell>
+        <TableCell>
+          {'newSigner' in signer
+            ? t('Add ERC20 bridge multisig signer')
+            : t('Remove ERC20 bridge multisig signer')}
+        </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>

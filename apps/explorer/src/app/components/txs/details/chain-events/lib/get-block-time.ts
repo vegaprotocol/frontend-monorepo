@@ -5,12 +5,21 @@
  * @returns String date in locale time
  */
 export function getBlockTime(date?: string) {
-  if (!date) {
+  try {
+    if (!date) {
+      throw new Error('No date provided');
+    }
+
+    const timeInSeconds = parseInt(date, 10);
+
+    if (isNaN(timeInSeconds)) {
+      throw new Error('Invalid date');
+    }
+
+    const timeInMs = timeInSeconds * 1000;
+
+    return new Date(timeInMs).toLocaleString();
+  } catch (e) {
     return '-';
   }
-
-  const timeInSeconds = parseInt(date, 10);
-  const timeInMs = timeInSeconds * 1000;
-
-  return new Date(timeInMs).toLocaleString();
 }

@@ -4,6 +4,7 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
+import { sha3_256 } from 'js-sha3';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
