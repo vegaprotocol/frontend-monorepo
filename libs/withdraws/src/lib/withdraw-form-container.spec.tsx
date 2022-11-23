@@ -142,6 +142,7 @@ describe('WithdrawFormContainer', () => {
                 __typename: 'Future',
                 settlementAsset: {
                   __typename: 'Asset',
+                  id: 'asset-id',
                   symbol: 'tUSDC',
                   decimals: 5,
                 },
