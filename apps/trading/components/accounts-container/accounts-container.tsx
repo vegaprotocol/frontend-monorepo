@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
