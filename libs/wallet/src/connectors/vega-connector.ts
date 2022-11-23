@@ -283,6 +283,10 @@ export type Transaction =
   | ProposalSubmissionBody
   | BatchMarketInstructionSubmissionBody;
 
+export const isWithdraw = (
+  transaction: Transaction
+): transaction is WithdrawSubmissionBody => 'withdrawSubmission' in transaction;
+
 export interface TransactionResponse {
   transactionHash: string;
   signature: string; // still to be added by core
