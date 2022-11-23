@@ -13,6 +13,7 @@ import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
+import type { GraphQLErrors } from '@apollo/client/errors';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -63,7 +64,7 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
+    if (graphQLErrors && hasNotFoundGraphQLErrors(graphQLErrors)) {
       console.log(graphQLErrors);
     }
     if (networkError) {
@@ -77,17 +78,20 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   });
 }
 
-export const isApolloGraphQLError = (
+const isApolloGraphQLError = (
   error: ApolloError | Error | undefined
 ): error is ApolloError => {
   return !!error && !!(error as ApolloError).graphQLErrors;
+};
+
+const hasNotFoundGraphQLErrors = (errors: GraphQLErrors) => {
+  return errors.some((e) => e.extensions?.type === NOT_FOUND);
 };
 
 export const isNotFoundGraphQLError = (
   error: Error | ApolloError | undefined
 ) => {
   return (
-    isApolloGraphQLError(error) &&
-    error.graphQLErrors.some((e) => e.extensions?.type === NOT_FOUND)
+    isApolloGraphQLError(error) && hasNotFoundGraphQLErrors(error.graphQLErrors)
   );
 };
