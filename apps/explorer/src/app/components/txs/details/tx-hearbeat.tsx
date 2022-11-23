@@ -1,4 +1,3 @@
-import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { BlockLink, NodeLink } from '../../links/';

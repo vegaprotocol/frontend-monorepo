@@ -14,21 +14,24 @@ import isUndefined from 'lodash/isUndefined';
 
 import type { BlockExplorerTransactionResult } from '../../../../routes/types/block-explorer-response';
 
+interface ChainEventProps {
+  txData: BlockExplorerTransactionResult | undefined;
+}
+
 /**
  * Inspects the chain event to determine which details view to show. The list of types
  * comes from the Swagger document that Block Explorer provides, which can be viewed at
  * https://docs.vega.xyz/testnet/api/rest/explorer/block-explorer-list-transactions
  *
- * This component *should* have one entry per chain event type, and new chain events
- * will need to be added manually.
+ * This component should have one entry per chain event type, however if there isn't
+ * a bespoke view for an event the tx-details-shared will still render some basic
+ * overview and the transaction viewer will still let people view the raw TX.
  *
  * Most chain events simply render more table rows for the header table
  *
  * @returns React.JSXElement
  */
-export function getChainEventComponent(
-  txData?: BlockExplorerTransactionResult
-) {
+export const ChainEvent = ({ txData }: ChainEventProps) => {
   const e = txData?.command.chainEvent;
   if (!e) {
     return null;
@@ -133,4 +136,4 @@ export function getChainEventComponent(
 
   // If we hit this return, tx-shared-details should give a basic overview
   return null;
-}
+};

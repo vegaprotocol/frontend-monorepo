@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableWithTbody } from '../../table';
-import { getChainEventComponent } from './chain-events';
 
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import { ChainEvent } from './chain-events';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -28,8 +27,6 @@ export const TxDetailsChainEvent = ({
   pubKey,
   blockData,
 }: TxDetailsChainEventProps) => {
-  const child = useMemo(() => getChainEventComponent(txData), [txData]);
-
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
@@ -37,7 +34,7 @@ export const TxDetailsChainEvent = ({
   return (
     <TableWithTbody>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      {child}
+      <ChainEvent txData={txData} />
     </TableWithTbody>
   );
 };
