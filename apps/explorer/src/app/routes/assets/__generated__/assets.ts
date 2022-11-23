@@ -3,41 +3,47 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type AssetsFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string }, infrastructureFeeAccount?: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null } | null };
+
 export type ExplorerAssetsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
 export type ExplorerAssetsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string }, infrastructureFeeAccount?: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null } | null } } | null> | null } | null };
 
-
+export const AssetsFieldsFragmentDoc = gql`
+    fragment AssetsFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  source {
+    ... on ERC20 {
+      contractAddress
+    }
+    ... on BuiltinAsset {
+      maxFaucetAmountMint
+    }
+  }
+  infrastructureFeeAccount {
+    type
+    balance
+    market {
+      id
+    }
+  }
+}
+    `;
 export const ExplorerAssetsDocument = gql`
     query ExplorerAssets {
   assetsConnection {
     edges {
       node {
-        id
-        name
-        symbol
-        decimals
-        source {
-          ... on ERC20 {
-            contractAddress
-          }
-          ... on BuiltinAsset {
-            maxFaucetAmountMint
-          }
-        }
-        infrastructureFeeAccount {
-          type
-          balance
-          market {
-            id
-          }
-        }
+        ...AssetsFields
       }
     }
   }
 }
-    `;
+    ${AssetsFieldsFragmentDoc}`;
 
 /**
  * __useExplorerAssetsQuery__
