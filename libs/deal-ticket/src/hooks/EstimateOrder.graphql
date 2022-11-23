@@ -5,7 +5,7 @@ query EstimateOrder(
   $size: String!
   $side: Side!
   $timeInForce: OrderTimeInForce!
-  $expiration: String
+  $expiration: Timestamp
   $type: OrderType!
 ) {
   estimateOrder(
