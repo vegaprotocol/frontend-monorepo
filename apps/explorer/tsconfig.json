@@ -13,6 +13,7 @@
     "noFallthroughCasesInSwitch": true,
     "lib": ["es5", "es6", "dom", "dom.iterable"]
   },
+  "exclude": ["./src/types/explorer.d.ts"],
   "include": [],
   "references": [
     {
