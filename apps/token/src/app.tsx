@@ -29,6 +29,7 @@ import {
 import { createConnectors } from './lib/web3-connectors';
 import { ENV } from './config/env';
 import type { InMemoryCacheConfig } from '@apollo/client';
+import { WithdrawalDialog } from '@vegaprotocol/withdraws';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -97,6 +98,7 @@ const Web3Container = ({
                   </div>
                   <VegaWalletDialogs />
                   <TransactionModal />
+                  <WithdrawalDialog />
                 </>
               </BalanceManager>
             </AppLoader>
