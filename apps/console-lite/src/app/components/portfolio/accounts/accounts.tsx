@@ -16,7 +16,7 @@ import { useAccountColumnDefinitions } from '.';
 
 const AccountsManager = () => {
   const { partyId = '' } = useOutletContext<{ partyId: string }>();
-  const { isOpen, symbol, setOpen } = useAssetDetailsDialogStore();
+  const { isOpen, id, setOpen } = useAssetDetailsDialogStore();
   const gridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<AccountFields[] | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -66,7 +66,7 @@ const AccountsManager = () => {
         />
       </AsyncRenderer>
       <AssetDetailsDialog
-        assetSymbol={symbol}
+        assetId={id}
         open={isOpen}
         onChange={(open) => setOpen(open)}
       />

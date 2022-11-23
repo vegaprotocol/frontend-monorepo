@@ -1,4 +1,3 @@
-import type { Asset } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
@@ -10,7 +9,7 @@ import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
   partyId: string;
-  onClickAsset: (asset?: string | Asset) => void;
+  onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
 }

@@ -64,7 +64,7 @@ export interface Datasource extends IDatasource {
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   datasource?: Datasource;
-  onClickAsset: (asset: string | Asset) => void;
+  onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
 }
@@ -98,12 +98,15 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             )}
             cellRenderer={({
               value,
+              data,
             }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
               return value ? (
                 <ButtonLink
                   data-testid="deposit"
                   onClick={() => {
-                    onClickAsset(value);
+                    if (data) {
+                      onClickAsset(data.asset.id);
+                    }
                   }}
                 >
                   {value}

@@ -16,8 +16,8 @@ export const AccountsContainer = () => {
   const openDepositDialog = useDepositDialog((store) => store.open);
 
   const onClickAsset = useCallback(
-    (value?: string | AssetFieldsFragment) => {
-      value && openAssetDetailsDialog(value);
+    (assetId?: string) => {
+      assetId && openAssetDetailsDialog(assetId);
     },
     [openAssetDetailsDialog]
   );

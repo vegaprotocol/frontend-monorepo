@@ -22,6 +22,7 @@ fragment MarketFields on Market {
       product {
         ... on Future {
           settlementAsset {
+            id
             symbol
             decimals
           }
