@@ -7,6 +7,7 @@ import type {
   Load,
   UpdateCallback,
 } from '../lib/generic-data-provider';
+import { isNotFoundGraphQLError } from '@vegaprotocol/apollo-client';
 
 export interface useDataProviderParams<
   Data,
@@ -136,7 +137,15 @@ export const useDataProvider = <
       return unsubscribe();
     };
   }, [client, initialized, dataProvider, callback, variables, skip, update]);
-  return { data, loading, error, flush, reload, load, totalCount };
+  return {
+    data,
+    loading,
+    error: isNotFoundGraphQLError(error) ? null : error,
+    flush,
+    reload,
+    load,
+    totalCount,
+  };
 };
 
 export const useThrottledDataProvider = <Data, Delta>(

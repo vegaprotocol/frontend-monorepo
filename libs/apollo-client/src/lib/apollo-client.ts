@@ -78,12 +78,14 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
 }
 
 export const isApolloGraphQLError = (
-  error: ApolloError | Error
+  error: ApolloError | Error | undefined
 ): error is ApolloError => {
-  return error && !!(error as ApolloError).graphQLErrors;
+  return !!error && !!(error as ApolloError).graphQLErrors;
 };
 
-export const isNotFoundGraphQLError = (error: Error | ApolloError) => {
+export const isNotFoundGraphQLError = (
+  error: Error | ApolloError | undefined
+) => {
   return (
     isApolloGraphQLError(error) &&
     error.graphQLErrors.some((e) => e.extensions?.type === NOT_FOUND)
