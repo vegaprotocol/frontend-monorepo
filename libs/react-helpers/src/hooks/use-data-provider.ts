@@ -86,7 +86,7 @@ export const useDataProvider = <
         isInsert,
         isUpdate,
       } = args;
-      setError(error);
+      setError(isNotFoundGraphQLError(error) ? undefined : error);
       setLoading(loading);
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
@@ -140,7 +140,7 @@ export const useDataProvider = <
   return {
     data,
     loading,
-    error: isNotFoundGraphQLError(error) ? null : error,
+    error,
     flush,
     reload,
     load,
