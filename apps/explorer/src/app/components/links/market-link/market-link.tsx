@@ -19,7 +19,7 @@ const MarketLink = ({ id, ...props }: MarketLinkProps) => {
     variables: { id },
   });
 
-  let label: string = id;
+  let label = id;
 
   if (data?.market?.tradableInstrument.instrument.name) {
     label = data.market.tradableInstrument.instrument.name;

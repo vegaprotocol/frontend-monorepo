@@ -66,6 +66,14 @@
         "passWithNoTests": true
       }
     },
+    "generate-types": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/main/specs/v0.62.1/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
+        ]
+      }
+    },
     "build-netlify": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {

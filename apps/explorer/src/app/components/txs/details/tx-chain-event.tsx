@@ -1,13 +1,10 @@
-import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type {
-  BlockExplorerTransactionResult,
-  ChainEvent,
-} from '../../../routes/types/block-explorer-response';
-import { AssetLink, PartyLink } from '../../links';
-import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
-import { TableCell, TableRow, TableWithTbody } from '../../table';
+import { TableWithTbody } from '../../table';
+
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
+import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
+import { ChainEvent } from './chain-events';
 
 interface TxDetailsChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -20,10 +17,10 @@ interface TxDetailsChainEventProps {
  * Multiple events will relay the same data, from each validator, so that the
  * deposit/withdrawal can be verified independently.
  *
- * Design considerations so far:
- * - The ethereum address should be a link to an Ethereum explorer
- * - Sender and recipient are shown because they are easy
- * - Amount is not shown because there is no formatter by asset component
+ * There are so many chain events that the specific components have been broken
+ * out in to individual components. `getChainEventComponent` determines which
+ * is the most appropriate based on the transaction shape. See that function
+ * for more information.
  */
 export const TxDetailsChainEvent = ({
   txData,
@@ -33,32 +30,11 @@ export const TxDetailsChainEvent = ({
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
-  const cmd = txData.command as ChainEvent;
-  const assetId = cmd.chainEvent.erc20.deposit.vegaAssetId;
-  const sender = cmd.chainEvent.erc20.deposit.sourceEthereumAddress;
-  const recipient = cmd.chainEvent.erc20.deposit.targetPartyId;
 
   return (
     <TableWithTbody>
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Asset')}</TableCell>
-        <TableCell>
-          <AssetLink id={assetId} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Sender')}</TableCell>
-        <TableCell>
-          <span>{sender}</span>
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Recipient')}</TableCell>
-        <TableCell>
-          <PartyLink id={recipient} />
-        </TableCell>
-      </TableRow>
+      <ChainEvent txData={txData} />
     </TableWithTbody>
   );
 };
