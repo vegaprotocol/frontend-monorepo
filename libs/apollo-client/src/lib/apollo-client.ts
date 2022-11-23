@@ -85,7 +85,7 @@ const isApolloGraphQLError = (
 };
 
 const hasNotFoundGraphQLErrors = (errors: GraphQLErrors) => {
-  return errors.some((e) => e.extensions?.type === NOT_FOUND);
+  return errors.some((e) => e.extensions && e.extensions['type'] === NOT_FOUND);
 };
 
 export const isNotFoundGraphQLError = (
