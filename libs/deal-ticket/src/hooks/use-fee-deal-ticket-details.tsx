@@ -30,7 +30,7 @@ export const useFeeDealTicketDetails = (
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
   const price = useMemo(() => {
-    const estPrice = order.price || market.depth?.lastTrade?.price;
+    const estPrice = order.price || market.data.markPrice;
     if (estPrice) {
       if (slippage && parseFloat(slippage) !== 0) {
         const isLong = order.side === Schema.Side.SIDE_BUY;
@@ -42,7 +42,7 @@ export const useFeeDealTicketDetails = (
       return order.price;
     }
     return null;
-  }, [market.depth?.lastTrade?.price, order.price, order.side, slippage]);
+  }, [market.data.markPrice, order.price, order.side, slippage]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,

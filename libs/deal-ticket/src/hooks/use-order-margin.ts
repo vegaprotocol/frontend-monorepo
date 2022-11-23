@@ -2,15 +2,25 @@ import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useMarketPositions } from './use-market-positions';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import { isMarketInAuction } from '../utils';
 
-interface Props {
+interface Market {
+  id: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+  tradingMode: Schema.MarketTradingMode;
+  data: {
+    indicativePrice: string;
+    markPrice: string;
+  };
+}
+
+export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: MarketDealTicket;
+  market: Market;
   partyId: string;
 }
 
@@ -87,7 +97,7 @@ const getPriceForEstimate = (
     type: Schema.OrderType;
     price?: string | undefined;
   },
-  market: MarketDealTicket
+  market: Market
 ) => {
   // If order type is market we should use either the mark price
   // or the uncrossing price. If order type is limit use the price
