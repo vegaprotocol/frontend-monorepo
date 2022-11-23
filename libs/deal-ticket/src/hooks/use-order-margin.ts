@@ -44,10 +44,7 @@ export const useOrderMargin = ({
       partyId,
       price: priceForEstimate,
       size: removeDecimal(order.size, market.positionDecimalPlaces),
-      side:
-        order.side === Schema.Side.SIDE_BUY
-          ? Schema.Side.SIDE_BUY
-          : Schema.Side.SIDE_SELL,
+      side: order.side,
       timeInForce: order.timeInForce,
       type: order.type,
     },
