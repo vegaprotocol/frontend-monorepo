@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type { PositionMargin } from './use-market-positions';
+import type { Props } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
+import { Schema } from '@vegaprotocol/types';
 
 let mockEstimateData = {
   estimateOrder: {
@@ -18,6 +18,7 @@ let mockEstimateData = {
     },
   },
 };
+
 jest.mock('@apollo/client', () => ({
   ...jest.requireActual('@apollo/client'),
   useQuery: jest.fn(() => ({ data: mockEstimateData })),
@@ -39,73 +40,52 @@ jest.mock('./use-market-positions', () => ({
 }));
 
 describe('useOrderMargin', () => {
-  const order = {
-    size: '2',
-    side: 'SIDE_BUY',
-    timeInForce: 'TIME_IN_FORCE_IOC',
-    type: 'TYPE_MARKET',
-  };
-  const market = {
-    id: 'marketId',
-    depth: {
-      lastTrade: {
-        price: '1000000',
+  const marketId = 'marketId';
+  const args: Props = {
+    order: {
+      marketId,
+      size: '2',
+      side: Schema.Side.SIDE_BUY,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+      type: Schema.OrderType.TYPE_MARKET,
+    },
+    market: {
+      id: marketId,
+      decimalPlaces: 2,
+      positionDecimalPlaces: 0,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      data: {
+        indicativePrice: '100',
+        markPrice: '200',
       },
     },
-    tradableInstrument: {
-      instrument: {
-        product: {
-          settlementAsset: {
-            decimals: 5,
-          },
-        },
-      },
-    },
+    partyId: 'partyId',
   };
-  const partyId = 'partyId';
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should calculate margin correctly', () => {
-    const { result } = renderHook(() =>
-      useOrderMargin({
-        order: order as OrderSubmissionBody['orderSubmission'],
-        market: market as MarketDealTicket,
-        partyId,
-      })
-    );
+    const { result } = renderHook(() => useOrderMargin(args));
     expect(result.current?.margin).toEqual('100000');
-    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
-      order.size
+    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+      args.order.size
     );
   });
 
   it('should calculate fees correctly', () => {
-    const { result } = renderHook(() =>
-      useOrderMargin({
-        order: order as OrderSubmissionBody['orderSubmission'],
-        market: market as MarketDealTicket,
-        partyId,
-      })
-    );
+    const { result } = renderHook(() => useOrderMargin(args));
     expect(result.current?.totalFees).toEqual('300000');
   });
 
   it('should not subtract initialMargin if there is no position', () => {
     mockMarketPositions = null;
-    const { result } = renderHook(() =>
-      useOrderMargin({
-        order: order as OrderSubmissionBody['orderSubmission'],
-        market: market as MarketDealTicket,
-        partyId,
-      })
-    );
+    const { result } = renderHook(() => useOrderMargin(args));
     expect(result.current?.margin).toEqual('200000');
 
-    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
-      order.size
+    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+      args.order.size
     );
   });
 
@@ -122,19 +102,13 @@ describe('useOrderMargin', () => {
         },
       },
     };
-    const { result } = renderHook(() =>
-      useOrderMargin({
-        order: order as OrderSubmissionBody['orderSubmission'],
-        market: market as MarketDealTicket,
-        partyId,
-      })
-    );
+    const { result } = renderHook(() => useOrderMargin(args));
     expect(result.current).toEqual(null);
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
-      .plus(order.size)
+      .plus(args.order.size)
       .toString();
-    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
       calledSize
     );
   });

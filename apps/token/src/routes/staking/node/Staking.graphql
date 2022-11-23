@@ -60,7 +60,6 @@ query Staking($partyId: ID!) {
     stakedTotal
     totalNodes
     inactiveNodes
-    validatingNodes
     uptime
   }
 }

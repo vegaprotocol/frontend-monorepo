@@ -1,4 +1,4 @@
-import type { InMemoryCacheConfig } from '@apollo/client';
+import type { ApolloError, InMemoryCacheConfig } from '@apollo/client';
 import {
   ApolloClient,
   from,
@@ -13,8 +13,11 @@ import { createClient as createWSClient } from 'graphql-ws';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
+import type { GraphQLErrors } from '@apollo/client/errors';
 
 const isBrowser = typeof window !== 'undefined';
+
+const NOT_FOUND = 'NotFound';
 
 export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   if (!base) {
@@ -61,8 +64,12 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) console.log(graphQLErrors);
-    if (networkError) console.log(networkError);
+    if (graphQLErrors && !hasNotFoundGraphQLErrors(graphQLErrors)) {
+      console.log(graphQLErrors);
+    }
+    if (networkError) {
+      console.log(networkError);
+    }
   });
 
   return new ApolloClient({
@@ -70,3 +77,21 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     cache: new InMemoryCache(cacheConfig),
   });
 }
+
+const isApolloGraphQLError = (
+  error: ApolloError | Error | undefined
+): error is ApolloError => {
+  return !!error && !!(error as ApolloError).graphQLErrors;
+};
+
+const hasNotFoundGraphQLErrors = (errors: GraphQLErrors) => {
+  return errors.some((e) => e.extensions && e.extensions['type'] === NOT_FOUND);
+};
+
+export const isNotFoundGraphQLError = (
+  error: Error | ApolloError | undefined
+) => {
+  return (
+    isApolloGraphQLError(error) && hasNotFoundGraphQLErrors(error.graphQLErrors)
+  );
+};
