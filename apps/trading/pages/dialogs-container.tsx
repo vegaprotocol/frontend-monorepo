@@ -12,12 +12,12 @@ import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
 import { WelcomeNoticeDialog } from '../components/welcome-notice';
 
 const DialogsContainer = () => {
-  const { isOpen, symbol, trigger, setOpen } = useAssetDetailsDialogStore();
+  const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
   return (
     <>
       <VegaConnectDialog connectors={Connectors} />
       <AssetDetailsDialog
-        assetSymbol={symbol}
+        assetId={id}
         trigger={trigger || null}
         open={isOpen}
         onChange={setOpen}

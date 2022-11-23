@@ -298,8 +298,7 @@ export const columns = (
             onCellClick(
               e,
               ColumnKind.Asset,
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol
+              market.tradableInstrument.instrument.product.settlementAsset.id
             );
           }}
         >
@@ -480,8 +479,7 @@ export const columnsPositionMarkets = (
             onCellClick(
               e,
               ColumnKind.Asset,
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol
+              market.tradableInstrument.instrument.product.settlementAsset.id
             );
           }}
         >

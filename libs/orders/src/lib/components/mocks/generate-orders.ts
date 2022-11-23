@@ -43,6 +43,7 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
             quoteName: '',
             settlementAsset: {
               __typename: 'Asset',
+              id: 'asset-id',
               decimals: 1,
               symbol: 'XYZ',
             },
