@@ -1,4 +1,4 @@
-import type { InMemoryCacheConfig } from '@apollo/client';
+import type { ApolloError, InMemoryCacheConfig } from '@apollo/client';
 import {
   ApolloClient,
   from,
@@ -15,6 +15,8 @@ import { RetryLink } from '@apollo/client/link/retry';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 
 const isBrowser = typeof window !== 'undefined';
+
+const NOT_FOUND = 'NotFound';
 
 export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
   if (!base) {
@@ -61,8 +63,12 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) console.log(graphQLErrors);
-    if (networkError) console.log(networkError);
+    if (graphQLErrors) {
+      console.log(graphQLErrors);
+    }
+    if (networkError) {
+      console.log(networkError);
+    }
   });
 
   return new ApolloClient({
@@ -70,3 +76,16 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     cache: new InMemoryCache(cacheConfig),
   });
 }
+
+export const isApolloGraphQLError = (
+  error: ApolloError | Error
+): error is ApolloError => {
+  return error && !!(error as ApolloError).graphQLErrors;
+};
+
+export const isNotFoundGraphQLError = (error: Error | ApolloError) => {
+  return (
+    isApolloGraphQLError(error) &&
+    error.graphQLErrors.some((e) => e.extensions?.type === NOT_FOUND)
+  );
+};
