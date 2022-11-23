@@ -51,7 +51,7 @@ describe('withdraw', { tags: '@smoke' }, () => {
     );
   });
   it('max amount', () => {
-    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesnt have any collateral
+    selectAsset(asset2Name); // Will be above maximum because the vega wallet doesn't have any collateral
     cy.get(amountField).clear().type('1001', { delay: 100 });
     cy.getByTestId(submitWithdrawBtn).click();
     cy.get('[data-testid="input-error-text"]').should(
@@ -81,17 +81,14 @@ describe('withdraw', { tags: '@smoke' }, () => {
       'contain.text',
       'Balance available'
     );
-    cy.getByTestId('BALANCE_AVAILABLE_value').should(
-      'have.text',
-      '1,000.00000'
-    );
+    cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '1,000.00');
     cy.getByTestId('WITHDRAWAL_THRESHOLD_label').should(
       'contain.text',
       'Delayed withdrawal threshold'
     );
     cy.getByTestId('WITHDRAWAL_THRESHOLD_value').should(
       'contain.text',
-      '100.00000'
+      '100.00'
     );
     cy.getByTestId('DELAY_TIME_label').should('contain.text', 'Delay time');
     cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');

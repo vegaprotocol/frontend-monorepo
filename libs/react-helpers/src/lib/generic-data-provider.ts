@@ -646,7 +646,7 @@ function makeDerivedDataProviderInternal<
         const updatedPart = parts[updatedPartIndex];
         if (updatedPart.isUpdate) {
           isUpdate = true;
-          if (updatedPart.delta && combineDelta && data) {
+          if (combineDelta && data) {
             delta = combineDelta(data, parts, previousData, variables);
           }
           delete updatedPart.isUpdate;

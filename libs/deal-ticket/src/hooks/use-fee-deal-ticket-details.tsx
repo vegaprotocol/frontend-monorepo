@@ -1,7 +1,7 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import {
-  addDecimalsNormalizeNumber,
-  normalizeFormatNumber,
+  addDecimalsFormatNumber,
+  formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
@@ -116,14 +116,14 @@ export const getFeeDetailsValues = ({
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? normalizeFormatNumber(value, market.decimalPlaces)
+      ? formatNumber(value, market.decimalPlaces)
       : '-';
   };
   const formatValueWithAssetDp = (
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? addDecimalsNormalizeNumber(value, assetDecimals)
+      ? addDecimalsFormatNumber(value, assetDecimals)
       : '-';
   };
   return [
