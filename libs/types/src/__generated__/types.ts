@@ -1947,8 +1947,6 @@ export type NodeData = {
   totalNodes: Scalars['Int'];
   /** Total uptime for all epochs across all nodes. Or specify a number of epochs */
   uptime: Scalars['Float'];
-  /** Number of nodes validating */
-  validatingNodes: Scalars['Int'];
 };
 
 /** Edge type containing the node and cursor information returned by a NodesConnection */
