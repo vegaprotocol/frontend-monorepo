@@ -3,7 +3,6 @@ query Stats {
     stakedTotal
     totalNodes
     inactiveNodes
-    validatingNodes
   }
   statistics {
     status

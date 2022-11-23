@@ -15,7 +15,6 @@ export const StatsDocument = gql`
     stakedTotal
     totalNodes
     inactiveNodes
-    validatingNodes
   }
   statistics {
     status
