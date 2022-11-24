@@ -175,23 +175,6 @@ export type AggregatedBalanceEdge = {
   node: AggregatedBalance;
 };
 
-export type AggregatedLedgerEntries = {
-  __typename?: 'AggregatedLedgerEntries';
-  /** Account type, if query was grouped by account type - else null */
-  accountType?: Maybe<AccountType>;
-  /** Asset identifier, if query was grouped by asset - else null */
-  assetId?: Maybe<Scalars['ID']>;
-  /** Market identifier, if query was grouped by market - else null */
-  marketId?: Maybe<Scalars['ID']>;
-  /** Party identifier, if query was grouped by party - else null */
-  partyId?: Maybe<Scalars['ID']>;
-  /** Net amount of ledger entries for the accounts specified in the filter at this time */
-  quantity: Scalars['String'];
-  transferType?: Maybe<Scalars['String']>;
-  /** RFC3339Nano time from at which this ledger entries records were relevant */
-  vegaTime: Scalars['String'];
-};
-
 export type AggregatedLedgerEntriesConnection = {
   __typename?: 'AggregatedLedgerEntriesConnection';
   edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
@@ -201,7 +184,31 @@ export type AggregatedLedgerEntriesConnection = {
 export type AggregatedLedgerEntriesEdge = {
   __typename?: 'AggregatedLedgerEntriesEdge';
   cursor: Scalars['String'];
-  node: AggregatedLedgerEntries;
+  node: AggregatedLedgerEntry;
+};
+
+export type AggregatedLedgerEntry = {
+  __typename?: 'AggregatedLedgerEntry';
+  /** Asset identifier, if query was grouped by asset - else null */
+  assetId?: Maybe<Scalars['ID']>;
+  /** Net amount of ledger entries for the accounts specified in the filter at this time */
+  quantity: Scalars['String'];
+  /** Account type, if query was grouped by receiver account type - else null */
+  receiverAccountType?: Maybe<AccountType>;
+  /** Market identifier, if query was grouped by receiver market - else null */
+  receiverMarketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by receiver party - else null */
+  receiverPartyId?: Maybe<Scalars['ID']>;
+  /** Account type, if query was grouped by sender account type - else null */
+  senderAccountType?: Maybe<AccountType>;
+  /** Market identifier, if query was grouped by sender market - else null */
+  senderMarketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by sender party - else null */
+  senderPartyId?: Maybe<Scalars['ID']>;
+  /** Type of the transfer for this ledger entry */
+  transferType?: Maybe<TransferType>;
+  /** RFC3339Nano time from at which this ledger entries records were relevant */
+  vegaTime: Scalars['Timestamp'];
 };
 
 /** Represents an asset in Vega */
@@ -1162,7 +1169,7 @@ export type LedgerEntry = {
   /** The amount transferred */
   amount: Scalars['String'];
   /** RFC3339Nano time at which the transfer was made */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** Type of ledger entry */
   type: Scalars['String'];
 };
@@ -1173,9 +1180,9 @@ export enum LedgerEntryField {
 
 /** Filter for historical entry ledger queries */
 export type LedgerEntryFilter = {
-  AccountFromFilter?: InputMaybe<AccountFilter>;
-  AccountToFilter?: InputMaybe<AccountFilter>;
   CloseOnAccountFilters?: InputMaybe<Scalars['Boolean']>;
+  ReceiverAccountFilter?: InputMaybe<AccountFilter>;
+  SenderAccountFilter?: InputMaybe<AccountFilter>;
   TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
 
