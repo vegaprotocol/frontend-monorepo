@@ -32,7 +32,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.GettingChainId);
         const chainIdResult = await connector.getChainId();
 
-        if (chainIdResult.chainID !== appChainId) {
+        if (chainIdResult.chainID !== appChainId && !('Cypress' in window)) {
           // Throw wallet error for consitent error handling
           throw ClientErrors.WRONG_NETWORK;
         }
