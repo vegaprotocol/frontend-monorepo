@@ -64,8 +64,12 @@ export function createClient(base?: string, cacheConfig?: InMemoryCacheConfig) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors && !hasNotFoundGraphQLErrors(graphQLErrors)) {
-      console.log(graphQLErrors);
+    if (graphQLErrors) {
+      graphQLErrors.forEach((e) => {
+        if (e.extensions && e.extensions['type'] !== NOT_FOUND) {
+          console.log(e);
+        }
+      });
     }
     if (networkError) {
       console.log(networkError);
