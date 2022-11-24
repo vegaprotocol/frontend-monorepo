@@ -46,7 +46,7 @@ export const DealTicketMarketAmount = ({
       <div className="flex items-end gap-4 mb-2">
         <div className="flex-1 text-sm">Size</div>
         <div />
-        <div className="flex-2 text-sm text-right">
+        <div className="flex-1 text-sm text-right">
           {isMarketInAuction(market) && (
             <Tooltip
               description={t(

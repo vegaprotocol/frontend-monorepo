@@ -25,13 +25,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
 
   return (
     <>
-      <AsyncRenderer
-        loading={loading}
-        error={error}
-        data={data}
-        noDataMessage={t('No positions')}
-        noDataCondition={(data) => !(data && data.length)}
-      >
+      <AsyncRenderer loading={loading} error={error} data={data}>
         <PositionsTable
           ref={gridRef}
           rowData={data}
