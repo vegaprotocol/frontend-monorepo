@@ -191,7 +191,7 @@ export const DepositForm = ({
             className="text-sm underline"
             onClick={(e) => {
               e.preventDefault();
-              openAssetDetailsDialog(selectedAsset, e.target as HTMLElement);
+              openAssetDetailsDialog(selectedAsset.id, e.target as HTMLElement);
             }}
           >
             {t('View asset details')}

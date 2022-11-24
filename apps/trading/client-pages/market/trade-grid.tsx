@@ -125,8 +125,7 @@ export const TradeMarketHeader = ({
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  const symbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset?.symbol;
+  const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
 
   const onCellClick: OnCellClickHandler = (e, kind, value) => {
     if (value && kind === ColumnKind.Asset) {
@@ -162,7 +161,7 @@ export const TradeMarketHeader = ({
       <Last24hPriceChange marketId={market?.id} />
       <Last24hVolume marketId={market?.id} />
       <MarketTradingModeComponent marketId={market?.id} onSelect={onSelect} />
-      {symbol ? (
+      {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}
           testId="market-settlement-asset"
@@ -170,10 +169,10 @@ export const TradeMarketHeader = ({
           <div>
             <ButtonLink
               onClick={(e) => {
-                openAssetDetailsDialog(symbol, e.target as HTMLElement);
+                openAssetDetailsDialog(asset.id, e.target as HTMLElement);
               }}
             >
-              {symbol}
+              {asset.symbol}
             </ButtonLink>
           </div>
         </HeaderStat>

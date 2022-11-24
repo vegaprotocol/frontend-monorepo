@@ -54,21 +54,21 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset.symbol"
+        field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
           value,
         }: VegaICellRendererParams<
           MarketWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
+          'tradableInstrument.instrument.product.settlementAsset'
         >) =>
-          value && value.length > 0 ? (
+          value ? (
             <button
               className="hover:underline"
               onClick={(e) => {
-                openAssetDetailsDialog(value, e.target as HTMLElement);
+                openAssetDetailsDialog(value.id, e.target as HTMLElement);
               }}
             >
-              {value}
+              {value.symbol}
             </button>
           ) : (
             ''

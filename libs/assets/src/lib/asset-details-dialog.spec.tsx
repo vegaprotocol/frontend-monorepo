@@ -49,14 +49,10 @@ const mocks = [
   },
 ];
 
-const WrappedAssetDetailsDialog = ({
-  assetSymbol,
-}: {
-  assetSymbol: string;
-}) => (
+const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
   <MockedProvider mocks={mocks}>
     <AssetDetailsDialog
-      assetSymbol={assetSymbol}
+      assetId={assetId}
       open={true}
       onChange={() => false}
     ></AssetDetailsDialog>
@@ -65,15 +61,18 @@ const WrappedAssetDetailsDialog = ({
 
 describe('AssetDetailsDialog', () => {
   it('should show no data message given unknown asset symbol', async () => {
-    render(<WrappedAssetDetailsDialog assetSymbol={'UNKNOWN_FOR_SURE'} />);
+    render(<WrappedAssetDetailsDialog assetId={'UNKNOWN_FOR_SURE'} />);
     expect((await screen.findByTestId('splash')).textContent).toContain(
       'No data'
     );
   });
 
-  const cases: [string, { key: AssetDetail; value: string }[]][] = [
+  const cases: [
+    string, // generated asset id
+    { key: AssetDetail; value: string }[]
+  ][] = [
     [
-      'EA01',
+      'E-01',
       [
         { key: AssetDetail.ID, value: 'E-01' },
         { key: AssetDetail.TYPE, value: 'ERC20' },
@@ -106,7 +105,7 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
     [
-      'BIA01',
+      'B-01',
       [
         { key: AssetDetail.ID, value: 'B-01' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -123,7 +122,7 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
     [
-      'BIA02',
+      'B-02',
       [
         { key: AssetDetail.ID, value: 'B-02' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -140,7 +139,7 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
     [
-      'BIA03',
+      'B-03',
       [
         { key: AssetDetail.ID, value: 'B-03' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -157,7 +156,7 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
     [
-      'BIA04',
+      'B-04',
       [
         { key: AssetDetail.ID, value: 'B-04' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -174,10 +173,11 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
   ];
+
   it.each(cases)(
-    'should show correct data given %p symbol',
-    async (symbol, details) => {
-      render(<WrappedAssetDetailsDialog assetSymbol={symbol} />);
+    'should show correct data given %p id',
+    async (id, details) => {
+      render(<WrappedAssetDetailsDialog assetId={id} />);
       for (const detail of details) {
         expect(
           (await screen.findByTestId(testId(detail.key, 'value'))).textContent
