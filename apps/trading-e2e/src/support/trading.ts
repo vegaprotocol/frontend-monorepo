@@ -4,7 +4,6 @@ import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
-import { generateChainId } from './mocks/generate-chain-id';
 import { generateChart } from './mocks/generate-chart';
 import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
@@ -17,7 +16,6 @@ import {
 import { generateNetworkParameters } from './mocks/generate-network-parameters';
 import { generateOrders } from './mocks/generate-orders';
 import { generateMargins, generatePositions } from './mocks/generate-positions';
-import { generateStatistics } from './mocks/generate-statistics';
 import { generateTrades } from './mocks/generate-trades';
 import { generateWithdrawals } from './mocks/generate-withdrawals';
 import {
