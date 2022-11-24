@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { useVegaWallet } from './use-vega-wallet';
 import type { Transaction } from './connectors';
-import { ClientErrors, isWithdraw } from './connectors';
+import { ClientErrors, isWithdrawTransaction } from './connectors';
 import { WalletError } from './connectors';
 import { determineId } from './utils';
 
@@ -84,7 +84,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
               transaction &&
               transaction.status === VegaTxStatus.Pending &&
               transaction.signature &&
-              isWithdraw(transaction?.body) &&
+              isWithdrawTransaction(transaction?.body) &&
               withdrawal.id === determineId(transaction.signature) // can we use withdrawal.txHash === transaction.txHash
           );
           if (transaction) {

@@ -39,7 +39,7 @@ export const WithdrawalFeedback = ({
   availableTimestamp,
 }: {
   transaction: VegaTxState;
-  withdrawal: Omit<WithdrawalFieldsFragment, 'status'> | null;
+  withdrawal: WithdrawalFieldsFragment | null;
   submitWithdraw: (withdrawalId: string) => void;
   availableTimestamp: number | null;
 }) => {

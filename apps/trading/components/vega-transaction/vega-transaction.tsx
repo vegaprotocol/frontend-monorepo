@@ -1,9 +1,16 @@
 import { WithdrawalFeedback } from '@vegaprotocol/withdraws';
-import { VegaDialog, VegaTxStatus, isWithdraw } from '@vegaprotocol/wallet';
+import { OrderFeedback } from '@vegaprotocol/orders';
+
+import {
+  VegaDialog,
+  VegaTxStatus,
+  isWithdrawTransaction,
+  isOrderCancellationTransaction,
+} from '@vegaprotocol/wallet';
 import type { VegaStoredTxState } from '@vegaprotocol/wallet';
 
 export const VegaTransaction = (transaction: VegaStoredTxState) => {
-  if (isWithdraw(transaction.body)) {
+  if (isWithdrawTransaction(transaction.body)) {
     if (
       transaction.status === VegaTxStatus.Complete &&
       transaction.withdrawal
@@ -18,6 +25,12 @@ export const VegaTransaction = (transaction: VegaStoredTxState) => {
         />
       );
     }
+  } else if (isOrderCancellationTransaction(transaction.body)) {
+    if (transaction.status === VegaTxStatus.Complete && transaction.order) {
+      return (
+        <OrderFeedback transaction={transaction} order={transaction.order} />
+      );
+    }
+    return <VegaDialog transaction={transaction} />;
   }
-  return <VegaDialog transaction={transaction} />;
 };
