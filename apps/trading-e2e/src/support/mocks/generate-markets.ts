@@ -44,6 +44,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-0',
               symbol: 'tDAI',
               decimals: 5,
               __typename: 'Asset',
@@ -88,6 +89,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-1',
               symbol: 'XYZalpha',
               decimals: 5,
               __typename: 'Asset',
@@ -132,6 +134,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-2',
               symbol: 'tUSDC',
               decimals: 5,
               __typename: 'Asset',
@@ -176,6 +179,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-3',
               symbol: 'tBTC',
               decimals: 5,
               __typename: 'Asset',
