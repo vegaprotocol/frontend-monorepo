@@ -10,7 +10,7 @@ export type EstimateOrderQueryVariables = Types.Exact<{
   size: Types.Scalars['String'];
   side: Types.Side;
   timeInForce: Types.OrderTimeInForce;
-  expiration?: Types.InputMaybe<Types.Scalars['String']>;
+  expiration?: Types.InputMaybe<Types.Scalars['Timestamp']>;
   type: Types.OrderType;
 }>;
 
@@ -19,7 +19,7 @@ export type EstimateOrderQuery = { __typename?: 'Query', estimateOrder: { __type
 
 
 export const EstimateOrderDocument = gql`
-    query EstimateOrder($marketId: ID!, $partyId: ID!, $price: String, $size: String!, $side: Side!, $timeInForce: OrderTimeInForce!, $expiration: String, $type: OrderType!) {
+    query EstimateOrder($marketId: ID!, $partyId: ID!, $price: String, $size: String!, $side: Side!, $timeInForce: OrderTimeInForce!, $expiration: Timestamp, $type: OrderType!) {
   estimateOrder(
     marketId: $marketId
     partyId: $partyId

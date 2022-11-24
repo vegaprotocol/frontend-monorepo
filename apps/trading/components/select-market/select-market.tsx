@@ -33,8 +33,11 @@ import type {
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
 import { Link } from 'react-router-dom';
-import { useLinks } from '../../lib/use-links';
-import { NEW_PROPOSAL_LINK } from '../constants';
+import {
+  DApp,
+  TOKEN_NEW_MARKET_PROPOSAL,
+  useLinks,
+} from '@vegaprotocol/environment';
 
 type Market = MarketWithCandles & MarketWithData;
 
@@ -95,7 +98,7 @@ export const SelectAllMarketsTableBody = ({
   headers?: Column[];
   tableColumns?: (market: Market, openVolume?: string) => Column[];
 }) => {
-  const tokenLink = useLinks('token');
+  const tokenLink = useLinks(DApp.Token);
   if (!markets) return null;
   return (
     <>
@@ -121,7 +124,7 @@ export const SelectAllMarketsTableBody = ({
         ) : (
           <SelectMarketTableRowSplash colSpan={12}>
             {t('No markets ')}
-            <ExternalLink href={tokenLink(NEW_PROPOSAL_LINK)}>
+            <ExternalLink href={tokenLink(TOKEN_NEW_MARKET_PROPOSAL)}>
               {t('Propose a new market')}
             </ExternalLink>
           </SelectMarketTableRowSplash>

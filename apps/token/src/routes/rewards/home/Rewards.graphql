@@ -11,14 +11,12 @@ fragment RewardFields on Reward {
     id
   }
   amount
-  amountFormatted @client
   percentageOfTotal
   receivedAt
 }
 
 fragment DelegationFields on Delegation {
   amount
-  amountFormatted @client
   epoch
 }
 

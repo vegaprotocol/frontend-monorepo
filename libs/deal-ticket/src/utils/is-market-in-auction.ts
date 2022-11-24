@@ -1,7 +1,8 @@
 import { Schema } from '@vegaprotocol/types';
-import type { DealTicketMarketFragment } from '../components';
 
-export const isMarketInAuction = (market: DealTicketMarketFragment) => {
+export const isMarketInAuction = (market: {
+  tradingMode: Schema.MarketTradingMode;
+}) => {
   return [
     Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
     Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,

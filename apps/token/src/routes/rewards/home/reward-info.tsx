@@ -11,6 +11,8 @@ import type {
   RewardFieldsFragment,
   DelegationFieldsFragment,
 } from './__generated___/Rewards';
+import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 interface RewardInfoProps {
   data: RewardsQuery | undefined;
@@ -71,6 +73,9 @@ interface RewardTableProps {
 
 export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
   const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
 
   // Get your stake for epoch in which you have rewards
   const stakeForEpoch = React.useMemo(() => {
@@ -78,7 +83,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
 
     const delegationsForEpoch = delegations
       .filter((d) => d.epoch.toString() === reward.epoch.id)
-      .map((d) => new BigNumber(d.amountFormatted));
+      .map((d) => toBigNum(d.amount, decimals));
 
     if (delegationsForEpoch.length) {
       return BigNumber.sum.apply(null, [
@@ -88,7 +93,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
     }
 
     return new BigNumber(0);
-  }, [delegations, reward.epoch]);
+  }, [decimals, delegations, reward.epoch.id]);
 
   return (
     <div className="mb-24">
@@ -107,7 +112,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
         <KeyValueTableRow>
           {t('reward')}
           <span>
-            {reward.amountFormatted} {t('VEGA')}
+            {formatNumber(toBigNum(reward.amount, decimals))} {t('VEGA')}
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>

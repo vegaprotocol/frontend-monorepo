@@ -34,7 +34,7 @@ export const DealTicketMarketAmount = ({
       price = market.data.indicativePrice;
     }
   } else {
-    price = market.depth.lastTrade?.price;
+    price = market.depth?.lastTrade?.price;
   }
 
   const priceFormatted = price

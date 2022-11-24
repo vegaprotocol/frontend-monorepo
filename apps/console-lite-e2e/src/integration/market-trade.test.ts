@@ -5,8 +5,8 @@ import {
   generateMarketsCandles,
   generateMarketsData,
   generateMarket,
+  generateMarketData,
 } from '../support/mocks/generate-markets';
-import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
@@ -28,7 +28,6 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-      aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
@@ -37,6 +36,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
       aliasQuery(req, 'Market', generateMarket());
+      aliasQuery(req, 'MarketData', generateMarketData());
     });
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
@@ -270,7 +270,10 @@ describe('Market trade', { tags: '@smoke' }, () => {
         .find('dt')
         .eq(3)
         .should('have.text', 'Est. Fees (tDAI)');
-      cy.get('#step-2-panel').find('dd').eq(3).should('have.text', '3 (3.03%)');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00 (3.03%)');
     }
   });
 
@@ -292,7 +295,10 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
       cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
 
-      cy.get('#step-3-panel').find('dd').eq(3).should('have.text', '3 (3.03%)');
+      cy.get('#step-3-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00 (3.03%)');
 
       cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
 

@@ -1,10 +1,10 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useBalances } from '../../../lib/balances/balances-store';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { AddLockedTokenAddress } from '../../../components/add-locked-token';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { formatNumber } from '../../../lib/format-number';
 import { truncateMiddle } from '../../../lib/truncate-middle';
 import Routes from '../../routes';
@@ -20,14 +20,12 @@ export const RedemptionInformation = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const {
-    appState: {
-      balanceFormatted,
-      lien,
-      totalVestedBalance,
-      totalLockedBalance,
-      trancheBalances,
-    },
-  } = useAppState();
+    balanceFormatted,
+    lien,
+    totalVestedBalance,
+    totalLockedBalance,
+    trancheBalances,
+  } = useBalances();
 
   const { userTranches } = state;
 

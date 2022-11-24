@@ -95,7 +95,7 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
     cy.get(vegaWalletAssociatedBalance)
       .invoke('text')
       .then((balance) => {
-        if (balance != '0.000000000000000000') {
+        if (balance != '0.00') {
           cy.vega_wallet_teardown_vesting(this.vestingContract);
           cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
         }
@@ -105,7 +105,7 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
   cy.get(vegaWalletContainer).within(() => {
     cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
       'contain',
-      '0.000000000000000000',
+      '0.00',
       { timeout: transactionTimeout }
     );
   });

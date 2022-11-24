@@ -83,13 +83,7 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    if (
-      !marginAccount ||
-      !marginLevel ||
-      !market ||
-      !marketData ||
-      position.openVolume === '0'
-    ) {
+    if (!marginAccount || !marginLevel || !market || !marketData) {
       return;
     }
     const generalAccount = accounts?.find(

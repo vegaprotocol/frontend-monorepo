@@ -11,6 +11,7 @@ import type {
 import { protoMarket, protoCandles, singleMarket } from './commons';
 import type { PartialDeep } from 'type-fest';
 import type { MarketQuery } from '@vegaprotocol/market-list';
+import type { MarketDataQuery } from '@vegaprotocol/market-list';
 
 export const generateSimpleMarkets = (): MarketsQuery => {
   const markets: Market[] = [
@@ -38,8 +39,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'XYZalpha',
               __typename: 'Asset',
+              id: 'asset-XYZalpha',
+              symbol: 'XYZalpha',
               decimals: 5,
             },
           },
@@ -72,8 +74,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'XYZbeta',
               __typename: 'Asset',
+              id: 'asset-XYZbeta',
+              symbol: 'XYZbeta',
               decimals: 5,
             },
           },
@@ -107,8 +110,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'DAI',
             settlementAsset: {
-              symbol: 'tDAI',
               __typename: 'Asset',
+              id: 'asset-tDAI',
+              symbol: 'tDAI',
               decimals: 5,
             },
           },
@@ -141,8 +145,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'XYZbeta',
               __typename: 'Asset',
+              id: 'asset-XYZbeta',
+              symbol: 'XYZbeta',
               decimals: 5,
             },
           },
@@ -174,8 +179,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tUSDC',
               __typename: 'Asset',
+              id: 'asset-tUSDC',
+              symbol: 'tUSDC',
               decimals: 5,
             },
           },
@@ -209,8 +215,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tBTC',
               __typename: 'Asset',
+              id: 'asset-tBTC',
+              symbol: 'tBTC',
               decimals: 5,
             },
           },
@@ -243,8 +250,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'XYZgamma',
               __typename: 'Asset',
+              id: 'asset-XYZgamma',
+              symbol: 'XYZgamma',
               decimals: 5,
             },
           },
@@ -278,8 +286,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tBTC',
               __typename: 'Asset',
+              id: 'asset-tBTC',
+              symbol: 'tBTC',
               decimals: 5,
             },
           },
@@ -313,8 +322,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'BTC',
             settlementAsset: {
-              symbol: 'tBTC',
               __typename: 'Asset',
+              id: 'asset-tBTC',
+              symbol: 'tBTC',
               decimals: 5,
             },
           },
@@ -349,8 +359,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tUSDC',
               __typename: 'Asset',
+              id: 'asset-tUSDC',
+              symbol: 'tUSDC',
               decimals: 5,
             },
           },
@@ -385,8 +396,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'EURO',
             settlementAsset: {
-              symbol: 'tEURO',
               __typename: 'Asset',
+              id: 'asset-tEURO',
+              symbol: 'tEURO',
               decimals: 5,
             },
           },
@@ -419,8 +431,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'XYZgamma',
               __typename: 'Asset',
+              id: 'asset-XYZgamma',
+              symbol: 'XYZgamma',
               decimals: 5,
             },
           },
@@ -454,8 +467,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tBTC',
               __typename: 'Asset',
+              id: 'asset-tBTC',
+              symbol: 'tBTC',
               decimals: 5,
             },
           },
@@ -489,8 +503,9 @@ export const generateSimpleMarkets = (): MarketsQuery => {
             __typename: 'Future',
             quoteName: 'USD',
             settlementAsset: {
-              symbol: 'tBTC',
               __typename: 'Asset',
+              id: 'asset-tBTC',
+              symbol: 'tBTC',
               decimals: 5,
             },
           },
@@ -1139,52 +1154,51 @@ export const generateFillsMarkets = () => {
   };
 };
 
+const markets = [
+  {
+    data: {
+      market: {
+        id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+        __typename: 'Market',
+      },
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '17588787',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
+    },
+    __typename: 'Market',
+  },
+  {
+    data: {
+      market: {
+        id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
+        __typename: 'Market',
+      },
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      staticMidPrice: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '0',
+      bestStaticOfferPrice: '0',
+      indicativeVolume: '0',
+      bestBidPrice: '0',
+      bestOfferPrice: '0',
+      markPrice: '84377569',
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      __typename: 'MarketData',
+    },
+    __typename: 'Market',
+  },
+];
 export const generateMarketsData = (
   override?: PartialDeep<MarketsDataQuery>
 ): MarketsDataQuery => {
-  const markets = [
-    {
-      data: {
-        market: {
-          id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
-          __typename: 'Market',
-        },
-        marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '17588787',
-        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
-    },
-    {
-      data: {
-        market: {
-          id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
-          __typename: 'Market',
-        },
-        marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        staticMidPrice: '0',
-        indicativePrice: '0',
-        bestStaticBidPrice: '0',
-        bestStaticOfferPrice: '0',
-        indicativeVolume: '0',
-        bestBidPrice: '0',
-        bestOfferPrice: '0',
-        markPrice: '84377569',
-        trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
-    },
-  ];
-
   const defaultResult: MarketsDataQuery = {
     marketsConnection: {
       __typename: 'MarketConnection',
@@ -1240,9 +1254,10 @@ export const generatePositionsMarkets = () => {
                 },
                 product: {
                   settlementAsset: {
+                    __typename: 'Asset',
+                    id: 'asset-tDAI',
                     symbol: 'tDAI',
                     decimals: 5,
-                    __typename: 'Asset',
                   },
                   quoteName: 'DAI',
                   __typename: 'Future',
@@ -1294,9 +1309,10 @@ export const generatePositionsMarkets = () => {
                 },
                 product: {
                   settlementAsset: {
+                    __typename: 'Asset',
+                    id: 'asset-tDAI',
                     symbol: 'tDAI',
                     decimals: 5,
-                    __typename: 'Asset',
                   },
                   quoteName: 'DAI',
                   __typename: 'Future',
@@ -1349,9 +1365,10 @@ export const generatePositionsMarkets = () => {
                 },
                 product: {
                   settlementAsset: {
+                    __typename: 'Asset',
+                    id: 'asset-tEURO',
                     symbol: 'tEURO',
                     decimals: 5,
-                    __typename: 'Asset',
                   },
                   quoteName: 'EURO',
                   __typename: 'Future',
@@ -1379,6 +1396,37 @@ export const generateMarket = (): MarketQuery => {
   return {
     market: {
       ...singleMarket,
+    },
+  };
+};
+
+export const generateMarketData = (): MarketDataQuery => {
+  return {
+    marketsConnection: {
+      edges: [
+        {
+          node: {
+            data: {
+              market: {
+                id: protoMarket.id,
+                __typename: 'Market',
+              },
+              marketTradingMode:
+                Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+              staticMidPrice: '0',
+              indicativePrice: '0',
+              bestStaticBidPrice: '0',
+              bestStaticOfferPrice: '0',
+              indicativeVolume: '0',
+              bestBidPrice: '0',
+              bestOfferPrice: '0',
+              markPrice: '17588787',
+              trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+              __typename: 'MarketData',
+            },
+          },
+        },
+      ],
     },
   };
 };

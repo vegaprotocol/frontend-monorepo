@@ -96,7 +96,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-        cy.get(nominatedStake).should('have.text', '2.000000000000000000'); // 2001-STKE-017 2002-SINC-007
+        cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
 
         cy.navigate_to('staking');
 
@@ -554,7 +554,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '0.000000000000000000'
+            '0.00'
           );
         });
 
@@ -608,7 +608,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '0.000000000000000000'
+            '0.00'
           );
         });
 
@@ -656,7 +656,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '2.000000000000000000'
+            '2.00'
           );
         });
 
@@ -819,7 +819,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '12.000000000000000000'
+            '12.00'
           );
         });
 

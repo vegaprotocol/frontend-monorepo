@@ -3,14 +3,24 @@ import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
-import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
+import { isMarketInAuction } from '../utils';
 
-interface Props {
+interface Market {
+  id: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+  tradingMode: Schema.MarketTradingMode;
+  data: {
+    indicativePrice: string;
+    markPrice: string;
+  };
+}
+
+export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: DealTicketMarketFragment;
+  market: Market;
   partyId: string;
 }
 
@@ -36,28 +46,19 @@ export const useOrderMargin = ({
   partyId,
 }: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
-  const markPriceData = useMarketDataMarkPrice(market.id);
+  const priceForEstimate = getPriceForEstimate(order, market);
 
   const { data } = useEstimateOrderQuery({
     variables: {
       marketId: market.id,
       partyId,
-      price: order.price
-        ? removeDecimal(order.price, market.decimalPlaces)
-        : markPriceData?.market?.data?.markPrice || '',
+      price: priceForEstimate,
       size: removeDecimal(order.size, market.positionDecimalPlaces),
-      side:
-        order.side === Schema.Side.SIDE_BUY
-          ? Schema.Side.SIDE_BUY
-          : Schema.Side.SIDE_SELL,
+      side: order.side,
       timeInForce: order.timeInForce,
       type: order.type,
     },
-    skip:
-      !partyId ||
-      !market.id ||
-      !order.size ||
-      !markPriceData?.market?.data?.markPrice,
+    skip: !partyId || !market.id || !order.size || !priceForEstimate,
   });
 
   if (data?.estimateOrder.marginLevels.initialLevel) {
@@ -69,8 +70,10 @@ export const useOrderMargin = ({
         marketPositions?.balance || 0
       )
     ).toString();
+
     const { makerFee, liquidityFee, infrastructureFee } =
       data.estimateOrder.fee;
+
     return {
       margin,
       totalFees: fees,
@@ -82,4 +85,33 @@ export const useOrderMargin = ({
     };
   }
   return null;
+};
+
+/**
+ * Gets a price to use for estimating order margin and fees.
+ * Market orders should use the markPrice or if in auction mode
+ * the indicative price. If its a limit order use user input price.
+ */
+const getPriceForEstimate = (
+  order: {
+    type: Schema.OrderType;
+    price?: string | undefined;
+  },
+  market: Market
+) => {
+  // If order type is market we should use either the mark price
+  // or the uncrossing price. If order type is limit use the price
+  // the user has input
+  let price;
+  if (order.type === Schema.OrderType.TYPE_LIMIT && order.price) {
+    price = removeDecimal(order.price, market.decimalPlaces);
+  } else {
+    if (isMarketInAuction(market)) {
+      price = market.data.indicativePrice;
+    } else {
+      price = market.data.markPrice;
+    }
+  }
+
+  return price === '0' ? undefined : price;
 };

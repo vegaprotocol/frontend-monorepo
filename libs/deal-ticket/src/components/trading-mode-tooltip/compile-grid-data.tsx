@@ -1,17 +1,17 @@
 import {
   t,
   getDateTimeFormat,
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';
-import type { DealTicketMarketFragment } from '../deal-ticket/__generated__/DealTicket';
 import { Link } from 'react-router-dom';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 export const compileGridData = (
-  market: Omit<DealTicketMarketFragment, 'depth'>,
+  market: MarketDealTicket,
   onSelect?: (id: string) => void
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: MarketDataGridProps['grid'] = [];
@@ -21,7 +21,7 @@ export const compileGridData = (
     market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   const formatStake = (value: string) => {
-    const formattedValue = addDecimalsNormalizeNumber(
+    const formattedValue = addDecimalsFormatNumber(
       value,
       market.tradableInstrument.instrument.product.settlementAsset.decimals
     );
@@ -77,7 +77,7 @@ export const compileGridData = (
       value:
         market.data.indicativePrice && market.data.indicativePrice !== '0'
           ? `~
-            ${addDecimalsNormalizeNumber(
+            ${addDecimalsFormatNumber(
               market.data.indicativePrice,
               market.decimalPlaces
             )}`
@@ -91,7 +91,7 @@ export const compileGridData = (
       value:
         market.data.indicativeVolume && market.data.indicativeVolume !== '0'
           ? '~' +
-            addDecimalsNormalizeNumber(
+            addDecimalsFormatNumber(
               market.data.indicativeVolume,
               market.positionDecimalPlaces
             )
