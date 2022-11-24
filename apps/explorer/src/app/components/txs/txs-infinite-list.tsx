@@ -93,7 +93,7 @@ export const TxsInfiniteList = ({
           {({ onItemsRendered, ref }) => (
             <List
               className="List"
-              height={595}
+              height={995}
               itemCount={itemCount}
               itemSize={isStacked ? 134 : 72}
               onItemsRendered={onItemsRendered}

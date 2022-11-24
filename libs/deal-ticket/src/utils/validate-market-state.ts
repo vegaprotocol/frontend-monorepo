@@ -16,12 +16,7 @@ export const validateMarketState = (state: Schema.MarketState) => {
     );
   }
 
-  if (
-    [
-      Schema.MarketState.STATE_PROPOSED,
-      Schema.MarketState.STATE_PENDING,
-    ].includes(state)
-  ) {
+  if (state === Schema.MarketState.STATE_PROPOSED) {
     return t(
       `This market is ${marketTranslations(
         state

@@ -2,11 +2,6 @@ import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-
-import {
-  getFeeDetailsValues,
-  useFeeDealTicketDetails,
-} from '../../hooks/use-fee-deal-ticket-details';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -14,8 +9,6 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
@@ -31,12 +24,13 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
-import type BigNumber from 'bignumber.js';
+import { useHasNoBalance } from '../../hooks/use-has-no-balance';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
   transactionStatus: TransactionStatus;
   defaultOrder?: OrderSubmissionBody['orderSubmission'];
@@ -67,17 +61,11 @@ export const DealTicket = ({
   });
 
   const order = watch();
-  const feeDetails = useFeeDealTicketDetails(order, market);
-  const details = getFeeDetailsValues(feeDetails);
-
   // When order state changes persist it in local storage
   useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
-
-  const accountData = useOrderMarginValidation({
-    market,
-    estMargin: feeDetails.estMargin,
-  });
-
+  const hasNoBalance = useHasNoBalance(
+    market.tradableInstrument.instrument.product.settlementAsset.id
+  );
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
       if (!pubKey) {
@@ -91,7 +79,7 @@ export const DealTicket = ({
         return;
       }
 
-      if (accountData.balance.isZero()) {
+      if (hasNoBalance) {
         setError('summary', { message: AccountValidationType.NoCollateral });
         return;
       }
@@ -117,7 +105,7 @@ export const DealTicket = ({
     [
       submit,
       pubKey,
-      accountData,
+      hasNoBalance,
       market.positionDecimalPlaces,
       market.decimalPlaces,
       market.state,
@@ -195,9 +183,9 @@ export const DealTicket = ({
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}
-        accountData={accountData}
+        order={order}
       />
-      <DealTicketFeeDetails details={details} />
+      <DealTicketFeeDetails order={order} market={market} />
     </form>
   );
 };
@@ -208,22 +196,18 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  market: DealTicketMarketFragment;
-  accountData: {
-    balance: BigNumber;
-    margin: BigNumber;
-    asset: {
-      id: string;
-      symbol: string;
-      decimals: number;
-      name: string;
-    };
-  };
+  market: MarketDealTicket;
+  order: OrderSubmissionBody['orderSubmission'];
 }
 const SummaryMessage = memo(
-  ({ errorMessage, market, accountData }: SummaryMessageProps) => {
+  ({ errorMessage, market, order }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
+    const asset = market.tradableInstrument.instrument.product.settlementAsset;
+    const { balanceError, balance, margin } = useOrderMarginValidation({
+      market,
+      order,
+    });
     if (errorMessage === AccountValidationType.NoCollateral) {
       return (
         <ZeroBalanceError
@@ -246,17 +230,8 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (
-      accountData.balance.isGreaterThan(0) &&
-      accountData.balance.isLessThan(accountData.margin)
-    ) {
-      return (
-        <MarginWarning
-          balance={accountData.balance.toString()}
-          margin={accountData.margin.toString()}
-          asset={accountData.asset}
-        />
-      );
+    if (balanceError) {
+      return <MarginWarning balance={balance} margin={margin} asset={asset} />;
     }
 
     // Show auction mode warning

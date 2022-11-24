@@ -28,6 +28,7 @@ import {
   removeDecimal,
   addDecimal,
 } from '@vegaprotocol/react-helpers';
+import { useBalances } from '../../../lib/balances/balances-store';
 
 export enum FormState {
   Default,
@@ -62,6 +63,7 @@ export const StakingForm = ({
   availableStakeToAdd,
   availableStakeToRemove,
 }: StakingFormProps) => {
+  const lien = useBalances((state) => state.lien);
   const params = useSearchParams();
   const navigate = useNavigate();
   const client = useApolloClient();
@@ -189,7 +191,7 @@ export const StakingForm = ({
         availableStakeToAdd.isEqualTo(0) &&
         availableStakeToRemove.isEqualTo(0) && (
           <div>
-            {appState.lien.isGreaterThan(0) ? (
+            {lien.isGreaterThan(0) ? (
               <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>
             ) : (
               <span className="text-red">{t('stakeNodeNone')}</span>

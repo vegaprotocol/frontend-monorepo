@@ -7,7 +7,7 @@ import {
   calcCandleVolume,
 } from '@vegaprotocol/market-list';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   PriceCell,
   signedNumberCssClass,
   t,
@@ -251,7 +251,7 @@ export const columns = (
       value: market.data?.markPrice ? (
         <PriceCell
           value={Number(market.data?.markPrice)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             market.data?.markPrice.toString(),
             market.decimalPlaces,
             2
@@ -298,8 +298,7 @@ export const columns = (
             onCellClick(
               e,
               ColumnKind.Asset,
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol
+              market.tradableInstrument.instrument.product.settlementAsset.id
             );
           }}
         >
@@ -315,7 +314,7 @@ export const columns = (
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
             market.decimalPlaces,
             2
@@ -332,7 +331,7 @@ export const columns = (
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),
             market.decimalPlaces,
             2
@@ -347,7 +346,7 @@ export const columns = (
     {
       kind: ColumnKind.Volume,
       value: candleVolume
-        ? addDecimalsNormalizeNumber(
+        ? addDecimalsFormatNumber(
             candleVolume.toString(),
             market.positionDecimalPlaces,
             2
@@ -432,7 +431,7 @@ export const columnsPositionMarkets = (
       value: market.data?.markPrice ? (
         <PriceCell
           value={Number(market.data.markPrice)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             market.data.markPrice.toString(),
             market.decimalPlaces,
             2
@@ -480,8 +479,7 @@ export const columnsPositionMarkets = (
             onCellClick(
               e,
               ColumnKind.Asset,
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol
+              market.tradableInstrument.instrument.product.settlementAsset.id
             );
           }}
         >
@@ -496,7 +494,7 @@ export const columnsPositionMarkets = (
       value: candleHigh ? (
         <PriceCell
           value={Number(candleHigh)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
             market.decimalPlaces,
             2
@@ -513,7 +511,7 @@ export const columnsPositionMarkets = (
       value: candleLow ? (
         <PriceCell
           value={Number(candleLow)}
-          valueFormatted={addDecimalsNormalizeNumber(
+          valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),
             market.decimalPlaces,
             2
@@ -528,7 +526,7 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.Volume,
       value: candleVolume
-        ? addDecimalsNormalizeNumber(
+        ? addDecimalsFormatNumber(
             candleVolume.toString(),
             market.positionDecimalPlaces,
             2
@@ -556,10 +554,7 @@ export const columnsPositionMarkets = (
       value: (
         <p className={signedNumberCssClass(openVolume || '')}>
           {openVolume &&
-            addDecimalsNormalizeNumber(
-              openVolume,
-              market.positionDecimalPlaces
-            )}
+            addDecimalsFormatNumber(openVolume, market.positionDecimalPlaces)}
         </p>
       ),
       className: `${cellClassNames} hidden xxl:table-cell font-mono`,

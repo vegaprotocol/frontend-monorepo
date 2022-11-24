@@ -1,9 +1,5 @@
-import React from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type {
-  AmendLiquidityProvisionOrder,
-  BlockExplorerTransactionResult,
-} from '../../../routes/types/block-explorer-response';
+import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
@@ -29,7 +25,7 @@ export const TxDetailsLPAmend = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd = txData.command as AmendLiquidityProvisionOrder;
+  const marketId = txData.command.liquidityProvisionAmendment?.marketId || '';
 
   return (
     <TableWithTbody>
@@ -37,7 +33,7 @@ export const TxDetailsLPAmend = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Market')}</TableCell>
         <TableCell>
-          <MarketLink id={cmd.liquidityProvisionAmendment.marketId} />
+          <MarketLink id={marketId} />
         </TableCell>
       </TableRow>
     </TableWithTbody>

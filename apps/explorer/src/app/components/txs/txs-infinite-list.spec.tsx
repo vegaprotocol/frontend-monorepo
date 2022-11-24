@@ -26,7 +26,7 @@ const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
         expiresAt: '1664966445481288736',
         type: 'TYPE_LIMIT',
         reference: 'traderbot',
-        peggedOrder: null,
+        peggedOrder: undefined,
       },
     },
   }));

@@ -3,11 +3,11 @@ import merge from 'lodash/merge';
 import { NodeList } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { PartialDeep } from 'type-fest';
 import type { NodesFragmentFragment } from './__generated___/Nodes';
 import { NodesDocument } from './__generated___/Nodes';
 import { Schema } from '@vegaprotocol/types';
+import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
 
 jest.mock('../../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
@@ -20,9 +20,7 @@ const nodeFactory = (overrides?: PartialDeep<NodesFragmentFragment>) => {
     avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
     pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
     stakedTotal: '14182454495731682635157',
-    stakedTotalFormatted: addDecimal('14182454495731682635157', 18),
     pendingStake: '0',
-    pendingStakeFormatted: addDecimal('0', 18),
     rankingScore: {
       rankingScore: '0.67845061012234727427532760837568',
       stakeScore: '0.3392701644525644',
@@ -48,7 +46,6 @@ const MOCK_NODES = {
         pubkey:
           'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
         stakedTotal: '9618711883996159534058',
-        stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
         rankingScore: {
           rankingScore: '0.4601942440481428',
           stakeScore: '0.2300971220240714',
@@ -64,7 +61,6 @@ const MOCK_NODES = {
         pubkey:
           '0931a8fd8cc935458f470e435a05414387cea6f329d648be894fcd44bd517a2b',
         stakedTotal: '4041343338923442976709',
-        stakedTotalFormatted: addDecimal('4041343338923442976709', 18),
         pendingStake: '0',
         rankingScore: {
           rankingScore: '0.1932810100133910357676209647912',
@@ -79,10 +75,8 @@ const MOCK_NODES = {
   },
   nodeData: {
     stakedTotal: '27842509718651285145924',
-    stakedTotalFormatted: addDecimal('27842509718651285145924', 18),
     totalNodes: 3,
     inactiveNodes: 0,
-    validatingNodes: 3,
     uptime: 1560.266845703125,
     __typename: 'NodeData',
   },
@@ -100,18 +94,20 @@ const MOCK_NODES = {
 
 const renderNodeList = (data = MOCK_NODES) => {
   return render(
-    <MemoryRouter>
-      <MockedProvider
-        mocks={[
-          {
-            request: { query: NodesDocument },
-            result: { data },
-          },
-        ]}
-      >
-        <NodeList />
-      </MockedProvider>
-    </MemoryRouter>
+    <AppStateProvider initialState={{ decimals: 18 }}>
+      <MemoryRouter>
+        <MockedProvider
+          mocks={[
+            {
+              request: { query: NodesDocument },
+              result: { data },
+            },
+          ]}
+        >
+          <NodeList />
+        </MockedProvider>
+      </MemoryRouter>
+    </AppStateProvider>
   );
 };
 
@@ -165,7 +161,6 @@ describe('Nodes list', () => {
             pubkey:
               'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
             stakedTotal: '9618711883996159534058',
-            stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
             rankingScore: {
               rankingScore: '0.4601942440481428',
               stakeScore: '0.2300971220240714',
@@ -179,10 +174,8 @@ describe('Nodes list', () => {
       },
       nodeData: {
         stakedTotal: '9618711883996159534058',
-        stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
         totalNodes: 1,
         inactiveNodes: 0,
-        validatingNodes: 1,
         uptime: 1560.266845703125,
         __typename: 'NodeData',
       },
@@ -245,11 +238,11 @@ describe('Nodes list', () => {
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="stakeScore"]')
-    ).toHaveTextContent('0.23010');
+    ).toHaveTextContent('0.2301');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="performanceScore"]')
-    ).toHaveTextContent('1.00000');
+    ).toHaveTextContent('1.00');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="votingPower"]')

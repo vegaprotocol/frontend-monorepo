@@ -3,12 +3,15 @@ import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { MarketStateMapping, Schema } from '@vegaprotocol/types';
+import {
+  MarketStateMapping,
+  Schema as Types,
+  Schema,
+} from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import * as DealTicket from '@vegaprotocol/deal-ticket';
-import BigNumber from 'bignumber.js';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@vegaprotocol/deal-ticket', () => {
@@ -19,7 +22,7 @@ jest.mock('@vegaprotocol/deal-ticket', () => {
 });
 
 type SettlementAsset =
-  DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
+  MarketDealTicket['tradableInstrument']['instrument']['product']['settlementAsset'];
 const asset: SettlementAsset = {
   __typename: 'Asset',
   id: 'asset-id',
@@ -28,7 +31,7 @@ const asset: SettlementAsset = {
   decimals: 2,
 };
 
-const market: DealTicketMarketFragment = {
+const market: MarketDealTicket = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
@@ -40,10 +43,17 @@ const market: DealTicketMarketFragment = {
       __typename: 'Instrument',
       id: 'instrument-id',
       name: 'instrument-name',
+      code: 'instriment-code',
+      metadata: {
+        tags: [],
+      },
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
         settlementAsset: asset,
+        dataSourceSpecForTradingTermination: {
+          id: 'dataSource-id',
+        },
       },
     },
   },
@@ -63,6 +73,25 @@ const market: DealTicketMarketFragment = {
       liquidityFee: '3',
     },
   },
+  data: {
+    __typename: 'MarketData',
+    bestBidPrice: '1605489971',
+    bestOfferPrice: '1606823730',
+    markPrice: '1606823730',
+    trigger: Types.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+    staticMidPrice: '1606156850',
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    indicativeVolume: '0',
+    indicativePrice: '0',
+    bestStaticBidPrice: '1605489971',
+    bestStaticOfferPrice: '1606823730',
+    targetStake: '8561302732',
+    suppliedStake: '727654170336',
+    auctionStart: null,
+    auctionEnd: null,
+    market: { __typename: 'Market', id: 'market-id' },
+  },
+  marketTimestamps: {},
 };
 
 const defaultWalletContext = {
@@ -75,19 +104,19 @@ const defaultWalletContext = {
   connector: null,
 };
 
+const order = {
+  type: Schema.OrderType.TYPE_MARKET,
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  marketId: 'market-id',
+  side: Schema.Side.SIDE_BUY,
+  size: '0.1',
+};
+
 const defaultOrder = {
-  market,
+  market: { ...market },
   step: 0.1,
-  orderType: Schema.OrderType.TYPE_MARKET,
-  orderTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-  estMargin: {
-    margin: '0,000001',
-    totalFees: '0,000006',
-    fees: {
-      makerFee: '0,000003',
-      liquidityFee: '0,000002',
-      infrastructureFee: '0,000001',
-    },
+  order: {
+    ...order,
   },
 };
 
@@ -127,9 +156,9 @@ describe('useOrderValidation', () => {
 
   it('Returns empty string when given valid data', () => {
     jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
-      balance: new BigNumber(0),
-      margin: new BigNumber(100),
-      asset,
+      balance: '0',
+      margin: '100',
+      balanceError: false,
     });
 
     const { result } = setup();
@@ -142,9 +171,9 @@ describe('useOrderValidation', () => {
 
   it('Returns an error message when no keypair found', () => {
     jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
-      balance: new BigNumber(0),
-      margin: new BigNumber(100),
-      asset,
+      balance: '0',
+      margin: '100',
+      balanceError: false,
     });
     const { result } = setup(defaultOrder, { pubKey: null });
     expect(result.current).toStrictEqual({
@@ -183,9 +212,10 @@ describe('useOrderValidation', () => {
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
       jest.spyOn(DealTicket, 'useOrderMarginValidation').mockReturnValue({
-        balance: new BigNumber(0),
-        margin: new BigNumber(100),
-        asset,
+        balance: '0',
+        margin: '100',
+        balanceError: false,
+        // asset,
       });
       const { result } = setup({
         market: {
@@ -193,8 +223,11 @@ describe('useOrderValidation', () => {
           state,
           tradingMode: Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         },
-        orderType: Schema.OrderType.TYPE_LIMIT,
-        orderTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
+        order: {
+          ...order,
+          type: Schema.OrderType.TYPE_LIMIT,
+          timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTT,
+        },
       });
       expect(result.current).toStrictEqual({
         isDisabled: false,
@@ -216,7 +249,10 @@ describe('useOrderValidation', () => {
     ({ tradingMode, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: Schema.OrderType.TYPE_MARKET,
+        order: {
+          ...order,
+          type: Schema.OrderType.TYPE_MARKET,
+        },
       });
       expect(result.current.isDisabled).toBeTruthy();
       expect(result.current.message).toBe(errorMessage);
@@ -239,8 +275,11 @@ describe('useOrderValidation', () => {
     ({ tradingMode, orderTimeInForce, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: Schema.OrderType.TYPE_LIMIT,
-        orderTimeInForce,
+        order: {
+          ...order,
+          type: Schema.OrderType.TYPE_LIMIT,
+          timeInForce: orderTimeInForce,
+        },
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,
@@ -261,7 +300,10 @@ describe('useOrderValidation', () => {
     ({ fieldName, errorType, section, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
-        orderType: Schema.OrderType.TYPE_LIMIT,
+        order: {
+          ...order,
+          type: Schema.OrderType.TYPE_LIMIT,
+        },
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,
@@ -300,9 +342,9 @@ describe('useOrderValidation', () => {
 
   it('Returns an error message when the estimated margin is higher than collateral', async () => {
     const invalidatedMockValue = {
-      balance: new BigNumber(100),
-      margin: new BigNumber(200),
-      asset,
+      balance: '100',
+      margin: '200',
+      balanceError: true,
     };
 
     jest
@@ -315,9 +357,9 @@ describe('useOrderValidation', () => {
 
     const testElement = (
       <DealTicket.MarginWarning
-        margin={invalidatedMockValue.margin.toString()}
-        balance={invalidatedMockValue.balance.toString()}
-        asset={invalidatedMockValue.asset}
+        margin={invalidatedMockValue.margin}
+        balance={invalidatedMockValue.balance}
+        asset={asset}
       />
     );
     expect((result.current.message as React.ReactElement)?.props).toEqual(

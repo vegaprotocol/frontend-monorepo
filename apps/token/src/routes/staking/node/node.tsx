@@ -11,7 +11,7 @@ import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 import compact from 'lodash/compact';
 import type { StakingQuery } from './__generated___/Staking';
 
@@ -48,29 +48,29 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
     const amountsThisEpoch = delegations
       .filter((d) => d.node.id === node)
       .filter((d) => d.epoch === Number(currentEpoch))
-      .map((d) => new BigNumber(d.amountFormatted));
+      .map((d) => toBigNum(d.amount, decimals));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsThisEpoch]);
-  }, [delegations, node, currentEpoch]);
+  }, [delegations, node, currentEpoch, decimals]);
 
   const stakeNextEpoch = React.useMemo(() => {
     const amountsNextEpoch = delegations
       .filter((d) => d.node.id === node)
       .filter((d) => d.epoch === Number(currentEpoch) + 1)
-      .map((d) => new BigNumber(d.amountFormatted));
+      .map((d) => toBigNum(d.amount, decimals));
 
     if (!amountsNextEpoch.length) {
       return stakeThisEpoch;
     }
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsNextEpoch]);
-  }, [currentEpoch, delegations, node, stakeThisEpoch]);
+  }, [currentEpoch, decimals, delegations, node, stakeThisEpoch]);
 
   const currentDelegationAmount = React.useMemo(() => {
     if (delegations.length < 1) return new BigNumber(0);
     const amounts = delegations
       .filter((d) => d.epoch === Number(currentEpoch) + 1)
-      .map((d) => new BigNumber(d.amountFormatted));
+      .map((d) => toBigNum(d.amount, decimals));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amounts]);
-  }, [currentEpoch, delegations]);
+  }, [currentEpoch, decimals, delegations]);
 
   const unstaked = React.useMemo(() => {
     const value = toBigNum(
@@ -102,7 +102,7 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
       <section className="mb-4">
         <ValidatorTable
           node={nodeInfo}
-          stakedTotal={data?.nodeData?.stakedTotalFormatted || '0'}
+          stakedTotal={addDecimal(data?.nodeData?.stakedTotal || '0', decimals)}
           stakeThisEpoch={stakeThisEpoch}
         />
       </section>

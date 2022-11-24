@@ -5,9 +5,16 @@ import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useGlobalStore } from '../../stores';
 import take from 'lodash/take';
-import { useLinks } from '../../lib/use-links';
-import { GOVERNANCE_LINK, NEW_PROPOSAL_LINK } from '../constants';
 import { activeMarketsProvider } from '@vegaprotocol/market-list';
+import {
+  BLOG,
+  DApp,
+  Networks,
+  TOKEN_NEW_MARKET_PROPOSAL,
+  TOKEN_PROPOSAL,
+  TOKEN_PROPOSALS,
+  useLinks,
+} from '@vegaprotocol/environment';
 
 export const WelcomeNoticeDialog = () => {
   const [welcomeNoticeDialog, update] = useGlobalStore((store) => [
@@ -50,8 +57,8 @@ export const WelcomeNoticeDialog = () => {
       proposal.terms.change.instrument.code,
   }));
 
-  const tokenLink = useLinks('token');
-  const consoleFairgroundLink = useLinks('console-fairground');
+  const tokenLink = useLinks(DApp.Token);
+  const consoleFairgroundLink = useLinks(DApp.Console, Networks.TESTNET);
 
   const proposedMarkets = useMemo(
     () =>
@@ -65,14 +72,16 @@ export const WelcomeNoticeDialog = () => {
               <div className="pt-1 flex justify-between" key={i}>
                 <dl>{displayName}</dl>
                 <dt>
-                  <ExternalLink href={tokenLink(`${GOVERNANCE_LINK}/${id}`)}>
+                  <ExternalLink
+                    href={tokenLink(TOKEN_PROPOSAL.replace(':id', id || ''))}
+                  >
                     {t('View or vote')}
                   </ExternalLink>
                 </dt>
               </div>
             ))}
           </dl>
-          <ExternalLink href={tokenLink(GOVERNANCE_LINK)}>
+          <ExternalLink href={tokenLink(TOKEN_PROPOSALS)}>
             {t('View all proposed markets')}
           </ExternalLink>
         </div>
@@ -101,17 +110,20 @@ export const WelcomeNoticeDialog = () => {
           {t(' on Fairground, our Testnet')}
         </li>
         <li>
-          <ExternalLink target="_blank" href={tokenLink(GOVERNANCE_LINK)}>
+          <ExternalLink target="_blank" href={tokenLink(TOKEN_PROPOSALS)}>
             {t('View and vote for proposed markets')}
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink target="_blank" href={tokenLink(NEW_PROPOSAL_LINK)}>
+          <ExternalLink
+            target="_blank"
+            href={tokenLink(TOKEN_NEW_MARKET_PROPOSAL)}
+          >
             {t('Propose your own markets')}
           </ExternalLink>
         </li>
         <li>
-          <ExternalLink target="_blank" href={tokenLink()}>
+          <ExternalLink target="_blank" href={BLOG}>
             {t('Read about the mainnet launch')}
           </ExternalLink>
         </li>

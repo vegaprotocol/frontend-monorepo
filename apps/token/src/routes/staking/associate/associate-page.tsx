@@ -1,5 +1,6 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
+import { useBalances } from '../../../lib/balances/balances-store';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +8,6 @@ import {
   StakingMethod,
   StakingMethodRadio,
 } from '../../../components/staking-method-radio';
-import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { TxState } from '../../../hooks/transaction-reducer';
 import { useSearchParams } from '../../../hooks/use-search-params';
 import { AssociateTransaction } from './associate-transaction';
@@ -52,10 +52,8 @@ export const AssociatePage = ({
 
   const linking = usePollForStakeLinking(vegaKey, txState.txData.hash);
 
-  const {
-    appState: { walletBalance, totalVestedBalance, totalLockedBalance },
-  } = useAppState();
-
+  const { walletBalance, totalVestedBalance, totalLockedBalance } =
+    useBalances();
   const zeroVesting = React.useMemo(
     () => totalVestedBalance.plus(totalLockedBalance).isEqualTo(0),
     [totalLockedBalance, totalVestedBalance]

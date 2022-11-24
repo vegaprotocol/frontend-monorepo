@@ -1,4 +1,4 @@
-import { normalizeFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { DepositDialog, useDepositDialog } from '@vegaprotocol/deposits';
 
@@ -30,12 +30,11 @@ export const MarginWarning = ({ margin, balance, asset }: Props) => {
           </ButtonLink>
         </p>
         <p>
-          {`${normalizeFormatNumber(margin, asset.decimals)} ${
-            asset.symbol
-          } ${t('currently required')}, ${normalizeFormatNumber(
-            balance,
-            asset.decimals
-          )} ${asset.symbol} ${t('available')}`}
+          {`${formatNumber(margin, asset.decimals)} ${asset.symbol} ${t(
+            'currently required'
+          )}, ${formatNumber(balance, asset.decimals)} ${asset.symbol} ${t(
+            'available'
+          )}`}
         </p>
       </div>
       <DepositDialog />

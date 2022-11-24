@@ -6,9 +6,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
+import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
@@ -74,6 +76,7 @@ const NetworkLabel = ({
 
 export const NetworkSwitcher = () => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
+  const tokenLink = useLinks(DApp.Token);
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
 
@@ -137,6 +140,14 @@ export const NetworkSwitcher = () => {
             ))}
           </>
         )}
+        <div
+          className="relative flex items-center justify-between mx-2 py-2 border-t border-neutral-400 pt-2 text-sm"
+          key="propose-network-param"
+        >
+          <ExternalLink href={tokenLink(TOKEN_NEW_NETWORK_PARAM_PROPOSAL)}>
+            {t('Propose a network parameter change')}
+          </ExternalLink>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

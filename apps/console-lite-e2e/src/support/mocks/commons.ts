@@ -116,7 +116,12 @@ export const protoMarket: Market = {
       product: {
         __typename: 'Future',
         quoteName: 'DAI',
-        settlementAsset: { symbol: 'tDAI', __typename: 'Asset', decimals: 5 },
+        settlementAsset: {
+          __typename: 'Asset',
+          id: 'asset-id',
+          symbol: 'tDAI',
+          decimals: 5,
+        },
       },
       __typename: 'Instrument',
     },
@@ -143,5 +148,9 @@ export const singleMarket: SingleMarketFieldsFragment = {
         },
       },
     },
+  },
+  depth: {
+    __typename: 'MarketDepth',
+    lastTrade: { price: '9893006', __typename: 'Trade' },
   },
 };

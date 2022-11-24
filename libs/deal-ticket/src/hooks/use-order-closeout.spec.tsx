@@ -2,9 +2,9 @@ import * as React from 'react';
 import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useOrderCloseOut } from './use-order-closeout';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
@@ -53,7 +53,7 @@ describe('useOrderCloseOut', () => {
       () =>
         useOrderCloseOut({
           order: order as OrderSubmissionBody['orderSubmission'],
-          market: market as DealTicketMarketFragment,
+          market: market as MarketDealTicket,
           partyData: partyData as PartyBalanceQuery,
         }),
       {
@@ -73,7 +73,7 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market as DealTicketMarketFragment,
+          market: market as MarketDealTicket,
           partyData: partyData as PartyBalanceQuery,
         }),
       {
@@ -82,7 +82,7 @@ describe('useOrderCloseOut', () => {
         ),
       }
     );
-    expect(result.current).toEqual('1.00000');
+    expect(result.current).toEqual('1.00');
   });
 
   it('should return proper empty value', () => {
@@ -93,7 +93,7 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market as DealTicketMarketFragment,
+          market: market as MarketDealTicket,
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
@@ -101,6 +101,6 @@ describe('useOrderCloseOut', () => {
         ),
       }
     );
-    expect(result.current).toEqual('0.00000');
+    expect(result.current).toEqual('0.00');
   });
 });

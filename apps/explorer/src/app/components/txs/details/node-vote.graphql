@@ -1,0 +1,32 @@
+query ExplorerNodeVote($id: ID!) {
+  withdrawal(id: $id) {
+    id
+    status
+    createdTimestamp
+    withdrawnTimestamp
+    txHash
+    asset {
+      id
+      name
+      decimals
+    }
+    party {
+      id
+    }
+  }
+  deposit(id: $id) {
+    id
+    status
+    createdTimestamp
+    creditedTimestamp
+    txHash
+    asset {
+      id
+      name
+      decimals
+    }
+    party {
+      id
+    }
+  }
+}

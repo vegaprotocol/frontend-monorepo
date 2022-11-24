@@ -5,17 +5,17 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import { DealTicketEstimates } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { SIDE_NAMES } from './side-selector';
 import { gql, useQuery } from '@apollo/client';
+import { Schema } from '@vegaprotocol/types';
+import { MarketExpires } from '@vegaprotocol/market-info';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import { Schema } from '@vegaprotocol/types';
-import { MarketExpires } from '@vegaprotocol/market-info';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -32,7 +32,7 @@ export const MARKET_TAGS_QUERY = gql`
 `;
 
 interface Props {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   isDisabled: boolean;
   transactionStatus?: string;
   order: OrderSubmissionBody['orderSubmission'];

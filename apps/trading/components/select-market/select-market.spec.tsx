@@ -35,6 +35,7 @@ const MARKET_A: PartialMarket = {
         quoteName: 'ABCDEF',
         settlementAsset: {
           __typename: 'Asset',
+          id: 'asset-ABC',
           decimals: 2,
           symbol: 'ABC',
         },
@@ -103,6 +104,7 @@ const MARKET_B: PartialMarket = {
         quoteName: 'XYZ',
         settlementAsset: {
           __typename: 'Asset',
+          id: 'asset-XYZ',
           decimals: 2,
           symbol: 'XYZ',
         },

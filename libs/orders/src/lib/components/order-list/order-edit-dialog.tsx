@@ -4,7 +4,7 @@ import {
   Size,
   getDateTimeFormat,
   addDecimal,
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import {
@@ -68,10 +68,7 @@ export const OrderEditDialog = ({
           <div className="md:col-span-1">
             <p className={headerClassName}>{t(`Price`)}</p>
             <p>
-              {addDecimalsNormalizeNumber(
-                order.price,
-                order.market.decimalPlaces
-              )}
+              {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
             </p>
           </div>
         )}

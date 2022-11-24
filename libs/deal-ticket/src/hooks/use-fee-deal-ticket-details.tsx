@@ -1,14 +1,15 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import {
-  addDecimalsNormalizeNumber,
-  normalizeFormatNumber,
+  addDecimalsFormatNumber,
+  formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   EST_CLOSEOUT_TOOLTIP_TEXT,
   EST_MARGIN_TOOLTIP_TEXT,
@@ -18,21 +19,18 @@ import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
-
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { DealTicketMarketFragment } from '../components';
 import type { OrderMargin } from './use-order-margin';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
-  market: DealTicketMarketFragment
+  market: MarketDealTicket
 ) => {
   const { pubKey } = useVegaWallet();
 
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
   const price = useMemo(() => {
-    const estPrice = order.price || market.depth.lastTrade?.price;
+    const estPrice = order.price || market.data.markPrice;
     if (estPrice) {
       if (slippage && parseFloat(slippage) !== 0) {
         const isLong = order.side === Schema.Side.SIDE_BUY;
@@ -44,7 +42,7 @@ export const useFeeDealTicketDetails = (
       return order.price;
     }
     return null;
-  }, [market.depth.lastTrade?.price, order.price, order.side, slippage]);
+  }, [market.data.markPrice, order.price, order.side, slippage]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,
@@ -72,7 +70,18 @@ export const useFeeDealTicketDetails = (
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
-  return {
+  return useMemo(() => {
+    return {
+      market,
+      quoteName,
+      notionalSize,
+      estMargin,
+      estCloseOut,
+      slippage,
+      price,
+      partyData: partyBalance,
+    };
+  }, [
     market,
     quoteName,
     notionalSize,
@@ -80,12 +89,12 @@ export const useFeeDealTicketDetails = (
     estCloseOut,
     slippage,
     price,
-    partyData: partyBalance,
-  };
+    partyBalance,
+  ]);
 };
 
 export interface FeeDetails {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   quoteName: string;
   notionalSize: string | null;
   estMargin: OrderMargin | null;
@@ -107,14 +116,14 @@ export const getFeeDetailsValues = ({
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? normalizeFormatNumber(value, market.decimalPlaces)
+      ? formatNumber(value, market.decimalPlaces)
       : '-';
   };
   const formatValueWithAssetDp = (
     value: string | number | null | undefined
   ): string => {
     return value && !isNaN(Number(value))
-      ? addDecimalsNormalizeNumber(value, assetDecimals)
+      ? addDecimalsFormatNumber(value, assetDecimals)
       : '-';
   };
   return [

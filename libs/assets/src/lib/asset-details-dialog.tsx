@@ -3,51 +3,49 @@ import { useAssetsDataProvider } from './assets-data-provider';
 import { Button, Dialog, Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import create from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
-import type { Asset } from './asset-data-provider';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
-  symbol: string | Asset;
+  id: string;
   trigger: HTMLElement | null | undefined;
   setOpen: (isOpen: boolean) => void;
-  open: (symbol: string | Asset, trigger?: HTMLElement | null) => void;
+  open: (id: string, trigger?: HTMLElement | null) => void;
 };
 
 export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
   (set) => ({
     isOpen: false,
-    symbol: '',
+    id: '',
     trigger: null,
     setOpen: (isOpen) => {
       set({ isOpen: isOpen });
     },
-    open: (symbol, trigger?) => {
+    open: (id, trigger?) => {
       set({
         isOpen: true,
-        symbol: symbol,
-        trigger: trigger,
+        id,
+        trigger,
       });
     },
   })
 );
 
 export interface AssetDetailsDialogProps {
-  assetSymbol: string | Asset;
+  assetId: string;
   trigger?: HTMLElement | null;
   open: boolean;
   onChange: (open: boolean) => void;
 }
+
 export const AssetDetailsDialog = ({
-  assetSymbol,
+  assetId,
   trigger,
   open,
   onChange,
 }: AssetDetailsDialogProps) => {
   const { data } = useAssetsDataProvider();
 
-  const symbol =
-    typeof assetSymbol === 'string' ? assetSymbol : assetSymbol.symbol;
-  const asset = data?.find((a) => a?.symbol === symbol);
+  const asset = data?.find((a) => a.id === assetId);
 
   const content = asset ? (
     <div className="my-2">
@@ -58,10 +56,13 @@ export const AssetDetailsDialog = ({
       <Splash>{t('No data')}</Splash>
     </div>
   );
+  const title = asset
+    ? t(`Asset details - ${asset.symbol}`)
+    : t('Asset not found');
 
   return (
     <Dialog
-      title={t(`Asset details - ${symbol}`)}
+      title={title}
       icon={<Icon name="info-sign"></Icon>}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}

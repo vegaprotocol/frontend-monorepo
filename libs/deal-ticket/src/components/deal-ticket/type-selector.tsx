@@ -2,14 +2,14 @@ import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
-import type { DealTicketMarketFragment } from './__generated__/DealTicket';
 import { MarketModeValidationType } from '../../constants';
 
 interface TypeSelectorProps {
   value: Schema.OrderType;
   onSelect: (type: Schema.OrderType) => void;
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   errorMessage?: string;
 }
 
