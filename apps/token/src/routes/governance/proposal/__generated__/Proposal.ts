@@ -790,13 +790,13 @@ export interface Proposal_proposal_terms {
    * RFC3339Nano time and date when voting closes for this proposal.
    * Constrained by "minClose" and "maxClose" network parameters.
    */
-  closingDatetime: string;
+  closingDatetime: any;
   /**
    * RFC3339Nano time and date when this proposal is executed (if passed). Note that it has to be after closing date time.
    * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
    * Note: Optional as free form proposals do not require it.
    */
-  enactmentDatetime: string | null;
+  enactmentDatetime: any | null;
   /**
    * Actual change being introduced by the proposal - action the proposal triggers if passed and enacted.
    */
@@ -836,7 +836,7 @@ export interface Proposal_proposal_votes_yes_votes {
   /**
    * RFC3339Nano time and date when the vote reached Vega network
    */
-  datetime: string;
+  datetime: any;
 }
 
 export interface Proposal_proposal_votes_yes {
@@ -892,7 +892,7 @@ export interface Proposal_proposal_votes_no_votes {
   /**
    * RFC3339Nano time and date when the vote reached Vega network
    */
-  datetime: string;
+  datetime: any;
 }
 
 export interface Proposal_proposal_votes_no {
@@ -948,7 +948,7 @@ export interface Proposal_proposal {
   /**
    * RFC3339Nano time and date when the proposal reached Vega network
    */
-  datetime: string;
+  datetime: any;
   /**
    * Why the proposal was rejected by the core
    */
