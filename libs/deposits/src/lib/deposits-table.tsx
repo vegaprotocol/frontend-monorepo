@@ -59,7 +59,10 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
         field="status"
         valueFormatter={({
           value,
-        }: VegaValueFormatterParams<DepositFieldsFragment, 'status'>) => {
+        }: VegaValueFormatterParams<
+          DepositFieldsFragment,
+          'depositStatus'
+        >) => {
           return value ? DepositStatusMapping[value] : '';
         }}
       />

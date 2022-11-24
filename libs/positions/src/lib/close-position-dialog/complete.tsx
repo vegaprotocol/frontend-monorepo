@@ -29,7 +29,7 @@ export const Complete = ({
 
   return (
     <>
-      {closingOrderResult.status === Schema.OrderStatus.STATUS_FILLED &&
+      {closingOrderResult.orderStatus === Schema.OrderStatus.STATUS_FILLED &&
       transactionResult.status ? (
         <Success partyId={partyId} order={closingOrder} />
       ) : (

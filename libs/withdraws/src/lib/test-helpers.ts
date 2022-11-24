@@ -68,7 +68,7 @@ export const generateWithdrawal = (
     {
       __typename: 'Withdrawal',
       id: 'withdrawal-id',
-      status: Schema.WithdrawalStatus.STATUS_OPEN,
+      withdrawalStatus: Schema.WithdrawalStatus.STATUS_OPEN,
       amount: '100',
       asset: {
         __typename: 'Asset',

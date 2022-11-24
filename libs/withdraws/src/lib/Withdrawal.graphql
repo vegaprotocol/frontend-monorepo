@@ -5,7 +5,7 @@ fragment PendingWithdrawal on Withdrawal {
 
 fragment WithdrawalFields on Withdrawal {
   id
-  status
+  withdrawalStatus: status
   amount
   asset {
     id

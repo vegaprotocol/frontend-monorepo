@@ -54,7 +54,7 @@ describe('renders the correct columns', () => {
     const withdrawal = generateWithdrawal({
       txHash: '0x1234567891011121314',
       withdrawnTimestamp: '2022-04-21T00:00:00',
-      status: Schema.WithdrawalStatus.STATUS_FINALIZED,
+      withdrawalStatus: Schema.WithdrawalStatus.STATUS_FINALIZED,
     });
 
     await act(async () => {
@@ -106,7 +106,7 @@ describe('StatusCell', () => {
   it('Completed', () => {
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
-    props.data.status = Schema.WithdrawalStatus.STATUS_FINALIZED;
+    props.data.withdrawalStatus = Schema.WithdrawalStatus.STATUS_FINALIZED;
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Completed')).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe('StatusCell', () => {
   it('Rejected', () => {
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
-    props.data.status = Schema.WithdrawalStatus.STATUS_REJECTED;
+    props.data.withdrawalStatus = Schema.WithdrawalStatus.STATUS_REJECTED;
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Rejected')).toBeInTheDocument();

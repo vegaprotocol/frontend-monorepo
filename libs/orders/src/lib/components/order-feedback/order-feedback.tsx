@@ -33,7 +33,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         )}
         <div>
           <p className={labelClass}>{t(`Status`)}</p>
-          <p>{t(`${OrderStatusMapping[order.status]}`)}</p>
+          <p>{t(`${OrderStatusMapping[order.orderStatus]}`)}</p>
         </div>
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div>
@@ -82,7 +82,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
 };
 
 const getRejectionReason = (order: OrderEventFieldsFragment): string | null => {
-  switch (order.status) {
+  switch (order.orderStatus) {
     case Schema.OrderStatus.STATUS_STOPPED:
       return t(
         `Your ${
