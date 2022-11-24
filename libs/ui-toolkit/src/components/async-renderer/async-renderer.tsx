@@ -1,6 +1,7 @@
 import { Splash } from '../splash';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import { isNotFoundGraphQLError } from '@vegaprotocol/apollo-client';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
@@ -25,7 +26,7 @@ export function AsyncRenderer<T = object>({
   children,
   render,
 }: AsyncRendererProps<T>) {
-  if (error) {
+  if (error && !isNotFoundGraphQLError(error)) {
     return (
       <Splash>
         {errorMessage
