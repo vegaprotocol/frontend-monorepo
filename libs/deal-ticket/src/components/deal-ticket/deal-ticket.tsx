@@ -26,6 +26,7 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { AccountValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { getMarketPrice } from './deal-ticket-market-amount';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -55,6 +56,7 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
@@ -63,6 +65,14 @@ export const DealTicket = ({
   const order = watch();
   // When order state changes persist it in local storage
   useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+
+  // When switch back to market order, set price to market price
+  useEffect(() => {
+    if (order.type === Schema.OrderType.TYPE_MARKET) {
+      setValue('price', getMarketPrice(market));
+    }
+  }, [order.type, market, setValue]);
+
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
