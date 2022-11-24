@@ -7,7 +7,6 @@ import type {
   Load,
   UpdateCallback,
 } from '../lib/generic-data-provider';
-import { isNotFoundGraphQLError } from '@vegaprotocol/apollo-client';
 
 export interface useDataProviderParams<
   Data,
@@ -86,7 +85,7 @@ export const useDataProvider = <
         isInsert,
         isUpdate,
       } = args;
-      setError(isNotFoundGraphQLError(error) ? undefined : error);
+      setError(error);
       setLoading(loading);
       // if update or insert function returns true it means that component handles updates
       // component can use flush() which will call callback without delta and cause data state update
