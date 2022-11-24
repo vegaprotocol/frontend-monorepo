@@ -1,0 +1,19 @@
+fragment validatorRawScore on Node {
+  id
+  rewardScore {
+    rawValidatorScore
+  }
+}
+
+query PreviousEpoch($epochId: ID) {
+  epoch(id: $epochId) {
+    id
+    validatorsConnection {
+      edges {
+        node {
+          ...validatorRawScore
+        }
+      }
+    }
+  }
+}

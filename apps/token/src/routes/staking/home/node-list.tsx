@@ -14,18 +14,17 @@ import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import type { ColDef } from 'ag-grid-community';
 import { useNodesQuery } from './__generated___/Nodes';
+import { usePreviousEpochQuery } from './__generated___/PreviousEpoch';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
-const TOTAL_STAKE_THIS_EPOCH = 'totalStakeThisEpoch';
-const SHARE = 'share';
-const VALIDATOR_STAKE = 'validatorStake';
+const STAKE = 'stake';
 const PENDING_STAKE = 'pendingStake';
-const RANKING_SCORE = 'rankingScore';
-const STAKE_SCORE = 'stakeScore';
-const PERFORMANCE_SCORE = 'performanceScore';
-const VOTING_POWER = 'votingPower';
+const STAKE_SHARE = 'stakeShare';
+const TOTAL_PENALTIES = 'totalPenalties';
+const NORMALISED_VOTING_POWER = 'normalisedVotingPower';
+const STAKE_NEEDED_FOR_PROMOTION = 'stakeNeededForPromotion';
 
 interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
@@ -38,14 +37,10 @@ interface CanonisedNodeProps {
     name: string;
   };
   [STATUS]: string;
-  [TOTAL_STAKE_THIS_EPOCH]: string;
-  [SHARE]: string;
-  [VALIDATOR_STAKE]: string;
+  [STAKE]: string;
+  [STAKE_SHARE]: string;
   [PENDING_STAKE]: string;
-  [RANKING_SCORE]: string;
-  [STAKE_SCORE]: string;
-  [PERFORMANCE_SCORE]: string;
-  [VOTING_POWER]: string;
+  [NORMALISED_VOTING_POWER]: string;
 }
 
 export const statusTranslationKey = (status: Schema.ValidatorStatus) => {
@@ -89,6 +84,12 @@ export const NodeList = () => {
   const { t } = useTranslation();
   // errorPolicy due to vegaprotocol/vega issue 5898
   const { data, error, loading, refetch } = useNodesQuery();
+  const { data: previousEpochData, refetch: previousEpochRefetch } =
+    usePreviousEpochQuery({
+      variables: {
+        epochId: (Number(data?.epoch.id) - 1).toString(),
+      },
+    });
   const navigate = useNavigate();
   const {
     appState: { decimals },
@@ -103,6 +104,9 @@ export const NodeList = () => {
 
       if (now > expiry) {
         refetch();
+        previousEpochRefetch({
+          epochId: (Number(data?.epoch.id) - 1).toString(),
+        });
         clearInterval(epochInterval);
       }
     }, 10000);
@@ -110,7 +114,12 @@ export const NodeList = () => {
     return () => {
       clearInterval(epochInterval);
     };
-  }, [data?.epoch.timestamps.expiry, refetch]);
+  }, [
+    data?.epoch.id,
+    data?.epoch.timestamps.expiry,
+    previousEpochRefetch,
+    refetch,
+  ]);
 
   const nodes = useMemo(() => {
     if (!data?.nodesConnection.edges) return [];
@@ -122,30 +131,43 @@ export const NodeList = () => {
           name,
           avatarUrl,
           stakedTotal,
-          rankingScore: {
-            rankingScore,
-            stakeScore,
-            status,
-            performanceScore,
-            votingPower,
-          },
+          rankingScore: { stakeScore, status, votingPower },
           pendingStake,
         },
       }) => {
-        const stakedTotalNum = toBigNum(
+        const totalStakeAllNodes = toBigNum(
           data?.nodeData?.stakedTotal || 0,
           decimals
         );
         const stakedOnNode = toBigNum(stakedTotal, decimals);
         const stakedTotalPercentage =
-          stakedTotalNum.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-            ? '-'
-            : stakedOnNode
-                .dividedBy(stakedTotalNum)
-                .times(100)
-                .dp(2)
-                .toString() + '%';
+          toBigNum(stakeScore, 0).times(100).dp(2).toString() + '%';
         const translatedStatus = t(statusTranslationKey(status));
+        const normalisedVotingPower =
+          toBigNum(votingPower, 0).dividedBy(100).dp(2).toString() + '%';
+        const rawValidatorScore = previousEpochData
+          ? compact(
+              previousEpochData.epoch?.validatorsConnection?.edges?.map(
+                (edge) => edge?.node
+              )
+            ).find((validator) => validator?.id === id)?.rewardScore
+              ?.rawValidatorScore
+          : null;
+        const totalPenaltiesCalc =
+          rawValidatorScore !== null
+            ? 100 *
+              Math.max(
+                0,
+                1 -
+                  Number(rawValidatorScore) /
+                    (Number(stakedTotal) /
+                      Number(data?.nodeData?.stakedTotal || 0))
+              )
+            : null;
+        const totalPenalties =
+          totalPenaltiesCalc !== null
+            ? toBigNum(totalPenaltiesCalc, 0).dp(2).toString() + '%'
+            : t('noPenaltyDataFromLastEpoch');
 
         return {
           id,
@@ -154,17 +176,11 @@ export const NodeList = () => {
             name,
           },
           [STATUS]: translatedStatus,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(
-            toBigNum(stakedTotal, decimals),
-            2
-          ),
-          [SHARE]: stakedTotalPercentage,
-          [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
+          [STAKE]: formatNumber(toBigNum(stakedTotal, decimals), 2),
+          [STAKE_SHARE]: stakedTotalPercentage,
           [PENDING_STAKE]: formatNumber(toBigNum(pendingStake, decimals), 2),
-          [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
-          [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
-          [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
-          [VOTING_POWER]: votingPower,
+          [NORMALISED_VOTING_POWER]: normalisedVotingPower,
+          [TOTAL_PENALTIES]: totalPenalties,
         };
       }
     );
@@ -175,8 +191,8 @@ export const NodeList = () => {
 
     const sortedByVotingPower = canonisedNodes.sort(
       (a, b) =>
-        new BigNumber(b[VOTING_POWER]).toNumber() -
-        new BigNumber(a[VOTING_POWER]).toNumber()
+        new BigNumber(b[NORMALISED_VOTING_POWER]).toNumber() -
+        new BigNumber(a[NORMALISED_VOTING_POWER]).toNumber()
     );
 
     // The point of identifying and hiding the group that could halt the network
@@ -187,7 +203,7 @@ export const NodeList = () => {
     const removeTopThirdOfStakeScores = sortedByVotingPower.reduce(
       (acc, node) => {
         if (acc.cumulativeScore < 3333) {
-          acc.cumulativeScore += Number(node[VOTING_POWER]);
+          acc.cumulativeScore += Number(node[NORMALISED_VOTING_POWER]);
           return acc;
         }
         acc.remaining.push(node);
@@ -205,6 +221,7 @@ export const NodeList = () => {
     data?.nodesConnection.edges,
     decimals,
     hideTopThird,
+    previousEpochData,
     t,
   ]);
 
@@ -224,54 +241,30 @@ export const NodeList = () => {
           pinned: 'left',
         },
         {
-          field: STATUS,
-          headerName: t('status').toString(),
-          comparator: (a, b) => {
-            if (a === b) return 0;
-            return a > b ? 1 : -1;
-          },
-          width: 100,
-        },
-        {
-          field: TOTAL_STAKE_THIS_EPOCH,
-          headerName: t('totalStakeThisEpoch').toString(),
-          width: 160,
-        },
-        {
-          field: SHARE,
-          headerName: t('share').toString(),
-          width: 80,
-        },
-        {
-          field: VALIDATOR_STAKE,
-          headerName: t('validatorStake').toString(),
+          field: STAKE,
+          headerName: t('stake').toString(),
           width: 120,
+        },
+        {
+          field: STAKE_SHARE,
+          headerName: t('stakeShare').toString(),
+          width: 100,
         },
         {
           field: PENDING_STAKE,
-          headerName: t('nextEpoch').toString(),
-          width: 100,
+          headerName: t('pendingStake').toString(),
+          width: 110,
         },
         {
-          field: RANKING_SCORE,
-          headerName: t('rankingScore').toString(),
-          width: 120,
+          field: NORMALISED_VOTING_POWER,
+          headerName: t('normalisedVotingPower').toString(),
+          width: 180,
           sort: 'desc',
         },
         {
-          field: STAKE_SCORE,
-          headerName: t('stakeScore').toString(),
-          width: 100,
-        },
-        {
-          field: PERFORMANCE_SCORE,
-          headerName: t('performanceScore').toString(),
-          width: 100,
-        },
-        {
-          field: VOTING_POWER,
-          headerName: t('votingPower').toString(),
-          width: 100,
+          field: TOTAL_PENALTIES,
+          headerName: t('totalPenalties').toString(),
+          width: 120,
         },
       ],
       []

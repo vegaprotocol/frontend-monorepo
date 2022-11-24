@@ -12,9 +12,15 @@ fragment NodesFragment on Node {
     votingPower
     status
   }
+  rewardScore {
+    rawValidatorScore
+  }
 }
 
 query Nodes {
+  nodes {
+    ...NodesFragment
+  }
   epoch {
     id
     timestamps {
