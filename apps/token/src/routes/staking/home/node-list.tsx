@@ -18,7 +18,6 @@ import { usePreviousEpochQuery } from './__generated___/PreviousEpoch';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 const VALIDATOR = 'validator';
-const STATUS = 'status';
 const STAKE = 'stake';
 const PENDING_STAKE = 'pendingStake';
 const STAKE_SHARE = 'stakeShare';
@@ -36,7 +35,6 @@ interface CanonisedNodeProps {
     avatarUrl: string | null | undefined;
     name: string;
   };
-  [STATUS]: string;
   [STAKE]: string;
   [STAKE_SHARE]: string;
   [PENDING_STAKE]: string;
@@ -131,18 +129,12 @@ export const NodeList = () => {
           name,
           avatarUrl,
           stakedTotal,
-          rankingScore: { stakeScore, status, votingPower },
+          rankingScore: { stakeScore, votingPower },
           pendingStake,
         },
       }) => {
-        const totalStakeAllNodes = toBigNum(
-          data?.nodeData?.stakedTotal || 0,
-          decimals
-        );
-        const stakedOnNode = toBigNum(stakedTotal, decimals);
         const stakedTotalPercentage =
           toBigNum(stakeScore, 0).times(100).dp(2).toString() + '%';
-        const translatedStatus = t(statusTranslationKey(status));
         const normalisedVotingPower =
           toBigNum(votingPower, 0).dividedBy(100).dp(2).toString() + '%';
         const rawValidatorScore = previousEpochData
@@ -175,7 +167,6 @@ export const NodeList = () => {
             avatarUrl,
             name,
           },
-          [STATUS]: translatedStatus,
           [STAKE]: formatNumber(toBigNum(stakedTotal, decimals), 2),
           [STAKE_SHARE]: stakedTotalPercentage,
           [PENDING_STAKE]: formatNumber(toBigNum(pendingStake, decimals), 2),
