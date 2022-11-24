@@ -106,10 +106,10 @@ export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
   if (data.pendingOnForeignChain || !data.txHash) {
     return <span>{t('Pending')}</span>;
   }
-  if (data.withdrawalStatus === Schema.WithdrawalStatus.STATUS_FINALIZED) {
+  if (data.status === Schema.WithdrawalStatus.STATUS_FINALIZED) {
     return <span>{t('Completed')}</span>;
   }
-  if (data.withdrawalStatus === Schema.WithdrawalStatus.STATUS_REJECTED) {
+  if (data.status === Schema.WithdrawalStatus.STATUS_REJECTED) {
     return <span>{t('Rejected')}</span>;
   }
   return <span>{t('Failed')}</span>;

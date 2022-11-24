@@ -16,7 +16,7 @@ export const generateWithdrawals = (
             __typename: 'WithdrawalEdge',
             node: {
               id: 'withdrawal-0',
-              withdrawalStatus: Schema.WithdrawalStatus.STATUS_FINALIZED,
+              status: Schema.WithdrawalStatus.STATUS_FINALIZED,
               amount: '100',
               txHash: null,
               createdTimestamp: new Date('2022-02-02').toISOString(),
@@ -45,7 +45,7 @@ export const generateWithdrawals = (
             __typename: 'WithdrawalEdge',
             node: {
               id: 'withdrawal-1',
-              withdrawalStatus: Schema.WithdrawalStatus.STATUS_FINALIZED,
+              status: Schema.WithdrawalStatus.STATUS_FINALIZED,
               amount: '100',
               txHash:
                 '0x5d7b1a35ba6bd23be17bb7a159c13cdbb3121fceb94e9c6c510f5503dce48d03',

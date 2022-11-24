@@ -77,7 +77,7 @@ const OrdersManager = () => {
         }}
       />
       <orderEdit.Dialog
-        title={getEditDialogTitle(orderEdit.updatedOrder?.orderStatus)}
+        title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
         content={{
           Complete: (
             <OrderFeedback

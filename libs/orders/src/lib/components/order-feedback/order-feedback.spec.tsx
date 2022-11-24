@@ -42,19 +42,15 @@ describe('OrderFeedback', () => {
       status: Schema.OrderStatus.STATUS_REJECTED,
       rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_AMEND_FAILURE,
     };
-    const { status, ...order } = generateOrder(orderFields);
-    const orderEvent = {
-      ...order,
-      orderStatus: status,
-    } as OrderEventFieldsFragment;
-    render(<OrderFeedback {...props} order={orderEvent} />);
+    const order = generateOrder(orderFields) as OrderEventFieldsFragment;
+    render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
       `${OrderRejectionReasonMapping[orderFields.rejectionReason]}`
     );
   });
 
   it('should render order details when order is placed successfully', () => {
-    const { status, ...order } = generateOrder({
+    const order = generateOrder({
       type: Schema.OrderType.TYPE_LIMIT,
       price: '100',
       size: '200',
@@ -63,12 +59,8 @@ describe('OrderFeedback', () => {
         decimalPlaces: 2,
         positionDecimalPlaces: 0,
       },
-    });
-    const orderEvent = {
-      ...order,
-      orderStatus: status,
-    } as OrderEventFieldsFragment;
-    render(<OrderFeedback {...props} order={orderEvent} />);
+    }) as OrderEventFieldsFragment;
+    render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('order-confirmed')).toBeInTheDocument();
     expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(
       // eslint-disable-next-line
@@ -83,7 +75,7 @@ describe('OrderFeedback', () => {
       order.market!.tradableInstrument.instrument.name
     );
     expect(screen.getByText('Status').nextElementSibling).toHaveTextContent(
-      OrderStatusMapping[orderEvent.orderStatus]
+      OrderStatusMapping[order.status]
     );
     expect(screen.getByText('Price').nextElementSibling).toHaveTextContent(
       '1.00'

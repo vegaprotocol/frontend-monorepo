@@ -1,7 +1,7 @@
 fragment OrderEventFields on Order {
   type
   id
-  orderStatus: status
+  status
   rejectionReason
   createdAt
   size

@@ -117,7 +117,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           }}
         />
         <orderEdit.Dialog
-          title={getEditDialogTitle(orderEdit.updatedOrder?.orderStatus)}
+          title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
           content={{
             Complete: (
               <OrderFeedback
@@ -474,7 +474,7 @@ export const getCancelDialogIntent = ({
   transactionResult?: TransactionResult;
 }): Intent | undefined => {
   if (cancelledOrder) {
-    if (cancelledOrder.orderStatus === Schema.OrderStatus.STATUS_CANCELLED) {
+    if (cancelledOrder.status === Schema.OrderStatus.STATUS_CANCELLED) {
       return Intent.Success;
     }
     return Intent.Danger;
@@ -496,7 +496,7 @@ export const getCancelDialogTitle = ({
   transactionResult?: TransactionResult;
 }): string | undefined => {
   if (cancelledOrder) {
-    if (cancelledOrder.orderStatus === Schema.OrderStatus.STATUS_CANCELLED) {
+    if (cancelledOrder.status === Schema.OrderStatus.STATUS_CANCELLED) {
       return t('Order cancelled');
     }
     return t('Order cancellation failed');

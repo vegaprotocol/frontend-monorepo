@@ -63,7 +63,7 @@ beforeEach(() => {
     .mockReturnValue(Promise.resolve({ transactionHash: txHash, signature }));
   withdrawalEvent = {
     id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
-    withdrawalStatus: Schema.WithdrawalStatus.STATUS_OPEN,
+    status: Schema.WithdrawalStatus.STATUS_OPEN,
     amount: '100',
     asset: {
       __typename: 'Asset',

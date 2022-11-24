@@ -1,6 +1,6 @@
 fragment DepositFields on Deposit {
   id
-  depositStatus: status
+  status
   amount
   asset {
     id

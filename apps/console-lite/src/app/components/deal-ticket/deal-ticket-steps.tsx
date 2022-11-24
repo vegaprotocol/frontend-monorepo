@@ -329,9 +329,9 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
             slippage={slippageValue}
           />
           <Dialog
-            title={getOrderDialogTitle(finalizedOrder?.orderStatus)}
-            intent={getOrderDialogIntent(finalizedOrder?.orderStatus)}
-            icon={getOrderDialogIcon(finalizedOrder?.orderStatus)}
+            title={getOrderDialogTitle(finalizedOrder?.status)}
+            intent={getOrderDialogIntent(finalizedOrder?.status)}
+            icon={getOrderDialogIcon(finalizedOrder?.status)}
             content={{
               Complete: (
                 <OrderFeedback
