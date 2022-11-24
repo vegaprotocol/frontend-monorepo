@@ -8,21 +8,26 @@ import { determineId } from './utils';
 import create from 'zustand';
 import type { VegaTxState } from './use-vega-transaction';
 import { VegaTxStatus } from './use-vega-transaction';
-import { useTransactionUpdateSubscription } from './__generated__/TransactionUpdate';
+import {
+  useDepositBusEventSubscription,
+  useOrderBusEventsSubscription,
+  useWithdrawalBusEventSubscription,
+  useTransactionEventSubscription,
+} from './__generated__/TransactionResult';
 import type {
-  TransactionResultEventFragment,
-  WithdrawalEventFragment,
-  OrderEventFragment,
-  DepositEventFragment,
-} from './__generated__/TransactionUpdate';
+  TransactionEventFieldsFragment,
+  WithdrawalBusEventFieldsFragment,
+  OrderBusEventFieldsFragment,
+  DepositBusEventFieldsFragment,
+} from './__generated__/TransactionResult';
 
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   body: Transaction;
-  transactionResult?: TransactionResultEventFragment;
-  withdrawal?: WithdrawalEventFragment;
-  order?: OrderEventFragment;
-  deposit?: DepositEventFragment;
+  transactionResult?: TransactionEventFieldsFragment;
+  withdrawal?: WithdrawalBusEventFieldsFragment;
+  order?: OrderBusEventFieldsFragment;
+  deposit?: DepositBusEventFieldsFragment;
 }
 interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
@@ -34,11 +39,11 @@ interface VegaTransactionStore {
     >
   ) => void;
   delete: (index: number) => void;
-  updateWithdrawal: (withdrawal: WithdrawalEventFragment) => void;
-  updateOrder: (order: OrderEventFragment) => void;
-  updateDeposit: (deposit: DepositEventFragment) => void;
+  updateWithdrawal: (withdrawal: WithdrawalBusEventFieldsFragment) => void;
+  updateOrder: (order: OrderBusEventFieldsFragment) => void;
+  updateDeposit: (deposit: DepositBusEventFieldsFragment) => void;
   updateTransaction: (
-    transactionResult: TransactionResultEventFragment
+    transactionResult: TransactionEventFieldsFragment
   ) => void;
 }
 
@@ -76,7 +81,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-    updateWithdrawal: (withdrawal: WithdrawalEventFragment) => {
+    updateWithdrawal: (withdrawal: WithdrawalBusEventFieldsFragment) => {
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find(
@@ -94,10 +99,10 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
       );
     },
     /* eslint-disable */
-    updateOrder: (order: OrderEventFragment) => {},
-    updateDeposit: (deposit: DepositEventFragment) => {},
+    updateOrder: (order: OrderBusEventFieldsFragment) => {},
+    updateDeposit: (deposit: DepositBusEventFieldsFragment) => {},
     updateTransaction: (
-      transactionResult: TransactionResultEventFragment
+      transactionResult: TransactionEventFieldsFragment
     ) => {},
     /* eslint-enable */
   })
@@ -148,27 +153,46 @@ export const useVegaWalletTransactionUpdater = () => {
       updateTransaction: state.updateTransaction,
     }));
   const { pubKey } = useVegaWallet();
-  useTransactionUpdateSubscription({
-    variables: { partyId: pubKey || '' },
-    skip: !!pubKey,
-    onData: ({ data: result }) => {
-      const { data } = result;
-      data?.busEvents?.forEach((event) => {
-        switch (event.event.__typename) {
-          case 'TransactionResult':
-            updateTransaction(event.event);
-            break;
-          case 'Withdrawal':
-            updateWithdrawal(event.event);
-            break;
-          case 'Deposit':
-            updateDeposit(event.event);
-            break;
-          case 'Order':
-            updateOrder(event.event);
-            break;
+  const variables = { partyId: pubKey || '' };
+  const skip = !!pubKey;
+  useDepositBusEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
+      result.data?.busEvents?.forEach((event) => {
+        if (event.event.__typename === 'Deposit') {
+          updateDeposit(event.event);
         }
-      });
-    },
+      }),
+  });
+  useOrderBusEventsSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
+      result.data?.busEvents?.forEach((event) => {
+        if (event.event.__typename === 'Order') {
+          updateOrder(event.event);
+        }
+      }),
+  });
+  useWithdrawalBusEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
+      result.data?.busEvents?.forEach((event) => {
+        if (event.event.__typename === 'Withdrawal') {
+          updateWithdrawal(event.event);
+        }
+      }),
+  });
+  useTransactionEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
+      result.data?.busEvents?.forEach((event) => {
+        if (event.event.__typename === 'TransactionResult') {
+          updateTransaction(event.event);
+        }
+      }),
   });
 };

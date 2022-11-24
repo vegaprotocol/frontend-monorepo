@@ -69,7 +69,6 @@ export const WithdrawalsDocument = gql`
   }
 }
     ${WithdrawalFieldsFragmentDoc}`;
-
 /**
  * __useWithdrawalsQuery__
  *
