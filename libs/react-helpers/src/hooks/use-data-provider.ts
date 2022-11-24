@@ -7,7 +7,6 @@ import type {
   Load,
   UpdateCallback,
 } from '../lib/generic-data-provider';
-import { isNotFoundGraphQLError } from '@vegaprotocol/apollo-client';
 
 export interface useDataProviderParams<
   Data,
