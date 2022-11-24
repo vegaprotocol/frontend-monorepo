@@ -13,6 +13,7 @@ import { LayoutPriority } from 'allotment';
 import { usePageTitleStore } from '../../stores';
 import { LedgerContainer } from '@vegaprotocol/ledger';
 import { AccountsContainer } from '../../components/accounts-container';
+import { AccountHistoryContainer } from './account-history-container';
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -30,6 +31,11 @@ export const Portfolio = () => {
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs>
+              <Tab id="account-history" name={t('Account history')}>
+                <VegaWalletContainer>
+                  <AccountHistoryContainer />
+                </VegaWalletContainer>
+              </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
                   <PositionsContainer />
