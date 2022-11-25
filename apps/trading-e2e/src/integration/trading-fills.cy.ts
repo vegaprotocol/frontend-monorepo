@@ -3,9 +3,20 @@ import { generateFills } from '../support/mocks/generate-fills';
 
 describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
+    // Ensure page loads with correct key
+    cy.window().then((window) => {
+      cy.wrap(
+        window.localStorage.setItem(
+          'vega_wallet_key',
+          Cypress.env('VEGA_PUBLIC_KEY')
+        )
+      );
+    });
     cy.mockTradingPage();
+    const fills = generateFills();
+    console.log(fills);
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Fills', generateFills());
+      aliasQuery(req, 'Fills', fills);
     });
     cy.mockGQLSubscription();
   });
@@ -43,17 +54,17 @@ describe('fills', { tags: '@regression' }, () => {
       .each(($amount) => {
         cy.wrap($amount).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="price"]')
       .each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="price_1"]')
       .each(($total) => {
         cy.wrap($total).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="aggressor"]')
       .each(($role) => {
         cy.wrap($role)
@@ -63,7 +74,7 @@ describe('fills', { tags: '@regression' }, () => {
             expect(roles.indexOf(text.trim())).to.be.greaterThan(-1);
           });
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get(
         '[role="gridcell"][col-id="market.tradableInstrument.instrument.product"]'
       )
