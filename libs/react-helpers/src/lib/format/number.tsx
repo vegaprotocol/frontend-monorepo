@@ -50,6 +50,17 @@ export const getNumberFormat = memoize((digits: number) => {
   });
 });
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
+export const getFixedNumberFormat = memoize((digits: number) => {
+  if (isNil(digits) || digits < 0) {
+    return new Intl.NumberFormat(getUserLocale());
+  }
+  return new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
+    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
+  });
+});
+
 export const getDecimalSeparator = memoize(
   () =>
     getNumberFormat(1)
@@ -66,6 +77,17 @@ export const formatNumber = (
   formatDecimals = 0
 ) => {
   return getNumberFormat(formatDecimals).format(Number(rawValue));
+};
+
+/** formatNumberFixed will format the number with fixed decimals
+ * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
+ * @param formatDecimals - number of decimals to use
+ */
+export const formatNumberFixed = (
+  rawValue: string | number | BigNumber,
+  formatDecimals = 0
+) => {
+  return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
 };
 
 export const addDecimalsFormatNumber = (
