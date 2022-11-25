@@ -177,8 +177,20 @@ export type AggregatedBalanceEdge = {
   node: AggregatedBalance;
 };
 
-export type AggregatedLedgerEntries = {
-  __typename?: 'AggregatedLedgerEntries';
+export type AggregatedLedgerEntriesConnection = {
+  __typename?: 'AggregatedLedgerEntriesConnection';
+  edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
+  pageInfo: PageInfo;
+};
+
+export type AggregatedLedgerEntriesEdge = {
+  __typename?: 'AggregatedLedgerEntriesEdge';
+  cursor: Scalars['String'];
+  node: AggregatedLedgerEntry;
+};
+
+export type AggregatedLedgerEntry = {
+  __typename?: 'AggregatedLedgerEntry';
   /** Asset identifier, if query was grouped by asset - else null */
   assetId?: Maybe<Scalars['ID']>;
   /** Net amount of ledger entries for the accounts specified in the filter at this time */
@@ -195,21 +207,10 @@ export type AggregatedLedgerEntries = {
   senderMarketId?: Maybe<Scalars['ID']>;
   /** Party identifier, if query was grouped by sender party - else null */
   senderPartyId?: Maybe<Scalars['ID']>;
-  transferType?: Maybe<Scalars['String']>;
+  /** Type of the transfer for this ledger entry */
+  transferType?: Maybe<TransferType>;
   /** RFC3339Nano time from at which this ledger entries records were relevant */
   vegaTime: Scalars['Timestamp'];
-};
-
-export type AggregatedLedgerEntriesConnection = {
-  __typename?: 'AggregatedLedgerEntriesConnection';
-  edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
-  pageInfo: PageInfo;
-};
-
-export type AggregatedLedgerEntriesEdge = {
-  __typename?: 'AggregatedLedgerEntriesEdge';
-  cursor: Scalars['String'];
-  node: AggregatedLedgerEntries;
 };
 
 /** Represents an asset in Vega */
