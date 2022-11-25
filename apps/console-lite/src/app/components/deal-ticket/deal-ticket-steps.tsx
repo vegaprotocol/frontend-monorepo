@@ -70,11 +70,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const step = toDecimal(market.positionDecimalPlaces);
   const order = watch();
   const { pubKey } = useVegaWallet();
-  const estMargin = useOrderMargin({
-    order,
-    market,
-    partyId: pubKey || '',
-  });
   const { message: invalidText, isDisabled } = useOrderValidation({
     market,
     order,
@@ -127,10 +122,17 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       );
       return new BigNumber(market?.depth?.lastTrade?.price)
         .multipliedBy(multiplier)
-        .toNumber();
+        .toString();
     }
-    return null;
+    return undefined;
   }, [market?.depth?.lastTrade?.price, order.side, slippage]);
+
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: pubKey || '',
+    derivedPrice: price,
+  });
 
   const formattedPrice =
     price && addDecimalsFormatNumber(price, market.decimalPlaces);
