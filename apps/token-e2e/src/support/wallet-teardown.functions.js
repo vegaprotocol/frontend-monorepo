@@ -93,6 +93,7 @@ Cypress.Commands.add('faucet_asset', function (assetEthAddress) {
 Cypress.Commands.add('vega_wallet_teardown', function () {
   cy.get(vegaWalletContainer).within(() => {
     cy.get(vegaWalletAssociatedBalance)
+      .first()
       .invoke('text')
       .then((balance) => {
         if (balance != '0.00') {
@@ -100,6 +101,10 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
           cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
         }
       });
+    cy.get('[data-test-id="associated-amount"]', { timeout: 30000 }).should(
+      'contain.text',
+      '0.00'
+    );
   });
 
   cy.get(vegaWalletContainer).within(() => {

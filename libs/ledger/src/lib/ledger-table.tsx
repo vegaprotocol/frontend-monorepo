@@ -44,13 +44,23 @@ const LedgerCellRenderer = ({
 }: LedgerCellRendererProps) => {
   return (
     <div className="flex flex-col justify-around leading-5 h-full">
-      <div className="flex">{`${t('Account')}: ${truncateByChars(
-        partyId || '-'
-      )}`}</div>
-      <div className="flex">{`${t('Account type')}: ${
-        accountType ? AccountTypeMapping[accountType] : '-'
-      }`}</div>
-      <div className="flex">{`${t('Market')}: ${marketName || '-'}`}</div>
+      <div
+        className="flex"
+        title={`${t('ID')}: ${truncateByChars(partyId || '-')}`}
+      >
+        {truncateByChars(partyId || '')}
+      </div>
+      <div
+        className="flex"
+        title={`${t('Account type')}: ${
+          accountType ? AccountTypeMapping[accountType] : '-'
+        }`}
+      >
+        {accountType && AccountTypeMapping[accountType]}
+      </div>
+      <div className="flex" title={`${t('Market')}: ${marketName || '-'}`}>
+        {marketName}
+      </div>
     </div>
   );
 };
