@@ -1,4 +1,9 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
 import { Schema } from '@vegaprotocol/types';
+import {
+  generateProposals,
+  marketUpdateProposal,
+} from '../support/mocks/generate-proposals';
 
 const marketSummaryBlock = 'header-summary';
 const marketExpiry = 'market-expiry';
@@ -11,6 +16,42 @@ const percentageValue = 'price-change-percentage';
 const priceChangeValue = 'price-change';
 const itemHeader = 'item-header';
 const itemValue = 'item-value';
+
+describe('Market proposal notification', { tags: '@smoke' }, () => {
+  before(() => {
+    cy.mockTradingPage(
+      Schema.MarketState.STATE_ACTIVE,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+    );
+    cy.mockGQL((req) => {
+      aliasQuery(
+        req,
+        'ProposalsList',
+        generateProposals([marketUpdateProposal])
+      );
+    });
+    cy.mockGQLSubscription();
+    cy.visit('/#/markets/market-0');
+    cy.wait('@MarketData');
+    cy.getByTestId(marketSummaryBlock).should('be.visible');
+  });
+  it('should display market proposal notification if proposal found', () => {
+    cy.getByTestId(marketSummaryBlock).within(() => {
+      cy.getByTestId('market-proposal-notification').should(
+        'contain.text',
+        'Changes have been proposed for this market'
+      );
+      cy.getByTestId('market-proposal-notification').within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://stagnet3.token.vega.xyz/governance/123'
+        );
+      });
+    });
+  });
+});
 
 describe('Market trading page', () => {
   before(() => {

@@ -38,3 +38,4 @@ export * from './vega-icons';
 export * from './vega-logo';
 export * from './traffic-light';
 export * from './toast';
+export * from './notification';

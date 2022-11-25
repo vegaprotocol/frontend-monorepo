@@ -36,6 +36,7 @@ import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { MarketMarkPrice } from '../../components/market-mark-price';
 import { MarketTradingModeComponent } from '../../components/market-trading-mode';
 import { Last24hVolume } from '../../components/last-24h-volume';
+import { MarketProposalNotification } from '@vegaprotocol/governance';
 
 const NO_MARKET = t('No market');
 
@@ -177,6 +178,7 @@ export const TradeMarketHeader = ({
           </div>
         </HeaderStat>
       ) : null}
+      <MarketProposalNotification marketId={market?.id} />
     </Header>
   );
 };
