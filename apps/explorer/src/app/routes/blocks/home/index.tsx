@@ -44,7 +44,7 @@ const Blocks = () => {
     refetch,
   } = useFetch<TendermintBlockchainResponse>(
     `${DATA_SOURCES.tendermintUrl}/blockchain`,
-    undefined,
+    { cache: 'no-cache' },
     false
   );
 
