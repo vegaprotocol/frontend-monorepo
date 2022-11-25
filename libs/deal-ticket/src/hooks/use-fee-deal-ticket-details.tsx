@@ -30,26 +30,24 @@ export const useFeeDealTicketDetails = (
   const { pubKey } = useVegaWallet();
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
-  // This isn't used right now
-
-  // const price = useMemo(() => {
-  //   const estPrice = order.price || market.data.markPrice;
-  //   if (estPrice) {
-  //     if (slippage && parseFloat(slippage) !== 0) {
-  //       const isLong = order.side === Schema.Side.SIDE_BUY;
-  //       const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-  //         parseFloat(slippage) / 100
-  //       );
-  //       return new BigNumber(estPrice).multipliedBy(multiplier).toNumber();
-  //     }
-  //     return order.price;
-  //   }
-  //   return null;
-  // }, [market.data.markPrice, order.price, order.side, slippage]);
-
   const derivedPrice = useMemo(() => {
     return getDerivedPrice(order, market);
   }, [order, market]);
+
+  // Note this isn't currently used anywhere
+  const slippageAdjustedPrice = useMemo(() => {
+    if (derivedPrice) {
+      if (slippage && parseFloat(slippage) !== 0) {
+        const isLong = order.side === Schema.Side.SIDE_BUY;
+        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
+          parseFloat(slippage) / 100
+        );
+        return new BigNumber(derivedPrice).multipliedBy(multiplier).toNumber();
+      }
+      return derivedPrice;
+    }
+    return null;
+  }, [derivedPrice, order.side, slippage]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,
@@ -88,6 +86,7 @@ export const useFeeDealTicketDetails = (
       estMargin,
       estCloseOut,
       slippage,
+      slippageAdjustedPrice,
       partyData: partyBalance,
     };
   }, [
@@ -97,6 +96,7 @@ export const useFeeDealTicketDetails = (
     estMargin,
     estCloseOut,
     slippage,
+    slippageAdjustedPrice,
     partyBalance,
   ]);
 };
