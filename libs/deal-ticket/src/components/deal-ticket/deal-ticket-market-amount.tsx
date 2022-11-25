@@ -5,8 +5,8 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction, validateAmount } from '../../utils';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
+import { getMarketPrice } from '../../utils/get-price';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -21,7 +21,6 @@ export const DealTicketMarketAmount = ({
   const quoteName =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-
   const price = getMarketPrice(market);
 
   const priceFormatted = price
@@ -86,21 +85,4 @@ export const DealTicketMarketAmount = ({
       )}
     </div>
   );
-};
-
-export const getMarketPrice = (market: MarketDealTicket) => {
-  if (isMarketInAuction(market)) {
-    // 0 can never be a valid uncrossing price
-    // as it would require there being orders on the book at that price.
-    if (
-      market.data?.indicativePrice &&
-      market.data.indicativePrice !== '0' &&
-      BigInt(market.data?.indicativePrice) !== BigInt(0)
-    ) {
-      return market.data.indicativePrice;
-    }
-  } else {
-    return market.depth?.lastTrade?.price;
-  }
-  return undefined;
 };
