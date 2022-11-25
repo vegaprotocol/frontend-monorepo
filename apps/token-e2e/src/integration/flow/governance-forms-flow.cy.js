@@ -116,7 +116,7 @@ context(
       cy.get(newProposalSubmitButton).click();
       cy.get(feedbackError).should(
         'have.text',
-        'proposal_submission.terms.closing_timestamp: cannot be after enactment time'
+        'Invalid params: proposal_submission.terms.closing_timestamp (cannot be after enactment time)'
       );
       cy.get(dialogCloseButton).click();
       cy.get(minVoteDeadline).click();
@@ -157,7 +157,7 @@ context(
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should(
         'have.text',
-        '*: unknown field "signers" in vega.DataSourceDefinition'
+        'Invalid params: the transaction is malformed'
       );
     });
 

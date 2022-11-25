@@ -3,6 +3,7 @@ import { useAssetsDataProvider } from './assets-data-provider';
 import { Button, Dialog, Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import create from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
+import { AssetProposalNotification } from '@vegaprotocol/governance';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -49,6 +50,7 @@ export const AssetDetailsDialog = ({
 
   const content = asset ? (
     <div className="my-2">
+      <AssetProposalNotification assetId={asset.id} />
       <AssetDetailsTable asset={asset} />
     </div>
   ) : (
