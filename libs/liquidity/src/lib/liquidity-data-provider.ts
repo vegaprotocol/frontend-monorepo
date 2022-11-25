@@ -189,6 +189,11 @@ export const getLiquidityProvision = (
     const market = marketLiquidity?.market;
     const feeShare = liquidityFeeShare.find((f) => f.party.id === lp.party.id);
     if (!feeShare) return lp;
+    const bondAccounts = accounts?.filter(
+      (a) =>
+        a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND &&
+        (!a.party?.id || a.party?.id === lp.party.id)
+    );
     const lpData: LiquidityProvisionData = {
       ...lp,
       averageEntryValuation: feeShare?.averageEntryValuation,
@@ -196,8 +201,7 @@ export const getLiquidityProvision = (
       assetDecimalPlaces:
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
       balance:
-        accounts
-          ?.filter((a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND)
+        bondAccounts
           ?.reduce(
             (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)

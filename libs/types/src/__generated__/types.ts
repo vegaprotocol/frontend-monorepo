@@ -133,6 +133,8 @@ export type AccountUpdate = {
   balance: Scalars['String'];
   /** Market id (only relevant to margin accounts) */
   marketId?: Maybe<Scalars['ID']>;
+  /** The party owning the account */
+  partyId: Scalars['ID'];
   /** Account type (General, Margin, etc) */
   type: AccountType;
 };
@@ -177,19 +179,25 @@ export type AggregatedBalanceEdge = {
 
 export type AggregatedLedgerEntries = {
   __typename?: 'AggregatedLedgerEntries';
-  /** Account type, if query was grouped by account type - else null */
-  accountType?: Maybe<AccountType>;
   /** Asset identifier, if query was grouped by asset - else null */
   assetId?: Maybe<Scalars['ID']>;
-  /** Market identifier, if query was grouped by market - else null */
-  marketId?: Maybe<Scalars['ID']>;
-  /** Party identifier, if query was grouped by party - else null */
-  partyId?: Maybe<Scalars['ID']>;
   /** Net amount of ledger entries for the accounts specified in the filter at this time */
   quantity: Scalars['String'];
+  /** Account type, if query was grouped by receiver account type - else null */
+  receiverAccountType?: Maybe<AccountType>;
+  /** Market identifier, if query was grouped by receiver market - else null */
+  receiverMarketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by receiver party - else null */
+  receiverPartyId?: Maybe<Scalars['ID']>;
+  /** Account type, if query was grouped by sender account type - else null */
+  senderAccountType?: Maybe<AccountType>;
+  /** Market identifier, if query was grouped by sender market - else null */
+  senderMarketId?: Maybe<Scalars['ID']>;
+  /** Party identifier, if query was grouped by sender party - else null */
+  senderPartyId?: Maybe<Scalars['ID']>;
   transferType?: Maybe<Scalars['String']>;
   /** RFC3339Nano time from at which this ledger entries records were relevant */
-  vegaTime: Scalars['String'];
+  vegaTime: Scalars['Timestamp'];
 };
 
 export type AggregatedLedgerEntriesConnection = {
@@ -287,9 +295,9 @@ export type AuctionDuration = {
 export type AuctionEvent = {
   __typename?: 'AuctionEvent';
   /** RFC3339Nano optional end time of auction */
-  auctionEnd: Scalars['String'];
+  auctionEnd: Scalars['Timestamp'];
   /** RFC3339Nano start time of auction */
-  auctionStart: Scalars['String'];
+  auctionStart: Scalars['Timestamp'];
   /** What, if anything, extended the ongoing auction */
   extensionTrigger?: Maybe<AuctionTrigger>;
   /** Event fired because of auction end */
@@ -399,13 +407,13 @@ export type Candle = {
   /** High price (uint64) */
   high: Scalars['String'];
   /** RFC3339Nano formatted date and time for the candle end time, or last updated time if the candle is still open */
-  lastUpdateInPeriod: Scalars['String'];
+  lastUpdateInPeriod: Scalars['Timestamp'];
   /** Low price (uint64) */
   low: Scalars['String'];
   /** Open price (uint64) */
   open: Scalars['String'];
   /** RFC3339Nano formatted date and time for the candle start time */
-  periodStart: Scalars['String'];
+  periodStart: Scalars['Timestamp'];
   /** Volume price (uint64) */
   volume: Scalars['String'];
 };
@@ -472,7 +480,7 @@ export type Data = {
    * with a matching data spec.
    * It has no value when the source data does not match any data spec.
    */
-  broadcastAt: Scalars['String'];
+  broadcastAt: Scalars['Timestamp'];
   /** properties contains all the properties sent by a data source */
   data?: Maybe<Array<Property>>;
   /**
@@ -521,14 +529,14 @@ export type DataSourceKind = DataSourceDefinitionExternal | DataSourceDefinition
 export type DataSourceSpec = {
   __typename?: 'DataSourceSpec';
   /** RFC3339Nano creation date time */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   data: DataSourceDefinition;
   /** ID is a hash generated from the DataSourceSpec data. */
   id: Scalars['ID'];
   /** Status describes the status of the data source spec */
   status: DataSourceSpecStatus;
   /** RFC3339Nano last updated timestamp */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
 };
 
 /**
@@ -628,9 +636,9 @@ export type Deposit = {
   /** The asset to be withdrawn */
   asset: Asset;
   /** RFC3339Nano time at which the deposit was created */
-  createdTimestamp: Scalars['String'];
+  createdTimestamp: Scalars['Timestamp'];
   /** RFC3339Nano time at which the deposit was finalised */
-  creditedTimestamp?: Maybe<Scalars['String']>;
+  creditedTimestamp?: Maybe<Scalars['Timestamp']>;
   /** The Vega internal ID of the deposit */
   id: Scalars['ID'];
   /** The Party initiating the deposit */
@@ -805,34 +813,14 @@ export type ETHAddress = {
 /** Epoch describes a specific period of time in the Vega network */
 export type Epoch = {
   __typename?: 'Epoch';
-  /**
-   * Delegations data for this epoch
-   * @deprecated Use delegationsConnection instead
-   */
-  delegations: Array<Delegation>;
   /** Delegations data for this epoch */
   delegationsConnection?: Maybe<DelegationsConnection>;
   /** Numeric sequence number used to identify the epoch */
   id: Scalars['ID'];
   /** Timestamps for start and end of epochs */
   timestamps: EpochTimestamps;
-  /**
-   * Validators that participated in this epoch
-   * @deprecated Use validatorsConnection instead
-   */
-  validators: Array<Node>;
   /** Validators that participated in this epoch */
   validatorsConnection?: Maybe<NodesConnection>;
-};
-
-
-/** Epoch describes a specific period of time in the Vega network */
-export type EpochdelegationsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  nodeId?: InputMaybe<Scalars['ID']>;
-  partyId?: InputMaybe<Scalars['ID']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -865,9 +853,9 @@ export type EpochParticipation = {
   __typename?: 'EpochParticipation';
   epoch?: Maybe<Epoch>;
   /** RFC3339 timestamp */
-  offline?: Maybe<Scalars['String']>;
+  offline?: Maybe<Scalars['Timestamp']>;
   /** RFC3339 timestamp */
-  online?: Maybe<Scalars['String']>;
+  online?: Maybe<Scalars['Timestamp']>;
   /** Total amount rewarded for participation in the given epoch */
   totalRewards?: Maybe<Scalars['Float']>;
 };
@@ -876,11 +864,11 @@ export type EpochParticipation = {
 export type EpochTimestamps = {
   __typename?: 'EpochTimestamps';
   /** RFC3339 timestamp - Vega time of epoch end, null if not ended */
-  end?: Maybe<Scalars['String']>;
+  end?: Maybe<Scalars['Timestamp']>;
   /** RFC3339 timestamp - Vega time of epoch expiry */
-  expiry?: Maybe<Scalars['String']>;
+  expiry?: Maybe<Scalars['Timestamp']>;
   /** RFC3339 timestamp - Vega time of epoch start, null if not started */
-  start?: Maybe<Scalars['String']>;
+  start?: Maybe<Scalars['Timestamp']>;
 };
 
 /** Response for the signature bundle to allowlist an ERC20 token in the collateral bridge */
@@ -909,7 +897,7 @@ export type Erc20WithdrawalApproval = {
   /** Timestamp at which the withdrawal was created */
   creation: Scalars['String'];
   /** Timestamp in seconds for expiry of the approval */
-  expiry: Scalars['String'];
+  expiry: Scalars['Timestamp'];
   /** The nonce to be used in the request */
   nonce: Scalars['String'];
   /**
@@ -954,7 +942,7 @@ export type EthereumKeyRotation = {
 export type EthereumKeyRotationEdge = {
   __typename?: 'EthereumKeyRotationEdge';
   cursor?: Maybe<Scalars['String']>;
-  ethereumKeyRotation: EthereumKeyRotation;
+  node: EthereumKeyRotation;
 };
 
 /** A paginated type for returning Ethereum key rotation records */
@@ -1052,11 +1040,6 @@ export type FutureProduct = {
   settlementAsset: Asset;
   /** The number of decimal places implied by the settlement data (such as price) emitted by the settlement oracle */
   settlementDataDecimals: Scalars['Int'];
-};
-
-export type GroupOptions = {
-  ByAccountField?: InputMaybe<Array<InputMaybe<AccountField>>>;
-  ByLedgerEntryField?: InputMaybe<Array<InputMaybe<LedgerEntryField>>>;
 };
 
 /** A segment of datanode history */
@@ -1162,7 +1145,7 @@ export type LedgerEntry = {
   /** The amount transferred */
   amount: Scalars['String'];
   /** RFC3339Nano time at which the transfer was made */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** Type of ledger entry */
   type: Scalars['String'];
 };
@@ -1173,9 +1156,9 @@ export enum LedgerEntryField {
 
 /** Filter for historical entry ledger queries */
 export type LedgerEntryFilter = {
-  AccountFromFilter?: InputMaybe<AccountFilter>;
-  AccountToFilter?: InputMaybe<AccountFilter>;
   CloseOnAccountFilters?: InputMaybe<Scalars['Boolean']>;
+  ReceiverAccountFilter?: InputMaybe<AccountFilter>;
+  SenderAccountFilter?: InputMaybe<AccountFilter>;
   TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
 
@@ -1226,7 +1209,7 @@ export type LiquidityProvision = {
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
   /** When the liquidity provision was initially created (formatted RFC3339) */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
@@ -1242,7 +1225,7 @@ export type LiquidityProvision = {
   /** The current status of this liquidity provision */
   status: LiquidityProvisionStatus;
   /** RFC3339Nano time of when the liquidity provision was updated */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
   /** The version of this liquidity provision */
   version: Scalars['String'];
 };
@@ -1275,7 +1258,7 @@ export type LiquidityProvisionUpdate = {
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
   /** When the liquidity provision was initially created (formatted RFC3339) */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
@@ -1291,7 +1274,7 @@ export type LiquidityProvisionUpdate = {
   /** The current status of this liquidity provision */
   status: LiquidityProvisionStatus;
   /** RFC3339Nano time of when the liquidity provision was updated */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
   /** The version of this liquidity provision */
   version: Scalars['String'];
 };
@@ -1385,7 +1368,7 @@ export type MarginLevels = {
   /** If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer) */
   searchLevel: Scalars['String'];
   /** RFC3339Nano time from at which this margin level was relevant */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
 };
 
 /** Margins for a given a party */
@@ -1409,17 +1392,12 @@ export type MarginLevelsUpdate = {
   /** If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer) */
   searchLevel: Scalars['String'];
   /** RFC3339Nano time from at which this margin level was relevant */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
 };
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type Market = {
   __typename?: 'Market';
-  /**
-   * Get account for a party or market
-   * @deprecated Use the accountsConnection instead
-   */
-  accounts?: Maybe<Array<AccountBalance>>;
   /** Get account for a party or market */
   accountsConnection?: Maybe<AccountsConnection>;
   /** Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination */
@@ -1451,11 +1429,6 @@ export type Market = {
   id: Scalars['ID'];
   /** Liquidity monitoring parameters for the market */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
-  /**
-   * The list of the liquidity provision commitments for this market
-   * @deprecated Use liquidityProvisionsConnection instead
-   */
-  liquidityProvisions?: Maybe<Array<LiquidityProvision>>;
   /** The list of the liquidity provision commitments for this market */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
   /** Timestamps for state changes in the market */
@@ -1465,11 +1438,6 @@ export type Market = {
    * duration and optionally a minimum traded volume).
    */
   openingAuction: AuctionDuration;
-  /**
-   * Orders on a market
-   * @deprecated Use the 'ordersConnection' field instead
-   */
-  orders?: Maybe<Array<Order>>;
   /** Orders on a market */
   ordersConnection?: Maybe<OrderConnection>;
   /**
@@ -1489,20 +1457,9 @@ export type Market = {
   state: MarketState;
   /** An instance of, or reference to, a tradable instrument. */
   tradableInstrument: TradableInstrument;
-  /**
-   * Trades on a market
-   * @deprecated Use tradesConnection for cursor based pagination instead
-   */
-  trades?: Maybe<Array<Trade>>;
   tradesConnection?: Maybe<TradeConnection>;
   /** Current mode of execution of the market */
   tradingMode: MarketTradingMode;
-};
-
-
-/** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
-export type MarketaccountsArgs = {
-  partyId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -1529,12 +1486,6 @@ export type MarketdepthArgs = {
 
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
-export type MarketliquidityProvisionsArgs = {
-  partyId?: InputMaybe<Scalars['ID']>;
-};
-
-
-/** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketliquidityProvisionsConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
@@ -1542,25 +1493,9 @@ export type MarketliquidityProvisionsConnectionArgs = {
 
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
-export type MarketordersArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
   pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
-export type MarkettradesArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -1624,6 +1559,8 @@ export type MarketData = {
   marketValueProxy: Scalars['String'];
   /** The arithmetic average of the best bid price and best offer price. */
   midPrice: Scalars['String'];
+  /** RFC3339Nano time indicating the next time positions will be marked to market */
+  nextMarkToMarket: Scalars['String'];
   /** The sum of the size of all positions greater than 0. */
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
@@ -1635,7 +1572,7 @@ export type MarketData = {
   /** The amount of stake targeted for this market */
   targetStake?: Maybe<Scalars['String']>;
   /** RFC3339Nano time at which this market price was relevant */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** What triggered an auction (if an auction was started) */
   trigger: AuctionTrigger;
 };
@@ -1768,13 +1705,13 @@ export type MarketTick = {
 export type MarketTimestamps = {
   __typename?: 'MarketTimestamps';
   /** Time when the market is closed */
-  close?: Maybe<Scalars['String']>;
+  close?: Maybe<Scalars['Timestamp']>;
   /** Time when the market is open and ready to accept trades */
-  open?: Maybe<Scalars['String']>;
+  open?: Maybe<Scalars['Timestamp']>;
   /** Time when the market has been voted in and waiting to be created */
-  pending?: Maybe<Scalars['String']>;
+  pending?: Maybe<Scalars['Timestamp']>;
   /** Time when the market is first proposed */
-  proposed?: Maybe<Scalars['String']>;
+  proposed?: Maybe<Scalars['Timestamp']>;
 };
 
 /** What market trading mode is the market in */
@@ -1882,11 +1819,6 @@ export type NewMarket = {
 export type Node = {
   __typename?: 'Node';
   avatarUrl?: Maybe<Scalars['String']>;
-  /**
-   * All delegation for a node by a given party if specified, or all delegations.
-   * @deprecated Use delegationsConnection instead
-   */
-  delegations?: Maybe<Array<Delegation>>;
   /** All delegation for a node by a given party if specified, or all delegations. */
   delegationsConnection?: Maybe<DelegationsConnection>;
   /** Summary of epoch data across all nodes */
@@ -1922,15 +1854,6 @@ export type Node = {
 
 
 /** Information available for a node */
-export type NodedelegationsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  partyId?: InputMaybe<Scalars['ID']>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** Information available for a node */
 export type NodedelegationsConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
@@ -1939,11 +1862,17 @@ export type NodedelegationsConnectionArgs = {
 /** Summary of data across all nodes */
 export type NodeData = {
   __typename?: 'NodeData';
-  /** Number of inactive nodes */
+  /** Details on the set of ersatz (standby) nodes in the network */
+  ersatzNodes?: Maybe<NodeSet>;
+  /** Total number of nodes that had a performance score of 0 at the end of the last epoch */
   inactiveNodes: Scalars['Int'];
+  /** Details on the set of pending nodes in the network */
+  pendingNodes?: Maybe<NodeSet>;
   /** Total staked amount across all nodes */
   stakedTotal: Scalars['String'];
-  /** Total number of nodes */
+  /** Details on the set of consensus nodes in the network */
+  tendermintNodes: NodeSet;
+  /** Total number of nodes across all node sets */
   totalNodes: Scalars['Int'];
   /** Total uptime for all epochs across all nodes. Or specify a number of epochs */
   uptime: Scalars['Float'];
@@ -1956,6 +1885,21 @@ export type NodeEdge = {
   cursor: Scalars['String'];
   /** The node */
   node: Node;
+};
+
+/** Details on the collection of nodes for particular validator status */
+export type NodeSet = {
+  __typename?: 'NodeSet';
+  /** IDs of the nodes that were demoted into this node set at the start of the epoch */
+  demoted?: Maybe<Array<Scalars['String']>>;
+  /** Number of nodes in the node set that had a performance score of 0 at the end of the last epoch */
+  inactive: Scalars['Int'];
+  /** Total number of nodes allowed in the node set */
+  maximum?: Maybe<Scalars['Int']>;
+  /** IDs of the nodes that were promoted into this node set at the start of the epoch */
+  promoted?: Maybe<Array<Scalars['String']>>;
+  /** Total number of nodes in the node set */
+  total: Scalars['Int'];
 };
 
 /** Represents a signature for the approval of a resource from a validator */
@@ -2072,6 +2016,8 @@ export type ObservableMarketData = {
   marketValueProxy: Scalars['String'];
   /** The arithmetic average of the best bid price and best offer price */
   midPrice: Scalars['String'];
+  /** RFC3339Nano time indicating the next time positions will be marked to market */
+  nextMarkToMarket: Scalars['String'];
   /** The sum of the size of all positions greater than 0 */
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
@@ -2083,7 +2029,7 @@ export type ObservableMarketData = {
   /** The amount of stake targeted for this market */
   targetStake?: Maybe<Scalars['String']>;
   /** RFC3339Nano time at which this market price was relevant */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** What triggered an auction (if an auction was started) */
   trigger: AuctionTrigger;
 };
@@ -2140,7 +2086,7 @@ export type OffsetPagination = {
 export type OneOffTransfer = {
   __typename?: 'OneOffTransfer';
   /** An optional time when the transfer should be delivered */
-  deliverOn?: Maybe<Scalars['String']>;
+  deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
 export type Oracle = EthereumEvent;
@@ -2197,9 +2143,9 @@ export type OracleSpecsConnection = {
 export type Order = {
   __typename?: 'Order';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
-  expiresAt?: Maybe<Scalars['String']>;
+  expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Hash of the order data */
   id: Scalars['ID'];
   /** The liquidity provision this order was created from */
@@ -2226,17 +2172,12 @@ export type Order = {
   status: OrderStatus;
   /** The timeInForce of order (determines how and if it executes, and whether it persists on the book) */
   timeInForce: OrderTimeInForce;
-  /**
-   * Trades relating to this order
-   * @deprecated Use tradesConnection instead
-   */
-  trades?: Maybe<Array<Trade>>;
   /** Trades relating to this order */
   tradesConnection?: Maybe<TradeConnection>;
   /** The order type */
   type?: Maybe<OrderType>;
   /** RFC3339Nano time the order was altered */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
   /** Version of this order, counts the number of amends */
   version: Scalars['String'];
 };
@@ -2427,9 +2368,9 @@ export enum OrderType {
 export type OrderUpdate = {
   __typename?: 'OrderUpdate';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
-  expiresAt?: Maybe<Scalars['String']>;
+  expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Hash of the order data */
   id: Scalars['ID'];
   /** The liquidity provision this order was created from */
@@ -2459,7 +2400,7 @@ export type OrderUpdate = {
   /** The order type */
   type?: Maybe<OrderType>;
   /** RFC3339Nano time the order was altered */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
   /** Version of this order, counts the number of amends */
   version: Scalars['String'];
 };
@@ -2492,105 +2433,36 @@ export type Pagination = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type Party = {
   __typename?: 'Party';
-  /**
-   * Collateral accounts relating to a party
-   * @deprecated Use accountsConnection instead
-   */
-  accounts?: Maybe<Array<AccountBalance>>;
   /** Collateral accounts relating to a party */
   accountsConnection?: Maybe<AccountsConnection>;
-  /** @deprecated Use delegationsConnection instead */
-  delegations?: Maybe<Array<Delegation>>;
   delegationsConnection?: Maybe<DelegationsConnection>;
-  /**
-   * The list of all deposits for a party by the party
-   * @deprecated Use depositsConnection instead
-   */
-  deposits?: Maybe<Array<Deposit>>;
   /** The list of all deposits for a party by the party */
   depositsConnection?: Maybe<DepositsConnection>;
   /** Party identifier */
   id: Scalars['ID'];
-  /**
-   * The list of the liquidity provision commitment from this party
-   * @deprecated Use liquidityProvisionsConnection instead
-   */
-  liquidityProvisions?: Maybe<Array<LiquidityProvision>>;
   /** The list of the liquidity provision commitment for this party */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
-  /**
-   * Margin Levels
-   * @deprecated Use marginsConnection instead
-   */
-  margins?: Maybe<Array<MarginLevels>>;
   /** Margin levels for a market */
   marginsConnection?: Maybe<MarginConnection>;
-  /**
-   * Orders relating to a party
-   * @deprecated Use ordersConnection instead
-   */
-  orders?: Maybe<Array<Order>>;
   /** Orders relating to a party */
   ordersConnection?: Maybe<OrderConnection>;
-  /**
-   * Trading positions relating to a party
-   * @deprecated Use the 'positionsConnection' field instead
-   */
-  positions?: Maybe<Array<Position>>;
   /** Trading positions relating to a party */
   positionsConnection?: Maybe<PositionConnection>;
-  /** @deprecated Use proposalsConnection instead */
-  proposals?: Maybe<Array<Maybe<Proposal>>>;
   /** All governance proposals in the Vega network */
   proposalsConnection?: Maybe<ProposalsConnection>;
-  /**
-   * Return reward information
-   * @deprecated Use rewardSummaries or rewards instead.
-   */
-  rewardDetails?: Maybe<Array<Maybe<RewardPerAssetDetail>>>;
   /** Return net reward information */
   rewardSummaries?: Maybe<Array<Maybe<RewardSummary>>>;
-  /**
-   * Return individual reward information
-   * @deprecated Use rewardsConnection instead
-   */
-  rewards?: Maybe<Array<Maybe<Reward>>>;
   /** Rewards information for the party */
   rewardsConnection?: Maybe<RewardsConnection>;
-  /**
-   * The staking information for this Party
-   * @deprecated Use stakingSummary instead
-   */
-  stake: PartyStake;
   /** The staking information for this Party */
   stakingSummary: StakingSummary;
-  /**
-   * Trades relating to a party (specifically where party is either buyer OR seller)
-   * @deprecated Use tradesConnection for cursor based pagination instead
-   */
-  trades?: Maybe<Array<Trade>>;
   tradesConnection?: Maybe<TradeConnection>;
   /** All transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
-  /** @deprecated Use votesConnection instead */
-  votes?: Maybe<Array<Maybe<ProposalVote>>>;
   /** All votes on proposals in the Vega network by the given party */
   votesConnection?: Maybe<ProposalVoteConnection>;
-  /**
-   * The list of all withdrawals initiated by the party
-   * @deprecated Use withdrawalsConnection instead
-   */
-  withdrawals?: Maybe<Array<Withdrawal>>;
   /** The list of all withdrawals initiated by the party */
   withdrawalsConnection?: Maybe<WithdrawalsConnection>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartyaccountsArgs = {
-  assetId?: InputMaybe<Scalars['ID']>;
-  marketId?: InputMaybe<Scalars['ID']>;
-  type?: InputMaybe<AccountType>;
 };
 
 
@@ -2600,15 +2472,6 @@ export type PartyaccountsConnectionArgs = {
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   type?: InputMaybe<AccountType>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartydelegationsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  nodeId?: InputMaybe<Scalars['ID']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2627,13 +2490,6 @@ export type PartydepositsConnectionArgs = {
 
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartyliquidityProvisionsArgs = {
-  market?: InputMaybe<Scalars['String']>;
-  reference?: InputMaybe<Scalars['String']>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyliquidityProvisionsConnectionArgs = {
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
@@ -2642,23 +2498,9 @@ export type PartyliquidityProvisionsConnectionArgs = {
 
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartymarginsArgs = {
-  marketId?: InputMaybe<Scalars['ID']>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartymarginsConnectionArgs = {
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartyordersArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2677,12 +2519,6 @@ export type PartypositionsConnectionArgs = {
 
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartyproposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyproposalsConnectionArgs = {
   inState?: InputMaybe<ProposalState>;
   pagination?: InputMaybe<Pagination>;
@@ -2697,15 +2533,6 @@ export type PartyrewardSummariesArgs = {
 
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartyrewardsArgs = {
-  assetId?: InputMaybe<Scalars['ID']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyrewardsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
@@ -2715,15 +2542,6 @@ export type PartyrewardsConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartystakingSummaryArgs = {
   pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Represents a party on Vega, could be an ethereum wallet address in the future */
-export type PartytradesArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  marketId?: InputMaybe<Scalars['ID']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2814,11 +2632,6 @@ export type Position = {
   __typename?: 'Position';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
-  /**
-   * Margins of the party for the given position
-   * @deprecated Use marginsConnection instead
-   */
-  margins?: Maybe<Array<MarginLevels>>;
   /** Margins of the party for the given position */
   marginsConnection?: Maybe<MarginConnection>;
   /** Market relating to this position */
@@ -2832,7 +2645,7 @@ export type Position = {
   /** Unrealised Profit and Loss (int64) */
   unrealisedPNL: Scalars['String'];
   /** RFC3339Nano time the position was updated */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
 };
 
 
@@ -2897,7 +2710,7 @@ export type PositionUpdate = {
   /** Unrealised Profit and Loss (int64) */
   unrealisedPNL: Scalars['String'];
   /** RFC3339Nano time the position was updated */
-  updatedAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Timestamp']>;
 };
 
 /** Represents a price on either the buy or sell side and all the orders at that price */
@@ -2995,7 +2808,7 @@ export enum PropertyKeyType {
 export type Proposal = {
   __typename?: 'Proposal';
   /** RFC3339Nano time and date when the proposal reached Vega network */
-  datetime: Scalars['String'];
+  datetime: Scalars['Timestamp'];
   /** Error details of the rejectionReason */
   errorDetails?: Maybe<Scalars['String']>;
   /** Proposal ID that is filled by Vega once proposal reaches the network */
@@ -3166,15 +2979,15 @@ export type ProposalTerms = {
    * RFC3339Nano time and date when voting closes for this proposal.
    * Constrained by "minClose" and "maxClose" network parameters.
    */
-  closingDatetime: Scalars['String'];
+  closingDatetime: Scalars['Timestamp'];
   /**
    * RFC3339Nano time and date when this proposal is executed (if passed). Note that it has to be after closing date time.
    * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
    * Note: Optional as free form proposals do not require it.
    */
-  enactmentDatetime?: Maybe<Scalars['String']>;
+  enactmentDatetime?: Maybe<Scalars['Timestamp']>;
   /** RFC3339Nano time and when node validation of the proposal stops, accepted only with new asset proposals */
-  validationDatetime?: Maybe<Scalars['String']>;
+  validationDatetime?: Maybe<Scalars['Timestamp']>;
 };
 
 /** Various proposal types that are supported by Vega */
@@ -3309,11 +3122,6 @@ export type Query = {
   __typename?: 'Query';
   /** An asset which is used in the vega network */
   asset?: Maybe<Asset>;
-  /**
-   * The list of all assets in use in the Vega network
-   * @deprecated Use assetsConnection instead
-   */
-  assets?: Maybe<Array<Asset>>;
   /** The list of all assets in use in the Vega network or the specified asset if ID is provided */
   assetsConnection?: Maybe<AssetsConnection>;
   /** Get historical balances for an account within the given date range */
@@ -3345,11 +3153,6 @@ export type Query = {
   getMarketDataHistoryByID?: Maybe<Array<Maybe<MarketData>>>;
   /** Get market data history for a specific market. If no dates are given, the latest snapshot will be returned. If only the start date is provided all history from the given date will be provided, and if only the end date is provided, all history from the start up to and including the end date will be provided. Pagination is provided using a cursor based pagination model */
   getMarketDataHistoryConnectionByID?: Maybe<MarketDataConnection>;
-  /**
-   * Query for historic key rotations
-   * @deprecated use keyRotationsConnection instead
-   */
-  keyRotations?: Maybe<Array<KeyRotation>>;
   /** Query for historic key rotations */
   keyRotationsConnection: KeyRotationConnection;
   /** The last block process by the blockchain */
@@ -3358,11 +3161,6 @@ export type Query = {
   ledgerEntries: AggregatedLedgerEntriesConnection;
   /** An instrument that is trading on the Vega network */
   market?: Maybe<Market>;
-  /**
-   * One or more instruments that are trading on the VEGA network
-   * @deprecated Use marketsConnection instead
-   */
-  markets?: Maybe<Array<Market>>;
   /** One or more instruments that are trading on the Vega network */
   marketsConnection?: Maybe<MarketConnection>;
   /** The most recent history segment */
@@ -3371,101 +3169,36 @@ export type Query = {
   networkLimits?: Maybe<NetworkLimits>;
   /** Return a single network parameter */
   networkParameter?: Maybe<NetworkParameter>;
-  /**
-   * Return the full list of network parameters
-   * @deprecated Use networkParametersConnection instead
-   */
-  networkParameters?: Maybe<Array<NetworkParameter>>;
   /** Return the full list of network parameters */
   networkParametersConnection: NetworkParametersConnection;
-  /**
-   * Governance proposals that aim to update Vega network parameters
-   * @deprecated Use proposalsConnection instead
-   */
-  networkParametersProposals?: Maybe<Array<Proposal>>;
-  /**
-   * Governance proposals that aim to create new assets in Vega
-   * @deprecated Use proposalsConnection instead
-   */
-  newAssetProposals?: Maybe<Array<Proposal>>;
-  /**
-   * Freeform governance proposals, which can be voted on but do not change the behaviour of the system, and can be used to gauge community sentiment in Vega
-   * @deprecated Use proposalsConnection instead
-   */
-  newFreeformProposals?: Maybe<Array<Proposal>>;
-  /**
-   * Governance proposals that aim to create new markets
-   * @deprecated Use proposalsConnection instead
-   */
-  newMarketProposals?: Maybe<Array<Proposal>>;
   /** Specific node in network */
   node?: Maybe<Node>;
   /** Returns information about nodes */
   nodeData?: Maybe<NodeData>;
-  /**
-   * Return a list of aggregated node signature for a given resource ID
-   * @deprecated Use nodeSignaturesConnection instead
-   */
-  nodeSignatures?: Maybe<Array<NodeSignature>>;
   /** Return a list of aggregated node signature for a given resource ID */
   nodeSignaturesConnection?: Maybe<NodeSignaturesConnection>;
-  /**
-   * All known network nodes
-   * @deprecated use nodesConnection instead
-   */
-  nodes?: Maybe<Array<Node>>;
   /** All known network nodes */
   nodesConnection: NodesConnection;
-  /**
-   * All registered oracle specs
-   * @deprecated Use oracleDataConnection instead
-   */
-  oracleData?: Maybe<Array<OracleData>>;
-  /**
-   * All oracle data for a given oracle spec ID
-   * @deprecated Use oracleDataBySpecConnection instead
-   */
-  oracleDataBySpec?: Maybe<Array<OracleData>>;
   /** All oracle data for a given oracle spec ID */
   oracleDataBySpecConnection?: Maybe<OracleDataConnection>;
   /** All registered oracle specs */
   oracleDataConnection?: Maybe<OracleDataConnection>;
   /** An oracle spec for a given oracle spec ID */
   oracleSpec?: Maybe<OracleSpec>;
-  /**
-   * All registered oracle specs
-   * @deprecated Use oracleSpecsConnection instead
-   */
-  oracleSpecs?: Maybe<Array<OracleSpec>>;
   /** All registered oracle specs */
   oracleSpecsConnection?: Maybe<OracleSpecsConnection>;
   /** An order in the Vega network found by orderID */
   orderByID: Order;
   /** An order in the Vega network found by referenceID */
   orderByReference: Order;
-  /**
-   * Order versions (created via amendments if any) found by orderID
-   * @deprecated Use orderVersionsConnection instead
-   */
-  orderVersions?: Maybe<Array<Order>>;
   /** Order versions (created via amendments if any) found by orderID */
   orderVersionsConnection?: Maybe<OrderConnection>;
-  /**
-   * One or more entities that are trading on the Vega network
-   * @deprecated Use partiesConnection instead.
-   */
-  parties?: Maybe<Array<Party>>;
   /** One or more entities that are trading on the Vega network */
   partiesConnection?: Maybe<PartyConnection>;
   /** An entity that is trading on the Vega network */
   party?: Maybe<Party>;
   /** A governance proposal located by either its ID or reference. If both are set, ID is used. */
   proposal?: Maybe<Proposal>;
-  /**
-   * All governance proposals in the Vega network
-   * @deprecated Use proposalsConnection instead
-   */
-  proposals?: Maybe<Array<Proposal>>;
   /** All governance proposals in the Vega network */
   proposalsConnection?: Maybe<ProposalsConnection>;
   /** List protocol upgrade proposals, optionally filtering on status or approver */
@@ -3474,18 +3207,8 @@ export type Query = {
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
   /** Get statistics about the Vega node */
   statistics: Statistics;
-  /**
-   * Get a list of all transfers for a public key
-   * @deprecated Use transfersConnection instead
-   */
-  transfers?: Maybe<Array<Transfer>>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
-  /**
-   * Governance proposals that aim to update existing markets
-   * @deprecated Use proposalsConnection instead
-   */
-  updateMarketProposals?: Maybe<Array<Proposal>>;
   /** Find a withdrawal using its ID */
   withdrawal?: Maybe<Withdrawal>;
   /** Fetch all withdrawals */
@@ -3571,7 +3294,7 @@ export type Queryerc20WithdrawalApprovalArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryestimateOrderArgs = {
-  expiration?: InputMaybe<Scalars['String']>;
+  expiration?: InputMaybe<Scalars['Timestamp']>;
   marketId: Scalars['ID'];
   partyId: Scalars['ID'];
   price?: InputMaybe<Scalars['String']>;
@@ -3590,27 +3313,21 @@ export type QueryethereumKeyRotationsArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerygetMarketDataHistoryByIDArgs = {
-  end?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['Timestamp']>;
   first?: InputMaybe<Scalars['Int']>;
   id: Scalars['ID'];
   last?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
-  start?: InputMaybe<Scalars['Int']>;
+  start?: InputMaybe<Scalars['Timestamp']>;
 };
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerygetMarketDataHistoryConnectionByIDArgs = {
-  end?: InputMaybe<Scalars['Int']>;
+  end?: InputMaybe<Scalars['Timestamp']>;
   id: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
-  start?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerykeyRotationsArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  start?: InputMaybe<Scalars['Timestamp']>;
 };
 
 
@@ -3625,7 +3342,6 @@ export type QuerykeyRotationsConnectionArgs = {
 export type QueryledgerEntriesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<LedgerEntryFilter>;
-  groupOptions?: InputMaybe<GroupOptions>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -3633,12 +3349,6 @@ export type QueryledgerEntriesArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerymarketArgs = {
   id: Scalars['ID'];
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerymarketsArgs = {
-  id?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -3662,38 +3372,8 @@ export type QuerynetworkParametersConnectionArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerynetworkParametersProposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerynewAssetProposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerynewFreeformProposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerynewMarketProposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerynodeArgs = {
   id: Scalars['ID'];
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerynodeSignaturesArgs = {
-  resourceId: Scalars['ID'];
 };
 
 
@@ -3707,19 +3387,6 @@ export type QuerynodeSignaturesConnectionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerynodesConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryoracleDataArgs = {
-  pagination?: InputMaybe<OffsetPagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryoracleDataBySpecArgs = {
-  oracleSpecId: Scalars['ID'];
-  pagination?: InputMaybe<OffsetPagination>;
 };
 
 
@@ -3743,12 +3410,6 @@ export type QueryoracleSpecArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryoracleSpecsArgs = {
-  pagination?: InputMaybe<OffsetPagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryoracleSpecsConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
 };
@@ -3768,24 +3429,9 @@ export type QueryorderByReferenceArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryorderVersionsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  orderId: Scalars['ID'];
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryorderVersionsConnectionArgs = {
   orderId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerypartiesArgs = {
-  id?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -3810,12 +3456,6 @@ export type QueryproposalArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryproposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryproposalsConnectionArgs = {
   inState?: InputMaybe<ProposalState>;
   pagination?: InputMaybe<Pagination>;
@@ -3832,25 +3472,10 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerytransfersArgs = {
-  isFrom?: InputMaybe<Scalars['Boolean']>;
-  isTo?: InputMaybe<Scalars['Boolean']>;
-  pubkey: Scalars['String'];
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryupdateMarketProposalsArgs = {
-  inState?: InputMaybe<ProposalState>;
-  marketId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -3911,7 +3536,7 @@ export type Reward = {
   /** Percentage out of the total distributed reward */
   percentageOfTotal: Scalars['String'];
   /** Time at which the rewards was received */
-  receivedAt: Scalars['String'];
+  receivedAt: Scalars['Timestamp'];
   /** The type of reward */
   rewardType: AccountType;
 };
@@ -3923,22 +3548,6 @@ export type RewardEdge = {
   cursor: Scalars['String'];
   /** The reward information */
   node: Reward;
-};
-
-/** RewardPerAssetDetail is deprecated, use RewardSummmary instead  */
-export type RewardPerAssetDetail = {
-  __typename?: 'RewardPerAssetDetail';
-  /** Asset in which the reward was paid */
-  asset: Asset;
-  /**
-   * ID of asset in which the reward was paid
-   * @deprecated Use asset{ID} instead
-   */
-  assetId: Scalars['ID'];
-  /** A list of rewards received for this asset */
-  rewards?: Maybe<Array<Maybe<Reward>>>;
-  /** The total amount of rewards received for this asset. */
-  totalAmount: Scalars['String'];
 };
 
 export type RewardScore = {
@@ -3963,20 +3572,8 @@ export type RewardSummary = {
   amount: Scalars['String'];
   /** The asset for which these rewards are associated */
   asset: Asset;
-  /**
-   * List of individual reward payouts, ordered by epoch
-   * @deprecated Use rewardsConnection instead
-   */
-  rewards?: Maybe<Array<Maybe<Reward>>>;
   /** List of individual reward payouts, ordered by epoch */
   rewardsConnection?: Maybe<RewardsConnection>;
-};
-
-
-export type RewardSummaryrewardsArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -4097,14 +3694,14 @@ export type StakeLinking = {
   /** The amount linked or unlinked */
   amount: Scalars['String'];
   /** The time at which the stake linking was fully processed by the Vega network, null until defined */
-  finalizedAt?: Maybe<Scalars['String']>;
+  finalizedAt?: Maybe<Scalars['Timestamp']>;
   id: Scalars['ID'];
   /** The party initiating the stake linking */
   party: Party;
   /** The status of the linking */
   status: StakeLinkingStatus;
   /** The time at which the request happened on ethereum */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** The transaction hash (ethereum) which initiated the link/unlink */
   txHash: Scalars['String'];
   /** Type of linking: link|unlink */
@@ -4198,9 +3795,9 @@ export type Statistics = {
   /** Version of the chain (semver) */
   chainVersion: Scalars['String'];
   /** RFC3339Nano current time (real) */
-  currentTime: Scalars['String'];
+  currentTime: Scalars['Timestamp'];
   /** RFC3339Nano genesis time of the chain */
-  genesisTime: Scalars['String'];
+  genesisTime: Scalars['Timestamp'];
   /** Number of orders per seconds */
   ordersPerSecond: Scalars['String'];
   /** Status of the Vega application connection with the chain */
@@ -4226,7 +3823,7 @@ export type Statistics = {
   /** RFC3339Nano uptime of the node */
   upTime: Scalars['String'];
   /** RFC3339Nano current time of the chain (decided through consensus) */
-  vegaTime: Scalars['String'];
+  vegaTime: Scalars['Timestamp'];
 };
 
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
@@ -4381,7 +3978,7 @@ export type TargetStakeParameters = {
 export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
 };
 
 /** A tradable instrument is a combination of an instrument and a risk model */
@@ -4409,7 +4006,7 @@ export type Trade = {
   /** The fee paid by the buyer side of the trade */
   buyerFee: TradeFee;
   /** RFC3339Nano time for when the trade occurred */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** The hash of the trade data */
   id: Scalars['ID'];
   /** The market the trade occurred on */
@@ -4491,7 +4088,7 @@ export type TradeUpdate = {
   /** The party that bought */
   buyerId: Scalars['ID'];
   /** RFC3339Nano time for when the trade occurred */
-  createdAt: Scalars['String'];
+  createdAt: Scalars['Timestamp'];
   /** The hash of the trade data */
   id: Scalars['ID'];
   /** The market the trade occurred on */
@@ -4552,7 +4149,7 @@ export type Transfer = {
   /** The status of this transfer */
   status: TransferStatus;
   /** The time at which the transfer was submitted */
-  timestamp: Scalars['String'];
+  timestamp: Scalars['Timestamp'];
   /** The public key of the recipient of the funds */
   to: Scalars['String'];
   /** The account type that has received the funds */
@@ -4742,7 +4339,7 @@ export enum ValidatorStatus {
 export type Vote = {
   __typename?: 'Vote';
   /** RFC3339Nano time and date when the vote reached Vega network */
-  datetime: Scalars['String'];
+  datetime: Scalars['Timestamp'];
   /** The weight of this vote based on the total equity like share */
   equityLikeShareWeight: Scalars['String'];
   /** Total number of governance tokens for the party that cast the vote */
@@ -4790,11 +4387,11 @@ export type Withdrawal = {
   /** The asset to be withdrawn */
   asset: Asset;
   /** RFC3339Nano time at which the withdrawal was created */
-  createdTimestamp: Scalars['String'];
+  createdTimestamp: Scalars['Timestamp'];
   /** Foreign chain specific details about the withdrawal */
   details?: Maybe<WithdrawalDetails>;
   /** RFC3339Nano time until the withdrawal will be invalid */
-  expiry: Scalars['String'];
+  expiry: Scalars['Timestamp'];
   /** The Vega internal ID of the withdrawal */
   id: Scalars['ID'];
   /** The Party initiating the withdrawal */
@@ -4808,7 +4405,7 @@ export type Withdrawal = {
   /** Hash of the transaction on the foreign chain */
   txHash?: Maybe<Scalars['String']>;
   /** RFC3339Nano time at which the withdrawal was finalised */
-  withdrawnTimestamp?: Maybe<Scalars['String']>;
+  withdrawnTimestamp?: Maybe<Scalars['Timestamp']>;
 };
 
 export type WithdrawalDetails = Erc20WithdrawalDetails;
