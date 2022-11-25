@@ -5,6 +5,7 @@ import type { PositionMargin } from './use-market-positions';
 import type { Props } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
 import { Schema } from '@vegaprotocol/types';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 let mockEstimateData = {
   estimateOrder: {
@@ -58,7 +59,7 @@ describe('useOrderMargin', () => {
         indicativePrice: '100',
         markPrice: '200',
       },
-    },
+    } as MarketDealTicket,
     partyId: 'partyId',
   };
 

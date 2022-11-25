@@ -69,7 +69,7 @@ describe('DealTicket', () => {
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(market!.depth!.lastTrade!.price, market.decimalPlaces)} ${
+      `~${addDecimal(market!.data.markPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.settlementAsset.symbol
       }`
     );
