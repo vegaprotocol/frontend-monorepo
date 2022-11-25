@@ -29,7 +29,12 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   };
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data}
+      noDataCondition={() => false}
+    >
       <FillsTable
         ref={gridRef}
         partyId={partyId}

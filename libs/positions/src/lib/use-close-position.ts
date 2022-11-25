@@ -43,7 +43,7 @@ export const useClosePosition = () => {
       setClosingOrder(undefined);
 
       try {
-        // figure out if opsition is long or short and make side the opposite
+        // figure out if position is long or short and make side the opposite
         const side = openVolume.startsWith('-')
           ? Schema.Side.SIDE_BUY
           : Schema.Side.SIDE_SELL;

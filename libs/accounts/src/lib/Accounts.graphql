@@ -7,6 +7,9 @@ fragment AccountFields on AccountBalance {
   asset {
     id
   }
+  party {
+    id
+  }
 }
 
 query Accounts($partyId: ID!) {
@@ -22,11 +25,12 @@ query Accounts($partyId: ID!) {
   }
 }
 
-subscription AccountEvents($partyId: ID!) {
+subscription AccountEvents($partyId: ID) {
   accounts(partyId: $partyId) {
     type
     balance
     assetId
     marketId
+    partyId
   }
 }
