@@ -1,5 +1,6 @@
 import { FeesBreakdown } from '@vegaprotocol/market-info';
 import {
+  addDecimal,
   addDecimalsFormatNumber,
   formatNumber,
   t,
@@ -20,34 +21,41 @@ import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
 import type { OrderMargin } from './use-order-margin';
+import { getDerivedPrice } from '../utils/get-price';
 
 export const useFeeDealTicketDetails = (
   order: OrderSubmissionBody['orderSubmission'],
   market: MarketDealTicket
 ) => {
   const { pubKey } = useVegaWallet();
-
   const slippage = useCalculateSlippage({ marketId: market.id, order });
 
-  const price = useMemo(() => {
-    const estPrice = order.price || market.data.markPrice;
-    if (estPrice) {
-      if (slippage && parseFloat(slippage) !== 0) {
-        const isLong = order.side === Schema.Side.SIDE_BUY;
-        const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
-          parseFloat(slippage) / 100
-        );
-        return new BigNumber(estPrice).multipliedBy(multiplier).toNumber();
-      }
-      return order.price;
-    }
-    return null;
-  }, [market.data.markPrice, order.price, order.side, slippage]);
+  // This isn't used right now
+
+  // const price = useMemo(() => {
+  //   const estPrice = order.price || market.data.markPrice;
+  //   if (estPrice) {
+  //     if (slippage && parseFloat(slippage) !== 0) {
+  //       const isLong = order.side === Schema.Side.SIDE_BUY;
+  //       const multiplier = new BigNumber(1)[isLong ? 'plus' : 'minus'](
+  //         parseFloat(slippage) / 100
+  //       );
+  //       return new BigNumber(estPrice).multipliedBy(multiplier).toNumber();
+  //     }
+  //     return order.price;
+  //   }
+  //   return null;
+  // }, [market.data.markPrice, order.price, order.side, slippage]);
+
+  const derivedPrice = useMemo(() => {
+    return getDerivedPrice(order, market);
+  }, [order, market]);
 
   const estMargin: OrderMargin | null = useOrderMargin({
     order,
     market,
     partyId: pubKey || '',
+    derivedPrice,
   });
 
   const { data: partyBalance } = usePartyBalanceQuery({
@@ -62,11 +70,13 @@ export const useFeeDealTicketDetails = (
   });
 
   const notionalSize = useMemo(() => {
-    if (order.price && order.size) {
-      return new BigNumber(order.size).multipliedBy(order.price).toString();
+    if (derivedPrice && order.size) {
+      return new BigNumber(order.size)
+        .multipliedBy(addDecimal(derivedPrice, market.decimalPlaces))
+        .toString();
     }
     return null;
-  }, [order.price, order.size]);
+  }, [derivedPrice, order.size, market.decimalPlaces]);
 
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
@@ -78,7 +88,6 @@ export const useFeeDealTicketDetails = (
       estMargin,
       estCloseOut,
       slippage,
-      price,
       partyData: partyBalance,
     };
   }, [
@@ -88,7 +97,6 @@ export const useFeeDealTicketDetails = (
     estMargin,
     estCloseOut,
     slippage,
-    price,
     partyBalance,
   ]);
 };
@@ -100,7 +108,6 @@ export interface FeeDetails {
   estMargin: OrderMargin | null;
   estCloseOut: string | null;
   slippage: string | null;
-  price?: string | number | null;
 }
 
 export const getFeeDetailsValues = ({
