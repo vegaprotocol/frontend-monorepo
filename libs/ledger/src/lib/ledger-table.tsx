@@ -46,7 +46,7 @@ const LedgerCellRenderer = ({
     <div className="flex flex-col justify-around leading-5 h-full">
       <div
         className="flex"
-        title={`${t('Party ID')}: ${truncateByChars(partyId || '-')}`}
+        title={`${t('ID')}: ${truncateByChars(partyId || '-')}`}
       >
         {truncateByChars(partyId || '')}
       </div>
