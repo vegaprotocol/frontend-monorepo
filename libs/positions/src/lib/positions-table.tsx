@@ -10,7 +10,6 @@ import type {
 import { ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
   PriceFlashCell,
-  addDecimalsFormatNumber,
   volumePrefix,
   t,
   toBigNum,
@@ -19,6 +18,7 @@ import {
   signedNumberCssClass,
   signedNumberCssClassRules,
   DateRangeFilter,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
