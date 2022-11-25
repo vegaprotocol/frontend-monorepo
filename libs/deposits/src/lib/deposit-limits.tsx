@@ -49,7 +49,7 @@ export const DepositLimits = ({
   return (
     <KeyValueTable>
       {limits.map(({ key, label, rawValue, value }) => (
-        <KeyValueTableRow>
+        <KeyValueTableRow key={key}>
           <div data-testid={`${key}_label`}>{label}</div>
           <div
             data-testid={`${key}_value`}

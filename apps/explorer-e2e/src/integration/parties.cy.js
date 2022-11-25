@@ -16,7 +16,6 @@ const assetsInTest = Object.keys(assetData);
 
 context('Parties page', { tags: '@regression' }, function () {
   before('send-faucet assets to connected vega wallet', function () {
-    cy.vega_wallet_import();
     assetsInTest.forEach((asset) => {
       cy.vega_wallet_receive_fauceted_asset(
         assetData[asset].name,
@@ -202,15 +201,6 @@ context('Parties page', { tags: '@regression' }, function () {
         .should('have.css', 'background-color')
         .and('include', darkThemeSideMenuBackgroundColor);
     });
-
-    after(
-      'teardown environment to prevent test data bleeding into other tests',
-      function () {
-        if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-          cy.restart_vegacapsule_network();
-        }
-      }
-    );
 
     Cypress.Commands.add('get_asset_decimals', (assetID) => {
       cy.get_asset_information().then((assetsInfo) => {

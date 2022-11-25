@@ -10,7 +10,6 @@ import type {
 import { ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 import {
   PriceFlashCell,
-  addDecimalsNormalizeNumber,
   volumePrefix,
   t,
   toBigNum,
@@ -19,12 +18,13 @@ import {
   signedNumberCssClass,
   signedNumberCssClassRules,
   DateRangeFilter,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { getRowId } from './use-positions-data';
 
@@ -68,11 +68,11 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
         className={classNames('text-right', signedNumberCssClass(openVolume))}
       >
         {volumePrefix(
-          addDecimalsNormalizeNumber(openVolume, positionDecimalPlaces)
+          addDecimalsFormatNumber(openVolume, positionDecimalPlaces)
         )}
       </div>
       <div className="text-right">
-        {addDecimalsNormalizeNumber(notional, marketDecimalPlaces)}
+        {addDecimalsFormatNumber(notional, marketDecimalPlaces)}
       </div>
     </div>
   ) : null;
@@ -155,7 +155,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'notional'>) => {
             return !data
               ? undefined
-              : addDecimalsNormalizeNumber(
+              : addDecimalsFormatNumber(
                   data.notional,
                   data.marketDecimalPlaces
                 );
@@ -183,7 +183,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             return data?.openVolume === undefined
               ? undefined
               : volumePrefix(
-                  addDecimalsNormalizeNumber(
+                  addDecimalsFormatNumber(
                     data.openVolume,
                     data.positionDecimalPlaces
                   )
@@ -205,7 +205,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueGetterParams<Position, 'markPrice'>) => {
             return !data ||
               data.marketTradingMode ===
-                MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ? undefined
               : toBigNum(data.markPrice, data.marketDecimalPlaces).toNumber();
           }}
@@ -218,11 +218,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             if (
               data.marketTradingMode ===
-              MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
             ) {
               return '-';
             }
-            return addDecimalsNormalizeNumber(
+            return addDecimalsFormatNumber(
               data.markPrice,
               data.marketDecimalPlaces
             );
@@ -258,7 +258,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             if (!data) {
               return undefined;
             }
-            return addDecimalsNormalizeNumber(
+            return addDecimalsFormatNumber(
               data.averageEntryPrice,
               data.marketDecimalPlaces
             );
@@ -292,7 +292,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             if (!data) {
               return undefined;
             }
-            return addDecimalsNormalizeNumber(
+            return addDecimalsFormatNumber(
               data.liquidationPrice,
               data.marketDecimalPlaces
             );
@@ -340,7 +340,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             if (!data) {
               return undefined;
             }
-            return addDecimalsNormalizeNumber(
+            return addDecimalsFormatNumber(
               data.marginAccountBalance,
               data.decimals
             );
@@ -364,7 +364,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
             return !data
               ? undefined
-              : addDecimalsNormalizeNumber(data.realisedPNL, data.decimals);
+              : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
           }}
           cellRenderer="PriceFlashCell"
           headerTooltip={t(
@@ -389,7 +389,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
             !data
               ? undefined
-              : addDecimalsNormalizeNumber(data.unrealisedPNL, data.decimals)
+              : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals)
           }
           cellRenderer="PriceFlashCell"
           headerTooltip={t(

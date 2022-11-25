@@ -1,9 +1,5 @@
 import merge from 'lodash/merge';
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
   MarketsQuery,
@@ -21,8 +17,8 @@ export const generateMarkets = (
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -48,6 +44,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-0',
               symbol: 'tDAI',
               decimals: 5,
               __typename: 'Asset',
@@ -65,8 +62,8 @@ export const generateMarkets = (
       id: 'market-1',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -92,6 +89,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-1',
               symbol: 'XYZalpha',
               decimals: 5,
               __typename: 'Asset',
@@ -109,8 +107,8 @@ export const generateMarkets = (
       id: 'market-2',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      state: MarketState.STATE_SUSPENDED,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      state: Schema.MarketState.STATE_SUSPENDED,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '2022-08-26T11:36:32.252490405Z',
@@ -136,6 +134,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-2',
               symbol: 'tUSDC',
               decimals: 5,
               __typename: 'Asset',
@@ -153,8 +152,8 @@ export const generateMarkets = (
       id: 'market-3',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      state: MarketState.STATE_ACTIVE,
+      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: Schema.MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '2022-08-26T11:36:32.252490405Z',
@@ -180,6 +179,7 @@ export const generateMarkets = (
           },
           product: {
             settlementAsset: {
+              id: 'asset-3',
               symbol: 'tBTC',
               decimals: 5,
               __typename: 'Asset',
@@ -217,7 +217,7 @@ export const generateMarketsData = (
         id: 'market-0',
         __typename: 'Market',
       },
-      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       staticMidPrice: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '0',
@@ -226,7 +226,7 @@ export const generateMarketsData = (
       bestBidPrice: '0',
       bestOfferPrice: '0',
       markPrice: '4612690058',
-      trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
       __typename: 'MarketData',
     },
     {
@@ -234,7 +234,7 @@ export const generateMarketsData = (
         id: 'market-1',
         __typename: 'Market',
       },
-      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       staticMidPrice: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '0',
@@ -243,7 +243,7 @@ export const generateMarketsData = (
       bestBidPrice: '0',
       bestOfferPrice: '0',
       markPrice: '8441',
-      trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
       __typename: 'MarketData',
     },
     {
@@ -251,7 +251,7 @@ export const generateMarketsData = (
         id: 'market-2',
         __typename: 'Market',
       },
-      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       staticMidPrice: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '0',
@@ -260,7 +260,7 @@ export const generateMarketsData = (
       bestBidPrice: '0',
       bestOfferPrice: '0',
       markPrice: '4612690058',
-      trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
       __typename: 'MarketData',
     },
     {
@@ -268,7 +268,7 @@ export const generateMarketsData = (
         id: 'market-3',
         __typename: 'Market',
       },
-      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       staticMidPrice: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '0',
@@ -277,7 +277,7 @@ export const generateMarketsData = (
       bestBidPrice: '0',
       bestOfferPrice: '0',
       markPrice: '4612690058',
-      trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
+      trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
       __typename: 'MarketData',
     },
   ];

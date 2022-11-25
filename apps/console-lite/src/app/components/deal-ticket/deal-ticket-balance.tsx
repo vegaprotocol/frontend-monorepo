@@ -1,14 +1,12 @@
 import classNames from 'classnames';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
-import type {
-  AccountFragment,
-  DealTicketMarketFragment,
-} from '@vegaprotocol/deal-ticket';
+import { Schema } from '@vegaprotocol/types';
+import type { AccountFragment } from '@vegaprotocol/deal-ticket';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useSettlementAccount } from '@vegaprotocol/deal-ticket';
 
 interface DealTicketBalanceProps {
-  settlementAsset: DealTicketMarketFragment['tradableInstrument']['instrument']['product']['settlementAsset'];
+  settlementAsset: MarketDealTicket['tradableInstrument']['instrument']['product']['settlementAsset'];
   accounts: AccountFragment[];
   isWalletConnected: boolean;
   className?: string;
@@ -25,7 +23,7 @@ export const DealTicketBalance = ({
   const settlementAccount = useSettlementAccount(
     settlementAssetId,
     accounts,
-    AccountType.ACCOUNT_TYPE_GENERAL
+    Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
   const formattedNumber =
     settlementAccount?.balance &&

@@ -1,4 +1,4 @@
-import { MarketState, MarketTradingModeMapping } from '@vegaprotocol/types';
+import { Schema, MarketTradingModeMapping } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
@@ -81,8 +81,8 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       'Contract address',
       '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
     );
-    validateMarketDataRow(8, 'Withdrawal threshold', '0.00050');
-    validateMarketDataRow(9, 'Lifetime limit', '1,230.00000');
+    validateMarketDataRow(8, 'Withdrawal threshold', '0.0005');
+    validateMarketDataRow(9, 'Lifetime limit', '1,230');
   });
 
   it('metadata displayed', () => {
@@ -184,7 +184,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .and('contain', '/governance/market-0');
     cy.getByTestId(externalLink)
       .eq(1)
-      .should('have.text', 'Propose a change to this market')
+      .should('have.text', 'Propose a change to market')
       .and('have.attr', 'href')
       .and('contain', '/governance/propose/update-market');
   });
@@ -215,11 +215,11 @@ describe('market states', { tags: '@smoke' }, function () {
   //7002-SORD-066
 
   const states = [
-    MarketState.STATE_REJECTED,
-    MarketState.STATE_CANCELLED,
-    MarketState.STATE_CLOSED,
-    MarketState.STATE_SETTLED,
-    MarketState.STATE_TRADING_TERMINATED,
+    Schema.MarketState.STATE_REJECTED,
+    Schema.MarketState.STATE_CANCELLED,
+    Schema.MarketState.STATE_CLOSED,
+    Schema.MarketState.STATE_SETTLED,
+    Schema.MarketState.STATE_TRADING_TERMINATED,
   ];
 
   states.forEach((marketState) => {
@@ -235,7 +235,7 @@ describe('market states', { tags: '@smoke' }, function () {
       //7002-/SORD-/061 no state displayed
       it('must display that market is not accepting orders', function () {
         cy.getByTestId('place-order').click();
-        cy.getByTestId('dealticket-error-message').should(
+        cy.getByTestId('dealticket-error-message-summary').should(
           'have.text',
           `This market is ${marketState
             .split('_')

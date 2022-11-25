@@ -1,9 +1,14 @@
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 import { MarketDocument } from './__generated___/market';
 import type {
   MarketQuery,
   SingleMarketFieldsFragment,
 } from './__generated___/market';
+import type { MarketData } from './market-data-provider';
+import { marketDataProvider } from './market-data-provider';
 
 const getData = (
   responseData: MarketQuery
@@ -17,4 +22,20 @@ export const marketProvider = makeDataProvider<
 >({
   query: MarketDocument,
   getData,
+});
+
+export type MarketDealTicket = SingleMarketFieldsFragment & {
+  data: MarketData;
+};
+export type MarketDealTicketAsset =
+  MarketDealTicket['tradableInstrument']['instrument']['product']['settlementAsset'];
+
+export const marketDealTicketProvider = makeDerivedDataProvider<
+  MarketDealTicket,
+  never
+>([marketProvider, marketDataProvider], ([market, marketData]) => {
+  return {
+    ...market,
+    data: marketData,
+  };
 });

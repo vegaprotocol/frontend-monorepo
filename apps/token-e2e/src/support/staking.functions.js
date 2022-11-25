@@ -98,7 +98,7 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   );
   cy.get(ethWalletDissociateButton).first().click();
 
-  cy.get(vegaKeySelector)
+  cy.get(vegaKeySelector, txTimeout)
     .invoke('attr', 'disabled')
     .then((disabled) => {
       if (!disabled) {
@@ -208,7 +208,7 @@ Cypress.Commands.add(
         if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
           cy.vega_wallet_teardown();
           cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
-            '0.000000000000000000',
+            '0.00',
             txTimeout
           );
           cy.staking_page_associate_tokens(tokenAmount);

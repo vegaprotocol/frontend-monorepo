@@ -27,15 +27,17 @@ context(
   function () {
     before('visit withdrawals and connect vega wallet', function () {
       cy.updateCapsuleMultiSig(); // When running tests locally, will fail if run without restarting capsule
-      cy.vega_wallet_import();
       cy.deposit_asset(usdcEthAddress);
     });
 
     beforeEach('Navigate to withdrawal page', function () {
+      cy.reload();
       cy.visit('/');
       cy.navigate_to('withdrawals');
+      cy.wait_for_spinner();
       cy.vega_wallet_connect();
       cy.ethereum_wallet_connect();
+      cy.vega_wallet_teardown();
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
@@ -77,7 +79,7 @@ context(
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset).select(usdtName);
       cy.getByTestId(balanceAvailable, txTimeout).should('exist');
-      cy.getByTestId(withdrawalThreshold).should('have.text', '100,000.00000T');
+      cy.getByTestId(withdrawalThreshold).should('have.text', '100,000.00T');
       cy.getByTestId(delayTime).should('have.text', 'None');
       cy.getByTestId(amountInput).click().type('100');
       cy.getByTestId(submitWithdrawalButton).click();
@@ -92,7 +94,7 @@ context(
         .should('have.attr', 'href')
         .and('contain', '/txs/');
       cy.getByTestId(withdrawalAssetSymbol).should('have.text', usdcSymbol);
-      cy.getByTestId(withdrawalAmount).should('have.text', '100.00000');
+      cy.getByTestId(withdrawalAmount).should('have.text', '100.00');
       cy.getByTestId(withdrawalRecipient)
         .should('have.text', truncatedWithdrawalEthAddress)
         .and('have.attr', 'href')
@@ -116,7 +118,7 @@ context(
         .parent()
         .within(() => {
           cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
-          cy.get('[col-id="amount"]').should('have.text', '100.00000');
+          cy.get('[col-id="amount"]').should('have.text', '100.00');
           cy.get('[col-id="details.receiverAddress"]')
             .find('a')
             .should('have.attr', 'href')
@@ -161,7 +163,7 @@ context(
         .parent()
         .within(() => {
           cy.get('[col-id="asset.symbol"]').should('have.text', usdcSymbol);
-          cy.get('[col-id="amount"]').should('have.text', '100.00000');
+          cy.get('[col-id="amount"]').should('have.text', '100.00');
           cy.get('[col-id="details.receiverAddress"]')
             .find('a')
             .should('have.attr', 'href')

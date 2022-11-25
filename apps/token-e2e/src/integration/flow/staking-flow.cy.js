@@ -33,87 +33,80 @@ context(
   function () {
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
-      cy.navigate_to('staking');
-      cy.wait_for_spinner();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
+          cy.reload();
+          cy.wait_for_spinner();
+          cy.vega_wallet_connect();
+          cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('staking');
           cy.wait_for_spinner();
         }
       );
 
-      it(
-        'Able to stake against a validator - using vega from wallet',
-        { tags: '@smoke' },
-        function () {
-          cy.staking_page_associate_tokens('3');
+      it('Able to stake against a validator - using vega from wallet', function () {
+        cy.staking_page_associate_tokens('3');
 
-          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-            'contain',
-            3.0,
-            txTimeout
-          );
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain',
+          3.0,
+          txTimeout
+        );
 
-          cy.get(ethWalletTotalAssociatedBalance, txTimeout)
-            .contains('3.0', txTimeout)
-            .should('be.visible');
+        cy.get(ethWalletTotalAssociatedBalance, txTimeout)
+          .contains('3.0', txTimeout)
+          .should('be.visible');
 
-          cy.get(ethWalletAssociatedBalances, txTimeout)
-            .contains(vegaWalletPublicKeyShort, txTimeout)
-            .parent()
-            .should('contain', 3.0, txTimeout);
+        cy.get(ethWalletAssociatedBalances, txTimeout)
+          .contains(vegaWalletPublicKeyShort, txTimeout)
+          .parent()
+          .should('contain', 3.0, txTimeout);
 
-          cy.get('button').contains('Select a validator to nominate').click();
+        cy.get('button').contains('Select a validator to nominate').click();
 
-          // 2001-STKE-031
-          cy.click_on_validator_from_list(0);
+        // 2001-STKE-031
+        cy.click_on_validator_from_list(0);
 
-          // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
-          cy.staking_validator_page_add_stake('2');
+        // 2001-STKE-033, 2001-STKE-034, 2001-STKE-037
+        cy.staking_validator_page_add_stake('2');
 
-          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-            'contain',
-            1.0,
-            txTimeout
-          );
-          // 2001-STKE-039
-          cy.get(vegaWalletStakedBalances, txTimeout)
-            .should('contain', 2.0, txTimeout)
-            .and('contain', partValidatorId);
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain',
+          1.0,
+          txTimeout
+        );
+        // 2001-STKE-039
+        cy.get(vegaWalletStakedBalances, txTimeout)
+          .should('contain', 2.0, txTimeout)
+          .and('contain', partValidatorId);
 
-          cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016 2001-STKE-038
-            .contains(2.0, epochTimeout)
-            .should('be.visible');
+        cy.get(stakeNextEpochValue, epochTimeout) // 2001-STKE-016 2001-STKE-038
+          .contains(2.0, epochTimeout)
+          .should('be.visible');
 
-          cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
-            .contains(2.0, epochTimeout)
-            .should('be.visible');
+        cy.get(stakeThisEpochValue, epochTimeout) // 2001-STKE-013
+          .contains(2.0, epochTimeout)
+          .should('be.visible');
 
-          cy.get(nominatedStake).should('have.text', '2.000000000000000000'); // 2001-STKE-017 2002-SINC-007
+        cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
 
-          cy.navigate_to('staking');
+        cy.navigate_to('staking');
 
-          cy.validate_validator_list_total_stake_and_share(
-            '0',
-            '',
-            '2.00',
-            '100%'
-          );
-        }
-      );
+        cy.validate_validator_list_total_stake_and_share(
+          '0',
+          '',
+          '2.00',
+          '100%'
+        );
+      });
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
         cy.staking_page_associate_tokens('3', { type: 'contract' });
@@ -310,73 +303,77 @@ context(
       });
 
       // 2001-STKE-041
-      it('Able to remove part of a stake against a validator', function () {
-        cy.staking_page_associate_tokens('4');
+      it(
+        'Able to remove part of a stake against a validator',
+        { tags: '@smoke' },
+        function () {
+          cy.staking_page_associate_tokens('4');
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          4.0,
-          txTimeout
-        );
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            4.0,
+            txTimeout
+          );
 
-        cy.get('button').contains('Select a validator to nominate').click();
+          cy.get('button').contains('Select a validator to nominate').click();
 
-        cy.click_on_validator_from_list(0);
+          cy.click_on_validator_from_list(0);
 
-        cy.staking_validator_page_add_stake('3');
+          cy.staking_validator_page_add_stake('3');
 
-        cy.get(stakeNextEpochValue, epochTimeout)
-          .contains(3.0, epochTimeout)
-          .should('be.visible');
+          cy.get(stakeNextEpochValue, epochTimeout)
+            .contains(3.0, epochTimeout)
+            .should('be.visible');
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          1.0,
-          txTimeout
-        );
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            1.0,
+            txTimeout
+          );
 
-        cy.navigate_to('staking');
-        // 2001-STKE-040
-        cy.click_on_validator_from_list(0);
+          cy.navigate_to('staking');
+          // 2001-STKE-040
+          cy.click_on_validator_from_list(0);
 
-        // 2001-STKE-044, 2001-STKE-048
-        cy.staking_validator_page_remove_stake('1');
+          // 2001-STKE-044, 2001-STKE-048
+          cy.staking_validator_page_remove_stake('1');
 
-        // 2001-STKE-049
-        cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
+          // 2001-STKE-049
+          cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            2.0,
+            txTimeout
+          );
 
-        cy.get(vegaWalletStakedBalances, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+          cy.get(vegaWalletStakedBalances, txTimeout).should(
+            'contain',
+            2.0,
+            txTimeout
+          );
 
-        cy.get(stakeNextEpochValue, epochTimeout)
-          .contains(2.0, epochTimeout)
-          .should('be.visible');
+          cy.get(stakeNextEpochValue, epochTimeout)
+            .contains(2.0, epochTimeout)
+            .should('be.visible');
 
-        cy.get(stakeThisEpochValue, epochTimeout)
-          .contains(2.0, epochTimeout)
-          .should('be.visible');
+          cy.get(stakeThisEpochValue, epochTimeout)
+            .contains(2.0, epochTimeout)
+            .should('be.visible');
 
-        cy.get(totalStake, epochTimeout).should('contain.text', '2');
-        cy.get(stakeShare, epochTimeout).should('have.text', '100%');
+          cy.get(totalStake, epochTimeout).should('contain.text', '2');
+          cy.get(stakeShare, epochTimeout).should('have.text', '100%');
 
-        cy.navigate_to('staking');
+          cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '2.00',
-          '100%'
-        );
-      });
+          cy.validate_validator_list_total_stake_and_share(
+            '0',
+            '',
+            '2.00',
+            '100%'
+          );
+        }
+      );
 
       // 2001-STKE-045
       it('Able to remove a full stake against a validator', function () {
@@ -557,7 +554,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '0.000000000000000000'
+            '0.00'
           );
         });
 
@@ -611,7 +608,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '0.000000000000000000'
+            '0.00'
           );
         });
 
@@ -659,7 +656,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '2.000000000000000000'
+            '2.00'
           );
         });
 
@@ -822,7 +819,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '12.000000000000000000'
+            '12.00'
           );
         });
 
@@ -870,15 +867,6 @@ context(
 
         cy.get(stakeTokenSubmitButton).should('contain', 'Add 1 $VEGA tokens');
       });
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );

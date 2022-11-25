@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react';
-import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  InputError,
+  Select,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import type { DealTicketErrorMessage } from './deal-ticket-error';
-import { DealTicketError } from './deal-ticket-error';
-import { DEAL_TICKET_SECTION } from '../constants';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
+import { MarketModeValidationType } from '../../constants';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  errorMessage?: DealTicketErrorMessage;
+  market: MarketDealTicket;
+  errorMessage?: string;
 }
 
 type OrderType = Schema.OrderType.TYPE_MARKET | Schema.OrderType.TYPE_LIMIT;
@@ -27,6 +33,7 @@ export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
+  market,
   errorMessage,
 }: TimeInForceSelectorProps) => {
   const options =
@@ -60,6 +67,50 @@ export const TimeInForceSelector = ({
     setPreviousOrderType,
   ]);
 
+  const renderError = (errorType: string) => {
+    if (errorType === MarketModeValidationType.Auction) {
+      return t(
+        `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+      );
+    }
+
+    if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
+      return (
+        <span>
+          {t('This market is in auction until it reaches')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('sufficient liquidity')}</span>
+          </Tooltip>
+          {'. '}
+          {t(
+            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          )}
+        </span>
+      );
+    }
+
+    if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
+      return (
+        <span>
+          {t('This market is in auction due to')}{' '}
+          <Tooltip
+            description={<MarketDataGrid grid={compileGridData(market)} />}
+          >
+            <span>{t('high price volatility')}</span>
+          </Tooltip>
+          {'. '}
+          {t(
+            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+          )}
+        </span>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
@@ -81,11 +132,11 @@ export const TimeInForceSelector = ({
           </option>
         ))}
       </Select>
-      <DealTicketError
-        errorMessage={errorMessage}
-        data-testid="dealticket-error-message-force"
-        section={DEAL_TICKET_SECTION.FORCE}
-      />
+      {errorMessage && (
+        <InputError data-testid="dealticket-error-message-tif">
+          {renderError(errorMessage)}
+        </InputError>
+      )}
     </FormGroup>
   );
 };

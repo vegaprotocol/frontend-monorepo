@@ -6,7 +6,10 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
+import { statusTranslationKey } from '../home/node-list';
 import type { StakingNodeFieldsFragment } from './__generated___/Staking';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 const ValidatorTableCell = ({
   children,
@@ -33,15 +36,18 @@ export const ValidatorTable = ({
 }: ValidatorTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const stakePercentage = React.useMemo(() => {
     const total = new BigNumber(stakedTotal);
-    const stakedOnNode = new BigNumber(node.stakedTotalFormatted);
+    const stakedOnNode = toBigNum(node.stakedTotal, decimals);
     const stakedTotalPercentage =
       total.isEqualTo(0) || stakedOnNode.isEqualTo(0)
         ? '-'
         : stakedOnNode.dividedBy(total).times(100).dp(2).toString() + '%';
     return stakedTotalPercentage;
-  }, [node.stakedTotalFormatted, stakedTotal]);
+  }, [decimals, node.stakedTotal, stakedTotal]);
 
   return (
     <KeyValueTable data-testid="validator-table">
@@ -65,7 +71,9 @@ export const ValidatorTable = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('STATUS')}</span>
-        <span>{node.status}</span>
+        <span data-testid="validator-status">
+          {t(statusTranslationKey(node.rankingScore.status))}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('IP ADDRESS')}</span>
@@ -85,22 +93,26 @@ export const ValidatorTable = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('TOTAL STAKE')}</span>
-        <span data-testid="total-stake">{node.stakedTotalFormatted}</span>
+        <span data-testid="total-stake">
+          {formatNumber(toBigNum(node.stakedTotal, decimals))}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('PENDING STAKE')}</span>
-        <span data-testid="pending-stake">{node.pendingStakeFormatted}</span>
+        <span data-testid="pending-stake">
+          {formatNumber(toBigNum(node.pendingStake, decimals))}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('STAKED BY OPERATOR')}</span>
         <span data-testid="staked-by-operator">
-          {node.stakedByOperatorFormatted}
+          {formatNumber(toBigNum(node.stakedByOperator, decimals))}
         </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('STAKED BY DELEGATES')}</span>
         <span data-testid="staked-by-delegates">
-          {node.stakedByDelegatesFormatted}
+          {formatNumber(toBigNum(node.stakedByDelegates, 18))}
         </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
@@ -114,7 +126,7 @@ export const ValidatorTable = ({
       <KeyValueTableRow>
         <span>{t('NOMINATED (THIS EPOCH)')}</span>
         <span data-testid="nominated-stake">
-          {node.stakedByDelegatesFormatted}
+          {formatNumber(toBigNum(node.stakedByDelegates, decimals))}
         </span>
       </KeyValueTableRow>
     </KeyValueTable>

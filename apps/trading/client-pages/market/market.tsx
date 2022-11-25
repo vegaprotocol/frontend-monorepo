@@ -14,11 +14,14 @@ import type {
   Candle,
   MarketDataUpdateFieldsFragment,
 } from '@vegaprotocol/market-list';
+
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
 import { useNavigate, useParams } from 'react-router-dom';
+import { EMPTY_MARKET_ID } from '../../components/constants';
+import { useWelcomeNoticeDialog } from '../../components/welcome-notice';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -40,7 +43,9 @@ export const Market = ({
 }) => {
   const params = useParams();
   const navigate = useNavigate();
-  const marketId = params.marketId;
+  const isEmpty = params.marketId === EMPTY_MARKET_ID;
+  const marketId = isEmpty ? undefined : params.marketId;
+
   const { w } = useWindowSize();
   const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
     (store) => ({
@@ -108,17 +113,16 @@ export const Market = ({
     skip: !marketId || !data,
   });
 
+  useWelcomeNoticeDialog();
+
   const tradeView = useMemo(() => {
-    if (!data) {
-      return null;
-    }
     if (w > 960) {
       return <TradeGrid market={data} onSelect={onSelect} />;
     }
     return <TradePanels market={data} onSelect={onSelect} />;
   }, [w, data, onSelect]);
 
-  if (!marketId) {
+  if (!marketId && !isEmpty) {
     return (
       <Splash>
         <p>{t('Not found')}</p>
@@ -131,8 +135,9 @@ export const Market = ({
       loading={loading}
       error={error}
       data={data || undefined}
+      noDataCondition={(data) => false}
       render={(data) => {
-        if (!data) {
+        if (!data && !isEmpty) {
           return <Splash>{t('Market not found')}</Splash>;
         }
         return (

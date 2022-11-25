@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -7,30 +6,21 @@ import { Heading } from '../../components/heading';
 import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { BigNumber } from '../../lib/bignumber';
 import type { RouteChildProps } from '..';
 import Routes from '../routes';
-import type { NodeData } from './__generated__/NodeData';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';
-
-export const TOTAL_ASSOCIATED_QUERY = gql`
-  query NodeData {
-    nodeData {
-      stakedTotal
-      stakedTotalFormatted @client
-    }
-  }
-`;
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useNodeDataQuery } from './__generated___/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
   const { appState } = useAppState();
-  const { data } = useQuery<NodeData>(TOTAL_ASSOCIATED_QUERY);
+  const { data } = useNodeDataQuery();
   const totalAssociated = React.useMemo(() => {
-    return new BigNumber(data?.nodeData?.stakedTotalFormatted || '0');
-  }, [data]);
+    return toBigNum(data?.nodeData?.stakedTotal || '0', appState.decimals);
+  }, [appState.decimals, data?.nodeData?.stakedTotal]);
 
   return (
     <>

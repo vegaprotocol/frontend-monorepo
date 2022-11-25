@@ -1,13 +1,11 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import type { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
-import { MarketState } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChainId } from './mocks/generate-chain-id';
 import { generateChart } from './mocks/generate-chart';
-import { generateDealTicketQuery } from './mocks/generate-deal-ticket-query';
 import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
@@ -28,12 +26,13 @@ import {
   generatePartyBalance,
   generatePartyMarketData,
 } from './mocks/generate-fees';
+import { generateMarketProposals } from './mocks/generate-proposals';
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
-  state: MarketState = MarketState.STATE_ACTIVE,
-  tradingMode?: MarketTradingMode,
-  trigger?: AuctionTrigger
+  state: Schema.MarketState = Schema.MarketState.STATE_ACTIVE,
+  tradingMode?: Schema.MarketTradingMode,
+  trigger?: Schema.AuctionTrigger
 ) => {
   aliasQuery(req, 'ChainId', generateChainId());
   aliasQuery(req, 'Statistics', generateStatistics());
@@ -48,6 +47,7 @@ const mockTradingPage = (
           },
         },
         state: state,
+        tradingMode: tradingMode,
       },
     })
   );
@@ -62,25 +62,13 @@ const mockTradingPage = (
   );
   aliasQuery(req, 'MarketsData', generateMarketsData());
   aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
+  aliasQuery(req, 'MarketCandles', generateMarketsCandles());
 
   aliasQuery(req, 'MarketDepth', generateMarketDepth());
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
   aliasQuery(req, 'Margins', generateMargins());
-  aliasQuery(
-    req,
-    'DealTicket',
-    generateDealTicketQuery({
-      market: {
-        state,
-        tradingMode: tradingMode,
-        data: {
-          trigger: trigger,
-        },
-      },
-    })
-  );
   aliasQuery(req, 'Assets', generateAssets());
   aliasQuery(req, 'Asset', generateAsset());
 
@@ -107,6 +95,7 @@ const mockTradingPage = (
   aliasQuery(req, 'PartyBalance', generatePartyBalance());
   aliasQuery(req, 'MarketPositions', generatePositions());
   aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+  aliasQuery(req, 'ProposalsList', generateMarketProposals());
 };
 
 declare global {
@@ -115,9 +104,9 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       mockTradingPage(
-        state?: MarketState,
-        tradingMode?: MarketTradingMode,
-        trigger?: AuctionTrigger
+        state?: Schema.MarketState,
+        tradingMode?: Schema.MarketTradingMode,
+        trigger?: Schema.AuctionTrigger
       ): void;
     }
   }
@@ -125,7 +114,7 @@ declare global {
 export const addMockTradingPage = () => {
   Cypress.Commands.add(
     'mockTradingPage',
-    (state = MarketState.STATE_ACTIVE, tradingMode, trigger) => {
+    (state = Schema.MarketState.STATE_ACTIVE, tradingMode, trigger) => {
       cy.mockGQL((req) => {
         mockTradingPage(req, state, tradingMode, trigger);
       });

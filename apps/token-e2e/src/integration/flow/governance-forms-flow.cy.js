@@ -18,6 +18,8 @@ const minEnactDeadline = '[data-testid="min-enactment"]';
 const maxEnactDeadline = '[data-testid="max-enactment"]';
 const dialogCloseButton = '[data-testid="dialog-close"]';
 const inputError = '[data-testid="input-error-text"]';
+const enactmentDeadlineError =
+  '[data-testid="enactment-before-voting-deadline"]';
 const feedbackError = '[data-testid="Error"]';
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -38,30 +40,22 @@ context(
   { tags: '@slow' },
   function () {
     before('connect wallets and set approval limit', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.wait_for_spinner();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
     });
 
     beforeEach('visit governance tab', function () {
+      cy.reload();
+      cy.wait_for_spinner();
+      cy.vega_wallet_connect();
+      cy.ethereum_wallet_connect();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.intercept('POST', '/query', (req) => {
-        if (req.body.operationName === 'ProposalEvent') {
-          req.alias = 'proposalSubmissionCompletion';
-        }
-      });
-      cy.ensure_specified_unstaked_tokens_are_associated('1');
     });
 
     it('Able to submit valid update network parameter proposal', function () {
-      cy.navigate_to_page_if_not_already_loaded('governance');
+      cy.ensure_specified_unstaked_tokens_are_associated('1');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       // 3002-PROP-006
       cy.get(newProposalTitle).type('Test update network parameter proposal');
@@ -104,6 +98,31 @@ context(
       );
     });
 
+    it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
+      cy.navigate_to_page_if_not_already_loaded('governance');
+      cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
+      cy.get(newProposalTitle).type('Test update network parameter proposal');
+      cy.get(newProposalDescription).type('invalid deadlines');
+      cy.get(proposalParameterSelect).select(
+        'spam_protection_proposal_min_tokens'
+      );
+      cy.get(newProposedParameterValue).type('0');
+      cy.get(proposalVoteDeadline).clear().type('0');
+      cy.get(maxVoteDeadline).click();
+      cy.get(enactmentDeadlineError).should(
+        'have.text',
+        'Proposal will fail if enactment is earlier than the voting deadline'
+      );
+      cy.get(newProposalSubmitButton).click();
+      cy.get(feedbackError).should(
+        'have.text',
+        'proposal_submission.terms.closing_timestamp: cannot be after enactment time'
+      );
+      cy.get(dialogCloseButton).click();
+      cy.get(minVoteDeadline).click();
+      cy.get(enactmentDeadlineError).should('not.exist');
+    });
+
     // Skipping because unclear what the required json is yet for new market proposal, will update once docs have been updated
     // 3003-todo-PMAN-001
     it.skip('Able to submit valid new market proposal', function () {
@@ -138,7 +157,7 @@ context(
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       cy.get(feedbackError).should(
         'have.text',
-        '*: unknown field "settlementPriceProperty" in vega.OracleSpecToFutureBinding'
+        '*: unknown field "signers" in vega.DataSourceDefinition'
       );
     });
 
@@ -222,8 +241,7 @@ context(
       cy.wait_for_proposal_submitted();
     });
 
-    // Skipping until #1837 is fixed
-    it.skip('Able to submit update asset proposal using max deadline', function () {
+    it('Able to submit update asset proposal using max deadline', function () {
       cy.go_to_make_new_proposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
       cy.get(maxVoteDeadline).click();

@@ -9,8 +9,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import { marketsWithDataProvider } from '@vegaprotocol/market-list';
 import type {
@@ -54,7 +53,7 @@ export interface Position {
   liquidationPrice: string;
   lowMarginLevel: boolean;
   marketId: string;
-  marketTradingMode: MarketTradingMode;
+  marketTradingMode: Schema.MarketTradingMode;
   markPrice: string;
   notional: string;
   openVolume: string;
@@ -84,19 +83,13 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    if (
-      !marginAccount ||
-      !marginLevel ||
-      !market ||
-      !marketData ||
-      position.openVolume === '0'
-    ) {
+    if (!marginAccount || !marginLevel || !market || !marketData) {
       return;
     }
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
-        account.type === AccountType.ACCOUNT_TYPE_GENERAL
+        account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
     );
     const decimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
@@ -121,15 +114,9 @@ export const getMetrics = (
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
-    const marginMaintenance = toBigNum(
-      marginLevel.maintenanceLevel,
-      marketDecimalPlaces
-    );
-    const marginSearch = toBigNum(marginLevel.searchLevel, marketDecimalPlaces);
-    const marginInitial = toBigNum(
-      marginLevel.initialLevel,
-      marketDecimalPlaces
-    );
+    const marginMaintenance = toBigNum(marginLevel.maintenanceLevel, decimals);
+    const marginSearch = toBigNum(marginLevel.searchLevel, decimals);
+    const marginInitial = toBigNum(marginLevel.initialLevel, decimals);
 
     const searchPrice = marginSearch
       .minus(marginAccountBalance)

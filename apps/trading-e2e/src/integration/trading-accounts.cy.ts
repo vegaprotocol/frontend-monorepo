@@ -1,5 +1,4 @@
 import { connectVegaWallet } from '../support/vega-wallet';
-import { connectEthereumWallet } from '../support/ethereum-wallet';
 
 beforeEach(() => {
   cy.mockTradingPage();
@@ -12,10 +11,8 @@ describe('accounts', { tags: '@smoke' }, () => {
   it('renders accounts', () => {
     const tradingAccountRowId = '[row-id="asset-0"]';
     cy.getByTestId('Collateral').click();
-    cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
     connectVegaWallet();
-    connectEthereumWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')
@@ -31,6 +28,6 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="deposited"]')
-      .should('have.text', '1,000.00000');
+      .should('have.text', '1,000.00');
   });
 });

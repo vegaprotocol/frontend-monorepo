@@ -15,13 +15,14 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import {
-  MarketTradingMode,
-  AuctionTrigger,
+  Schema,
   MarketTradingModeMapping,
   AuctionTriggerMapping,
 } from '@vegaprotocol/types';
 import type { MarketWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+
+const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
@@ -53,21 +54,21 @@ export const MarketListTable = forwardRef<
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset.symbol"
+        field="tradableInstrument.instrument.product.settlementAsset"
         cellRenderer={({
           value,
         }: VegaICellRendererParams<
           MarketWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
+          'tradableInstrument.instrument.product.settlementAsset'
         >) =>
-          value && value.length > 0 ? (
+          value ? (
             <button
               className="hover:underline"
               onClick={(e) => {
-                openAssetDetailsDialog(value, e.target as HTMLElement);
+                openAssetDetailsDialog(value.id, e.target as HTMLElement);
               }}
             >
-              {value}
+              {value.symbol}
             </button>
           ) : (
             ''

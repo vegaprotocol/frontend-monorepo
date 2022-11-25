@@ -1,11 +1,12 @@
+import { connectVegaWallet } from '../support/vega-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import {
   generateSimpleMarkets,
   generateMarketsCandles,
   generateMarketsData,
   generateMarket,
+  generateMarketData,
 } from '../support/mocks/generate-markets';
-import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
@@ -14,16 +15,19 @@ import { generatePartyMarketData } from '../support/mocks/generate-party-market-
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import type { MarketsQuery, Market } from '@vegaprotocol/market-list';
+import { generateChainId } from '../support/mocks/generate-chain-id';
+import { generateStatistics } from '../support/mocks/generate-statistics';
 
 describe('Market trade', { tags: '@smoke' }, () => {
   let markets: Market[];
   beforeEach(() => {
     cy.mockGQL((req) => {
+      aliasQuery(req, 'ChainId', generateChainId());
+      aliasQuery(req, 'Statistics', generateStatistics());
       aliasQuery(req, 'Markets', generateSimpleMarkets());
       aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-      aliasQuery(req, 'DealTicket', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
@@ -32,6 +36,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
       aliasQuery(req, 'Market', generateMarket());
+      aliasQuery(req, 'MarketData', generateMarketData());
     });
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
@@ -58,7 +63,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('side selector should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').should(
         'have.text',
         'Long'
@@ -77,7 +82,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.getByTestId('next-button').scrollIntoView().click();
 
       cy.get('button[aria-label="Open long position"]').should(
@@ -109,7 +114,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('size slider should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -131,7 +136,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('percentage selection should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -158,7 +163,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('size input should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -186,7 +191,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('slippage value should be displayed', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -202,7 +207,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('allow slippage value to be adjusted', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -230,7 +235,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('notional position size should be present', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -257,7 +262,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
   it('total fees should be displayed', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
@@ -265,14 +270,17 @@ describe('Market trade', { tags: '@smoke' }, () => {
         .find('dt')
         .eq(3)
         .should('have.text', 'Est. Fees (tDAI)');
-      cy.get('#step-2-panel').find('dd').eq(3).should('have.text', '3 (3.03%)');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00 (3.03%)');
     }
   });
 
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-3-control').click();
 
       cy.getByTestId('review-trade')
@@ -287,7 +295,10 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
       cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
 
-      cy.get('#step-3-panel').find('dd').eq(3).should('have.text', '3 (3.03%)');
+      cy.get('#step-3-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00 (3.03%)');
 
       cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
 
@@ -299,7 +310,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      cy.connectVegaWallet();
+      connectVegaWallet();
       cy.get('#step-3-control').click();
 
       // Start from the bottom tooltip to ensure the tooltip above

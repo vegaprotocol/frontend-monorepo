@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import compact from 'lodash/compact';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
@@ -6,13 +7,13 @@ import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
 import { Schema } from '@vegaprotocol/types';
-import type { DealTicketMarketFragment } from '../components/deal-ticket/__generated__/DealTicket';
 import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useSettlementAccount } from './use-settlement-account';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
   partyData?: PartyBalanceQuery;
 }
 
@@ -22,9 +23,12 @@ export const useOrderCloseOut = ({
   partyData,
 }: Props): string | null => {
   const { pubKey } = useVegaWallet();
+  const accounts = compact(partyData?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
   const account = useSettlementAccount(
     market.tradableInstrument.instrument.product.settlementAsset.id,
-    partyData?.party?.accounts || []
+    accounts
   );
   const { data } = usePartyMarketDataQuery({
     pollInterval: 5000,
@@ -46,7 +50,11 @@ export const useOrderCloseOut = ({
       market.decimalPlaces
     )
   );
-  const positionAccount = data?.party?.accounts?.find(
+
+  const dataAccounts = compact(data?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
+  const positionAccount = dataAccounts.find(
     (account) => account.market?.id === market.id
   );
   const positionAccountBalance = new BigNumber(

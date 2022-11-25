@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
@@ -17,7 +17,7 @@ const singleRow: Position = {
   liquidationPrice: '83',
   lowMarginLevel: false,
   marketId: 'string',
-  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123',
   notional: '12300',
   openVolume: '100',
@@ -92,7 +92,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeTruthy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
-  expect(cells[1].textContent).toEqual('1,230');
+  expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
     result.rerender(
       <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
@@ -102,7 +102,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   expect(cells[2].classList.contains('text-vega-green-dark')).toBeFalsy();
   expect(cells[2].classList.contains('text-vega-red-dark')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
-  expect(cells[1].textContent).toEqual('1,230');
+  expect(cells[1].textContent).toEqual('1,230.0');
 });
 
 it('displays mark price', async () => {
@@ -120,7 +120,8 @@ it('displays mark price', async () => {
         rowData={[
           {
             ...singleRow,
-            marketTradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+            marketTradingMode:
+              Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
           },
         ]}
       />

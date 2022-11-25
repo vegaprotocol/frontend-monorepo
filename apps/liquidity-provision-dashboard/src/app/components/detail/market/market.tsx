@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
-import type { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import type { Schema } from '@vegaprotocol/types';
 import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Last24hVolume } from '../last-24h-volume';
@@ -33,8 +33,8 @@ export const Market = ({
   comittedLiquidity: number;
   targetStake: string;
   settlementAsset?: settlementAsset;
-  tradingMode?: MarketTradingMode;
-  trigger?: AuctionTrigger;
+  tradingMode?: Schema.MarketTradingMode;
+  trigger?: Schema.AuctionTrigger;
 }) => {
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
 

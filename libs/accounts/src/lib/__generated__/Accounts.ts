@@ -10,7 +10,7 @@ export type AccountsQueryVariables = Types.Exact<{
 }>;
 
 
-export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accounts?: Array<{ __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string } }> | null } | null };
+export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string } } } | null> | null } | null } | null };
 
 export type AccountEventsSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -35,8 +35,12 @@ export const AccountsDocument = gql`
     query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id
-    accounts {
-      ...AccountFields
+    accountsConnection {
+      edges {
+        node {
+          ...AccountFields
+        }
+      }
     }
   }
 }

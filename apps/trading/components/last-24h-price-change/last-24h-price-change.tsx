@@ -15,7 +15,7 @@ import {
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const Last24hPriceChange = ({ marketId }: { marketId: string }) => {
+export const Last24hPriceChange = ({ marketId }: { marketId?: string }) => {
   const [candlesClose, setCandlesClose] = useState<string[]>([]);
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when

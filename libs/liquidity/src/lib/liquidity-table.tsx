@@ -1,10 +1,11 @@
 import { forwardRef } from 'react';
 import {
-  addDecimalsNormalizeNumber,
+  addDecimalsFormatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import {
   AgGridDynamic as AgGrid,
   TooltipCellComponent,
@@ -13,7 +14,6 @@ import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { Schema } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 import { getId } from './liquidity-data-provider';
@@ -41,18 +41,14 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   ({ data, symbol = '', assetDecimalPlaces, stakeToCcySiskas }, ref) => {
     const assetDecimalsFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
-      return `${addDecimalsNormalizeNumber(value, assetDecimalPlaces ?? 0, 5)}`;
+      return `${addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0, 5)}`;
     };
     const stakeToCcySiskasFormatter = ({ value }: ValueFormatterParams) => {
       if (!value) return '-';
       const newValue = new BigNumber(value)
         .times(stakeToCcySiskas ?? 1)
         .toString();
-      return `${addDecimalsNormalizeNumber(
-        newValue,
-        assetDecimalPlaces ?? 0,
-        5
-      )}`;
+      return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0, 5)}`;
     };
 
     if (!data) return null;
@@ -94,7 +90,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="equityLikeShare"
           type="rightAligned"
           headerTooltip={t(
-            'The equity-like share of liquidity of the market, specific to each liquidity provider.'
+            'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
           )}
           valueFormatter={percentageFormatter}
         />
@@ -108,11 +104,11 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           valueFormatter={percentageFormatter}
         />
         <AgGridColumn
-          headerName={t('Average entry valuation')}
+          headerName={t('Market valuation at entry')}
           field="averageEntryValuation"
           type="rightAligned"
           headerTooltip={t(
-            'The average entry valuation of this liquidity provision for the market.'
+            'The valuation of the market at the time the liquidity commitment was made. Commitments made at a lower valuation earlier in the lifetime of the market would be expected to have a higher equity-like share if the market has grown. If a commitment is amended, value will reflect the average of the market valuations across the lifetime of the commitment.'
           )}
           minWidth={160}
           valueFormatter={assetDecimalsFormatter}
@@ -122,14 +118,14 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="commitmentAmount"
           type="rightAligned"
           headerTooltip={t(
-            'The liquidity provider’s obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter.'
+            `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_siskas network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
           )}
           valueFormatter={stakeToCcySiskasFormatter}
         />
         <AgGridColumn
           headerName={t('Supplied')}
           headerTooltip={t(
-            'The amount of the settlement asset supplied for liquidity by this provider, calculated as the bond account balance multiplied by the value of the stake_to_ccy_siskas network parameter.'
+            `The amount of liquidity volume supplied by the LP order in order to meet the obligation. If the obligation is already met in full by other limit orders from the same Vega key the LP order is not required and this value will be zero. Also note if the target stake for the market is less than the obligation the full value of the obligation may not be required.`
           )}
           field="balance"
           type="rightAligned"
@@ -141,9 +137,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           field="status"
           valueFormatter={({
             value,
-          }: {
-            value: Schema.LiquidityProvisionStatus;
-          }) => {
+          }: VegaValueFormatterParams<LiquidityProvisionData, 'status'>) => {
             if (!value) return value;
             return LiquidityProvisionStatusMapping[value];
           }}

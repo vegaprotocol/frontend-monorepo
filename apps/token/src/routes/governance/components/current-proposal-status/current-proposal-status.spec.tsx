@@ -80,7 +80,7 @@ it('Proposal open - renders will fail state if the proposal will fail', async ()
   };
   renderComponent({ proposal: failedProposal });
   expect(await screen.findByText('Currently expected to')).toBeInTheDocument();
-  expect(await screen.findByText('fail')).toBeInTheDocument();
+  expect(await screen.findByText('fail.')).toBeInTheDocument();
 });
 
 it('Proposal open - renders will pass state if the proposal will pass', async () => {
@@ -88,7 +88,7 @@ it('Proposal open - renders will pass state if the proposal will pass', async ()
 
   renderComponent({ proposal });
   expect(await screen.findByText('Currently expected to')).toBeInTheDocument();
-  expect(await screen.findByText('pass')).toBeInTheDocument();
+  expect(await screen.findByText('pass.')).toBeInTheDocument();
 });
 
 it('Proposal enacted - renders vote passed and time since enactment', async () => {
@@ -153,7 +153,7 @@ it('Proposal waiting for node vote - will pass  - renders if the vote will pass 
     await screen.findByText('Waiting for nodes to validate asset.')
   ).toBeInTheDocument();
   expect(await screen.findByText('Currently expected to')).toBeInTheDocument();
-  expect(await screen.findByText('fail')).toBeInTheDocument();
+  expect(await screen.findByText('fail.')).toBeInTheDocument();
 });
 
 it('Proposal waiting for node vote - will fail - renders if the vote will pass and status', async () => {
@@ -169,7 +169,7 @@ it('Proposal waiting for node vote - will fail - renders if the vote will pass a
     await screen.findByText('Waiting for nodes to validate asset.')
   ).toBeInTheDocument();
   expect(await screen.findByText('Currently expected to')).toBeInTheDocument();
-  expect(await screen.findByText('pass')).toBeInTheDocument();
+  expect(await screen.findByText('pass.')).toBeInTheDocument();
 });
 
 it('Proposal failed - renders vote failed reason and vote closed ago', async () => {

@@ -6,6 +6,7 @@ import React from 'react';
 
 import { getUserLocale } from './utils';
 
+const MIN_FRACTION_DIGITS = 2;
 const MAX_FRACTION_DIGITS = 20;
 
 export function toDecimal(numberOfDecimals: number) {
@@ -44,16 +45,7 @@ export const getNumberFormat = memoize((digits: number) => {
     return new Intl.NumberFormat(getUserLocale());
   }
   return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-  });
-});
-
-export const getMaximumDigitsNumberFormat = memoize((digits: number) => {
-  if (isNil(digits) || digits < 0) {
-    return new Intl.NumberFormat(getUserLocale());
-  }
-  return new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: Math.min(Math.max(0, digits), MIN_FRACTION_DIGITS),
     maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
   });
 });
@@ -76,20 +68,6 @@ export const formatNumber = (
   return getNumberFormat(formatDecimals).format(Number(rawValue));
 };
 
-/** normalizeFormatNumber will format the number with fixed decimals, but without insignificant trailing zeros
- * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
- * @param formatDecimals - number of decimals to use
- */
-export const normalizeFormatNumber = (
-  rawValue: string | number | BigNumber,
-  formatDecimals = 0
-): string => {
-  const numberToFormat = getMaximumDigitsNumberFormat(formatDecimals).format(
-    new BigNumber(rawValue).toNumber()
-  );
-  return numberToFormat;
-};
-
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
   decimalPlaces: number,
@@ -98,15 +76,6 @@ export const addDecimalsFormatNumber = (
   const x = addDecimal(rawValue, decimalPlaces);
 
   return formatNumber(x, formatDecimals);
-};
-
-export const addDecimalsNormalizeNumber = (
-  rawValue: string | number,
-  decimalPlaces: number,
-  formatDecimals: number = decimalPlaces
-) => {
-  const x = addDecimal(rawValue, decimalPlaces);
-  return normalizeFormatNumber(x, formatDecimals);
 };
 
 export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {

@@ -20,10 +20,6 @@ on:
       tags:
         required: false
         type: string
-      capsule-teardown:
-        required: false
-        type: boolean
-        default: false
 
 jobs:
   token-e2e:
@@ -75,12 +71,10 @@ jobs:
       ## Setup a Vega wallet for our user
       ######
 
-      - name: Set up Vegawallet
-        uses: ./frontend-monorepo/.github/actions/setup-vegawallet
+      - name: Set up Vegawallet for docker
+        uses: ./frontend-monorepo/.github/actions/setup-vegawallet-docker
         with:
-          recovery: ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
-          capsule: true
 
       ######
       ## Run some tests
@@ -98,7 +92,6 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_TEARDOWN_NETWORK_AFTER_FLOWS: ${{ inputs.capsule-teardown }}
 
       ######
       ## Upload logs

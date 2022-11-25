@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
-import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useTranches } from '../../hooks/use-tranches';
+import { useBalances } from '../../lib/balances/balances-store';
 import RoutesConfig from '../routes';
 import {
   initialRedemptionState,
@@ -22,9 +22,7 @@ const RedemptionRouter = () => {
     redemptionReducer,
     initialRedemptionState
   );
-  const {
-    appState: { trancheBalances },
-  } = useAppState();
+  const { trancheBalances } = useBalances();
   const { account } = useWeb3React();
   const { tranches, error, loading } = useTranches();
 

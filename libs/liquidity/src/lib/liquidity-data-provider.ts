@@ -3,7 +3,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import produce from 'immer';
 
@@ -197,7 +197,7 @@ export const getLiquidityProvision = (
         market?.tradableInstrument.instrument.product.settlementAsset.decimals,
       balance:
         accounts
-          ?.filter((a) => a?.type === AccountType.ACCOUNT_TYPE_BOND)
+          ?.filter((a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND)
           ?.reduce(
             (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)

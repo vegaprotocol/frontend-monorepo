@@ -8,7 +8,6 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import {
-  AccountType,
   Schema,
   MarketStateMapping,
   MarketTradingModeMapping,
@@ -22,6 +21,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import pick from 'lodash/pick';
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
@@ -49,7 +49,7 @@ export const calcCandleVolume = (
 
 export interface MarketInfoContainerProps {
   marketId: string;
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
 }
 export const MarketInfoContainer = ({
   marketId,
@@ -77,7 +77,7 @@ export const MarketInfoContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <Info market={data.market} onSelect={onSelect} />
+        <Info market={data.market} onSelect={(id) => onSelect?.(id)} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -98,7 +98,13 @@ export const Info = ({ market, onSelect }: InfoProps) => {
     [market]
   );
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+
   if (!market) return null;
+
+  const marketAccounts = compact(market.accountsConnection?.edges).map(
+    (e) => e.node
+  );
+
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -155,8 +161,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         />
       ),
     },
-    ...(market.accounts || [])
-      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
+    ...marketAccounts
+      .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((a) => ({
         title: t(`Insurance pool`),
         content: (
@@ -173,10 +179,12 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         ),
       })),
   ];
+
   const keyDetails = {
     ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
     state: MarketStateMapping[market.state],
   };
+
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -383,7 +391,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
               ''
             }
           >
-            {t('Propose a change to this market')}
+            {t('Propose a change to market')}
           </ExternalLink>
         </div>
       ),

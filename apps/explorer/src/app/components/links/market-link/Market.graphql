@@ -1,0 +1,11 @@
+query ExplorerMarket($id: ID!) {
+  market(id: $id) {
+    id
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+    state
+  }
+}

@@ -3,6 +3,7 @@ import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
+  ExternalLink,
   Icon,
   Intent,
   Link as UILink,
@@ -21,6 +22,7 @@ import {
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
+  SelectMarketTableRowSplash,
 } from './select-market-table';
 
 import type { ReactNode } from 'react';
@@ -31,6 +33,12 @@ import type {
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
 import { Link } from 'react-router-dom';
+import {
+  DApp,
+  TOKEN_NEW_MARKET_PROPOSAL,
+  useLinks,
+} from '@vegaprotocol/environment';
+
 type Market = MarketWithCandles & MarketWithData;
 
 export const SelectMarketLandingTable = ({
@@ -90,6 +98,7 @@ export const SelectAllMarketsTableBody = ({
   headers?: Column[];
   tableColumns?: (market: Market, openVolume?: string) => Column[];
 }) => {
+  const tokenLink = useLinks(DApp.Token);
   if (!markets) return null;
   return (
     <>
@@ -98,19 +107,28 @@ export const SelectAllMarketsTableBody = ({
       </thead>
       {/* Border styles required to create space between tbody elements margin/padding don't work */}
       <tbody className="border-b-[10px] border-transparent">
-        {markets?.map((market, i) => (
-          <SelectMarketTableRow
-            marketId={market.id}
-            key={i}
-            detailed={true}
-            onSelect={onSelect}
-            columns={tableColumns(
-              market,
-              positions &&
-                positions.find((p) => p.market.id === market.id)?.openVolume
-            )}
-          />
-        ))}
+        {markets.length > 0 ? (
+          markets?.map((market, i) => (
+            <SelectMarketTableRow
+              marketId={market.id}
+              key={i}
+              detailed={true}
+              onSelect={onSelect}
+              columns={tableColumns(
+                market,
+                positions &&
+                  positions.find((p) => p.market.id === market.id)?.openVolume
+              )}
+            />
+          ))
+        ) : (
+          <SelectMarketTableRowSplash colSpan={12}>
+            {t('No markets ')}
+            <ExternalLink href={tokenLink(TOKEN_NEW_MARKET_PROPOSAL)}>
+              {t('Propose a new market')}
+            </ExternalLink>
+          </SelectMarketTableRowSplash>
+        )}
       </tbody>
     </>
   );
@@ -172,7 +190,7 @@ export const SelectMarketPopover = ({
         {marketsLoading || (pubKey && positionsLoading) ? (
           <div className="flex items-center gap-4">
             <Loader size="small" />
-            Loading market data
+            {t('Loading market data')}
           </div>
         ) : (
           <table className="relative text-sm w-full whitespace-nowrap">

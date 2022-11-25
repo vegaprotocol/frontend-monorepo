@@ -14,7 +14,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
-import { AccountType } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
@@ -74,8 +74,8 @@ export const usePollForDelegations = () => {
                 return d.epoch.toString() === res.data.epoch.id;
               }) || [];
             const sortedDelegations = [...filter].sort((a, b) => {
-              return new BigNumber(b.amountFormatted)
-                .minus(a.amountFormatted)
+              return toBigNum(b.amount, decimals)
+                .minus(toBigNum(a.amount, decimals))
                 .toNumber();
             });
             setDelegations(sortedDelegations);
@@ -90,7 +90,9 @@ export const usePollForDelegations = () => {
             ).map((e) => e.node);
             setAccounts(
               accounts
-                .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+                .filter(
+                  (a) => a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
+                )
                 .map((a) => {
                   const isVega =
                     isAssetTypeERC20(a.asset as ERC20Asset) &&
@@ -155,18 +157,18 @@ export const usePollForDelegations = () => {
                   delegatedThisEpoch[d]?.node?.name ||
                   delegatedNextEpoch[d]?.node?.name,
                 hasStakePending: !!(
-                  (delegatedThisEpoch[d]?.amountFormatted ||
-                    delegatedNextEpoch[d]?.amountFormatted) &&
-                  delegatedThisEpoch[d]?.amountFormatted !==
-                    delegatedNextEpoch[d]?.amountFormatted &&
+                  (delegatedThisEpoch[d]?.amount ||
+                    delegatedNextEpoch[d]?.amount) &&
+                  delegatedThisEpoch[d]?.amount !==
+                    delegatedNextEpoch[d]?.amount &&
                   delegatedNextEpoch[d] !== undefined
                 ),
                 currentEpochStake:
                   delegatedThisEpoch[d] &&
-                  new BigNumber(delegatedThisEpoch[d].amountFormatted),
+                  toBigNum(delegatedThisEpoch[d].amount, decimals),
                 nextEpochStake:
                   delegatedNextEpoch[d] &&
-                  new BigNumber(delegatedNextEpoch[d].amountFormatted),
+                  toBigNum(delegatedNextEpoch[d].amount, decimals),
               }))
               .sort((a, b) => {
                 if (

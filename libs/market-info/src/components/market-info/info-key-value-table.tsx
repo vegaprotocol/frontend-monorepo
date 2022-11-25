@@ -40,9 +40,7 @@ const Row = ({
       return value;
     }
     if (decimalPlaces) {
-      return `${parseFloat(
-        addDecimalsFormatNumber(value, decimalPlaces)
-      )} ${assetSymbol}`;
+      return `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`;
     }
     if (asPercentage) {
       return formatNumberPercentage(new BigNumber(value).times(100));

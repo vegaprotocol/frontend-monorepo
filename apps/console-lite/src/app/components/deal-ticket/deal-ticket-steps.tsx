@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
-import type { DealTicketMarketFragment } from '@vegaprotocol/deal-ticket';
 import {
+  getDefaultOrder,
   useOrderCloseOut,
   useOrderMargin,
   usePartyBalanceQuery,
   useMaximumPositionSize,
   useCalculateSlippage,
-} from '@vegaprotocol/deal-ticket';
-import {
-  getDefaultOrder,
-  useOrderValidation,
-  validateSize,
+  validateAmount,
 } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
@@ -26,7 +23,6 @@ import {
   toDecimal,
   removeDecimal,
   addDecimalsFormatNumber,
-  addDecimalsNormalizeNumber,
   addDecimal,
   formatNumber,
 } from '@vegaprotocol/react-helpers';
@@ -43,9 +39,11 @@ import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import { Schema } from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
+import { useOrderValidation } from './use-order-validation';
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 interface DealTicketMarketProps {
-  market: DealTicketMarketFragment;
+  market: MarketDealTicket;
 }
 
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
@@ -79,10 +77,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   });
   const { message: invalidText, isDisabled } = useOrderValidation({
     market,
-    orderType: order.type,
-    orderTimeInForce: order.timeInForce,
+    order,
     fieldErrors: errors,
-    estMargin,
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
@@ -91,9 +87,12 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     skip: !pubKey,
   });
 
+  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
+    (e) => e.node
+  );
   const maxTrade = useMaximumPositionSize({
     partyId: pubKey || '',
-    accounts: partyBalance?.party?.accounts || [],
+    accounts: accounts,
     marketId: market.id,
     settlementAssetId:
       market.tradableInstrument.instrument.product.settlementAsset.id,
@@ -156,7 +155,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
         .decimalPlaces(2)
         .toString();
 
-      return `${addDecimalsNormalizeNumber(
+      return `${addDecimalsFormatNumber(
         estMargin.totalFees,
         assetDecimals
       )} (${formatNumber(addDecimal(percentage, assetDecimals), 2)}%)`;
@@ -180,7 +179,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       const newVal = new BigNumber(value)
         .decimalPlaces(market.positionDecimalPlaces)
         .toString();
-      const isValid = validateSize(step)(newVal);
+      const isValid = validateAmount(step, 'Size')(newVal);
       if (isValid !== 'step') {
         setValue('size', newVal);
       }

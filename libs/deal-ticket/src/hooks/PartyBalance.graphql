@@ -1,7 +1,11 @@
 query PartyBalance($partyId: ID!) {
   party(id: $partyId) {
-    accounts {
-      ...Account
+    accountsConnection {
+      edges {
+        node {
+          ...Account
+        }
+      }
     }
   }
 }

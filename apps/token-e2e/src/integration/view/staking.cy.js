@@ -4,6 +4,7 @@ const validatorTitle = '[data-testid="validator-node-title"]';
 const validatorId = '[data-testid="validator-id"]';
 const validatorPubKey = '[data-testid="validator-public-key"]';
 const ethAddressLink = '[data-testid="link"]';
+const validatorStatus = '[data-testid="validator-status"]';
 const totalStake = '[data-testid="total-stake"]';
 const pendingStake = '[data-testid="pending-stake"]';
 const stakedByOperator = '[data-testid="staked-by-operator"]';
@@ -137,7 +138,6 @@ context('Staking Page - verify elements on page', function () {
     { tags: '@smoke' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.vega_wallet_import();
         cy.vega_wallet_connect();
         cy.click_on_validator_from_list(0);
       });
@@ -162,6 +162,10 @@ context('Staking Page - verify elements on page', function () {
         cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href');
       });
       // TODO validators missing url for more information about them 2001-STKE-09
+
+      it('Should be able to see validator status', function () {
+        cy.get(validatorStatus).should('have.text', 'Consensus');
+      });
 
       // 2001-STKE-012
       it('Should be able to see total stake', function () {

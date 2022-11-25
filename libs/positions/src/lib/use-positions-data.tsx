@@ -43,11 +43,16 @@ export const usePositionsData = (
         }
       });
       if (update.length || add.length) {
-        gridRef.current.api.applyTransactionAsync({
+        const rowDataTransaction = {
           update,
           add,
           addIndex: 0,
-        });
+        };
+        if (add.length) {
+          gridRef.current.api.applyTransaction(rowDataTransaction);
+        } else {
+          gridRef.current.api.applyTransactionAsync(rowDataTransaction);
+        }
       }
       return true;
     },

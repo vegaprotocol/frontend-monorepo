@@ -1,0 +1,12 @@
+Name = "DV"
+LogLevel = "info"
+TokenExpiry = "168h0m0s"
+Port = 1789
+Host = "0.0.0.0"
+
+[API]
+  [API.GRPC]
+    Hosts = ["127.0.0.1:3002", "127.0.0.1:3012", "127.0.0.1:3022", "127.0.0.1:3032"]
+    Retries = 5
+  [API.REST]
+  [API.GraphQL]

@@ -26,22 +26,20 @@ context(
   { tags: '@slow' },
   function () {
     before('visit staking tab and connect vega wallet', function () {
-      cy.vega_wallet_import();
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
       cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
-      cy.reload();
-      cy.verify_page_header('The $VEGA token');
-      cy.ethereum_wallet_connect();
-      cy.navigate_to('staking');
-      cy.wait_for_spinner();
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
+          cy.reload();
+          cy.wait_for_spinner();
+          cy.vega_wallet_connect();
+          cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('staking');
           cy.wait_for_spinner();
@@ -111,7 +109,7 @@ context(
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
           .parent()
-          .should('contain', '1,001.000000000000000000', txTimeout);
+          .should('contain', '1,001.00', txTimeout);
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
           .contains('1,001.00', txTimeout)
@@ -120,7 +118,7 @@ context(
         cy.get(vegaWallet).within(() => {
           cy.get(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
-            '1,001.000000000000000000'
+            '1,001.00'
           );
         });
       });
@@ -310,15 +308,6 @@ context(
           )} can now participate in governance and nominate a validator with your associated $VEGA.`
         );
       });
-
-      after(
-        'teardown environment to prevent test data bleeding into other tests',
-        function () {
-          if (Cypress.env('TEARDOWN_NETWORK_AFTER_FLOWS')) {
-            cy.restart_vegacapsule_network();
-          }
-        }
-      );
     });
   }
 );

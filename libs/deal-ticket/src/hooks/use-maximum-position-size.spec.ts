@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { AccountType, Schema } from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
 import { BigNumber } from 'bignumber.js';
 import { useMaximumPositionSize } from './use-maximum-position-size';
@@ -15,7 +15,7 @@ let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
 const mockAccount: Account = {
   __typename: 'AccountBalance',
-  type: AccountType.ACCOUNT_TYPE_GENERAL,
+  type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
   balance: '200000',
   asset: {
     __typename: 'Asset',

@@ -49,14 +49,10 @@ const mocks = [
   },
 ];
 
-const WrappedAssetDetailsDialog = ({
-  assetSymbol,
-}: {
-  assetSymbol: string;
-}) => (
+const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
   <MockedProvider mocks={mocks}>
     <AssetDetailsDialog
-      assetSymbol={assetSymbol}
+      assetId={assetId}
       open={true}
       onChange={() => false}
     ></AssetDetailsDialog>
@@ -65,15 +61,18 @@ const WrappedAssetDetailsDialog = ({
 
 describe('AssetDetailsDialog', () => {
   it('should show no data message given unknown asset symbol', async () => {
-    render(<WrappedAssetDetailsDialog assetSymbol={'UNKNOWN_FOR_SURE'} />);
+    render(<WrappedAssetDetailsDialog assetId={'UNKNOWN_FOR_SURE'} />);
     expect((await screen.findByTestId('splash')).textContent).toContain(
       'No data'
     );
   });
 
-  const cases: [string, { key: AssetDetail; value: string }[]][] = [
+  const cases: [
+    string, // generated asset id
+    { key: AssetDetail; value: string }[]
+  ][] = [
     [
-      'EA01',
+      'E-01',
       [
         { key: AssetDetail.ID, value: 'E-01' },
         { key: AssetDetail.TYPE, value: 'ERC20' },
@@ -83,8 +82,8 @@ describe('AssetDetailsDialog', () => {
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Enabled' },
         { key: AssetDetail.CONTRACT_ADDRESS, value: '0x123' },
-        { key: AssetDetail.WITHDRAWAL_THRESHOLD, value: '0.050' },
-        { key: AssetDetail.LIFETIME_LIMIT, value: '123,000.000' },
+        { key: AssetDetail.WITHDRAWAL_THRESHOLD, value: '0.05' },
+        { key: AssetDetail.LIFETIME_LIMIT, value: '123,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
           value: '0.001',
@@ -106,7 +105,7 @@ describe('AssetDetailsDialog', () => {
       ],
     ],
     [
-      'BIA01',
+      'B-01',
       [
         { key: AssetDetail.ID, value: 'B-01' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -115,15 +114,15 @@ describe('AssetDetailsDialog', () => {
         { key: AssetDetail.DECIMALS, value: '5' },
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Enabled' },
-        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000.00000' },
+        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-          value: '0.00000',
+          value: '0',
         },
       ],
     ],
     [
-      'BIA02',
+      'B-02',
       [
         { key: AssetDetail.ID, value: 'B-02' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -132,15 +131,15 @@ describe('AssetDetailsDialog', () => {
         { key: AssetDetail.DECIMALS, value: '5' },
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Pending listing' },
-        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000.00000' },
+        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-          value: '0.00000',
+          value: '0',
         },
       ],
     ],
     [
-      'BIA03',
+      'B-03',
       [
         { key: AssetDetail.ID, value: 'B-03' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -149,15 +148,15 @@ describe('AssetDetailsDialog', () => {
         { key: AssetDetail.DECIMALS, value: '5' },
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Proposed' },
-        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000.00000' },
+        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-          value: '0.00000',
+          value: '0',
         },
       ],
     ],
     [
-      'BIA04',
+      'B-04',
       [
         { key: AssetDetail.ID, value: 'B-04' },
         { key: AssetDetail.TYPE, value: 'Builtin asset' },
@@ -166,18 +165,19 @@ describe('AssetDetailsDialog', () => {
         { key: AssetDetail.DECIMALS, value: '5' },
         { key: AssetDetail.QUANTUM, value: '1' },
         { key: AssetDetail.STATUS, value: 'Rejected' },
-        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000.00000' },
+        { key: AssetDetail.MAX_FAUCET_AMOUNT_MINT, value: '50,000' },
         {
           key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-          value: '0.00000',
+          value: '0',
         },
       ],
     ],
   ];
+
   it.each(cases)(
-    'should show correct data given %p symbol',
-    async (symbol, details) => {
-      render(<WrappedAssetDetailsDialog assetSymbol={symbol} />);
+    'should show correct data given %p id',
+    async (id, details) => {
+      render(<WrappedAssetDetailsDialog assetId={id} />);
       for (const detail of details) {
         expect(
           (await screen.findByTestId(testId(detail.key, 'value'))).textContent

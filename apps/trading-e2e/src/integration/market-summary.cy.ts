@@ -1,8 +1,4 @@
-import {
-  AuctionTrigger,
-  MarketState,
-  MarketTradingMode,
-} from '@vegaprotocol/types';
+import { Schema } from '@vegaprotocol/types';
 
 const marketSummaryBlock = 'header-summary';
 const marketExpiry = 'market-expiry';
@@ -19,9 +15,9 @@ const itemValue = 'item-value';
 describe('Market trading page', () => {
   before(() => {
     cy.mockTradingPage(
-      MarketState.STATE_ACTIVE,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
+      Schema.MarketState.STATE_ACTIVE,
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.mockGQLSubscription();
     cy.visit('/#/markets/market-0');
@@ -104,7 +100,7 @@ describe('Market trading page', () => {
     });
   });
 
-  describe('Market tooltips', { tags: '@regression' }, () => {
+  describe('Market tooltips', { tags: '@smoke' }, () => {
     it('should see expiry tooltip', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketExpiry).within(() => {
