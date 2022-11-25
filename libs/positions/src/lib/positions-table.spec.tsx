@@ -162,7 +162,7 @@ it('displays allocated margin', async () => {
   });
   const cells = screen.getAllByRole('gridcell');
   const cell = cells[8];
-  expect(cell.textContent).toEqual('123,456');
+  expect(cell.textContent).toEqual('123,456.00');
 });
 
 it('displays realised and unrealised PNL', async () => {
