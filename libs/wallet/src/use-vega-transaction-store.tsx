@@ -1,7 +1,14 @@
 import produce from 'immer';
 import { useVegaWallet } from './use-vega-wallet';
 import type { Transaction } from './connectors';
-import { ClientErrors, isWithdrawTransaction } from './connectors';
+import { useRef } from 'react';
+import {
+  ClientErrors,
+  isWithdrawTransaction,
+  isOrderSubmissionTransaction,
+  isOrderCancellationTransaction,
+  isOrderAmendmentTransaction,
+} from './connectors';
 import { WalletError } from './connectors';
 import { determineId } from './utils';
 
@@ -9,7 +16,6 @@ import create from 'zustand';
 import type { VegaTxState } from './use-vega-transaction';
 import { VegaTxStatus } from './use-vega-transaction';
 import {
-  useDepositBusEventSubscription,
   useOrderBusEventsSubscription,
   useWithdrawalBusEventSubscription,
   useTransactionEventSubscription,
@@ -18,7 +24,6 @@ import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
   OrderBusEventFieldsFragment,
-  DepositBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
 
 export interface VegaStoredTxState extends VegaTxState {
@@ -27,7 +32,6 @@ export interface VegaStoredTxState extends VegaTxState {
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
   order?: OrderBusEventFieldsFragment;
-  deposit?: DepositBusEventFieldsFragment;
 }
 interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
@@ -41,7 +45,6 @@ interface VegaTransactionStore {
   delete: (index: number) => void;
   updateWithdrawal: (withdrawal: WithdrawalBusEventFieldsFragment) => void;
   updateOrder: (order: OrderBusEventFieldsFragment) => void;
-  updateDeposit: (deposit: DepositBusEventFieldsFragment) => void;
   updateTransaction: (
     transactionResult: TransactionEventFieldsFragment
   ) => void;
@@ -90,29 +93,61 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
               transaction.status === VegaTxStatus.Pending &&
               transaction.signature &&
               isWithdrawTransaction(transaction?.body) &&
-              withdrawal.id === determineId(transaction.signature) // can we use withdrawal.txHash === transaction.txHash
+              withdrawal.id === determineId(transaction.signature)
           );
           if (transaction) {
             transaction.withdrawal = withdrawal;
+            transaction.status = VegaTxStatus.Complete;
           }
         })
       );
     },
-    /* eslint-disable */
-    updateOrder: (order: OrderBusEventFieldsFragment) => {},
-    updateDeposit: (deposit: DepositBusEventFieldsFragment) => {},
-    updateTransaction: (
-      transactionResult: TransactionEventFieldsFragment
-    ) => {},
-    /* eslint-enable */
+    updateOrder: (order: OrderBusEventFieldsFragment) => {
+      set(
+        produce((state: VegaTransactionStore) => {
+          const transaction = state.transactions.find(
+            (transaction) =>
+              transaction &&
+              transaction.status === VegaTxStatus.Pending &&
+              transaction.signature &&
+              (isOrderSubmissionTransaction(transaction?.body) ||
+                isOrderCancellationTransaction(transaction?.body) ||
+                isOrderAmendmentTransaction(transaction?.body)) &&
+              order.id === determineId(transaction.signature)
+          );
+          if (transaction) {
+            transaction.order = order;
+            transaction.status = VegaTxStatus.Complete;
+          }
+        })
+      );
+    },
+    updateTransaction: (transactionResult: TransactionEventFieldsFragment) => {
+      set(
+        produce((state: VegaTransactionStore) => {
+          const transaction = state.transactions.find(
+            (transaction) =>
+              transaction?.txHash &&
+              transaction.txHash.toLowerCase() ===
+                transactionResult.hash.toLowerCase()
+          );
+          if (transaction) {
+            transaction.transactionResult = transactionResult;
+          }
+        })
+      );
+    },
   })
 );
 
 export const useVegaWalletTransactionManager = () => {
   const { sendTx, pubKey } = useVegaWallet();
+  const processed = useRef<Set<number>>(new Set());
   const transaction = useVegaTransactionStore((state) =>
     state.transactions.find(
-      (transaction) => transaction?.status === VegaTxStatus.Requested
+      (transaction) =>
+        transaction?.status === VegaTxStatus.Requested &&
+        processed.current.has(transaction.id)
     )
   );
   const update = useVegaTransactionStore((state) => state.update);
@@ -120,7 +155,7 @@ export const useVegaWalletTransactionManager = () => {
   if (!(transaction && pubKey)) {
     return;
   }
-  // #TODO store index of transaction in ref that was sent to avoid processing single transaction many times
+  processed.current.add(transaction.id);
   sendTx(pubKey, transaction.body)
     .then((res) => {
       if (res === null) {
@@ -145,26 +180,15 @@ export const useVegaWalletTransactionManager = () => {
 };
 
 export const useVegaWalletTransactionUpdater = () => {
-  const { updateWithdrawal, updateOrder, updateDeposit, updateTransaction } =
+  const { updateWithdrawal, updateOrder, updateTransaction } =
     useVegaTransactionStore((state) => ({
       updateWithdrawal: state.updateWithdrawal,
       updateOrder: state.updateOrder,
-      updateDeposit: state.updateDeposit,
       updateTransaction: state.updateTransaction,
     }));
   const { pubKey } = useVegaWallet();
   const variables = { partyId: pubKey || '' };
   const skip = !!pubKey;
-  useDepositBusEventSubscription({
-    variables,
-    skip,
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'Deposit') {
-          updateDeposit(event.event);
-        }
-      }),
-  });
   useOrderBusEventsSubscription({
     variables,
     skip,

@@ -9,6 +9,13 @@ import type { MultisigControl } from '@vegaprotocol/smart-contracts';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
+import {
+  useDepositBusEventSubscription,
+  useVegaWallet,
+} from '@vegaprotocol/wallet';
+
+import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import { Schema } from '@vegaprotocol/types';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
@@ -27,9 +34,10 @@ interface EthStoredTxState extends EthTxState {
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
+  deposit?: DepositBusEventFieldsFragment;
 }
 
-export const useEthTransactionStore = create<{
+interface EthTransactionStore {
   transactions: (EthStoredTxState | undefined)[];
   create: (
     contract: Contract,
@@ -40,49 +48,86 @@ export const useEthTransactionStore = create<{
   ) => number;
   update: (
     id: EthStoredTxState['id'],
-    update?: Partial<EthStoredTxState>
+    update?: Partial<
+      Pick<
+        EthStoredTxState,
+        'status' | 'error' | 'receipt' | 'confirmations' | 'txHash'
+      >
+    >
   ) => void;
-  get: (id: EthStoredTxState['id']) => EthStoredTxState | undefined;
-}>((set, get) => ({
-  transactions: [] as EthStoredTxState[],
-  update: (id: EthStoredTxState['id'], update?: Partial<EthStoredTxState>) => {
-    set({
-      transactions: produce(get().transactions, (draft) => {
-        const transaction = draft.find((transaction) => transaction?.id === id);
-        if (transaction) {
-          Object.assign(transaction, update);
-        }
-      }),
-    });
-  },
-  get: (id: number) =>
-    get().transactions.find((transaction) => transaction?.id === id),
-  create: (
-    contract: Contract,
-    methodName: ContractMethod,
-    args: string[] = [],
-    requiredConfirmations: number,
-    requiresConfirmation: boolean
-  ) => {
-    const transactions = get().transactions;
-    const transaction: EthStoredTxState = {
-      id: transactions.length,
-      contract,
-      methodName,
-      args,
-      status: EthTxStatus.Default,
-      error: null,
-      txHash: null,
-      receipt: null,
-      confirmations: 0,
-      dialogOpen: false,
-      requiredConfirmations,
-      requiresConfirmation,
-    };
-    set({ transactions: transactions.concat(transaction) });
-    return transaction.id;
-  },
-}));
+  updateDeposit: (deposit: DepositBusEventFieldsFragment) => void;
+  delete: (index: number) => void;
+}
+
+export const useEthTransactionStore = create<EthTransactionStore>(
+  (set, get) => ({
+    transactions: [] as EthStoredTxState[],
+    create: (
+      contract: Contract,
+      methodName: ContractMethod,
+      args: string[] = [],
+      requiredConfirmations: number,
+      requiresConfirmation: boolean
+    ) => {
+      const transactions = get().transactions;
+      const transaction: EthStoredTxState = {
+        id: transactions.length,
+        contract,
+        methodName,
+        args,
+        status: EthTxStatus.Default,
+        error: null,
+        txHash: null,
+        receipt: null,
+        confirmations: 0,
+        dialogOpen: false,
+        requiredConfirmations,
+        requiresConfirmation,
+      };
+      set({ transactions: transactions.concat(transaction) });
+      return transaction.id;
+    },
+    update: (
+      id: EthStoredTxState['id'],
+      update?: Partial<EthStoredTxState>
+    ) => {
+      set({
+        transactions: produce(get().transactions, (draft) => {
+          const transaction = draft.find(
+            (transaction) => transaction?.id === id
+          );
+          if (transaction) {
+            Object.assign(transaction, update);
+          }
+        }),
+      });
+    },
+    updateDeposit: (deposit: DepositBusEventFieldsFragment) => {
+      set(
+        produce((state: EthTransactionStore) => {
+          const transaction = state.transactions.find(
+            (transaction) =>
+              transaction &&
+              transaction.status === EthTxStatus.Pending &&
+              deposit.txHash === transaction.txHash
+          );
+          if (!transaction) {
+            return;
+          }
+          transaction.status = EthTxStatus.Confirmed;
+          transaction.deposit = deposit;
+        })
+      );
+    },
+    delete: (index: number) => {
+      set(
+        produce((state: EthTransactionStore) => {
+          delete state.transactions[index];
+        })
+      );
+    },
+  })
+);
 
 export const useEthTransactionManager = () => {
   const update = useEthTransactionStore((state) => state.update);
@@ -98,7 +143,6 @@ export const useEthTransactionManager = () => {
         status: EthTxStatus.Requested,
         error: null,
         confirmations: 0,
-        dialogOpen: true,
       });
       const {
         contract,
@@ -162,9 +206,7 @@ export const useEthTransactionManager = () => {
         }
       } catch (err) {
         if (err instanceof Error || isEthereumError(err)) {
-          if (isExpectedEthereumError(err)) {
-            update(transaction.id, { dialogOpen: false });
-          } else {
+          if (!isExpectedEthereumError(err)) {
             update(transaction.id, { status: EthTxStatus.Error, error: err });
           }
         } else {
@@ -177,4 +219,27 @@ export const useEthTransactionManager = () => {
       }
     })();
   }
+};
+
+export const useEthTransactionUpdater = () => {
+  const { pubKey } = useVegaWallet();
+  const updateDeposit = useEthTransactionStore((state) => state.updateDeposit);
+  const variables = { partyId: pubKey || '' };
+  const skip = !!pubKey;
+  useDepositBusEventSubscription({
+    variables,
+    skip,
+    onData: ({ data: result }) =>
+      result.data?.busEvents?.forEach((event) => {
+        if (
+          event.event.__typename === 'Deposit' &&
+          // Note there is a bug in data node where the subscription is not emitted when the status
+          // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
+          // https://github.com/vegaprotocol/data-node/issues/460
+          event.event.status === Schema.DepositStatus.STATUS_FINALIZED
+        ) {
+          updateDeposit(event.event);
+        }
+      }),
+  });
 };
