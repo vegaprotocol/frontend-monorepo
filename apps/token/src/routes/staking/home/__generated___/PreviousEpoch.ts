@@ -3,8 +3,6 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type validatorRawScoreFragment = { __typename?: 'Node', id: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string } | null };
-
 export type PreviousEpochQueryVariables = Types.Exact<{
   epochId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
@@ -12,14 +10,7 @@ export type PreviousEpochQueryVariables = Types.Exact<{
 
 export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string } | null } } | null> | null } | null } };
 
-export const validatorRawScoreFragmentDoc = gql`
-    fragment validatorRawScore on Node {
-  id
-  rewardScore {
-    rawValidatorScore
-  }
-}
-    `;
+
 export const PreviousEpochDocument = gql`
     query PreviousEpoch($epochId: ID) {
   epoch(id: $epochId) {
@@ -27,13 +18,16 @@ export const PreviousEpochDocument = gql`
     validatorsConnection {
       edges {
         node {
-          ...validatorRawScore
+          id
+          rewardScore {
+            rawValidatorScore
+          }
         }
       }
     }
   }
 }
-    ${validatorRawScoreFragmentDoc}`;
+    `;
 
 /**
  * __usePreviousEpochQuery__

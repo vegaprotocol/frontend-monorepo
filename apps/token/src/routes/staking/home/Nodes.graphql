@@ -18,9 +18,6 @@ fragment NodesFragment on Node {
 }
 
 query Nodes {
-  nodes {
-    ...NodesFragment
-  }
   epoch {
     id
     timestamps {

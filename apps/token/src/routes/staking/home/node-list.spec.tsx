@@ -193,9 +193,11 @@ describe('Nodes list', () => {
 
     renderNodeList(MOCK_NODE);
 
-    expect(await screen.findByTestId('validators-grid')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('consensus-validators-table')
+    ).toBeInTheDocument();
 
-    const grid = screen.getByTestId('validators-grid');
+    const grid = screen.getByTestId('consensus-validators-table');
 
     act(() => {
       fireEvent.click(screen.getByTestId('show-all-validators'));
