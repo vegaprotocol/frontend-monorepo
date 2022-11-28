@@ -669,7 +669,19 @@ describe('account validation', { tags: '@regression' }, () => {
     cy.wait('@Market');
   });
 
-  it('should display info and button for deposit if balance is zero', () => {
+  it('should show an error if your balance is zero', () => {
+    cy.getByTestId('place-order').should('not.be.disabled');
+    cy.getByTestId('place-order').click();
+    cy.getByTestId('place-order').should('be.disabled');
+    //7002-SORD-003
+    cy.getByTestId('dealticket-error-message-zero-balance').should(
+      'have.text',
+      'Insufficient balance. Deposit ' + 'tBTC'
+    );
+    cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
+  });
+
+  it('should display info and button for deposit', () => {
     //7002-SORD-003
     // warning should show immediately
     cy.getByTestId('dealticket-warning-margin').should(
