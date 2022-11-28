@@ -5,9 +5,12 @@ import type { components } from '../../../../../types/explorer';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { TxDetailsChainMultisigSigner } from './tx-multisig-signer';
+import { getBlockTime } from './lib/get-block-time';
 
 type Added = components['schemas']['vegaERC20SignerAdded'];
 type Removed = components['schemas']['vegaERC20SignerRemoved'];
+
+const mockBlockTime = '1669631323'
 
 describe('Chain Event: multisig signer change', () => {
   it('Copes with a poorly formatted time prop', () => {
@@ -36,7 +39,7 @@ describe('Chain Event: multisig signer change', () => {
     const addedMock: Added = {
       newSigner: 'eth123',
       nonce: 'nonce123',
-      blockTime: '1669223762',
+      blockTime: mockBlockTime,
     };
     const screen = render(
       <MockedProvider>
@@ -58,15 +61,17 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Add signer'))).toBeInTheDocument();
     expect(screen.getByText(`${addedMock.newSigner}`)).toBeInTheDocument();
 
+    const expectedDate = getBlockTime(mockBlockTime)
+
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
-    expect(screen.getByText(`23/11/2022, 17:16:02`)).toBeInTheDocument();
+    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 
   it('Renders TableRows if all data is provided', () => {
     const removedMock: Removed = {
       oldSigner: 'eth123',
       nonce: 'nonce123',
-      blockTime: '1669223762',
+      blockTime: mockBlockTime,
     };
     const screen = render(
       <MockedProvider>
@@ -88,7 +93,9 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Remove signer'))).toBeInTheDocument();
     expect(screen.getByText(`${removedMock.oldSigner}`)).toBeInTheDocument();
 
+    const expectedDate = getBlockTime(mockBlockTime)
+
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
-    expect(screen.getByText(`23/11/2022, 17:16:02`)).toBeInTheDocument();
+    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 });

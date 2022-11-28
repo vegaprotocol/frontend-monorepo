@@ -6,16 +6,18 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { TxDetailsChainMultisigThreshold } from './tx-multisig-threshold';
 import omit from 'lodash/omit';
+import { getBlockTime } from './lib/get-block-time';
 
 type Threshold =
   components['schemas']['vegaERC20MultiSigEvent']['thresholdSet'];
 
+const mockBlockTime = '1669631323'
 // Note: nonce is missing from this partial because the component does not render
 // the nonce currently. It could render the nonce, at which point it can be added
 // here.
 const fullMock: Partial<Threshold> = {
-  blockTime: '1669377134',
-  newThreshold: 667,
+  blockTime: mockBlockTime, 
+  newThreshold: 667
 };
 
 describe('Chain Event: multisig threshold change', () => {
@@ -34,7 +36,7 @@ describe('Chain Event: multisig threshold change', () => {
     );
 
     expect(screen.getByText(t('Threshold change date'))).toBeInTheDocument();
-    expect(screen.getByText('Invalid Date')).toBeInTheDocument();
+    expect(screen.getByText('-')).toBeInTheDocument();
   });
 
   it(`Renders nothing if correct type with partial data is provided`, () => {
@@ -72,7 +74,9 @@ describe('Chain Event: multisig threshold change', () => {
     expect(screen.getByText(t('Threshold'))).toBeInTheDocument();
     expect(screen.getByText(`66.7%`)).toBeInTheDocument();
 
+    const expectedDate = getBlockTime(mockBlockTime)
+
     expect(screen.getByText(t('Threshold change date'))).toBeInTheDocument();
-    expect(screen.getByText(`25/11/2022, 11:52:14`)).toBeInTheDocument();
+    expect(screen.getByText(expectedDate)).toBeInTheDocument();
   });
 });

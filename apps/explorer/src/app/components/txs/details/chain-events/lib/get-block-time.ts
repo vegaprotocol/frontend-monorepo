@@ -4,7 +4,7 @@
  * @param date String or null date
  * @returns String date in locale time
  */
-export function getBlockTime(date?: string) {
+export function getBlockTime(date?: string, locale?: Intl.LocalesArgument) {
   try {
     if (!date) {
       throw new Error('No date provided');
@@ -18,7 +18,7 @@ export function getBlockTime(date?: string) {
 
     const timeInMs = timeInSeconds * 1000;
 
-    return new Date(timeInMs).toLocaleString();
+    return new Date(timeInMs).toLocaleString(locale);
   } catch (e) {
     return '-';
   }
