@@ -10,7 +10,7 @@ import { getBlockTime } from './lib/get-block-time';
 type Added = components['schemas']['vegaERC20SignerAdded'];
 type Removed = components['schemas']['vegaERC20SignerRemoved'];
 
-const mockBlockTime = '1669631323'
+const mockBlockTime = '1669631323';
 
 describe('Chain Event: multisig signer change', () => {
   it('Copes with a poorly formatted time prop', () => {
@@ -61,7 +61,7 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Add signer'))).toBeInTheDocument();
     expect(screen.getByText(`${addedMock.newSigner}`)).toBeInTheDocument();
 
-    const expectedDate = getBlockTime(mockBlockTime)
+    const expectedDate = getBlockTime(mockBlockTime);
 
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
     expect(screen.getByText(expectedDate)).toBeInTheDocument();
@@ -93,7 +93,7 @@ describe('Chain Event: multisig signer change', () => {
     expect(screen.getByText(t('Remove signer'))).toBeInTheDocument();
     expect(screen.getByText(`${removedMock.oldSigner}`)).toBeInTheDocument();
 
-    const expectedDate = getBlockTime(mockBlockTime)
+    const expectedDate = getBlockTime(mockBlockTime);
 
     expect(screen.getByText(t('Signer change at'))).toBeInTheDocument();
     expect(screen.getByText(expectedDate)).toBeInTheDocument();
