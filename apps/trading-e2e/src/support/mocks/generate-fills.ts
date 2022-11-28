@@ -46,7 +46,7 @@ export const generateFills = (
 
   const defaultResult: FillsQuery = {
     party: {
-      id: 'buyer-id',
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
       tradesConnection: {
         __typename: 'TradeConnection',
         edges: fills.map((f) => {

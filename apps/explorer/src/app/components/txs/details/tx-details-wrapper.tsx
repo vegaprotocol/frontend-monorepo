@@ -26,7 +26,8 @@ export const TxDetailsWrapper = ({
   const {
     state: { data: blockData },
   } = useFetch<TendermintBlocksResponse>(
-    `${DATA_SOURCES.tendermintUrl}/block?height=${height}`
+    `${DATA_SOURCES.tendermintUrl}/block?height=${height}`,
+    { cache: 'force-cache' }
   );
 
   const child = useMemo(() => getTransactionComponent(txData), [txData]);

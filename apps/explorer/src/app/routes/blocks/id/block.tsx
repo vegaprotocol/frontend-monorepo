@@ -23,7 +23,8 @@ const Block = () => {
   const {
     state: { data: blockData, loading, error },
   } = useFetch<TendermintBlocksResponse>(
-    `${DATA_SOURCES.tendermintUrl}/block?height=${block}`
+    `${DATA_SOURCES.tendermintUrl}/block?height=${block}`,
+    { cache: 'force-cache' }
   );
 
   return (

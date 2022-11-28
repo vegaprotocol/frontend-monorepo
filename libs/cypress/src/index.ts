@@ -3,7 +3,6 @@ import {
   addMockGQLCommand,
   addMockGQLSubscriptionCommand,
 } from './lib/commands/mock-gql';
-import { addMockVegaWalletCommands } from './lib/commands/mock-vega-wallet';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
 import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
@@ -13,12 +12,12 @@ import { addContainsExactly } from './lib/commands/contains-exactly';
 import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
 import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multisig';
 import { addVegaWalletConnect } from './lib/commands/vega-wallet-connect';
+import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 
 addGetTestIdcommand();
 addSlackCommand();
 addMockGQLCommand();
 addMockGQLSubscriptionCommand();
-addMockVegaWalletCommands();
 addMockWeb3ProviderCommand();
 addHighlightLog();
 addVegaWalletReceiveFaucetedAsset();
@@ -27,6 +26,7 @@ addContainsExactly();
 addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
+addMockTransactionResponse();
 
 export * from './lib/graphql-test-utils';
 export type { onMessage } from './lib/commands/mock-gql';

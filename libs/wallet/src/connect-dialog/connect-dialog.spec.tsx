@@ -89,12 +89,9 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(3);
-    expect(screen.getByTestId('connector-gui')).toHaveTextContent(
-      'Desktop wallet app'
-    );
-    expect(screen.getByTestId('connector-cli')).toHaveTextContent(
-      'Command line wallet app'
+    expect(list.children).toHaveLength(2);
+    expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
+      'Connect Vega wallet'
     );
     expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
       'Hosted Fairground wallet'
@@ -379,7 +376,7 @@ describe('VegaConnectDialog', () => {
 
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
-      fireEvent.click(await screen.findByTestId('connector-cli'));
+      fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
     }
   });
 });
