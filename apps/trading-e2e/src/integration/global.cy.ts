@@ -68,7 +68,7 @@ describe('vega wallet v2', { tags: '@smoke' }, () => {
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-cli"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.getByTestId(dialogContent).should('not.exist');
     cy.getByTestId(manageVegaBtn).should('exist');
