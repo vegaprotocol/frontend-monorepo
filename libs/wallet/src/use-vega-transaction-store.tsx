@@ -1,4 +1,6 @@
 import produce from 'immer';
+import type { ApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { useVegaWallet } from './use-vega-wallet';
 import type { Transaction } from './connectors';
 import { useRef } from 'react';
@@ -26,11 +28,18 @@ import type {
   OrderBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
 
+import type {
+  WithdrawalApprovalQuery,
+  WithdrawalApprovalQueryVariables,
+} from './__generated__/WithdrawalApproval';
+import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
+
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   body: Transaction;
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
+  withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
   order?: OrderBusEventFieldsFragment;
 }
 interface VegaTransactionStore {
@@ -43,7 +52,10 @@ interface VegaTransactionStore {
     >
   ) => void;
   delete: (index: number) => void;
-  updateWithdrawal: (withdrawal: WithdrawalBusEventFieldsFragment) => void;
+  updateWithdrawal: (
+    withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
+    withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
+  ) => void;
   updateOrder: (order: OrderBusEventFieldsFragment) => void;
   updateTransaction: (
     transactionResult: TransactionEventFieldsFragment
@@ -84,7 +96,10 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-    updateWithdrawal: (withdrawal: WithdrawalBusEventFieldsFragment) => {
+    updateWithdrawal: (
+      withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
+      withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
+    ) => {
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find(
@@ -97,6 +112,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.withdrawal = withdrawal;
+            transaction.withdrawalApproval = withdrawalApproval;
             transaction.status = VegaTxStatus.Complete;
           }
         })
@@ -147,7 +163,7 @@ export const useVegaWalletTransactionManager = () => {
     state.transactions.find(
       (transaction) =>
         transaction?.status === VegaTxStatus.Requested &&
-        processed.current.has(transaction.id)
+        !processed.current.has(transaction.id)
     )
   );
   const update = useVegaTransactionStore((state) => state.update);
@@ -179,7 +195,39 @@ export const useVegaWalletTransactionManager = () => {
     });
 };
 
+const waitForWithdrawalApproval = (
+  withdrawalId: string,
+  client: ApolloClient<object>
+) =>
+  new Promise<NonNullable<VegaStoredTxState['withdrawalApproval']>>(
+    (resolve) => {
+      const interval = setInterval(async () => {
+        try {
+          const res = await client.query<
+            WithdrawalApprovalQuery,
+            WithdrawalApprovalQueryVariables
+          >({
+            query: WithdrawalApprovalDocument,
+            variables: { withdrawalId },
+            fetchPolicy: 'network-only',
+          });
+
+          if (
+            res.data.erc20WithdrawalApproval &&
+            res.data.erc20WithdrawalApproval.signatures.length > 2
+          ) {
+            clearInterval(interval);
+            resolve(res.data.erc20WithdrawalApproval);
+          }
+        } catch (err) {
+          // no op as the query will error until the approval is created
+        }
+      }, 1000);
+    }
+  );
+
 export const useVegaWalletTransactionUpdater = () => {
+  const client = useApolloClient();
   const { updateWithdrawal, updateOrder, updateTransaction } =
     useVegaTransactionStore((state) => ({
       updateWithdrawal: state.updateWithdrawal,
@@ -205,7 +253,10 @@ export const useVegaWalletTransactionUpdater = () => {
     onData: ({ data: result }) =>
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'Withdrawal') {
-          updateWithdrawal(event.event);
+          const withdrawal = event.event;
+          waitForWithdrawalApproval(event.event.id, client).then((approval) =>
+            updateWithdrawal(withdrawal, approval)
+          );
         }
       }),
   });

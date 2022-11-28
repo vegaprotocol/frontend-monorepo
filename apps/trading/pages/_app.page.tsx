@@ -2,7 +2,15 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import {
+  VegaWalletProvider,
+  useVegaWalletTransactionManager,
+  useVegaWalletTransactionUpdater,
+} from '@vegaprotocol/wallet';
+import {
+  useEthTransactionManager,
+  useEthTransactionUpdater,
+} from '@vegaprotocol/web3';
 import {
   EnvironmentProvider,
   envTriggerMapping,
@@ -15,6 +23,7 @@ import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
+import ToastsContainer from './toasts-container';
 import { HashRouter, useLocation } from 'react-router-dom';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
@@ -38,6 +47,14 @@ const Title = () => {
       <title>{title}</title>
     </Head>
   );
+};
+
+const TransactionsHandler = () => {
+  useVegaWalletTransactionManager();
+  useVegaWalletTransactionUpdater();
+  useEthTransactionManager();
+  useEthTransactionUpdater();
+  return null;
 };
 
 function AppBody({ Component }: AppProps) {
@@ -76,6 +93,8 @@ function AppBody({ Component }: AppProps) {
           </main>
           <Footer />
           <DialogsContainer />
+          <ToastsContainer />
+          <TransactionsHandler />
         </AppLoader>
       </div>
     </ThemeContext.Provider>

@@ -11,7 +11,11 @@ import {
 } from '@vegaprotocol/wallet';
 import type { VegaStoredTxState } from '@vegaprotocol/wallet';
 
-export const VegaTransaction = (transaction: VegaStoredTxState) => {
+export const VegaTransaction = ({
+  transaction,
+}: {
+  transaction: VegaStoredTxState;
+}) => {
   if (isWithdrawTransaction(transaction.body)) {
     if (
       transaction.status === VegaTxStatus.Complete &&

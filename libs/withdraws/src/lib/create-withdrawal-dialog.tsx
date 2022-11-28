@@ -1,0 +1,46 @@
+import { t } from '@vegaprotocol/react-helpers';
+import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { WithdrawFormContainer } from './withdraw-form-container';
+import { Web3Container } from '@vegaprotocol/web3';
+import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import { useWithdrawalDialog } from './withdrawal-dialog';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+
+export const CreateWithdrawalDialog = () => {
+  const { assetId, isOpen, open, close } = useWithdrawalDialog();
+  const { pubKey } = useVegaWallet();
+  const createTransaction = useVegaTransactionStore((state) => state.create);
+  const connectWalletDialogIsOpen = useWeb3ConnectDialog(
+    (state) => state.isOpen
+  );
+  return (
+    <Dialog
+      title={t('Withdraw')}
+      open={isOpen && !connectWalletDialogIsOpen}
+      onChange={(isOpen) => (isOpen ? open() : close())}
+      size="small"
+    >
+      <Web3Container connectEagerly>
+        <WithdrawFormContainer
+          assetId={assetId}
+          partyId={pubKey ? pubKey : undefined}
+          submit={({ amount, asset, receiverAddress }) => {
+            createTransaction({
+              withdrawSubmission: {
+                amount,
+                asset,
+                ext: {
+                  erc20: {
+                    receiverAddress,
+                  },
+                },
+              },
+            });
+            close();
+          }}
+        />
+      </Web3Container>
+    </Dialog>
+  );
+};
