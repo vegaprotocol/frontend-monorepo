@@ -32,7 +32,12 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.GettingChainId);
         const chainIdResult = await connector.getChainId();
 
-        if (chainIdResult.chainID !== appChainId) {
+        // Dont throw in when cypress is running as trading app relies on
+        // mocks which result in a mismatch between chainId for app and
+        // chainId for wallet
+        const isTest = !('Cypress' in window);
+
+        if (chainIdResult.chainID !== appChainId && isTest) {
           // Throw wallet error for consitent error handling
           throw ClientErrors.WRONG_NETWORK;
         }

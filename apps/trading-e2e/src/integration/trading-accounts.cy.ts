@@ -1,5 +1,3 @@
-import { connectVegaWallet } from '../support/vega-wallet';
-
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
@@ -12,9 +10,10 @@ describe('accounts', { tags: '@smoke' }, () => {
     const tradingAccountRowId = '[row-id="asset-0"]';
     cy.getByTestId('Collateral').click();
 
-    connectVegaWallet();
+    cy.connectVegaWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
+
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="asset.symbol"]')

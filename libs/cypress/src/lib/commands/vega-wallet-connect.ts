@@ -20,6 +20,7 @@ export function addVegaWalletConnect() {
       'contain.text',
       'Successfully connected'
     );
+    cy.getByTestId('dialog-close').click();
     cy.get('[data-testid=dialog-content]').should('not.exist');
   });
 }

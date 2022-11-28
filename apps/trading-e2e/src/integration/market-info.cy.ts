@@ -1,5 +1,4 @@
 import { Schema, MarketTradingModeMapping } from '@vegaprotocol/types';
-import { connectVegaWallet } from '../support/vega-wallet';
 
 const marketInfoBtn = 'Info';
 const row = 'key-value-table-row';
@@ -229,7 +228,7 @@ describe('market states', { tags: '@smoke' }, function () {
         cy.mockGQLSubscription();
         cy.visit('/#/markets/market-0');
         cy.wait('@Market');
-        connectVegaWallet();
+        cy.connectVegaWallet();
       });
       it.skip('must display correct market state');
       //7002-/SORD-/061 no state displayed

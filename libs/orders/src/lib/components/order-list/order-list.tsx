@@ -259,6 +259,17 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             }
             return value ? OrderStatusMapping[value] : '';
           }}
+          cellRenderer={({
+            valueFormatted,
+            data,
+          }: {
+            valueFormatted: string;
+            data: Order;
+          }) => (
+            <span data-testId={`order-status-${data?.id}`}>
+              {valueFormatted}
+            </span>
+          )}
         />
         <AgGridColumn
           headerName={t('Filled')}
