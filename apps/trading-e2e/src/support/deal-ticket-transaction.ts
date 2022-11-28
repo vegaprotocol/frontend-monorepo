@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
-import type { Transaction, OrderSubmissionBody } from '@vegaprotocol/wallet';
-import type { Schema } from '@vegaprotocol/types';
+import type {
+  Transaction,
+  OrderSubmissionBody,
+  OrderSubmission,
+} from '@vegaprotocol/wallet';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -8,17 +11,6 @@ const orderTIFDropDown = 'order-tif';
 const placeOrderBtn = 'place-order';
 const dialogTitle = 'dialog-title';
 const orderTransactionHash = 'tx-block-explorer';
-
-export type Order = {
-  marketId: string;
-  reference?: string;
-  type: Schema.OrderType;
-  side: Schema.Side;
-  timeInForce: Schema.OrderTimeInForce;
-  size: string;
-  price?: string;
-  expiresAt?: string;
-};
 
 /**
  * Base64 encode a transaction object
@@ -29,7 +21,10 @@ const encodeTransaction = (tx: Transaction): string => {
   );
 };
 
-export const testOrder = (order: Order, expected?: Partial<Order>) => {
+export const testOrder = (
+  order: OrderSubmission,
+  expected?: Partial<OrderSubmission>
+) => {
   const { type, side, size, price, timeInForce, expiresAt } = order;
 
   cy.getByTestId(`order-type-${type}`).click();
@@ -57,9 +52,7 @@ export const testOrder = (order: Order, expected?: Partial<Order>) => {
   expectedOrder.price = expectedOrder.price || undefined;
 
   const transaction: OrderSubmissionBody = {
-    orderSubmission: {
-      ...expectedOrder,
-    },
+    orderSubmission: expectedOrder,
   };
 
   cy.wait('@VegaWalletTransaction')
