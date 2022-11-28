@@ -1,4 +1,8 @@
-import { Schema } from '@vegaprotocol/types';
+import {
+  OrderTimeInForceCode,
+  OrderTimeInForceMapping,
+  Schema,
+} from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
@@ -14,38 +18,13 @@ const toggleLimit = 'order-type-TYPE_LIMIT';
 const toggleMarket = 'order-type-TYPE_MARKET';
 const errorMessage = 'dealticket-error-message';
 
-const TIFlist = [
-  {
-    code: 'GTT',
-    value: 'TIME_IN_FORCE_GTT',
-    text: `Good 'til Time (GTT)`,
-  },
-  {
-    code: 'GTC',
-    value: 'TIME_IN_FORCE_GTC',
-    text: `Good 'til Cancelled (GTC)`,
-  },
-  {
-    code: 'IOC',
-    value: 'TIME_IN_FORCE_IOC',
-    text: `Immediate or Cancel (IOC)`,
-  },
-  {
-    code: 'FOK',
-    value: 'TIME_IN_FORCE_FOK',
-    text: `Fill or Kill (FOK)`,
-  },
-  {
-    code: 'GFN',
-    value: 'TIME_IN_FORCE_GFN',
-    text: `Good for Normal (GFN)`,
-  },
-  {
-    code: 'GFA',
-    value: 'TIME_IN_FORCE_GFA',
-    text: `Good for Auction (GFA)`,
-  },
-];
+const TIFlist = Object.values(Schema.OrderTimeInForce).map((value) => {
+  return {
+    code: OrderTimeInForceCode[value],
+    value,
+    text: OrderTimeInForceMapping[value],
+  };
+});
 
 const displayTomorrow = () => {
   const tomorrow = new Date();
@@ -419,14 +398,8 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('order-connect-wallet').click();
     cy.getByTestId('dialog-content').should('be.visible');
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
-    const form = 'rest-connector-form';
-    const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-    const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-    cy.getByTestId(form).find('#wallet').click().type(walletName);
-    cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-    cy.getByTestId(form).find('button[type=submit]').click();
     cy.getByTestId(placeOrderBtn).should('be.visible');
     cy.getByTestId(toggleLimit).children('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');

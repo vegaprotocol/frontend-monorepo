@@ -6,8 +6,6 @@ const connectVegaBtn = 'connect-vega-wallet';
 const manageVegaBtn = 'manage-vega-wallet';
 const form = 'rest-connector-form';
 const dialogContent = 'dialog-content';
-const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
 
 describe('vega wallet v1', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -20,23 +18,19 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
-    cy.contains('Desktop wallet app');
-    cy.contains('Command line wallet app');
+    cy.contains('Connect Vega wallet');
     cy.contains('Hosted Fairground wallet');
 
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
-    cy.getByTestId(form).find('#wallet').click().type(walletName);
-    cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-    cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
   it('doesnt connect with invalid credentials', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-hosted"]')
       .click();
     cy.getByTestId(form).find('#wallet').click().type('invalid name');
     cy.getByTestId(form).find('#passphrase').click().type('invalid password');
@@ -47,7 +41,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
   it('doesnt connect with invalid fields', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-gui"]')
+      .find('[data-testid="connector-hosted"]')
       .click();
 
     cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
@@ -74,7 +68,7 @@ describe('vega wallet v2', { tags: '@smoke' }, () => {
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
-      .find('[data-testid="connector-cli"]')
+      .find('[data-testid="connector-jsonRpc"]')
       .click();
     cy.getByTestId(dialogContent).should('not.exist');
     cy.getByTestId(manageVegaBtn).should('exist');
