@@ -1,6 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateLedgerEntries } from '../support/mocks/generate-ledger-entries';
-import { connectVegaWallet } from '../support/vega-wallet';
 import { generateAssets } from '../support/mocks/generate-assets';
 import { generateMarkets } from '../support/mocks/generate-markets';
 
@@ -16,7 +15,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
   describe('Ledger entries', () => {
     it('List should be properly rendered', () => {
       cy.visit('/#/portfolio');
-      connectVegaWallet();
+      cy.connectVegaWallet();
       cy.getByTestId('"Ledger entries"').click();
       const headers = [
         'Sender',
