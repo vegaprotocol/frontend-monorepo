@@ -13,6 +13,7 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.connectVegaWallet();
 
     cy.getByTestId('tab-accounts').should('be.visible');
+
     cy.getByTestId('tab-accounts')
       .get(tradingAccountRowId)
       .find('[col-id="asset.symbol"]')
