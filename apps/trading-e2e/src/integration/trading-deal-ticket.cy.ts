@@ -1,4 +1,8 @@
-import { Schema } from '@vegaprotocol/types';
+import {
+  OrderTimeInForceCode,
+  OrderTimeInForceMapping,
+  Schema,
+} from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
@@ -14,38 +18,13 @@ const toggleLimit = 'order-type-TYPE_LIMIT';
 const toggleMarket = 'order-type-TYPE_MARKET';
 const errorMessage = 'dealticket-error-message';
 
-const TIFlist = [
-  {
-    code: 'GTT',
-    value: 'TIME_IN_FORCE_GTT',
-    text: `Good 'til Time (GTT)`,
-  },
-  {
-    code: 'GTC',
-    value: 'TIME_IN_FORCE_GTC',
-    text: `Good 'til Cancelled (GTC)`,
-  },
-  {
-    code: 'IOC',
-    value: 'TIME_IN_FORCE_IOC',
-    text: `Immediate or Cancel (IOC)`,
-  },
-  {
-    code: 'FOK',
-    value: 'TIME_IN_FORCE_FOK',
-    text: `Fill or Kill (FOK)`,
-  },
-  {
-    code: 'GFN',
-    value: 'TIME_IN_FORCE_GFN',
-    text: `Good for Normal (GFN)`,
-  },
-  {
-    code: 'GFA',
-    value: 'TIME_IN_FORCE_GFA',
-    text: `Good for Auction (GFA)`,
-  },
-];
+const TIFlist = Object.values(Schema.OrderTimeInForce).map((value) => {
+  return {
+    code: OrderTimeInForceCode[value],
+    value,
+    text: OrderTimeInForceMapping[value],
+  };
+});
 
 const displayTomorrow = () => {
   const tomorrow = new Date();
