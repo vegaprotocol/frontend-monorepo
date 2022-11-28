@@ -4,7 +4,7 @@ import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { Link as UiToolkitLink, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
 import testnetBg from '../../assets/green-cloud.png';
@@ -67,13 +67,14 @@ export const Navbar = ({
             path={Routes.PORTFOLIO}
             navbarTheme={navbarTheme}
           />
-          <UiToolkitLink
+          <a
             href={`${VEGA_TOKEN_URL}/governance`}
             target="_blank"
+            rel="noreferrer"
             className={getActiveNavLinkClassNames(false, navbarTheme, true)}
           >
             {t('Governance')}
-          </UiToolkitLink>
+          </a>
         </nav>
         <div className="flex items-center gap-2 ml-auto">
           <VegaWalletConnectButton />
