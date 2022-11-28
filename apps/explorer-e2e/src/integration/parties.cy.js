@@ -48,7 +48,9 @@ context('Parties page', { tags: '@regression' }, function () {
       });
     });
 
-    it('should see party address id - having searched', function () {
+    // skipped due to existing issue
+    // https://github.com/vegaprotocol/frontend-monorepo/issues/2243
+    it.skip('should see party address id - having searched', function () {
       cy.getByTestId('parties-header')
         .siblings()
         .contains(vegaWalletPublicKey.substring(0, 14))
