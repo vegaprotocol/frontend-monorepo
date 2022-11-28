@@ -25,6 +25,8 @@ import {
   generatePartyMarketData,
 } from './mocks/generate-fees';
 import { generateMarketProposals } from './mocks/generate-proposals';
+import { generateStatistics } from './mocks/generate-statistics';
+import { generateChainId } from './mocks/generate-chain-id';
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
@@ -33,8 +35,8 @@ const mockTradingPage = (
   trigger?: Schema.AuctionTrigger
 ) => {
   // Skipped, to allow v2 wallet connection in tests
-  // aliasQuery(req, 'ChainId', generateChainId());
-  // aliasQuery(req, 'Statistics', generateStatistics());
+  aliasQuery(req, 'ChainId', generateChainId());
+  aliasQuery(req, 'Statistics', generateStatistics());
   aliasQuery(
     req,
     'Market',
