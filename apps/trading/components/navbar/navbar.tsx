@@ -4,7 +4,7 @@ import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { Link as UiToolkitLink, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
 import testnetBg from '../../assets/green-cloud.png';
@@ -67,13 +67,13 @@ export const Navbar = ({
             path={Routes.PORTFOLIO}
             navbarTheme={navbarTheme}
           />
-          <AppNavLink
-            name={t('Governance')}
-            path={`${VEGA_TOKEN_URL}/governance`}
-            alignRight={true}
+          <UiToolkitLink
+            href={`${VEGA_TOKEN_URL}/governance`}
             target="_blank"
-            navbarTheme={navbarTheme}
-          />
+            className={getActiveNavLinkClassNames(false, navbarTheme, true)}
+          >
+            {t('Governance')}
+          </UiToolkitLink>
         </nav>
         <div className="flex items-center gap-2 ml-auto">
           <VegaWalletConnectButton />
@@ -108,19 +108,8 @@ const AppNavLink = ({
   return (
     <NavLink
       data-testid={testId}
-      to={path}
-      className={({ isActive }) => {
-        return classNames('mx-2 py-3 self-end relative', {
-          'cursor-default': isActive,
-          'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
-          'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
-            !isActive && navbarTheme !== 'yellow',
-          'ml-auto': alignRight,
-          'text-black': isActive && navbarTheme === 'yellow',
-          'text-black/60 hover:text-black':
-            !isActive && navbarTheme === 'yellow',
-        });
-      }}
+      to={{ pathname: path }}
+      className={getNavLinkClassNames(navbarTheme, alignRight)}
       target={target}
     >
       {({ isActive }) => {
@@ -133,4 +122,29 @@ const AppNavLink = ({
       }}
     </NavLink>
   );
+};
+
+function getNavLinkClassNames(
+  navbarTheme: string,
+  alignRight = false
+): (props: { isActive?: boolean }) => string | undefined {
+  return ({ isActive = false }) => {
+    return getActiveNavLinkClassNames(isActive, navbarTheme, alignRight);
+  };
+}
+
+export const getActiveNavLinkClassNames = (
+  isActive: boolean,
+  navbarTheme: string,
+  alignRight = false
+): string | undefined => {
+  return classNames('mx-2 py-3 self-end relative', {
+    'cursor-default': isActive,
+    'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
+    'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
+      !isActive && navbarTheme !== 'yellow',
+    'ml-auto': alignRight,
+    'text-black': isActive && navbarTheme === 'yellow',
+    'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
+  });
 };
