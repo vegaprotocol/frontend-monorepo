@@ -5,6 +5,7 @@ import { useMarketPositions } from './use-market-positions';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { getDerivedPrice } from '../utils/get-price';
 
 export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
@@ -36,18 +37,19 @@ export const useOrderMargin = ({
   derivedPrice,
 }: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
+  const priceForEstimate = derivedPrice || getDerivedPrice(order, market);
 
   const { data } = useEstimateOrderQuery({
     variables: {
       marketId: market.id,
       partyId,
-      price: derivedPrice,
+      price: priceForEstimate,
       size: removeDecimal(order.size, market.positionDecimalPlaces),
       side: order.side,
       timeInForce: order.timeInForce,
       type: order.type,
     },
-    skip: !partyId || !market.id || !order.size || !derivedPrice,
+    skip: !partyId || !market.id || !order.size || !priceForEstimate,
   });
 
   if (data?.estimateOrder.marginLevels.initialLevel) {

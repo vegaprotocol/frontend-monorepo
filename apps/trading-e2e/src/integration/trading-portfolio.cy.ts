@@ -4,7 +4,7 @@ import { connectVegaWallet } from '../support/vega-wallet';
 import { generateAssets } from '../support/mocks/generate-assets';
 import { generateMarkets } from '../support/mocks/generate-markets';
 
-describe('Portfolio page', { tags: '@regression' }, () => {
+describe('Portfolio page', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
       aliasQuery(req, 'LedgerEntries', generateLedgerEntries());
@@ -17,7 +17,7 @@ describe('Portfolio page', { tags: '@regression' }, () => {
     it('List should be properly rendered', () => {
       cy.visit('/#/portfolio');
       connectVegaWallet();
-      cy.get('[data-testid="Ledger entries"]').click();
+      cy.getByTestId('"Ledger entries"').click();
       const headers = [
         'Sender',
         'Receiver',
@@ -26,7 +26,7 @@ describe('Portfolio page', { tags: '@regression' }, () => {
         'Asset',
         'Vega Time',
       ];
-      cy.get('.ag-header-row.ag-header-row-column').within(($headers) => {
+      cy.getByTestId('tab-ledger-entries').within(($headers) => {
         cy.wrap($headers)
           .get('.ag-header-cell-text')
           .each(($header, i) => {
