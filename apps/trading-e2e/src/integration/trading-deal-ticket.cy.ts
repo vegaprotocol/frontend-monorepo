@@ -718,7 +718,7 @@ describe('account validation', { tags: '@regression' }, () => {
     );
     cy.getByTestId('dealticket-warning-margin').should(
       'contain.text',
-      '10,000 tBTC currently required, 1,000 tBTC available'
+      '10,000.00 tBTC currently required, 1,000.00 tBTC available'
     );
     cy.getByTestId('deal-ticket-deposit-dialog-button').click();
     cy.getByTestId('dialog-content')
