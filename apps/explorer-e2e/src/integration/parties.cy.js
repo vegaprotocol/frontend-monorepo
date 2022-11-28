@@ -14,7 +14,9 @@ let assetData = {
 
 const assetsInTest = Object.keys(assetData);
 
-context('Parties page', { tags: '@regression' }, function () {
+// skipped due to existing issue
+// https://github.com/vegaprotocol/frontend-monorepo/issues/2243
+context.skip('Parties page', { tags: '@regression' }, function () {
   before('send-faucet assets to connected vega wallet', function () {
     assetsInTest.forEach((asset) => {
       cy.vega_wallet_receive_fauceted_asset(
@@ -48,9 +50,7 @@ context('Parties page', { tags: '@regression' }, function () {
       });
     });
 
-    // skipped due to existing issue
-    // https://github.com/vegaprotocol/frontend-monorepo/issues/2243
-    it.skip('should see party address id - having searched', function () {
+    it('should see party address id - having searched', function () {
       cy.getByTestId('parties-header')
         .siblings()
         .contains(vegaWalletPublicKey.substring(0, 14))
