@@ -134,7 +134,7 @@ function getNavLinkClassNames(
   };
 }
 
-export const getActiveNavLinkClassNames = (
+const getActiveNavLinkClassNames = (
   isActive: boolean,
   navbarTheme: string,
   alignRight = false
