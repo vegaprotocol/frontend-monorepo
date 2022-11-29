@@ -144,7 +144,11 @@ export const useLedgerEntriesDataProvider = ({
   const newRows = useRef(0);
 
   const variables = useMemo<LedgerEntriesQueryVariables>(
-    () => ({ partyId, dateRange: filter?.vegaTime?.value }),
+    () => ({
+      partyId,
+      dateRange: filter?.vegaTime?.value,
+      pagination: { first: !filter?.vegaTime?.value ? 100 : undefined },
+    }),
     [partyId, filter]
   );
 

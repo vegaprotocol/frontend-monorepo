@@ -85,7 +85,9 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
   };
 
   useEffect(() => {
-    props?.filterChangedCallback();
+    if (props && props.filterChangedCallback) {
+      props?.filterChangedCallback();
+    }
   }, [value, props]);
 
   const start = (value.start && toInputValue(value.start)) || '';
