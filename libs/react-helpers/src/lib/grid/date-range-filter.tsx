@@ -85,8 +85,8 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
   };
 
   useEffect(() => {
-    props.filterChangedCallback();
-  }, [value]); //eslint-disable-line react-hooks/exhaustive-deps
+    props?.filterChangedCallback();
+  }, [value, props]);
 
   const start = (value.start && toInputValue(value.start)) || '';
   const end = (value.end && toInputValue(value.end)) || '';

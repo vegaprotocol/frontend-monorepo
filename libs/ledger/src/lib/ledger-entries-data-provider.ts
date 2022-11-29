@@ -3,15 +3,24 @@ import { assetsProvider } from '@vegaprotocol/assets';
 import type { Market } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import type { PageInfo } from '@vegaprotocol/react-helpers';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import {
   defaultAppend as append,
   makeDataProvider,
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
+import type { Schema } from '@vegaprotocol/types';
+import type { AgGridReact } from 'ag-grid-react';
+import produce from 'immer';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
+import type { RefObject } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
+import type { Filter } from './ledger-manager';
 import type {
   LedgerEntriesQuery,
+  LedgerEntriesQueryVariables,
   LedgerEntryFragment,
 } from './__generated__/LedgerEntries';
 import { LedgerEntriesDocument } from './__generated__/LedgerEntries';
@@ -23,25 +32,76 @@ export type LedgerEntry = LedgerEntryFragment & {
   marketReceiver: Market | null | undefined;
 };
 
-const getData = (responseData: LedgerEntriesQuery): LedgerEntry[] => {
-  return (
-    responseData.ledgerEntries?.edges
-      ?.filter((e) => Boolean(e?.node))
-      .map((e, i) => ({ id: i, ...e?.node } as LedgerEntry)) ?? []
-  );
+export type AggregatedLedgerEntriesEdge = Schema.AggregatedLedgerEntriesEdge;
+
+const getData = (responseData: LedgerEntriesQuery) => {
+  return responseData.ledgerEntries?.edges || [];
+};
+
+export const update = (
+  data: ReturnType<typeof getData>,
+  delta: ReturnType<typeof getData>,
+  reload: () => void,
+  variables?: LedgerEntriesQueryVariables
+) => {
+  if (!data) {
+    return data;
+  }
+  return produce(data, (draft) => {
+    // A single update can contain the same order with multiple updates, so we need to find
+    // the latest version of the order and only update using that
+    const incoming = uniqBy(
+      orderBy(delta, (entry) => entry?.node.vegaTime, 'desc'),
+      'id'
+    );
+
+    // Add or update incoming orders
+    incoming.reverse().forEach((node) => {
+      const index = draft.findIndex(
+        (edge) => edge?.node.vegaTime === node?.node.vegaTime
+      );
+      const newer =
+        draft.length === 0 || node?.node.vegaTime >= draft[0]?.node.vegaTime;
+      let doesFilterPass = true;
+      if (
+        doesFilterPass &&
+        variables?.dateRange?.start &&
+        new Date(node?.node.vegaTime) <= new Date(variables?.dateRange?.start)
+      ) {
+        doesFilterPass = false;
+      }
+      if (
+        doesFilterPass &&
+        variables?.dateRange?.end &&
+        new Date(node?.node.vegaTime) >= new Date(variables?.dateRange?.end)
+      ) {
+        doesFilterPass = false;
+      }
+      if (index !== -1) {
+        if (doesFilterPass) {
+          // Object.assign(draft[index]?.node, node?.node);
+          if (newer) {
+            draft.unshift(...draft.splice(index, 1));
+          }
+        } else {
+          draft.splice(index, 1);
+        }
+      } else if (newer && doesFilterPass) {
+        draft.unshift(node);
+      }
+    });
+  });
 };
 
 const getPageInfo = (responseData: LedgerEntriesQuery): PageInfo | null =>
   responseData.ledgerEntries?.pageInfo || null;
 
-const ledgerEntriesOnlyProvider = makeDataProvider<
-  LedgerEntriesQuery,
-  LedgerEntry[] | null,
-  never,
-  never
->({
+const ledgerEntriesOnlyProvider = makeDataProvider({
   query: LedgerEntriesDocument,
+  subscriptionQuery: LedgerEntriesDocument,
   getData,
+  getDelta: getData,
+  update,
   pagination: {
     getPageInfo,
     append,
@@ -49,13 +109,11 @@ const ledgerEntriesOnlyProvider = makeDataProvider<
   },
 });
 
-export const ledgerEntriesProvider = makeDerivedDataProvider<
-  LedgerEntry[],
-  never
->(
+export const ledgerEntriesProvider = makeDerivedDataProvider(
   [ledgerEntriesOnlyProvider, assetsProvider, marketsProvider],
-  ([entries, assets, markets]): LedgerEntry[] =>
-    entries.map((entry: LedgerEntry) => {
+  ([entries, assets, markets]) => {
+    return entries.map((edge: AggregatedLedgerEntriesEdge) => {
+      const entry = edge?.node;
       const asset = assets.find((asset: Asset) => asset.id === entry.assetId);
       const marketSender = markets.find(
         (market: Market) => market.id === entry.senderMarketId
@@ -63,15 +121,100 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
       const marketReceiver = markets.find(
         (market: Market) => market.id === entry.receiverMarketId
       );
-      return { ...entry, asset, marketSender, marketReceiver };
-    })
+      return { node: { ...entry, asset, marketSender, marketReceiver } };
+    });
+  }
 );
 
-export const useLedgerEntriesDataProvider = (partyId: string) => {
-  const variables = useMemo(() => ({ partyId }), [partyId]);
-  return useDataProvider({
+interface Props {
+  partyId: string;
+  filter?: Filter;
+  gridRef: RefObject<AgGridReact>;
+  scrolledToTop: RefObject<boolean>;
+}
+
+export const useLedgerEntriesDataProvider = ({
+  partyId,
+  filter,
+  gridRef,
+  scrolledToTop,
+}: Props) => {
+  const dataRef = useRef<(AggregatedLedgerEntriesEdge | null)[] | null>(null);
+  const totalCountRef = useRef<number>();
+  const newRows = useRef(0);
+
+  const variables = useMemo<LedgerEntriesQueryVariables>(
+    () => ({ partyId, dateRange: filter?.vegaTime?.value }),
+    [partyId, filter]
+  );
+
+  const addNewRows = useCallback(() => {
+    if (newRows.current === 0) {
+      return;
+    }
+    if (totalCountRef.current !== undefined) {
+      totalCountRef.current += newRows.current;
+    }
+    newRows.current = 0;
+    gridRef.current?.api?.refreshInfiniteCache();
+  }, [gridRef]);
+
+  const update = useCallback(
+    ({
+      data,
+      delta,
+    }: {
+      data: (AggregatedLedgerEntriesEdge | null)[] | null;
+      delta?: AggregatedLedgerEntriesEdge[];
+    }) => {
+      if (dataRef.current?.length && delta?.length && !scrolledToTop.current) {
+        const createdAt = dataRef.current?.[0]?.node.vegaTime;
+        if (createdAt) {
+          newRows.current += (delta || []).filter(
+            (trade) => trade.node.vegaTime > createdAt
+          ).length;
+        }
+      }
+      const avoidRerender = !!(
+        (dataRef.current?.length && data?.length) ||
+        (!dataRef.current?.length && !data?.length)
+      );
+      dataRef.current = data;
+      gridRef.current?.api?.refreshInfiniteCache();
+      return avoidRerender;
+    },
+    [gridRef, scrolledToTop]
+  );
+
+  const insert = useCallback(
+    ({
+      data,
+      totalCount,
+    }: {
+      data: (AggregatedLedgerEntriesEdge | null)[] | null;
+      totalCount?: number;
+    }) => {
+      dataRef.current = data;
+      totalCountRef.current = totalCount;
+      return true;
+    },
+    []
+  );
+
+  const { data, error, loading, load, totalCount } = useDataProvider({
     dataProvider: ledgerEntriesProvider,
+    update,
+    insert,
     variables,
-    skip: !partyId,
+    skip: !variables.partyId,
   });
+  totalCountRef.current = totalCount;
+
+  const getRows = makeInfiniteScrollGetRows<AggregatedLedgerEntriesEdge>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
+  return { loading, error, data, addNewRows, getRows };
 };
