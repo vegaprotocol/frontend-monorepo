@@ -26,20 +26,15 @@ const MarketLink = ({ id, ...props }: MarketLinkProps) => {
     if (data?.market?.tradableInstrument.instrument.name) {
       label = <span>{data.market.tradableInstrument.instrument.name}</span>;
     } else if (error) {
-      label = (
-        <div title={t('Unknown market')}>
-          <span role="img" aria-label="Unknown market" className="img">
-            ⚠️
-          </span>
-          &nbsp;{id}
-        </div>
-      );
+      label = <div title={t('Unknown market')}>
+        <span role="img" aria-label="Unknown market" className="img">⚠️</span>&nbsp;{id}
+      </div>
     }
   }
 
   return (
     <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
-      {label}
+      {label} 
     </Link>
   );
 };

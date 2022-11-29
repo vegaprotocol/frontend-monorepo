@@ -27,20 +27,21 @@ describe('Market link component', () => {
       request: {
         query: ExplorerMarketDocument,
         variables: {
-          id: '456',
+          id: '456'
         },
       },
       result: {
-        errors: [new GraphQLError('No such market')],
-      },
-    };
+        errors: [new GraphQLError('No such market')]
+      }
+    } 
     const res = render(renderComponent('456', [mock]));
     // The ID
     expect(res.getByText('456')).toBeInTheDocument();
 
     // The emoji
     expect(await res.findByRole('img')).toBeInTheDocument();
-  });
+  })
+
 
   it('Renders the market name when the query returns a result', async () => {
     const mock = {
@@ -54,14 +55,10 @@ describe('Market link component', () => {
         data: {
           market: {
             id: '123',
-            decimalPlaces: 5,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {
                 name: 'test-label',
-                product: {
-                  quoteName: 'dai',
-                },
               },
             },
           },
