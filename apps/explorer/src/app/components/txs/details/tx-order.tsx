@@ -6,6 +6,7 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
+import { InfoPanel } from '../../info-panel';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -38,7 +39,7 @@ export const TxDetailsOrder = ({
 
   return (
     <>
-      <TableWithTbody className="mb-8">
+      <TableWithTbody>
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
@@ -53,7 +54,13 @@ export const TxDetailsOrder = ({
       </TableWithTbody>
 
       {deterministicId.length > 0 ? (
-        <DeterministicOrderDetails id={deterministicId} version={1} />
+        <div className="mt-5">
+          <InfoPanel title={t('Current Details')} id="current" copy={false}>
+            <TableWithTbody>
+              <DeterministicOrderDetails id={deterministicId} />
+            </TableWithTbody>
+          </InfoPanel>
+        </div>
       ) : null}
     </>
   );
