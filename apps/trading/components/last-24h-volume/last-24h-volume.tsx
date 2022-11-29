@@ -31,7 +31,6 @@ export const Last24hVolume = ({
   isHeader = false,
   initialValue,
 }: Props) => {
-  console.log('initialValue', initialValue);
   const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
@@ -85,8 +84,6 @@ export const Last24hVolume = ({
       </>
     );
   }, [error, candleVolume, positionDecimalPlaces, formatDecimals]);
-  console.log('isHeader', isHeader);
-  console.log('content', content);
   return isHeader ? (
     <HeaderStat
       heading={t('Volume (24h)')}
