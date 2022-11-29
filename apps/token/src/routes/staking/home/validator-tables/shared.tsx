@@ -1,10 +1,13 @@
 import compact from 'lodash/compact';
+import { Link } from 'react-router-dom';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
-import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export enum ValidatorFields {
+  RANKING_INDEX = '#',
   VALIDATOR = 'validator',
   STAKE = 'stake',
   PENDING_STAKE = 'pendingStake',
@@ -73,22 +76,30 @@ export const defaultColDef = {
 };
 
 interface ValidatorRendererProps {
-  data: { validator: { avatarUrl: string; name: string } };
+  data: { id: string; validator: { avatarUrl: string; name: string } };
 }
 
 export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
+  const { t } = useTranslation();
   const { avatarUrl, name } = data.validator;
   return (
-    <div className="flex items-center">
-      {avatarUrl && (
-        <img
-          className="h-6 w-6 rounded-full mr-2"
-          src={avatarUrl}
-          alt={`Avatar icon for ${name}`}
-          onError={(e) => (e.currentTarget.style.display = 'none')}
-        />
-      )}
-      {name}
+    <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+      <span className="flex overflow-hidden">
+        {avatarUrl && (
+          <img
+            className="h-6 w-6 rounded-full mr-2"
+            src={avatarUrl}
+            alt={`Avatar icon for ${name}`}
+            onError={(e) => (e.currentTarget.style.display = 'none')}
+          />
+        )}
+        <span>{name}</span>
+      </span>
+      <Link to={data.id}>
+        <Button size="sm" fill={true}>
+          {t('Stake')}
+        </Button>
+      </Link>
     </div>
   );
 };

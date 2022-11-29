@@ -46,61 +46,71 @@ export const ConsensusValidatorsTable = ({
   const nodes = useMemo(() => {
     if (!data) return [];
 
-    const canonisedNodes = data.map(
-      ({
-        id,
-        name,
-        avatarUrl,
-        stakedTotal,
-        rankingScore: { stakeScore, votingPower, performanceScore },
-        pendingStake,
-      }) => {
-        const normalisedVotingPower =
-          toBigNum(votingPower, 0).dividedBy(100).dp(2).toString() + '%';
+    const canonisedNodes = data
+      .sort((a, b) => {
+        const aVotingPower = toBigNum(a.rankingScore.votingPower, 0);
+        const bVotingPower = toBigNum(b.rankingScore.votingPower, 0);
+        return bVotingPower.minus(aVotingPower).toNumber();
+      })
+      .map((node, index) => {
+        const votingPowerRanking = index + 1;
 
         return {
-          id,
-          [ValidatorFields.VALIDATOR]: {
-            avatarUrl,
-            name,
-          },
-          [ValidatorFields.STAKE]: formatNumber(
-            toBigNum(stakedTotal, decimals),
-            2
-          ),
-          [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
-          [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
-          [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-            previousEpochData,
-            id,
-            performanceScore,
-            stakedTotal,
-            totalStake
-          ),
-          [ValidatorFields.PENDING_STAKE]: formatNumber(
-            toBigNum(pendingStake, decimals),
-            2
-          ),
+          ...node,
+          votingPowerRanking,
         };
-      }
-    );
+      })
+      .map(
+        ({
+          id,
+          name,
+          avatarUrl,
+          stakedTotal,
+          rankingScore: { stakeScore, votingPower, performanceScore },
+          pendingStake,
+          votingPowerRanking,
+        }) => {
+          const normalisedVotingPower =
+            toBigNum(votingPower, 0).dividedBy(100).dp(2).toString() + '%';
+
+          return {
+            id,
+            [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
+            [ValidatorFields.VALIDATOR]: {
+              avatarUrl,
+              name,
+            },
+            [ValidatorFields.STAKE]: formatNumber(
+              toBigNum(stakedTotal, decimals),
+              2
+            ),
+            [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
+            [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
+            [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
+              previousEpochData,
+              id,
+              performanceScore,
+              stakedTotal,
+              totalStake
+            ),
+            [ValidatorFields.PENDING_STAKE]: formatNumber(
+              toBigNum(pendingStake, decimals),
+              2
+            ),
+          };
+        }
+      );
 
     if (canonisedNodes.length < 3 || !hideTopThird) {
       return canonisedNodes;
     }
-
-    const sortedByVotingPower = canonisedNodes.sort(
-      (a, b) =>
-        new BigNumber(b[ValidatorFields.NORMALISED_VOTING_POWER]).toNumber() -
-        new BigNumber(a[ValidatorFields.NORMALISED_VOTING_POWER]).toNumber()
-    );
 
     // The point of identifying and hiding the group that could halt the network
     // is that we assume the top 1/3 of stake is held by considerably less than
     // 1/3 of the validators and we really want people not to stake any more to
     // that group, because we want to make it require as many difference
     // validators to collude as possible to halt the network, so we hide them.
-    const removeTopThirdOfStakeScores = sortedByVotingPower.reduce(
+    const removeTopThirdOfStakeScores = canonisedNodes.reduce(
       (acc, node) => {
         if (acc.cumulativeScore < 3333) {
           acc.cumulativeScore += Number(
@@ -124,6 +134,12 @@ export const ConsensusValidatorsTable = ({
     const colDefs = useMemo<ColDef[]>(
       () => [
         {
+          field: ValidatorFields.RANKING_INDEX,
+          headerName: t(ValidatorFields.RANKING_INDEX).toString(),
+          width: 40,
+          pinned: 'left',
+        },
+        {
           field: ValidatorFields.VALIDATOR,
           headerName: t(ValidatorFields.VALIDATOR).toString(),
           cellRenderer: ValidatorRenderer,
@@ -132,6 +148,7 @@ export const ConsensusValidatorsTable = ({
             return a > b ? 1 : -1;
           },
           pinned: 'left',
+          width: 240,
         },
         {
           field: ValidatorFields.STAKE,

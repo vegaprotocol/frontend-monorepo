@@ -110,6 +110,7 @@ export const StandbyPendingValidatorsTable = ({
             return a > b ? 1 : -1;
           },
           pinned: 'left',
+          width: 240,
         },
         {
           field: ValidatorFields.STAKE,
