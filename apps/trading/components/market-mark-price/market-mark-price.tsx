@@ -9,23 +9,26 @@ import {
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
+import { marketDataProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const MarketMarkPrice = ({
-  marketId,
-  initialValue,
-  isHeader = true,
-  noUpdate = false,
-}: {
+interface Props {
   marketId?: string;
+  decimalPlaces?: number;
   isHeader?: boolean;
   noUpdate?: boolean;
   initialValue?: string;
-}) => {
+}
+
+export const MarketMarkPrice = ({
+  marketId,
+  decimalPlaces,
+  initialValue,
+  isHeader = true,
+  noUpdate = false,
+}: Props) => {
   const [marketPrice, setMarketPrice] = useState<string | null>(
     initialValue || null
   );
@@ -35,11 +38,7 @@ export const MarketMarkPrice = ({
     }),
     [marketId]
   );
-  const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
+
   const throttledSetMarketPrice = useRef(
     throttle((price: string) => {
       noUpdate || setMarketPrice(price);
@@ -57,26 +56,22 @@ export const MarketMarkPrice = ({
     dataProvider: marketDataProvider,
     update,
     variables,
-    skip: noUpdate || !marketId || !data,
+    skip: noUpdate || !marketId,
   });
 
   const content = useMemo(() => {
-    if (!marketPrice || !data?.decimalPlaces) {
+    if (!marketPrice || !decimalPlaces) {
       return <>-</>;
     }
     return isHeader ? (
-      <div>{addDecimalsFormatNumber(marketPrice, data.decimalPlaces)}</div>
+      <div>{addDecimalsFormatNumber(marketPrice, decimalPlaces)}</div>
     ) : (
       <PriceCell
         value={Number(marketPrice)}
-        valueFormatted={addDecimalsFormatNumber(
-          marketPrice || '',
-          data?.decimalPlaces || 0,
-          2
-        )}
+        valueFormatted={addDecimalsFormatNumber(marketPrice, decimalPlaces, 2)}
       />
     );
-  }, [marketPrice, data?.decimalPlaces, isHeader]);
+  }, [marketPrice, decimalPlaces, isHeader]);
 
   return isHeader ? (
     <HeaderStat heading={t('Price')} testId="market-price">

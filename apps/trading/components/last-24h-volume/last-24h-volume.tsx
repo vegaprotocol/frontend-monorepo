@@ -1,7 +1,6 @@
 import {
   calcCandleVolume,
   marketCandlesProvider,
-  marketProvider,
 } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
@@ -12,17 +11,13 @@ import {
 import { Schema } from '@vegaprotocol/types';
 import throttle from 'lodash/throttle';
 import { useCallback, useMemo, useRef, useState } from 'react';
-
 import * as constants from '../constants';
 import { HeaderStat } from '../header';
-
-import type {
-  SingleMarketFieldsFragment,
-  Candle,
-} from '@vegaprotocol/market-list';
+import type { Candle } from '@vegaprotocol/market-list';
 
 interface Props {
   marketId?: string;
+  positionDecimalPlaces?: number;
   noUpdate?: boolean;
   isHeader?: boolean;
   initialValue?: string;
@@ -30,6 +25,7 @@ interface Props {
 
 export const Last24hVolume = ({
   marketId,
+  positionDecimalPlaces,
   noUpdate = false,
   isHeader = true,
   initialValue,
@@ -42,13 +38,6 @@ export const Last24hVolume = ({
     return new Date(yesterday).toISOString();
   }, [yesterday]);
 
-  const marketVariables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
-
   const variables = useMemo(
     () => ({
       marketId: marketId,
@@ -57,12 +46,6 @@ export const Last24hVolume = ({
     }),
     [marketId, yTimestamp]
   );
-
-  const { data, error } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    variables: marketVariables,
-    skip: !marketId,
-  });
 
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
@@ -79,34 +62,34 @@ export const Last24hVolume = ({
     [throttledSetCandles]
   );
 
-  useDataProvider<Candle[], Candle>({
+  const { error } = useDataProvider<Candle[], Candle>({
     dataProvider: marketCandlesProvider,
     update,
     variables,
-    skip: noUpdate || !marketId || !data,
+    skip: noUpdate || !marketId,
   });
 
-  const formatDecimals = isHeader ? data?.positionDecimalPlaces || 0 : 2;
+  const formatDecimals = isHeader ? positionDecimalPlaces || 0 : 2;
   const content = useMemo(() => {
     return (
       <>
-        {!error && candleVolume && data?.positionDecimalPlaces
+        {!error && candleVolume && positionDecimalPlaces
           ? addDecimalsFormatNumber(
               candleVolume,
-              data.positionDecimalPlaces,
+              positionDecimalPlaces,
               formatDecimals
             )
           : '-'}
       </>
     );
-  }, [error, candleVolume, data?.positionDecimalPlaces, formatDecimals]);
+  }, [error, candleVolume, positionDecimalPlaces, formatDecimals]);
 
   return isHeader ? (
     <HeaderStat
       heading={t('Volume (24h)')}
       testId="market-volume"
       description={
-        error && candleVolume && data?.positionDecimalPlaces
+        error && candleVolume && positionDecimalPlaces
           ? t('The total amount of assets traded in the last 24 hours.')
           : null
       }

@@ -221,6 +221,7 @@ export const columns = (
       value: (
         <MarketMarkPrice
           marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
           initialValue={market.data?.markPrice.toString()}
           noUpdate={market.id !== activeMarketId}
           isHeader={false}
@@ -234,6 +235,7 @@ export const columns = (
       value: (
         <Last24hPriceChange
           marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
           noUpdate={market.id !== activeMarketId}
           isHeader={false}
           initialValue={candlesClose}
@@ -316,6 +318,7 @@ export const columns = (
       value: (
         <Last24hVolume
           marketId={market.id}
+          positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
           isHeader={false}
           noUpdate={market.id !== activeMarketId}
@@ -412,6 +415,7 @@ export const columnsPositionMarkets = (
       value: (
         <MarketMarkPrice
           marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
           initialValue={market.data?.markPrice.toString()}
           noUpdate={market.id !== activeMarketId}
           isHeader={false}
@@ -425,6 +429,7 @@ export const columnsPositionMarkets = (
       value: (
         <Last24hPriceChange
           marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
           noUpdate={market.id !== activeMarketId}
           isHeader={false}
           initialValue={candlesClose}
@@ -507,6 +512,7 @@ export const columnsPositionMarkets = (
       value: (
         <Last24hVolume
           marketId={market.id}
+          positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
           isHeader={false}
           noUpdate={market.id !== activeMarketId}

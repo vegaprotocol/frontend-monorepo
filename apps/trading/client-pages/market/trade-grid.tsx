@@ -159,9 +159,18 @@ export const TradeMarketHeader = ({
       >
         <ExpiryLabel market={market} />
       </HeaderStat>
-      <MarketMarkPrice marketId={market?.id} />
-      <Last24hPriceChange marketId={market?.id} />
-      <Last24hVolume marketId={market?.id} />
+      <MarketMarkPrice
+        marketId={market?.id}
+        decimalPlaces={market?.decimalPlaces}
+      />
+      <Last24hPriceChange
+        marketId={market?.id}
+        decimalPlaces={market?.decimalPlaces}
+      />
+      <Last24hVolume
+        marketId={market?.id}
+        positionDecimalPlaces={market?.positionDecimalPlaces}
+      />
       <MarketTradingModeComponent marketId={market?.id} onSelect={onSelect} />
       {asset ? (
         <HeaderStat
