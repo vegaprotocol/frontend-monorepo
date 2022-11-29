@@ -62,8 +62,8 @@ export const ValidatorTables = ({
   }, [data?.nodesConnection.edges]);
 
   if (
-    consensusValidators.length > 0 &&
-    (standbyValidators.length > 0 || pendingValidators.length > 0)
+    consensusValidators.length &&
+    (standbyValidators.length || pendingValidators.length)
   ) {
     const lowestRankingConsensusScore = consensusValidators.reduce(
       (lowest: NodesFragmentFragment, validator: NodesFragmentFragment) => {
