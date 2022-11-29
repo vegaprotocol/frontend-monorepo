@@ -7,7 +7,7 @@ import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import { useTranslation } from 'react-i18next';
 
 export enum ValidatorFields {
-  RANKING_INDEX = '#',
+  RANKING_INDEX = 'rankingIndex',
   VALIDATOR = 'validator',
   STAKE = 'stake',
   PENDING_STAKE = 'pendingStake',

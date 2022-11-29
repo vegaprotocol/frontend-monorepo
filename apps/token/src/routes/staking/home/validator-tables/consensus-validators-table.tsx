@@ -134,7 +134,7 @@ export const ConsensusValidatorsTable = ({
       () => [
         {
           field: ValidatorFields.RANKING_INDEX,
-          headerName: t(ValidatorFields.RANKING_INDEX).toString(),
+          headerName: '#',
           width: 40,
           pinned: 'left',
         },
