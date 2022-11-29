@@ -2,6 +2,7 @@ import compact from 'lodash/compact';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import React from 'react';
 
 export enum ValidatorFields {
   VALIDATOR = 'validator',
@@ -24,6 +25,9 @@ export interface ValidatorsTableProps {
 export const nodeListGridStyles = `
   .ag-theme-balham-dark .ag-body-horizontal-scroll {
     opacity: 0.75;
+  }
+  .ag-theme-balham-dark *:hover {
+    cursor: pointer;
   }
 `;
 
