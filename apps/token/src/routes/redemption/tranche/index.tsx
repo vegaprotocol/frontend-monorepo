@@ -121,7 +121,7 @@ export const RedeemFromTranche = () => {
                     stakingLink: (
                       <Link
                         className="underline text-white"
-                        to={Routes.STAKING}
+                        to={Routes.VALIDATORS}
                       />
                     ),
                     governanceLink: (

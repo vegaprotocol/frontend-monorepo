@@ -175,7 +175,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
                 label={`${d.name || truncateMiddle(d.nodeId)} ${
                   d.hasStakePending ? `(${t('thisEpoch')})` : ''
                 }`}
-                link={`${Routes.STAKING}/${d.nodeId}`}
+                link={`${Routes.VALIDATORS}/${d.nodeId}`}
                 value={d.currentEpochStake}
               />
             </div>
@@ -186,7 +186,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
                 label={`${d.name || truncateMiddle(d.nodeId)} (${t(
                   'nextEpoch'
                 )})`}
-                link={`${Routes.STAKING}/${d.nodeId}`}
+                link={`${Routes.VALIDATORS}/${d.nodeId}`}
                 value={d.nextEpochStake}
               />
             </div>
@@ -199,7 +199,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
             {t('governance')}
           </Button>
         </Link>
-        <Link className="flex-1" to={Routes.STAKING}>
+        <Link className="flex-1" to={Routes.VALIDATORS}>
           <Button size="sm" fill={true}>
             {t('staking')}
           </Button>

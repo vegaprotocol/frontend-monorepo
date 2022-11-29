@@ -234,24 +234,11 @@ const routerConfig = [
     element: <Navigate to={Routes.PROPOSALS} replace />,
   },
   {
-    path: Routes.TOKEN,
-    // Not lazy as loaded when a user first hits the site
-    element: <Home name="Home" />,
-  },
-  {
-    path: Routes.TRANCHES,
-    element: <LazyTranches name="Tranches" />,
-    children: [
-      { index: true, element: <LazyTranchesTranches /> },
-      { path: ':trancheId', element: <LazyTranchesTranche /> },
-    ],
-  },
-  {
-    path: Routes.CLAIM,
-    element: <LazyClaim name="Claim" />,
-  },
-  {
     path: Routes.STAKING,
+    element: <Navigate to={Routes.VALIDATORS} replace />,
+  },
+  {
+    path: Routes.VALIDATORS,
     element: <LazyStaking name="Staking" />,
     children: [
       { path: 'associate', element: <LazyStakingAssociate /> },
@@ -268,22 +255,44 @@ const routerConfig = [
     element: <LazyRewards name="Rewards" />,
   },
   {
-    path: Routes.WITHDRAWALS,
-    element: <LazyWithdrawals name="Withdrawals" />,
-  },
-  {
-    path: Routes.VESTING,
-    element: <LazyRedemption name="Vesting" />,
+    path: Routes.TOKEN,
+    // Not lazy as loaded when a user first hits the site
     children: [
       {
+        element: <Home name="Home" />,
         index: true,
-        element: <LazyRedemptionIndex />,
       },
       {
-        path: ':id',
-        element: <LazyRedemptionTranche />,
+        path: Routes.TRANCHES,
+        element: <LazyTranches name="Tranches" />,
+        children: [
+          { index: true, element: <LazyTranchesTranches /> },
+          { path: ':trancheId', element: <LazyTranchesTranche /> },
+        ],
+      },
+      {
+        path: Routes.WITHDRAWALS,
+        element: <LazyWithdrawals name="Withdrawals" />,
+      },
+      {
+        path: Routes.VESTING,
+        element: <LazyRedemption name="Vesting" />,
+        children: [
+          {
+            index: true,
+            element: <LazyRedemptionIndex />,
+          },
+          {
+            path: ':id',
+            element: <LazyRedemptionTranche />,
+          },
+        ],
       },
     ],
+  },
+  {
+    path: Routes.CLAIM,
+    element: <LazyClaim name="Claim" />,
   },
   {
     path: Routes.NOT_PERMITTED,

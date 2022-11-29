@@ -93,7 +93,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <Link
             data-testid="associate-vega-tokens-link-on-homepage"
-            to={`${Routes.STAKING}/associate`}
+            to={`${Routes.VALIDATORS}/associate`}
             className="underline text-white"
           >
             {t('Associate VEGA tokens')}
@@ -110,7 +110,7 @@ const Home = ({ name }: RouteChildProps) => {
               )}
             </p>
             <p>
-              <Link to={Routes.STAKING}>
+              <Link to={Routes.VALIDATORS}>
                 <Button size="md" data-testid="staking-button-on-homepage">
                   {t('Nominate a validator')}
                 </Button>

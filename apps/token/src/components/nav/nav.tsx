@@ -221,11 +221,12 @@ const NavLinks = ({
   };
   const routes = [
     { route: Routes.PROPOSALS, text: t('Proposals') },
-    { route: Routes.VESTING, text: t('Vesting') },
-    { route: Routes.STAKING, text: t('Staking') },
+    { route: Routes.VALIDATORS, text: t('Validators') },
     { route: Routes.REWARDS, text: t('Rewards') },
+    { route: Routes.TOKEN, text: t('Token'), exact: true },
+    { route: Routes.VESTING, text: t('Redeem') },
     { route: Routes.WITHDRAWALS, text: t('Withdraw') },
-    { route: Routes.TOKEN, text: t('Token') },
+    { route: Routes.TRANCHES, text: t('Supply & Vesting') },
   ];
   const navClasses = classNames('flex', {
     'flex-row gap-2 mt-4 uppercase': isDesktop,
