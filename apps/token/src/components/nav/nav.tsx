@@ -225,7 +225,7 @@ const NavLinks = ({
     { route: Routes.VALIDATORS, text: t('Validators') },
     { route: Routes.REWARDS, text: t('Rewards') },
     { route: Routes.TOKEN, text: t('Token'), exact: true },
-    { route: Routes.VESTING, text: t('Redeem') },
+    { route: Routes.REDEEM, text: t('Redeem') },
     { route: Routes.WITHDRAWALS, text: t('Withdraw') },
     { route: Routes.TRANCHES, text: t('Supply & Vesting') },
   ];

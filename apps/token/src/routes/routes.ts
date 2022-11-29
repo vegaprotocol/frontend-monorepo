@@ -9,7 +9,7 @@ export default {
   CONTRACTS: '/contracts',
   STAKING: '/staking',
   TOKEN: '/token',
-  VESTING: '/token/vesting',
-  WITHDRAWALS: '/token/withdrawals',
+  REDEEM: '/token/redeem',
+  WITHDRAWALS: '/token/withdraw',
   TRANCHES: '/token/tranches',
 };

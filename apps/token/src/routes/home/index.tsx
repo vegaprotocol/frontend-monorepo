@@ -57,7 +57,7 @@ const Home = ({ name }: RouteChildProps) => {
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
         </p>
-        <Link to={Routes.VESTING}>
+        <Link to={Routes.REDEEM}>
           <Button
             variant="primary"
             size="md"

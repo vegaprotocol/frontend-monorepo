@@ -193,6 +193,29 @@ const LazyWithdrawals = React.lazy(
     )
 );
 
+const redirects = [
+  {
+    path: Routes.HOME,
+    element: <Navigate to={Routes.PROPOSALS} replace />,
+  },
+  {
+    path: Routes.STAKING,
+    element: <Navigate to={Routes.VALIDATORS} replace />,
+  },
+  {
+    path: '/tranches',
+    element: <Navigate to={Routes.TRANCHES} replace />,
+  },
+  {
+    path: '/withdrawals',
+    element: <Navigate to={Routes.WITHDRAWALS} replace />,
+  },
+  {
+    path: '/vesting',
+    element: <Navigate to={Routes.REDEEM} replace />,
+  },
+];
+
 const routerConfig = [
   {
     path: Routes.PROPOSALS,
@@ -228,14 +251,6 @@ const routerConfig = [
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
       { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
     ],
-  },
-  {
-    path: Routes.HOME,
-    element: <Navigate to={Routes.PROPOSALS} replace />,
-  },
-  {
-    path: Routes.STAKING,
-    element: <Navigate to={Routes.VALIDATORS} replace />,
   },
   {
     path: Routes.VALIDATORS,
@@ -275,7 +290,7 @@ const routerConfig = [
         element: <LazyWithdrawals name="Withdrawals" />,
       },
       {
-        path: Routes.VESTING,
+        path: Routes.REDEEM,
         element: <LazyRedemption name="Vesting" />,
         children: [
           {
@@ -308,6 +323,7 @@ const routerConfig = [
     // Not lazy as loaded when a user first hits the site
     element: <NotFound name="NotFound" />,
   },
+  ...redirects,
 ];
 
 export default routerConfig;
