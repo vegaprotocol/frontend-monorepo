@@ -6,6 +6,7 @@ import { TimeAgo } from '../../../time-ago';
 import type { BlockExplorerTransactionResult } from '../../../../routes/types/block-explorer-response';
 import type { TendermintBlocksResponse } from '../../../../routes/blocks/tendermint-blocks-response';
 import { Time } from '../../../time';
+import { ChainResponseCode } from '../chain-response-code/chain-reponse.code';
 
 interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -61,6 +62,12 @@ export const TxDetailsShared = ({
           ) : (
             '-'
           )}
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>{t('Response code')}</TableCell>
+        <TableCell>
+          <ChainResponseCode code={txData.code} />
         </TableCell>
       </TableRow>
     </>

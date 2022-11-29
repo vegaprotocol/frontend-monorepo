@@ -1,11 +1,18 @@
 fragment ExplorerDeterministicOrderFields on Order {
   id
   status
-  remaining
   version
   createdAt
   expiresAt
+  timeInForce
+  price
   side
+  remaining
+  size
+  rejectionReason
+  party {
+    id
+  }
   market {
     id
     decimalPlaces

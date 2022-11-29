@@ -29,7 +29,7 @@ export const TxDetailsOrderCancel = ({
 
   return (
     <>
-      <TableWithTbody>
+      <TableWithTbody className="mb-8">
         <TxDetailsShared
           txData={txData}
           pubKey={pubKey}
@@ -43,9 +43,7 @@ export const TxDetailsOrderCancel = ({
         </TableRow>
       </TableWithTbody>
 
-      {orderId.length > 0 ? (
-        <DeterministicOrderDetails id={orderId} />
-      ) : null}
+      {orderId.length > 0 ? <DeterministicOrderDetails id={orderId} /> : null}
     </>
   );
 };

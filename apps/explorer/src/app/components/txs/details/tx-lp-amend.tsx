@@ -28,7 +28,7 @@ export const TxDetailsLPAmend = ({
   const marketId = txData.command.liquidityProvisionAmendment?.marketId || '';
 
   return (
-    <TableWithTbody>
+    <TableWithTbody className="mb-8">
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Market')}</TableCell>

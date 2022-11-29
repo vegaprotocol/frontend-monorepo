@@ -4,11 +4,14 @@ import { Routes } from '../../routes/route-names';
 import { TxOrderType } from './tx-order-type';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import { toHex } from '../search/detect-search';
+import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
+import isNumber from 'lodash/isNumber';
 
 const TRUNCATE_LENGTH = 14;
 
 export const TxsInfiniteListItem = ({
   hash,
+  code,
   submitter,
   type,
   block,
@@ -55,7 +58,7 @@ export const TxsInfiniteListItem = ({
         />
       </div>
       <div className="text-sm col-span-5 xl:col-span-2 leading-none	flex items-center">
-        <TxOrderType orderType={type} chainEvent={command?.chainEvent} />
+        <TxOrderType orderType={type} command={command} />
       </div>
       <div
         className="text-sm col-span-3 xl:col-span-1 leading-none flex items-center"
@@ -73,8 +76,14 @@ export const TxsInfiniteListItem = ({
         className="text-sm col-span-2 xl:col-span-1 leading-none flex items-center"
         data-testid="tx-index"
       >
-        <span className="xl:hidden uppercase text-zinc-500">Index:&nbsp;</span>
-        {index}
+        <span className="xl:hidden uppercase text-zinc-500">
+          Success:&nbsp;
+        </span>
+        {isNumber(code) ? (
+          <ChainResponseCode code={code} hideLabel={true} />
+        ) : (
+          code
+        )}
       </div>
     </div>
   );
