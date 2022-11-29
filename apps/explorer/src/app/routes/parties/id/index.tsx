@@ -1,11 +1,13 @@
 import {
   t,
+  useFetch,
   addDecimalsFormatNumber,
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
+import { SyntaxHighlighter, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
@@ -13,27 +15,6 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
-import type { Schema } from '@vegaprotocol/types';
-import get from 'lodash/get';
-
-const accountTypeString: Record<Schema.AccountType, string> = {
-  ACCOUNT_TYPE_BOND: 'Bond',
-  ACCOUNT_TYPE_EXTERNAL: 'External',
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Fees (Infrastructure)',
-  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Fees (Liquidity)',
-  ACCOUNT_TYPE_FEES_MAKER: 'Fees (Maker)',
-  ACCOUNT_TYPE_GENERAL: 'General',
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global Insurance Pool',
-  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global Reward Pool',
-  ACCOUNT_TYPE_INSURANCE: 'Insurance',
-  ACCOUNT_TYPE_MARGIN: 'Margin',
-  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending Transfers',
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'Reward - LP Fees received',
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward - Maker fees paid',
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Reward - Maker fees received',
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward - Market proposers',
-  ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
-};
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -42,7 +23,7 @@ const Party = () => {
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
   const filters = `filters[tx.submitter]=${partyId}`;
   const { hasMoreTxs, loadTxs, error, txsData, loading } = useTxsData({
-    limit: 10,
+    limit: 100,
     filters,
   });
 
@@ -76,13 +57,9 @@ const Party = () => {
           if (!account || !account.asset) {
             return '';
           }
-          const m = get(account, 'market.tradableInstrument.instrument.name');
 
           return (
-            <InfoPanel
-              title={account.asset.name}
-              id={`${accountTypeString[account.type]} ${m ? ` - ${m}` : ''}`}
-            >
+            <InfoPanel title={account.asset.name} id={account.asset.id}>
               <section>
                 <dl className="flex gap-2 flex-wrap">
                   <dt className="text-zinc-500 dark:text-zinc-400 text-md">
@@ -140,16 +117,25 @@ const Party = () => {
           {accounts}
           <SubHeading>{t('Staking')}</SubHeading>
           {staking}
-
-          <SubHeading>{t('Transactions')}</SubHeading>
-          <TxsInfiniteList
-            hasMoreTxs={hasMoreTxs}
-            areTxsLoading={loading}
-            txs={txsData}
-            loadMoreTxs={loadTxs}
+          <SubHeading>{t('JSON')}</SubHeading>
+          <section data-testid="parties-json">
+            <SyntaxHighlighter data={data} />
+          </section>
+          <AsyncRenderer
+            loading={loading as boolean}
             error={error}
-            className="mb-28"
-          />
+            data={txsData}
+          >
+            <SubHeading>{t('Transactions')}</SubHeading>
+            <TxsInfiniteList
+              hasMoreTxs={hasMoreTxs}
+              areTxsLoading={loading}
+              txs={txsData}
+              loadMoreTxs={loadTxs}
+              error={error}
+              className="mb-28"
+            />
+          </AsyncRenderer>
         </>
       ) : null}
     </section>

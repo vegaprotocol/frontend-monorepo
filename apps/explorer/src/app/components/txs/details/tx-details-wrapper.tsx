@@ -11,6 +11,7 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxContent } from '../../../routes/txs/id/tx-content';
 import { TxDetailsNodeVote } from './tx-node-vote';
+import { TxDetailsOrderCancel } from './tx-order-cancel';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -69,6 +70,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
   switch (txData.type) {
     case 'Submit Order':
       return TxDetailsOrder;
+    case 'Cancel Order':
+      return TxDetailsOrderCancel;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
     case 'Amend LiquidityProvision Order':

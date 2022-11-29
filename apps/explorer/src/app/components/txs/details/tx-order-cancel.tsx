@@ -8,34 +8,26 @@ import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
 import { InfoPanel } from '../../info-panel';
 
-interface TxDetailsOrderProps {
+interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
 }
 
 /**
- * An order type is probably the most interesting type we'll see! Except until:
- * https://github.com/vegaprotocol/vega/issues/6832 is complete, we can only
- * fetch the actual transaction and not more details about the order. So for now
- * this view is very basic
+ * Someone cancelled an order
  */
-export const TxDetailsOrder = ({
+export const TxDetailsOrderCancel = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsOrderProps) => {
-  if (!txData || !txData.command.orderSubmission) {
+}: TxDetailsOrderCancelProps) => {
+  if (!txData || !txData.command.orderCancellation) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
-  const marketId = txData.command.orderSubmission.marketId || '-';
 
-  let deterministicId = '';
-
-  const sig = txData.signature.value as string;
-  if (sig) {
-    deterministicId = txSignatureToDeterministicId(sig);
-  }
+  const marketId = txData.command.orderCancellation.marketId || '-';
+  const orderId = txData.command.orderCancellation.orderId || '-';
 
   return (
     <>
@@ -53,11 +45,11 @@ export const TxDetailsOrder = ({
         </TableRow>
       </TableWithTbody>
 
-      {deterministicId.length > 0 ? (
+      {orderId.length > 0 ? (
         <div className="mt-5">
           <InfoPanel title={t('Current Details')} id="current" copy={false}>
             <TableWithTbody>
-              <DeterministicOrderDetails id={deterministicId} />
+              <DeterministicOrderDetails id={orderId} />
             </TableWithTbody>
           </InfoPanel>
         </div>

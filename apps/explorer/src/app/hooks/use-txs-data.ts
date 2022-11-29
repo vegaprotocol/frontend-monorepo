@@ -24,18 +24,24 @@ interface IGetTxsDataUrl {
 
 export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+  let requiresAmpersand = false;
 
   if (limit) {
     url.searchParams.append('limit', limit);
+    requiresAmpersand = true;
   }
 
-  // Hacky fix for param as array
-  let urlAsString = url.toString();
+  let value = url.toString();
+
   if (filters) {
-    urlAsString += '&' + filters;
+    if (requiresAmpersand) {
+      value += '&';
+    }
+
+    value += filters;
   }
 
-  return urlAsString;
+  return value;
 };
 
 export const useTxsData = ({ limit, filters }: IUseTxsData) => {
@@ -57,7 +63,7 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
     if (data?.transactions?.length) {
       setTxsState((prev) => ({
         txsData: [...prev.txsData, ...data.transactions],
-        hasMoreTxs: true,
+        hasMoreTxs: false,
         lastCursor:
           data.transactions[data.transactions.length - 1].cursor || '',
       }));
@@ -75,7 +81,7 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
     setTxsState((prev) => ({
       ...prev,
       lastCursor: '',
-      hasMoreTxs: true,
+      hasMoreTxs: false,
       txsData: [],
     }));
   }, [setTxsState]);
