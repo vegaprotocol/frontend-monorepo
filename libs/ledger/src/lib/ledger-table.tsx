@@ -1,5 +1,6 @@
 import {
   addDecimalsFormatNumber,
+  DateRangeFilter,
   fromNanoSeconds,
   getDateTimeFormat,
   t,
@@ -151,29 +152,12 @@ export const LedgerTable = ({ ...props }) => (
     <AgGridColumn
       headerName={t('Vega Time')}
       field="vegaTime"
-      valueFormatter={({ value }: { value?: string }) =>
+      valueFormatter={({
+        value,
+      }: VegaValueFormatterParams<LedgerEntry, 'vegaTime'>) =>
         value ? getDateTimeFormat().format(fromNanoSeconds(value)) : '-'
       }
-      filter="agDateColumnFilter"
-      filterParams={{
-        comparator: (
-          filterLocalDateAtMidnight: number,
-          dateAsString: string
-        ) => {
-          if (dateAsString == null) {
-            return 0;
-          }
-          const filterDate = new Date(filterLocalDateAtMidnight)
-            .getTime()
-            .toString();
-          if (dateAsString < filterDate) {
-            return -1;
-          } else if (dateAsString > filterDate) {
-            return 1;
-          }
-          return 0;
-        },
-      }}
+      filter={DateRangeFilter}
     />
   </AgGrid>
 );

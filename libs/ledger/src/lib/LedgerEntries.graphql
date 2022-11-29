@@ -11,13 +11,18 @@ fragment LedgerEntry on AggregatedLedgerEntry {
   senderPartyId
 }
 
-query LedgerEntries($partyId: ID!, $pagination: Pagination) {
+query LedgerEntries(
+  $partyId: ID!
+  $pagination: Pagination
+  $dateRange: DateRange
+) {
   ledgerEntries(
     filter: {
       SenderAccountFilter: { partyIds: [$partyId] }
       ReceiverAccountFilter: { partyIds: [$partyId] }
     }
     pagination: $pagination
+    dateRange: $dateRange
   ) {
     edges {
       node {

@@ -24,7 +24,6 @@ export type LedgerEntry = LedgerEntryFragment & {
 };
 
 const getData = (responseData: LedgerEntriesQuery): LedgerEntry[] => {
-  console.log('responseData', responseData);
   return (
     responseData.ledgerEntries?.edges
       ?.filter((e) => Boolean(e?.node))

@@ -3,6 +3,7 @@ import type { Schema } from '@vegaprotocol/types';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { isValidDate } from '../format/date';
+import { t } from '../i18n';
 
 const defaultFilterValue: Schema.DateRange = {};
 
@@ -93,7 +94,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
     <div className="ag-filter-body-wrapper">
       <fieldset className="ag-simple-filter-body-wrapper">
         <label className="block" key="start">
-          <span className="block">start</span>
+          <span className="block">{t('Start')}</span>
           <input
             type="datetime-local"
             name="start"
@@ -102,7 +103,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
           />
         </label>
         <label className="block" key="end">
-          <span className="block">end</span>
+          <span className="block">{t('End')}</span>
           <input
             type="datetime-local"
             name="end"
