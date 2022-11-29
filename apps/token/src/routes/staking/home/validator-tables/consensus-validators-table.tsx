@@ -141,7 +141,7 @@ export const ConsensusValidatorsTable = ({
         {
           field: ValidatorFields.NORMALISED_VOTING_POWER,
           headerName: t(ValidatorFields.NORMALISED_VOTING_POWER).toString(),
-          width: 180,
+          width: 200,
           sort: 'desc',
         },
         {
