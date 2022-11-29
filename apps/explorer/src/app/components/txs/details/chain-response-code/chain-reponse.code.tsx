@@ -1,3 +1,5 @@
+import { t } from '@vegaprotocol/react-helpers';
+
 // https://github.com/vegaprotocol/vega/blob/develop/core/blockchain/response.go
 export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],
@@ -24,16 +26,16 @@ export const ChainResponseCode = ({
   code,
   hideLabel = false,
 }: ChainResponseCodeProps) => {
-  const isSuccess = successCodes.has(code);
+  const isError = successCodes.has(code);
 
-  const icon = isSuccess ? '✅' : '❌';
+  const icon = isError ? '✅' : '❌';
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
   return (
     <div title={`Response code: ${code} - ${label}`}>
       <span
         className="mr-2"
-        aria-label={isSuccess ? 'Success' : 'Warning'}
+        aria-label={isError ? 'Warning' : 'Success'}
         role="img"
       >
         {icon}
