@@ -2,7 +2,6 @@ import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
-import { BigNumber } from '../../../../lib/bignumber';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import {
   defaultColDef,

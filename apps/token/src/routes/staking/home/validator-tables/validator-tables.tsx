@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ConsensusValidatorsTable } from './consensus-validators-table';
 import { StandbyPendingValidatorsTable } from './standby-pending-validators-table';
-import { ValidatorStatus } from '../../../../../../../libs/types/src/__generated__/types';
+import { Schema } from '@vegaprotocol/types';
 import type {
   NodesQuery,
   NodesFragmentFragment,
@@ -37,7 +37,7 @@ export const ValidatorTables = ({
     return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
       (edge) =>
         edge?.rankingScore?.status ===
-        ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT
+        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT
     );
   }, [data?.nodesConnection.edges]);
 
@@ -47,7 +47,7 @@ export const ValidatorTables = ({
     return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
       (edge) =>
         edge?.rankingScore?.status ===
-        ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ
+        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ
     );
   }, [data?.nodesConnection.edges]);
 
@@ -57,7 +57,7 @@ export const ValidatorTables = ({
     return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
       (edge) =>
         edge?.rankingScore?.status ===
-        ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING
+        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING
     );
   }, [data?.nodesConnection.edges]);
 
@@ -77,15 +77,13 @@ export const ValidatorTables = ({
       }
     ).rankingScore.rankingScore;
 
-    stakeNeededForPromotion = useMemo(() => {
-      const lowestRankingBigNum = toBigNum(lowestRankingConsensusScore, 0);
-      const totalStakeBigNum = toBigNum(totalStake, 18);
+    const lowestRankingBigNum = toBigNum(lowestRankingConsensusScore, 0);
+    const totalStakeBigNum = toBigNum(totalStake, 18);
 
-      return formatNumber(
-        lowestRankingBigNum.times(totalStakeBigNum),
-        2
-      ).toString();
-    }, [lowestRankingConsensusScore, totalStake]);
+    stakeNeededForPromotion = formatNumber(
+      lowestRankingBigNum.times(totalStakeBigNum),
+      2
+    ).toString();
   }
 
   return (
