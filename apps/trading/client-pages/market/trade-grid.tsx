@@ -162,16 +162,23 @@ export const TradeMarketHeader = ({
       <MarketMarkPrice
         marketId={market?.id}
         decimalPlaces={market?.decimalPlaces}
+        isHeader
       />
       <Last24hPriceChange
         marketId={market?.id}
         decimalPlaces={market?.decimalPlaces}
+        isHeader
       />
       <Last24hVolume
         marketId={market?.id}
         positionDecimalPlaces={market?.positionDecimalPlaces}
+        isHeader
       />
-      <MarketTradingModeComponent marketId={market?.id} onSelect={onSelect} />
+      <MarketTradingModeComponent
+        marketId={market?.id}
+        onSelect={onSelect}
+        isHeader
+      />
       {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}

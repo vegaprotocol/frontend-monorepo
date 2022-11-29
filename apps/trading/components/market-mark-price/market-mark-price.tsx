@@ -26,7 +26,7 @@ export const MarketMarkPrice = ({
   marketId,
   decimalPlaces,
   initialValue,
-  isHeader = true,
+  isHeader = false,
   noUpdate = false,
 }: Props) => {
   const [marketPrice, setMarketPrice] = useState<string | null>(

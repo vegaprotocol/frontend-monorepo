@@ -29,7 +29,7 @@ interface Props {
 export const MarketTradingModeComponent = ({
   marketId,
   onSelect,
-  isHeader = true,
+  isHeader = false,
   noUpdate = false,
   initialMode,
   initialTrigger,

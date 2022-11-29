@@ -27,7 +27,7 @@ export const Last24hVolume = ({
   marketId,
   positionDecimalPlaces,
   noUpdate = false,
-  isHeader = true,
+  isHeader = false,
   initialValue,
 }: Props) => {
   const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');

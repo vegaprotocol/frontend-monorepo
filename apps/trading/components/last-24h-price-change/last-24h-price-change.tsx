@@ -21,7 +21,7 @@ export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
-  isHeader = true,
+  isHeader = false,
   noUpdate = false,
 }: Props) => {
   const [candlesClose, setCandlesClose] = useState<string[]>(

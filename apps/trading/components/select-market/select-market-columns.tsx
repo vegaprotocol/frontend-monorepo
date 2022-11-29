@@ -171,7 +171,8 @@ export type OnCellClickHandler = (
 export const columns = (
   market: Market,
   onSelect: (id: string) => void,
-  onCellClick: OnCellClickHandler
+  onCellClick: OnCellClickHandler,
+  activeMarketId?: string | null
 ) => {
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
@@ -179,10 +180,6 @@ export const columns = (
   const candleLow = market.candles && calcCandleLow(market.candles);
   const candleHigh = market.candles && calcCandleHigh(market.candles);
   const candleVolume = market.candles && calcCandleVolume(market.candles);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { activeMarketId } = useGlobalStore((store) => ({
-    activeMarketId: store.marketId,
-  }));
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -191,6 +188,7 @@ export const columns = (
       return onSelect(id);
     }
   };
+  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -223,8 +221,7 @@ export const columns = (
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
           initialValue={market.data?.markPrice.toString()}
-          noUpdate={market.id !== activeMarketId}
-          isHeader={false}
+          noUpdate={noUpdate}
         />
       ),
       className: cellClassNames,
@@ -236,8 +233,7 @@ export const columns = (
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={market.id !== activeMarketId}
-          isHeader={false}
+          noUpdate={noUpdate}
           initialValue={candlesClose}
         />
       ),
@@ -320,8 +316,7 @@ export const columns = (
           marketId={market.id}
           positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
-          isHeader={false}
-          noUpdate={market.id !== activeMarketId}
+          noUpdate={noUpdate}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -333,8 +328,7 @@ export const columns = (
       value: (
         <MarketTradingModeComponent
           marketId={market?.id}
-          isHeader={false}
-          noUpdate={market?.id !== activeMarketId}
+          noUpdate={noUpdate}
           initialMode={market.tradingMode}
           initialTrigger={market.data?.trigger}
         />
@@ -365,12 +359,9 @@ export const columnsPositionMarkets = (
   market: Market,
   onSelect: (id: string) => void,
   openVolume?: string,
-  onCellClick?: OnCellClickHandler
+  onCellClick?: OnCellClickHandler,
+  activeMarketId?: string | null
 ) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { activeMarketId } = useGlobalStore((store) => ({
-    activeMarketId: store.marketId,
-  }));
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
     .filter((c: string | undefined): c is CandleClose => !isNil(c));
@@ -385,6 +376,7 @@ export const columnsPositionMarkets = (
     }
   };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
+  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -417,8 +409,7 @@ export const columnsPositionMarkets = (
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
           initialValue={market.data?.markPrice.toString()}
-          noUpdate={market.id !== activeMarketId}
-          isHeader={false}
+          noUpdate={noUpdate}
         />
       ),
       className: cellClassNames,
@@ -430,8 +421,7 @@ export const columnsPositionMarkets = (
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market?.decimalPlaces}
-          noUpdate={market.id !== activeMarketId}
-          isHeader={false}
+          noUpdate={noUpdate}
           initialValue={candlesClose}
         />
       ),
@@ -514,8 +504,7 @@ export const columnsPositionMarkets = (
           marketId={market.id}
           positionDecimalPlaces={market.positionDecimalPlaces}
           initialValue={candleVolume}
-          isHeader={false}
-          noUpdate={market.id !== activeMarketId}
+          noUpdate={noUpdate}
         />
       ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
@@ -527,8 +516,7 @@ export const columnsPositionMarkets = (
       value: (
         <MarketTradingModeComponent
           marketId={market?.id}
-          isHeader={false}
-          noUpdate={market?.id !== activeMarketId}
+          noUpdate={noUpdate}
           initialMode={market.tradingMode}
           initialTrigger={market.data?.trigger}
         />

@@ -38,6 +38,7 @@ import {
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
+import { useGlobalStore } from '../../stores';
 
 type Market = MarketWithCandles & MarketWithData;
 
@@ -87,14 +88,17 @@ export const SelectAllMarketsTableBody = ({
   positions,
   onSelect,
   onCellClick,
+  activeMarketId,
   headers = columnHeaders,
-  tableColumns = (market) => columns(market, onSelect, onCellClick),
+  tableColumns = (market) =>
+    columns(market, onSelect, onCellClick, activeMarketId),
 }: {
   markets?: Market[] | null;
   positions?: PositionFieldsFragment[];
   title?: string;
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
+  activeMarketId?: string | null;
   headers?: Column[];
   tableColumns?: (market: Market, openVolume?: string) => Column[];
 }) => {
@@ -143,6 +147,9 @@ export const SelectMarketPopover = ({
   onSelect: (id: string) => void;
   onCellClick: OnCellClickHandler;
 }) => {
+  const { activeMarketId } = useGlobalStore((store) => ({
+    activeMarketId: store.marketId,
+  }));
   const triggerClasses =
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();
@@ -226,7 +233,8 @@ export const SelectMarketPopover = ({
                       market,
                       onSelectMarket,
                       openVolume,
-                      onCellClick
+                      onCellClick,
+                      activeMarketId
                     )
                   }
                 />
@@ -237,6 +245,7 @@ export const SelectMarketPopover = ({
               markets={data}
               onSelect={onSelectMarket}
               onCellClick={onCellClick}
+              activeMarketId={activeMarketId}
             />
           </table>
         )}
