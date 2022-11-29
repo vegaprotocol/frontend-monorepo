@@ -7,6 +7,7 @@ import {
   t,
   useDataProvider,
   useYesterday,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import throttle from 'lodash/throttle';
@@ -30,6 +31,7 @@ export const Last24hVolume = ({
   isHeader = false,
   initialValue,
 }: Props) => {
+  console.log('initialValue', initialValue);
   const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
@@ -73,7 +75,7 @@ export const Last24hVolume = ({
   const content = useMemo(() => {
     return (
       <>
-        {!error && candleVolume && positionDecimalPlaces
+        {!error && candleVolume && isNumeric(positionDecimalPlaces)
           ? addDecimalsFormatNumber(
               candleVolume,
               positionDecimalPlaces,
@@ -83,7 +85,8 @@ export const Last24hVolume = ({
       </>
     );
   }, [error, candleVolume, positionDecimalPlaces, formatDecimals]);
-
+  console.log('isHeader', isHeader);
+  console.log('content', content);
   return isHeader ? (
     <HeaderStat
       heading={t('Volume (24h)')}

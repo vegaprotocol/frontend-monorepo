@@ -5,6 +5,7 @@ import {
   t,
   PriceCell,
   useDataProvider,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
   MarketData,
@@ -60,7 +61,7 @@ export const MarketMarkPrice = ({
   });
 
   const content = useMemo(() => {
-    if (!marketPrice || !decimalPlaces) {
+    if (!marketPrice || !isNumeric(decimalPlaces)) {
       return <>-</>;
     }
     return isHeader ? (

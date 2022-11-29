@@ -1,6 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import throttle from 'lodash/throttle';
-import { t, useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
+import {
+  isNumeric,
+  t,
+  useDataProvider,
+  useYesterday,
+} from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import { Schema } from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -71,7 +76,7 @@ export const Last24hPriceChange = ({
   });
 
   const content = useMemo(() => {
-    if (error || !decimalPlaces) {
+    if (error || !isNumeric(decimalPlaces)) {
       return <>-</>;
     }
     return (
