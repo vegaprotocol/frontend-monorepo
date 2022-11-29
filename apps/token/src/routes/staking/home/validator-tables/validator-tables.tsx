@@ -117,7 +117,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {pendingValidators.length > 0 && (
+      {pendingValidators.length && (
         <>
           <h2>{t('status-pending')}</h2>
           <p>
