@@ -6,6 +6,8 @@ export * from './lib/use-ethereum-config';
 export * from './lib/use-ethereum-read-contract';
 export * from './lib/use-ethereum-transaction';
 export * from './lib/use-ethereum-transaction-store';
+export * from './lib/use-get-withdraw-delay';
+export * from './lib/use-get-withdraw-threshold';
 export * from './lib/ethereum-transaction-dialog';
 export * from './lib/web3-provider';
 export * from './lib/web3-connect-dialog';

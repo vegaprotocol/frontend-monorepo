@@ -10,6 +10,7 @@ import {
 import {
   useEthTransactionManager,
   useEthTransactionUpdater,
+  useWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
 import {
   EnvironmentProvider,
@@ -25,6 +26,7 @@ import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import ToastsContainer from './toasts-container';
 import { HashRouter, useLocation } from 'react-router-dom';
+import { Web3Container } from '@vegaprotocol/web3';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -54,6 +56,7 @@ const TransactionsHandler = () => {
   useVegaWalletTransactionUpdater();
   useEthTransactionManager();
   useEthTransactionUpdater();
+  useWithdrawApprovalsManager();
   return null;
 };
 
@@ -94,7 +97,9 @@ function AppBody({ Component }: AppProps) {
           <Footer />
           <DialogsContainer />
           <ToastsContainer />
-          <TransactionsHandler />
+          <Web3Container connectEagerly>
+            <TransactionsHandler />
+          </Web3Container>
         </AppLoader>
       </div>
     </ThemeContext.Provider>

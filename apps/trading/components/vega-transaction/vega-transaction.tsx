@@ -10,12 +10,16 @@ import {
   isOrderAmendmentTransaction,
 } from '@vegaprotocol/wallet';
 import type { VegaStoredTxState } from '@vegaprotocol/wallet';
+import { useEthWithdrawApprovalsStore } from '@vegaprotocol/web3';
 
 export const VegaTransaction = ({
   transaction,
 }: {
   transaction: VegaStoredTxState;
 }) => {
+  const createEthWithdrawalApproval = useEthWithdrawApprovalsStore(
+    (state) => state.create
+  );
   if (isWithdrawTransaction(transaction.body)) {
     if (
       transaction.status === VegaTxStatus.Complete &&
@@ -26,8 +30,15 @@ export const VegaTransaction = ({
           transaction={transaction}
           withdrawal={transaction.withdrawal}
           availableTimestamp={null}
-          // eslint-disable-next-line
-          submitWithdraw={() => {}}
+          submitWithdraw={() => {
+            if (!transaction?.withdrawal) {
+              return;
+            }
+            createEthWithdrawalApproval(
+              transaction.withdrawal,
+              transaction.withdrawalApproval
+            );
+          }}
         />
       );
     }

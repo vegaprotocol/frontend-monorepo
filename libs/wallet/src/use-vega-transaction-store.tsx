@@ -236,7 +236,7 @@ export const useVegaWalletTransactionUpdater = () => {
     }));
   const { pubKey } = useVegaWallet();
   const variables = { partyId: pubKey || '' };
-  const skip = !!pubKey;
+  const skip = !pubKey;
   useOrderBusEventsSubscription({
     variables,
     skip,

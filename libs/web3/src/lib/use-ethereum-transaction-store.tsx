@@ -1,26 +1,41 @@
 import create from 'zustand';
 import produce from 'immer';
+import { useApolloClient } from '@apollo/client';
 import type { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
+import { useRef } from 'react';
+import { addDecimal } from '@vegaprotocol/react-helpers';
+import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
+import { useGetWithdrawDelay } from './use-get-withdraw-delay';
+
 import type { EthereumError } from './ethereum-error';
 import { isExpectedEthereumError } from './ethereum-error';
 import { isEthereumError } from './ethereum-error';
 
+import { t } from '@vegaprotocol/react-helpers';
 import type { MultisigControl } from '@vegaprotocol/smart-contracts';
-import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
+import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import { useEthereumConfig } from './use-ethereum-config';
+import { useWeb3React } from '@web3-react/core';
 import {
   useDepositBusEventSubscription,
   useVegaWallet,
 } from '@vegaprotocol/wallet';
 
-import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import type {
+  DepositBusEventFieldsFragment,
+  WithdrawalApprovalQuery,
+  WithdrawalApprovalQueryVariables,
+} from '@vegaprotocol/wallet';
 import { Schema } from '@vegaprotocol/types';
-
+import { WithdrawalApprovalDocument } from '@vegaprotocol/wallet';
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
 
-type Contract = MultisigControl & CollateralBridge & Token & TokenFaucetable;
+type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
 type ContractMethod =
   | keyof MultisigControl
   | keyof CollateralBridge
@@ -43,8 +58,8 @@ interface EthTransactionStore {
     contract: Contract,
     methodName: ContractMethod,
     args: string[],
-    requiredConfirmations: number,
-    requiresConfirmation: boolean
+    requiredConfirmations?: number,
+    requiresConfirmation?: boolean
   ) => number;
   update: (
     id: EthStoredTxState['id'],
@@ -66,8 +81,8 @@ export const useEthTransactionStore = create<EthTransactionStore>(
       contract: Contract,
       methodName: ContractMethod,
       args: string[] = [],
-      requiredConfirmations: number,
-      requiresConfirmation: boolean
+      requiredConfirmations = 1,
+      requiresConfirmation = false
     ) => {
       const transactions = get().transactions;
       const transaction: EthStoredTxState = {
@@ -131,94 +146,99 @@ export const useEthTransactionStore = create<EthTransactionStore>(
 
 export const useEthTransactionManager = () => {
   const update = useEthTransactionStore((state) => state.update);
+  const processed = useRef<Set<number>>(new Set());
   const transaction = useEthTransactionStore((state) =>
     state.transactions.find(
-      (transaction) => transaction?.status === EthTxStatus.Default
+      (transaction) =>
+        transaction?.status === EthTxStatus.Default &&
+        !processed.current.has(transaction.id)
     )
   );
-
-  if (transaction) {
-    (async () => {
+  if (!transaction) {
+    return;
+  }
+  processed.current.add(transaction.id);
+  (async () => {
+    update(transaction.id, {
+      status: EthTxStatus.Requested,
+      error: null,
+      confirmations: 0,
+    });
+    const {
+      contract,
+      methodName,
+      args,
+      requiredConfirmations,
+      requiresConfirmation,
+    } = transaction;
+    try {
+      if (
+        !contract ||
+        // @ts-ignore method vary depends on contract
+        typeof contract[methodName] !== 'function' ||
+        typeof contract.contract.callStatic[methodName] !== 'function'
+      ) {
+        throw new Error('method not found on contract');
+      }
+      await contract.contract.callStatic[methodName](...args);
+    } catch (err) {
       update(transaction.id, {
-        status: EthTxStatus.Requested,
-        error: null,
-        confirmations: 0,
+        status: EthTxStatus.Error,
+        error: err as EthereumError,
       });
-      const {
-        contract,
-        methodName,
-        args,
-        requiredConfirmations,
-        requiresConfirmation,
-      } = transaction;
-      try {
-        if (
-          !contract ||
-          (typeof methodName in contract &&
-            contract[methodName] !== 'function') ||
-          typeof contract.contract.callStatic[methodName] !== 'function'
-        ) {
-          throw new Error('method not found on contract');
+      return;
+    }
+
+    try {
+      // @ts-ignore method vary depends on contract
+      const method = contract[methodName];
+
+      if (!method || typeof method !== 'function') {
+        throw new Error('method not found on contract');
+      }
+
+      // @ts-ignore args will vary depends on contract and method
+      const tx = await method.call(contract, ...args);
+
+      let receipt: ethers.ContractReceipt | null = null;
+
+      update(transaction.id, {
+        status: EthTxStatus.Pending,
+        txHash: tx.hash,
+      });
+
+      for (let i = 1; i <= requiredConfirmations; i++) {
+        receipt = await tx.wait(i);
+        update(transaction.id, {
+          confirmations: receipt
+            ? receipt.confirmations
+            : requiredConfirmations,
+        });
+      }
+
+      if (!receipt) {
+        throw new Error('no receipt after confirmations are met');
+      }
+
+      if (requiresConfirmation) {
+        update(transaction.id, { status: EthTxStatus.Complete, receipt });
+      } else {
+        update(transaction.id, { status: EthTxStatus.Confirmed, receipt });
+      }
+    } catch (err) {
+      if (err instanceof Error || isEthereumError(err)) {
+        if (!isExpectedEthereumError(err)) {
+          update(transaction.id, { status: EthTxStatus.Error, error: err });
         }
-        await contract.contract.callStatic[methodName as string](...args);
-      } catch (err) {
+      } else {
         update(transaction.id, {
           status: EthTxStatus.Error,
-          error: err as EthereumError,
+          error: new Error('Something went wrong'),
         });
-        return;
       }
-
-      try {
-        const method = contract[methodName];
-
-        if (!method || typeof method !== 'function') {
-          throw new Error('method not found on contract');
-        }
-
-        // @ts-ignore args will vary depends on contract and method
-        const tx = await method.call(contract, ...args);
-
-        let receipt: ethers.ContractReceipt | null = null;
-
-        update(transaction.id, {
-          status: EthTxStatus.Pending,
-          txHash: tx.hash,
-        });
-
-        for (let i = 1; i <= requiredConfirmations; i++) {
-          receipt = await tx.wait(i);
-          update(transaction.id, {
-            confirmations: receipt
-              ? receipt.confirmations
-              : requiredConfirmations,
-          });
-        }
-
-        if (!receipt) {
-          throw new Error('no receipt after confirmations are met');
-        }
-
-        if (requiresConfirmation) {
-          update(transaction.id, { status: EthTxStatus.Complete, receipt });
-        } else {
-          update(transaction.id, { status: EthTxStatus.Confirmed, receipt });
-        }
-      } catch (err) {
-        if (err instanceof Error || isEthereumError(err)) {
-          if (!isExpectedEthereumError(err)) {
-            update(transaction.id, { status: EthTxStatus.Error, error: err });
-          }
-        } else {
-          update(transaction.id, {
-            status: EthTxStatus.Error,
-            error: new Error('Something went wrong'),
-          });
-        }
-        return;
-      }
-    })();
-  }
+      return;
+    }
+  })();
 };
 
 export const useEthTransactionUpdater = () => {
@@ -242,4 +262,172 @@ export const useEthTransactionUpdater = () => {
         }
       }),
   });
+};
+
+export enum ApprovalStatus {
+  Idle = 'Idle',
+  Pending = 'Pending',
+  Delayed = 'Delayed',
+  Error = 'Error',
+  Ready = 'Ready',
+}
+interface EthWithdrawalApprovalState {
+  id: number;
+  status: ApprovalStatus;
+  message?: string;
+  threshold?: BigNumber;
+  completeTimestamp?: number | null;
+  dialogOpen?: boolean;
+  withdrawal: WithdrawalBusEventFieldsFragment;
+  approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
+}
+interface EthWithdrawApprovalStore {
+  transactions: (EthWithdrawalApprovalState | undefined)[];
+  create: (
+    withdrawal: EthWithdrawalApprovalState['withdrawal'],
+    approval?: EthWithdrawalApprovalState['approval']
+  ) => number;
+  update: (
+    id: EthWithdrawalApprovalState['id'],
+    update?: Partial<
+      Pick<
+        EthWithdrawalApprovalState,
+        'approval' | 'status' | 'message' | 'threshold' | 'completeTimestamp'
+      >
+    >
+  ) => void;
+}
+
+export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
+  (set, get) => ({
+    transactions: [] as EthWithdrawalApprovalState[],
+    create: (
+      withdrawal: EthWithdrawalApprovalState['withdrawal'],
+      approval?: EthWithdrawalApprovalState['approval']
+    ) => {
+      const transactions = get().transactions;
+      const transaction: EthWithdrawalApprovalState = {
+        id: transactions.length,
+        status: ApprovalStatus.Idle,
+        withdrawal,
+        approval,
+      };
+      set({ transactions: transactions.concat(transaction) });
+      return transaction.id;
+    },
+    update: (
+      id: EthWithdrawalApprovalState['id'],
+      update?: Partial<
+        Pick<EthWithdrawalApprovalState, 'approval' | 'status' | 'message'>
+      >
+    ) =>
+      set({
+        transactions: produce(get().transactions, (draft) => {
+          const transaction = draft.find(
+            (transaction) => transaction?.id === id
+          );
+          if (transaction) {
+            Object.assign(transaction, update);
+          }
+        }),
+      }),
+  })
+);
+
+export const useWithdrawApprovalsManager = () => {
+  const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
+  const { query } = useApolloClient();
+  const { provider } = useWeb3React();
+  const { config } = useEthereumConfig();
+  const createEthTransaction = useEthTransactionStore((state) => state.create);
+  const update = useEthWithdrawApprovalsStore((state) => state.update);
+  const processed = useRef<Set<number>>(new Set());
+  const transaction = useEthWithdrawApprovalsStore((state) =>
+    state.transactions.find(
+      (transaction) =>
+        transaction?.status === ApprovalStatus.Idle &&
+        !processed.current.has(transaction.id)
+    )
+  );
+  if (!transaction) {
+    return;
+  }
+  processed.current.add(transaction.id);
+  (async () => {
+    const { withdrawal } = transaction;
+    let { approval } = transaction;
+    if (withdrawal.asset.source.__typename !== 'ERC20') {
+      update(transaction.id, {
+        status: ApprovalStatus.Error,
+        message: t(
+          `Invalid asset source: ${withdrawal.asset.source.__typename}`
+        ),
+      });
+      return;
+    }
+    update(transaction.id, {
+      status: ApprovalStatus.Pending,
+      message: t('Verifying withdrawal approval'),
+    });
+
+    const amount = new BigNumber(
+      addDecimal(withdrawal.amount, withdrawal.asset.decimals)
+    );
+
+    const threshold = await getThreshold(withdrawal.asset);
+
+    if (threshold && amount.isGreaterThan(threshold)) {
+      const delaySecs = await getDelay();
+      const completeTimestamp =
+        new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
+
+      if (Date.now() < completeTimestamp) {
+        update(transaction.id, {
+          status: ApprovalStatus.Delayed,
+          threshold,
+          completeTimestamp,
+        });
+        return;
+      }
+    }
+    if (!approval) {
+      const res = await query<
+        WithdrawalApprovalQuery,
+        WithdrawalApprovalQueryVariables
+      >({
+        query: WithdrawalApprovalDocument,
+        variables: { withdrawalId: withdrawal.id },
+      });
+
+      approval = res.data.erc20WithdrawalApproval;
+    }
+    if (!(provider && config && approval) || approval.signatures.length < 3) {
+      update(transaction.id, {
+        status: ApprovalStatus.Error,
+        message: t(`Withdraw dependencies not met.`),
+      });
+      return;
+    }
+    update(transaction.id, {
+      status: ApprovalStatus.Ready,
+      approval,
+    });
+    const signer = provider.getSigner();
+    createEthTransaction(
+      new CollateralBridge(
+        config.collateral_bridge_contract.address,
+        signer || provider
+      ),
+      'withdraw_asset',
+      [
+        approval.assetSource,
+        approval.amount,
+        approval.targetAddress,
+        approval.creation,
+        approval.nonce,
+        approval.signatures,
+      ]
+    );
+  })();
 };

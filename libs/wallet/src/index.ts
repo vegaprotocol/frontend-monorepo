@@ -11,3 +11,4 @@ export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
 export * from './__generated__/TransactionResult';
+export * from './__generated__/WithdrawalApproval';
