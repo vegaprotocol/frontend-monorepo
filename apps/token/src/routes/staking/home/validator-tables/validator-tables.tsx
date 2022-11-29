@@ -98,7 +98,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {standbyValidators.length > 0 && (
+      {standbyValidators.length && (
         <>
           <h2>{t('status-ersatz')}</h2>
           <p>
