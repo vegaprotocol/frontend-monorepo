@@ -1,26 +1,34 @@
-fragment LedgerEntry on AggregatedLedgerEntries {
+fragment LedgerEntry on AggregatedLedgerEntry {
   vegaTime
   quantity
-  partyId
   assetId
-  marketId
-  accountType
   transferType
+  receiverAccountType
+  receiverMarketId
+  receiverPartyId
+  senderAccountType
+  senderMarketId
+  senderPartyId
 }
 
-query LedgerEntries($partyId: ID!) {
+query LedgerEntries($partyId: ID!, $pagination: Pagination) {
   ledgerEntries(
-    filter: { AccountFromFilter: { partyIds: [$partyId] } }
-    groupOptions: {
-      ByAccountField: [PartyId, AccountType, AssetId, MarketId]
-      ByLedgerEntryField: [TransferType]
+    filter: {
+      SenderAccountFilter: { partyIds: [$partyId] }
+      ReceiverAccountFilter: { partyIds: [$partyId] }
     }
-    pagination: { first: 500 }
+    pagination: $pagination
   ) {
     edges {
       node {
         ...LedgerEntry
       }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }

@@ -36,6 +36,8 @@ import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { MarketMarkPrice } from '../../components/market-mark-price';
 import { MarketTradingModeComponent } from '../../components/market-trading-mode';
 import { Last24hVolume } from '../../components/last-24h-volume';
+import { MarketProposalNotification } from '@vegaprotocol/governance';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
 
 const NO_MARKET = t('No market');
 
@@ -177,6 +179,7 @@ export const TradeMarketHeader = ({
           </div>
         </HeaderStat>
       ) : null}
+      <MarketProposalNotification marketId={market?.id} />
     </Header>
   );
 };
@@ -259,16 +262,24 @@ const MainGrid = ({
       <TradeGridChild>
         <Tabs>
           <Tab id="positions" name={t('Positions')}>
-            <TradingViews.Positions />
+            <VegaWalletContainer>
+              <TradingViews.Positions />
+            </VegaWalletContainer>
           </Tab>
           <Tab id="orders" name={t('Orders')}>
-            <TradingViews.Orders />
+            <VegaWalletContainer>
+              <TradingViews.Orders />
+            </VegaWalletContainer>
           </Tab>
           <Tab id="fills" name={t('Fills')}>
-            <TradingViews.Fills />
+            <VegaWalletContainer>
+              <TradingViews.Fills />
+            </VegaWalletContainer>
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>
-            <TradingViews.Collateral />
+            <VegaWalletContainer>
+              <TradingViews.Collateral />
+            </VegaWalletContainer>
           </Tab>
         </Tabs>
       </TradeGridChild>

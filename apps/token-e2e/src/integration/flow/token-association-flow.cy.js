@@ -28,7 +28,6 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       cy.verify_page_header('The $VEGA token');
-      cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 

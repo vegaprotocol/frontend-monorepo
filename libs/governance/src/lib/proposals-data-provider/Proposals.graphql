@@ -12,6 +12,63 @@ fragment NewMarketFields on NewMarket {
   }
 }
 
+fragment UpdateMarketFields on UpdateMarket {
+  marketId
+  updateMarketConfiguration {
+    instrument {
+      code
+      product {
+        quoteName
+      }
+    }
+    priceMonitoringParameters {
+      triggers {
+        horizonSecs
+        probability
+        auctionExtensionSecs
+      }
+    }
+    liquidityMonitoringParameters {
+      targetStakeParameters {
+        timeWindow
+        scalingFactor
+      }
+      triggeringRatio
+    }
+    riskParameters {
+      __typename
+      ... on UpdateMarketSimpleRiskModel {
+        simple {
+          factorLong
+          factorShort
+        }
+      }
+      ... on UpdateMarketLogNormalRiskModel {
+        logNormal {
+          riskAversionParameter
+          tau
+          params {
+            mu
+            r
+            sigma
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment UpdateAssetFields on UpdateAsset {
+  assetId
+  quantum
+  source {
+    ... on UpdateERC20 {
+      lifetimeLimit
+      withdrawThreshold
+    }
+  }
+}
+
 fragment ProposalListFields on Proposal {
   id
   reference
@@ -35,6 +92,12 @@ fragment ProposalListFields on Proposal {
     change {
       ... on NewMarket {
         ...NewMarketFields
+      }
+      ... on UpdateMarket {
+        ...UpdateMarketFields
+      }
+      ... on UpdateAsset {
+        ...UpdateAssetFields
       }
     }
   }

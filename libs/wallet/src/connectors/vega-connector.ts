@@ -15,7 +15,7 @@ export interface UndelegateSubmissionBody {
   };
 }
 
-interface OrderSubmission {
+export interface OrderSubmission {
   marketId: string;
   reference?: string;
   type: Schema.OrderType;

@@ -63,9 +63,11 @@ export const DealTicket = ({
   const order = watch();
   // When order state changes persist it in local storage
   useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
+
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
       if (!pubKey) {

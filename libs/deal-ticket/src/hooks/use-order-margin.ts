@@ -1,27 +1,17 @@
 import { BigNumber } from 'bignumber.js';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { Schema } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import type { EstimateOrderQuery } from './__generated__/EstimateOrder';
 import { useEstimateOrderQuery } from './__generated__/EstimateOrder';
-import { isMarketInAuction } from '../utils';
-
-interface Market {
-  id: string;
-  decimalPlaces: number;
-  positionDecimalPlaces: number;
-  tradingMode: Schema.MarketTradingMode;
-  data: {
-    indicativePrice: string;
-    markPrice: string;
-  };
-}
+import type { MarketDealTicket } from '@vegaprotocol/market-list';
+import { getDerivedPrice } from '../utils/get-price';
 
 export interface Props {
   order: OrderSubmissionBody['orderSubmission'];
-  market: Market;
+  market: MarketDealTicket;
   partyId: string;
+  derivedPrice?: string;
 }
 
 const addFees = (feeObj: EstimateOrderQuery['estimateOrder']['fee']) => {
@@ -44,9 +34,10 @@ export const useOrderMargin = ({
   order,
   market,
   partyId,
+  derivedPrice,
 }: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
-  const priceForEstimate = getPriceForEstimate(order, market);
+  const priceForEstimate = derivedPrice || getDerivedPrice(order, market);
 
   const { data } = useEstimateOrderQuery({
     variables: {
@@ -85,33 +76,4 @@ export const useOrderMargin = ({
     };
   }
   return null;
-};
-
-/**
- * Gets a price to use for estimating order margin and fees.
- * Market orders should use the markPrice or if in auction mode
- * the indicative price. If its a limit order use user input price.
- */
-const getPriceForEstimate = (
-  order: {
-    type: Schema.OrderType;
-    price?: string | undefined;
-  },
-  market: Market
-) => {
-  // If order type is market we should use either the mark price
-  // or the uncrossing price. If order type is limit use the price
-  // the user has input
-  let price;
-  if (order.type === Schema.OrderType.TYPE_LIMIT && order.price) {
-    price = removeDecimal(order.price, market.decimalPlaces);
-  } else {
-    if (isMarketInAuction(market)) {
-      price = market.data.indicativePrice;
-    } else {
-      price = market.data.markPrice;
-    }
-  }
-
-  return price === '0' ? undefined : price;
 };

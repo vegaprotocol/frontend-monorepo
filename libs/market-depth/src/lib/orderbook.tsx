@@ -14,11 +14,11 @@ import {
 import classNames from 'classnames';
 
 import {
-  formatNumber,
   addDecimalsFormatNumber,
   t,
   ThemeContext,
   useResizeObserver,
+  formatNumberFixed,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
@@ -659,7 +659,7 @@ export const Orderbook = ({
           >
             {resolutions.map((r) => (
               <option key={r} value={r}>
-                {formatNumber(0, decimalPlaces - Math.log10(r))}
+                {formatNumberFixed(0, decimalPlaces - Math.log10(r))}
               </option>
             ))}
           </select>

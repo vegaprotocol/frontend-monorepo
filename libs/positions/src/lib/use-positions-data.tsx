@@ -29,6 +29,7 @@ export const usePositionsData = (
 
       const update: Position[] = [];
       const add: Position[] = [];
+      const remove: Position[] = [];
       if (!gridRef.current?.api) {
         return false;
       }
@@ -37,18 +38,23 @@ export const usePositionsData = (
           getRowId({ data: position })
         );
         if (rowNode) {
-          update.push(position);
-        } else {
+          if (position.openVolume === '0') {
+            remove.push(position);
+          } else {
+            update.push(position);
+          }
+        } else if (position.openVolume !== '0') {
           add.push(position);
         }
       });
-      if (update.length || add.length) {
+      if (update.length || add.length || remove.length) {
         const rowDataTransaction = {
           update,
           add,
+          remove,
           addIndex: 0,
         };
-        if (add.length) {
+        if (add.length || remove.length) {
           gridRef.current.api.applyTransaction(rowDataTransaction);
         } else {
           gridRef.current.api.applyTransactionAsync(rowDataTransaction);
@@ -64,7 +70,7 @@ export const usePositionsData = (
     variables,
   });
   return {
-    data,
+    data: data?.filter((position) => position.openVolume !== '0'),
     error,
     loading,
   };

@@ -223,15 +223,25 @@ export const OrderStatusMapping: {
 /**
  * Valid order types, these determine what happens when an order is added to the book
  */
-export const OrderTimeInForceMapping: {
+type OrderTimeInForceMap = {
   [T in OrderTimeInForce]: string;
-} = {
+};
+export const OrderTimeInForceMapping: OrderTimeInForceMap = {
   TIME_IN_FORCE_FOK: 'Fill or Kill (FOK)',
   TIME_IN_FORCE_GFA: 'Good for Auction (GFA)',
   TIME_IN_FORCE_GFN: 'Good for Normal (GFN)',
   TIME_IN_FORCE_GTC: `Good 'til Cancelled (GTC)`,
   TIME_IN_FORCE_GTT: `Good 'til Time (GTT)`,
   TIME_IN_FORCE_IOC: 'Immediate or Cancel (IOC)',
+};
+
+export const OrderTimeInForceCode: OrderTimeInForceMap = {
+  TIME_IN_FORCE_FOK: 'FOK',
+  TIME_IN_FORCE_GFA: 'GFA',
+  TIME_IN_FORCE_GFN: 'GFN',
+  TIME_IN_FORCE_GTC: 'GTC',
+  TIME_IN_FORCE_GTT: 'GTT',
+  TIME_IN_FORCE_IOC: 'IOC',
 };
 
 export const OrderTypeMapping: {
