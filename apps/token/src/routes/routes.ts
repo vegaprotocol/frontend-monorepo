@@ -5,9 +5,10 @@ export default {
   STAKING: '/staking',
   REWARDS: '/rewards',
   WITHDRAWALS: '/withdrawals',
-  GOVERNANCE: '/governance',
+  PROPOSALS: '/proposals',
   VESTING: '/vesting',
   NOT_PERMITTED: '/not-permitted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
+  TOKEN: '/token',
 };

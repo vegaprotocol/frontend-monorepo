@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import Home from './home';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
@@ -195,7 +195,46 @@ const LazyWithdrawals = React.lazy(
 
 const routerConfig = [
   {
+    path: Routes.PROPOSALS,
+    element: <LazyGovernance name="Governance" />,
+    children: [
+      { index: true, element: <LazyGovernanceProposals /> },
+      {
+        path: 'propose',
+        element: <Outlet />,
+        children: [
+          { index: true, element: <LazyGovernancePropose /> },
+          {
+            path: 'network-parameter',
+            element: <LazyGovernanceProposeNetworkParameter />,
+          },
+          {
+            path: 'new-market',
+            element: <LazyGovernanceProposeNewMarket />,
+          },
+          {
+            path: 'update-market',
+            element: <LazyGovernanceProposeUpdateMarket />,
+          },
+          { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
+          {
+            path: 'update-asset',
+            element: <LazyGovernanceProposeUpdateAsset />,
+          },
+          { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
+          { path: 'raw', element: <LazyGovernanceProposeRaw /> },
+        ],
+      },
+      { path: ':proposalId', element: <LazyGovernanceProposal /> },
+      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
+    ],
+  },
+  {
     path: Routes.HOME,
+    element: <Navigate to={Routes.PROPOSALS} replace />,
+  },
+  {
+    path: Routes.TOKEN,
     // Not lazy as loaded when a user first hits the site
     element: <Home name="Home" />,
   },
@@ -244,41 +283,6 @@ const routerConfig = [
         path: ':id',
         element: <LazyRedemptionTranche />,
       },
-    ],
-  },
-  {
-    path: Routes.GOVERNANCE,
-    element: <LazyGovernance name="Governance" />,
-    children: [
-      { index: true, element: <LazyGovernanceProposals /> },
-      {
-        path: 'propose',
-        element: <Outlet />,
-        children: [
-          { index: true, element: <LazyGovernancePropose /> },
-          {
-            path: 'network-parameter',
-            element: <LazyGovernanceProposeNetworkParameter />,
-          },
-          {
-            path: 'new-market',
-            element: <LazyGovernanceProposeNewMarket />,
-          },
-          {
-            path: 'update-market',
-            element: <LazyGovernanceProposeUpdateMarket />,
-          },
-          { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
-          {
-            path: 'update-asset',
-            element: <LazyGovernanceProposeUpdateAsset />,
-          },
-          { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
-          { path: 'raw', element: <LazyGovernanceProposeRaw /> },
-        ],
-      },
-      { path: ':proposalId', element: <LazyGovernanceProposal /> },
-      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
     ],
   },
   {

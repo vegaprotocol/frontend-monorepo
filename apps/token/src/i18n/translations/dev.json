@@ -715,5 +715,6 @@
   "SpamProtectionMin": "Spam protection minimum",
   "ListAsset": "List Asset",
   "ListAssetDescription": "This asset needs to be listed on the collateral bridge before it can be used.",
-  "ListAssetAction": "List asset"
+  "ListAssetAction": "List asset",
+  "Proposals": "Proposals"
 }

@@ -127,7 +127,7 @@ export const RedeemFromTranche = () => {
                     governanceLink: (
                       <Link
                         className="underline text-white"
-                        to={Routes.GOVERNANCE}
+                        to={Routes.PROPOSALS}
                       />
                     ),
                   }}

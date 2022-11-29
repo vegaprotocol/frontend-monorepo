@@ -127,7 +127,7 @@ const Home = ({ name }: RouteChildProps) => {
               )}
             </p>
             <p>
-              <Link to={Routes.GOVERNANCE}>
+              <Link to={Routes.PROPOSALS}>
                 <Button size="md" data-testid="governance-button-on-homepage">
                   {t('View Governance proposals')}
                 </Button>

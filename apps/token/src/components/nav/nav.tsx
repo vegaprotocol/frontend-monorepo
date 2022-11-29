@@ -220,12 +220,12 @@ const NavLinks = ({
       appDispatch({ type: AppStateActionType.SET_DRAWER, isOpen: false }),
   };
   const routes = [
-    { route: Routes.HOME, text: t('Home') },
+    { route: Routes.PROPOSALS, text: t('Proposals') },
     { route: Routes.VESTING, text: t('Vesting') },
     { route: Routes.STAKING, text: t('Staking') },
     { route: Routes.REWARDS, text: t('Rewards') },
     { route: Routes.WITHDRAWALS, text: t('Withdraw') },
-    { route: Routes.GOVERNANCE, text: t('Governance') },
+    { route: Routes.TOKEN, text: t('Token') },
   ];
   const navClasses = classNames('flex', {
     'flex-row gap-2 mt-4 uppercase': isDesktop,

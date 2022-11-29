@@ -194,7 +194,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         </div>
       ))}
       <WalletCardActions>
-        <Link className="flex-1" to={Routes.GOVERNANCE}>
+        <Link className="flex-1" to={Routes.PROPOSALS}>
           <Button size="sm" fill={true}>
             {t('governance')}
           </Button>
