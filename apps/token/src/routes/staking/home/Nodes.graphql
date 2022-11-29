@@ -12,9 +12,6 @@ fragment NodesFragment on Node {
     votingPower
     status
   }
-  rewardScore {
-    rawValidatorScore
-  }
 }
 
 query Nodes {

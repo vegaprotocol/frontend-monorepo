@@ -61,7 +61,10 @@ export const ValidatorTables = ({
     );
   }, [data?.nodesConnection.edges]);
 
-  if (consensusValidators.length > 0) {
+  if (
+    consensusValidators.length > 0 &&
+    (standbyValidators.length > 0 || pendingValidators.length > 0)
+  ) {
     const lowestRankingConsensusScore = consensusValidators.reduce(
       (lowest: NodesFragmentFragment, validator: NodesFragmentFragment) => {
         if (
@@ -86,18 +89,17 @@ export const ValidatorTables = ({
   }
 
   return (
-    <>
-      {consensusValidators.length > 0 &&
-        (standbyValidators.length > 0 || pendingValidators.length > 0) && (
-          <>
-            <h2>{t('status-tendermint')}</h2>
-            <ConsensusValidatorsTable
-              data={consensusValidators}
-              previousEpochData={previousEpochData}
-              totalStake={totalStake}
-            />
-          </>
-        )}
+    <div data-testid="validator-tables">
+      {consensusValidators.length > 0 && (
+        <>
+          <h2>{t('status-tendermint')}</h2>
+          <ConsensusValidatorsTable
+            data={consensusValidators}
+            previousEpochData={previousEpochData}
+            totalStake={totalStake}
+          />
+        </>
+      )}
       {standbyValidators.length > 0 && (
         <>
           <h2>{t('status-ersatz')}</h2>
@@ -146,6 +148,6 @@ export const ValidatorTables = ({
           />
         </>
       )}
-    </>
+    </div>
   );
 };

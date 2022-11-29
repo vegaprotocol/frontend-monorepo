@@ -119,8 +119,8 @@ export const StandbyPendingValidatorsTable = ({
         {
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
           headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
-          width: 180,
-          sort: 'desc',
+          width: 210,
+          sort: 'asc',
         },
         {
           field: ValidatorFields.STAKE_SHARE,
