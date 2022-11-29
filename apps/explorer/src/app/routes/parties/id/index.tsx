@@ -1,6 +1,5 @@
 import {
   t,
-  useFetch,
   addDecimalsFormatNumber,
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';

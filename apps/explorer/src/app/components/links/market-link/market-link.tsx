@@ -4,6 +4,7 @@ import { useExplorerMarketQuery } from './__generated__/Market';
 import { Link } from 'react-router-dom';
 
 import type { ComponentProps } from 'react';
+import { t } from '@vegaprotocol/react-helpers';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -15,19 +16,25 @@ export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
  * it will use the ID instead
  */
 const MarketLink = ({ id, ...props }: MarketLinkProps) => {
-  const { data } = useExplorerMarketQuery({
+  const { data, error, loading } = useExplorerMarketQuery({
     variables: { id },
   });
 
-  let label = id;
+  let label = <span>{id}</span>;
 
-  if (data?.market?.tradableInstrument.instrument.name) {
-    label = data.market.tradableInstrument.instrument.name;
+  if (!loading) {
+    if (data?.market?.tradableInstrument.instrument.name) {
+      label = <span>{data.market.tradableInstrument.instrument.name}</span>;
+    } else if (error) {
+      label = <div title={t('Unknown market')}>
+        <span role="img" aria-label="Unknown market" className="img">⚠️</span>&nbsp;{id}
+      </div>
+    }
   }
 
   return (
     <Link className="underline" {...props} to={`/${Routes.MARKETS}#${id}`}>
-      {label}
+      {label} 
     </Link>
   );
 };

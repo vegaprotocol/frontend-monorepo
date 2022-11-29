@@ -4,10 +4,11 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
 import MarketLink from './market-link';
 import { ExplorerMarketDocument } from './__generated__/Market';
+import { GraphQLError } from 'graphql';
 
-function renderComponent(id: string, mock: MockedResponse[]) {
+function renderComponent(id: string, mocks: MockedResponse[]) {
   return (
-    <MockedProvider mocks={mock}>
+    <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
         <MarketLink id={id} />
       </MemoryRouter>
@@ -20,6 +21,27 @@ describe('Market link component', () => {
     const res = render(renderComponent('123', []));
     expect(res.getByText('123')).toBeInTheDocument();
   });
+
+  it('Renders the ID with an emoji on error', async () => {
+    const mock = {
+      request: {
+        query: ExplorerMarketDocument,
+        variables: {
+          id: '456'
+        },
+      },
+      result: {
+        errors: [new GraphQLError('No such market')]
+      }
+    } 
+    const res = render(renderComponent('456', [mock]));
+    // The ID
+    expect(res.getByText('456')).toBeInTheDocument();
+
+    // The emoji
+    expect(await res.findByRole('img')).toBeInTheDocument();
+  })
+
 
   it('Renders the market name when the query returns a result', async () => {
     const mock = {

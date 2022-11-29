@@ -24,24 +24,16 @@ interface IGetTxsDataUrl {
 
 export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
-  let requiresAmpersand = false;
 
   if (limit) {
     url.searchParams.append('limit', limit);
-    requiresAmpersand = true;
   }
-
-  let value = url.toString();
 
   if (filters) {
-    if (requiresAmpersand) {
-      value += '&';
-    }
-
-    value += filters;
+    url.searchParams.append('filters', filters);
   }
 
-  return value;
+  return url;
 };
 
 export const useTxsData = ({ limit, filters }: IUseTxsData) => {
@@ -57,13 +49,13 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   const {
     state: { data, error, loading },
     refetch,
-  } = useFetch<BlockExplorerTransactions>(url, {}, false);
+  } = useFetch<BlockExplorerTransactions>(url.href, {}, false);
 
   useEffect(() => {
     if (data?.transactions?.length) {
       setTxsState((prev) => ({
         txsData: [...prev.txsData, ...data.transactions],
-        hasMoreTxs: false,
+        hasMoreTxs: true,
         lastCursor:
           data.transactions[data.transactions.length - 1].cursor || '',
       }));
@@ -81,7 +73,7 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
     setTxsState((prev) => ({
       ...prev,
       lastCursor: '',
-      hasMoreTxs: false,
+      hasMoreTxs: true,
       txsData: [],
     }));
   }, [setTxsState]);

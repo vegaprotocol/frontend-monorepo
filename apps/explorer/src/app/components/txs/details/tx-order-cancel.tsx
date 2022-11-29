@@ -4,9 +4,7 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
-import { InfoPanel } from '../../info-panel';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -46,13 +44,7 @@ export const TxDetailsOrderCancel = ({
       </TableWithTbody>
 
       {orderId.length > 0 ? (
-        <div className="mt-5">
-          <InfoPanel title={t('Current Details')} id="current" copy={false}>
-            <TableWithTbody>
-              <DeterministicOrderDetails id={orderId} />
-            </TableWithTbody>
-          </InfoPanel>
-        </div>
+        <DeterministicOrderDetails id={orderId} />
       ) : null}
     </>
   );
