@@ -60,22 +60,29 @@ export const MarketMarkPrice = ({
     skip: noUpdate || !marketId || !data,
   });
 
-  if (!marketPrice || !data?.decimalPlaces) {
-    return <>-</>;
-  }
+  const content = useMemo(() => {
+    if (!marketPrice || !data?.decimalPlaces) {
+      return <>-</>;
+    }
+    return isHeader ? (
+      <div>{addDecimalsFormatNumber(marketPrice, data.decimalPlaces)}</div>
+    ) : (
+      <PriceCell
+        value={Number(marketPrice)}
+        valueFormatted={addDecimalsFormatNumber(
+          marketPrice || '',
+          data?.decimalPlaces || 0,
+          2
+        )}
+      />
+    );
+  }, [marketPrice, data?.decimalPlaces, isHeader]);
 
   return isHeader ? (
     <HeaderStat heading={t('Price')} testId="market-price">
-      <div>{addDecimalsFormatNumber(marketPrice, data.decimalPlaces)}</div>
+      {content}
     </HeaderStat>
   ) : (
-    <PriceCell
-      value={Number(marketPrice)}
-      valueFormatted={addDecimalsFormatNumber(
-        marketPrice || '',
-        data?.decimalPlaces || 0,
-        2
-      )}
-    />
+    content
   );
 };

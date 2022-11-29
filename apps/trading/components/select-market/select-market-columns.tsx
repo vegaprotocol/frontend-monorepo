@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -12,19 +10,8 @@ import {
   signedNumberCssClass,
   t,
 } from '@vegaprotocol/react-helpers';
-import {
-  AuctionTriggerMapping,
-  MarketTradingModeMapping,
-  Schema,
-} from '@vegaprotocol/types';
-import {
-  Link as UILink,
-  PriceCellChange,
-  Sparkline,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
-
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   MarketWithData,

@@ -65,7 +65,7 @@ export const MarketTradingModeComponent = ({
       }
       return true;
     },
-    [data]
+    [noUpdate, data]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
@@ -76,11 +76,12 @@ export const MarketTradingModeComponent = ({
   });
 
   const content =
-    tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    (tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     trigger &&
     trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
       ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
-      : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode];
+      : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]) ||
+    '-';
 
   return isHeader ? (
     <HeaderStat
@@ -96,7 +97,7 @@ export const MarketTradingModeComponent = ({
       }
       testId="market-trading-mode"
     >
-      <div>{content || '-'}</div>
+      <div>{content}</div>
     </HeaderStat>
   ) : (
     <Tooltip

@@ -21,17 +21,19 @@ import type {
   Candle,
 } from '@vegaprotocol/market-list';
 
+interface Props {
+  marketId?: string;
+  noUpdate?: boolean;
+  isHeader?: boolean;
+  initialValue?: string;
+}
+
 export const Last24hVolume = ({
   marketId,
   noUpdate = false,
   isHeader = true,
   initialValue,
-}: {
-  marketId?: string;
-  noUpdate?: boolean;
-  isHeader?: boolean;
-  initialValue?: string;
-}) => {
+}: Props) => {
   const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
@@ -85,14 +87,19 @@ export const Last24hVolume = ({
   });
 
   const formatDecimals = isHeader ? data?.positionDecimalPlaces || 0 : 2;
-  const content =
-    !error && candleVolume && data?.positionDecimalPlaces
-      ? addDecimalsFormatNumber(
-          candleVolume,
-          data.positionDecimalPlaces,
-          formatDecimals
-        )
-      : '-';
+  const content = useMemo(() => {
+    return (
+      <>
+        {!error && candleVolume && data?.positionDecimalPlaces
+          ? addDecimalsFormatNumber(
+              candleVolume,
+              data.positionDecimalPlaces,
+              formatDecimals
+            )
+          : '-'}
+      </>
+    );
+  }, [error, candleVolume, data?.positionDecimalPlaces, formatDecimals]);
 
   return isHeader ? (
     <HeaderStat
@@ -107,6 +114,6 @@ export const Last24hVolume = ({
       {content}
     </HeaderStat>
   ) : (
-    <>{content}</>
+    content
   );
 };

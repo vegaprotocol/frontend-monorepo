@@ -15,17 +15,19 @@ import {
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
+interface Props {
+  marketId?: string;
+  initialValue?: string[];
+  isHeader?: boolean;
+  noUpdate?: boolean;
+}
+
 export const Last24hPriceChange = ({
   marketId,
   initialValue,
   isHeader = true,
   noUpdate = false,
-}: {
-  marketId?: string;
-  initialValue?: string[];
-  isHeader?: boolean;
-  noUpdate?: boolean;
-}) => {
+}: Props) => {
   const [candlesClose, setCandlesClose] = useState<string[]>(
     initialValue || []
   );
@@ -85,21 +87,23 @@ export const Last24hPriceChange = ({
     skip: noUpdate || !marketId || !data,
   });
 
-  if (error || !data?.decimalPlaces) {
-    return <>-</>;
-  }
-
-  return isHeader ? (
-    <HeaderStat heading={t('Change (24h)')} testId="market-change">
+  const content = useMemo(() => {
+    if (error || !data?.decimalPlaces) {
+      return <>-</>;
+    }
+    return (
       <PriceCellChange
         candles={candlesClose}
         decimalPlaces={data.decimalPlaces}
       />
+    );
+  }, [candlesClose, data?.decimalPlaces, error]);
+
+  return isHeader ? (
+    <HeaderStat heading={t('Change (24h)')} testId="market-change">
+      {content}
     </HeaderStat>
   ) : (
-    <PriceCellChange
-      candles={candlesClose}
-      decimalPlaces={data.decimalPlaces}
-    />
+    content
   );
 };
