@@ -22,7 +22,6 @@ import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
 import { MarketTradingModeComponent } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
-import { useGlobalStore } from '../../stores';
 
 type Market = MarketWithData & MarketWithCandles;
 
