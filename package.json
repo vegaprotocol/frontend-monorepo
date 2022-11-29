@@ -144,7 +144,7 @@
     "autoprefixer": "10.4.8",
     "babel-jest": "27.5.1",
     "babel-loader": "8.1.0",
-    "cypress": "^10.2.0",
+    "cypress": "^11.2.0",
     "cypress-grep": "^3.0.3",
     "cypress-real-events": "^1.7.1",
     "dotenv": "^16.0.1",
