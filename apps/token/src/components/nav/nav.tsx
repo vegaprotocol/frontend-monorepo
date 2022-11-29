@@ -216,6 +216,7 @@ const NavLinks = ({
   const { appDispatch } = useAppState();
   const { t } = useTranslation();
   const linkProps = {
+    end: true,
     onClick: () =>
       appDispatch({ type: AppStateActionType.SET_DRAWER, isOpen: false }),
   };
