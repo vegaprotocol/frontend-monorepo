@@ -15,8 +15,20 @@ import {
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const Last24hPriceChange = ({ marketId }: { marketId?: string }) => {
-  const [candlesClose, setCandlesClose] = useState<string[]>([]);
+export const Last24hPriceChange = ({
+  marketId,
+  initialValue,
+  isHeader = true,
+  noUpdate = false,
+}: {
+  marketId?: string;
+  initialValue?: string[];
+  isHeader?: boolean;
+  noUpdate?: boolean;
+}) => {
+  const [candlesClose, setCandlesClose] = useState<string[]>(
+    initialValue || []
+  );
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
@@ -48,10 +60,12 @@ export const Last24hPriceChange = ({ marketId }: { marketId?: string }) => {
 
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
-      const candlesClose: string[] = data
-        .map((candle) => candle?.close)
-        .filter((c): c is CandleClose => c !== null);
-      setCandlesClose(candlesClose);
+      if (!noUpdate) {
+        const candlesClose: string[] = data
+          .map((candle) => candle?.close)
+          .filter((c): c is CandleClose => c !== null);
+        setCandlesClose(candlesClose);
+      }
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
@@ -68,19 +82,24 @@ export const Last24hPriceChange = ({ marketId }: { marketId?: string }) => {
     dataProvider: marketCandlesProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId || !data,
   });
 
-  return (
+  if (error || !data?.decimalPlaces) {
+    return <>-</>;
+  }
+
+  return isHeader ? (
     <HeaderStat heading={t('Change (24h)')} testId="market-change">
-      {!error && data?.decimalPlaces ? (
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={data.decimalPlaces}
-        />
-      ) : (
-        '-'
-      )}
+      <PriceCellChange
+        candles={candlesClose}
+        decimalPlaces={data.decimalPlaces}
+      />
     </HeaderStat>
+  ) : (
+    <PriceCellChange
+      candles={candlesClose}
+      decimalPlaces={data.decimalPlaces}
+    />
   );
 };

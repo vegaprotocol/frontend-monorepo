@@ -98,15 +98,15 @@ export const useMarketList = () => {
       interval: Schema.Interval.INTERVAL_I1H,
     };
   }, [yesterday]);
-  const { data, loading, error } = useDataProvider({
+  const { data, loading, error, reload } = useDataProvider({
     dataProvider: marketListProvider,
     variables,
-    skipUpdates: true,
   });
 
   return {
     data,
     loading,
     error,
+    reload,
   };
 };

@@ -3,6 +3,7 @@ import throttle from 'lodash/throttle';
 import {
   addDecimalsFormatNumber,
   t,
+  PriceCell,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import type {
@@ -14,8 +15,20 @@ import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const MarketMarkPrice = ({ marketId }: { marketId?: string }) => {
-  const [marketPrice, setMarketPrice] = useState<string | null>(null);
+export const MarketMarkPrice = ({
+  marketId,
+  initialValue,
+  isHeader = true,
+  noUpdate = false,
+}: {
+  marketId?: string;
+  isHeader?: boolean;
+  noUpdate?: boolean;
+  initialValue?: string;
+}) => {
+  const [marketPrice, setMarketPrice] = useState<string | null>(
+    initialValue || null
+  );
   const variables = useMemo(
     () => ({
       marketId: marketId,
@@ -29,31 +42,40 @@ export const MarketMarkPrice = ({ marketId }: { marketId?: string }) => {
   });
   const throttledSetMarketPrice = useRef(
     throttle((price: string) => {
-      setMarketPrice(price);
+      noUpdate || setMarketPrice(price);
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
-      throttledSetMarketPrice(
-        marketData?.markPrice && data?.decimalPlaces
-          ? addDecimalsFormatNumber(marketData.markPrice, data.decimalPlaces)
-          : '-'
-      );
+      throttledSetMarketPrice(marketData?.markPrice || '');
       return true;
     },
-    [data?.decimalPlaces, throttledSetMarketPrice]
+    [throttledSetMarketPrice]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
     dataProvider: marketDataProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId || !data,
   });
 
-  return (
+  if (!marketPrice || !data?.decimalPlaces) {
+    return <>-</>;
+  }
+
+  return isHeader ? (
     <HeaderStat heading={t('Price')} testId="market-price">
-      <div>{marketPrice}</div>
+      <div>{addDecimalsFormatNumber(marketPrice, data.decimalPlaces)}</div>
     </HeaderStat>
+  ) : (
+    <PriceCell
+      value={Number(marketPrice)}
+      valueFormatted={addDecimalsFormatNumber(
+        marketPrice || '',
+        data?.decimalPlaces || 0,
+        2
+      )}
+    />
   );
 };

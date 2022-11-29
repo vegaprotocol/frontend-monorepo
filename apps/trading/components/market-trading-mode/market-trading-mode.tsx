@@ -15,16 +15,30 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 interface Props {
   marketId?: string;
   onSelect?: (marketId: string) => void;
+  isHeader?: boolean;
+  noUpdate?: boolean;
+  initialMode?: Types.MarketTradingMode;
+  initialTrigger?: Types.AuctionTrigger;
 }
 
-export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
+export const MarketTradingModeComponent = ({
+  marketId,
+  onSelect,
+  isHeader = true,
+  noUpdate = false,
+  initialMode,
+  initialTrigger,
+}: Props) => {
   const [tradingMode, setTradingMode] =
-    useState<Types.MarketTradingMode | null>(null);
-  const [trigger, setTrigger] = useState<Types.AuctionTrigger | null>(null);
+    useState<Types.MarketTradingMode | null>(initialMode || null);
+  const [trigger, setTrigger] = useState<Types.AuctionTrigger | null>(
+    initialTrigger || null
+  );
   const [market, setMarket] = useState<MarketDealTicket | null>(null);
   const variables = useMemo(
     () => ({
@@ -41,7 +55,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
 
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
+      if (!noUpdate && marketData) {
         setTradingMode(marketData.marketTradingMode);
         setTrigger(marketData.trigger);
         setMarket({
@@ -58,7 +72,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
     dataProvider: marketDataProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId || !data,
   });
 
   const content =
@@ -68,7 +82,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
       ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
       : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode];
 
-  return (
+  return isHeader ? (
     <HeaderStat
       heading={t('Trading mode')}
       description={
@@ -84,5 +98,16 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
     >
       <div>{content || '-'}</div>
     </HeaderStat>
+  ) : (
+    <Tooltip
+      description={
+        tradingMode &&
+        trigger && (
+          <TradingModeTooltip tradingMode={tradingMode} trigger={trigger} />
+        )
+      }
+    >
+      <span>{content}</span>
+    </Tooltip>
   );
 };

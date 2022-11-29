@@ -20,8 +20,19 @@ import type {
   SingleMarketFieldsFragment,
   Candle,
 } from '@vegaprotocol/market-list';
-export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
-  const [candleVolume, setCandleVolume] = useState<string>();
+
+export const Last24hVolume = ({
+  marketId,
+  noUpdate = false,
+  isHeader = true,
+  initialValue,
+}: {
+  marketId?: string;
+  noUpdate?: boolean;
+  isHeader?: boolean;
+  initialValue?: string;
+}) => {
+  const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
@@ -53,7 +64,7 @@ export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
 
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
-      setCandleVolume(calcCandleVolume(data));
+      noUpdate || setCandleVolume(calcCandleVolume(data) || '');
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
@@ -70,10 +81,20 @@ export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
     dataProvider: marketCandlesProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId || !data,
   });
 
-  return (
+  const formatDecimals = isHeader ? data?.positionDecimalPlaces || 0 : 2;
+  const content =
+    !error && candleVolume && data?.positionDecimalPlaces
+      ? addDecimalsFormatNumber(
+          candleVolume,
+          data.positionDecimalPlaces,
+          formatDecimals
+        )
+      : '-';
+
+  return isHeader ? (
     <HeaderStat
       heading={t('Volume (24h)')}
       testId="market-volume"
@@ -83,9 +104,9 @@ export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
           : null
       }
     >
-      {!error && candleVolume && data?.positionDecimalPlaces
-        ? addDecimalsFormatNumber(candleVolume, data.positionDecimalPlaces)
-        : '-'}
+      {content}
     </HeaderStat>
+  ) : (
+    <>{content}</>
   );
 };

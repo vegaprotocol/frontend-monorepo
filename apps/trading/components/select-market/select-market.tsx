@@ -11,7 +11,7 @@ import {
   Popover,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   columnHeaders,
@@ -112,7 +112,7 @@ export const SelectAllMarketsTableBody = ({
             <SelectMarketTableRow
               marketId={market.id}
               key={i}
-              detailed={true}
+              detailed
               onSelect={onSelect}
               columns={tableColumns(
                 market,
@@ -147,19 +147,28 @@ export const SelectMarketPopover = ({
     'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300 mt-1';
   const { pubKey } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const { data, loading: marketsLoading } = useMarketList();
+  const {
+    data,
+    loading: marketsLoading,
+    reload: marketListReload,
+  } = useMarketList();
   const variables = useMemo(() => ({ partyId: pubKey }), [pubKey]);
-  const { data: party, loading: positionsLoading } = useDataProvider({
+  const {
+    data: party,
+    loading: positionsLoading,
+    reload,
+  } = useDataProvider({
     dataProvider: positionsDataProvider,
-    skipUpdates: true,
     variables,
     skip: !pubKey,
   });
-
-  const onSelectMarket = (marketId: string) => {
-    onSelect(marketId);
-    setOpen(false);
-  };
+  const onSelectMarket = useCallback(
+    (marketId: string) => {
+      onSelect(marketId);
+      setOpen(false);
+    },
+    [onSelect]
+  );
 
   const iconClass = open ? 'rotate-180' : '';
   const markets = useMemo(
@@ -171,6 +180,13 @@ export const SelectMarketPopover = ({
       ),
     [data, party]
   );
+
+  useEffect(() => {
+    if (open) {
+      reload();
+      marketListReload();
+    }
+  }, [open, marketListReload, reload]);
 
   return (
     <Popover
