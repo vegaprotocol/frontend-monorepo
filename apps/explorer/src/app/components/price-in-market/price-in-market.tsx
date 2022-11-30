@@ -1,6 +1,7 @@
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
+import get from 'lodash/get';
 
 export type PriceInMarketProps = {
   marketId: string;
@@ -22,10 +23,11 @@ const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
     label = addDecimalsFormatNumber(price, data.market.decimalPlaces);
   }
 
-  const suffix =
-    data && data.market?.tradableInstrument.instrument.product.quoteName
-      ? data.market.tradableInstrument.instrument.product.quoteName
-      : '';
+  const suffix = get(
+    data,
+    'market.tradableInstrument.instrument.product.quoteName',
+    ''
+  );
 
   if (isUndefined(price) || price === '' || price === '0') {
     return (
@@ -33,13 +35,13 @@ const PriceInMarket = ({ marketId, price }: PriceInMarketProps) => {
         <abbr title={'Best available price'}>{t('Market')}</abbr> {suffix}
       </span>
     );
+  } else {
+    return (
+      <div className="inline-block">
+        <span>{label}</span> <span>{suffix}</span>
+      </div>
+    );
   }
-
-  return (
-    <span>
-      {label} {suffix}
-    </span>
-  );
 };
 
 export default PriceInMarket;

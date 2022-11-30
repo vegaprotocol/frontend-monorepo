@@ -53,7 +53,7 @@ export const TxDetailsOrder = ({
       </TableWithTbody>
 
       {deterministicId.length > 0 ? (
-        <DeterministicOrderDetails id={deterministicId} />
+        <DeterministicOrderDetails id={deterministicId} version={1} />
       ) : null}
     </>
   );
