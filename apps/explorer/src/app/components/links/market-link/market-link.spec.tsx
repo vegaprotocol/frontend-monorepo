@@ -54,10 +54,14 @@ describe('Market link component', () => {
         data: {
           market: {
             id: '123',
+            decimalPlaces: 5,
             state: 'irrelevant-test-data',
             tradableInstrument: {
               instrument: {
                 name: 'test-label',
+                product: {
+                  quoteName: 'dai',
+                },
               },
             },
           },
