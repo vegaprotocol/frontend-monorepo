@@ -13,7 +13,6 @@ module.exports = defineConfig({
     fixturesFolder: './src/fixtures',
     specPattern: [
       './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
-
       './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
     ],
     modifyObstructiveCode: false,
