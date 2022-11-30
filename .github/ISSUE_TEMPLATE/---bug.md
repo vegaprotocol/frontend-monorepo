@@ -1,7 +1,7 @@
 ---
 name: "\U0001F41B Bug"
 about: Create a report to help us improve
-title: ''
+title: '[console/token/explorer/common]'
 labels: "\U0001F41B bug"
 assignees: ''
 ---

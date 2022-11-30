@@ -2,6 +2,10 @@ import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { PartyLink } from '../../../links';
+import {
+  EthExplorerLink,
+  EthExplorerLinkTypes,
+} from '../../../links/eth-explorer-link/eth-explorer-link';
 
 interface TxDetailsChainEventStakeRemoveProps {
   remove: components['schemas']['vegaStakeRemoved'];
@@ -16,24 +20,35 @@ interface TxDetailsChainEventStakeRemoveProps {
 export const TxDetailsChainEventStakeRemove = ({
   remove,
 }: TxDetailsChainEventStakeRemoveProps) => {
-  if (!remove) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (
+    !remove ||
+    !remove.ethereumAddress ||
+    !remove.vegaPublicKey ||
+    !remove.amount ||
+    !remove.blockTime
+  ) {
+    return null;
   }
 
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Chain Event type')}</TableCell>
-        <TableCell>{t('Stake removed')}</TableCell>
+        <TableCell>{t('Chain event type')}</TableCell>
+        <TableCell>{t('Stake remove')}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
-        <TableCell>{remove.ethereumAddress || ''}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={remove.ethereumAddress}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
-          <PartyLink id={remove.vegaPublicKey || ''} />
+          <PartyLink id={remove.vegaPublicKey} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -41,7 +56,7 @@ export const TxDetailsChainEventStakeRemove = ({
         <TableCell>{remove.amount}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>{t('Deposited at')}</TableCell>
+        <TableCell>{t('Removed at')}</TableCell>
         <TableCell>{remove.blockTime}</TableCell>
       </TableRow>
     </>

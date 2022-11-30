@@ -19,8 +19,8 @@ interface TxDetailsChainEventErc20AssetListProps {
 export const TxDetailsChainEventErc20AssetList = ({
   assetList,
 }: TxDetailsChainEventErc20AssetListProps) => {
-  if (!assetList) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!assetList || !assetList.assetSource || !assetList.vegaAssetId) {
+    return null;
   }
 
   return (
@@ -29,21 +29,19 @@ export const TxDetailsChainEventErc20AssetList = ({
         <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('ERC20 asset added')}</TableCell>
       </TableRow>
-      {assetList.assetSource ? (
-        <TableRow modifier="bordered">
-          <TableCell>{t('Source')}</TableCell>
-          <TableCell>
-            <EthExplorerLink
-              id={assetList.assetSource}
-              type={EthExplorerLinkTypes.address}
-            />
-          </TableCell>
-        </TableRow>
-      ) : null}
+      <TableRow modifier="bordered">
+        <TableCell>{t('Source')}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={assetList.assetSource}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
+      </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Added Vega asset')}</TableCell>
         <TableCell>
-          <AssetLink id={assetList.vegaAssetId || ''} />
+          <AssetLink id={assetList.vegaAssetId} />
         </TableCell>
       </TableRow>
     </>

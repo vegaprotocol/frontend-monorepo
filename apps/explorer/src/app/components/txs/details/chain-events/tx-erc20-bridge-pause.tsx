@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { TableRow, TableCell } from '../../../table';
 
-interface TxDetailsChainEventErc20BridgePauseProps {
+export interface TxDetailsChainEventErc20BridgePauseProps {
   isPaused: boolean;
 }
 
@@ -13,7 +13,7 @@ interface TxDetailsChainEventErc20BridgePauseProps {
 export const TxDetailsChainEventErc20BridgePause = ({
   isPaused,
 }: TxDetailsChainEventErc20BridgePauseProps) => {
-  const event = isPaused ? 'pause' : 'unpaused';
+  const event = isPaused ? 'pause' : 'unpause';
 
   return (
     <TableRow modifier="bordered">
