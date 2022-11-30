@@ -44,6 +44,7 @@ type ContractMethod =
 
 interface EthStoredTxState extends EthTxState {
   id: number;
+  createdAt: Date;
   contract: Contract;
   methodName: ContractMethod;
   args: string[];
@@ -273,6 +274,7 @@ export enum ApprovalStatus {
 }
 interface EthWithdrawalApprovalState {
   id: number;
+  createdAt: Date;
   status: ApprovalStatus;
   message?: string;
   threshold?: BigNumber;
@@ -308,6 +310,7 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
       const transactions = get().transactions;
       const transaction: EthWithdrawalApprovalState = {
         id: transactions.length,
+        createdAt: new Date(),
         status: ApprovalStatus.Idle,
         withdrawal,
         approval,

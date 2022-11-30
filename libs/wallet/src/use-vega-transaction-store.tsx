@@ -36,6 +36,7 @@ import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
 
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
+  createdAt: Date;
   body: Transaction;
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
@@ -69,6 +70,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
       const transactions = get().transactions;
       const transaction: VegaStoredTxState = {
         id: transactions.length,
+        createdAt: new Date(),
         body,
         error: null,
         txHash: null,

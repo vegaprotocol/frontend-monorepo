@@ -24,10 +24,10 @@ export enum ApprovalStatus {
 
 export interface VerifyState {
   status: ApprovalStatus;
-  message: string;
-  threshold: BigNumber;
-  completeTimestamp: number | null;
-  dialogOpen: boolean;
+  message?: string;
+  threshold?: BigNumber;
+  completeTimestamp?: number | null;
+  dialogOpen?: boolean;
 }
 
 const initialState = {

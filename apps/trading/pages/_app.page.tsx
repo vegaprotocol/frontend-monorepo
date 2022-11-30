@@ -24,7 +24,7 @@ import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
-import ToastsContainer from './toasts-container';
+import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation } from 'react-router-dom';
 import { Web3Container } from '@vegaprotocol/web3';
 
@@ -96,8 +96,8 @@ function AppBody({ Component }: AppProps) {
           </main>
           <Footer />
           <DialogsContainer />
-          <ToastsContainer />
-          <Web3Container connectEagerly>
+          <ToastsManager />
+          <Web3Container connectEagerly childrenOnly>
             <TransactionsHandler />
           </Web3Container>
         </AppLoader>

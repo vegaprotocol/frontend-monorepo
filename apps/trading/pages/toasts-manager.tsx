@@ -2,10 +2,13 @@ import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import {
   useEthTransactionStore,
   useEthWithdrawApprovalsStore,
+  TransactionContent,
 } from '@vegaprotocol/web3';
+
+import { VerificationStatus } from '@vegaprotocol/withdraws';
 import { VegaTransaction } from '../components/vega-transaction';
 
-export const ToastsContainer = () => {
+export const ToastsManager = () => {
   const vegaTransactions = useVegaTransactionStore(
     (state) => state.transactions
   );
@@ -27,9 +30,7 @@ export const ToastsContainer = () => {
         {ethTransactions.map(
           (transaction) =>
             transaction && (
-              <div key={transaction.id}>
-                {transaction.txHash} - {transaction.status}
-              </div>
+              <TransactionContent key={transaction.id} {...transaction} />
             )
         )}
       </div>
@@ -38,7 +39,7 @@ export const ToastsContainer = () => {
           (transaction) =>
             transaction && (
               <div key={transaction.id}>
-                {transaction.withdrawal.id} - {transaction.status}
+                <VerificationStatus state={transaction} />
               </div>
             )
         )}
@@ -47,4 +48,4 @@ export const ToastsContainer = () => {
   );
 };
 
-export default ToastsContainer;
+export default ToastsManager;
