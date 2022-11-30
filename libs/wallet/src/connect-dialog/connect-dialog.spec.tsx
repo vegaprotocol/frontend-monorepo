@@ -205,8 +205,6 @@ describe('VegaConnectDialog', () => {
     let spyOnGetChainId: jest.SpyInstance;
     let spyOnConnectWallet: jest.SpyInstance;
     let spyOnConnect: jest.SpyInstance;
-    let spyOnGetPermissions: jest.SpyInstance;
-    let spyOnRequestPermissions: jest.SpyInstance;
 
     beforeEach(() => {
       spyOnCheckCompat = jest
@@ -218,24 +216,6 @@ describe('VegaConnectDialog', () => {
       spyOnConnectWallet = jest
         .spyOn(connectors.jsonRpc, 'connectWallet')
         .mockImplementation(() => delayedResolve({ token: 'token' }));
-      spyOnGetPermissions = jest
-        .spyOn(connectors.jsonRpc, 'getPermissions')
-        .mockImplementation(() =>
-          delayedResolve({
-            permissions: {
-              public_keys: 'none',
-            },
-          })
-        );
-      spyOnRequestPermissions = jest
-        .spyOn(connectors.jsonRpc, 'requestPermissions')
-        .mockImplementation(() =>
-          delayedResolve({
-            permissions: {
-              public_keys: 'read',
-            },
-          })
-        );
       spyOnConnect = jest
         .spyOn(connectors.jsonRpc, 'connect')
         .mockImplementation(() =>
@@ -273,19 +253,6 @@ describe('VegaConnectDialog', () => {
       // Await user connect
       expect(screen.getByText('Connecting...')).toBeInTheDocument();
       expect(spyOnConnectWallet).toHaveBeenCalled();
-      await act(async () => {
-        jest.advanceTimersByTime(delay);
-      });
-
-      // Perms check
-      expect(spyOnGetPermissions).toHaveBeenCalled();
-      await act(async () => {
-        jest.advanceTimersByTime(delay);
-      });
-
-      // Await user perms update
-      expect(screen.getByText('Update permissions')).toBeInTheDocument();
-      expect(spyOnRequestPermissions).toHaveBeenCalled();
       await act(async () => {
         jest.advanceTimersByTime(delay);
       });
