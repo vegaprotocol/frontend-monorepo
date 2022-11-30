@@ -109,7 +109,11 @@ const ledgerEntriesOnlyProvider = makeDataProvider({
   },
 });
 
-export const ledgerEntriesProvider = makeDerivedDataProvider(
+export const ledgerEntriesProvider = makeDerivedDataProvider<
+  (AggregatedLedgerEntriesEdge | null)[],
+  AggregatedLedgerEntriesEdge[],
+  LedgerEntriesQueryVariables
+>(
   [ledgerEntriesOnlyProvider, assetsProvider, marketsProvider],
   ([entries, assets, markets]) => {
     return entries.map((edge: AggregatedLedgerEntriesEdge) => {
