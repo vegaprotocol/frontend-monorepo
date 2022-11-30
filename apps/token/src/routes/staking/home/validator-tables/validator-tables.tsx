@@ -66,8 +66,8 @@ export const ValidatorTables = ({
   }, [data?.nodesConnection.edges]);
 
   if (
-    consensusValidators.length > 0 &&
-    (standbyValidators.length > 0 || pendingValidators.length > 0)
+    consensusValidators.length &&
+    (standbyValidators.length || pendingValidators.length)
   ) {
     const lowestRankingConsensusScore = consensusValidators.reduce(
       (lowest: NodesFragmentFragment, validator: NodesFragmentFragment) => {
@@ -102,7 +102,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {standbyValidators.length > 0 && (
+      {standbyValidators.length && (
         <>
           <h2>{t('status-ersatz')}</h2>
           <p>
@@ -121,7 +121,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {pendingValidators.length > 0 && (
+      {pendingValidators.length && (
         <>
           <h2>{t('status-pending')}</h2>
           <p>
