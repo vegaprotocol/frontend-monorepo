@@ -1,11 +1,14 @@
 import { useParams } from 'react-router-dom';
-import compact from 'lodash/compact';
 import {
   DealTicketManager,
   usePartyBalanceQuery,
 } from '@vegaprotocol/deal-ticket';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  useDataProvider,
+  removePaginationWrapper,
+} from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DealTicketSteps } from './deal-ticket-steps';
 import { DealTicketBalance } from './deal-ticket-balance';
@@ -46,8 +49,8 @@ export const DealTicketContainer = () => {
     skip: !marketId,
   });
 
-  const accounts = compact(partyData?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const accounts = removePaginationWrapper(
+    partyData?.party?.accountsConnection?.edges
   );
 
   const loader = <Loader />;

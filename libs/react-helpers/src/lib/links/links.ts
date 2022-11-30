@@ -10,6 +10,7 @@ export const createDocsLinks = (docsUrl: string) => ({
   STAKING_GUIDE: `${docsUrl}/concepts/vega-chain/#staking-on-vega`,
   VEGA_WALLET_CONCEPTS_URL: `${docsUrl}/concepts/vega-wallet`,
   PROPOSALS_GUIDE: `${docsUrl}/tutorials/proposals`,
+  NODE_OPERATORS: `${docsUrl}/node-operators`,
 });
 
 export const ExternalLinks = {
