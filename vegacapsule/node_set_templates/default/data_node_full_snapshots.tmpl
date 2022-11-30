@@ -1,5 +1,4 @@
 GatewayEnabled = true
-
 [SQLStore]
   Enabled = true
   [SQLStore.ConnectionConfig]
@@ -10,7 +9,6 @@ GatewayEnabled = true
     UseTransactions = true
     Username = "vega"
 
-
 [API]
   Level = "Info"
   Port = {{add 300 .NodeNumber}}7
@@ -18,7 +16,7 @@ GatewayEnabled = true
 
 [Pprof]
   Level = "Info"
-  Enabled = false
+  Enabled = true
   Port = {{add 60 .NodeNumber}}60
   ProfilesDir = "{{.NodeHomeDir}}"
 
@@ -39,11 +37,16 @@ GatewayEnabled = true
 [Broker]
   Level = "Info"
   UseEventFile = false
+  PanicOnError = false
   [Broker.SocketConfig]
     Port = {{add 300 .NodeNumber}}5
 
 [DeHistory]
+  Level = "Info"
   Enabled = true
+  WipeOnStartup = true
+  AddSnapshotsToStore = true
+  AddSnapshotsInterval = "5s"
   [DeHistory.Store]
     PeerID = "{{.GetDehistoryPeerID .NodeNumber}}"
     PrivKey = "{{.GetDehistoryPrivKey .NodeNumber}}"
@@ -54,6 +57,9 @@ GatewayEnabled = true
     {{- end -}}]
 
     UseIpfsDefaultPeers = false
-    SwarmPort = 40{{.NodeNumber}}5
+    SwarmPort = {{add 400 .NodeNumber}}5
     StartWebUI = false
-    WebUIPort = 50{{.NodeNumber}}5
+    WebUIPort = {{add 500 .NodeNumber}}5
+  [DeHistory.Snapshot]
+    PanicOnSnapshotCreationError = true
+    WaitForCreationLockTimeout = "5s"
