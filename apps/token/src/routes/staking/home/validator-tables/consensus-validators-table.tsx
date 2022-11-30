@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import { BigNumber } from '../../../../lib/bignumber';
+import { normalisedVotingPower, rawValidatorScore } from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
@@ -47,8 +49,8 @@ export const ConsensusValidatorsTable = ({
 
     const canonisedNodes = data
       .sort((a, b) => {
-        const aVotingPower = toBigNum(a.rankingScore.votingPower, 0);
-        const bVotingPower = toBigNum(b.rankingScore.votingPower, 0);
+        const aVotingPower = new BigNumber(a.rankingScore.votingPower);
+        const bVotingPower = new BigNumber(b.rankingScore.votingPower);
         return bVotingPower.minus(aVotingPower).toNumber();
       })
       .map((node, index) => {
@@ -69,9 +71,6 @@ export const ConsensusValidatorsTable = ({
           pendingStake,
           votingPowerRanking,
         }) => {
-          const normalisedVotingPower =
-            toBigNum(votingPower, 0).dividedBy(100).dp(2).toString() + '%';
-
           return {
             id,
             [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
@@ -83,11 +82,11 @@ export const ConsensusValidatorsTable = ({
               toBigNum(stakedTotal, decimals),
               2
             ),
-            [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
+            [ValidatorFields.NORMALISED_VOTING_POWER]:
+              normalisedVotingPower(votingPower),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
             [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-              previousEpochData,
-              id,
+              rawValidatorScore(previousEpochData, id),
               performanceScore,
               stakedTotal,
               totalStake

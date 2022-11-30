@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import { BigNumber } from '../../../../lib/bignumber';
+import { rawValidatorScore } from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
@@ -49,9 +51,9 @@ export const StandbyPendingValidatorsTable = ({
         let individualStakeNeededForPromotion = undefined;
 
         if (stakeNeededForPromotion) {
-          const stakedTotalBigNum = toBigNum(stakedTotal, 0);
-          const stakeNeededBigNum = toBigNum(stakeNeededForPromotion, 0);
-          const performanceScoreBigNum = toBigNum(performanceScore, 0);
+          const stakedTotalBigNum = new BigNumber(stakedTotal);
+          const stakeNeededBigNum = new BigNumber(stakeNeededForPromotion);
+          const performanceScoreBigNum = new BigNumber(performanceScore);
 
           const calc = stakeNeededBigNum
             .dividedBy(performanceScoreBigNum)
@@ -76,8 +78,7 @@ export const StandbyPendingValidatorsTable = ({
             individualStakeNeededForPromotion || t('n/a'),
           [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
           [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-            previousEpochData,
-            id,
+            rawValidatorScore(previousEpochData, id),
             performanceScore,
             stakedTotal,
             totalStake

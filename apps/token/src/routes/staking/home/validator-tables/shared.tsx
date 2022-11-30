@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { removePaginationWrapper, toBigNum } from '@vegaprotocol/react-helpers';
-import { Button } from '@vegaprotocol/ui-toolkit';
-import type { NodesFragmentFragment } from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import { useTranslation } from 'react-i18next';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { rawValidatorScore } from '../../shared';
+import type { NodesFragmentFragment } from '../__generated___/Nodes';
+import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
@@ -37,19 +38,11 @@ export const stakedTotalPercentage = (stakeScore: string) =>
   toBigNum(stakeScore, 0).times(100).dp(2).toString() + '%';
 
 export const totalPenalties = (
-  previousEpochData: PreviousEpochQuery | undefined,
-  id: string,
+  rawValidatorScore: string | null | undefined,
   performanceScore: string,
   stakedTotal: string,
   totalStake: string
 ) => {
-  const rawValidatorScore = previousEpochData
-    ? removePaginationWrapper(
-        previousEpochData.epoch?.validatorsConnection?.edges
-      ).find((validator) => validator?.id === id)?.rewardScore
-        ?.rawValidatorScore
-    : null;
-
   const totalPenaltiesCalc =
     rawValidatorScore !== null
       ? 100 *

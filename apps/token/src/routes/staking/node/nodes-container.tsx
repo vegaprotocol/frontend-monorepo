@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useStakingQuery } from './__generated___/Staking';
 import { SplashLoader } from '../../../components/splash-loader';
+import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import type { StakingQuery } from './__generated___/Staking';
+import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 
@@ -14,14 +16,28 @@ const RPC_ERROR = 'rpc error: code = NotFound desc = NotFound error';
 export const NodeContainer = ({
   children,
 }: {
-  children: ({ data }: { data?: StakingQuery }) => React.ReactElement;
+  children: ({
+    data,
+    previousEpochData,
+  }: {
+    data?: StakingQuery;
+    previousEpochData?: PreviousEpochQuery;
+  }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { data, loading, error, refetch } = useStakingQuery({
     variables: { partyId: pubKey || '' },
   });
+  const { data: previousEpochData } = usePreviousEpochQuery({
+    variables: {
+      epochId: (Number(data?.epoch.id) - 1).toString(),
+    },
+    skip: !data?.epoch.id,
+  });
 
+  // @todo - this epoch querying needs to be hoisted as the validator tables rely
+  // on it too
   React.useEffect(() => {
     const interval = setInterval(() => {
       if (!data?.epoch.timestamps.expiry) return;
@@ -59,7 +75,7 @@ export const NodeContainer = ({
     );
   }
 
-  return children({ data });
+  return children({ data, previousEpochData });
 };
 
 export default NodeContainer;

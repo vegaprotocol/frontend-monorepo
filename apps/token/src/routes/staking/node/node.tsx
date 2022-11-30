@@ -2,6 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  addDecimal,
+  removePaginationWrapper,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { ConnectToVega } from '../../../components/connect-to-vega';
@@ -9,41 +15,39 @@ import { StakingForm } from './staking-form';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import {
-  addDecimal,
-  removePaginationWrapper,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
 import type { StakingQuery } from './__generated___/Staking';
+import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 
 interface StakingNodeProps {
   data?: StakingQuery;
+  previousEpochData?: PreviousEpochQuery;
 }
 
-export const StakingNode = ({ data }: StakingNodeProps) => {
+export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
   const { pubKey: vegaKey } = useVegaWallet();
   const {
     appState: { decimals },
   } = useAppState();
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
-  const nodeInfo = React.useMemo(
-    () =>
-      removePaginationWrapper(data?.nodesConnection?.edges).find(
+
+  const { nodeInfo, currentEpoch, delegations } = React.useMemo(
+    () => ({
+      nodeInfo: removePaginationWrapper(data?.nodesConnection?.edges).find(
         ({ id }) => id === node
       ),
-    [node, data]
-  );
-
-  const currentEpoch = React.useMemo(() => {
-    return data?.epoch.id;
-  }, [data?.epoch.id]);
-
-  const delegations = React.useMemo(
-    () => removePaginationWrapper(data?.party?.delegationsConnection?.edges),
-    [data?.party?.delegationsConnection?.edges]
+      currentEpoch: data?.epoch.id,
+      delegations: removePaginationWrapper(
+        data?.party?.delegationsConnection?.edges
+      ),
+    }),
+    [
+      data?.epoch.id,
+      data?.nodesConnection?.edges,
+      data?.party?.delegationsConnection?.edges,
+      node,
+    ]
   );
 
   const stakeThisEpoch = React.useMemo(() => {
@@ -105,7 +109,7 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
         <ValidatorTable
           node={nodeInfo}
           stakedTotal={addDecimal(data?.nodeData?.stakedTotal || '0', decimals)}
-          stakeThisEpoch={stakeThisEpoch}
+          previousEpochData={previousEpochData}
         />
       </section>
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
@@ -148,6 +152,10 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
 
 export const Node = () => {
   return (
-    <NodeContainer>{({ data }) => <StakingNode data={data} />}</NodeContainer>
+    <NodeContainer>
+      {({ data, previousEpochData }) => (
+        <StakingNode data={data} previousEpochData={previousEpochData} />
+      )}
+    </NodeContainer>
   );
 };
