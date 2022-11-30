@@ -4,15 +4,15 @@
     Enabled = true
 
 [API]
-	Port = 30{{.NodeNumber}}2
+	Port = {{add 300 .NodeNumber}}2
 	[API.REST]
-			Port = 30{{.NodeNumber}}3
+			Port = {{add 300 .NodeNumber}}3
 
 [Blockchain]
 	[Blockchain.Tendermint]
-		RPCAddr = "tcp://127.0.0.1:266{{.NodeNumber}}7"
+		RPCAddr = "tcp://127.0.0.1:{{add 2660 .NodeNumber}}7"
 	[Blockchain.Null]
-		Port = 31{{.NodeNumber}}1
+		Port = {{add 310 .NodeNumber}}1
 
 [EvtForward]
 	Level = "Info"
@@ -28,5 +28,5 @@
 
 [Broker]
   [Broker.Socket]
-    Port = 30{{.NodeNumber}}5
+    Port = {{add 300 .NodeNumber}}5
     Enabled = true
