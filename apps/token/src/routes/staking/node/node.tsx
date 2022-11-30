@@ -4,15 +4,18 @@ import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
-import { ConnectToVega } from '../../../components/connect-to-vega/connect-to-vega';
+import { ConnectToVega } from '../../../components/connect-to-vega';
 import { StakingForm } from './staking-form';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { addDecimal, toBigNum } from '@vegaprotocol/react-helpers';
-import compact from 'lodash/compact';
+import {
+  addDecimal,
+  removePaginationWrapper,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import type { StakingQuery } from './__generated___/Staking';
 
 interface StakingNodeProps {
@@ -26,21 +29,20 @@ export const StakingNode = ({ data }: StakingNodeProps) => {
   } = useAppState();
   const { node } = useParams<{ node: string }>();
   const { t } = useTranslation();
-  const nodeInfo = React.useMemo(() => {
-    const canonisedNodes =
-      compact(data?.nodesConnection?.edges?.map((edge) => edge?.node)) || [];
-    return canonisedNodes.find(({ id }) => id === node);
-  }, [node, data]);
+  const nodeInfo = React.useMemo(
+    () =>
+      removePaginationWrapper(data?.nodesConnection?.edges).find(
+        ({ id }) => id === node
+      ),
+    [node, data]
+  );
 
   const currentEpoch = React.useMemo(() => {
     return data?.epoch.id;
   }, [data?.epoch.id]);
 
   const delegations = React.useMemo(
-    () =>
-      compact(
-        data?.party?.delegationsConnection?.edges?.map((edge) => edge?.node)
-      ) || [],
+    () => removePaginationWrapper(data?.party?.delegationsConnection?.edges),
     [data?.party?.delegationsConnection?.edges]
   );
 

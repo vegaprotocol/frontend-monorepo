@@ -9,9 +9,11 @@ import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-b
 import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  removeDecimal,
+  removePaginationWrapper,
+} from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
-import compact from 'lodash/compact';
 import type {
   LinkingsFieldsFragment,
   PartyStakeLinkingsQuery,
@@ -92,12 +94,9 @@ export const usePollForStakeLinking = (
           fetchPolicy: 'no-cache',
         })
         .then((res) => {
-          const linkings =
-            compact(
-              res.data?.party?.stakingSummary.linkings.edges?.map(
-                (e) => e?.node
-              )
-            ) || [];
+          const linkings = removePaginationWrapper(
+            res.data?.party?.stakingSummary.linkings.edges
+          );
 
           if (!linkings?.length) return;
 

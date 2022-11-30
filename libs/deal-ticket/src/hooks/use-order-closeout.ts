@@ -1,8 +1,11 @@
 import { BigNumber } from 'bignumber.js';
-import compact from 'lodash/compact';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  formatNumber,
+  removePaginationWrapper,
+} from '@vegaprotocol/react-helpers';
 import { useMarketPositions } from './use-market-positions';
 import { useMarketDataMarkPrice } from './use-market-data-mark-price';
 import { usePartyMarketDataQuery } from './__generated__/PartyMarketData';
@@ -23,8 +26,8 @@ export const useOrderCloseOut = ({
   partyData,
 }: Props): string | null => {
   const { pubKey } = useVegaWallet();
-  const accounts = compact(partyData?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const accounts = removePaginationWrapper(
+    partyData?.party?.accountsConnection?.edges
   );
   const account = useSettlementAccount(
     market.tradableInstrument.instrument.product.settlementAsset.id,
@@ -51,8 +54,8 @@ export const useOrderCloseOut = ({
     )
   );
 
-  const dataAccounts = compact(data?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const dataAccounts = removePaginationWrapper(
+    data?.party?.accountsConnection?.edges
   );
   const positionAccount = dataAccounts.find(
     (account) => account.market?.id === market.id

@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import compact from 'lodash/compact';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +26,7 @@ import {
   NetworkParams,
   removeDecimal,
   addDecimal,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import { useBalances } from '../../../lib/balances/balances-store';
 
@@ -157,8 +157,8 @@ export const StakingForm = ({
         delegationSearch();
 
         if (data) {
-          const delegation = compact(
-            data.party?.delegationsConnection?.edges?.map((edge) => edge?.node)
+          const delegation = removePaginationWrapper(
+            data.party?.delegationsConnection?.edges
           ).find((d) => {
             return (
               d.node.id === nodeId && d.epoch === Number(data.epoch.id) + 1
