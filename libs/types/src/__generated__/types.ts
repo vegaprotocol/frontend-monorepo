@@ -1148,7 +1148,7 @@ export type LedgerEntry = {
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['Timestamp'];
   /** Type of ledger entry */
-  type: Scalars['String'];
+  type: TransferType;
 };
 
 export enum LedgerEntryField {
@@ -1496,6 +1496,7 @@ export type MarketliquidityProvisionsConnectionArgs = {
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<OrderFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -2219,6 +2220,13 @@ export type OrderEstimate = {
   totalFeeAmount: Scalars['String'];
 };
 
+export type OrderFilter = {
+  excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
+  status?: InputMaybe<Array<OrderStatus>>;
+  timeInForce?: InputMaybe<Array<OrderTimeInForce>>;
+  types?: InputMaybe<Array<OrderType>>;
+};
+
 /** Why the order was rejected by the core node */
 export enum OrderRejectionReason {
   /** Amending the order failed */
@@ -2508,6 +2516,7 @@ export type PartymarginsConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<OrderFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
