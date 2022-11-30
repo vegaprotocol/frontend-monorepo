@@ -12,8 +12,8 @@ const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const associateContractRadioButton = '[data-testid="associate-radio-contract"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
-const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
-const stakeValidatorListTotalShare = '[col-id="share"]';
+const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
+const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
 
@@ -178,10 +178,8 @@ Cypress.Commands.add(
   ) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.contains('Total stake this epoch').should('be.visible');
     cy.wait_for_beginning_of_epoch();
     cy.get(`[row-id="${positionOnList}"]`).within(() => {
-      cy.get(stakeValidatorListName).should('have.text', expectedValidatorName);
       cy.get(stakeValidatorListTotalStake, epochTimeout).should(
         'have.text',
         expectedTotalStake

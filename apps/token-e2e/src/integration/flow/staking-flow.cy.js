@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
-const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
-const stakeValidatorListTotalShare = '[col-id="share"]';
+const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
+const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
 const stakeValidatorListValidatorStake = '[col-id="validatorStake"]';
 const stakeRemoveStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const stakeTokenAmountInputBox = '[data-testid="token-amount-input"]';
