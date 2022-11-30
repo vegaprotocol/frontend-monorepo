@@ -81,6 +81,7 @@ export const TradeMarketHeader = ({
       <HeaderStat
         heading={t('Status')}
         description={getMarketStateTooltip(market?.state)}
+        testId="market-state"
       >
         {market?.state ? MarketStateMapping[market?.state] : '-'}
       </HeaderStat>

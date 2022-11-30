@@ -11,6 +11,7 @@ const marketPrice = 'market-price';
 const marketChange = 'market-change';
 const marketVolume = 'market-volume';
 const marketMode = 'market-trading-mode';
+const marketState = 'market-state';
 const marketSettlement = 'market-settlement-asset';
 const percentageValue = 'price-change-percentage';
 const priceChangeValue = 'price-change';
@@ -36,6 +37,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');
   });
+
   it('should display market proposal notification if proposal found', () => {
     cy.getByTestId(marketSummaryBlock).within(() => {
       cy.getByTestId('market-proposal-notification').should(
@@ -114,6 +116,15 @@ describe('Market trading page', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketMode).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
+          cy.getByTestId(itemValue).should('not.be.empty');
+        });
+      });
+    });
+
+    it('must see market state', () => {
+      cy.getByTestId(marketSummaryBlock).within(() => {
+        cy.getByTestId(marketState).within(() => {
+          cy.getByTestId(itemHeader).should('have.text', 'Status');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
