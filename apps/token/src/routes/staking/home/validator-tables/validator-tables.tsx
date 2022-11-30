@@ -22,6 +22,12 @@ export interface ValidatorsTableProps {
   previousEpochData: PreviousEpochQuery | undefined;
 }
 
+interface SortedValidatorsProps {
+  consensusValidators: NodesFragmentFragment[];
+  standbyValidators: NodesFragmentFragment[];
+  pendingValidators: NodesFragmentFragment[];
+}
+
 export const ValidatorTables = ({
   data,
   previousEpochData,
@@ -34,35 +40,31 @@ export const ValidatorTables = ({
   );
   let stakeNeededForPromotion = undefined;
 
-  const consensusValidators = useMemo(() => {
-    if (!data?.nodesConnection.edges) return [];
+  const { consensusValidators, standbyValidators, pendingValidators } = useMemo(
+    () =>
+      removePaginationWrapper(data?.nodesConnection.edges).reduce(
+        (acc: SortedValidatorsProps, validator) => {
+          switch (validator.rankingScore?.status) {
+            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT:
+              acc.consensusValidators.push(validator);
+              break;
+            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ:
+              acc.standbyValidators.push(validator);
+              break;
+            case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
+              acc.pendingValidators.push(validator);
+          }
 
-    return removePaginationWrapper(data.nodesConnection.edges).filter(
-      (edge) =>
-        edge?.rankingScore?.status ===
-        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT
-    );
-  }, [data?.nodesConnection.edges]);
-
-  const standbyValidators = useMemo(() => {
-    if (!data?.nodesConnection.edges) return [];
-
-    return removePaginationWrapper(data.nodesConnection.edges).filter(
-      (edge) =>
-        edge?.rankingScore?.status ===
-        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ
-    );
-  }, [data?.nodesConnection.edges]);
-
-  const pendingValidators = useMemo(() => {
-    if (!data?.nodesConnection.edges) return [];
-
-    return removePaginationWrapper(data.nodesConnection.edges).filter(
-      (edge) =>
-        edge?.rankingScore?.status ===
-        Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING
-    );
-  }, [data?.nodesConnection.edges]);
+          return acc;
+        },
+        {
+          consensusValidators: [],
+          standbyValidators: [],
+          pendingValidators: [],
+        }
+      ),
+    [data?.nodesConnection.edges]
+  );
 
   if (
     consensusValidators.length &&
@@ -101,7 +103,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {standbyValidators.length && (
+      {standbyValidators.length > 0 && (
         <>
           <h2>{t('status-ersatz')}</h2>
           <p>
@@ -120,7 +122,7 @@ export const ValidatorTables = ({
           />
         </>
       )}
-      {pendingValidators.length && (
+      {pendingValidators.length > 0 && (
         <>
           <h2>{t('status-pending')}</h2>
           <p>

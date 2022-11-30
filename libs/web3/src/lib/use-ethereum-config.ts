@@ -2,7 +2,6 @@ import {
   removePaginationWrapper,
   useNetworkParamsQuery,
 } from '@vegaprotocol/react-helpers';
-import compact from 'lodash/compact';
 import { useMemo } from 'react';
 
 export interface EthereumConfig {

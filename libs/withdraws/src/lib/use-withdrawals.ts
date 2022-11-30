@@ -1,5 +1,4 @@
 import orderBy from 'lodash/orderBy';
-import compact from 'lodash/compact';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
