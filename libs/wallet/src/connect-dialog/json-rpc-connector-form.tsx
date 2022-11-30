@@ -2,7 +2,6 @@ import capitalize from 'lodash/capitalize';
 import { createDocsLinks, t } from '@vegaprotocol/react-helpers';
 import {
   ButtonLink,
-  Cross,
   Diamond,
   Link,
   Loader,
