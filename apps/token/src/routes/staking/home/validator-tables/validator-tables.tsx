@@ -16,6 +16,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 export interface ValidatorsTableProps {
   data: NodesQuery | undefined;
@@ -34,6 +35,9 @@ export const ValidatorTables = ({
 }: ValidatorsTableProps) => {
   const { t } = useTranslation();
   const { VEGA_DOCS_URL } = useEnvironment();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const totalStake = useMemo(
     () => data?.nodeData?.stakedTotal || '0',
     [data?.nodeData?.stakedTotal]
@@ -83,7 +87,7 @@ export const ValidatorTables = ({
     ).rankingScore.rankingScore;
 
     const lowestRankingBigNum = toBigNum(lowestRankingConsensusScore, 0);
-    const totalStakeBigNum = toBigNum(totalStake, 18);
+    const totalStakeBigNum = toBigNum(totalStake, decimals);
 
     stakeNeededForPromotion = formatNumber(
       lowestRankingBigNum.times(totalStakeBigNum),
