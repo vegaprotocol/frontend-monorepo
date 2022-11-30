@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import compact from 'lodash/compact';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
