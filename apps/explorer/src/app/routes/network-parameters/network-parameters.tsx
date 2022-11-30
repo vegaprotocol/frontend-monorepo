@@ -7,14 +7,14 @@ import {
 import {
   addDecimalsFormatNumber,
   formatNumber,
+  removePaginationWrapper,
+  suitableForSyntaxHighlighter,
   t,
+  useNetworkParamsQuery,
 } from '@vegaprotocol/react-helpers';
-import { suitableForSyntaxHighlighter } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import compact from 'lodash/compact';
 
 const PERCENTAGE_PARAMS = [
   'governance.proposal.asset.requiredMajority',
@@ -107,9 +107,7 @@ export const NetworkParametersTable = ({
       error={error}
       render={(data) => {
         const ascParams = orderBy(
-          compact(data.networkParametersConnection.edges).map(
-            ({ node }) => node
-          ) || [],
+          removePaginationWrapper(data.networkParametersConnection.edges),
           (param) => param.key,
           'asc'
         );

@@ -1,4 +1,3 @@
-import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ConsensusValidatorsTable } from './consensus-validators-table';
@@ -12,7 +11,7 @@ import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import { formatNumber } from '../../../../lib/format-number';
 import {
   createDocsLinks,
-  removeNodeFromEdges,
+  removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/react-helpers';
 import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
@@ -38,7 +37,7 @@ export const ValidatorTables = ({
   const consensusValidators = useMemo(() => {
     if (!data?.nodesConnection.edges) return [];
 
-    return removeNodeFromEdges(data.nodesConnection.edges).filter(
+    return removePaginationWrapper(data.nodesConnection.edges).filter(
       (edge) =>
         edge?.rankingScore?.status ===
         Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT
@@ -48,7 +47,7 @@ export const ValidatorTables = ({
   const standbyValidators = useMemo(() => {
     if (!data?.nodesConnection.edges) return [];
 
-    return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
+    return removePaginationWrapper(data.nodesConnection.edges).filter(
       (edge) =>
         edge?.rankingScore?.status ===
         Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ
@@ -58,7 +57,7 @@ export const ValidatorTables = ({
   const pendingValidators = useMemo(() => {
     if (!data?.nodesConnection.edges) return [];
 
-    return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
+    return removePaginationWrapper(data.nodesConnection.edges).filter(
       (edge) =>
         edge?.rankingScore?.status ===
         Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING

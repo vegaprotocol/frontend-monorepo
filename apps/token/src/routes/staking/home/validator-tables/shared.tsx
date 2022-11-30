@@ -1,6 +1,5 @@
-import compact from 'lodash/compact';
 import { Link } from 'react-router-dom';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper, toBigNum } from '@vegaprotocol/react-helpers';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
@@ -45,10 +44,8 @@ export const totalPenalties = (
   totalStake: string
 ) => {
   const rawValidatorScore = previousEpochData
-    ? compact(
-        previousEpochData.epoch?.validatorsConnection?.edges?.map(
-          (edge) => edge?.node
-        )
+    ? removePaginationWrapper(
+        previousEpochData.epoch?.validatorsConnection?.edges
       ).find((validator) => validator?.id === id)?.rewardScore
         ?.rawValidatorScore
     : null;

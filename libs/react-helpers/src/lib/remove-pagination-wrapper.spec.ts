@@ -1,4 +1,4 @@
-import { removeNodeFromEdges } from './remove-node-from-edges';
+import { removePaginationWrapper } from './remove-pagination-wrapper';
 
 const expected = [
   { id: '1', name: 'foo' },
@@ -12,7 +12,7 @@ describe('Remove node from edges', () => {
       { node: { id: '2', name: 'bar' } },
     ];
 
-    expect(removeNodeFromEdges(edges)).toEqual(expected);
+    expect(removePaginationWrapper(edges)).toEqual(expected);
   });
 
   it('should remove any null values', () => {
@@ -20,8 +20,14 @@ describe('Remove node from edges', () => {
       { node: { id: '1', name: 'foo' } },
       { node: null },
       { node: { id: '2', name: 'bar' } },
+      null,
     ];
 
-    expect(removeNodeFromEdges(edges)).toEqual(expected);
+    expect(removePaginationWrapper(edges)).toEqual(expected);
+  });
+
+  it('should return an empty array if no edges are provided', () => {
+    expect(removePaginationWrapper(null)).toEqual([]);
+    expect(removePaginationWrapper(undefined)).toEqual([]);
   });
 });

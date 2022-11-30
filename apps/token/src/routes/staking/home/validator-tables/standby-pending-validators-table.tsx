@@ -105,7 +105,7 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.VALIDATOR,
           headerName: t(ValidatorFields.VALIDATOR).toString(),
           cellRenderer: ValidatorRenderer,
-          comparator: ({ name: a }, { name: b }) => Math.sign(a-b),
+          comparator: ({ name: a }, { name: b }) => Math.sign(a - b),
           pinned: 'left',
           width: 240,
         },

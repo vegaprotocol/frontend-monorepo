@@ -4,7 +4,6 @@ import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import compact from 'lodash/compact';
 
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
@@ -15,7 +14,7 @@ import { useContracts } from '../../contexts/contracts/contracts-context';
 import type { ERC20Asset } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import { Schema } from '@vegaprotocol/types';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { removePaginationWrapper, toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type {
@@ -66,9 +65,9 @@ export const usePollForDelegations = () => {
           })
           .then((res) => {
             if (!mounted) return;
-            const canonisedDelegations = compact(
+            const canonisedDelegations = removePaginationWrapper(
               res.data.party?.delegationsConnection?.edges
-            ).map(({ node }) => node);
+            );
             const filter =
               canonisedDelegations.filter((d) => {
                 return d.epoch.toString() === res.data.epoch.id;
@@ -85,9 +84,9 @@ export const usePollForDelegations = () => {
                 decimals
               )
             );
-            const accounts = compact(
+            const accounts = removePaginationWrapper(
               res.data.party?.accountsConnection?.edges
-            ).map((e) => e.node);
+            );
             setAccounts(
               accounts
                 .filter(

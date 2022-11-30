@@ -27,6 +27,7 @@ import {
   NetworkParams,
   removeDecimal,
   addDecimal,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import { useBalances } from '../../../lib/balances/balances-store';
 
@@ -157,8 +158,8 @@ export const StakingForm = ({
         delegationSearch();
 
         if (data) {
-          const delegation = compact(
-            data.party?.delegationsConnection?.edges?.map((edge) => edge?.node)
+          const delegation = removePaginationWrapper(
+            data.party?.delegationsConnection?.edges
           ).find((d) => {
             return (
               d.node.id === nodeId && d.epoch === Number(data.epoch.id) + 1

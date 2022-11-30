@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
 import {
   getDefaultOrder,
@@ -25,6 +24,7 @@ import {
   addDecimalsFormatNumber,
   addDecimal,
   formatNumber,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
@@ -87,8 +87,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     skip: !pubKey,
   });
 
-  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const accounts = removePaginationWrapper(
+    partyBalance?.party?.accountsConnection?.edges
   );
   const maxTrade = useMaximumPositionSize({
     partyId: pubKey || '',

@@ -21,8 +21,8 @@ import compact from 'lodash/compact';
  * @returns array
  */
 
-export const removeNodeFromEdges = (
-  edges: Array<{ node: any } | null>
-): any[] => {
-  return compact(edges.map((edge) => edge?.node));
-};
+export function removePaginationWrapper<T>(
+  edges: Array<{ node: T } | null> | undefined | null
+): T[] {
+  return compact(edges?.map((edge) => edge?.node));
+}

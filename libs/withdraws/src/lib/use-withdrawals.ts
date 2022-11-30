@@ -14,6 +14,7 @@ import type {
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables,
 } from './__generated__/Withdrawal';
+import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
 
 type WithdrawalEdges = { node: WithdrawalFieldsFragment }[];
 
@@ -47,7 +48,7 @@ export const useWithdrawals = () => {
     }
 
     return orderBy(
-      compact(data.party.withdrawalsConnection.edges).map((edge) => edge.node),
+      removePaginationWrapper(data.party.withdrawalsConnection.edges),
       'createdTimestamp',
       'desc'
     );
