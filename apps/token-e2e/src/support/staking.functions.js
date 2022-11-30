@@ -150,7 +150,6 @@ Cypress.Commands.add(
   (validatorNumber, validatorName = null) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.contains('Total stake this epoch').should('be.visible');
     cy.wait_for_beginning_of_epoch();
     // below is to ensure validator list is shown
     cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
