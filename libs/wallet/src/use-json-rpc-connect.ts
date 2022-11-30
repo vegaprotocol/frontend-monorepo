@@ -10,7 +10,6 @@ export enum Status {
   GettingChainId = 'GettingChainId',
   Connecting = 'Connecting',
   GettingPerms = 'GettingPerms',
-  RequestingPerms = 'RequestingPerms',
   ListingKeys = 'ListingKeys',
   Connected = 'Connected',
   Error = 'Error',
@@ -48,15 +47,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.Connecting);
         await connector.connectWallet();
 
-        // Check wallet is permitted to reveal its public keys
         setStatus(Status.GettingPerms);
-        const permsResult = await connector.getPermissions();
-        if (permsResult.permissions.public_keys === 'none') {
-          // Automatically request new perms. User will again be prompted to permit this change
-          // and enter their password
-          setStatus(Status.RequestingPerms);
-          await connector.requestPermissions();
-        }
 
         // Call connect in the wallet provider. The connector will be stored for
         // future actions such as sending transactions
