@@ -25,7 +25,7 @@ context(
         // 3001-VOTE-001
         cy.get(proposalDocumentationLink)
           .should('be.visible')
-          .and('have.text', 'Find out more about Vega governance')
+          .and('have.text', 'Vega governance')
           .and('have.attr', 'href')
           .and('equal', governanceDocsUrl);
 
@@ -59,7 +59,7 @@ context(
         cy.get(newProposalButton).should('be.visible').click();
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
-          .and('have.text', 'Connect Vega wallet');
+          .and('have.text', '123');
         cy.navigate_to('governance');
         cy.wait_for_spinner();
       });

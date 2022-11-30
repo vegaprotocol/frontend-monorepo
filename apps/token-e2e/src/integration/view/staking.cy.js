@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 const guideLink = '[data-testid="staking-guide-link"]';
-const validatorTitle = '[data-testid="validator-node-title"]';
+const validatorTitle = '[data-testid="valida"]';
 const validatorId = '[data-testid="validator-id"]';
 const validatorPubKey = '[data-testid="validator-public-key"]';
 const ethAddressLink = '[data-testid="link"]';
