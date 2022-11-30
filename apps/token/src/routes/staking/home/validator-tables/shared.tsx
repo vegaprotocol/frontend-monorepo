@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { rawValidatorScore } from '../../shared';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
