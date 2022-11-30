@@ -12,6 +12,7 @@ import type {
   MarketData,
 } from '@vegaprotocol/market-list';
 import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
 type Market = MarketWithCandles & MarketWithData;
 
 type PartialMarket = Partial<
@@ -91,6 +92,7 @@ const MARKET_B: PartialMarket = {
   __typename: 'Market',
   id: '2',
   decimalPlaces: 2,
+  positionDecimalPlaces: 0,
   tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   tradableInstrument: {
     __typename: 'TradableInstrument',
@@ -158,7 +160,8 @@ describe('SelectMarket', () => {
           onCellClick={onCellClick}
           onSelect={onSelect}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper: MockedProvider }
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
@@ -178,7 +181,8 @@ describe('SelectMarket', () => {
           onCellClick={onCellClick}
           onSelect={onSelect}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper: MockedProvider }
     );
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');
