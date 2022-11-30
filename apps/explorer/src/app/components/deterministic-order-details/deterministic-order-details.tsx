@@ -2,6 +2,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useExplorerDeterministicOrderQuery } from './__generated__/Order';
 import type { Schema } from '@vegaprotocol/types';
 import { MarketLink } from '../links';
+import PriceInMarket from '../price-in-market/price-in-market';
+import { Time } from '../time';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -24,6 +26,23 @@ const sideText: Record<Schema.Side, string> = {
   SIDE_SELL: 'Sell',
 };
 
+const tifShort: Record<Schema.OrderTimeInForce, string> = {
+  TIME_IN_FORCE_FOK: 'FOK',
+  TIME_IN_FORCE_GFA: 'GFA',
+  TIME_IN_FORCE_GFN: 'GFN',
+  TIME_IN_FORCE_GTC: 'GTC',
+  TIME_IN_FORCE_GTT: 'GTT',
+  TIME_IN_FORCE_IOC: 'IOC',
+};
+
+const tifFull: Record<Schema.OrderTimeInForce, string> = {
+  TIME_IN_FORCE_FOK: 'Fill or Kill',
+  TIME_IN_FORCE_GFA: 'Good for Auction',
+  TIME_IN_FORCE_GFN: 'Good for Normal',
+  TIME_IN_FORCE_GTC: "Good 'til Cancel",
+  TIME_IN_FORCE_GTT: "Good 'til Time",
+  TIME_IN_FORCE_IOC: 'Immediate or Cancel',
+};
 const wrapperClasses =
   'grid lg:grid-cols-1 flex items-center max-w-xl border border-zinc-200 dark:border-zinc-800 rounded-md pv-2 ph-5 mb-5';
 
@@ -66,15 +85,21 @@ const DeterministicOrderDetails = ({ id }: DeterministicOrderDetailsProps) => {
 
   const o = data.orderByID;
 
-  const title = `${sideText[o.side]} order`;
-
   return (
     <div className={wrapperClasses}>
       <div className="mb-12 lg:mb-0">
         <div className="relative block px-3 py-6 md:px-6 lg:-mr-7">
-          <h2 className="text-3xl font-bold mb-4 display-5">{title}</h2>
-          <p className="text-gray-500 mb-12">
-            Created in <MarketLink id={o.market.id} /> at {o.createdAt}
+          <h2 className="text-3xl font-bold mb-4 display-5">
+            <abbr title={tifFull[o.timeInForce]} className="bb-dotted mr-2">
+              {tifShort[o.timeInForce]}
+            </abbr>
+            {sideText[o.side]}
+            <span className="mx-5 text-base">@</span>
+            <PriceInMarket price={o.price} marketId={o.market.id} />
+          </h2>
+          <p className="text-gray-500 mb-4">
+            Created in <MarketLink id={o.market.id} /> at{' '}
+            <Time date={o.createdAt} />.
           </p>
 
           <div className="grid md:grid-cols-4 gap-x-6">

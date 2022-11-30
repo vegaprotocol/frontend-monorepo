@@ -5,65 +5,78 @@ import { MemoryRouter } from 'react-router-dom';
 describe('Txs infinite list item', () => {
   it('should display "missing vital data" if "type" data missing', () => {
     render(
-      <TxsInfiniteListItem
-        type={undefined}
-        submitter="test"
-        hash=""
-        index={0}
-        block="1"
-      />
+      <MemoryRouter>
+        <TxsInfiniteListItem
+          type={undefined}
+          submitter="test"
+          hash=""
+          code={0}
+          block="1"
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
 
   it('should display "missing vital data" if "hash" data missing', () => {
     render(
-      <TxsInfiniteListItem
-        type="test"
-        submitter="test"
-        hash={undefined}
-        index={0}
-        block="1"
-      />
+      <MemoryRouter>
+        <TxsInfiniteListItem
+          type="test"
+          submitter="test"
+          hash={undefined}
+          code={0}
+          block="1"
+          command={{}}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
 
   it('should display "missing vital data" if "submitter" data missing', () => {
     render(
-      <TxsInfiniteListItem
-        type="test"
-        submitter={undefined}
-        hash="test"
-        index={0}
-        block="1"
-      />
+      <MemoryRouter>
+        <TxsInfiniteListItem
+          type="test"
+          submitter={undefined}
+          hash="test"
+          code={0}
+          block="1"
+          command={{}}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
 
   it('should display "missing vital data" if "block" data missing', () => {
     render(
-      <TxsInfiniteListItem
-        type="test"
-        submitter="test"
-        hash="test"
-        index={0}
-        block={undefined}
-      />
+      <MemoryRouter>
+        <TxsInfiniteListItem
+          type="test"
+          submitter="test"
+          hash="test"
+          code={0}
+          block={undefined}
+          command={{}}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
 
-  it('should display "missing vital data" if "index" data missing', () => {
+  it('should display "missing vital data" if "code" data missing', () => {
     render(
-      <TxsInfiniteListItem
-        type="test"
-        submitter="test"
-        hash="test"
-        index={undefined}
-        block="1"
-      />
+      <MemoryRouter>
+        <TxsInfiniteListItem
+          type="test"
+          submitter="test"
+          hash="test"
+          block="1"
+          command={{}}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
@@ -75,8 +88,9 @@ describe('Txs infinite list item', () => {
           type="testType"
           submitter="testPubKey"
           hash="testTxHash"
-          index={1}
           block="1"
+          code={0}
+          command={{}}
         />
       </MemoryRouter>
     );
@@ -84,6 +98,6 @@ describe('Txs infinite list item', () => {
     expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
     expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
     expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
-    expect(screen.getByTestId('tx-index')).toHaveTextContent('1');
+    expect(screen.getByTestId('tx-success')).toHaveTextContent('Success: ✅');
   });
 });

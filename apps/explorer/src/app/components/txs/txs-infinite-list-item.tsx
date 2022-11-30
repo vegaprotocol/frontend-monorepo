@@ -15,15 +15,15 @@ export const TxsInfiniteListItem = ({
   submitter,
   type,
   block,
-  index,
   command,
 }: Partial<BlockExplorerTransactionResult>) => {
   if (
     !hash ||
     !submitter ||
     !type ||
+    code === undefined ||
     block === undefined ||
-    index === undefined
+    command === undefined
   ) {
     return <div>Missing vital data</div>;
   }
@@ -74,7 +74,7 @@ export const TxsInfiniteListItem = ({
       </div>
       <div
         className="text-sm col-span-2 xl:col-span-1 leading-none flex items-center"
-        data-testid="tx-index"
+        data-testid="tx-success"
       >
         <span className="xl:hidden uppercase text-zinc-500">
           Success:&nbsp;
