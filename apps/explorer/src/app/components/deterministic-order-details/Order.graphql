@@ -1,5 +1,7 @@
 fragment ExplorerDeterministicOrderFields on Order {
   id
+  type
+  reference
   status
   version
   createdAt

@@ -7,7 +7,7 @@ import { toHex } from '../search/detect-search';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import isNumber from 'lodash/isNumber';
 
-const TRUNCATE_LENGTH = 14;
+const TRUNCATE_LENGTH = 5;
 
 export const TxsInfiniteListItem = ({
   hash,

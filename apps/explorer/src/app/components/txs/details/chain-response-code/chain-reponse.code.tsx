@@ -1,5 +1,3 @@
-import { t } from '@vegaprotocol/react-helpers';
-
 // https://github.com/vegaprotocol/vega/blob/develop/core/blockchain/response.go
 export const ErrorCodes = new Map([
   [51, 'Transaction failed validation'],

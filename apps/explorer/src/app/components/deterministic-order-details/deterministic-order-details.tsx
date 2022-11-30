@@ -7,6 +7,8 @@ import { Time } from '../time';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
+  // Version to fetch, with 0 being 'latest' and 1 being 'first'. Defaults to 0
+  version?: number;
 }
 
 const statusText: Record<Schema.OrderStatus, string> = {
@@ -57,7 +59,10 @@ const wrapperClasses =
  * @param param0
  * @returns
  */
-const DeterministicOrderDetails = ({ id }: DeterministicOrderDetailsProps) => {
+const DeterministicOrderDetails = ({
+  id,
+  version = 0,
+}: DeterministicOrderDetailsProps) => {
   const { data, error } = useExplorerDeterministicOrderQuery({
     variables: { orderId: id },
   });
@@ -84,7 +89,6 @@ const DeterministicOrderDetails = ({ id }: DeterministicOrderDetailsProps) => {
   }
 
   const o = data.orderByID;
-
   return (
     <div className={wrapperClasses}>
       <div className="mb-12 lg:mb-0">
@@ -98,19 +102,24 @@ const DeterministicOrderDetails = ({ id }: DeterministicOrderDetailsProps) => {
             <PriceInMarket price={o.price} marketId={o.market.id} />
           </h2>
           <p className="text-gray-500 mb-4">
-            Created in <MarketLink id={o.market.id} /> at{' '}
-            <Time date={o.createdAt} />.
+            In <MarketLink id={o.market.id} /> at <Time date={o.createdAt} />.
           </p>
-
+          {o.reference ? (
+            <p className="text-gray-500 mb-4">
+              <span>{t('Reference')}</span>: {o.reference}
+            </p>
+          ) : null}
           <div className="grid md:grid-cols-4 gap-x-6">
-            <div className="mb-12 md:mb-0">
-              <h2 className="text-2xl font-bold text-dark mb-4">
-                {t('Status')}
-              </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
-                {statusText[o.status]}
-              </h5>
-            </div>
+            {version !== 0 ? null : (
+              <div className="mb-12 md:mb-0">
+                <h2 className="text-2xl font-bold text-dark mb-4">
+                  {t('Status')}
+                </h2>
+                <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
+                  {statusText[o.status]}
+                </h5>
+              </div>
+            )}
 
             <div className="mb-12 md:mb-0">
               <h2 className="text-2xl font-bold text-dark mb-4">{t('Size')}</h2>
@@ -119,14 +128,16 @@ const DeterministicOrderDetails = ({ id }: DeterministicOrderDetailsProps) => {
               </h5>
             </div>
 
-            <div className="">
-              <h2 className="text-2xl font-bold text-dark mb-4">
-                {t('Remaining')}
-              </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0">
-                {o.remaining}
-              </h5>
-            </div>
+            {version !== 0 ? null : (
+              <div className="">
+                <h2 className="text-2xl font-bold text-dark mb-4">
+                  {t('Remaining')}
+                </h2>
+                <h5 className="text-lg font-medium text-gray-500 mb-0">
+                  {o.remaining}
+                </h5>
+              </div>
+            )}
 
             <div className="">
               <h2 className="text-2xl font-bold text-dark mb-4">

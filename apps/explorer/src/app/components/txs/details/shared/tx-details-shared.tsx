@@ -29,13 +29,19 @@ export const TxDetailsShared = ({
   }
 
   const time: string = blockData?.result.block.header.time || '';
-  const height: string = blockData?.result.block.header.height || '';
+  const height: string = blockData?.result.block.header.height || txData.block;
 
   return (
     <>
       <TableRow modifier="bordered">
+        <TableCell>{t('Type')}</TableCell>
+        <TableCell>{txData.type}</TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
         <TableCell>{t('Hash')}</TableCell>
-        <TableCell>{txData.hash}</TableCell>
+        <TableCell>
+          <code>{txData.hash}</code>
+        </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Submitter')}</TableCell>
