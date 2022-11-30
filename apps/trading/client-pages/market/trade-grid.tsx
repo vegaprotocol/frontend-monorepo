@@ -1,5 +1,5 @@
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoContainer, getExpiryDate } from '@vegaprotocol/market-info';
+import { MarketInfoContainer } from '@vegaprotocol/market-info';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
@@ -17,29 +17,14 @@ import {
   Tabs,
   ResizableGrid,
   ResizableGridPanel,
-  ButtonLink,
-  Link,
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { Header, HeaderStat } from '../../components/header';
 import { AccountsContainer } from '../../components/accounts-container';
-import {
-  ColumnKind,
-  SelectMarketPopover,
-} from '../../components/select-market';
-import type { OnCellClickHandler } from '../../components/select-market';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
-import { Last24hPriceChange } from '../../components/last-24h-price-change';
-import { MarketMarkPrice } from '../../components/market-mark-price';
-import { MarketTradingModeComponent } from '../../components/market-trading-mode';
-import { Last24hVolume } from '../../components/last-24h-volume';
-import { MarketProposalNotification } from '@vegaprotocol/governance';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-
-const NO_MARKET = t('No market');
+import { TradeMarketHeader } from './trade-market-header';
+import { NO_MARKET } from './constants';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -73,6 +58,7 @@ const TradingViews = {
 
 type TradingView = keyof typeof TradingViews;
 
+<<<<<<< HEAD
 type ExpiryLabelProps = {
   market: SingleMarketFieldsFragment | null;
 };
@@ -200,6 +186,8 @@ export const TradeMarketHeader = ({
   );
 };
 
+=======
+>>>>>>> 512441314 (feat: add status header stat, move header to own component)
 interface TradeGridProps {
   market: SingleMarketFieldsFragment | null;
   onSelect: (marketId: string) => void;
