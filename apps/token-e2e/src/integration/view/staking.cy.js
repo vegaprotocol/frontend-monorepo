@@ -92,8 +92,8 @@ context('Staking Page - verify elements on page', function () {
       it('Should be able to see validator pending stake', function () {
         cy.get('[col-id="pendingStake"] > div > span')
           .should('have.length.at.least', 1)
-          .each(($penalties) => {
-            cy.wrap($penalties).should('contain.text', '0.00');
+          .each(($pendingStake) => {
+            cy.wrap($pendingStake).should('contain.text', '0.00');
           });
       });
 
