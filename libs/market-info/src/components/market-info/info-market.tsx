@@ -197,6 +197,11 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             tradingMode:
               keyDetails.tradingMode &&
               MarketTradingModeMapping[keyDetails.tradingMode],
+            marketDecimalPlaces: market.decimalPlaces,
+            positionDecimalPlaces: market.positionDecimalPlaces,
+            settlementAssetDecimalPlaces:
+              market.tradableInstrument.instrument.product.settlementAsset
+                .decimals,
           }}
         />
       ),

@@ -67,4 +67,4 @@ jobs:
       project: ${{ needs.pr.outputs.projects }}
       vega-version: ${{needs.pr.outputs.vega-version}}
       gobin: ${{needs.pr.outputs.gobin}}
-      tags: "--env.grepTags='[@smoke, @regression]'"
+      tags: "--env.grepTags='[ @smoke, @regression ]'"
