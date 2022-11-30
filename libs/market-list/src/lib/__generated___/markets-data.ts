@@ -1,28 +1,49 @@
 import { Schema as Types } from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
-import { MarketDataFieldsFragmentDoc } from './market-data';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type MarketsDataFieldsFragment = { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, staticMidPrice: string, marketTradingMode: Types.MarketTradingMode, indicativeVolume: string, indicativePrice: string, bestStaticBidPrice: string, bestStaticOfferPrice: string, targetStake?: string | null, suppliedStake?: string | null, auctionStart?: string | null, auctionEnd?: string | null, market: { __typename?: 'Market', id: string } };
+
 export type MarketsDataQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
 export type MarketsDataQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', data?: { __typename?: 'MarketData', bestBidPrice: string, bestOfferPrice: string, markPrice: string, trigger: Types.AuctionTrigger, staticMidPrice: string, marketTradingMode: Types.MarketTradingMode, indicativeVolume: string, indicativePrice: string, bestStaticBidPrice: string, bestStaticOfferPrice: string, targetStake?: string | null, suppliedStake?: string | null, auctionStart?: string | null, auctionEnd?: string | null, market: { __typename?: 'Market', id: string } } | null } }> } | null };
 
-
+export const MarketsDataFieldsFragmentDoc = gql`
+    fragment MarketsDataFields on MarketData {
+  market {
+    id
+  }
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+  trigger
+  staticMidPrice
+  marketTradingMode
+  indicativeVolume
+  indicativePrice
+  bestStaticBidPrice
+  bestStaticOfferPrice
+  targetStake
+  suppliedStake
+  auctionStart
+  auctionEnd
+}
+    `;
 export const MarketsDataDocument = gql`
     query MarketsData {
   marketsConnection {
     edges {
       node {
         data {
-          ...MarketDataFields
+          ...MarketsDataFields
         }
       }
     }
   }
 }
-    ${MarketDataFieldsFragmentDoc}`;
+    ${MarketsDataFieldsFragmentDoc}`;
 
 /**
  * __useMarketsDataQuery__

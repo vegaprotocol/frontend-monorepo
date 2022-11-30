@@ -15,8 +15,8 @@ import { NO_MARKET } from './constants';
 import { MarketMarkPrice } from '../../components/market-mark-price';
 import { Last24hPriceChange } from '../../components/last-24h-price-change';
 import { Last24hVolume } from '../../components/last-24h-volume';
+import { MarketState } from '../../components/market-state';
 import { MarketTradingMode } from '../../components/market-trading-mode';
-import { MarketStateMapping, Schema } from '@vegaprotocol/types';
 
 interface TradeMarketHeaderProps {
   market: SingleMarketFieldsFragment | null;
@@ -78,13 +78,7 @@ export const TradeMarketHeader = ({
         isHeader
       />
       <MarketTradingMode marketId={market?.id} onSelect={onSelect} isHeader />
-      <HeaderStat
-        heading={t('Status')}
-        description={getMarketStateTooltip(market?.state)}
-        testId="market-state"
-      >
-        {market?.state ? MarketStateMapping[market?.state] : '-'}
-      </HeaderStat>
+      <MarketState market={market} />
       {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}
@@ -146,50 +140,4 @@ const ExpiryTooltipContent = ({
   }
 
   return null;
-};
-
-const getMarketStateTooltip = (state?: Schema.MarketState) => {
-  if (state === Schema.MarketState.STATE_ACTIVE) {
-    return t('Enactment date reached and usual auction exit checks pass');
-  }
-
-  if (state === Schema.MarketState.STATE_CANCELLED) {
-    return t(
-      'Market triggers cancellation or governance vote has passed to cancel'
-    );
-  }
-
-  if (state === Schema.MarketState.STATE_CLOSED) {
-    return t('Governance vote passed to close the market');
-  }
-
-  if (state === Schema.MarketState.STATE_PENDING) {
-    return t(
-      'Governance vote has passed and market is awaiting opening auction exit'
-    );
-  }
-
-  if (state === Schema.MarketState.STATE_PROPOSED) {
-    return t('Governance vote for this market is valid and has been accepted');
-  }
-
-  if (state === Schema.MarketState.STATE_REJECTED) {
-    return t('Governance vote for this market has been rejected');
-  }
-
-  if (state === Schema.MarketState.STATE_SETTLED) {
-    return t('Settlement defined by product has been triggered and completed');
-  }
-
-  if (state === Schema.MarketState.STATE_SUSPENDED) {
-    return t('Suspended due to price or liquidity monitoring trigger');
-  }
-
-  if (state === Schema.MarketState.STATE_TRADING_TERMINATED) {
-    return t(
-      'Trading has been terminated as a result of the product definition'
-    );
-  }
-
-  return undefined;
 };
