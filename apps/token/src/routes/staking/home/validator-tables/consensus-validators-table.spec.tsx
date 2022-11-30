@@ -127,7 +127,7 @@ const previousEpochMock: MockedResponse<PreviousEpochQuery> = {
   },
 };
 
-const mockTotalStake = '28832590188747439203824';
+const MOCK_TOTAL_STAKE = '28832590188747439203824';
 
 const renderValidatorsTable = (
   data = MOCK_NODES,
@@ -140,7 +140,7 @@ const renderValidatorsTable = (
           <ConsensusValidatorsTable
             data={data}
             previousEpochData={previousEpochData}
-            totalStake={mockTotalStake}
+            totalStake={MOCK_TOTAL_STAKE}
           />
         </MockedProvider>
       </MemoryRouter>
@@ -182,7 +182,7 @@ describe('Consensus validators table', () => {
   });
 
   it('should display the correctly formatted fields in the correct columns', async () => {
-    const MOCK_NODE = [
+    const mockNode = [
       nodeFactory({
         id: '966438c6bffac737cfb08173ffcb3f393c4692b099ad80cb45a82e2dc0a8cf99',
         name: 'T-800 Terminator',
@@ -202,7 +202,7 @@ describe('Consensus validators table', () => {
       }),
     ];
 
-    renderValidatorsTable(MOCK_NODE, MOCK_PREVIOUS_EPOCH);
+    renderValidatorsTable(mockNode, MOCK_PREVIOUS_EPOCH);
 
     expect(
       await screen.findByTestId('consensus-validators-table')

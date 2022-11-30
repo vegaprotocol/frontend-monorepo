@@ -11,3 +11,4 @@ export * from './pagination';
 export * from './remove-0x';
 export * from './time';
 export * from './links';
+export * from './remove-node-from-edges';

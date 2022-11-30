@@ -10,7 +10,11 @@ import type {
 } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import { formatNumber } from '../../../../lib/format-number';
-import { createDocsLinks, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  createDocsLinks,
+  removeNodeFromEdges,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -34,7 +38,7 @@ export const ValidatorTables = ({
   const consensusValidators = useMemo(() => {
     if (!data?.nodesConnection.edges) return [];
 
-    return compact(data.nodesConnection.edges.map((edge) => edge?.node)).filter(
+    return removeNodeFromEdges(data.nodesConnection.edges).filter(
       (edge) =>
         edge?.rankingScore?.status ===
         Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT
@@ -132,7 +136,6 @@ export const ValidatorTables = ({
                   >
                     {t('pendingDescriptionLinkText')}
                   </UTLink>
-                  {'. '}
                 </span>
               </>
             )}

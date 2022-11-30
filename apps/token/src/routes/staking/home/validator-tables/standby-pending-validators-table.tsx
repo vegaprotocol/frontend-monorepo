@@ -5,7 +5,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import {
   defaultColDef,
-  nodeListGridStyles,
+  NODE_LIST_GRID_STYLES,
   stakedTotalPercentage,
   totalPenalties,
   ValidatorFields,
@@ -147,7 +147,7 @@ export const StandbyPendingValidatorsTable = ({
         <AgGrid
           domLayout="autoHeight"
           style={{ width: '100%' }}
-          customThemeParams={nodeListGridStyles}
+          customThemeParams={NODE_LIST_GRID_STYLES}
           rowHeight={52}
           defaultColDef={defaultColDef}
           animateRows={true}

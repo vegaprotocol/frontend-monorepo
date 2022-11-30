@@ -5,7 +5,7 @@ import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import {
   defaultColDef,
-  nodeListGridStyles,
+  NODE_LIST_GRID_STYLES,
   stakedTotalPercentage,
   totalPenalties,
   ValidatorFields,
@@ -209,7 +209,7 @@ export const ConsensusValidatorsTable = ({
           <AgGrid
             domLayout="autoHeight"
             style={{ width: '100%' }}
-            customThemeParams={nodeListGridStyles}
+            customThemeParams={NODE_LIST_GRID_STYLES}
             rowHeight={52}
             defaultColDef={defaultColDef}
             animateRows={true}

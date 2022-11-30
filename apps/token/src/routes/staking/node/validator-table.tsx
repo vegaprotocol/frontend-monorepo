@@ -11,17 +11,15 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { Schema } from '@vegaprotocol/types';
 
-const statusTranslationKey = (status: Schema.ValidatorStatus) => {
-  // Returns a key for translation
-  const statuses = {
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: 'status-pending',
-    [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]:
-      'status-tendermint',
-  };
-
-  return statuses[status];
+const statuses = {
+  [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
+  [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING]: 'status-pending',
+  [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_TENDERMINT]:
+    'status-tendermint',
 };
+
+const statusTranslationKey = (status: Schema.ValidatorStatus) =>
+  statuses[status];
 
 const ValidatorTableCell = ({
   children,
