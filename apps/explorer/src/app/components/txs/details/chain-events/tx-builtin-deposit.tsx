@@ -15,26 +15,26 @@ interface TxDetailsChainEventBuiltinDepositProps {
 export const TxDetailsChainEventBuiltinDeposit = ({
   deposit,
 }: TxDetailsChainEventBuiltinDepositProps) => {
-  if (!deposit) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!deposit || !deposit.partyId || !deposit.vegaAssetId || !deposit.amount) {
+    return null;
   }
 
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Chain Event type')}</TableCell>
+        <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('Built-in asset deposit')}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
-          <PartyLink id={deposit.partyId || ''} />
+          <PartyLink id={deposit.partyId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={deposit.vegaAssetId || ''} /> ({t('built in asset')})
+          <AssetLink id={deposit.vegaAssetId} /> ({t('built in asset')})
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

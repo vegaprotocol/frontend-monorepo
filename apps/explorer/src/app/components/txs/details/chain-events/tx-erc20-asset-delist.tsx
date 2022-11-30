@@ -16,8 +16,8 @@ interface TxDetailsChainEventErc20AssetDelistProps {
 export const TxDetailsChainEventErc20AssetDelist = ({
   assetDelist,
 }: TxDetailsChainEventErc20AssetDelistProps) => {
-  if (!assetDelist) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!assetDelist || !assetDelist.vegaAssetId) {
+    return null;
   }
 
   return (
