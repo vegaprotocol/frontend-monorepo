@@ -75,7 +75,7 @@ export function getLabelForChainEvent(
     return t('Staking event');
   } else if (chainEvent.erc20Multisig) {
     if (chainEvent.erc20Multisig.signerAdded) {
-      return t('Signer adde');
+      return t('Signer added');
     } else if (chainEvent.erc20Multisig.signerRemoved) {
       return t('Signer remove');
     } else if (chainEvent.erc20Multisig.thresholdSet) {
