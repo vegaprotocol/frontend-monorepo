@@ -110,7 +110,7 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
-            headerName={t('Committed bond')}
+            headerName={t('Total staked by LPs')}
             field="liquidityCommitted"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
               formatWithAsset(
