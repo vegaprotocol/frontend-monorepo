@@ -2,7 +2,7 @@ import { useApolloClient } from '@apollo/client';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
-import { WithdrawalsDocument } from './__generated__/Withdrawal';
+import { WithdrawalEventDocument } from './__generated__/Withdrawal';
 import type {
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables,
@@ -20,13 +20,13 @@ export const useWithdrawalEvent = (transaction: VegaTxState) => {
 
   const waitForWithdrawalEvent = useCallback<WaitForWithdrawalEvent>(
     (id, partyId) => {
-      return new Promise((resolve) => {
+      return new Promise<WithdrawalFieldsFragment>((resolve) => {
         subRef.current = client
           .subscribe<
             WithdrawalEventSubscription,
             WithdrawalEventSubscriptionVariables
           >({
-            query: WithdrawalsDocument,
+            query: WithdrawalEventDocument,
             variables: { partyId },
           })
           .subscribe(({ data }) => {

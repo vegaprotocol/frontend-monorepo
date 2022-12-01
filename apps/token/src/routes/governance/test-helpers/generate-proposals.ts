@@ -4,7 +4,7 @@ import * as faker from 'faker';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
-import type { DeepPartial } from '../../../lib/type-helpers';
+import type { PartialDeep } from 'type-fest';
 import type {
   Proposal_proposal,
   Proposal_proposal_votes_yes,
@@ -14,7 +14,7 @@ import type {
 } from '../proposal/__generated__/Proposal';
 
 export function generateProposal(
-  override: DeepPartial<Proposal_proposal> = {}
+  override: PartialDeep<Proposal_proposal> = {}
 ): Proposal_proposal {
   const defaultProposal: Proposal_proposal = {
     __typename: 'Proposal',
@@ -63,7 +63,7 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<Proposal_proposal, DeepPartial<Proposal_proposal>>(
+  return mergeWith<Proposal_proposal, PartialDeep<Proposal_proposal>>(
     defaultProposal,
     override,
     (objValue, srcValue) => {

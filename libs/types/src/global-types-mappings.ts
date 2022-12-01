@@ -405,7 +405,8 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_SEND: 'Transfer funds',
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer funds',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market is closed, accounts are cleared',
-  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: 'Checkpoint balance restore',
+  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE:
+    'Initial balance after checkpoint restart',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {

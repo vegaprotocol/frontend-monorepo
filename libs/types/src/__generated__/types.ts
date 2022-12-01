@@ -1707,11 +1707,11 @@ export type MarketTick = {
 export type MarketTimestamps = {
   __typename?: 'MarketTimestamps';
   /** Time when the market is closed */
-  close?: Maybe<Scalars['Timestamp']>;
+  close: Scalars['Timestamp'];
   /** Time when the market is open and ready to accept trades */
-  open?: Maybe<Scalars['Timestamp']>;
+  open: Scalars['Timestamp'];
   /** Time when the market has been voted in and waiting to be created */
-  pending?: Maybe<Scalars['Timestamp']>;
+  pending: Scalars['Timestamp'];
   /** Time when the market is first proposed */
   proposed?: Maybe<Scalars['Timestamp']>;
 };
@@ -1878,8 +1878,6 @@ export type NodeData = {
   totalNodes: Scalars['Int'];
   /** Total uptime for all epochs across all nodes. Or specify a number of epochs */
   uptime: Scalars['Float'];
-  /** Number of nodes validating */
-  validatingNodes: Scalars['Int'];
 };
 
 /** Edge type containing the node and cursor information returned by a NodesConnection */

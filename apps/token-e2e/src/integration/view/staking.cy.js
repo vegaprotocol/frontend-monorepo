@@ -12,8 +12,6 @@ const stakedByDelegates = '[data-testid="staked-by-delegates"]';
 const stakeShare = '[data-testid="stake-percentage"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d*\.?\d*$/;
-const ownStake = '[data-testid="own-stake"]';
-const nominatedStake = '[data-testid="nominated-stake"]';
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
@@ -50,79 +48,50 @@ context('Staking Page - verify elements on page', function () {
     function () {
       // 2001-STKE-050
       it('Should be able to see validator names', function () {
-        cy.get('[col-id="validator"]')
+        cy.get('[col-id="validator"] > div > span')
           .should('have.length.at.least', 1)
           .each(($name) => {
             cy.wrap($name).should('not.be.empty');
           });
       });
 
-      it('Should be able to see validator status', function () {
-        cy.get('[col-id="status"]')
+      it('Should be able to see validator stake', function () {
+        cy.get('[col-id="stake"] > div > span')
           .should('have.length.at.least', 1)
-          .each(($status) => {
-            cy.wrap($status).should('not.be.empty');
+          .each(($stake) => {
+            cy.wrap($stake).should('not.be.empty');
           });
       });
 
-      it('Should be able to see total stake for this epoch', function () {
-        cy.get('[col-id="totalStakeThisEpoch"]')
+      it('Should be able to see validator normalised voting power', function () {
+        cy.get('[col-id="normalisedVotingPower"] > div > span')
           .should('have.length.at.least', 1)
-          .each(($totalStaked) => {
-            cy.wrap($totalStaked).should('not.be.empty');
+          .each(($vPower) => {
+            cy.wrap($vPower).should('not.be.empty');
           });
       });
 
-      it('Should be able to see validator staked for this epoch', function () {
-        cy.get('[col-id="validatorStake"]')
+      it('Should be able to see validator normalised voting power', function () {
+        cy.get('[col-id="normalisedVotingPower"] > div > span')
           .should('have.length.at.least', 1)
-          .each(($validatorStake) => {
-            cy.wrap($validatorStake).should('not.be.empty');
+          .each(($vPower) => {
+            cy.wrap($vPower).should('not.be.empty');
           });
       });
 
-      it('Should be able to see validator staked for next epoch', function () {
-        cy.get('[col-id="pendingStake"]')
+      it('Should be able to see validator total penalties', function () {
+        cy.get('[col-id="totalPenalties"] > div > span')
+          .should('have.length.at.least', 1)
+          .each(($penalties) => {
+            cy.wrap($penalties).should('contain.text', '0%');
+          });
+      });
+
+      it('Should be able to see validator pending stake', function () {
+        cy.get('[col-id="pendingStake"] > div > span')
           .should('have.length.at.least', 1)
           .each(($pendingStake) => {
-            cy.wrap($pendingStake).should('not.be.empty');
-          });
-      });
-
-      // 2001-STKE-021
-      it('Should be able to see validator ranking score', function () {
-        cy.get('.ag-body-horizontal-scroll-viewport').scrollTo('right');
-        cy.get('[col-id="rankingScore"]')
-          .should('have.length.at.least', 1)
-          .each(($rankingScore) => {
-            cy.wrap($rankingScore).should('not.be.empty');
-          });
-      });
-
-      // 2001-STKE-022
-      it('Should be able to see validator stake score', function () {
-        cy.get('[col-id="stakeScore"]')
-          .should('have.length.at.least', 1)
-          .each(($stakeScore) => {
-            cy.wrap($stakeScore).should('not.be.empty');
-          });
-      });
-
-      // 2001-STKE-023
-      it('Should be able to see validator performance score', function () {
-        cy.get('[col-id="performanceScore"]')
-          .should('have.length.at.least', 1)
-          .each(($performanceScore) => {
-            cy.wrap($performanceScore).should('not.be.empty');
-          });
-      });
-
-      // 2001-STKE-024
-      it('Should be able to see validator voting power score', function () {
-        cy.get('[col-id="votingPower"]')
-          .should('have.length.at.least', 1)
-          .each(($votingPower) => {
-            cy.wrap($votingPower).should('not.be.empty');
+            cy.wrap($pendingStake).should('contain.text', '0.00');
           });
       });
 
@@ -200,16 +169,6 @@ context('Staking Page - verify elements on page', function () {
               );
             }
           });
-      });
-
-      // 2001-STKE-013
-      it('Should be able to see own stake this epoch', function () {
-        cy.get(ownStake).invoke('text').should('match', stakeNumberRegex);
-      });
-
-      // 2001-STKE-014
-      it('Should be able to see nominated stake this epoch', function () {
-        cy.get(nominatedStake).invoke('text').should('match', stakeNumberRegex);
       });
 
       // 2001-STKE-011 2002-SINC-001 2002-SINC-002

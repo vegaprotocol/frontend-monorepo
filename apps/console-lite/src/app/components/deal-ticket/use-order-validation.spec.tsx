@@ -91,7 +91,10 @@ const market: MarketDealTicket = {
     auctionEnd: null,
     market: { __typename: 'Market', id: 'market-id' },
   },
-  marketTimestamps: {},
+  marketTimestamps: {
+    open: null,
+    close: null,
+  },
 };
 
 const defaultWalletContext = {
