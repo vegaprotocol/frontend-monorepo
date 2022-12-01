@@ -24,16 +24,16 @@ export const ChainResponseCode = ({
   code,
   hideLabel = false,
 }: ChainResponseCodeProps) => {
-  const isError = successCodes.has(code);
+  const isSuccess = successCodes.has(code);
 
-  const icon = isError ? '✅' : '❌';
+  const icon = isSuccess ? '✅' : '❌';
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
   return (
     <div title={`Response code: ${code} - ${label}`}>
       <span
         className="mr-2"
-        aria-label={isError ? 'Warning' : 'Success'}
+        aria-label={isSuccess ? 'Success' : 'Warning'}
         role="img"
       >
         {icon}

@@ -24,8 +24,8 @@ export const TxDetailsOrderCancel = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const marketId = txData.command.orderCancellation.marketId || '-';
-  const orderId = txData.command.orderCancellation.orderId || '-';
+  const marketId: string = txData.command.orderCancellation.marketId || '-';
+  const orderId: string = txData.command.orderCancellation.orderId || '-';
 
   return (
     <>
@@ -43,7 +43,7 @@ export const TxDetailsOrderCancel = ({
         </TableRow>
       </TableWithTbody>
 
-      {orderId.length > 0 ? <DeterministicOrderDetails id={orderId} /> : null}
+      {orderId !== '-' ? <DeterministicOrderDetails id={orderId} /> : null}
     </>
   );
 };
