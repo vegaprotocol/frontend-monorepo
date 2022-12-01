@@ -12,7 +12,6 @@ export const ENV = {
   // Environment
   dsn: windowOrDefault('NX_EXPLORER_SENTRY_DSN'),
   dataSources: {
-    chainExplorerUrl: windowOrDefault('NX_CHAIN_EXPLORER_URL'),
     blockExplorerUrl: windowOrDefault('NX_BLOCK_EXPLORER'),
     tendermintUrl: windowOrDefault('NX_TENDERMINT_URL'),
     tendermintWebsocketUrl: windowOrDefault('NX_TENDERMINT_WEBSOCKET_URL'),
