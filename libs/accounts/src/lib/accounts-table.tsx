@@ -63,138 +63,170 @@ export interface Datasource extends IDatasource {
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   datasource?: Datasource;
-  onClickAsset: (assetId: string) => void;
+  onClickAsset?: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
 }
 
+interface AccountEmptyTableProps extends AccountTableProps {
+  setOpenBreakdown?: (value: boolean) => void;
+  openBreakdown?: boolean;
+  setBreakdown?: (value: AccountFields[] | null) => void;
+}
+
+export const AccountTableEmpty = forwardRef<
+  AgGridReact,
+  AccountEmptyTableProps
+>(
+  (
+    {
+      onClickAsset,
+      onClickDeposit,
+      onClickWithdraw,
+      setOpenBreakdown,
+      openBreakdown,
+      setBreakdown,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <AgGrid
+        style={{ width: '100%', height: '100%' }}
+        overlayNoRowsTemplate={t('No accounts')}
+        getRowId={({ data }: { data: AccountFields }) => data.asset.id}
+        ref={ref}
+        rowHeight={34}
+        tooltipShowDelay={500}
+        defaultColDef={{
+          flex: 1,
+          resizable: true,
+          tooltipComponent: TooltipCellComponent,
+          sortable: true,
+        }}
+        {...props}
+      >
+        <AgGridColumn
+          headerName={t('Asset')}
+          field="asset.symbol"
+          headerTooltip={t(
+            'Asset is the collateral that is deposited into the Vega protocol.'
+          )}
+          cellRenderer={({
+            value,
+            data,
+          }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
+            return value ? (
+              <ButtonLink
+                data-testid="deposit"
+                onClick={() => {
+                  if (data && onClickAsset) {
+                    onClickAsset(data.asset.id);
+                  }
+                }}
+              >
+                {value}
+              </ButtonLink>
+            ) : null;
+          }}
+          maxWidth={300}
+        />
+        <AgGridColumn
+          headerName={t('Total')}
+          field="deposited"
+          headerTooltip={t(
+            'This is the total amount of collateral used plus the amount available in your general account.'
+          )}
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
+            data &&
+            data.asset &&
+            isNumeric(value) &&
+            addDecimalsFormatNumber(value, data.asset.decimals)
+          }
+          maxWidth={300}
+        />
+        <AgGridColumn
+          headerName={t('Used')}
+          field="used"
+          flex={2}
+          minWidth={150}
+          maxWidth={500}
+          headerComponentParams={progressBarHeaderComponentParams}
+          cellRendererSelector={progressBarCellRendererSelector}
+          valueFormatter={progressBarValueFormatter}
+        />
+        <AgGridColumn
+          headerName=""
+          field="breakdown"
+          minWidth={150}
+          cellRenderer={({
+            value,
+          }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
+            return (
+              <ButtonLink
+                data-testid="breakdown"
+                onClick={() => {
+                  setOpenBreakdown?.(!openBreakdown);
+                  setBreakdown?.(value || null);
+                }}
+              >
+                {t('Breakdown')}
+              </ButtonLink>
+            );
+          }}
+        />
+        <AgGridColumn
+          colId="transact"
+          headerName=""
+          sortable={false}
+          minWidth={250}
+          cellRenderer={({ data }: VegaICellRendererParams<AccountFields>) => {
+            return data ? (
+              <div className="flex gap-2 justify-end">
+                <Button
+                  size="xs"
+                  data-testid="deposit"
+                  onClick={() => {
+                    onClickDeposit && onClickDeposit(data.asset.id);
+                  }}
+                >
+                  {t('Deposit')}
+                </Button>
+
+                <Button
+                  size="xs"
+                  data-testid="withdraw"
+                  onClick={() =>
+                    onClickWithdraw && onClickWithdraw(data.asset.id)
+                  }
+                >
+                  {t('Withdraw')}
+                </Button>
+              </div>
+            ) : null;
+          }}
+        />
+      </AgGrid>
+    );
+  }
+);
+
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
-  ({ onClickAsset, onClickWithdraw, onClickDeposit, ...props }, ref) => {
+  (props, ref) => {
     const [openBreakdown, setOpenBreakdown] = useState(false);
     const [breakdown, setBreakdown] = useState<AccountFields[] | null>(null);
     return (
       <>
-        <AgGrid
-          style={{ width: '100%', height: '100%' }}
-          overlayNoRowsTemplate={t('No accounts')}
-          getRowId={({ data }: { data: AccountFields }) => data.asset.id}
-          ref={ref}
-          rowHeight={34}
-          tooltipShowDelay={500}
-          defaultColDef={{
-            flex: 1,
-            resizable: true,
-            tooltipComponent: TooltipCellComponent,
-            sortable: true,
-          }}
+        <AccountTableEmpty
           {...props}
-        >
-          <AgGridColumn
-            headerName={t('Asset')}
-            field="asset.symbol"
-            headerTooltip={t(
-              'Asset is the collateral that is deposited into the Vega protocol.'
-            )}
-            cellRenderer={({
-              value,
-              data,
-            }: VegaICellRendererParams<AccountFields, 'asset.symbol'>) => {
-              return value ? (
-                <ButtonLink
-                  data-testid="deposit"
-                  onClick={() => {
-                    if (data) {
-                      onClickAsset(data.asset.id);
-                    }
-                  }}
-                >
-                  {value}
-                </ButtonLink>
-              ) : null;
-            }}
-            maxWidth={300}
-          />
-          <AgGridColumn
-            headerName={t('Total')}
-            field="deposited"
-            headerTooltip={t(
-              'This is the total amount of collateral used plus the amount available in your general account.'
-            )}
-            valueFormatter={({
-              value,
-              data,
-            }: VegaValueFormatterParams<AccountFields, 'deposited'>) =>
-              data &&
-              data.asset &&
-              isNumeric(value) &&
-              addDecimalsFormatNumber(value, data.asset.decimals)
-            }
-            maxWidth={300}
-          />
-          <AgGridColumn
-            headerName={t('Used')}
-            field="used"
-            flex={2}
-            minWidth={150}
-            maxWidth={500}
-            headerComponentParams={progressBarHeaderComponentParams}
-            cellRendererSelector={progressBarCellRendererSelector}
-            valueFormatter={progressBarValueFormatter}
-          />
-          <AgGridColumn
-            headerName=""
-            field="breakdown"
-            minWidth={150}
-            cellRenderer={({
-              value,
-            }: VegaICellRendererParams<AccountFields, 'breakdown'>) => {
-              return (
-                <ButtonLink
-                  data-testid="breakdown"
-                  onClick={() => {
-                    setOpenBreakdown(!openBreakdown);
-                    setBreakdown(value || null);
-                  }}
-                >
-                  {t('Breakdown')}
-                </ButtonLink>
-              );
-            }}
-          />
-          <AgGridColumn
-            colId="transact"
-            headerName=""
-            sortable={false}
-            minWidth={250}
-            cellRenderer={({
-              data,
-            }: VegaICellRendererParams<AccountFields>) => {
-              return data ? (
-                <div className="flex gap-2 justify-end">
-                  <Button
-                    size="xs"
-                    data-testid="deposit"
-                    onClick={() => {
-                      onClickDeposit && onClickDeposit(data.asset.id);
-                    }}
-                  >
-                    {t('Deposit')}
-                  </Button>
-
-                  <Button
-                    size="xs"
-                    data-testid="withdraw"
-                    onClick={() =>
-                      onClickWithdraw && onClickWithdraw(data.asset.id)
-                    }
-                  >
-                    {t('Withdraw')}
-                  </Button>
-                </div>
-              ) : null;
-            }}
-          />
-        </AgGrid>
+          ref={ref}
+          openBreakdown={openBreakdown}
+          setOpenBreakdown={setOpenBreakdown}
+          setBreakdown={setBreakdown}
+        />
         <Dialog size="medium" open={openBreakdown} onChange={setOpenBreakdown}>
           <div className="h-[35vh] w-full m-auto flex flex-col">
             <h1 className="text-xl mb-4">{t('Collateral breakdown')}</h1>
