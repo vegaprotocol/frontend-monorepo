@@ -4,13 +4,13 @@ import { ConsensusValidatorsTable } from './consensus-validators-table';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { NodesDocument } from '../__generated___/Nodes';
-import { PreviousEpochDocument } from '../__generated___/PreviousEpoch';
+import { PreviousEpochDocument } from '../../__generated___/PreviousEpoch';
 import { Schema } from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { PartialDeep } from 'type-fest';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
 const nodeFactory = (
   overrides?: PartialDeep<NodesFragmentFragment>
