@@ -34,7 +34,10 @@ describe('fills', { tags: '@regression' }, () => {
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').contains('Please connect Vega wallet');
+    cy.getByTestId('tab-fills').should(
+      'contain.text',
+      'Connect your Vega wallet'
+    );
     cy.connectVegaWallet();
     validateFillsDisplayed();
   });
