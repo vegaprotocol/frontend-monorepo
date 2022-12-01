@@ -88,6 +88,13 @@ const LazyStakingNode = React.lazy(
     )
 );
 
+const LazyGovernanceHome = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-home", webpackPrefetch: true */ './governance-home'
+    )
+);
+
 const LazyGovernance = React.lazy(
   () =>
     import(
@@ -250,7 +257,7 @@ const routerConfig = [
     path: Routes.GOVERNANCE,
     element: <LazyGovernance name="Governance" />,
     children: [
-      { index: true, element: <LazyGovernanceProposals /> },
+      { index: true, element: <LazyGovernanceHome name="Governance" /> },
       {
         path: 'propose',
         element: <Outlet />,
@@ -277,6 +284,7 @@ const routerConfig = [
           { path: 'raw', element: <LazyGovernanceProposeRaw /> },
         ],
       },
+      { path: 'proposals', element: <LazyGovernanceProposals /> },
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
       { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
     ],
