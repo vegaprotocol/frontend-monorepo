@@ -18,7 +18,7 @@ import type {
   WithdrawalEventSubscription,
   WithdrawalFieldsFragment,
 } from './__generated__/Withdrawal';
-import { WithdrawalsDocument } from './__generated__/Withdrawal';
+import { WithdrawalEventDocument } from './__generated__/Withdrawal';
 import { Schema } from '@vegaprotocol/types';
 
 function setup(
@@ -116,7 +116,7 @@ beforeEach(() => {
   };
   mockWithdrawalEvent = {
     request: {
-      query: WithdrawalsDocument,
+      query: WithdrawalEventDocument,
       variables: { partyId: pubKey },
     },
     result: {
