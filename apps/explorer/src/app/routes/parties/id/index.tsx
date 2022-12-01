@@ -17,22 +17,22 @@ import type { Schema } from '@vegaprotocol/types';
 import get from 'lodash/get';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
-  ACCOUNT_TYPE_BOND: 'Bond',
-  ACCOUNT_TYPE_EXTERNAL: 'External',
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Fees (Infrastructure)',
-  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Fees (Liquidity)',
-  ACCOUNT_TYPE_FEES_MAKER: 'Fees (Maker)',
-  ACCOUNT_TYPE_GENERAL: 'General',
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global Insurance Pool',
-  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global Reward Pool',
-  ACCOUNT_TYPE_INSURANCE: 'Insurance',
-  ACCOUNT_TYPE_MARGIN: 'Margin',
-  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending Transfers',
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'Reward - LP Fees received',
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward - Maker fees paid',
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Reward - Maker fees received',
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward - Market proposers',
-  ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
+  ACCOUNT_TYPE_BOND: t('Bond'),
+  ACCOUNT_TYPE_EXTERNAL: t('External'),
+  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: t('Fees (Infrastructure)'),
+  ACCOUNT_TYPE_FEES_LIQUIDITY: t('Fees (Liquidity)'),
+  ACCOUNT_TYPE_FEES_MAKER: t('Fees (Maker)'),
+  ACCOUNT_TYPE_GENERAL: t('General'),
+  ACCOUNT_TYPE_GLOBAL_INSURANCE: t('Global Insurance Pool'),
+  ACCOUNT_TYPE_GLOBAL_REWARD: t('Global Reward Pool'),
+  ACCOUNT_TYPE_INSURANCE: t('Insurance'),
+  ACCOUNT_TYPE_MARGIN: t('Margin'),
+  ACCOUNT_TYPE_PENDING_TRANSFERS: t('Pending Transfers'),
+  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: t('Reward - LP Fees received'),
+  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: t('Reward - Maker fees paid'),
+  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: t('Reward - Maker fees received'),
+  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: t('Reward - Market proposers'),
+  ACCOUNT_TYPE_SETTLEMENT: t('Settlement'),
 };
 
 const Party = () => {
