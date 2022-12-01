@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
 const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
-const stakeValidatorListValidatorStake = '[col-id="validatorStake"]';
+const stakeValidatorListValidatorStake = '[col-id="stake"] > div > span';
 const stakeRemoveStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const stakeTokenAmountInputBox = '[data-testid="token-amount-input"]';
 const stakeTokenSubmitButton = '[data-testid="token-input-submit-button"]';
@@ -96,16 +96,11 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-        cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
+        // cy.get(nominatedStake).should('have.text', '2.00'); // 2001-STKE-017 2002-SINC-007
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '2.00',
-          '100%'
-        );
+        cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
@@ -152,12 +147,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '2.00',
-          '100%'
-        );
+        cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
 
       it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
@@ -217,12 +207,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '6.00',
-          '100%'
-        );
+        cy.validate_validator_list_total_stake_and_share('0', '6.00', '100%');
       });
 
       it('Able to stake against multiple validators', function () {
@@ -366,12 +351,7 @@ context(
 
           cy.navigate_to('staking');
 
-          cy.validate_validator_list_total_stake_and_share(
-            '0',
-            '',
-            '2.00',
-            '100%'
-          );
+          cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
         }
       );
 
@@ -428,7 +408,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share('0', '', '0.00', '-');
+        cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
 
       it('Unable to remove a stake with a negative value for a validator', function () {
@@ -452,7 +432,7 @@ context(
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
           'contain',
-          3.0,
+          1.0,
           txTimeout
         );
 
@@ -565,7 +545,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share('0', '', '0.00', '-');
+        cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
 
       it('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
@@ -619,7 +599,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share('0', '', '0.00', '-');
+        cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
 
       it('Disassociating some tokens - prioritizes unstaked tokens', function () {
@@ -666,12 +646,7 @@ context(
 
         cy.navigate_to('staking');
 
-        cy.validate_validator_list_total_stake_and_share(
-          '0',
-          '',
-          '2.00',
-          '100%'
-        );
+        cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
 
       it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
