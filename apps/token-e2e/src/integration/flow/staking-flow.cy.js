@@ -11,7 +11,6 @@ const stakeAddStakeRadioButton = '[data-testid="add-stake-radio"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const totalStake = '[data-testid="total-stake"]';
 const stakeShare = '[data-testid="stake-percentage"]';
-const nominatedStake = '[data-testid="nominated-stake"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletUnstakedBalance =
