@@ -52,6 +52,7 @@ export function generateMarket(
       trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_BATCH,
       staticMidPrice: '100',
       marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      marketState: Schema.MarketState.STATE_ACTIVE,
       indicativePrice: '100',
       indicativeVolume: '10',
       bestStaticBidPrice: '100',
