@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AgGridColumn } from 'ag-grid-react';
 import type {
   ValueFormatterParams,
@@ -26,6 +25,7 @@ import {
   displayChange,
 } from '@vegaprotocol/liquidity';
 import type { Schema } from '@vegaprotocol/types';
+import { DApp, useLinks } from '@vegaprotocol/environment';
 
 import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
@@ -35,7 +35,7 @@ import { Status } from '../../status';
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
-  const navigate = useNavigate();
+  const consoleLink = useLinks(DApp.Console);
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
@@ -50,7 +50,11 @@ export const MarketList = () => {
         <Grid
           gridOptions={{
             onRowClicked: ({ data }: RowClickedEvent) => {
-              navigate(`/markets/${data.id}`);
+              window.open(
+                liquidityDetailsConsoleLink(data.id, consoleLink),
+                '_blank',
+                'noopener,noreferrer'
+              );
             },
           }}
           rowData={localData}
@@ -223,3 +227,8 @@ export const MarketList = () => {
     </AsyncRenderer>
   );
 };
+
+const liquidityDetailsConsoleLink = (
+  marketId: string,
+  consoleLink: (url: string | undefined) => string
+) => consoleLink(`/#/liquidity/${marketId}`);
