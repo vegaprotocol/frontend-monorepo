@@ -12,38 +12,38 @@ export interface DeterministicOrderDetailsProps {
 }
 
 const statusText: Record<Schema.OrderStatus, string> = {
-  STATUS_ACTIVE: 'Active',
-  STATUS_CANCELLED: 'Cancelled',
-  STATUS_EXPIRED: 'Expired',
-  STATUS_FILLED: 'Filled',
-  STATUS_PARKED: 'Parked',
+  STATUS_ACTIVE: t('Active'),
+  STATUS_CANCELLED: t('Cancelled'),
+  STATUS_EXPIRED: t('Expired'),
+  STATUS_FILLED: t('Filled'),
+  STATUS_PARKED: t('Parked'),
   // Intentionally vague - table shows partial fills
-  STATUS_PARTIALLY_FILLED: 'Active',
-  STATUS_REJECTED: 'Rejected',
-  STATUS_STOPPED: 'Stopped',
+  STATUS_PARTIALLY_FILLED: t('Active'),
+  STATUS_REJECTED: t('Rejected'),
+  STATUS_STOPPED: t('Stopped'),
 };
 
 const sideText: Record<Schema.Side, string> = {
-  SIDE_BUY: 'Buy',
-  SIDE_SELL: 'Sell',
+  SIDE_BUY: t('Buy'),
+  SIDE_SELL: t('Sell'),
 };
 
 const tifShort: Record<Schema.OrderTimeInForce, string> = {
-  TIME_IN_FORCE_FOK: 'FOK',
-  TIME_IN_FORCE_GFA: 'GFA',
-  TIME_IN_FORCE_GFN: 'GFN',
-  TIME_IN_FORCE_GTC: 'GTC',
-  TIME_IN_FORCE_GTT: 'GTT',
-  TIME_IN_FORCE_IOC: 'IOC',
+  TIME_IN_FORCE_FOK: t('FOK'),
+  TIME_IN_FORCE_GFA: t('GFA'),
+  TIME_IN_FORCE_GFN: t('GFN'),
+  TIME_IN_FORCE_GTC: t('GTC'),
+  TIME_IN_FORCE_GTT: t('GTT'),
+  TIME_IN_FORCE_IOC: t('IOC'),
 };
 
 const tifFull: Record<Schema.OrderTimeInForce, string> = {
-  TIME_IN_FORCE_FOK: 'Fill or Kill',
-  TIME_IN_FORCE_GFA: 'Good for Auction',
-  TIME_IN_FORCE_GFN: 'Good for Normal',
-  TIME_IN_FORCE_GTC: "Good 'til Cancel",
-  TIME_IN_FORCE_GTT: "Good 'til Time",
-  TIME_IN_FORCE_IOC: 'Immediate or Cancel',
+  TIME_IN_FORCE_FOK: t('Fill or Kill'),
+  TIME_IN_FORCE_GFA: t('Good for Auction'),
+  TIME_IN_FORCE_GFN: t('Good for Normal'),
+  TIME_IN_FORCE_GTC: t("Good 'til Cancel"),
+  TIME_IN_FORCE_GTT: t("Good 'til Time"),
+  TIME_IN_FORCE_IOC: t('Immediate or Cancel'),
 };
 const wrapperClasses =
   'grid lg:grid-cols-1 flex items-center max-w-xl border border-zinc-200 dark:border-zinc-800 rounded-md pv-2 ph-5 mb-5';
