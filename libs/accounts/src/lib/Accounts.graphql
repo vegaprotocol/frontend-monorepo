@@ -31,6 +31,5 @@ subscription AccountEvents($partyId: ID) {
     balance
     assetId
     marketId
-    partyId
   }
 }
