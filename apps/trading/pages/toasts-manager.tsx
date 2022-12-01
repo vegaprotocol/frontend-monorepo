@@ -9,20 +9,39 @@ import { VerificationStatus } from '@vegaprotocol/withdraws';
 import { VegaTransaction } from '../components/vega-transaction';
 
 export const ToastsManager = () => {
-  const vegaTransactions = useVegaTransactionStore(
-    (state) => state.transactions
+  const vegaTransactions = useVegaTransactionStore((state) =>
+    state.transactions.filter((transaction) => transaction?.dialogOpen)
   );
-  const ethTransactions = useEthTransactionStore((state) => state.transactions);
-  const withdrawApprovals = useEthWithdrawApprovalsStore(
-    (state) => state.transactions
+  const dismissVegaTransaction = useVegaTransactionStore(
+    (state) => state.dismiss
+  );
+  const ethTransactions = useEthTransactionStore((state) =>
+    state.transactions.filter((transaction) => transaction?.dialogOpen)
+  );
+  const dismissEthTransaction = useEthTransactionStore(
+    (state) => state.dismiss
+  );
+  const withdrawApprovals = useEthWithdrawApprovalsStore((state) =>
+    state.transactions.filter((transaction) => transaction?.dialogOpen)
+  );
+  const dismissWithdrawApproval = useEthWithdrawApprovalsStore(
+    (state) => state.dismiss
   );
   return (
-    <div className="fixed right-0 bottom-0 w-96 m-1 bg-inherit">
+    <div className="fixed right-0 bottom-0 w-96 p-1 bg-inherit">
       <div>
         {vegaTransactions.map(
           (transaction) =>
             transaction && (
-              <VegaTransaction key={transaction.id} transaction={transaction} />
+              <div
+                key={transaction.id}
+                className="m-1 p-1 border border-indigo-500"
+              >
+                <VegaTransaction transaction={transaction} />
+                <button onClick={() => dismissVegaTransaction(transaction.id)}>
+                  dismiss
+                </button>
+              </div>
             )
         )}
       </div>
@@ -30,7 +49,15 @@ export const ToastsManager = () => {
         {ethTransactions.map(
           (transaction) =>
             transaction && (
-              <TransactionContent key={transaction.id} {...transaction} />
+              <div
+                key={transaction.id}
+                className="m-1 p-1 border border-indigo-500"
+              >
+                <TransactionContent {...transaction} />
+                <button onClick={() => dismissEthTransaction(transaction.id)}>
+                  dismiss
+                </button>
+              </div>
             )
         )}
       </div>
@@ -38,8 +65,14 @@ export const ToastsManager = () => {
         {withdrawApprovals.map(
           (transaction) =>
             transaction && (
-              <div key={transaction.id}>
+              <div
+                key={transaction.id}
+                className="m-1 p-1 border border-indigo-500"
+              >
                 <VerificationStatus state={transaction} />
+                <button onClick={() => dismissWithdrawApproval(transaction.id)}>
+                  dismiss
+                </button>
               </div>
             )
         )}

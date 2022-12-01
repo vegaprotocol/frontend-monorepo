@@ -52,6 +52,7 @@ interface VegaTransactionStore {
       Pick<VegaStoredTxState, 'status' | 'txHash' | 'signature' | 'error'>
     >
   ) => void;
+  dismiss: (index: number) => void;
   delete: (index: number) => void;
   updateWithdrawal: (
     withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
@@ -87,6 +88,16 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             Object.assign(transaction, update);
+          }
+        })
+      );
+    },
+    dismiss: (index: number) => {
+      set(
+        produce((state: VegaTransactionStore) => {
+          const transaction = state.transactions[index];
+          if (transaction) {
+            transaction.dialogOpen = false;
           }
         })
       );

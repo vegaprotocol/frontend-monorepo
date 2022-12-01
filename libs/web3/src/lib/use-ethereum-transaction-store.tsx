@@ -23,6 +23,7 @@ import { useWeb3React } from '@web3-react/core';
 import {
   useDepositBusEventSubscription,
   useVegaWallet,
+  useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
 
 import type {
@@ -71,6 +72,7 @@ interface EthTransactionStore {
       >
     >
   ) => void;
+  dismiss: (index: number) => void;
   updateDeposit: (deposit: DepositBusEventFieldsFragment) => void;
   delete: (index: number) => void;
 }
@@ -88,6 +90,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
       const transactions = get().transactions;
       const transaction: EthStoredTxState = {
         id: transactions.length,
+        createdAt: new Date(),
         contract,
         methodName,
         args,
@@ -96,7 +99,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         txHash: null,
         receipt: null,
         confirmations: 0,
-        dialogOpen: false,
+        dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
       };
@@ -117,6 +120,16 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           }
         }),
       });
+    },
+    dismiss: (index: number) => {
+      set(
+        produce((state: EthTransactionStore) => {
+          const transaction = state.transactions[index];
+          if (transaction) {
+            transaction.dialogOpen = false;
+          }
+        })
+      );
     },
     updateDeposit: (deposit: DepositBusEventFieldsFragment) => {
       set(
@@ -276,7 +289,7 @@ interface EthWithdrawalApprovalState {
   id: number;
   createdAt: Date;
   status: ApprovalStatus;
-  message?: string;
+  message?: string; //#TODO message is not use anywhere
   threshold?: BigNumber;
   completeTimestamp?: number | null;
   dialogOpen?: boolean;
@@ -294,10 +307,16 @@ interface EthWithdrawApprovalStore {
     update?: Partial<
       Pick<
         EthWithdrawalApprovalState,
-        'approval' | 'status' | 'message' | 'threshold' | 'completeTimestamp'
+        | 'approval'
+        | 'status'
+        | 'message'
+        | 'threshold'
+        | 'completeTimestamp'
+        | 'dialogOpen'
       >
     >
   ) => void;
+  dismiss: (index: number) => void;
 }
 
 export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
@@ -314,14 +333,30 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
         status: ApprovalStatus.Idle,
         withdrawal,
         approval,
+        dialogOpen: true,
       };
+      // dismiss possible vega transaction dialog/toast
+      const vegaTransaction = useVegaTransactionStore
+        .getState()
+        .transactions.find((t) => t?.withdrawal?.id === withdrawal.id);
+      if (vegaTransaction) {
+        useVegaTransactionStore.getState().dismiss(vegaTransaction.id);
+      }
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
     },
     update: (
       id: EthWithdrawalApprovalState['id'],
       update?: Partial<
-        Pick<EthWithdrawalApprovalState, 'approval' | 'status' | 'message'>
+        Pick<
+          EthWithdrawalApprovalState,
+          | 'approval'
+          | 'status'
+          | 'message'
+          | 'threshold'
+          | 'completeTimestamp'
+          | 'dialogOpen'
+        >
       >
     ) =>
       set({
@@ -334,6 +369,16 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
           }
         }),
       }),
+    dismiss: (index: number) => {
+      set(
+        produce((state: EthWithdrawApprovalStore) => {
+          const transaction = state.transactions[index];
+          if (transaction) {
+            transaction.dialogOpen = false;
+          }
+        })
+      );
+    },
   })
 );
 
@@ -415,6 +460,7 @@ export const useWithdrawApprovalsManager = () => {
     update(transaction.id, {
       status: ApprovalStatus.Ready,
       approval,
+      dialogOpen: false,
     });
     const signer = provider.getSigner();
     createEthTransaction(
