@@ -12,6 +12,7 @@ Cypress.Commands.add('vega_wallet_connect', () => {
   });
   cy.getByTestId('connector-jsonRpc').click();
   cy.get(vegaWalletNameElement).should('be.visible');
+  cy.getByTestId('wallet-dialog-title').should('not.exist');
 });
 
 Cypress.Commands.add(

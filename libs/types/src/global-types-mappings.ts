@@ -385,7 +385,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_LOSS: 'Loss',
   TRANSFER_TYPE_WIN: 'Win',
-  TRANSFER_TYPE_CLOSE: 'Close',
   TRANSFER_TYPE_MTM_LOSS: 'Mark to market loss',
   TRANSFER_TYPE_MTM_WIN: 'Mark to market win',
   TRANSFER_TYPE_MARGIN_LOW: 'Margin too low',
@@ -399,7 +398,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE: 'Receive liquidity fee',
   TRANSFER_TYPE_BOND_LOW: 'Bond too low',
   TRANSFER_TYPE_BOND_HIGH: 'Bond too high',
-  TRANSFER_TYPE_WITHDRAW_LOCK: 'Lock amount for withdraw',
   TRANSFER_TYPE_WITHDRAW: 'Actual withdraw from system',
   TRANSFER_TYPE_DEPOSIT: 'Deposit funds',
   TRANSFER_TYPE_BOND_SLASHING: 'Bond slashing',
@@ -407,6 +405,8 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_SEND: 'Transfer funds',
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer funds',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market is closed, accounts are cleared',
+  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE:
+    'Initial balance after checkpoint restart',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -433,6 +433,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: `Transfer received: Funds added to your general account to fulfil a transfer`,
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market accounts cleared: Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
-  TRANSFER_TYPE_CLOSE: 'Close',
-  TRANSFER_TYPE_WITHDRAW_LOCK: 'Lock amount for withdraw',
+  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE:
+    'When the network is restored from a checkpoint this sets the balances of parties',
 };
