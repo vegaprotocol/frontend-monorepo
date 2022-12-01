@@ -9,12 +9,12 @@ export function hexToString(hex: string) {
   if (!hex.match(/^[0-9a-fA-F]+$/)) {
     throw new Error('is not a hex string.');
   }
-  if (hex.length % 2 !== 0) {
-    hex = '0' + hex;
-  }
+
+  const paddedHex = hex.length % 2 !== 0 ? `0${hex}` : hex;
+
   const bytes = [];
-  for (let n = 0; n < hex.length; n += 2) {
-    const code = parseInt(hex.substr(n, 2), 16);
+  for (let n = 0; n < paddedHex.length; n += 2) {
+    const code = parseInt(paddedHex.substring(n, n + 2), 16);
     bytes.push(code);
   }
   return bytes;
