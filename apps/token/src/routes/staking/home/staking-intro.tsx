@@ -32,7 +32,7 @@ export const StakingIntro = () => {
             </Link>
           </li>
           <li>
-            {t('stakingDescription2')}{' '}
+            {t('stakingDescription2a')} {t('stakingDescription2b')}{' '}
             <UTLink
               href={ExternalLinks.VALIDATOR_FORUM}
               target="_blank"

@@ -7,7 +7,7 @@ import type {
   NodesQuery,
   NodesFragmentFragment,
 } from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 import { formatNumber } from '../../../../lib/format-number';
 import {
   createDocsLinks,
