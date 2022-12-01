@@ -20,7 +20,7 @@ import type {
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
-import { MarketTradingModeComponent } from '../market-trading-mode';
+import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 
 type Market = MarketWithData & MarketWithCandles;
@@ -325,7 +325,7 @@ export const columns = (
     {
       kind: ColumnKind.TradingMode,
       value: (
-        <MarketTradingModeComponent
+        <MarketTradingMode
           marketId={market?.id}
           noUpdate={noUpdate}
           initialMode={market.tradingMode}
@@ -513,7 +513,7 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.TradingMode,
       value: (
-        <MarketTradingModeComponent
+        <MarketTradingMode
           marketId={market?.id}
           noUpdate={noUpdate}
           initialMode={market.tradingMode}
