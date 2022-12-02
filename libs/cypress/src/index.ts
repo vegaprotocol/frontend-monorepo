@@ -14,6 +14,8 @@ import { addGetNetworkParameters } from './lib/commands/get-network-parameters';
 import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multisig';
 import { addVegaWalletConnect } from './lib/commands/vega-wallet-connect';
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
+import { addMonitorClipboard } from './lib/commands/monitor-clipboard';
+import { addGetCopiedTextFromClipboard } from './lib/commands/get-copied-text-from-clipboard';
 
 addGetTestIdcommand();
 addSlackCommand();
@@ -29,6 +31,8 @@ addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
 addMockTransactionResponse();
+addMonitorClipboard();
+addGetCopiedTextFromClipboard();
 
 export * from './lib/graphql-test-utils';
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
