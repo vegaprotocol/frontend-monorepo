@@ -59,7 +59,7 @@ interface VegaTransactionStore {
     withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
   ) => void;
   updateOrder: (order: OrderBusEventFieldsFragment) => void;
-  updateTransaction: (
+  updateTransactionResult: (
     transactionResult: TransactionEventFieldsFragment
   ) => void;
 }
@@ -151,7 +151,9 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
         })
       );
     },
-    updateTransaction: (transactionResult: TransactionEventFieldsFragment) => {
+    updateTransactionResult: (
+      transactionResult: TransactionEventFieldsFragment
+    ) => {
       set(
         produce((state: VegaTransactionStore) => {
           const transaction = state.transactions.find(
@@ -245,7 +247,7 @@ export const useVegaWalletTransactionUpdater = () => {
     useVegaTransactionStore((state) => ({
       updateWithdrawal: state.updateWithdrawal,
       updateOrder: state.updateOrder,
-      updateTransaction: state.updateTransaction,
+      updateTransaction: state.updateTransactionResult,
     }));
   const { pubKey } = useVegaWallet();
   const variables = { partyId: pubKey || '' };
