@@ -4,37 +4,28 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
 
-interface TxDetailsOrderProps {
+interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
 }
 
 /**
- * An order type is probably the most interesting type we'll see! Except until:
- * https://github.com/vegaprotocol/vega/issues/6832 is complete, we can only
- * fetch the actual transaction and not more details about the order. So for now
- * this view is very basic
+ * Someone cancelled an order
  */
-export const TxDetailsOrder = ({
+export const TxDetailsOrderCancel = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsOrderProps) => {
-  if (!txData || !txData.command.orderSubmission) {
+}: TxDetailsOrderCancelProps) => {
+  if (!txData || !txData.command.orderCancellation) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
-  const marketId = txData.command.orderSubmission.marketId || '-';
 
-  let deterministicId = '';
-
-  const sig = txData.signature.value as string;
-  if (sig) {
-    deterministicId = txSignatureToDeterministicId(sig);
-  }
+  const marketId: string = txData.command.orderCancellation.marketId || '-';
+  const orderId: string = txData.command.orderCancellation.orderId || '-';
 
   return (
     <>
@@ -52,9 +43,7 @@ export const TxDetailsOrder = ({
         </TableRow>
       </TableWithTbody>
 
-      {deterministicId.length > 0 ? (
-        <DeterministicOrderDetails id={deterministicId} version={1} />
-      ) : null}
+      {orderId !== '-' ? <DeterministicOrderDetails id={orderId} /> : null}
     </>
   );
 };

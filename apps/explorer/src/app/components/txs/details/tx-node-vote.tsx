@@ -38,7 +38,7 @@ export const TxDetailsNodeVote = ({
   }
 
   return (
-    <TableWithTbody>
+    <TableWithTbody className="mb-8">
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       {data && !!data.deposit
         ? TxDetailsNodeVoteDeposit({ deposit: data })

@@ -61,7 +61,7 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
                       />
                     </TableCell>
                     <TableCell modifier="bordered">
-                      <TxOrderType orderType={type} chainEvent={command} />
+                      <TxOrderType orderType={type} command={command} />
                     </TableCell>
                   </TableRow>
                 );
