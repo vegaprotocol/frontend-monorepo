@@ -84,7 +84,7 @@ const VegaWalletNotConnected = () => {
           openVegaWalletDialog();
         }}
         fill={true}
-        data-testid="connect-vega"
+        data-testid="connect-vega-wallet"
       >
         {t('connectVegaWalletToUseAssociated')}
       </Button>
