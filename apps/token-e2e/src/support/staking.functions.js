@@ -170,12 +170,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'validate_validator_list_total_stake_and_share',
-  (
-    positionOnList,
-    expectedValidatorName,
-    expectedTotalStake,
-    expectedTotalShare
-  ) => {
+  (positionOnList, expectedTotalStake, expectedTotalShare) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.wait_for_beginning_of_epoch();
