@@ -32,7 +32,9 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
             cy.wrap($header).should('have.text', headers[i]);
           });
       });
-      cy.get('.ag-center-cols-container .ag-row').should(
+      cy.get(
+        '[data-testid="tab-ledger-entries"] .ag-center-cols-container .ag-row'
+      ).should(
         'have.length',
         generateLedgerEntries().ledgerEntries.edges.length
       );
