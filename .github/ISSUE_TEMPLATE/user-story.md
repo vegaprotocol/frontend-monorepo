@@ -3,7 +3,7 @@ name: User Story
 about:
   A template to describe a features or enhancements we want to make from a users
   perspective to ensure we understand what is needed and the value it would add
-title: '[console/token/explorer/common]'
+title: ''
 labels: feature
 assignees: ''
 ---
