@@ -21,9 +21,7 @@ export const AccountManager = ({
   partyId,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const emptyGridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<AccountFields[] | null>(null);
-  const flushRef = useRef<any>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
     ({ data }: { data: AccountFields[] | null }) => {
@@ -42,17 +40,16 @@ export const AccountManager = ({
     update,
     variables,
   });
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: GetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current?.length ?? -1;
-    successCallback(rowsThisBlock, lastRow);
-  };
+  const getRows = useCallback(
+    async ({ successCallback, startRow, endRow }: GetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current?.length ?? -1;
+      successCallback(rowsThisBlock, lastRow);
+    },
+    []
+  );
   const isNotEmpty = Boolean(data?.length);
   const content = useMemo(() => {
     return isNotEmpty ? (
