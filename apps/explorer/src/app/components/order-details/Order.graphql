@@ -5,6 +5,7 @@ fragment ExplorerDeterministicOrderFields on Order {
   status
   version
   createdAt
+  updatedAt
   expiresAt
   timeInForce
   price
@@ -26,8 +27,8 @@ fragment ExplorerDeterministicOrderFields on Order {
   }
 }
 
-query ExplorerDeterministicOrder($orderId: ID!) {
-  orderByID(id: $orderId) {
+query ExplorerDeterministicOrder($orderId: ID!, $version: Int) {
+  orderByID(id: $orderId, version: $version) {
     ...ExplorerDeterministicOrderFields
   }
 }

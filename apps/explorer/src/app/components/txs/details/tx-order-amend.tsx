@@ -4,7 +4,7 @@ import { MarketLink } from '../../links';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
+import AmendOrderDetails from '../../order-details/amend-order-details';
 
 interface TxDetailsOrderAmendProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -49,7 +49,9 @@ export const TxDetailsOrderAmend = ({
         </TableRow>
       </TableWithTbody>
 
-      {orderId !== '-' ? <DeterministicOrderDetails id={orderId} /> : null}
+      {orderId !== '-' ? (
+        <AmendOrderDetails id={orderId} amend={txData.command.orderAmendment} />
+      ) : null}
     </>
   );
 };

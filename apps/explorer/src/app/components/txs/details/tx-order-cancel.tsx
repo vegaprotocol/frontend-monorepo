@@ -4,7 +4,7 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
+import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;

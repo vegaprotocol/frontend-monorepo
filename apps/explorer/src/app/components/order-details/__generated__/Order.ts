@@ -3,14 +3,15 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerDeterministicOrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, reference: string, status: Types.OrderStatus, version: string, createdAt: any, expiresAt?: any | null, timeInForce: Types.OrderTimeInForce, price: string, side: Types.Side, remaining: string, size: string, rejectionReason?: Types.OrderRejectionReason | null, party: { __typename?: 'Party', id: string }, market: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } };
+export type ExplorerDeterministicOrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, reference: string, status: Types.OrderStatus, version: string, createdAt: any, updatedAt?: any | null, expiresAt?: any | null, timeInForce: Types.OrderTimeInForce, price: string, side: Types.Side, remaining: string, size: string, rejectionReason?: Types.OrderRejectionReason | null, party: { __typename?: 'Party', id: string }, market: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } };
 
 export type ExplorerDeterministicOrderQueryVariables = Types.Exact<{
   orderId: Types.Scalars['ID'];
+  version?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type ExplorerDeterministicOrderQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, reference: string, status: Types.OrderStatus, version: string, createdAt: any, expiresAt?: any | null, timeInForce: Types.OrderTimeInForce, price: string, side: Types.Side, remaining: string, size: string, rejectionReason?: Types.OrderRejectionReason | null, party: { __typename?: 'Party', id: string }, market: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } } };
+export type ExplorerDeterministicOrderQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, reference: string, status: Types.OrderStatus, version: string, createdAt: any, updatedAt?: any | null, expiresAt?: any | null, timeInForce: Types.OrderTimeInForce, price: string, side: Types.Side, remaining: string, size: string, rejectionReason?: Types.OrderRejectionReason | null, party: { __typename?: 'Party', id: string }, market: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } } };
 
 export const ExplorerDeterministicOrderFieldsFragmentDoc = gql`
     fragment ExplorerDeterministicOrderFields on Order {
@@ -20,6 +21,7 @@ export const ExplorerDeterministicOrderFieldsFragmentDoc = gql`
   status
   version
   createdAt
+  updatedAt
   expiresAt
   timeInForce
   price
@@ -42,8 +44,8 @@ export const ExplorerDeterministicOrderFieldsFragmentDoc = gql`
 }
     `;
 export const ExplorerDeterministicOrderDocument = gql`
-    query ExplorerDeterministicOrder($orderId: ID!) {
-  orderByID(id: $orderId) {
+    query ExplorerDeterministicOrder($orderId: ID!, $version: Int) {
+  orderByID(id: $orderId, version: $version) {
     ...ExplorerDeterministicOrderFields
   }
 }
@@ -62,6 +64,7 @@ export const ExplorerDeterministicOrderDocument = gql`
  * const { data, loading, error } = useExplorerDeterministicOrderQuery({
  *   variables: {
  *      orderId: // value for 'orderId'
+ *      version: // value for 'version'
  *   },
  * });
  */
