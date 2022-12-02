@@ -26,7 +26,7 @@ interface Props {
   initialTrigger?: Types.AuctionTrigger;
 }
 
-export const MarketTradingModeComponent = ({
+export const MarketTradingMode = ({
   marketId,
   onSelect,
   isHeader = false,

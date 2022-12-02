@@ -11,6 +11,7 @@ const marketPrice = 'market-price';
 const marketChange = 'market-change';
 const marketVolume = 'market-volume';
 const marketMode = 'market-trading-mode';
+const marketState = 'market-state';
 const marketSettlement = 'market-settlement-asset';
 const percentageValue = 'price-change-percentage';
 const priceChangeValue = 'price-change';
@@ -36,6 +37,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');
   });
+
   it('should display market proposal notification if proposal found', () => {
     cy.getByTestId(marketSummaryBlock).within(() => {
       cy.getByTestId('market-proposal-notification').should(
@@ -114,6 +116,16 @@ describe('Market trading page', () => {
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketMode).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
+          cy.getByTestId(itemValue).should('not.be.empty');
+        });
+      });
+    });
+
+    it('must see market state', () => {
+      //7002-SORD-061
+      cy.getByTestId(marketSummaryBlock).within(() => {
+        cy.getByTestId(marketState).within(() => {
+          cy.getByTestId(itemHeader).should('have.text', 'Status');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
@@ -200,6 +212,43 @@ describe('Market trading page', () => {
             cy.getByTestId(toolTipValue).eq(i).should('not.be.empty');
           }
         });
+    });
+  });
+});
+
+describe('market states not accepting orders', { tags: '@smoke' }, function () {
+  //7002-SORD-062
+  //7002-SORD-063
+  //7002-SORD-066
+
+  const states = [
+    Schema.MarketState.STATE_REJECTED,
+    Schema.MarketState.STATE_CANCELLED,
+    Schema.MarketState.STATE_CLOSED,
+    Schema.MarketState.STATE_SETTLED,
+    Schema.MarketState.STATE_TRADING_TERMINATED,
+  ];
+
+  states.forEach((marketState) => {
+    describe(marketState, function () {
+      beforeEach(function () {
+        cy.mockTradingPage(marketState);
+        cy.mockGQLSubscription();
+        cy.visit('/#/markets/market-0');
+        cy.wait('@Market');
+        cy.connectVegaWallet();
+      });
+      it('must display that market is not accepting orders', function () {
+        cy.getByTestId('place-order').click();
+        cy.getByTestId('dealticket-error-message-summary').should(
+          'have.text',
+          `This market is ${marketState
+            .split('_')
+            .pop()
+            ?.toLowerCase()} and not accepting orders`
+        );
+        cy.getByTestId('place-order').should('be.disabled');
+      });
     });
   });
 });

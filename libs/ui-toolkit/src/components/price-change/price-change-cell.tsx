@@ -44,20 +44,18 @@ export const PriceCellChange = React.memo(
       <span
         className={`${signedNumberCssClass(
           change
-        )} flex items-center gap-2 justify-end`}
+        )} flex items-center gap-2 font-mono text-ui-small`}
       >
         <Arrow value={change} />
-        <span className="flex items-center gap-2 font-mono text-ui-small">
-          <span data-testid="price-change-percentage">
-            {formatNumberPercentage(
-              new BigNumber(changePercentage.toString()),
-              2
-            )}
-            &nbsp;
-          </span>
-          <span data-testid="price-change">
-            {addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
-          </span>
+        <span data-testid="price-change-percentage">
+          {formatNumberPercentage(
+            new BigNumber(changePercentage.toString()),
+            2
+          )}
+          &nbsp;
+        </span>
+        <span data-testid="price-change">
+          {addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
         </span>
       </span>
     );
