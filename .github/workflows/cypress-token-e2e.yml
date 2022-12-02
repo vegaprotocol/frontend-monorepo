@@ -93,7 +93,7 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.api-token }}
+          CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
 
       ######
       ## Upload logs
