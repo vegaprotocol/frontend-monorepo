@@ -28,7 +28,7 @@ on:
         default: false
 env:
   GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.62.1'
+  VEGA_VERSION: 'v0.63.0'
 
 jobs:
   manual:
