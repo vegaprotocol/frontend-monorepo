@@ -1,11 +1,11 @@
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useMemo, useCallback, memo } from 'react';
 import type { AccountFields } from './accounts-data-provider';
 import { aggregatedAccountsDataProvider } from './accounts-data-provider';
 import type { GetRowsParams } from './accounts-table';
-import { AccountTable, AccountTableEmpty } from './accounts-table';
+import { AccountTable } from './accounts-table';
 
 interface AccountManagerProps {
   partyId: string;
@@ -27,10 +27,8 @@ export const AccountManager = ({
     ({ data }: { data: AccountFields[] | null }) => {
       const isEmpty = !dataRef.current?.length;
       dataRef.current = data;
-      if (dataRef.current?.length) {
-        gridRef.current?.api?.refreshInfiniteCache();
-      }
-      return !isEmpty;
+      gridRef.current?.api?.refreshInfiniteCache();
+      return Boolean((isEmpty && !data?.length) || (!isEmpty && data?.length));
     },
     [gridRef]
   );
@@ -50,9 +48,8 @@ export const AccountManager = ({
     },
     []
   );
-  const isNotEmpty = Boolean(data?.length);
-  const content = useMemo(() => {
-    return isNotEmpty ? (
+  return (
+    <div className="relative h-full">
       <AccountTable
         rowModelType="infinite"
         ref={gridRef}
@@ -61,15 +58,15 @@ export const AccountManager = ({
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
       />
-    ) : (
-      <AccountTableEmpty rowModelType="clientSide" rowData={[]} />
-    );
-  }, [isNotEmpty, getRows, onClickAsset, onClickDeposit, onClickWithdraw]);
-
-  return (
-    <AsyncRenderer data={data} error={error} loading={loading}>
-      {content}
-    </AsyncRenderer>
+      <div className="pointer-events-none absolute inset-0 top-5">
+        <AsyncRenderer
+          data={data?.length ? data : null}
+          error={error}
+          loading={loading}
+          noDataMessage={t('No accounts')}
+        />
+      </div>
+    </div>
   );
 };
 
