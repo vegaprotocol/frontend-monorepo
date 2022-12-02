@@ -1,0 +1,15 @@
+query PreviousEpoch($epochId: ID) {
+  epoch(id: $epochId) {
+    id
+    validatorsConnection {
+      edges {
+        node {
+          id
+          rewardScore {
+            rawValidatorScore
+          }
+        }
+      }
+    }
+  }
+}

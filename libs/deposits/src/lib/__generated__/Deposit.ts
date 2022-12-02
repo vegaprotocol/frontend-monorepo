@@ -3,21 +3,21 @@ import { Schema as Types } from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type DepositFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: string, creditedTimestamp?: string | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
+export type DepositFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
 
 export type DepositsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: string, creditedTimestamp?: string | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } | null> | null } | null } | null };
+export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } } | null> | null } | null } | null };
 
 export type DepositEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DepositEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: string, creditedTimestamp?: string | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
+export type DepositEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal' } }> | null };
 
 export const DepositFieldsFragmentDoc = gql`
     fragment DepositFields on Deposit {

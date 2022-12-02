@@ -88,7 +88,10 @@ const Block = () => {
                 </TableRow>
               </TableWithTbody>
               {blockData.result.block.data.txs.length > 0 ? (
-                <TxsPerBlock blockHeight={block} />
+                <TxsPerBlock
+                  blockHeight={blockData.result.block.header.height}
+                  txCount={blockData.result.block.data.txs.length}
+                />
               ) : null}
             </>
           )}

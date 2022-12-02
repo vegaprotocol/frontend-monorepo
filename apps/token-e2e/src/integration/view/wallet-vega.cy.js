@@ -151,6 +151,7 @@ context(
       before('connect vega wallet', function () {
         cy.visit('/');
         cy.vega_wallet_connect();
+        cy.vega_wallet_teardown();
       });
 
       it('should have VEGA WALLET header visible', function () {

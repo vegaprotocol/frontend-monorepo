@@ -29,11 +29,13 @@ export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
     url.searchParams.append('limit', limit);
   }
 
+  // Hacky fix for param as array
+  let urlAsString = url.toString();
   if (filters) {
-    url.searchParams.append('filters', filters);
+    urlAsString += '&' + filters;
   }
 
-  return url;
+  return urlAsString;
 };
 
 export const useTxsData = ({ limit, filters }: IUseTxsData) => {
@@ -49,7 +51,7 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   const {
     state: { data, error, loading },
     refetch,
-  } = useFetch<BlockExplorerTransactions>(url.href, {}, false);
+  } = useFetch<BlockExplorerTransactions>(url, {}, false);
 
   useEffect(() => {
     if (data?.transactions?.length) {

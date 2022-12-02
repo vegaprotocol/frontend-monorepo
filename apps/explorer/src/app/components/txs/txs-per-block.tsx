@@ -1,4 +1,3 @@
-import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
 import { Routes } from '../../routes/route-names';
 import { DATA_SOURCES } from '../../config';
 import { RenderFetched } from '../render-fetched';
@@ -6,32 +5,28 @@ import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
+import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
 
 interface TxsPerBlockProps {
-  blockHeight: string | undefined;
+  blockHeight: string;
+  txCount: number;
 }
 
 const truncateLength = 14;
 
-export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
+export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
+  // TODO after https://github.com/vegaprotocol/vega/pull/6958/files is merged and deployed, use filter
+  // by block height instead
   const {
-    state: { data: decodedBlockData, loading, error },
-  } = useFetch<ChainExplorerTxResponse[]>(DATA_SOURCES.chainExplorerUrl, {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      block_height: parseInt(blockHeight!),
-      node_url: `${DATA_SOURCES.tendermintUrl}/`,
-    }),
-  });
-
+    state: { data, loading, error },
+  } = useFetch<BlockExplorerTransactions>(
+    `${
+      DATA_SOURCES.blockExplorerUrl
+    }/transactions/before=${blockHeight.toString()}.0&limit=${txCount}`
+  );
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
-      {decodedBlockData && decodedBlockData.length > 0 ? (
+      {data && data.transactions.length > 0 ? (
         <div className="overflow-x-auto whitespace-nowrap mb-28">
           <Table>
             <thead>
@@ -42,33 +37,31 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
               </TableRow>
             </thead>
             <tbody>
-              {decodedBlockData.map(({ TxHash, PubKey, Type, Command }) => {
-                const chainEvent = JSON.parse(Command || '');
-
+              {data.transactions.map(({ hash, submitter, type, command }) => {
                 return (
                   <TableRow
                     modifier="bordered"
-                    key={TxHash}
+                    key={hash}
                     data-testid="transaction-row"
                   >
                     <TableCell modifier="bordered" className="pr-12">
                       <TruncatedLink
-                        to={`/${Routes.TX}/${TxHash}`}
-                        text={TxHash}
+                        to={`/${Routes.TX}/${hash}`}
+                        text={hash}
                         startChars={truncateLength}
                         endChars={truncateLength}
                       />
                     </TableCell>
                     <TableCell modifier="bordered" className="pr-12">
                       <TruncatedLink
-                        to={`/${Routes.PARTIES}/${PubKey}`}
-                        text={PubKey}
+                        to={`/${Routes.PARTIES}/${submitter}`}
+                        text={submitter}
                         startChars={truncateLength}
                         endChars={truncateLength}
                       />
                     </TableCell>
                     <TableCell modifier="bordered">
-                      <TxOrderType orderType={Type} chainEvent={chainEvent} />
+                      <TxOrderType orderType={type} chainEvent={command} />
                     </TableCell>
                   </TableRow>
                 );
