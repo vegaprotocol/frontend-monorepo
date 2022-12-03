@@ -4,18 +4,44 @@ import {
   useVegaWalletTransactionManager,
 } from './use-vega-transaction-store';
 import { VegaTxStatus } from './use-vega-transaction';
-import type { OrderCancellationBody } from './connectors/vega-connector';
+import type { VegaStoredTxState } from './use-vega-transaction-store';
+import type {
+  OrderCancellationBody,
+  WithdrawSubmissionBody,
+} from './connectors/vega-connector';
 
-jest.mock('zustand');
-
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  determineId: jest.fn((v) => v),
+}));
 describe('useVegaTransactionStore', () => {
-  it('exists', () => {
-    expect(useVegaTransactionStore).toBeTruthy();
-  });
-
+  const orderCancellation: OrderCancellationBody = { orderCancellation: {} };
+  const withdrawSubmission: WithdrawSubmissionBody = {
+    withdrawSubmission: {
+      amount: 'amount',
+      asset: 'asset',
+      ext: {
+        erc20: {
+          receiverAddress: 'receiverAddress',
+        },
+      },
+    },
+  };
+  const processedTransactionUpdate = {
+    status: VegaTxStatus.Pending,
+    txHash: 'txHash',
+    signature: 'signature',
+  };
+  const transactionResult = {
+    hash: processedTransactionUpdate.txHash,
+  } as unknown as NonNullable<VegaStoredTxState['transactionResult']>;
+  const withdrawal = {
+    id: 'signature',
+  } as unknown as NonNullable<VegaStoredTxState['withdrawal']>;
+  const withdrawalApproval = {} as unknown as NonNullable<
+    VegaStoredTxState['withdrawalApproval']
+  >;
   it('creates transaction with default values', () => {
-    const orderCancellation: OrderCancellationBody = { orderCancellation: {} };
-    expect(useVegaTransactionStore).toBeTruthy();
     useVegaTransactionStore.getState().create(orderCancellation);
     const transaction = useVegaTransactionStore.getState().transactions[0];
     expect(transaction?.createdAt).toBeTruthy();
@@ -24,16 +50,51 @@ describe('useVegaTransactionStore', () => {
     expect(transaction?.dialogOpen).toEqual(true);
   });
   it('updates transaction by index/id', () => {
-    expect(true).toEqual(false);
+    useVegaTransactionStore.getState().create(orderCancellation);
+    useVegaTransactionStore.getState().create(orderCancellation);
+    useVegaTransactionStore.getState().create(orderCancellation);
+    const transaction = useVegaTransactionStore.getState().transactions[1];
+    useVegaTransactionStore
+      .getState()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .update(transaction!.id, { status: VegaTxStatus.Pending });
+    expect(
+      useVegaTransactionStore.getState().transactions.map((t) => t?.status)
+    ).toEqual([
+      VegaTxStatus.Requested,
+      VegaTxStatus.Pending,
+      VegaTxStatus.Requested,
+    ]);
   });
   it('sets dialogOpen to false on dismiss', () => {
-    expect(true).toEqual(false);
-  });
-  it('updates withdrawal', () => {
-    expect(true).toEqual(false);
+    useVegaTransactionStore.getState().create(orderCancellation);
+    useVegaTransactionStore.getState().dismiss(0);
+    expect(
+      useVegaTransactionStore.getState().transactions[0]?.dialogOpen
+    ).toEqual(false);
   });
   it('updates transaction result', () => {
-    expect(true).toEqual(false);
+    useVegaTransactionStore.getState().create(withdrawSubmission);
+    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
+    useVegaTransactionStore
+      .getState()
+      .updateTransactionResult(transactionResult);
+    expect(
+      useVegaTransactionStore.getState().transactions[0]?.transactionResult
+    ).toEqual(transactionResult);
+  });
+  it('updates withdrawal', () => {
+    useVegaTransactionStore.getState().create(withdrawSubmission);
+    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
+    useVegaTransactionStore
+      .getState()
+      .updateTransactionResult(transactionResult);
+    useVegaTransactionStore
+      .getState()
+      .updateWithdrawal(withdrawal, withdrawalApproval);
+    const transction = useVegaTransactionStore.getState().transactions[0];
+    expect(transction?.withdrawalApproval).toEqual(withdrawalApproval);
+    expect(transction?.withdrawal).toEqual(withdrawal);
   });
 });
 

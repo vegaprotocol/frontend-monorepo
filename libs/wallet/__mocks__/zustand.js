@@ -1,6 +1,5 @@
-import actualCreate from 'zustand';
-// const actualCreate = jest.requireActual('zustand') // if using jest
 import { act } from 'react-dom/test-utils';
+const actualCreate = jest.requireActual('zustand').default // if using jest
 
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set();
