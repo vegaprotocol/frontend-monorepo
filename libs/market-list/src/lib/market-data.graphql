@@ -6,6 +6,7 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   trigger
   staticMidPrice
   marketTradingMode
+  marketState
   indicativeVolume
   indicativePrice
   bestStaticBidPrice
@@ -28,6 +29,7 @@ fragment MarketDataFields on MarketData {
   trigger
   staticMidPrice
   marketTradingMode
+  marketState
   indicativeVolume
   indicativePrice
   bestStaticBidPrice

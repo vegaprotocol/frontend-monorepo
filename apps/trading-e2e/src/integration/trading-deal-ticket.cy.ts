@@ -4,7 +4,7 @@ import {
   Schema,
 } from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 
@@ -393,6 +393,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
   });
 
   it('order connect vega wallet button should connect', () => {
+    mockConnectWallet();
     cy.getByTestId(toggleLimit).click();
     cy.getByTestId(orderPriceField).clear().type('101');
     cy.getByTestId('order-connect-wallet').click();
@@ -400,6 +401,7 @@ describe('deal ticket validation', { tags: '@smoke' }, () => {
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
+    cy.wait('@walletGQL');
     cy.getByTestId(placeOrderBtn).should('be.visible');
     cy.getByTestId(toggleLimit).children('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');

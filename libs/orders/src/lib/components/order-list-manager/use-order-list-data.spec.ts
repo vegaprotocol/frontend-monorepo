@@ -159,7 +159,7 @@ describe('useOrderListData Hook', () => {
     expect(loadMock).toHaveBeenCalled();
     expect(successCallback).toHaveBeenLastCalledWith(
       mockDelta.map((item) => item.node),
-      -1
+      undefined
     );
   });
 });

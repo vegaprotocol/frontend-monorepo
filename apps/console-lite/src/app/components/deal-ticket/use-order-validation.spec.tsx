@@ -81,6 +81,7 @@ const market: MarketDealTicket = {
     trigger: Types.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     staticMidPrice: '1606156850',
     marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    marketState: Schema.MarketState.STATE_ACTIVE,
     indicativeVolume: '0',
     indicativePrice: '0',
     bestStaticBidPrice: '1605489971',
@@ -92,8 +93,9 @@ const market: MarketDealTicket = {
     market: { __typename: 'Market', id: 'market-id' },
   },
   marketTimestamps: {
-    open: null,
+    __typename: 'MarketTimestamps',
     close: null,
+    open: null,
   },
 };
 

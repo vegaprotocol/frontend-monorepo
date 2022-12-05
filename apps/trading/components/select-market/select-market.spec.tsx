@@ -64,6 +64,8 @@ const MARKET_A: PartialMarket = {
     },
     markPrice: '90',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    marketState: Schema.MarketState.STATE_PENDING,
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
     indicativeVolume: '1000',
   },
   candles: [
@@ -134,6 +136,8 @@ const MARKET_B: PartialMarket = {
     },
     markPrice: '123.123',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    marketState: Schema.MarketState.STATE_PENDING,
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
     indicativeVolume: '2000',
   },
   candles: [

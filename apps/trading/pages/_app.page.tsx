@@ -48,20 +48,8 @@ function AppBody({ Component }: AppProps) {
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
+        {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link
-          rel="preload"
-          href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="icon"
-          type="image/x-icon"
-          href="https://static.vega.xyz/favicon.ico"
-        />
-        <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
       </Head>
       <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">

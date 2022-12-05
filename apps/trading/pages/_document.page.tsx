@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
         <link
           rel="preload"
           href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
@@ -17,7 +17,6 @@ export default function Document() {
           type="image/x-icon"
           href="https://static.vega.xyz/favicon.ico"
         />
-        <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
         <script
           src="https://static.vega.xyz/theme.js"
           type="text/javascript"

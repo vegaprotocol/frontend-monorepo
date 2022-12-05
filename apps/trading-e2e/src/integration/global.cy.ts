@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
@@ -18,12 +18,14 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.getByTestId(connectVegaBtn).click();
+    mockConnectWallet();
     cy.contains('Connect Vega wallet');
     cy.contains('Hosted Fairground wallet');
 
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
+    cy.wait('@walletGQL');
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
@@ -66,10 +68,12 @@ describe('vega wallet v2', { tags: '@smoke' }, () => {
   });
 
   it('can connect', () => {
+    mockConnectWallet();
     cy.getByTestId(connectVegaBtn).click();
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
+    cy.wait('@walletGQL');
     cy.getByTestId(dialogContent).should('not.exist');
     cy.getByTestId(manageVegaBtn).should('exist');
   });

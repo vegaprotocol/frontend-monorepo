@@ -2,7 +2,6 @@ import capitalize from 'lodash/capitalize';
 import { createDocsLinks, t } from '@vegaprotocol/react-helpers';
 import {
   ButtonLink,
-  Cross,
   Diamond,
   Link,
   Loader,
@@ -122,21 +121,6 @@ const Connecting = ({
           {t(
             "Approve the connection from your Vega wallet app. If you have multiple wallets you'll need to choose which to connect with."
           )}
-        </p>
-      </>
-    );
-  }
-
-  if (status === Status.RequestingPerms) {
-    return (
-      <>
-        <ConnectDialogTitle>{t('Update permissions')}</ConnectDialogTitle>
-        <Center>
-          <Cross />
-        </Center>
-        <p className="text-center">
-          {t(`${window.location.host} now has access to your Wallet, however you don't
-        have sufficient permissions to retrieve your public keys. Go to your wallet to approve new permissions.`)}
         </p>
       </>
     );

@@ -88,7 +88,7 @@ Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), o
 
 ### Using wallet
 
-To run tests locally using your own wallets make sure you have generated at least two public keys and update the following environment variables in `cypress.config.js` to match your wallet. You should also use [vegawallet-dummy](https://github.com/vegaprotocol/vegawallet-dummy) to avoid being prompted in CLI during test execution.
+To run tests locally using your own wallets make sure you have generated at least two public keys and update the following environment variables in `cypress.config.js` to match your wallet.
 
 1. Set `VEGA_PUBLIC_KEY` and `TRUNCATED_VEGA_PUBLIC_KEY` to your first public key.
 2. Set `VEGA_PUBLIC_KEY2` and `TRUNCATED_VEGA_PUBLIC_KEY2` to your second public key.

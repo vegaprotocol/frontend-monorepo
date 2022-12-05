@@ -1413,6 +1413,7 @@ export const generateMarketData = (): MarketDataQuery => {
               },
               marketTradingMode:
                 Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+              marketState: Schema.MarketState.STATE_ACTIVE,
               staticMidPrice: '0',
               indicativePrice: '0',
               bestStaticBidPrice: '0',

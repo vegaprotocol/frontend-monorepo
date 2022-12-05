@@ -10,7 +10,11 @@ export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
 
 const PartyLink = ({ id, ...props }: PartyLinkProps) => {
   return (
-    <Link className="underline" {...props} to={`/${Routes.PARTIES}/${id}`}>
+    <Link
+      className="underline font-mono"
+      {...props}
+      to={`/${Routes.PARTIES}/${id}`}
+    >
       {id}
     </Link>
   );
