@@ -734,42 +734,38 @@ context(
       });
 
       // 1005-PROP-009
-      it(
-        'Unable to vote on a freeform proposal - when some but not enough vega associated',
-        { tags: '@smoke' },
-        function () {
-          const proposalTitle = generateProposalTitle();
+      it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
+        const proposalTitle = generateProposalTitle();
 
-          cy.ensure_specified_unstaked_tokens_are_associated(
-            this.minProposerBalance
+        cy.ensure_specified_unstaked_tokens_are_associated(
+          this.minProposerBalance
+        );
+        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
+        cy.get(newProposalSubmitButton).should('be.visible').click();
+        cy.wait_for_proposal_submitted();
+        cy.wait_for_proposal_sync();
+        cy.staking_page_disassociate_tokens('0.0001');
+        cy.get(vegaWallet).within(() => {
+          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            '0.9999'
           );
-          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-          cy.enter_unique_freeform_proposal_body('50', proposalTitle);
-          cy.get(newProposalSubmitButton).should('be.visible').click();
-          cy.wait_for_proposal_submitted();
-          cy.wait_for_proposal_sync();
-          cy.staking_page_disassociate_tokens('0.0001');
-          cy.get(vegaWallet).within(() => {
-            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-              'contain',
-              '0.9999'
-            );
-          });
-          cy.navigate_to('governance');
-          cy.wait_for_spinner();
-          cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
-            () => cy.get(viewProposalButton).click()
-          );
-          cy.contains('Vote breakdown').should('be.visible', {
-            timeout: 10000,
-          });
-          cy.get(voteButtons).should('not.exist');
-          cy.getByTestId('min-proposal-requirements').should(
-            'have.text',
-            `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
-          );
-        }
-      );
+        });
+        cy.navigate_to('governance');
+        cy.wait_for_spinner();
+        cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
+          cy.get(viewProposalButton).click()
+        );
+        cy.contains('Vote breakdown').should('be.visible', {
+          timeout: 10000,
+        });
+        cy.get(voteButtons).should('not.exist');
+        cy.getByTestId('min-proposal-requirements').should(
+          'have.text',
+          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
+        );
+      });
 
       it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
         createRawProposal(this.minProposerBalance);
