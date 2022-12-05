@@ -176,69 +176,77 @@ context(
         cy.wait_for_proposal_submitted();
       });
 
-      it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
-        // 3001-VOTE-005
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        let proposalDays = [
-          this.minCloseDays + 1,
-          this.maxCloseDays,
-          this.minCloseDays + 3,
-          this.minCloseDays + 2,
-        ];
-        for (var index = 0; index < proposalDays.length; index++) {
-          cy.go_to_make_new_proposal(governanceProposalType.RAW);
-          cy.create_ten_digit_unix_timestamp_for_specified_days(
-            proposalDays[index]
-          ).then((closingDateTimestamp) => {
-            cy.enter_raw_proposal_body(closingDateTimestamp);
-          });
-          cy.get(newProposalSubmitButton).should('be.visible').click();
-          cy.contains('Awaiting network confirmation', epochTimeout).should(
-            'be.visible'
+      it(
+        'Newly created proposals list - proposals closest to closing date appear higher in list',
+        { tags: '@governance' },
+        function () {
+          // 3001-VOTE-005
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
           );
-          cy.contains('Proposal submitted', proposalTimeout).should(
-            'be.visible'
-          );
-          cy.get(dialogCloseButton).click();
-          cy.wait_for_proposal_sync();
-        }
-
-        let arrayOfProposals = [];
-
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get(proposalDetailsTitle)
-          .each((proposalTitleElement) => {
-            arrayOfProposals.push(proposalTitleElement.text());
-          })
-          .then(() => {
-            cy.get_sort_order_of_supplied_array(arrayOfProposals).should(
-              'equal',
-              'descending'
+          let proposalDays = [
+            this.minCloseDays + 1,
+            this.maxCloseDays,
+            this.minCloseDays + 3,
+            this.minCloseDays + 2,
+          ];
+          for (var index = 0; index < proposalDays.length; index++) {
+            cy.go_to_make_new_proposal(governanceProposalType.RAW);
+            cy.create_ten_digit_unix_timestamp_for_specified_days(
+              proposalDays[index]
+            ).then((closingDateTimestamp) => {
+              cy.enter_raw_proposal_body(closingDateTimestamp);
+            });
+            cy.get(newProposalSubmitButton).should('be.visible').click();
+            cy.contains('Awaiting network confirmation', epochTimeout).should(
+              'be.visible'
             );
-          });
-      });
+            cy.contains('Proposal submitted', proposalTimeout).should(
+              'be.visible'
+            );
+            cy.get(dialogCloseButton).click();
+            cy.wait_for_proposal_sync();
+          }
 
-      it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
-        cy.ensure_specified_unstaked_tokens_are_associated('2');
-        cy.navigate_to_page_if_not_already_loaded('governance');
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
-        cy.navigate_to('staking');
-        cy.wait_for_spinner();
-        cy.click_on_validator_from_list(0);
-        cy.staking_validator_page_add_stake('2');
+          let arrayOfProposals = [];
 
-        cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
+          cy.navigate_to('governance');
+          cy.wait_for_spinner();
+          cy.get(proposalDetailsTitle)
+            .each((proposalTitleElement) => {
+              arrayOfProposals.push(proposalTitleElement.text());
+            })
+            .then(() => {
+              cy.get_sort_order_of_supplied_array(arrayOfProposals).should(
+                'equal',
+                'descending'
+              );
+            });
+        }
+      );
 
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.wait_for_proposal_submitted();
-      });
+      it(
+        'Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked',
+        { tags: '@governance' },
+        function () {
+          cy.ensure_specified_unstaked_tokens_are_associated('2');
+          cy.navigate_to_page_if_not_already_loaded('governance');
+          cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
+          cy.navigate_to('staking');
+          cy.wait_for_spinner();
+          cy.click_on_validator_from_list(0);
+          cy.staking_validator_page_add_stake('2');
+
+          cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
+
+          cy.navigate_to('governance');
+          cy.wait_for_spinner();
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.wait_for_proposal_submitted();
+        }
+      );
 
       it('Newly created proposals list - able to filter by proposerID to show it in list', function () {
         const proposerId = Cypress.env('vegaWalletPublicKey');
