@@ -288,7 +288,7 @@ context(
     });
 
     // 2002-SINC-016
-    describe('when assets exist in vegawallet', { tags: '@slow' }, function () {
+    describe.skip('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
         cy.vega_wallet_faucet_assets_without_check(
           faucetAssets.USDCFake,
