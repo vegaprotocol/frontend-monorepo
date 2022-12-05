@@ -14,7 +14,7 @@ context(
 
     describe('with no network change proposals', function () {
       it('should have governance tab highlighted', function () {
-        cy.verify_tab_highlighted('governance');
+        cy.verify_tab_highlighted('proposals');
       });
 
       it('should have GOVERNANCE header visible', function () {

@@ -1,10 +1,10 @@
 const navSection = 'nav';
-const navHome = '[href="/"]';
-const navVesting = '[href="/vesting"]';
-const navStaking = '[href="/staking"]';
+const navVesting = '[href="/token/tranches"]';
+const navToken = '[href="/token"]';
+const navStaking = '[href="/validators"]';
 const navRewards = '[href="/rewards"]';
-const navWithdraw = '[href="/withdrawals"]';
-const navGovernance = '[href="/governance"]';
+const navWithdraw = '[href="/token/withdraw"]';
+const navGovernance = '[href="/proposals"]';
 
 const tokenDetailsTable = '.token-details';
 const address = '[data-testid="token-address"]';
@@ -34,9 +34,9 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     describe('Navigation tabs', function () {
-      it('should have HOME tab', function () {
+      it('should have TOKEN tab', function () {
         cy.get(navSection).within(() => {
-          cy.get(navHome).should('be.visible');
+          cy.get(navToken).should('be.visible');
         });
       });
       it('should have VESTING tab', function () {
