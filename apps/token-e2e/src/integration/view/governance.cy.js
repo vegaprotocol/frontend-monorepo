@@ -49,7 +49,7 @@ context(
           .should('be.visible')
           .and('have.text', 'New proposal')
           .and('have.attr', 'href')
-          .and('equal', '/governance/propose');
+          .and('equal', '/proposals/propose');
       });
 
       // Skipping this test for now, the new proposal button no longer takes a user directly
