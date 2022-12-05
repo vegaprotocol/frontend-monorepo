@@ -8,7 +8,7 @@ Cypress.Commands.add(
 
 const navigation = {
   section: 'nav',
-  vesting: '[href="/token/vesting"]',
+  vesting: '[href="/token/tranches"]',
   validators: '[href="/validators"]',
   rewards: '[href="/rewards"]',
   withdraw: '[href="/token/redeem"]',
