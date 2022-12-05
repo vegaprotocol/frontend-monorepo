@@ -279,9 +279,9 @@ context('Validator page', { tags: '@smoke' }, function () {
 
     Cypress.Commands.add('get_nodes', () => {
       const mutation =
-        '{nodes { id name infoUrl avatarUrl pubkey tmPubkey ethereumAddress \
+        '{nodesConnection { edges { node { id name infoUrl avatarUrl pubkey tmPubkey ethereumAddress \
           location stakedByOperator stakedByDelegates stakedTotal pendingStake \
-          epochData { total offline online __typename } status name __typename}}';
+          epochData { total offline online __typename } status name __typename}}}}';
       cy.request({
         method: 'POST',
         url: `http://localhost:3028/query`,
@@ -290,7 +290,7 @@ context('Validator page', { tags: '@smoke' }, function () {
         },
         headers: { 'content-type': 'application/json' },
       })
-        .its(`body.data.nodes`)
+        .its(`body.data.nodesConnection.edges`)
         .then(function (response) {
           let nodes = [];
           response.forEach((node) => {

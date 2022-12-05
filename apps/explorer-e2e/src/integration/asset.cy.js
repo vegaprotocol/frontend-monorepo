@@ -49,7 +49,10 @@ context('Asset page', { tags: '@regression' }, function () {
 
                 assert.equal(assetsListedInJson.name, assetInfo.node.name);
                 assert.equal(assetsListedInJson.id, assetInfo.node.id);
-                assert.equal(assetsListedInJson.decimals, assetInfo.node.decimals);
+                assert.equal(
+                  assetsListedInJson.decimals,
+                  assetInfo.node.decimals
+                );
                 assert.equal(assetsListedInJson.symbol, assetInfo.node.symbol);
                 assert.equal(
                   assetsListedInJson.source.__typename,
