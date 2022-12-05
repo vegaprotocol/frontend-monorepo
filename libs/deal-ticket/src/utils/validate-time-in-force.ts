@@ -9,9 +9,9 @@ export const validateTimeInForce = (market: MarketDealTicket) => {
       market.data.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION;
     const isPriceTrigger =
-      market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE;
+      market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE;
     const isLiquidityTrigger =
-      market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+      market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
     if (isMarketInAuction(market)) {
       if (
