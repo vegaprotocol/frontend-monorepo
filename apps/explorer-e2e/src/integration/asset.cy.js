@@ -47,34 +47,34 @@ context('Asset page', { tags: '@regression' }, function () {
               .then((assetsListedInJson) => {
                 const assetInfo = this.assetsInfo[assetName];
 
-                assert.equal(assetsListedInJson.name, assetInfo.name);
-                assert.equal(assetsListedInJson.id, assetInfo.id);
-                assert.equal(assetsListedInJson.decimals, assetInfo.decimals);
-                assert.equal(assetsListedInJson.symbol, assetInfo.symbol);
+                assert.equal(assetsListedInJson.name, assetInfo.node.name);
+                assert.equal(assetsListedInJson.id, assetInfo.node.id);
+                assert.equal(assetsListedInJson.decimals, assetInfo.node.decimals);
+                assert.equal(assetsListedInJson.symbol, assetInfo.node.symbol);
                 assert.equal(
                   assetsListedInJson.source.__typename,
-                  assetInfo.source.__typename
+                  assetInfo.node.source.__typename
                 );
 
-                if (assetInfo.source.__typename == 'ERC20') {
+                if (assetInfo.node.source.__typename == 'ERC20') {
                   assert.equal(
                     assetsListedInJson.source.contractAddress,
-                    assetInfo.source.contractAddress
+                    assetInfo.node.source.contractAddress
                   );
                 }
 
-                if (assetInfo.source.__typename == 'BuiltinAsset') {
+                if (assetInfo.node.source.__typename == 'BuiltinAsset') {
                   assert.equal(
                     assetsListedInJson.source.maxFaucetAmountMint,
-                    assetInfo.source.maxFaucetAmountMint
+                    assetInfo.node.source.maxFaucetAmountMint
                   );
                 }
 
                 let knownAssetTypes = ['BuiltinAsset', 'ERC20'];
                 assert.include(
                   knownAssetTypes,
-                  assetInfo.source.__typename,
-                  `Checking that current asset type of ${assetInfo.source.__typename} /
+                  assetInfo.node.source.__typename,
+                  `Checking that current asset type of ${assetInfo.node.source.__typename} /
                   is one of: ${knownAssetTypes}: /
                   If fail then we need to add extra tests for un-encountered asset types`
                 );
