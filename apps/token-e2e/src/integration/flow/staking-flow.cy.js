@@ -309,7 +309,7 @@ context(
           txTimeout
         );
 
-          cy.navigate_to('validators');
+        cy.navigate_to('validators');
         // 2001-STKE-040
         cy.click_on_validator_from_list(0);
 
@@ -342,7 +342,7 @@ context(
         cy.get(totalStake, epochTimeout).should('contain.text', '2');
         cy.get(stakeShare, epochTimeout).should('have.text', '100%');
 
-          cy.navigate_to('validators');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
