@@ -6,7 +6,7 @@ import type { MarketDealTicket } from '@vegaprotocol/market-list';
 export const validateTimeInForce = (market: MarketDealTicket) => {
   return (value: Schema.OrderTimeInForce) => {
     const isMonitoringAuction =
-      market.tradingMode ===
+      market.data.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION;
     const isPriceTrigger =
       market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE;

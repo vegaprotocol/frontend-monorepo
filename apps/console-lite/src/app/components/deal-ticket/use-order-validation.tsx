@@ -169,13 +169,13 @@ export const useOrderValidation = ({
         Schema.MarketState.STATE_TRADING_TERMINATED,
         Schema.MarketState.STATE_CANCELLED,
         Schema.MarketState.STATE_CLOSED,
-      ].includes(market.state)
+      ].includes(market.data.marketState)
     ) {
       return {
         isDisabled: true,
         message: t(
           `This market is ${marketTranslations(
-            market.state
+            market.data.marketState
           )} and not accepting orders`
         ),
         section: DEAL_TICKET_SECTION.SUMMARY,
@@ -186,7 +186,7 @@ export const useOrderValidation = ({
       [
         Schema.MarketState.STATE_PROPOSED,
         Schema.MarketState.STATE_PENDING,
-      ].includes(market.state)
+      ].includes(market.data.marketState)
     ) {
       if (fieldErrorChecking) {
         return fieldErrorChecking;
@@ -195,7 +195,7 @@ export const useOrderValidation = ({
         isDisabled: false,
         message: t(
           `This market is ${marketTranslations(
-            market.state
+            market.data.marketState
           )} and only accepting liquidity commitment orders`
         ),
         section: DEAL_TICKET_SECTION.SUMMARY,
@@ -205,9 +205,9 @@ export const useOrderValidation = ({
     if (isMarketInAuction(market)) {
       if (order.type === Schema.OrderType.TYPE_MARKET) {
         if (
-          market.tradingMode ===
+          market.data.marketTradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger ===
+          market.data.trigger ===
             Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
           return {
@@ -230,9 +230,9 @@ export const useOrderValidation = ({
           };
         }
         if (
-          market.tradingMode ===
+          market.data.marketTradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
+          market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
           return {
             isDisabled: true,
@@ -270,9 +270,9 @@ export const useOrderValidation = ({
         ].includes(order.timeInForce)
       ) {
         if (
-          market.tradingMode ===
+          market.data.marketTradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger ===
+          market.data.trigger ===
             Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
         ) {
           return {
@@ -297,9 +297,9 @@ export const useOrderValidation = ({
           };
         }
         if (
-          market.tradingMode ===
+          market.data.marketTradingMode ===
             Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-          market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
+          market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE
         ) {
           return {
             isDisabled: true,
@@ -355,7 +355,7 @@ export const useOrderValidation = ({
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.tradingMode)
+      ].includes(market.data.marketTradingMode)
     ) {
       return {
         isDisabled: false,
