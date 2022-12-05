@@ -69,7 +69,7 @@ export const Search = () => {
             placeholder={t('Enter block number, party id or transaction hash')}
           />
           {error?.message && (
-            <div className="bg-white border border-t-0 border-accent absolute top-[100%] flex-1 w-full pb-2 px-2 rounded-b">
+            <div className="bg-white border border-t-0 border-accent absolute top-[100%] flex-1 w-full pb-2 px-2 rounded-b text-black">
               <InputError data-testid="search-error" intent="danger">
                 {error.message}
               </InputError>
