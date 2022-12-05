@@ -132,6 +132,7 @@ context(
         cy.wait_for_spinner();
         cy.connectVegaWallet();
         cy.ethereum_wallet_connect();
+        cy.vega_wallet_teardown();
         cy.navigate_to('governance');
         cy.wait_for_spinner();
       });
