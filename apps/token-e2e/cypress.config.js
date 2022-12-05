@@ -17,7 +17,7 @@ module.exports = defineConfig({
     ],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.js',
-    video: false,
+    video: true,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/token-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/token-e2e/screenshots',
