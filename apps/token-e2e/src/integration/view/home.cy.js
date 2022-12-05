@@ -25,7 +25,7 @@ const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
 context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
-    cy.visit('/');
+    cy.visit('/token');
   });
 
   describe('with wallets disconnected', function () {
