@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';

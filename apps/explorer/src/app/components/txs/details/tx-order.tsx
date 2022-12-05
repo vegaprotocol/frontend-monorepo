@@ -31,7 +31,7 @@ export const TxDetailsOrder = ({
 
   let deterministicId = '';
 
-  const sig = txData.signature.value as string;
+  const sig = txData?.signature?.value;
   if (sig) {
     deterministicId = txSignatureToDeterministicId(sig);
   }
