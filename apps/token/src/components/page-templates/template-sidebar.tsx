@@ -1,5 +1,4 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
 import { Nav } from '../nav';
