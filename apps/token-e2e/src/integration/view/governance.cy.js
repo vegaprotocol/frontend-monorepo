@@ -9,7 +9,7 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to governance page', function () {
-      cy.visit('/').navigate_to('governance');
+      cy.visit('/').navigate_to('proposals');
     });
 
     describe('with no network change proposals', function () {
@@ -60,7 +60,7 @@ context(
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet');
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
       });
     });

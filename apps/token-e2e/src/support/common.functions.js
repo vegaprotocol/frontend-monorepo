@@ -8,13 +8,13 @@ Cypress.Commands.add(
 
 const navigation = {
   section: 'nav',
-  home: '[href="/"]',
-  vesting: '[href="/vesting"]',
-  staking: '[href="/staking"]',
+  vesting: '[href="/token/vesting"]',
+  validators: '[href="/validators"]',
   rewards: '[href="/rewards"]',
-  withdrawals: '[href="/withdrawals"]',
-  governance: '[href="/governance"]',
+  withdraw: '[href="/token/redeem"]',
+  proposals: '[href="/proposals"]',
   pageSpinner: '[data-testid="splash-loader"]',
+  token: '[href="/token"]',
 };
 
 Cypress.Commands.add('navigate_to', (page) => {

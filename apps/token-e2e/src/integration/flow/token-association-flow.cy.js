@@ -27,7 +27,6 @@ context(
   function () {
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      cy.verify_page_header('The $VEGA token');
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
@@ -40,7 +39,7 @@ context(
           cy.connectVegaWallet();
           cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
-          cy.navigate_to('staking');
+          cy.navigate_to('validators');
           cy.wait_for_spinner();
         }
       );
@@ -257,7 +256,7 @@ context(
           cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 52);
         });
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.staking_page_disassociate_tokens('9', { type: 'wallet' });
         cy.get(vegaInWalletSection).within(() => {
