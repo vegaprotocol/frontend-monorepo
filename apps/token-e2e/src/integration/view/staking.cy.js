@@ -104,10 +104,10 @@ context('Staking Page - verify elements on page', function () {
   // 2001-STKE-050
   describe(
     'Should be able to see static information about a validator',
-    { tags: '@smoke' },
+    { tags: '@slow' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.vega_wallet_connect();
+        cy.connectVegaWallet();
         cy.click_on_validator_from_list(0);
       });
 

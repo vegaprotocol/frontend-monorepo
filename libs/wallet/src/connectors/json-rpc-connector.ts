@@ -10,8 +10,6 @@ const VERSION = 'v2';
 enum Methods {
   ConnectWallet = 'client.connect_wallet',
   DisconnectWallet = 'client.disconnect_wallet',
-  GetPermissions = 'client.get_permissions',
-  RequestPermisssions = 'client.request_permissions',
   ListKeys = 'client.list_keys',
   SendTransaction = 'client.send_transaction',
   GetChainId = 'client.get_chain_id',
@@ -45,22 +43,6 @@ const GetChainIdSchema = BaseSchema.extend({
   }),
 });
 
-const GetPermissionsSchema = BaseSchema.extend({
-  result: z.object({
-    permissions: z.object({
-      public_keys: z.enum(['none', 'read', 'write']),
-    }),
-  }),
-});
-
-const RequestPermissionsSchema = BaseSchema.extend({
-  result: z.object({
-    permissions: z.object({
-      public_keys: z.enum(['none', 'read', 'write']),
-    }),
-  }),
-});
-
 const SendTransactionSchema = BaseSchema.extend({
   result: z.object({
     receivedAt: z.string(),
@@ -84,8 +66,6 @@ type Response =
   | z.infer<typeof ConnectWalletSchema>
   | z.infer<typeof ListKeysSchema>
   | z.infer<typeof GetChainIdSchema>
-  | z.infer<typeof GetPermissionsSchema>
-  | z.infer<typeof RequestPermissionsSchema>
   | z.infer<typeof SendTransactionSchema>
   | { error: JsonRpcError };
 
@@ -149,47 +129,6 @@ export class JsonRpcConnector implements VegaConnector {
         connector: 'jsonRpc',
         url: this.url,
       });
-      return parseResult.data.result;
-    } else {
-      throw ClientErrors.INVALID_RESPONSE;
-    }
-  }
-
-  async getPermissions() {
-    const cfg = getConfig();
-    if (!cfg?.token) {
-      throw ClientErrors.NO_TOKEN;
-    }
-    const result = await this.request(Methods.GetPermissions, {
-      token: cfg.token,
-    });
-    if ('error' in result) {
-      throw this.wrapError(result.error);
-    }
-    const parseResult = GetPermissionsSchema.safeParse(result);
-    if (parseResult.success) {
-      return parseResult.data.result;
-    } else {
-      throw ClientErrors.INVALID_RESPONSE;
-    }
-  }
-
-  async requestPermissions() {
-    const cfg = getConfig();
-    if (!cfg?.token) {
-      throw ClientErrors.NO_TOKEN;
-    }
-    const result = await this.request(Methods.RequestPermisssions, {
-      token: cfg.token,
-      requestedPermissions: {
-        public_keys: 'read',
-      },
-    });
-    if ('error' in result) {
-      throw this.wrapError(result.error);
-    }
-    const parseResult = RequestPermissionsSchema.safeParse(result);
-    if (parseResult.success) {
       return parseResult.data.result;
     } else {
       throw ClientErrors.INVALID_RESPONSE;

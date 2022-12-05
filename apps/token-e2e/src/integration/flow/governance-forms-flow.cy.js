@@ -48,7 +48,7 @@ context(
     beforeEach('visit governance tab', function () {
       cy.reload();
       cy.wait_for_spinner();
-      cy.vega_wallet_connect();
+      cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.navigate_to('governance');
       cy.wait_for_spinner();

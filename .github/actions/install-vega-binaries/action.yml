@@ -15,14 +15,3 @@ runs:
       run: |
         wget 'https://github.com/vegaprotocol/vega/releases/download/${{ inputs.version }}/vega-linux-amd64.zip' -q
         unzip vega-linux-amd64.zip -d ${{ inputs.gobin }}
-
-    - name: Checkout vegawallet-dummy
-      uses: actions/checkout@v3
-      with:
-        repository: 'vegaprotocol/vegawallet-dummy'
-        path: './dummy'
-
-    - name: Install vegawallet-dummy binaries
-      shell: bash
-      run: go install
-      working-directory: ./dummy
