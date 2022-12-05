@@ -43,7 +43,7 @@ export const AccountManager = ({
       const rowsThisBlock = dataRef.current
         ? dataRef.current.slice(startRow, endRow)
         : [];
-      const lastRow = dataRef.current?.length ?? 0;
+      const lastRow = dataRef.current?.length ?? undefined;
       successCallback(rowsThisBlock, lastRow);
     },
     []
