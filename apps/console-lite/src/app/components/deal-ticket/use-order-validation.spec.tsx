@@ -224,7 +224,6 @@ describe('useOrderValidation', () => {
         balance: '0',
         margin: '100',
         balanceError: false,
-        // asset,
       });
 
       const market = {
