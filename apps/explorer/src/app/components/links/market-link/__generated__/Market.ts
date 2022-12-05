@@ -8,16 +8,22 @@ export type ExplorerMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null };
+export type ExplorerMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null };
 
 
 export const ExplorerMarketDocument = gql`
     query ExplorerMarket($id: ID!) {
   market(id: $id) {
     id
+    decimalPlaces
     tradableInstrument {
       instrument {
         name
+        product {
+          ... on Future {
+            quoteName
+          }
+        }
       }
     }
     state
