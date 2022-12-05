@@ -427,82 +427,78 @@ context(
       });
 
       // 3001-VOTE-080 3001-VOTE-090
-      it(
-        'Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated',
-        { tags: '@smoke' },
-        function () {
-          createRawProposal(this.minProposerBalance);
-          cy.get('@rawProposal').then((rawProposal) => {
-            cy.get_submitted_proposal_from_proposal_list(
-              rawProposal.rationale.title
-            ).within(() => cy.get(viewProposalButton).click());
-          });
-          // 3001-VOTE-080
-          cy.get(voteButtons).contains('against').should('be.visible');
-          cy.get(voteButtons).contains('for').should('be.visible');
-          cy.vote_for_proposal('for');
-          cy.get_governance_proposal_date_format_for_specified_days(
-            '0',
-            'shortMonth'
-          ).then((votedDate) => {
-            // 3001-VOTE-051
-            // 3001-VOTE-093
-            cy.contains('You voted:')
-              .siblings()
-              .contains('For')
-              .siblings()
-              .contains(votedDate)
-              .should('be.visible');
-          });
-          cy.get(proposalVoteProgressForPercentage)
-            .contains('100.00%')
-            .and('be.visible');
-          cy.get(proposalVoteProgressAgainstPercentage)
-            .contains('0.00%')
-            .and('be.visible');
-          cy.get(proposalVoteProgressForTokens)
-            .contains('1.00')
-            .and('be.visible');
-          cy.get(proposalVoteProgressAgainstTokens)
-            .contains('0.00')
-            .and('be.visible');
-          cy.get_proposal_information_from_table('Tokens for proposal')
-            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-            .and('be.visible');
-          cy.get_proposal_information_from_table('Tokens against proposal')
-            .should('have.text', '0.00')
-            .and('be.visible');
-          // 3001-VOTE-061
-          cy.get_proposal_information_from_table('Participation required')
-            .contains(`${this.requiredParticipation}%`)
+      it('Newly created proposal details - ability to vote for and against proposal - with minimum required tokens associated', function () {
+        createRawProposal(this.minProposerBalance);
+        cy.get('@rawProposal').then((rawProposal) => {
+          cy.get_submitted_proposal_from_proposal_list(
+            rawProposal.rationale.title
+          ).within(() => cy.get(viewProposalButton).click());
+        });
+        // 3001-VOTE-080
+        cy.get(voteButtons).contains('against').should('be.visible');
+        cy.get(voteButtons).contains('for').should('be.visible');
+        cy.vote_for_proposal('for');
+        cy.get_governance_proposal_date_format_for_specified_days(
+          '0',
+          'shortMonth'
+        ).then((votedDate) => {
+          // 3001-VOTE-051
+          // 3001-VOTE-093
+          cy.contains('You voted:')
+            .siblings()
+            .contains('For')
+            .siblings()
+            .contains(votedDate)
             .should('be.visible');
-          // 3001-VOTE-066
-          cy.get_proposal_information_from_table('Majority Required')
-            .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
-            .should('be.visible');
-          cy.get_proposal_information_from_table('Number of voting parties')
-            .should('have.text', '1')
-            .and('be.visible');
-          cy.get(changeVoteButton).should('be.visible').click();
-          cy.vote_for_proposal('for');
-          // 3001-VOTE-064
-          cy.get_proposal_information_from_table('Tokens for proposal')
-            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-            .and('be.visible');
-          cy.wait_for_spinner();
-          cy.get(changeVoteButton).should('be.visible').click();
-          cy.vote_for_proposal('against');
-          cy.get(proposalVoteProgressAgainstPercentage)
-            .contains('100.00%')
-            .and('be.visible');
-          cy.get_proposal_information_from_table('Tokens against proposal')
-            .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
-            .and('be.visible');
-          cy.get_proposal_information_from_table('Number of voting parties')
-            .should('have.text', '1')
-            .and('be.visible');
-        }
-      );
+        });
+        cy.get(proposalVoteProgressForPercentage)
+          .contains('100.00%')
+          .and('be.visible');
+        cy.get(proposalVoteProgressAgainstPercentage)
+          .contains('0.00%')
+          .and('be.visible');
+        cy.get(proposalVoteProgressForTokens)
+          .contains('1.00')
+          .and('be.visible');
+        cy.get(proposalVoteProgressAgainstTokens)
+          .contains('0.00')
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Tokens for proposal')
+          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Tokens against proposal')
+          .should('have.text', '0.00')
+          .and('be.visible');
+        // 3001-VOTE-061
+        cy.get_proposal_information_from_table('Participation required')
+          .contains(`${this.requiredParticipation}%`)
+          .should('be.visible');
+        // 3001-VOTE-066
+        cy.get_proposal_information_from_table('Majority Required')
+          .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
+          .should('be.visible');
+        cy.get_proposal_information_from_table('Number of voting parties')
+          .should('have.text', '1')
+          .and('be.visible');
+        cy.get(changeVoteButton).should('be.visible').click();
+        cy.vote_for_proposal('for');
+        // 3001-VOTE-064
+        cy.get_proposal_information_from_table('Tokens for proposal')
+          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+          .and('be.visible');
+        cy.wait_for_spinner();
+        cy.get(changeVoteButton).should('be.visible').click();
+        cy.vote_for_proposal('against');
+        cy.get(proposalVoteProgressAgainstPercentage)
+          .contains('100.00%')
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Tokens against proposal')
+          .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+          .and('be.visible');
+        cy.get_proposal_information_from_table('Number of voting parties')
+          .should('have.text', '1')
+          .and('be.visible');
+      });
 
       // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
       it('Newly created proposal details - ability to increase associated tokens - by voting again after association', function () {
