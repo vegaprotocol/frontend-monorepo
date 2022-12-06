@@ -58,7 +58,5 @@ module.exports = defineConfig({
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
     grepOmitFiltered: true,
-    VEGA_WALLET_API_TOKEN:
-      'hfZp9PmREQgtPyLrVnHJ8JwQfTGPkaJ4wuAJG16vNNS5xXiYU37NTDg0TnNQzoH9',
   },
 });
