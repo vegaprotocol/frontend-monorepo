@@ -8,6 +8,7 @@ import { rawValidatorScore } from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
+  StakeNeededForPromotionRenderer,
   stakedTotalPercentage,
   totalPenalties,
   ValidatorFields,
@@ -50,7 +51,8 @@ export const StandbyPendingValidatorsTable = ({
         rankingScore: { stakeScore, performanceScore },
         pendingStake,
       }) => {
-        let individualStakeNeededForPromotion = undefined;
+        let individualStakeNeededForPromotion,
+          individualStakeNeededForPromotionDescription;
 
         if (stakeNeededForPromotion) {
           const stakedTotalBigNum = new BigNumber(stakedTotal);
@@ -61,9 +63,23 @@ export const StandbyPendingValidatorsTable = ({
             .dividedBy(performanceScoreBigNum)
             .minus(stakedTotalBigNum);
 
-          individualStakeNeededForPromotion = calc.isGreaterThan(0)
-            ? calc.toString()
-            : '0';
+          if (calc.isGreaterThan(0)) {
+            individualStakeNeededForPromotion = calc.toString();
+            individualStakeNeededForPromotionDescription = t(
+              stakeNeededForPromotionDescription,
+              {
+                prefix: formatNumber(calc, 2).toString(),
+              }
+            );
+          } else {
+            individualStakeNeededForPromotion = '0';
+            individualStakeNeededForPromotionDescription = t(
+              stakeNeededForPromotionDescription,
+              {
+                prefix: formatNumber(0, 2).toString(),
+              }
+            );
+          }
         }
 
         return {
@@ -77,7 +93,9 @@ export const StandbyPendingValidatorsTable = ({
             2
           ),
           [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
-            individualStakeNeededForPromotion || t('n/a'),
+            individualStakeNeededForPromotion || null,
+          [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
+            individualStakeNeededForPromotionDescription || t('n/a'),
           [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
           [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
             rawValidatorScore(previousEpochData, id),
@@ -121,14 +139,16 @@ export const StandbyPendingValidatorsTable = ({
         {
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
           headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
-          headerTooltip: stakeNeededForPromotionDescription,
+          headerTooltip: t(stakeNeededForPromotionDescription, {
+            prefix: 'The',
+          }),
+          cellRenderer: StakeNeededForPromotionRenderer,
           width: 210,
           sort: 'asc',
         },
         {
           field: ValidatorFields.STAKE_SHARE,
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
-          headerTooltip: t('StakeShareDescription').toString(),
           width: 100,
         },
         {

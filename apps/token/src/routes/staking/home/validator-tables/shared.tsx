@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toBigNum } from '@vegaprotocol/react-helpers';
-import { Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  Button,
+  Tooltip,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
@@ -14,6 +18,7 @@ export enum ValidatorFields {
   TOTAL_PENALTIES = 'totalPenalties',
   NORMALISED_VOTING_POWER = 'normalisedVotingPower',
   STAKE_NEEDED_FOR_PROMOTION = 'stakeNeededForPromotion',
+  STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION = 'stakeNeededForPromotionDescription',
 }
 
 export interface ValidatorsTableProps {
@@ -92,5 +97,25 @@ export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
         </Button>
       </Link>
     </div>
+  );
+};
+
+interface StakeNeededForPromotionRendererProps {
+  data: {
+    stakeNeededForPromotion: string | undefined;
+    stakeNeededForPromotionDescription: string;
+  };
+}
+
+export const StakeNeededForPromotionRenderer = ({
+  data,
+}: StakeNeededForPromotionRendererProps) => {
+  return (
+    <Tooltip description={data.stakeNeededForPromotionDescription}>
+      <span>
+        {data.stakeNeededForPromotion &&
+          formatNumber(data.stakeNeededForPromotion, 2)}
+      </span>
+    </Tooltip>
   );
 };

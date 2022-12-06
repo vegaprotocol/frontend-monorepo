@@ -721,6 +721,6 @@
   "StakeShareDescription": "The stake a validator represents as a share of total stake across the network.",
   "TotalPenaltiesDescription": "Total of penalties taking into account performance (considering proportion of blocks proposed against the number of blocks the validator was expected to propose) and any overstaking.",
   "PendingStakeDescription": "The amount of stake that will be added or removed from the validator from the next epoch.",
-  "StakeNeededForPromotionStandbyDescription": "The amount of stake needed for promotion to consensus, assuming constant performance in line with previous epoch.",
-  "StakeNeededForPromotionCandidateDescription": "The amount of stake needed for promotion to standby, assuming constant performance in line with previous epoch."
+  "StakeNeededForPromotionStandbyDescription": "{{prefix}} additional stake needed for promotion to consensus, assuming constant performance in line with previous epoch.",
+  "StakeNeededForPromotionCandidateDescription": "{{prefix}} additional stake needed for promotion to standby, assuming constant performance in line with previous epoch."
 }

@@ -123,9 +123,7 @@ export const ValidatorTables = ({
             previousEpochData={previousEpochData}
             totalStake={totalStake}
             stakeNeededForPromotion={stakeNeededForPromotion}
-            stakeNeededForPromotionDescription={t(
-              'StakeNeededForPromotionStandbyDescription'
-            )}
+            stakeNeededForPromotionDescription="StakeNeededForPromotionStandbyDescription"
           />
         </>
       )}
@@ -154,9 +152,7 @@ export const ValidatorTables = ({
             previousEpochData={previousEpochData}
             totalStake={totalStake}
             stakeNeededForPromotion={stakeNeededForPromotion}
-            stakeNeededForPromotionDescription={t(
-              'StakeNeededForPromotionCandidateDescription'
-            )}
+            stakeNeededForPromotionDescription="StakeNeededForPromotionCandidateDescription"
           />
         </>
       )}
