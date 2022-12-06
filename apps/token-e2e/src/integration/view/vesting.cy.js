@@ -15,7 +15,7 @@ context(
       });
 
       it('should have VESTING header visible', function () {
-        cy.verify_page_header('Vesting');
+        cy.verify_page_header('Vesting tranches');
       });
 
       it('should have connect Eth wallet info', function () {
