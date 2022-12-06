@@ -1,39 +1,23 @@
 import produce from 'immer';
-import type { ApolloClient } from '@apollo/client';
-import { useApolloClient } from '@apollo/client';
-import { useVegaWallet } from './use-vega-wallet';
 import type { Transaction } from './connectors';
-import { useRef } from 'react';
 import {
-  ClientErrors,
   isWithdrawTransaction,
   isOrderSubmissionTransaction,
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
 } from './connectors';
-import { WalletError } from './connectors';
 import { determineId } from './utils';
 
 import create from 'zustand';
 import type { VegaTxState } from './use-vega-transaction';
 import { VegaTxStatus } from './use-vega-transaction';
-import {
-  useOrderBusEventsSubscription,
-  useWithdrawalBusEventSubscription,
-  useTransactionEventSubscription,
-} from './__generated__/TransactionResult';
 import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
   OrderBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
 
-import type {
-  WithdrawalApprovalQuery,
-  WithdrawalApprovalQueryVariables,
-} from './__generated__/WithdrawalApproval';
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
-
+import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
@@ -43,7 +27,7 @@ export interface VegaStoredTxState extends VegaTxState {
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
   order?: OrderBusEventFieldsFragment;
 }
-interface VegaTransactionStore {
+export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
   create: (tx: Transaction) => number;
   update: (
@@ -170,119 +154,3 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
     },
   })
 );
-
-export const useVegaWalletTransactionManager = () => {
-  const { sendTx, pubKey } = useVegaWallet();
-  const processed = useRef<Set<number>>(new Set());
-  const transaction = useVegaTransactionStore((state) =>
-    state.transactions.find(
-      (transaction) =>
-        transaction?.status === VegaTxStatus.Requested &&
-        !processed.current.has(transaction.id)
-    )
-  );
-  const update = useVegaTransactionStore((state) => state.update);
-  const del = useVegaTransactionStore((state) => state.delete);
-  if (!(transaction && pubKey)) {
-    return;
-  }
-  processed.current.add(transaction.id);
-  sendTx(pubKey, transaction.body)
-    .then((res) => {
-      if (res === null) {
-        // User rejected
-        del(transaction.id);
-        return;
-      }
-      if (res.signature && res.transactionHash) {
-        update(transaction.id, {
-          status: VegaTxStatus.Pending,
-          txHash: res.transactionHash,
-          signature: res.signature,
-        });
-      }
-    })
-    .catch((err) => {
-      update(transaction.id, {
-        error: err instanceof WalletError ? err : ClientErrors.UNKNOWN,
-        status: VegaTxStatus.Error,
-      });
-    });
-};
-
-const waitForWithdrawalApproval = (
-  withdrawalId: string,
-  client: ApolloClient<object>
-) =>
-  new Promise<NonNullable<VegaStoredTxState['withdrawalApproval']>>(
-    (resolve) => {
-      const interval = setInterval(async () => {
-        try {
-          const res = await client.query<
-            WithdrawalApprovalQuery,
-            WithdrawalApprovalQueryVariables
-          >({
-            query: WithdrawalApprovalDocument,
-            variables: { withdrawalId },
-            fetchPolicy: 'network-only',
-          });
-
-          if (
-            res.data.erc20WithdrawalApproval &&
-            res.data.erc20WithdrawalApproval.signatures.length > 2
-          ) {
-            clearInterval(interval);
-            resolve(res.data.erc20WithdrawalApproval);
-          }
-        } catch (err) {
-          // no op as the query will error until the approval is created
-        }
-      }, 1000);
-    }
-  );
-
-export const useVegaWalletTransactionUpdater = () => {
-  const client = useApolloClient();
-  const { updateWithdrawal, updateOrder, updateTransaction } =
-    useVegaTransactionStore((state) => ({
-      updateWithdrawal: state.updateWithdrawal,
-      updateOrder: state.updateOrder,
-      updateTransaction: state.updateTransactionResult,
-    }));
-  const { pubKey } = useVegaWallet();
-  const variables = { partyId: pubKey || '' };
-  const skip = !pubKey;
-  useOrderBusEventsSubscription({
-    variables,
-    skip,
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'Order') {
-          updateOrder(event.event);
-        }
-      }),
-  });
-  useWithdrawalBusEventSubscription({
-    variables,
-    skip,
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'Withdrawal') {
-          const withdrawal = event.event;
-          waitForWithdrawalApproval(event.event.id, client).then((approval) =>
-            updateWithdrawal(withdrawal, approval)
-          );
-        }
-      }),
-  });
-  useTransactionEventSubscription({
-    variables,
-    skip,
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'TransactionResult') {
-          updateTransaction(event.event);
-        }
-      }),
-  });
-};

@@ -4,8 +4,8 @@ import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
   VegaWalletProvider,
-  useVegaWalletTransactionManager,
-  useVegaWalletTransactionUpdater,
+  useVegaTransactionManager,
+  useVegaTransactionUpdater,
 } from '@vegaprotocol/wallet';
 import {
   useEthTransactionManager,
@@ -52,8 +52,8 @@ const Title = () => {
 };
 
 const TransactionsHandler = () => {
-  useVegaWalletTransactionManager();
-  useVegaWalletTransactionUpdater();
+  useVegaTransactionManager();
+  useVegaTransactionUpdater();
   useEthTransactionManager();
   useEthTransactionUpdater();
   useWithdrawApprovalsManager();
