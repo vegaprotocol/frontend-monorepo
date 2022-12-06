@@ -98,6 +98,18 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Last Price')}
+            headerTooltip={t('Latest price for this market')}
+            field="data.markPrice"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              formatWithAsset(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+              )
+            }
+          />
+
+          <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
