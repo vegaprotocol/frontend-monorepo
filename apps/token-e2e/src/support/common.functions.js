@@ -8,10 +8,10 @@ Cypress.Commands.add(
 
 const navigation = {
   section: 'nav',
-  vesting: '[href="/token/tranches"]',
+  vesting: '[href="/token/redeem"]',
   validators: '[href="/validators"]',
   rewards: '[href="/rewards"]',
-  withdraw: '[href="/token/redeem"]',
+  withdraw: '[href="/withdraw"]',
   proposals: '[href="/proposals"]',
   pageSpinner: '[data-testid="splash-loader"]',
   token: '[href="/token"]',
