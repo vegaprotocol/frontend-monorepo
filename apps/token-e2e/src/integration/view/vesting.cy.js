@@ -15,7 +15,7 @@ context(
       });
 
       it('should have VESTING header visible', function () {
-        cy.verify_page_header('Vesting tranches');
+        cy.verify_page_header('Vesting');
       });
 
       it('should have connect Eth wallet info', function () {
@@ -37,10 +37,10 @@ context(
       // 1005-VEST-001
       // 1005-VEST-002
       it('Able to view tranches', function () {
-        cy.get('[href="/tranches"]')
+        cy.get('[href="/token/vesting"]')
           .should('have.text', 'all tranches')
           .click();
-        cy.url().should('include', '/tranches');
+        cy.url().should('include', '/token/vesting');
         cy.get('h1').should('contain.text', 'Vesting tranches');
       });
     });
