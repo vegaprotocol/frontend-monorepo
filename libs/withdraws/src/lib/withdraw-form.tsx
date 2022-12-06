@@ -195,7 +195,12 @@ export const WithdrawForm = ({
             </UseButton>
           )}
         </FormGroup>
-        <Button data-testid="submit-withdrawal" type="submit" variant="primary">
+        <Button
+          data-testid="submit-withdrawal"
+          type="submit"
+          variant="primary"
+          fill={true}
+        >
           Release funds
         </Button>
       </form>

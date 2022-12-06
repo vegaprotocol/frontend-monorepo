@@ -8,6 +8,7 @@ import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useWithdrawStore } from './withdraw-store';
+import { useWeb3React } from '@web3-react/core';
 
 export const useWithdrawAsset = (
   assets: Asset[],
@@ -37,16 +38,18 @@ export const useWithdrawAsset = (
         : new BigNumber(0);
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it
-      let threshold;
-      let delay;
+      let threshold = new BigNumber(0);
+      let delay = 0;
+
       try {
         const result = await Promise.all([getThreshold(asset), getDelay()]);
         threshold = result[0];
         delay = result[1];
-        update({ asset, balance, min, threshold, delay });
       } catch (err) {
         captureException(err);
       }
+
+      update({ asset, balance, min, threshold, delay });
     },
     [accounts, assets, update, getThreshold, getDelay]
   );

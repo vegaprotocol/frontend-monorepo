@@ -92,13 +92,24 @@ export const WithdrawalFeedback = ({
 };
 
 const ActionButton = ({ withdrawal, submitWithdraw }: any) => {
-  const { isActive } = useWeb3React();
-  const open = useWeb3ConnectDialog((store) => store.open);
+  const { isActive, chainId } = useWeb3React();
+  const { open, desiredChainId } = useWeb3ConnectDialog((store) => ({
+    open: store.open,
+    desiredChainId: store.desiredChainId,
+  }));
 
   if (!isActive) {
     return (
       <Button onClick={() => open()}>
         {t('Connect Ethereum wallet to complete')}
+      </Button>
+    );
+  }
+
+  if (chainId !== desiredChainId) {
+    return (
+      <Button onClick={() => open()} disabled={true}>
+        {t('Please change chain')}
       </Button>
     );
   }

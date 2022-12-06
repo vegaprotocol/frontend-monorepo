@@ -2,7 +2,10 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import {
+  useEagerConnect as useVegaEagerConnect,
+  VegaWalletProvider,
+} from '@vegaprotocol/wallet';
 import {
   EnvironmentProvider,
   envTriggerMapping,
@@ -16,6 +19,8 @@ import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import { HashRouter, useLocation } from 'react-router-dom';
+import { Connectors } from '../lib/vega-connectors';
+import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -66,6 +71,7 @@ function AppBody({ Component }: AppProps) {
               </main>
               <Footer />
               <DialogsContainer />
+              <MaybeConnectEagerly />
             </Web3Provider>
           </AppLoader>
         </VegaWalletProvider>
@@ -96,3 +102,9 @@ function VegaTradingApp(props: AppProps) {
 }
 
 export default VegaTradingApp;
+
+const MaybeConnectEagerly = () => {
+  useVegaEagerConnect(Connectors);
+  useEthereumEagerConnect();
+  return null;
+};

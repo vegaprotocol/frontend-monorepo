@@ -74,7 +74,8 @@ export const Web3ConnectDialog = ({
 };
 
 export const Web3ConnectUncontrolledDialog = () => {
-  const { isOpen, connectors, open, close } = useWeb3ConnectDialog();
+  const { isOpen, connectors, open, close, desiredChainId } =
+    useWeb3ConnectDialog();
   const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
   return (
@@ -82,6 +83,7 @@ export const Web3ConnectUncontrolledDialog = () => {
       dialogOpen={isOpen}
       setDialogOpen={onChange}
       connectors={connectors}
+      desiredChainId={desiredChainId}
     />
   );
 };

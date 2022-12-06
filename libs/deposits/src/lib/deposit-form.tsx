@@ -300,8 +300,11 @@ const FormButton = ({
   allowance,
   onApproveClick,
 }: FormButtonProps) => {
-  const openConnectDialog = useWeb3ConnectDialog((store) => store.open);
-  const { isActive } = useWeb3React();
+  const { open, desiredChainId } = useWeb3ConnectDialog((store) => ({
+    open: store.open,
+    desiredChainId: store.desiredChainId,
+  }));
+  const { isActive, chainId } = useWeb3React();
   const approved =
     allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
   let button = null;
@@ -309,8 +312,19 @@ const FormButton = ({
 
   if (!isActive) {
     button = (
-      <Button onClick={openConnectDialog}>
-        {t('Please connect Ethereum wallet')}
+      <Button onClick={open}>{t('Please connect Ethereum wallet')}</Button>
+    );
+  } else if (chainId !== desiredChainId) {
+    message = t('Please change chain');
+    button = (
+      <Button
+        type="submit"
+        data-testid="deposit-submit"
+        variant="primary"
+        fill={true}
+        disabled={true}
+      >
+        {t('Deposit')}
       </Button>
     );
   } else if (!selectedAsset) {

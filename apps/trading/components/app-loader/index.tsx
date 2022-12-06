@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import { useEagerConnect } from '@vegaprotocol/wallet';
 import { NetworkLoader, useEnvironment } from '@vegaprotocol/environment';
-import { Connectors } from '../../lib/vega-connectors';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   useEthereumConfig,
@@ -20,7 +18,6 @@ interface AppLoaderProps {
  * that must happen for it can be used
  */
 export function AppLoader({ children }: AppLoaderProps) {
-  useEagerConnect(Connectors);
   return <NetworkLoader cache={cacheConfig}>{children}</NetworkLoader>;
 }
 
