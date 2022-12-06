@@ -151,7 +151,6 @@ export const useLedgerEntriesDataProvider = ({
     () => ({
       partyId,
       dateRange: filter?.vegaTime?.value,
-      pagination: { first: !filter?.vegaTime?.value ? 100 : undefined },
     }),
     [partyId, filter]
   );
