@@ -106,14 +106,14 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         cy.get(tranchesLink)
           .should('be.visible')
           .and('have.attr', 'href')
-          .and('equal', '/tranches');
+          .and('equal', '/token/tranches');
       });
       it('should have REDEEM button', function () {
         cy.get(redeemBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/vesting');
+          .and('equal', '/token/redeem');
       });
       it('should have GET VEGA WALLET link', function () {
         cy.get(getVegaWalletLink)
@@ -132,14 +132,14 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/staking');
+          .and('equal', '/validators');
       });
       it('should have GOVERNANCE button', function () {
         cy.get(governanceBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/governance');
+          .and('equal', '/proposals');
       });
     });
   });
