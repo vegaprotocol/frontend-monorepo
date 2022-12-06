@@ -8,18 +8,25 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
     throw new Error('Invalid Ethereum chain ID for environment');
   }
 
-  const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
-    (actions) => new MetaMask(actions)
-  );
+  const [metamask, metamaskHooks] = initializeConnector<MetaMask>((actions) => {
+    const instance = new MetaMask(actions);
+    // @ts-ignore tag connector with a name so we can match up by string
+    instance.connectorName = 'MetaMask';
+    return instance;
+  });
 
   const [walletconnect, walletconnectHooks] =
     initializeConnector<WalletConnect>(
-      (actions) =>
-        new WalletConnect(actions, {
+      (actions) => {
+        const instance = new WalletConnect(actions, {
           rpc: {
             [chainId]: providerUrl,
           },
-        }),
+        });
+        // @ts-ignore tag connector with a name so we can match up by string
+        instance.connectorName = 'WalletConnect';
+        return instance;
+      },
       [chainId]
     );
   return [

@@ -1,10 +1,11 @@
 import create from 'zustand';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
+import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 
 interface State {
   isOpen: boolean;
@@ -43,6 +44,8 @@ export const Web3ConnectDialog = ({
   connectors,
   desiredChainId,
 }: Web3ConnectDialogProps) => {
+  const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+
   return (
     <Dialog
       open={dialogOpen}
@@ -52,18 +55,21 @@ export const Web3ConnectDialog = ({
     >
       <ul data-testid="web3-connector-list">
         {connectors.map(([connector], i) => {
-          const info = getConnectorInfo(connector);
+          const text = getConnectorText(connector);
+          // @ts-ignore additional field tagged onto class
+          const name = connector.connectorName;
           return (
             <li key={i} className="mb-2 last:mb-0">
               <button
                 className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
-                data-testid={`web3-connector-${info.name}`}
+                data-testid={`web3-connector-${name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);
+                  setEagerConnector(name);
                   setDialogOpen(false);
                 }}
               >
-                {info.text}
+                {text}
               </button>
             </li>
           );
@@ -88,18 +94,12 @@ export const Web3ConnectUncontrolledDialog = () => {
   );
 };
 
-function getConnectorInfo(connector: Connector) {
+function getConnectorText(connector: Connector) {
   if (connector instanceof MetaMask) {
-    return {
-      name: 'MetaMask',
-      text: t('MetaMask, Brave or other injected web wallet'),
-    };
+    return t('MetaMask, Brave or other injected web wallet');
   }
   if (connector instanceof WalletConnect) {
-    return {
-      name: 'WalletConnect',
-      text: t('WalletConnect'),
-    };
+    return t('WalletConnect');
   }
-  return { name: 'Unknown', text: t('Unknown') };
+  return t('Unknown');
 }

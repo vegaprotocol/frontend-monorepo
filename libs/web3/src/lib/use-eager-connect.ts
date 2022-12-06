@@ -1,14 +1,29 @@
-import { useWeb3React } from '@web3-react/core';
-import { useEffect } from 'react';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { useEffect, useRef } from 'react';
+import { useWeb3ConnectDialog } from './web3-connect-dialog';
+
+export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
 
 export const useEagerConnect = () => {
-  const { connector } = useWeb3React();
+  const connectors = useWeb3ConnectDialog((store) => store.connectors);
+  const [eagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const attemptedRef = useRef(false);
+
   useEffect(() => {
-    if (connector?.connectEagerly && !('Cypress' in window)) {
-      connector.connectEagerly();
+    if (attemptedRef.current || 'Cypress' in window) return;
+    console.log('attempt connect with', eagerConnector);
+
+    const option = connectors.find(([c]) => {
+      // @ts-ignore connector class has connectName added at init
+      // web3-connectors.ts
+      return c.connectorName === eagerConnector;
+    });
+
+    // found a valid connection option
+    if (option && option[0]?.connectEagerly) {
+      option[0].connectEagerly();
     }
-    // wallet connect doesnt handle connectEagerly being called when connector is also in the
-    // deps array.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    attemptedRef.current = true;
+  }, [eagerConnector, connectors]);
 };

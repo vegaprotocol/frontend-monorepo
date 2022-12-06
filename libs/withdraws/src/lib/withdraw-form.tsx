@@ -5,6 +5,7 @@ import {
   t,
   removeDecimal,
   required,
+  useLocalStorage,
 } from '@vegaprotocol/react-helpers';
 import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import {
@@ -20,7 +21,10 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
-import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import {
+  ETHEREUM_EAGER_CONNECT,
+  useWeb3ConnectDialog,
+} from '@vegaprotocol/web3';
 
 interface FormFields {
   asset: string;
@@ -227,6 +231,7 @@ const UseButton = ({ children, ...rest }: UseButtonProps) => {
 const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
   const openDialog = useWeb3ConnectDialog((state) => state.open);
   const { isActive, connector } = useWeb3React();
+  const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 
   if (!isActive) {
     return <UseButton onClick={openDialog}>{t('Connect')}</UseButton>;
@@ -237,6 +242,7 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
       onClick={() => {
         connector.deactivate();
         clearAddress();
+        removeEagerConnector();
       }}
       data-testid="disconnect-ethereum-wallet"
     >
