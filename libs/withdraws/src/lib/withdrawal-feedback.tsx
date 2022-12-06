@@ -10,7 +10,7 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import { ChainIdMap, useWeb3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
@@ -113,10 +113,14 @@ const ActionButton = ({
   }
 
   if (chainId !== desiredChainId) {
+    const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
     return (
-      <Button onClick={() => open()} disabled={true}>
-        {t('Please change chain')}
-      </Button>
+      <>
+        <p className="text-danger mb-2">
+          {t(`This app only works on ${chainName}. Please change chain.`)}
+        </p>
+        <Button disabled={true}>{t('Withdraw funds')}</Button>
+      </>
     );
   }
 

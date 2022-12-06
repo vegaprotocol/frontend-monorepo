@@ -29,6 +29,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectDialog,
+  ChainIdMap,
 } from '@vegaprotocol/web3';
 
 interface FormFields {
@@ -317,11 +318,13 @@ const FormButton = ({
   if (!isActive) {
     button = (
       <Button onClick={open} data-testid="connect-eth-wallet-btn">
-        {t('Please connect Ethereum wallet')}
+        {t('Connect Ethereum wallet')}
       </Button>
     );
   } else if (chainId !== desiredChainId) {
-    message = t('Please change chain');
+    console.log(chainId, desiredChainId);
+    const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
+    message = t(`This app only works on ${chainName}.`);
     button = (
       <Button
         type="submit"
@@ -383,19 +386,15 @@ const FormButton = ({
   );
 };
 
-interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
+type UseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const UseButton = ({ children, ...rest }: UseButtonProps) => {
+const UseButton = (props: UseButtonProps) => {
   return (
     <button
+      {...props}
       type="button"
       className="ml-auto text-sm absolute top-0 right-0 underline"
-      {...rest}
-    >
-      {children}
-    </button>
+    />
   );
 };
 

@@ -1,3 +1,4 @@
+export * from './lib/constants';
 export * from './lib/ethereum-error';
 export * from './lib/use-bridge-contract';
 export * from './lib/use-eager-connect';

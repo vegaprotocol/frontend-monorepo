@@ -212,19 +212,15 @@ export const WithdrawForm = ({
   );
 };
 
-interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
+type UseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const UseButton = ({ children, ...rest }: UseButtonProps) => {
+const UseButton = ({ children, ...props }: UseButtonProps) => {
   return (
     <button
-      {...rest}
+      {...props}
       type="button"
       className="ml-auto text-sm absolute top-0 right-0 underline"
-    >
-      {children}
-    </button>
+    />
   );
 };
 
