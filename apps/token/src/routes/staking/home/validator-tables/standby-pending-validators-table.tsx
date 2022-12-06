@@ -13,6 +13,7 @@ import {
   totalPenalties,
   ValidatorFields,
   ValidatorRenderer,
+  TotalStakeRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -99,13 +100,13 @@ export const StandbyPendingValidatorsTable = ({
           [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
             individualStakeNeededForPromotionDescription || t('n/a'),
           [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
-          [ValidatorFields.STAKED_BY_DELEGATES]: toBigNum(
-            stakedByDelegates,
-            decimals
+          [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
+            toBigNum(stakedByDelegates, decimals),
+            2
           ),
-          [ValidatorFields.STAKED_BY_OPERATOR]: toBigNum(
-            stakedByOperator,
-            decimals
+          [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
+            toBigNum(stakedByOperator, decimals),
+            2
           ),
           [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
             rawValidatorScore(previousEpochData, id),
@@ -125,6 +126,7 @@ export const StandbyPendingValidatorsTable = ({
     decimals,
     previousEpochData,
     stakeNeededForPromotion,
+    stakeNeededForPromotionDescription,
     t,
     totalStake,
   ]);
@@ -144,6 +146,7 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
           headerTooltip: t('StakeDescription').toString(),
+          cellRenderer: TotalStakeRenderer,
           width: 120,
         },
         {
