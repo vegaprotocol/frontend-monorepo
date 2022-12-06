@@ -37,10 +37,10 @@ context(
       // 1005-VEST-001
       // 1005-VEST-002
       it('Able to view tranches', function () {
-        cy.get('[href="/token/vesting"]')
+        cy.get('[href="/token/tranches"]')
           .should('have.text', 'all tranches')
           .click();
-        cy.url().should('include', '/token/vesting');
+        cy.url().should('include', '/token/tranches');
         cy.get('h1').should('contain.text', 'Vesting tranches');
       });
     });
