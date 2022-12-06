@@ -214,7 +214,7 @@ export const WithdrawForm = ({
 
 type UseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const UseButton = ({ children, ...props }: UseButtonProps) => {
+const UseButton = (props: UseButtonProps) => {
   return (
     <button
       {...props}

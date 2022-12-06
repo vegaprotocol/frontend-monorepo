@@ -109,12 +109,13 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
 
   it('can connect', () => {
     cy.wait('@NetworkParams');
-    cy.getByTestId('withdraw-dialog-button').click();
+    cy.getByTestId('Deposits').click();
+    cy.getByTestId('deposit-button').click();
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();
     cy.getByTestId('web3-connector-list').should('not.exist');
-    cy.getByTestId('tab-withdrawals').should('not.be.empty');
+    cy.getByTestId('tab-deposits').should('not.be.empty');
   });
 
   it('able to disconnect eth wallet', () => {

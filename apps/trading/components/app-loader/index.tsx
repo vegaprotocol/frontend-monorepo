@@ -38,7 +38,6 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
       );
     }
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL, initializeConnectors]);
-  console.log(connectors);
 
   return (
     <AsyncRenderer
