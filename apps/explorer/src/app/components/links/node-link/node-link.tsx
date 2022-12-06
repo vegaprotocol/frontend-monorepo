@@ -22,7 +22,7 @@ const NodeLink = ({ id, ...props }: NodeLinkProps) => {
 
   return (
     <Link className="underline" {...props} to={`/${Routes.VALIDATORS}#${id}`}>
-      {label}
+      <code>{label}</code>
     </Link>
   );
 };

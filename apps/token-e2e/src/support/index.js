@@ -6,7 +6,7 @@ import './governance.functions.js';
 import './wallet-eth.functions.js';
 import './wallet-teardown.functions.js';
 import './wallet-vega.functions.js';
-import registerCypressGrep from 'cypress-grep';
+import registerCypressGrep from '@cypress/grep';
 import { aliasQuery } from '@vegaprotocol/cypress';
 registerCypressGrep();
 

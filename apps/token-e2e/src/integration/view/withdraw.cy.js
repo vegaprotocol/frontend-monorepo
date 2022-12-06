@@ -5,12 +5,12 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to withdrawals page', function () {
-      cy.visit('/').navigate_to('withdrawals');
+      cy.visit('/').navigate_to('withdraw');
     });
 
     describe('with wallets disconnected', function () {
       it('should have withdraw tab highlighted', function () {
-        cy.verify_tab_highlighted('withdrawals');
+        cy.verify_tab_highlighted('withdraw');
       });
 
       it('should have WITHDRAW header visible', function () {

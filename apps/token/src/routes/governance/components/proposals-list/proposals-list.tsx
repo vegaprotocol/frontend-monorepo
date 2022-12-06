@@ -54,7 +54,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <Link
           className="xs:justify-self-end"
           data-testid="new-proposal-link"
-          to={`${Routes.GOVERNANCE}/propose`}
+          to={`${Routes.PROPOSALS}/propose`}
         >
           <Button variant="primary" size="sm">
             {t('NewProposal')}

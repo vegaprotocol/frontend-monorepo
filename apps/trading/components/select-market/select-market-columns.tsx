@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { FeesCell } from '@vegaprotocol/market-info';
 import {
   calcCandleHigh,
@@ -12,55 +10,22 @@ import {
   signedNumberCssClass,
   t,
 } from '@vegaprotocol/react-helpers';
-import {
-  AuctionTriggerMapping,
-  MarketTradingModeMapping,
-  Schema,
-} from '@vegaprotocol/types';
-import {
-  Link as UILink,
-  PriceCellChange,
-  Sparkline,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { Link as UILink, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import isNil from 'lodash/isNil';
-
 import type { CandleClose } from '@vegaprotocol/types';
 import type {
   MarketWithData,
   MarketWithCandles,
 } from '@vegaprotocol/market-list';
 import { Link } from 'react-router-dom';
+import { MarketMarkPrice } from '../market-mark-price';
+import { Last24hPriceChange } from '../last-24h-price-change';
+import { MarketTradingMode } from '../market-trading-mode';
+import { Last24hVolume } from '../last-24h-volume';
 
 type Market = MarketWithData & MarketWithCandles;
 
 export const cellClassNames = 'py-1 first:text-left text-right';
-
-const TradingMode = ({ market }: { market: Market }) => {
-  return (
-    <Tooltip
-      description={
-        market && (
-          <TradingModeTooltip
-            tradingMode={market.tradingMode}
-            trigger={market.data?.trigger || null}
-          />
-        )
-      }
-    >
-      <span>
-        {market.tradingMode ===
-          Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-        market.data?.trigger &&
-        market.data.trigger !==
-          Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${MarketTradingModeMapping[market.tradingMode]}
-                     - ${AuctionTriggerMapping[market.data.trigger]}`
-          : MarketTradingModeMapping[market.tradingMode]}
-      </span>
-    </Tooltip>
-  );
-};
 
 const FeesInfo = () => {
   return (
@@ -205,7 +170,8 @@ export type OnCellClickHandler = (
 export const columns = (
   market: Market,
   onSelect: (id: string) => void,
-  onCellClick: OnCellClickHandler
+  onCellClick: OnCellClickHandler,
+  activeMarketId?: string | null
 ) => {
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
@@ -221,6 +187,7 @@ export const columns = (
       return onSelect(id);
     }
   };
+  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -248,27 +215,25 @@ export const columns = (
     },
     {
       kind: ColumnKind.LastPrice,
-      value: market.data?.markPrice ? (
-        <PriceCell
-          value={Number(market.data?.markPrice)}
-          valueFormatted={addDecimalsFormatNumber(
-            market.data?.markPrice.toString(),
-            market.decimalPlaces,
-            2
-          )}
+      value: (
+        <MarketMarkPrice
+          marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
+          initialValue={market.data?.markPrice.toString()}
+          noUpdate={noUpdate}
         />
-      ) : (
-        '-'
       ),
       className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
       kind: ColumnKind.Change24,
-      value: candlesClose && (
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={market.decimalPlaces}
+      value: (
+        <Last24hPriceChange
+          marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
+          noUpdate={noUpdate}
+          initialValue={candlesClose}
         />
       ),
       className: cellClassNames,
@@ -345,20 +310,28 @@ export const columns = (
     },
     {
       kind: ColumnKind.Volume,
-      value: candleVolume
-        ? addDecimalsFormatNumber(
-            candleVolume.toString(),
-            market.positionDecimalPlaces,
-            2
-          )
-        : '-',
+      value: (
+        <Last24hVolume
+          marketId={market.id}
+          positionDecimalPlaces={market.positionDecimalPlaces}
+          initialValue={candleVolume}
+          noUpdate={noUpdate}
+        />
+      ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
       onlyOnDetailed: true,
       dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.TradingMode,
-      value: <TradingMode market={market} />,
+      value: (
+        <MarketTradingMode
+          marketId={market?.id}
+          noUpdate={noUpdate}
+          initialMode={market.tradingMode}
+          initialTrigger={market.data?.trigger}
+        />
+      ),
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',
@@ -385,7 +358,8 @@ export const columnsPositionMarkets = (
   market: Market,
   onSelect: (id: string) => void,
   openVolume?: string,
-  onCellClick?: OnCellClickHandler
+  onCellClick?: OnCellClickHandler,
+  activeMarketId?: string | null
 ) => {
   const candlesClose = market.candles
     ?.map((candle) => candle?.close)
@@ -401,6 +375,7 @@ export const columnsPositionMarkets = (
     }
   };
   const candleVolume = market.candles && calcCandleVolume(market.candles);
+  const noUpdate = !activeMarketId || market.id !== activeMarketId;
   const selectMarketColumns: Column[] = [
     {
       kind: ColumnKind.Market,
@@ -428,27 +403,25 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.LastPrice,
-      value: market.data?.markPrice ? (
-        <PriceCell
-          value={Number(market.data.markPrice)}
-          valueFormatted={addDecimalsFormatNumber(
-            market.data.markPrice.toString(),
-            market.decimalPlaces,
-            2
-          )}
+      value: (
+        <MarketMarkPrice
+          marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
+          initialValue={market.data?.markPrice.toString()}
+          noUpdate={noUpdate}
         />
-      ) : (
-        '-'
       ),
       className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
       kind: ColumnKind.Change24,
-      value: candlesClose && (
-        <PriceCellChange
-          candles={candlesClose}
-          decimalPlaces={market.decimalPlaces}
+      value: (
+        <Last24hPriceChange
+          marketId={market.id}
+          decimalPlaces={market?.decimalPlaces}
+          noUpdate={noUpdate}
+          initialValue={candlesClose}
         />
       ),
       className: cellClassNames,
@@ -525,20 +498,28 @@ export const columnsPositionMarkets = (
     },
     {
       kind: ColumnKind.Volume,
-      value: candleVolume
-        ? addDecimalsFormatNumber(
-            candleVolume.toString(),
-            market.positionDecimalPlaces,
-            2
-          )
-        : '-',
+      value: (
+        <Last24hVolume
+          marketId={market.id}
+          positionDecimalPlaces={market.positionDecimalPlaces}
+          initialValue={candleVolume}
+          noUpdate={noUpdate}
+        />
+      ),
       className: `${cellClassNames} hidden lg:table-cell font-mono`,
       onlyOnDetailed: true,
       dataTestId: 'market-volume',
     },
     {
       kind: ColumnKind.TradingMode,
-      value: <TradingMode market={market} />,
+      value: (
+        <MarketTradingMode
+          marketId={market?.id}
+          noUpdate={noUpdate}
+          initialMode={market.tradingMode}
+          initialTrigger={market.data?.trigger}
+        />
+      ),
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode-col',

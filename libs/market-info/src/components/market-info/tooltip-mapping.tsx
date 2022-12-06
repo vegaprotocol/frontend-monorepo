@@ -34,7 +34,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
   bestStaticOfferVolume: t(
     'The aggregated volume being offered at the best static offer price on the market.'
   ),
-
+  marketDecimalPlaces: t('The smallest price increment on the book.'),
   decimalPlaces: t('The smallest price increment on the book.'),
   positionDecimalPlaces: t(
     'How big the smallest order / position on the market can be.'

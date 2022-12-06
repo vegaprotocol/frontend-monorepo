@@ -1,9 +1,9 @@
-import compact from 'lodash/compact';
 import { assetsProvider } from '@vegaprotocol/assets';
 import { marketsProvider } from '@vegaprotocol/market-list';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import produce from 'immer';
@@ -76,7 +76,7 @@ const getData = (
   responseData: AccountsQuery
 ): AccountFieldsFragment[] | null => {
   return (
-    compact(responseData.party?.accountsConnection?.edges).map((e) => e.node) ??
+    removePaginationWrapper(responseData.party?.accountsConnection?.edges) ??
     null
   );
 };

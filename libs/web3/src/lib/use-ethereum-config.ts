@@ -1,5 +1,7 @@
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import compact from 'lodash/compact';
+import {
+  removePaginationWrapper,
+  useNetworkParamsQuery,
+} from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 
 export interface EthereumConfig {
@@ -31,9 +33,9 @@ export const useEthereumConfig = () => {
       return null;
     }
 
-    const param = compact(data.networkParametersConnection.edges)
-      .map(({ node }) => node)
-      ?.find((node) => node.key === 'blockchains.ethereumConfig');
+    const param = removePaginationWrapper(
+      data.networkParametersConnection.edges
+    )?.find(({ key }) => key === 'blockchains.ethereumConfig');
 
     if (!param) {
       return null;

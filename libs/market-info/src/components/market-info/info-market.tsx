@@ -3,6 +3,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   formatNumber,
+  removePaginationWrapper,
   t,
   useDataProvider,
   useYesterday,
@@ -21,7 +22,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import pick from 'lodash/pick';
-import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
@@ -102,8 +102,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
 
   if (!market) return null;
 
-  const marketAccounts = compact(market.accountsConnection?.edges).map(
-    (e) => e.node
+  const marketAccounts = removePaginationWrapper(
+    market.accountsConnection?.edges
   );
 
   const marketDataPanels = [
@@ -197,6 +197,11 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             tradingMode:
               keyDetails.tradingMode &&
               MarketTradingModeMapping[keyDetails.tradingMode],
+            marketDecimalPlaces: market.decimalPlaces,
+            positionDecimalPlaces: market.positionDecimalPlaces,
+            settlementAssetDecimalPlaces:
+              market.tradableInstrument.instrument.product.settlementAsset
+                .decimals,
           }}
         />
       ),

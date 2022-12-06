@@ -3,57 +3,82 @@ import throttle from 'lodash/throttle';
 import {
   addDecimalsFormatNumber,
   t,
+  PriceCell,
   useDataProvider,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
-  SingleMarketFieldsFragment,
 } from '@vegaprotocol/market-list';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
+import { marketDataProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
 import * as constants from '../constants';
 
-export const MarketMarkPrice = ({ marketId }: { marketId?: string }) => {
-  const [marketPrice, setMarketPrice] = useState<string | null>(null);
+interface Props {
+  marketId?: string;
+  decimalPlaces?: number;
+  isHeader?: boolean;
+  noUpdate?: boolean;
+  initialValue?: string;
+}
+
+export const MarketMarkPrice = ({
+  marketId,
+  decimalPlaces,
+  initialValue,
+  isHeader = false,
+  noUpdate = false,
+}: Props) => {
+  const [marketPrice, setMarketPrice] = useState<string | null>(
+    initialValue || null
+  );
   const variables = useMemo(
     () => ({
       marketId: marketId,
     }),
     [marketId]
   );
-  const { data } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
+
   const throttledSetMarketPrice = useRef(
     throttle((price: string) => {
-      setMarketPrice(price);
+      noUpdate || setMarketPrice(price);
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
-      throttledSetMarketPrice(
-        marketData?.markPrice && data?.decimalPlaces
-          ? addDecimalsFormatNumber(marketData.markPrice, data.decimalPlaces)
-          : '-'
-      );
+      throttledSetMarketPrice(marketData?.markPrice || '');
       return true;
     },
-    [data?.decimalPlaces, throttledSetMarketPrice]
+    [throttledSetMarketPrice]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
     dataProvider: marketDataProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId,
   });
 
-  return (
+  const content = useMemo(() => {
+    if (!marketPrice || !isNumeric(decimalPlaces)) {
+      return <>-</>;
+    }
+    return isHeader ? (
+      <div>{addDecimalsFormatNumber(marketPrice, decimalPlaces)}</div>
+    ) : (
+      <PriceCell
+        value={Number(marketPrice)}
+        valueFormatted={addDecimalsFormatNumber(marketPrice, decimalPlaces, 2)}
+      />
+    );
+  }, [marketPrice, decimalPlaces, isHeader]);
+
+  return isHeader ? (
     <HeaderStat heading={t('Price')} testId="market-price">
-      <div>{marketPrice}</div>
+      {content}
     </HeaderStat>
+  ) : (
+    content
   );
 };

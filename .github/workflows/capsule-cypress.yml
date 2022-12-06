@@ -14,7 +14,7 @@ on:
 
 env:
   GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.62.1'
+  VEGA_VERSION: 'v0.63.1'
 
 jobs:
   pr:
@@ -67,4 +67,4 @@ jobs:
       project: ${{ needs.pr.outputs.projects }}
       vega-version: ${{needs.pr.outputs.vega-version}}
       gobin: ${{needs.pr.outputs.gobin}}
-      tags: "--env.grepTags='[@smoke, @regression]'"
+      tags: "--env.grepTags='[ @smoke, @regression ]'"

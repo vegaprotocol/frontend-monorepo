@@ -1,22 +1,39 @@
 import {
   t,
-  useFetch,
   addDecimalsFormatNumber,
   useScreenDimensions,
 } from '@vegaprotocol/react-helpers';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
-import { SyntaxHighlighter, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '../../../components/panel';
 import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
-import { DATA_SOURCES } from '../../../config';
-import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
+import type { Schema } from '@vegaprotocol/types';
+import get from 'lodash/get';
+
+const accountTypeString: Record<Schema.AccountType, string> = {
+  ACCOUNT_TYPE_BOND: t('Bond'),
+  ACCOUNT_TYPE_EXTERNAL: t('External'),
+  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: t('Fees (Infrastructure)'),
+  ACCOUNT_TYPE_FEES_LIQUIDITY: t('Fees (Liquidity)'),
+  ACCOUNT_TYPE_FEES_MAKER: t('Fees (Maker)'),
+  ACCOUNT_TYPE_GENERAL: t('General'),
+  ACCOUNT_TYPE_GLOBAL_INSURANCE: t('Global Insurance Pool'),
+  ACCOUNT_TYPE_GLOBAL_REWARD: t('Global Reward Pool'),
+  ACCOUNT_TYPE_INSURANCE: t('Insurance'),
+  ACCOUNT_TYPE_MARGIN: t('Margin'),
+  ACCOUNT_TYPE_PENDING_TRANSFERS: t('Pending Transfers'),
+  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: t('Reward - LP Fees received'),
+  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: t('Reward - Maker fees paid'),
+  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: t('Reward - Maker fees received'),
+  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: t('Reward - Market proposers'),
+  ACCOUNT_TYPE_SETTLEMENT: t('Settlement'),
+};
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -28,12 +45,6 @@ const Party = () => {
     limit: 10,
     filters,
   });
-
-  const {
-    state: { data: partyData },
-  } = useFetch<TendermintSearchTransactionResponse>(
-    `${DATA_SOURCES.tendermintUrl}/tx_search?query="tx.submitter='${partyId}'"`
-  );
 
   const { data } = useExplorerPartyAssetsQuery({
     // Don't cache data for this query, party information can move quite quickly
@@ -65,9 +76,13 @@ const Party = () => {
           if (!account || !account.asset) {
             return '';
           }
+          const m = get(account, 'market.tradableInstrument.instrument.name');
 
           return (
-            <InfoPanel title={account.asset.name} id={account.asset.id}>
+            <InfoPanel
+              title={account.asset.name}
+              id={`${accountTypeString[account.type]} ${m ? ` - ${m}` : ''}`}
+            >
               <section>
                 <dl className="flex gap-2 flex-wrap">
                   <dt className="text-zinc-500 dark:text-zinc-400 text-md">
@@ -125,32 +140,16 @@ const Party = () => {
           {accounts}
           <SubHeading>{t('Staking')}</SubHeading>
           {staking}
-          <SubHeading>{t('JSON')}</SubHeading>
-          <section data-testid="parties-json">
-            <SyntaxHighlighter data={data} />
-          </section>
-          <AsyncRenderer
-            loading={loading as boolean}
-            error={error}
-            data={txsData}
-          >
-            <SubHeading>{t('Transactions')}</SubHeading>
-            <TxsInfiniteList
-              hasMoreTxs={hasMoreTxs}
-              areTxsLoading={loading}
-              txs={txsData}
-              loadMoreTxs={loadTxs}
-              error={error}
-              className="mb-28"
-            />
-          </AsyncRenderer>
-        </>
-      ) : null}
 
-      {partyData ? (
-        <>
-          <SubHeading>{t('Tendermint Data')}</SubHeading>
-          <SyntaxHighlighter data={partyData} />
+          <SubHeading>{t('Transactions')}</SubHeading>
+          <TxsInfiniteList
+            hasMoreTxs={hasMoreTxs}
+            areTxsLoading={loading}
+            txs={txsData}
+            loadMoreTxs={loadTxs}
+            error={error}
+            className="mb-28"
+          />
         </>
       ) : null}
     </section>

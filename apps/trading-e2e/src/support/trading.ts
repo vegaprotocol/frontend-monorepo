@@ -59,6 +59,7 @@ const mockTradingPage = (
     generateMarketData({
       trigger: trigger,
       marketTradingMode: tradingMode,
+      marketState: state,
     })
   );
   aliasQuery(req, 'MarketsData', generateMarketsData());

@@ -3,7 +3,7 @@ import type { components } from '../../../types/explorer';
 
 interface TxOrderTypeProps {
   orderType: string;
-  chainEvent?: components['schemas']['v1ChainEvent'];
+  command?: components['schemas']['v1InputData'];
   className?: string;
 }
 
@@ -18,6 +18,7 @@ const displayString: StringMap = {
   OrderAmendment: 'Order Amendment',
   VoteSubmission: 'Vote Submission',
   WithdrawSubmission: 'Withdraw Submission',
+  Withdraw: 'Withdraw Request',
   LiquidityProvisionSubmission: 'Liquidity Provision',
   LiquidityProvisionCancellation: 'Liquidity Cancellation',
   LiquidityProvisionAmendment: 'Liquidity Amendment',
@@ -35,6 +36,31 @@ const displayString: StringMap = {
   CancelTransfer: 'Cancel Transfer',
   ValidatorHeartbeat: 'Validator Heartbeat',
 };
+
+/**
+ * Given a proposal, will return a specific label
+ * @param chainEvent
+ * @returns
+ */
+export function getLabelForProposal(
+  proposal: components['schemas']['v1ProposalSubmission']
+): string {
+  if (proposal.terms?.newAsset) {
+    return t('Proposal: New asset');
+  } else if (proposal.terms?.updateAsset) {
+    return t('Proposal: Update asset');
+  } else if (proposal.terms?.newMarket) {
+    return t('Proposal: New market');
+  } else if (proposal.terms?.updateMarket) {
+    return t('Proposal: Update market');
+  } else if (proposal.terms?.updateNetworkParameter) {
+    return t('Proposal: Network parameter');
+  } else if (proposal.terms?.newFreeform) {
+    return t('Proposal: Freeform');
+  } else {
+    return t('Proposal');
+  }
+}
 
 /**
  * Given a chain event, will try to provide a more useful label
@@ -75,7 +101,7 @@ export function getLabelForChainEvent(
     return t('Staking event');
   } else if (chainEvent.erc20Multisig) {
     if (chainEvent.erc20Multisig.signerAdded) {
-      return t('Signer adde');
+      return t('Signer added');
     } else if (chainEvent.erc20Multisig.signerRemoved) {
       return t('Signer remove');
     } else if (chainEvent.erc20Multisig.thresholdSet) {
@@ -86,17 +112,44 @@ export function getLabelForChainEvent(
   return t('Chain Event');
 }
 
-export const TxOrderType = ({ orderType, chainEvent }: TxOrderTypeProps) => {
+/**
+ * Actually it's a transaction type, rather than an order type - this just
+ * hasn't been refactored yet.
+ *
+ * There's no logic to the colours used -
+ * - Chain events are white text on pink background
+ * - Proposals are black text on yellow background
+ *
+ * Both of these were opted as they're easy to pick out when scrolling
+ * the infinite transaction list
+ *
+ * The multiple paths on this one are different types from the old chain
+ * explorer and the new one. When there are no longer two different APIs
+ * in use, these should be consistent. For now, the view on a block page
+ * can have a different label to the transaction list - but the colours
+ * are consistent.
+ */
+export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
   let colours = 'text-white dark:text-white bg-zinc-800 dark:bg-zinc-800';
 
   // This will get unwieldy and should probably produce a different colour of tag
-  if (type === 'Chain Event' && !!chainEvent) {
-    type = getLabelForChainEvent(chainEvent);
+  if (type === 'Chain Event' && !!command?.chainEvent) {
+    type = getLabelForChainEvent(command.chainEvent);
     colours =
       'text-white dark-text-white bg-vega-pink-dark dark:bg-vega-pink-dark';
+  } else if (type === 'Proposal' || type === 'Governance Proposal') {
+    if (command && !!command.proposalSubmission) {
+      type = getLabelForProposal(command.proposalSubmission);
+    }
+    colours = 'text-black bg-vega-yellow';
   }
+
+  if (type === 'Vote on Proposal' || type === 'Vote Submission') {
+    colours = 'text-black bg-vega-yellow';
+  }
+
   return (
     <div
       data-testid="tx-type"

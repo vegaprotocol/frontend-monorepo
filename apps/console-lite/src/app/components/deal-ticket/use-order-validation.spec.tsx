@@ -81,6 +81,7 @@ const market: MarketDealTicket = {
     trigger: Types.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     staticMidPrice: '1606156850',
     marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    marketState: Schema.MarketState.STATE_ACTIVE,
     indicativeVolume: '0',
     indicativePrice: '0',
     bestStaticBidPrice: '1605489971',
@@ -91,7 +92,11 @@ const market: MarketDealTicket = {
     auctionEnd: null,
     market: { __typename: 'Market', id: 'market-id' },
   },
-  marketTimestamps: {},
+  marketTimestamps: {
+    __typename: 'MarketTimestamps',
+    close: null,
+    open: null,
+  },
 };
 
 const defaultWalletContext = {
@@ -193,7 +198,11 @@ describe('useOrderValidation', () => {
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {
-      const { result } = setup({ market: { ...defaultOrder.market, state } });
+      const market = {
+        ...defaultOrder.market,
+        data: { ...defaultOrder.market.data, marketState: state },
+      };
+      const { result } = setup({ market });
       expect(result.current).toStrictEqual({
         isDisabled: true,
         message: `This market is ${marketTranslations(
@@ -215,14 +224,19 @@ describe('useOrderValidation', () => {
         balance: '0',
         margin: '100',
         balanceError: false,
-        // asset,
       });
-      const { result } = setup({
-        market: {
-          ...defaultOrder.market,
-          state,
-          tradingMode: Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+
+      const market = {
+        ...defaultOrder.market,
+        data: {
+          ...defaultOrder.market.data,
+          marketState: state,
+          marketTradingMode:
+            Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         },
+      };
+      const { result } = setup({
+        market,
         order: {
           ...order,
           type: Schema.OrderType.TYPE_LIMIT,
@@ -247,8 +261,12 @@ describe('useOrderValidation', () => {
   `(
     `Returns an error message when trying to submit a non-limit order for a "$tradingMode" market`,
     ({ tradingMode, errorMessage }) => {
+      const market = {
+        ...defaultOrder.market,
+        data: { ...defaultOrder.market.data, marketTradingMode: tradingMode },
+      };
       const { result } = setup({
-        market: { ...defaultOrder.market, tradingMode },
+        market,
         order: {
           ...order,
           type: Schema.OrderType.TYPE_MARKET,
@@ -273,8 +291,12 @@ describe('useOrderValidation', () => {
   `(
     `Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market`,
     ({ tradingMode, orderTimeInForce, errorMessage }) => {
+      const market = {
+        ...defaultOrder.market,
+        data: { ...defaultOrder.market.data, marketTradingMode: tradingMode },
+      };
       const { result } = setup({
-        market: { ...defaultOrder.market, tradingMode },
+        market,
         order: {
           ...order,
           type: Schema.OrderType.TYPE_LIMIT,
@@ -377,14 +399,15 @@ describe('useOrderValidation', () => {
   `(
     'Returns error when market state is pending and size is wrong',
     ({ state }) => {
+      const market = {
+        ...defaultOrder.market,
+        data: { ...defaultOrder.market.data, marketState: state },
+      };
       const { result } = setup({
         fieldErrors: {
           size: { type: `validate`, message: DealTicket.ERROR_SIZE_DECIMAL },
         },
-        market: {
-          ...market,
-          state,
-        },
+        market,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,

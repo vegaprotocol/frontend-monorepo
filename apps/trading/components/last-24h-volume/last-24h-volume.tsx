@@ -1,40 +1,43 @@
 import {
   calcCandleVolume,
   marketCandlesProvider,
-  marketProvider,
 } from '@vegaprotocol/market-list';
 import {
   addDecimalsFormatNumber,
   t,
   useDataProvider,
   useYesterday,
+  isNumeric,
 } from '@vegaprotocol/react-helpers';
 import { Schema } from '@vegaprotocol/types';
 import throttle from 'lodash/throttle';
 import { useCallback, useMemo, useRef, useState } from 'react';
-
 import * as constants from '../constants';
 import { HeaderStat } from '../header';
+import type { Candle } from '@vegaprotocol/market-list';
 
-import type {
-  SingleMarketFieldsFragment,
-  Candle,
-} from '@vegaprotocol/market-list';
-export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
-  const [candleVolume, setCandleVolume] = useState<string>();
+interface Props {
+  marketId?: string;
+  positionDecimalPlaces?: number;
+  noUpdate?: boolean;
+  isHeader?: boolean;
+  initialValue?: string;
+}
+
+export const Last24hVolume = ({
+  marketId,
+  positionDecimalPlaces,
+  noUpdate = false,
+  isHeader = false,
+  initialValue,
+}: Props) => {
+  const [candleVolume, setCandleVolume] = useState<string>(initialValue || '');
   const yesterday = useYesterday();
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
   const yTimestamp = useMemo(() => {
     return new Date(yesterday).toISOString();
   }, [yesterday]);
-
-  const marketVariables = useMemo(
-    () => ({
-      marketId: marketId,
-    }),
-    [marketId]
-  );
 
   const variables = useMemo(
     () => ({
@@ -45,15 +48,9 @@ export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
     [marketId, yTimestamp]
   );
 
-  const { data, error } = useDataProvider<SingleMarketFieldsFragment, never>({
-    dataProvider: marketProvider,
-    variables: marketVariables,
-    skip: !marketId,
-  });
-
   const throttledSetCandles = useRef(
     throttle((data: Candle[]) => {
-      setCandleVolume(calcCandleVolume(data));
+      noUpdate || setCandleVolume(calcCandleVolume(data) || '');
     }, constants.DEBOUNCE_UPDATE_TIME)
   ).current;
   const update = useCallback(
@@ -66,26 +63,40 @@ export const Last24hVolume = ({ marketId }: { marketId?: string }) => {
     [throttledSetCandles]
   );
 
-  useDataProvider<Candle[], Candle>({
+  const { error } = useDataProvider<Candle[], Candle>({
     dataProvider: marketCandlesProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId,
   });
 
-  return (
+  const formatDecimals = isHeader ? positionDecimalPlaces || 0 : 2;
+  const content = useMemo(() => {
+    return (
+      <>
+        {!error && candleVolume && isNumeric(positionDecimalPlaces)
+          ? addDecimalsFormatNumber(
+              candleVolume,
+              positionDecimalPlaces,
+              formatDecimals
+            )
+          : '-'}
+      </>
+    );
+  }, [error, candleVolume, positionDecimalPlaces, formatDecimals]);
+  return isHeader ? (
     <HeaderStat
       heading={t('Volume (24h)')}
       testId="market-volume"
       description={
-        error && candleVolume && data?.positionDecimalPlaces
+        error && candleVolume && positionDecimalPlaces
           ? t('The total amount of assets traded in the last 24 hours.')
           : null
       }
     >
-      {!error && candleVolume && data?.positionDecimalPlaces
-        ? addDecimalsFormatNumber(candleVolume, data.positionDecimalPlaces)
-        : '-'}
+      {content}
     </HeaderStat>
+  ) : (
+    content
   );
 };

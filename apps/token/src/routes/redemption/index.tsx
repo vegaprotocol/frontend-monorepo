@@ -10,7 +10,7 @@ import Routes from '../routes';
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const tranche = useMatch(`${Routes.VESTING}/:id`);
+  const tranche = useMatch(`${Routes.REDEEM}/:id`);
 
   return (
     <>

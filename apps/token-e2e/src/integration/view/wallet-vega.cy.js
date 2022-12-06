@@ -2,7 +2,7 @@ import { truncateByChars } from '@vegaprotocol/react-helpers';
 
 const walletContainer = '[data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
-const connectButton = '[data-testid="connect-vega"]';
+const connectButton = '[data-testid="connect-vega-wallet"]';
 const getVegaLink = '[data-testid="link"]';
 const dialog = '[role="dialog"]';
 const dialogHeader = '[data-testid="dialog-title"]';
@@ -18,8 +18,8 @@ const walletName = '[data-testid="wallet-name"]';
 const currencyTitle = '[data-testid="currency-title"]';
 const currencyValue = '[data-testid="currency-value"]';
 const vegaUnstaked = '[data-testid="vega-wallet-balance-unstaked"] .text-right';
-const governanceBtn = '[href="/governance"]';
-const stakingBtn = '[href="/staking"]';
+const governanceBtn = '[href="/proposals"]';
+const stakingBtn = '[href="/validators"]';
 const manageLink = '[data-testid="manage-vega-wallet"]';
 const dialogVegaKey = '[data-testid="vega-public-key-full"]';
 const dialogDisconnectBtn = '[data-testid="disconnect"]';
@@ -150,7 +150,8 @@ context(
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.visit('/');
-        cy.vega_wallet_connect();
+        cy.connectVegaWallet();
+        cy.vega_wallet_teardown();
       });
 
       it('should have VEGA WALLET header visible', function () {
@@ -287,7 +288,7 @@ context(
     });
 
     // 2002-SINC-016
-    describe('when assets exist in vegawallet', function () {
+    describe.skip('when assets exist in vegawallet', function () {
       before('send-faucet assets to connected vega wallet', function () {
         cy.vega_wallet_faucet_assets_without_check(
           faucetAssets.USDCFake,
@@ -309,7 +310,7 @@ context(
           '200000',
           vegaWalletPublicKey
         );
-        cy.vega_wallet_connect();
+        cy.connectVegaWallet();
         cy.ethereum_wallet_connect();
       });
 
