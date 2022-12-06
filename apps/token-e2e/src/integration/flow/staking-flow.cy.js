@@ -33,7 +33,6 @@ context(
     // 2001-STKE-002, 2001-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
-      cy.verify_page_header('The $VEGA token');
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
@@ -46,7 +45,7 @@ context(
           cy.connectVegaWallet();
           cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
-          cy.navigate_to('staking');
+          cy.navigate_to('validators');
           cy.wait_for_spinner();
         }
       );
@@ -95,7 +94,7 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
@@ -142,14 +141,14 @@ context(
           .contains(2.0, epochTimeout)
           .should('be.visible');
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
 
       it('Able to stake against a validator - using vega from both wallet and vesting contract', function () {
         cy.staking_page_associate_tokens('3', { type: 'contract' });
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
         cy.staking_page_associate_tokens('4', { type: 'wallet' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -202,7 +201,7 @@ context(
           .contains(6.0, epochTimeout)
           .should('be.visible');
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '6.00', '100%');
       });
@@ -232,7 +231,7 @@ context(
           .parent()
           .should('contain', 2.0, txTimeout);
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(1);
 
@@ -253,7 +252,7 @@ context(
           .eq(1)
           .should('contain', 1.0, txTimeout);
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
         cy.wait_for_spinner();
 
         cy.get(`[row-id="${0}"]`).within(() => {
@@ -310,7 +309,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
         // 2001-STKE-040
         cy.click_on_validator_from_list(0);
 
@@ -343,7 +342,7 @@ context(
         cy.get(totalStake, epochTimeout).should('contain.text', '2');
         cy.get(stakeShare, epochTimeout).should('have.text', '100%');
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
@@ -370,7 +369,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.click_on_validator_from_list('0');
 
@@ -399,7 +398,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
@@ -429,7 +428,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(0);
 
@@ -470,7 +469,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.click_on_validator_from_list(0);
 
@@ -536,7 +535,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
@@ -590,7 +589,7 @@ context(
           txTimeout
         );
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '0.00', '0%');
       });
@@ -637,7 +636,7 @@ context(
           .should('contain', 2.0, txTimeout)
           .and('contain', partValidatorId);
 
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
 
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });

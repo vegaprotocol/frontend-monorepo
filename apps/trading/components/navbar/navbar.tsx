@@ -7,8 +7,12 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
-import testnetBg from '../../assets/green-cloud.png';
 import { Routes } from '../../pages/client-router';
+import {
+  getNavLinkClassNames,
+  getActiveNavLinkClassNames,
+  Nav,
+} from '@vegaprotocol/ui-toolkit';
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
@@ -27,61 +31,40 @@ export const Navbar = ({
     marketId: store.marketId,
   }));
   const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
-
-  const themeWrapperClasses = classNames({
-    dark: navbarTheme === 'dark',
-  });
-
-  const isYellow = navbarTheme === 'yellow';
-  const navbarClasses = classNames(
-    'flex items-stretch border-b px-4 border-default',
-    {
-      'dark:bg-black dark:text-white': !isYellow,
-      'bg-vega-yellow text-black bg-right-top bg-no-repeat bg-contain':
-        isYellow,
-    }
-  );
-
   return (
-    <div className={themeWrapperClasses}>
-      <div
-        className={navbarClasses}
-        style={{
-          backgroundImage: isYellow ? `url("${testnetBg.src}")` : '',
-        }}
-      >
-        <div className="flex gap-4 items-center">
-          <Link to="/">
-            <Vega className="w-13" />
-          </Link>
-          <NetworkSwitcher />
-        </div>
-        <nav className="flex items-center flex-1 px-2">
-          <AppNavLink
-            name={t('Trading')}
-            path={tradingPath}
-            navbarTheme={navbarTheme}
-          />
-          <AppNavLink
-            name={t('Portfolio')}
-            path={Routes.PORTFOLIO}
-            navbarTheme={navbarTheme}
-          />
-          <a
-            href={`${VEGA_TOKEN_URL}/governance`}
-            target="_blank"
-            rel="noreferrer"
-            className={getActiveNavLinkClassNames(false, navbarTheme, true)}
-          >
-            {t('Governance')}
-          </a>
-        </nav>
-        <div className="flex items-center gap-2 ml-auto">
-          <VegaWalletConnectButton />
-          <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
-        </div>
+    <Nav
+      navbarTheme={navbarTheme}
+      title={t('Console')}
+      titleContent={<NetworkSwitcher />}
+      icon={
+        <Link to="/">
+          <Vega className="w-13" />
+        </Link>
+      }
+    >
+      <AppNavLink
+        name={t('Trading')}
+        path={tradingPath}
+        navbarTheme={navbarTheme}
+      />
+      <AppNavLink
+        name={t('Portfolio')}
+        path={Routes.PORTFOLIO}
+        navbarTheme={navbarTheme}
+      />
+      <div className="flex items-center gap-2 ml-auto">
+        <a
+          href={`${VEGA_TOKEN_URL}/governance`}
+          target="_blank"
+          rel="noreferrer"
+          className={getActiveNavLinkClassNames(false, navbarTheme, true)}
+        >
+          {t('Governance')}
+        </a>
+        <VegaWalletConnectButton />
+        <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
       </div>
-    </div>
+    </Nav>
   );
 };
 
@@ -123,29 +106,4 @@ const AppNavLink = ({
       }}
     </NavLink>
   );
-};
-
-function getNavLinkClassNames(
-  navbarTheme: string,
-  alignRight = false
-): (props: { isActive?: boolean }) => string | undefined {
-  return ({ isActive = false }) => {
-    return getActiveNavLinkClassNames(isActive, navbarTheme, alignRight);
-  };
-}
-
-const getActiveNavLinkClassNames = (
-  isActive: boolean,
-  navbarTheme: string,
-  alignRight = false
-): string | undefined => {
-  return classNames('mx-2 py-3 self-end relative', {
-    'cursor-default': isActive,
-    'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
-    'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
-      !isActive && navbarTheme !== 'yellow',
-    'ml-auto': alignRight,
-    'text-black': isActive && navbarTheme === 'yellow',
-    'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
-  });
 };

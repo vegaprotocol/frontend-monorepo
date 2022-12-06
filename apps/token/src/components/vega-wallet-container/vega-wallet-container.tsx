@@ -22,20 +22,18 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
 
   if (!pubKey) {
     return (
-      <p>
-        <Button
-          data-testid="connect-to-vega-wallet-btn"
-          onClick={() => {
-            appDispatch({
-              type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-              isOpen: true,
-            });
-            openVegaWalletDialog();
-          }}
-        >
-          {t('connectVegaWallet')}
-        </Button>
-      </p>
+      <Button
+        data-testid="connect-to-vega-wallet-btn"
+        onClick={() => {
+          appDispatch({
+            type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
+            isOpen: true,
+          });
+          openVegaWalletDialog();
+        }}
+      >
+        {t('connectVegaWallet')}
+      </Button>
     );
   }
 
