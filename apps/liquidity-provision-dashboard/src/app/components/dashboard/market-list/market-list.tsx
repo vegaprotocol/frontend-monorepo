@@ -110,6 +110,22 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Change (24h)')}
+            headerTooltip={t('Change in price over the last 24h')}
+            cellRenderer={({ data }: { data: Market }) => {
+              if (data.candles) {
+                const prices = data.candles.map((candle) => candle.close);
+                return (
+                  <PriceCellChange
+                    candles={prices}
+                    decimalPlaces={data?.decimalPlaces}
+                  />
+                );
+              } else return <div>{t('No data')}</div>;
+            }}
+          />
+
+          <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
