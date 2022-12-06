@@ -1,34 +1,35 @@
-import { useCallback, useState } from 'react';
-import { AgGridColumn } from 'ag-grid-react';
+import { DApp, useLinks } from '@vegaprotocol/environment';
+import type { Market } from '@vegaprotocol/liquidity';
+import {
+  displayChange,
+  formatWithAsset,
+  useMarketsLiquidity,
+} from '@vegaprotocol/liquidity';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  t,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
+import type { Schema } from '@vegaprotocol/types';
+import {
+  AsyncRenderer,
+  Icon,
+  PriceCellChange,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import type {
-  ValueFormatterParams,
   GetRowIdParams,
   RowClickedEvent,
+  ValueFormatterParams,
 } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import {
-  t,
-  addDecimalsFormatNumber,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
-import {
-  Icon,
-  AsyncRenderer,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
-import type { Market } from '@vegaprotocol/liquidity';
-import {
-  useMarketsLiquidity,
-  formatWithAsset,
-  displayChange,
-} from '@vegaprotocol/liquidity';
-import type { Schema } from '@vegaprotocol/types';
-import { DApp, useLinks } from '@vegaprotocol/environment';
+import { AgGridColumn } from 'ag-grid-react';
+import { useCallback, useState } from 'react';
 
-import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
+import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 
