@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
@@ -62,6 +62,8 @@ export const defaultColDef = {
   autoHeight: true,
   comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
   cellStyle: { margin: '10px 0' },
+  tooltipComponent: TooltipCellComponent,
+  tooltipShowDelay: 0,
 };
 
 interface ValidatorRendererProps {
