@@ -75,7 +75,7 @@ export const DealTicket = ({
         return;
       }
 
-      const marketStateError = validateMarketState(market.state);
+      const marketStateError = validateMarketState(market.data.marketState);
       if (marketStateError !== true) {
         setError('summary', { message: marketStateError });
         return;
@@ -87,7 +87,7 @@ export const DealTicket = ({
       }
 
       const marketTradingModeError = validateMarketTradingMode(
-        market.tradingMode
+        market.data.marketTradingMode
       );
       if (marketTradingModeError !== true) {
         setError('summary', { message: marketTradingModeError });
@@ -110,8 +110,8 @@ export const DealTicket = ({
       hasNoBalance,
       market.positionDecimalPlaces,
       market.decimalPlaces,
-      market.state,
-      market.tradingMode,
+      market.data.marketState,
+      market.data.marketTradingMode,
       setError,
     ]
   );
@@ -242,7 +242,7 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.tradingMode)
+      ].includes(market.data.marketTradingMode)
     ) {
       return (
         <div
