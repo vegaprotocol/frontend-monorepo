@@ -175,11 +175,22 @@ describe('Console - markets table - live env', { tags: '@live' }, () => {
 
   it('renders market list drop down', () => {
     openMarketDropDown();
-    cy.getByTestId(marketListContent).find('[data-testid="price"]').invoke('text').should('not.be.empty');
-    cy.getByTestId(marketListContent).find('[data-testid="trading-mode-col"]').should('not.be.empty');
-    cy.getByTestId(marketListContent).find('[data-testid="taker-fee"]').should('contain.text', '%');
-    cy.getByTestId(marketListContent).find('[data-testid="market-volume"]').should('not.be.empty');
-    cy.getByTestId(marketListContent).find('[data-testid="market-name"]').should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="price"]')
+      .invoke('text')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="trading-mode-col"]')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="taker-fee"]')
+      .should('contain.text', '%');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="market-volume"]')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="market-name"]')
+      .should('not.be.empty');
   });
 
   it('Able to select market from dropdown', () => {
