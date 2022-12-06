@@ -21,7 +21,7 @@ const IconLine = ({ inverted }: { inverted: boolean }) => (
   <span className={`block w-6 h-[2px] ${inverted ? 'bg-black' : 'bg-white'}`} />
 );
 
-const DrawNavLinks = ({
+const DrawerNavLinks = ({
   isInverted,
   routes,
 }: {
@@ -115,7 +115,7 @@ export const NavDrawer = ({
                 <VegaWallet />
               </DrawerSection>
             </div>
-            <DrawNavLinks routes={routes} />
+            <DrawerNavLinks routes={routes} />
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
