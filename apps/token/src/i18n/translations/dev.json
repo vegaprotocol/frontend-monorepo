@@ -577,6 +577,7 @@
   "finalOutcomeMayDiffer": "Final outcome may differ",
   "votingPower": "Voting power",
   "normalisedVotingPower": "Normalised voting power",
+  "unnormalisedVotingPower": "Unnormalised voting power",
   "noValidators": "No validators",
   "validator": "Validator",
   "stake": "Stake",

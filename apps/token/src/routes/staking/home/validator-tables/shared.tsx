@@ -17,6 +17,7 @@ export enum ValidatorFields {
   STAKE_SHARE = 'stakeShare',
   TOTAL_PENALTIES = 'totalPenalties',
   NORMALISED_VOTING_POWER = 'normalisedVotingPower',
+  UNNORMALISED_VOTING_POWER = 'unnormalisedVotingPower',
   STAKE_NEEDED_FOR_PROMOTION = 'stakeNeededForPromotion',
   STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION = 'stakeNeededForPromotionDescription',
 }
@@ -116,6 +117,34 @@ export const StakeNeededForPromotionRenderer = ({
         {data.stakeNeededForPromotion &&
           formatNumber(data.stakeNeededForPromotion, 2)}
       </span>
+    </Tooltip>
+  );
+};
+
+interface VotingPowerRendererProps {
+  data: {
+    normalisedVotingPower: string | undefined | null;
+    unnormalisedVotingPower: string | undefined | null;
+  };
+}
+
+export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Tooltip
+      description={
+        <>
+          <div>
+            {t('unnormalisedVotingPower')}: {data.unnormalisedVotingPower}
+          </div>
+          <div>
+            {t('normalisedVotingPower')}: {data.normalisedVotingPower}
+          </div>
+        </>
+      }
+    >
+      <span>{data.normalisedVotingPower}</span>
     </Tooltip>
   );
 };

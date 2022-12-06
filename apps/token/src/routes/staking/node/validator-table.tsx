@@ -11,7 +11,11 @@ import { ExternalLinks, toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { Schema } from '@vegaprotocol/types';
 import { totalPenalties } from '../home/validator-tables/shared';
-import { normalisedVotingPower, rawValidatorScore } from '../shared';
+import {
+  normalisedVotingPower,
+  rawValidatorScore,
+  unnormalisedVotingPower,
+} from '../shared';
 import type { ReactNode } from 'react';
 import type { StakingNodeFieldsFragment } from './__generated___/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
@@ -97,10 +101,6 @@ export const ValidatorTable = ({
       '%',
     [overstakedAmount, stakedOnNode]
   );
-
-  const unnormalisedVotingPower = validatorScore
-    ? new BigNumber(validatorScore).times(100).dp(2).toString() + '%'
-    : null;
 
   return (
     <div className="mb-8" data-testid="validator-table">
@@ -236,7 +236,7 @@ export const ValidatorTable = ({
       >
         <KeyValueTableRow>
           <span>{t('UNNORMALISED VOTING POWER')}</span>
-          <span>{unnormalisedVotingPower}</span>
+          <span>{unnormalisedVotingPower(validatorScore)}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>

@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
-import { normalisedVotingPower, rawValidatorScore } from '../../shared';
+import {
+  normalisedVotingPower,
+  rawValidatorScore,
+  unnormalisedVotingPower,
+} from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
@@ -12,6 +16,7 @@ import {
   totalPenalties,
   ValidatorFields,
   ValidatorRenderer,
+  VotingPowerRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -71,6 +76,8 @@ export const ConsensusValidatorsTable = ({
           pendingStake,
           votingPowerRanking,
         }) => {
+          const validatorScore = rawValidatorScore(previousEpochData, id);
+
           return {
             id,
             [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
@@ -84,9 +91,11 @@ export const ConsensusValidatorsTable = ({
             ),
             [ValidatorFields.NORMALISED_VOTING_POWER]:
               normalisedVotingPower(votingPower),
+            [ValidatorFields.UNNORMALISED_VOTING_POWER]:
+              unnormalisedVotingPower(validatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
             [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-              rawValidatorScore(previousEpochData, id),
+              validatorScore,
               performanceScore,
               stakedTotal,
               totalStake
@@ -158,6 +167,7 @@ export const ConsensusValidatorsTable = ({
           field: ValidatorFields.NORMALISED_VOTING_POWER,
           headerName: t(ValidatorFields.NORMALISED_VOTING_POWER).toString(),
           headerTooltip: t('NormalisedVotingPowerDescription').toString(),
+          cellRenderer: VotingPowerRenderer,
           width: 200,
           sort: 'desc',
         },
