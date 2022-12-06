@@ -78,7 +78,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
       data={proposalsData && validatorsData}
     >
       {proposalsData && (
-        <section className="mb-16" data-testid="governance-home-proposals">
+        <section className="mb-10" data-testid="governance-home-proposals">
           <h2 className="text-2xl font-bold mb-4">{t('Proposals')}</h2>
           <h3 className="mb-6">
             {t(
@@ -178,7 +178,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
           </h3>
           <div className="flex items-center mb-8 gap-4">
             <Link to={Routes.WITHDRAWALS}>
-              <Button size="md">{t('See rewards')}</Button>
+              <Button size="md">{t('Manage tokens')}</Button>
             </Link>
           </div>
         </div>
