@@ -98,6 +98,12 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Type')}
+            headerTooltip={t('Type')}
+            field="tradableInstrument.instrument.product.__typename"
+          />
+
+          <AgGridColumn
             headerName={t('Last Price')}
             headerTooltip={t('Latest price for this market')}
             field="data.markPrice"
