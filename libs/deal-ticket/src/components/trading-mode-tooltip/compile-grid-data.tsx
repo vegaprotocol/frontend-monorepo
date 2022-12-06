@@ -16,9 +16,9 @@ export const compileGridData = (
 ): { label: ReactNode; value?: ReactNode }[] => {
   const grid: MarketDataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    market.tradingMode ===
+    market.data.marketTradingMode ===
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    market.data?.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
+    market.data.trigger === Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(
@@ -32,14 +32,14 @@ export const compileGridData = (
 
   if (!market.data) return grid;
 
-  if (market.data?.auctionStart) {
+  if (market.data.auctionStart) {
     grid.push({
       label: t('Auction start'),
       value: getDateTimeFormat().format(new Date(market.data.auctionStart)),
     });
   }
 
-  if (market.data?.auctionEnd) {
+  if (market.data.auctionEnd) {
     const endDate = getDateTimeFormat().format(
       new Date(market.data.auctionEnd)
     );
@@ -51,14 +51,14 @@ export const compileGridData = (
     });
   }
 
-  if (isLiquidityMonitoringAuction && market.data?.targetStake) {
+  if (isLiquidityMonitoringAuction && market.data.targetStake) {
     grid.push({
       label: t('Target liquidity'),
       value: formatStake(market.data.targetStake),
     });
   }
 
-  if (isLiquidityMonitoringAuction && market.data?.suppliedStake) {
+  if (isLiquidityMonitoringAuction && market.data.suppliedStake) {
     grid.push({
       label: (
         <Link
@@ -71,7 +71,7 @@ export const compileGridData = (
       value: formatStake(market.data.suppliedStake),
     });
   }
-  if (market.data?.indicativePrice) {
+  if (market.data.indicativePrice) {
     grid.push({
       label: t('Est. uncrossing price'),
       value:
@@ -85,7 +85,7 @@ export const compileGridData = (
     });
   }
 
-  if (market.data?.indicativeVolume) {
+  if (market.data.indicativeVolume) {
     grid.push({
       label: t('Est. uncrossing vol'),
       value:
