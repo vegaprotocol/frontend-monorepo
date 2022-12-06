@@ -17,9 +17,11 @@ import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { NodeLink } from '../../../components/links';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
+  useDocumentTitle(['Blocks', `Block #${block}`])
   const {
     state: { data: blockData, loading, error },
   } = useFetch<TendermintBlocksResponse>(

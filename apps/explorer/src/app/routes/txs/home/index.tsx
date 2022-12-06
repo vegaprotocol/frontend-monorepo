@@ -3,10 +3,13 @@ import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList, TxsStatsInfo } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const BE_TXS_PER_REQUEST = 20;
 
 export const TxsList = () => {
+  useDocumentTitle(['Transactions'])
+  
   const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
     useTxsData({ limit: BE_TXS_PER_REQUEST });
   return (

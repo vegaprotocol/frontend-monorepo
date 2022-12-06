@@ -7,8 +7,9 @@ import {
   EthExplorerLink,
   EthExplorerLinkTypes,
 } from '../../links/eth-explorer-link/eth-explorer-link';
-import { AssetLink } from '../../links';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
+import AssetBalance from '../../asset-balance/asset-balance';
+import { useScrollToLocation } from '../../../hooks/scroll-to-location';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -26,25 +27,21 @@ export const TxDetailsWithdrawSubmission = ({
   pubKey,
   blockData,
 }: TxDetailsOrderCancelProps) => {
+  useScrollToLocation()
+  
   if (!txData || !txData.command.withdrawSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
   const w = txData.command.withdrawSubmission;
-  console.dir(w);
 
   return (
     <TableWithTbody className="mb-8">
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Amount')}</TableCell>
-        <TableCell>{w.amount}</TableCell>
-      </TableRow>
-
-      <TableRow modifier="bordered">
-        <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={w.asset} />
+          <AssetBalance price={w.amount} assetId={w.asset} />
         </TableCell>
       </TableRow>
 

@@ -9,6 +9,7 @@ import { BlocksRefetch } from '../../../components/blocks';
 import { BlocksInfiniteList } from '../../../components/blocks/blocks-infinite-list';
 import { JumpToBlock } from '../../../components/jump-to-block';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 // This constant should only be changed if Tendermint API changes the max blocks returned
 const TM_BLOCKS_PER_REQUEST = 20;
@@ -22,6 +23,7 @@ interface BlocksStateProps {
 }
 
 const Blocks = () => {
+  useDocumentTitle(['Blocks'])
   const [
     {
       areBlocksLoading,

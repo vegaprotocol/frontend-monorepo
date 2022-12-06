@@ -4,11 +4,14 @@ import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { useExplorerProposalsQuery } from './__generated__/proposals';
+import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Governance = () => {
   const { data } = useExplorerProposalsQuery({
     errorPolicy: 'ignore',
   });
+
+  useDocumentTitle()
 
   if (!data || !data.proposalsConnection || !data.proposalsConnection.edges) {
     return <section></section>;

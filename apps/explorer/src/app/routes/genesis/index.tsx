@@ -3,8 +3,11 @@ import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import type { TendermintGenesisResponse } from './tendermint-genesis-response';
+import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Genesis = () => {
+  useDocumentTitle(['Genesis'])
+  
   const {
     state: { data: genesis },
   } = useFetch<TendermintGenesisResponse>(
