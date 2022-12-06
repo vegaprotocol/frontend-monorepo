@@ -98,10 +98,7 @@ export const Web3Content = ({
         <p data-testid="connect-eth-wallet-msg" className="mb-4">
           {t('Connect your Ethereum wallet')}
         </p>
-        <Button
-          onClick={() => openDialog(connectors, chainId)}
-          data-testid="connect-eth-wallet-btn"
-        >
+        <Button onClick={openDialog} data-testid="connect-eth-wallet-btn">
           {t('Connect')}
         </Button>
       </SplashWrapper>

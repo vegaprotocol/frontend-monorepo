@@ -1,4 +1,5 @@
 import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
@@ -102,11 +103,13 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     });
     cy.mockGQLSubscription();
     cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.connectVegaWallet();
     cy.getByTestId('Withdrawals').click();
   });
 
   it('can connect', () => {
     cy.wait('@NetworkParams');
+    cy.getByTestId('withdraw-dialog-button').click();
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();
@@ -116,17 +119,13 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
 
   it('able to disconnect eth wallet', () => {
     const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
-    cy.connectVegaWallet();
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
-    cy.get('#ethereum-address').should('have.value', ethWalletAddress).click();
-    cy.getByTestId('dialog-content').within(() => {
-      cy.get('p').should('have.text', `Connected with ${ethWalletAddress}`);
-      cy.getByTestId('disconnect-ethereum-wallet')
-        .should('have.text', 'Disconnect Ethereum Wallet')
-        .click();
-    });
-    cy.getByTestId('connect-eth-wallet-msg').should('exist');
+    connectEthereumWallet();
+    cy.get('#ethereum-address').should('have.value', ethWalletAddress);
+    cy.getByTestId('disconnect-ethereum-wallet')
+      .should('have.text', 'Disconnect')
+      .click();
     cy.getByTestId(connectEthWalletBtn).should('exist');
   });
 });

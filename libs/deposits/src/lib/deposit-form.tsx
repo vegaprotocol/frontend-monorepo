@@ -21,7 +21,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -317,7 +317,9 @@ const FormButton = ({
 
   if (!isActive) {
     button = (
-      <Button onClick={open}>{t('Please connect Ethereum wallet')}</Button>
+      <Button onClick={open} data-testid="connect-eth-wallet-btn">
+        {t('Please connect Ethereum wallet')}
+      </Button>
     );
   } else if (chainId !== desiredChainId) {
     message = t('Please change chain');
@@ -382,17 +384,16 @@ const FormButton = ({
   );
 };
 
-interface UseButtonProps {
+interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  onClick: () => void;
 }
 
-const UseButton = ({ children, onClick }: UseButtonProps) => {
+const UseButton = ({ children, ...rest }: UseButtonProps) => {
   return (
     <button
       type="button"
       className="ml-auto text-sm absolute top-0 right-0 underline"
-      onClick={onClick}
+      {...rest}
     >
       {children}
     </button>

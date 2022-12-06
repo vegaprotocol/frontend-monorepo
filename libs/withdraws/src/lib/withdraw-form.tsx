@@ -234,7 +234,11 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 
   if (!isActive) {
-    return <UseButton onClick={openDialog}>{t('Connect')}</UseButton>;
+    return (
+      <UseButton onClick={openDialog} data-testid="connect-eth-wallet-btn">
+        {t('Connect')}
+      </UseButton>
+    );
   }
 
   return (
@@ -244,7 +248,7 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
         clearAddress();
         removeEagerConnector();
       }}
-      data-testid="disconnect-ethereum-wallet"
+      testId="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
     </UseButton>
