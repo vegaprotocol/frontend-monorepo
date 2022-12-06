@@ -10,9 +10,9 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Assets = () => {
   const { data } = useExplorerAssetsQuery();
-  useDocumentTitle(['Assets'])
+  useDocumentTitle(['Assets']);
 
-  useScrollToLocation()
+  useScrollToLocation();
 
   const assets = getNodes<AssetsFieldsFragment>(data?.assetsConnection);
 

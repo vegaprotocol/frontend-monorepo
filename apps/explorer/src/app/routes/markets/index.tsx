@@ -10,8 +10,8 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 const Markets = () => {
   const { data } = useExplorerMarketsQuery();
 
-  useScrollToLocation()
-  useDocumentTitle(['Markets'])
+  useScrollToLocation();
+  useDocumentTitle(['Markets']);
 
   const m = data?.marketsConnection?.edges;
 
@@ -20,7 +20,7 @@ const Markets = () => {
       <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
       {m
-        ? m.map(e => (
+        ? m.map((e) => (
             <React.Fragment key={e.node.id}>
               <SubHeading data-testid="markets-header" id={e.node.id}>
                 {e.node.tradableInstrument.instrument.name}

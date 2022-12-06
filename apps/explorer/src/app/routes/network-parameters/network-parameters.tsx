@@ -60,7 +60,7 @@ export const NetworkParameterRow = ({
   row: { key: string; value: string };
 }) => {
   const isSyntaxRow = suitableForSyntaxHighlighter(value);
-  useDocumentTitle(['Network Parameters'])
+  useDocumentTitle(['Network Parameters']);
 
   return (
     <KeyValueTableRow
@@ -128,6 +128,6 @@ export const NetworkParametersTable = ({
 
 export const NetworkParameters = () => {
   const { data, loading, error } = useNetworkParamsQuery();
-  useScrollToLocation()
+  useScrollToLocation();
   return <NetworkParametersTable data={data} error={error} loading={loading} />;
 };

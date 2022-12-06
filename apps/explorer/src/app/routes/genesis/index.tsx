@@ -6,8 +6,8 @@ import type { TendermintGenesisResponse } from './tendermint-genesis-response';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Genesis = () => {
-  useDocumentTitle(['Genesis'])
-  
+  useDocumentTitle(['Genesis']);
+
   const {
     state: { data: genesis },
   } = useFetch<TendermintGenesisResponse>(

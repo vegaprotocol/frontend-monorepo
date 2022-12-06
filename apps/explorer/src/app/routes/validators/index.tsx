@@ -15,9 +15,9 @@ const Validators = () => {
   } = useFetch<TendermintValidatorsResponse>(
     `${DATA_SOURCES.tendermintUrl}/validators`
   );
-  
-  useDocumentTitle(['Validators'])
-  
+
+  useDocumentTitle(['Validators']);
+
   const { data } = useExplorerNodesQuery();
 
   return (

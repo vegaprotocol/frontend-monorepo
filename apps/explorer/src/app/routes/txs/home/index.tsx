@@ -8,8 +8,8 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 const BE_TXS_PER_REQUEST = 20;
 
 export const TxsList = () => {
-  useDocumentTitle(['Transactions'])
-  
+  useDocumentTitle(['Transactions']);
+
   const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
     useTxsData({ limit: BE_TXS_PER_REQUEST });
   return (

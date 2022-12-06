@@ -11,7 +11,7 @@ const Governance = () => {
     errorPolicy: 'ignore',
   });
 
-  useDocumentTitle()
+  useDocumentTitle();
 
   if (!data || !data.proposalsConnection || !data.proposalsConnection.edges) {
     return <section></section>;

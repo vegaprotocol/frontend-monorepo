@@ -13,7 +13,7 @@ const PendingTxs = () => {
     `${DATA_SOURCES.tendermintUrl}/unconfirmed_txs`
   );
 
-  useDocumentTitle(['Pending transactions'])
+  useDocumentTitle(['Pending transactions']);
 
   return (
     <section>

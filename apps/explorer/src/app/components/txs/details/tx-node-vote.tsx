@@ -7,6 +7,10 @@ import type { ExplorerNodeVoteQueryResult } from './__generated___/node-vote';
 import { useExplorerNodeVoteQuery } from './__generated___/node-vote';
 import { PartyLink } from '../../links';
 import { Time } from '../../time';
+import {
+  EthExplorerLink,
+  EthExplorerLinkTypes,
+} from '../../links/eth-explorer-link/eth-explorer-link';
 
 interface TxDetailsNodeVoteProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -80,10 +84,10 @@ export function TxDetailsNodeVoteDeposit({
         <TableCell>
           <Time date={deposit?.deposit?.creditedTimestamp} />
         </TableCell>
-        {deposit?.deposit?.txHash ? (
-          <TxHash hash={deposit?.deposit?.txHash} />
-        ) : null}
       </TableRow>
+      {deposit?.deposit?.txHash ? (
+        <TxHash hash={deposit?.deposit?.txHash} />
+      ) : null}
     </>
   );
 }
@@ -119,10 +123,10 @@ export function TxDetailsNodeVoteWithdrawal({
         <TableCell>
           <Time date={withdrawal?.withdrawal?.withdrawnTimestamp} />
         </TableCell>
-        {withdrawal?.withdrawal?.txHash ? (
-          <TxHash hash={withdrawal?.withdrawal?.txHash} />
-        ) : null}
       </TableRow>
+      {withdrawal?.withdrawal?.txHash ? (
+        <TxHash hash={withdrawal?.withdrawal?.txHash} />
+      ) : null}
     </>
   );
 }
@@ -138,7 +142,9 @@ export function TxHash({ hash }: TxDetailsEthTxHashProps) {
   return (
     <TableRow modifier="bordered">
       <TableCell>Ethereum TX:</TableCell>
-      <TableCell>{hash}</TableCell>
+      <TableCell>
+        <EthExplorerLink id={hash} type={EthExplorerLinkTypes.tx} />
+      </TableCell>
     </TableRow>
   );
 }

@@ -40,7 +40,7 @@ const accountTypeString: Record<Schema.AccountType, string> = {
 const Party = () => {
   const { party } = useParams<{ party: string }>();
 
-  useDocumentTitle(['Parties', party || '-'])
+  useDocumentTitle(['Parties', party || '-']);
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);

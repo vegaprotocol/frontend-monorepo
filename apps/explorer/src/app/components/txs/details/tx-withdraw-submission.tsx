@@ -27,8 +27,8 @@ export const TxDetailsWithdrawSubmission = ({
   pubKey,
   blockData,
 }: TxDetailsOrderCancelProps) => {
-  useScrollToLocation()
-  
+  useScrollToLocation();
+
   if (!txData || !txData.command.withdrawSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }

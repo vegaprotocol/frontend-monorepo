@@ -8,10 +8,9 @@ export function useDocumentTitle(segments?: string[]) {
   const base = 'VEGA explorer';
   const split = ' | ';
 
-
   React.useEffect(() => {
-    const segmentsOrdered = segments?.reverse() || []
-    
+    const segmentsOrdered = segments?.reverse() || [];
+
     if (segments && segments.length > 0) {
       document.title = `${segmentsOrdered.join(split)}${split}${base}`;
     } else {

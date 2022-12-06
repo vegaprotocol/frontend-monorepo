@@ -17,7 +17,7 @@ const Tx = () => {
   const hash = txHash ? toNonHex(txHash) : '';
   let errorMessage: string | undefined = undefined;
 
-  useDocumentTitle(['Transactions', `TX ${txHash}`])
+  useDocumentTitle(['Transactions', `TX ${txHash}`]);
 
   const {
     state: { data, loading, error },

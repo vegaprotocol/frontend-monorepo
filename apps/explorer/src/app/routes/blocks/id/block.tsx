@@ -21,7 +21,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
-  useDocumentTitle(['Blocks', `Block #${block}`])
+  useDocumentTitle(['Blocks', `Block #${block}`]);
   const {
     state: { data: blockData, loading, error },
   } = useFetch<TendermintBlocksResponse>(

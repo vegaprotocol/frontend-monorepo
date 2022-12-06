@@ -23,7 +23,7 @@ interface BlocksStateProps {
 }
 
 const Blocks = () => {
-  useDocumentTitle(['Blocks'])
+  useDocumentTitle(['Blocks']);
   const [
     {
       areBlocksLoading,

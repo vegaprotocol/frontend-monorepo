@@ -10,7 +10,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 export const JumpToParty = () => {
   const navigate = useNavigate();
 
-  useDocumentTitle(['Parties'])
+  useDocumentTitle(['Parties']);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
