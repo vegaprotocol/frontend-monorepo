@@ -5,11 +5,10 @@ context(
   'Vesting Page - verify elements on page',
   { tags: '@smoke' },
   function () {
-    before('navigate to vesting page', function () {
-      cy.visit('/').navigate_to('vesting');
-    });
-
     describe('with wallets disconnected', function () {
+      before('navigate to vesting page', function () {
+        cy.visit('/').navigate_to('vesting');
+      });
       it('should have vesting tab highlighted', function () {
         cy.verify_tab_highlighted('vesting');
       });
@@ -32,6 +31,7 @@ context(
     describe('with eth wallet connected', function () {
       before('connect eth wallet', function () {
         cy.ethereum_wallet_connect();
+        cy.visit('/');
       });
 
       // 1005-VEST-001
