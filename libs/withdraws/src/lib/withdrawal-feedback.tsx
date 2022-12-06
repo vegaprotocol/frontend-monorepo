@@ -91,7 +91,13 @@ export const WithdrawalFeedback = ({
   );
 };
 
-const ActionButton = ({ withdrawal, submitWithdraw }: any) => {
+const ActionButton = ({
+  withdrawal,
+  submitWithdraw,
+}: {
+  withdrawal: WithdrawalFieldsFragment | null;
+  submitWithdraw: (withdrawalId: string) => void;
+}) => {
   const { isActive, chainId } = useWeb3React();
   const { open, desiredChainId } = useWeb3ConnectDialog((store) => ({
     open: store.open,

@@ -8,7 +8,6 @@ import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useWithdrawStore } from './withdraw-store';
-import { useWeb3React } from '@web3-react/core';
 
 export const useWithdrawAsset = (
   assets: Asset[],

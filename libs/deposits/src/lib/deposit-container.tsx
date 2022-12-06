@@ -1,6 +1,5 @@
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
-import { Web3Container } from '@vegaprotocol/web3';
 import { DepositManager } from './deposit-manager';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { enabledAssetsProvider } from '@vegaprotocol/assets';
