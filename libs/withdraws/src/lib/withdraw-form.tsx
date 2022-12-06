@@ -248,7 +248,7 @@ const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
         clearAddress();
         removeEagerConnector();
       }}
-      testId="disconnect-ethereum-wallet"
+      data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
     </UseButton>
