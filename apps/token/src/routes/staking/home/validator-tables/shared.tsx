@@ -8,11 +8,14 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
   VALIDATOR = 'validator',
   STAKE = 'stake',
+  STAKED_BY_DELEGATES = 'stakedByDelegates',
+  STAKED_BY_OPERATOR = 'stakedByOperator',
   PENDING_STAKE = 'pendingStake',
   STAKE_SHARE = 'stakeShare',
   TOTAL_PENALTIES = 'totalPenalties',
@@ -145,6 +148,38 @@ export const VotingPowerRenderer = ({ data }: VotingPowerRendererProps) => {
       }
     >
       <span>{data.normalisedVotingPower}</span>
+    </Tooltip>
+  );
+};
+
+interface TotalStakeRendererProps {
+  data: {
+    stake: string;
+    stakedByDelegates: string;
+    stakedByOperator: string;
+  };
+}
+
+export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Tooltip
+      description={
+        <>
+          <div>
+            {t('stakedByOperator')}: {data.stakedByOperator.toString()}
+          </div>
+          <div>
+            {t('stakedByDelegates')}: {data.stakedByDelegates.toString()}
+          </div>
+          <div>
+            {t('totalStake')}: <span className="font-bold">{data.stake}</span>
+          </div>
+        </>
+      }
+    >
+      <span>{data.stake}</span>
     </Tooltip>
   );
 };

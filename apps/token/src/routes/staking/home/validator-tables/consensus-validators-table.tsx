@@ -14,6 +14,7 @@ import {
   NODE_LIST_GRID_STYLES,
   stakedTotalPercentage,
   totalPenalties,
+  TotalStakeRenderer,
   ValidatorFields,
   ValidatorRenderer,
   VotingPowerRenderer,
@@ -71,6 +72,8 @@ export const ConsensusValidatorsTable = ({
           id,
           name,
           avatarUrl,
+          stakedByDelegates,
+          stakedByOperator,
           stakedTotal,
           rankingScore: { stakeScore, votingPower, performanceScore },
           pendingStake,
@@ -94,6 +97,14 @@ export const ConsensusValidatorsTable = ({
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
               unnormalisedVotingPower(validatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
+            [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
+              toBigNum(stakedByDelegates, decimals),
+              2
+            ),
+            [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
+              toBigNum(stakedByOperator, decimals),
+              2
+            ),
             [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
               validatorScore,
               performanceScore,
@@ -161,6 +172,7 @@ export const ConsensusValidatorsTable = ({
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
           headerTooltip: t('StakeDescription').toString(),
+          cellRenderer: TotalStakeRenderer,
           width: 120,
         },
         {

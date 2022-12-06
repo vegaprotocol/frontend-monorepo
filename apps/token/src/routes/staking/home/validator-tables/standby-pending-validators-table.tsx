@@ -47,6 +47,8 @@ export const StandbyPendingValidatorsTable = ({
         id,
         name,
         avatarUrl,
+        stakedByDelegates,
+        stakedByOperator,
         stakedTotal,
         rankingScore: { stakeScore, performanceScore },
         pendingStake,
@@ -97,6 +99,14 @@ export const StandbyPendingValidatorsTable = ({
           [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
             individualStakeNeededForPromotionDescription || t('n/a'),
           [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
+          [ValidatorFields.STAKED_BY_DELEGATES]: toBigNum(
+            stakedByDelegates,
+            decimals
+          ),
+          [ValidatorFields.STAKED_BY_OPERATOR]: toBigNum(
+            stakedByOperator,
+            decimals
+          ),
           [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
             rawValidatorScore(previousEpochData, id),
             performanceScore,
