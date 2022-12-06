@@ -57,10 +57,10 @@ function AppBody({ Component }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
-        <VegaWalletProvider>
-          <AppLoader>
-            <Web3Provider>
+      <VegaWalletProvider>
+        <AppLoader>
+          <Web3Provider>
+            <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
               <Navbar
                 theme={theme}
                 toggleTheme={toggleTheme}
@@ -72,10 +72,10 @@ function AppBody({ Component }: AppProps) {
               <Footer />
               <DialogsContainer />
               <MaybeConnectEagerly />
-            </Web3Provider>
-          </AppLoader>
-        </VegaWalletProvider>
-      </div>
+            </div>
+          </Web3Provider>
+        </AppLoader>
+      </VegaWalletProvider>
     </ThemeContext.Provider>
   );
 }

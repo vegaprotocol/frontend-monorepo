@@ -8,6 +8,7 @@ import {
   Web3Provider as Web3ProviderInternal,
   useWeb3ConnectDialog,
 } from '@vegaprotocol/web3';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -37,23 +38,22 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
       );
     }
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL, initializeConnectors]);
-
-  if (!connectors.length) {
-    return null;
-  }
-
-  if (loading) {
-    return <div>Loading ethereum config</div>;
-  }
-
-  if (error) {
-    return <div>Could not load Ethereum config</div>;
-  }
+  console.log(connectors);
 
   return (
-    <Web3ProviderInternal connectors={connectors}>
-      <>{children}</>
-    </Web3ProviderInternal>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={connectors}
+      noDataCondition={(d) => {
+        if (!d) return true;
+        return d.length < 1;
+      }}
+    >
+      <Web3ProviderInternal connectors={connectors}>
+        <>{children}</>
+      </Web3ProviderInternal>
+    </AsyncRenderer>
   );
 };
 
