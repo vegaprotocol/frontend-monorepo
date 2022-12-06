@@ -38,7 +38,7 @@ context(
       // 1005-VEST-002
       it('Able to view tranches', function () {
         cy.get('[href="/token/tranches"]')
-          .should('have.text', 'all tranches')
+          .should('have.text', 'Supply & Vesting')
           .click();
         cy.url().should('include', '/token/tranches');
         cy.get('h1').should('contain.text', 'Vesting tranches');
