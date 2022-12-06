@@ -86,6 +86,7 @@ export const DealTicket = ({
     marketTradingModeError,
     clearErrors,
     errors.summary?.message,
+    errors.summary?.type,
   ]);
 
   // When order state changes persist it in local storage
