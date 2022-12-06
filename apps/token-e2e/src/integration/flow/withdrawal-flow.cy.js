@@ -35,7 +35,7 @@ context(
       cy.visit('/');
       cy.navigate_to('withdrawals');
       cy.wait_for_spinner();
-      cy.vega_wallet_connect();
+      cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.vega_wallet_teardown();
     });

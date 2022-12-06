@@ -12,8 +12,15 @@ declare global {
     interface Chainable<Subject> {
       mockGQL(handler: RouteHandler): void;
       mockGQLSubscription(mocks?: Record<string, onMessage>): void;
+      mockWalletGQL(handler: RouteHandler): void;
     }
   }
+}
+
+export function addMockWalletGQLCommand() {
+  Cypress.Commands.add('mockWalletGQL', (handler: RouteHandler): void => {
+    cy.intercept('POST', '**/api/v2/requests', handler).as('walletGQL');
+  });
 }
 
 export function addMockGQLCommand() {
