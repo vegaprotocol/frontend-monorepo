@@ -124,9 +124,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<LedgerEntry, 'transferType'>) =>
-            value
-              ? TransferTypeMapping[value as keyof typeof TransferTypeMapping]
-              : ''
+            value ? TransferTypeMapping[value] : ''
           }
         />
         <AgGridColumn
