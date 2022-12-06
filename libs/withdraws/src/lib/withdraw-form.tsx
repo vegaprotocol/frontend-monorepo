@@ -17,7 +17,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
