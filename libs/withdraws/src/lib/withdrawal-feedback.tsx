@@ -10,6 +10,8 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
+import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
@@ -75,17 +77,7 @@ export const WithdrawalFeedback = ({
         </KeyValueTable>
       )}
       {isAvailable ? (
-        <Button
-          disabled={withdrawal === null ? true : false}
-          data-testid="withdraw-funds"
-          onClick={() => {
-            if (withdrawal) {
-              submitWithdraw(withdrawal.id);
-            }
-          }}
-        >
-          {t('Withdraw funds')}
-        </Button>
+        <ActionButton withdrawal={withdrawal} submitWithdraw={submitWithdraw} />
       ) : (
         <p className="text-danger">
           {t(
@@ -96,5 +88,32 @@ export const WithdrawalFeedback = ({
         </p>
       )}
     </div>
+  );
+};
+
+const ActionButton = ({ withdrawal, submitWithdraw }: any) => {
+  const { isActive } = useWeb3React();
+  const open = useWeb3ConnectDialog((store) => store.open);
+
+  if (!isActive) {
+    return (
+      <Button onClick={() => open()}>
+        {t('Connect Ethereum wallet to complete')}
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      disabled={withdrawal === null ? true : false}
+      data-testid="withdraw-funds"
+      onClick={() => {
+        if (withdrawal) {
+          submitWithdraw(withdrawal.id);
+        }
+      }}
+    >
+      {t('Withdraw funds')}
+    </Button>
   );
 };

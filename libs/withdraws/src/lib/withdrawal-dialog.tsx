@@ -6,7 +6,6 @@ import { useCompleteWithdraw } from './use-complete-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { WithdrawalFeedback } from './withdrawal-feedback';
-import { Web3Container } from '@vegaprotocol/web3';
 import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
 interface State {
   isOpen: boolean;
@@ -41,16 +40,14 @@ export const WithdrawalDialog = () => {
         onChange={(isOpen) => (isOpen ? open() : close())}
         size="small"
       >
-        <Web3Container connectEagerly>
-          <WithdrawFormContainer
-            assetId={assetId}
-            partyId={pubKey ? pubKey : undefined}
-            submit={(args) => {
-              close();
-              createWithdraw.submit(args);
-            }}
-          />
-        </Web3Container>
+        <WithdrawFormContainer
+          assetId={assetId}
+          partyId={pubKey ? pubKey : undefined}
+          submit={(args) => {
+            close();
+            createWithdraw.submit(args);
+          }}
+        />
       </Dialog>
       <createWithdraw.Dialog
         content={{

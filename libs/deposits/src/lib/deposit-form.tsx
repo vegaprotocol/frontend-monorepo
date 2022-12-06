@@ -19,13 +19,13 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
-import { Web3WalletInput } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
 
 interface FormFields {
   asset: string;
@@ -137,10 +137,19 @@ export const DepositForm = ({
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
-        <Web3WalletInput
-          inputProps={{
-            id: 'ethereum-address',
-            ...register('from', { validate: { required, ethereumAddress } }),
+        <Input
+          id="ethereum-address"
+          {...register('from', {
+            validate: {
+              required,
+              ethereumAddress,
+            },
+          })}
+        />
+        <EthereumButton
+          clearAddress={() => {
+            setValue('from', '');
+            clearErrors('from');
           }}
         />
         {errors.from?.message && (
@@ -291,12 +300,20 @@ const FormButton = ({
   allowance,
   onApproveClick,
 }: FormButtonProps) => {
+  const openConnectDialog = useWeb3ConnectDialog((store) => store.open);
+  const { isActive } = useWeb3React();
   const approved =
     allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
   let button = null;
   let message: ReactNode = '';
 
-  if (!selectedAsset) {
+  if (!isActive) {
+    button = (
+      <Button onClick={openConnectDialog}>
+        {t('Please connect Ethereum wallet')}
+      </Button>
+    );
+  } else if (!selectedAsset) {
     button = (
       <Button
         type="submit"
@@ -360,5 +377,26 @@ const UseButton = ({ children, onClick }: UseButtonProps) => {
     >
       {children}
     </button>
+  );
+};
+
+const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+  const openDialog = useWeb3ConnectDialog((state) => state.open);
+  const { isActive, connector } = useWeb3React();
+
+  if (!isActive) {
+    return <UseButton onClick={openDialog}>{t('Connect')}</UseButton>;
+  }
+
+  return (
+    <UseButton
+      onClick={() => {
+        connector.deactivate();
+        clearAddress();
+      }}
+      data-testid="disconnect-ethereum-wallet"
+    >
+      {t('Disconnect')}
+    </UseButton>
   );
 };

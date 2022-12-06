@@ -12,17 +12,22 @@ interface State {
   desiredChainId?: number;
 }
 interface Actions {
-  open: (connectors: State['connectors'], desiredChainId?: number) => void;
+  initialize: (
+    connectors: [MetaMask | WalletConnect, Web3ReactHooks][],
+    desiredChainId: number
+  ) => void;
+  open: () => void;
   close: () => void;
 }
 
 export const useWeb3ConnectDialog = create<State & Actions>((set) => ({
   isOpen: false,
   connectors: [],
-  open: (connectors, desiredChainId) =>
-    set(() => ({ isOpen: true, connectors, desiredChainId })),
-  close: () =>
-    set(() => ({ isOpen: false, connectors: [], desiredChainId: undefined })),
+  initialize: (connectors, desiredChainId) => {
+    set({ connectors, desiredChainId });
+  },
+  open: () => set(() => ({ isOpen: true })),
+  close: () => set(() => ({ isOpen: false })),
 }));
 
 interface Web3ConnectDialogProps {
@@ -69,11 +74,8 @@ export const Web3ConnectDialog = ({
 };
 
 export const Web3ConnectUncontrolledDialog = () => {
-  const { isOpen, connectors, desiredChainId, open, close } =
-    useWeb3ConnectDialog();
-
-  const onChange = (isOpen: boolean) =>
-    isOpen ? open(connectors, desiredChainId) : close();
+  const { isOpen, connectors, open, close } = useWeb3ConnectDialog();
+  const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
   return (
     <Web3ConnectDialog

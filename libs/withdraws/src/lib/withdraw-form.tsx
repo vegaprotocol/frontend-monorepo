@@ -20,6 +20,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
+import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
 
 interface FormFields {
   asset: string;
@@ -133,16 +134,12 @@ export const WithdrawForm = ({
           label={t('To (Ethereum address)')}
           labelFor="ethereum-address"
         >
-          {address && (
-            <UseButton
-              onClick={() => {
-                setValue('to', address);
-                clearErrors('to');
-              }}
-            >
-              {t('Use connected')}
-            </UseButton>
-          )}
+          <EthereumButton
+            clearAddress={() => {
+              setValue('to', '');
+              clearErrors('to');
+            }}
+          />
           <Input
             id="ethereum-address"
             data-testid="eth-address-input"
@@ -219,5 +216,26 @@ const UseButton = ({ children, ...rest }: UseButtonProps) => {
     >
       {children}
     </button>
+  );
+};
+
+const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+  const openDialog = useWeb3ConnectDialog((state) => state.open);
+  const { isActive, connector } = useWeb3React();
+
+  if (!isActive) {
+    return <UseButton onClick={openDialog}>{t('Connect')}</UseButton>;
+  }
+
+  return (
+    <UseButton
+      onClick={() => {
+        connector.deactivate();
+        clearAddress();
+      }}
+      data-testid="disconnect-ethereum-wallet"
+    >
+      {t('Disconnect')}
+    </UseButton>
   );
 };

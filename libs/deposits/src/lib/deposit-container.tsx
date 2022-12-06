@@ -24,14 +24,12 @@ export const DepositContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
       {data && data.length ? (
-        <Web3Container connectEagerly>
-          <DepositManager
-            assetId={assetId}
-            assets={data}
-            isFaucetable={VEGA_ENV !== Networks.MAINNET}
-            setDialogStyleProps={setDialogStyleProps}
-          />
-        </Web3Container>
+        <DepositManager
+          assetId={assetId}
+          assets={data}
+          isFaucetable={VEGA_ENV !== Networks.MAINNET}
+          setDialogStyleProps={setDialogStyleProps}
+        />
       ) : (
         <Splash>
           <p>{t('No assets on this network')}</p>

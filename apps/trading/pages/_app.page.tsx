@@ -9,7 +9,7 @@ import {
   Networks,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { AppLoader } from '../components/app-loader';
+import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
@@ -53,18 +53,22 @@ function AppBody({ Component }: AppProps) {
       </Head>
       <Title />
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
-        <AppLoader>
-          <Navbar
-            theme={theme}
-            toggleTheme={toggleTheme}
-            navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-          />
-          <main data-testid={location.pathname}>
-            <Component />
-          </main>
-          <Footer />
-          <DialogsContainer />
-        </AppLoader>
+        <VegaWalletProvider>
+          <AppLoader>
+            <Web3Provider>
+              <Navbar
+                theme={theme}
+                toggleTheme={toggleTheme}
+                navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
+              />
+              <main data-testid={location.pathname}>
+                <Component />
+              </main>
+              <Footer />
+              <DialogsContainer />
+            </Web3Provider>
+          </AppLoader>
+        </VegaWalletProvider>
       </div>
     </ThemeContext.Provider>
   );
@@ -85,9 +89,7 @@ function VegaTradingApp(props: AppProps) {
   return (
     <HashRouter>
       <EnvironmentProvider>
-        <VegaWalletProvider>
-          <AppBody {...props} />
-        </VegaWalletProvider>
+        <AppBody {...props} />
       </EnvironmentProvider>
     </HashRouter>
   );
