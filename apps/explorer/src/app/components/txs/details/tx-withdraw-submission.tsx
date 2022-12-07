@@ -10,6 +10,7 @@ import {
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import AssetBalance from '../../asset-balance/asset-balance';
 import { useScrollToLocation } from '../../../hooks/scroll-to-location';
+import { WithdrawalProgress } from '../../withdrawal/withdrawal-progress';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -34,35 +35,38 @@ export const TxDetailsWithdrawSubmission = ({
   }
 
   const w = txData.command.withdrawSubmission;
+  const id = txData?.signature?.value
+    ? txSignatureToDeterministicId(txData.signature.value)
+    : '-';
 
   return (
-    <TableWithTbody className="mb-8">
-      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Amount')}</TableCell>
-        <TableCell>
-          <AssetBalance price={w.amount} assetId={w.asset} />
-        </TableCell>
-      </TableRow>
-
-      <TableRow modifier="bordered">
-        <TableCell>{t('Recipient')}</TableCell>
-        <TableCell>
-          <EthExplorerLink
-            id={w.ext.erc20.receiverAddress}
-            type={EthExplorerLinkTypes.address}
-          />
-        </TableCell>
-      </TableRow>
-
-      {txData?.signature?.value ? (
+    <>
+      <TableWithTbody className="mb-8">
+        <TxDetailsShared
+          txData={txData}
+          pubKey={pubKey}
+          blockData={blockData}
+        />
         <TableRow modifier="bordered">
-          <TableCell>{t('ID?')}</TableCell>
+          <TableCell>{t('Amount')}</TableCell>
           <TableCell>
-            {txSignatureToDeterministicId(txData.signature.value)}
+            <AssetBalance price={w.amount} assetId={w.asset} />
           </TableCell>
         </TableRow>
+
+        <TableRow modifier="bordered">
+          <TableCell>{t('Recipient')}</TableCell>
+          <TableCell>
+            <EthExplorerLink
+              id={w.ext.erc20.receiverAddress}
+              type={EthExplorerLinkTypes.address}
+            />
+          </TableCell>
+        </TableRow>
+      </TableWithTbody>
+      {id !== '-' ? (
+        <WithdrawalProgress id={id} txStatus={txData.code} />
       ) : null}
-    </TableWithTbody>
+    </>
   );
 };

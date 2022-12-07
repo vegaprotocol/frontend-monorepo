@@ -1,0 +1,20 @@
+fragment ExplorerWithdrawalProperties on Withdrawal {
+  id
+  status
+  createdTimestamp
+  withdrawnTimestamp
+  ref
+  txHash
+  expiry
+  details {
+    ... on Erc20WithdrawalDetails {
+      receiverAddress
+    }
+  }
+}
+
+query ExplorerWithdrawal($id: ID!) {
+  withdrawal(id: $id) {
+    ...ExplorerWithdrawalProperties
+  }
+}
