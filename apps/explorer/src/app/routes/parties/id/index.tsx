@@ -15,7 +15,6 @@ import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
 import type { Schema } from '@vegaprotocol/types';
 import get from 'lodash/get';
-import PartyIdError from './error/party-id-error';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
@@ -134,9 +133,6 @@ const Party = () => {
       >
         {t('Party')}
       </h1>
-      {partyRes.error ? (
-        <PartyIdError id={partyId} error={partyRes.error} />
-      ) : null}
       {partyRes.data ? (
         <>
           {header}

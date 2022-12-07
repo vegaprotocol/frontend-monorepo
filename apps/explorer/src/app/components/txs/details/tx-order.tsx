@@ -5,7 +5,7 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
-import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
+import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -44,6 +44,12 @@ export const TxDetailsOrder = ({
           pubKey={pubKey}
           blockData={blockData}
         />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Order')}</TableCell>
+          <TableCell>
+            <code>{deterministicId}</code>
+          </TableCell>
+        </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Market')}</TableCell>
           <TableCell>

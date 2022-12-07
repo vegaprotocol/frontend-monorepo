@@ -1,9 +1,9 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { useExplorerDeterministicOrderQuery } from './__generated__/Order';
-import type { Schema } from '@vegaprotocol/types';
 import { MarketLink } from '../links';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { Time } from '../time';
+import { sideText, statusText, tifFull, tifShort } from './lib/order-labels';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -11,41 +11,7 @@ export interface DeterministicOrderDetailsProps {
   version?: number;
 }
 
-const statusText: Record<Schema.OrderStatus, string> = {
-  STATUS_ACTIVE: t('Active'),
-  STATUS_CANCELLED: t('Cancelled'),
-  STATUS_EXPIRED: t('Expired'),
-  STATUS_FILLED: t('Filled'),
-  STATUS_PARKED: t('Parked'),
-  // Intentionally vague - table shows partial fills
-  STATUS_PARTIALLY_FILLED: t('Active'),
-  STATUS_REJECTED: t('Rejected'),
-  STATUS_STOPPED: t('Stopped'),
-};
-
-const sideText: Record<Schema.Side, string> = {
-  SIDE_BUY: t('Buy'),
-  SIDE_SELL: t('Sell'),
-};
-
-const tifShort: Record<Schema.OrderTimeInForce, string> = {
-  TIME_IN_FORCE_FOK: t('FOK'),
-  TIME_IN_FORCE_GFA: t('GFA'),
-  TIME_IN_FORCE_GFN: t('GFN'),
-  TIME_IN_FORCE_GTC: t('GTC'),
-  TIME_IN_FORCE_GTT: t('GTT'),
-  TIME_IN_FORCE_IOC: t('IOC'),
-};
-
-const tifFull: Record<Schema.OrderTimeInForce, string> = {
-  TIME_IN_FORCE_FOK: t('Fill or Kill'),
-  TIME_IN_FORCE_GFA: t('Good for Auction'),
-  TIME_IN_FORCE_GFN: t('Good for Normal'),
-  TIME_IN_FORCE_GTC: t("Good 'til Cancel"),
-  TIME_IN_FORCE_GTT: t("Good 'til Time"),
-  TIME_IN_FORCE_IOC: t('Immediate or Cancel'),
-};
-const wrapperClasses =
+export const wrapperClasses =
   'grid lg:grid-cols-1 flex items-center max-w-xl border border-zinc-200 dark:border-zinc-800 rounded-md pv-2 ph-5 mb-5';
 
 /**
@@ -64,7 +30,7 @@ const DeterministicOrderDetails = ({
   version = 0,
 }: DeterministicOrderDetailsProps) => {
   const { data, error } = useExplorerDeterministicOrderQuery({
-    variables: { orderId: id },
+    variables: { orderId: id, version },
   });
 
   if (error || (data && !data.orderByID)) {
