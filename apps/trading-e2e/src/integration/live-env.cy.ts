@@ -12,6 +12,7 @@ const percentageValue = 'price-change-percentage';
 const priceChangeValue = 'price-change';
 const itemHeader = 'item-header';
 const itemValue = 'item-value';
+const marketListContent = 'popover-content';
 
 describe('Console - market list - live env', { tags: '@live' }, () => {
   beforeEach(() => {
@@ -19,9 +20,7 @@ describe('Console - market list - live env', { tags: '@live' }, () => {
   });
 
   it('shows the market list page', () => {
-    cy.get('main', { timeout: 20000 }).then((el) => {
-      expect(el.attr('data-testid')?.startsWith('/market')).to.equal(true);
-    }); // Wait for page to be rendered to before checking url
+    cy.get('main', { timeout: 20000 });
 
     // Overlay should be shown
     cy.getByTestId(selectMarketOverlay).should('exist');
@@ -70,7 +69,6 @@ describe('Console - market info - live env', { tags: '@live' }, () => {
     'Risk parameters',
     'Risk factors',
     'Price monitoring trigger 1',
-    'Price monitoring bound 1',
     'Liquidity monitoring parameters',
     'Liquidity',
     'Oracle',
@@ -84,6 +82,10 @@ describe('Console - market info - live env', { tags: '@live' }, () => {
   });
 
   it('market info subtitles are displayed', () => {
+    cy.getByTestId('popover-trigger').click();
+    cy.contains('Loading market data...').should('not.exist');
+    cy.contains('[data-testid="link"]', 'AAVEDAI.MF21').click();
+    cy.getByTestId(marketInfoBtn).click();
     cy.getByTestId(marketInfoSubtitle).each((element, index) => {
       cy.wrap(element).should('have.text', subtitles[index]);
     });
@@ -96,6 +98,7 @@ describe('Console - market summary - live env', { tags: '@live' }, () => {
     cy.getByTestId('dialog-close').click();
     cy.getByTestId(marketSummaryBlock).should('be.visible');
   });
+
   it('must display market name', () => {
     cy.getByTestId('popover-trigger').should('not.be.empty');
   });
@@ -172,11 +175,22 @@ describe('Console - markets table - live env', { tags: '@live' }, () => {
 
   it('renders market list drop down', () => {
     openMarketDropDown();
-    cy.getByTestId('price').invoke('text').should('not.be.empty');
-    cy.getByTestId('trading-mode-col').should('not.be.empty');
-    cy.getByTestId('taker-fee').should('contain.text', '%');
-    cy.getByTestId('market-volume').should('not.be.empty');
-    cy.getByTestId('market-name').should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="price"]')
+      .invoke('text')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="trading-mode-col"]')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="taker-fee"]')
+      .should('contain.text', '%');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="market-volume"]')
+      .should('not.be.empty');
+    cy.getByTestId(marketListContent)
+      .find('[data-testid="market-name"]')
+      .should('not.be.empty');
   });
 
   it('Able to select market from dropdown', () => {
@@ -184,7 +198,7 @@ describe('Console - markets table - live env', { tags: '@live' }, () => {
       .invoke('text')
       .then((marketName) => {
         openMarketDropDown();
-        cy.get('[data-testid^=market-link').eq(1).click();
+        cy.get('[data-testid^=market-link]').eq(1).click();
         cy.getByTestId('popover-trigger').should('not.be.equal', marketName);
       });
   });

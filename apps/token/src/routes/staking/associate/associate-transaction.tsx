@@ -93,7 +93,7 @@ export const AssociateTransaction = ({
         vegaKey: truncateMiddle(vegaKey),
       })}
       completeFooter={
-        <RouteLink to={Routes.STAKING}>
+        <RouteLink to={Routes.VALIDATORS}>
           <Button>{t('Nominate Stake to Validator Node')}</Button>
         </RouteLink>
       }

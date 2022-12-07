@@ -1,34 +1,16 @@
-import create from 'zustand';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
-import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
-
-interface State {
-  isOpen: boolean;
-  connectors: [Connector, Web3ReactHooks][];
-  desiredChainId?: number;
-}
-interface Actions {
-  open: (connectors: State['connectors'], desiredChainId?: number) => void;
-  close: () => void;
-}
-
-export const useWeb3ConnectDialog = create<State & Actions>((set) => ({
-  isOpen: false,
-  connectors: [],
-  open: (connectors, desiredChainId) =>
-    set(() => ({ isOpen: true, connectors, desiredChainId })),
-  close: () =>
-    set(() => ({ isOpen: false, connectors: [], desiredChainId: undefined })),
-}));
+import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
+import type { Web3ReactHooks } from '@web3-react/core';
+import { useWeb3ConnectStore } from './web3-connect-store';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
-  connectors: State['connectors'];
+  connectors: [Connector, Web3ReactHooks][];
   desiredChainId?: number;
 }
 
@@ -38,6 +20,8 @@ export const Web3ConnectDialog = ({
   connectors,
   desiredChainId,
 }: Web3ConnectDialogProps) => {
+  const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+
   return (
     <Dialog
       open={dialogOpen}
@@ -55,6 +39,7 @@ export const Web3ConnectDialog = ({
                 data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);
+                  setEagerConnector(info.name);
                   setDialogOpen(false);
                 }}
               >
@@ -69,17 +54,16 @@ export const Web3ConnectDialog = ({
 };
 
 export const Web3ConnectUncontrolledDialog = () => {
-  const { isOpen, connectors, desiredChainId, open, close } =
-    useWeb3ConnectDialog();
-
-  const onChange = (isOpen: boolean) =>
-    isOpen ? open(connectors, desiredChainId) : close();
+  const { isOpen, connectors, open, close, desiredChainId } =
+    useWeb3ConnectStore();
+  const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
   return (
     <Web3ConnectDialog
       dialogOpen={isOpen}
       setDialogOpen={onChange}
       connectors={connectors}
+      desiredChainId={desiredChainId}
     />
   );
 };

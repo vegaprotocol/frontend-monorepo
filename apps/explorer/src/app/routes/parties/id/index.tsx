@@ -46,14 +46,14 @@ const Party = () => {
     filters,
   });
 
-  const { data } = useExplorerPartyAssetsQuery({
+  const partyRes = useExplorerPartyAssetsQuery({
     // Don't cache data for this query, party information can move quite quickly
     fetchPolicy: 'network-only',
     variables: { partyId: partyId },
     skip: !party,
   });
 
-  const p = data?.partiesConnection?.edges[0].node;
+  const p = partyRes.data?.partiesConnection?.edges[0].node;
 
   const header = p?.id ? (
     <PageHeader
@@ -133,7 +133,7 @@ const Party = () => {
       >
         {t('Party')}
       </h1>
-      {data ? (
+      {partyRes.data ? (
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>

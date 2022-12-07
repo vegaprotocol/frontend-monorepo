@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useFetch } from '@vegaprotocol/react-helpers';
+import { remove0x, useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxDetails } from './tx-details';
@@ -14,12 +14,19 @@ import { Icon } from '@vegaprotocol/ui-toolkit';
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
   const hash = txHash ? toNonHex(txHash) : '';
+  let errorMessage: string | undefined = undefined;
 
   const {
-    state: { data, loading: tTxLoading, error: tTxError },
+    state: { data, loading, error },
   } = useFetch<BlockExplorerTransaction>(
     `${DATA_SOURCES.blockExplorerUrl}/transactions/${toNonHex(hash)}`
   );
+
+  if (error) {
+    if (remove0x(hash).length !== 64) {
+      errorMessage = 'Invalid transaction hash';
+    }
+  }
 
   return (
     <section>
@@ -41,7 +48,11 @@ const Tx = () => {
         className="mb-5"
       />
 
-      <RenderFetched error={tTxError} loading={tTxLoading}>
+      <RenderFetched
+        error={error}
+        loading={loading}
+        errorMessage={errorMessage}
+      >
         <TxDetails
           className="mb-28"
           txData={data?.transaction}
