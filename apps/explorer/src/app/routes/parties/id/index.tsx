@@ -133,9 +133,6 @@ const Party = () => {
       >
         {t('Party')}
       </h1>
-      {partyRes.error ? (
-        <PartyIdError id={partyId} error={partyRes.error} />
-      ) : null}
       {partyRes.data ? (
         <>
           {header}
