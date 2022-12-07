@@ -87,7 +87,10 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   //   'can now participate in governance and nominate a validator',
   //   txTimeout
   // ).should('be.visible');
-  cy.getByTestId('associated-amount', txTimeout).should('contains.text', amount);
+  cy.getByTestId('associated-amount', txTimeout).should(
+    'contains.text',
+    amount
+  );
 });
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
