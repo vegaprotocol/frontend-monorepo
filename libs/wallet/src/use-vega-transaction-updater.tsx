@@ -73,7 +73,7 @@ export const useVegaTransactionUpdater = () => {
       result.data?.busEvents?.forEach((event) => {
         if (event.event.__typename === 'Withdrawal') {
           const withdrawal = event.event;
-          waitForWithdrawalApproval(event.event.id, client).then((approval) =>
+          waitForWithdrawalApproval(withdrawal.id, client).then((approval) =>
             updateWithdrawal(withdrawal, approval)
           );
         }
