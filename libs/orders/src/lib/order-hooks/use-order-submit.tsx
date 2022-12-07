@@ -1,9 +1,12 @@
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { OrderEventFieldsFragment } from './__generated__/OrderEvent';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction, determineId } from '@vegaprotocol/wallet';
+import {
+  useVegaWallet,
+  useVegaTransaction,
+  determineId,
+} from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
 import { Schema } from '@vegaprotocol/types';
