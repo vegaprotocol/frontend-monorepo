@@ -43,7 +43,7 @@ const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
               {t('The connection to your Vega Wallet has been lost')}
             </li>
             <li className="mb-0 border-t pt-4">
-              <Button onClick={reconnect}>{t('Reconnect vega wallet')}</Button>
+              <Button onClick={reconnect}>{t('Connect vega wallet')}</Button>
             </li>
           </ul>
         );
