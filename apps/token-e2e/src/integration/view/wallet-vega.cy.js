@@ -265,17 +265,12 @@ context(
         });
 
         // 0002-WCON-029
-        it('should be able to copy public key button', function () {
-          cy.monitorClipboard().as('clipboard');
+        it('should have copy public key button visible', function () {
           cy.get(dialog).within(() => {
             cy.get(copyPublicKeyBtn)
-              .first()
-              .should('contain.text', 'Copy')
-              .click();
+              .should('be.visible')
+              .and('contain.text', 'Copy');
           });
-          cy.get('@clipboard')
-            .getCopiedTextFromClipboard()
-            .should('equal', vegaWalletPublicKey);
         });
 
         it('should have close button visible', function () {
