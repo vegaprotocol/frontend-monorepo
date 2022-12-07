@@ -303,32 +303,32 @@ context(
         });
       });
 
-    // 2002-SINC-016
-    describe.skip('when assets exist in vegawallet', function () {
-      before('send-faucet assets to connected vega wallet', function () {
-        cy.vega_wallet_faucet_assets_without_check(
-          faucetAssets.USDCFake,
-          '1000000',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_faucet_assets_without_check(
-          faucetAssets.BTCFake,
-          '600000',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_faucet_assets_without_check(
-          faucetAssets.EUROFake,
-          '800000',
-          vegaWalletPublicKey
-        );
-        cy.vega_wallet_faucet_assets_without_check(
-          faucetAssets.DAIFake,
-          '200000',
-          vegaWalletPublicKey
-        );
-        cy.connectVegaWallet();
-        cy.ethereum_wallet_connect();
-      });
+      // 2002-SINC-016
+      describe.skip('when assets exist in vegawallet', function () {
+        before('send-faucet assets to connected vega wallet', function () {
+          cy.vega_wallet_faucet_assets_without_check(
+            faucetAssets.USDCFake,
+            '1000000',
+            vegaWalletPublicKey
+          );
+          cy.vega_wallet_faucet_assets_without_check(
+            faucetAssets.BTCFake,
+            '600000',
+            vegaWalletPublicKey
+          );
+          cy.vega_wallet_faucet_assets_without_check(
+            faucetAssets.EUROFake,
+            '800000',
+            vegaWalletPublicKey
+          );
+          cy.vega_wallet_faucet_assets_without_check(
+            faucetAssets.DAIFake,
+            '200000',
+            vegaWalletPublicKey
+          );
+          cy.connectVegaWallet();
+          cy.ethereum_wallet_connect();
+        });
 
         it('should see fUSDC assets - within vega wallet', function () {
           let currency = { id: faucetAssets.USDCFake, name: 'USDC (fake)' };
