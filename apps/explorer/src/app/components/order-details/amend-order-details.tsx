@@ -4,12 +4,7 @@ import { MarketLink } from '../links';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { Time } from '../time';
 
-import {
-  tifShort,
-  sideText,
-  peggedReference,
-  tifFull,
-} from './lib/order-labels';
+import { sideText, peggedReference } from './lib/order-labels';
 import type { components } from '../../../types/explorer';
 import { VegaColours } from '@vegaprotocol/tailwindcss-config';
 import { wrapperClasses } from './deterministic-order-details';
