@@ -5,15 +5,20 @@ import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
-  normalisedVotingPower,
-  rawValidatorScore,
-  unnormalisedVotingPower,
+  getFormattedPerformanceScore,
+  getNormalisedVotingPower,
+  getOverstakedAmount,
+  getOverstakingPenalty,
+  getPerformancePenalty,
+  getRawValidatorScore,
+  getTotalPenalties,
+  getUnnormalisedVotingPower,
 } from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
   stakedTotalPercentage,
-  totalPenalties,
+  TotalPenaltiesRenderer,
   TotalStakeRenderer,
   ValidatorFields,
   ValidatorRenderer,
@@ -79,7 +84,12 @@ export const ConsensusValidatorsTable = ({
           pendingStake,
           votingPowerRanking,
         }) => {
-          const validatorScore = rawValidatorScore(previousEpochData, id);
+          const validatorScore = getRawValidatorScore(previousEpochData, id);
+          const overstakedAmount = getOverstakedAmount(
+            validatorScore,
+            stakedTotal,
+            totalStake
+          );
 
           return {
             id,
@@ -93,9 +103,9 @@ export const ConsensusValidatorsTable = ({
               2
             ),
             [ValidatorFields.NORMALISED_VOTING_POWER]:
-              normalisedVotingPower(votingPower),
+              getNormalisedVotingPower(votingPower),
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
-              unnormalisedVotingPower(validatorScore),
+              getUnnormalisedVotingPower(validatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
             [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
               toBigNum(stakedByDelegates, decimals),
@@ -105,7 +115,16 @@ export const ConsensusValidatorsTable = ({
               toBigNum(stakedByOperator, decimals),
               2
             ),
-            [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
+            [ValidatorFields.PERFORMANCE_SCORE]:
+              getFormattedPerformanceScore(performanceScore).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]:
+              getPerformancePenalty(performanceScore),
+            [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
+            [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
+              overstakedAmount,
+              totalStake
+            ),
+            [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
               validatorScore,
               performanceScore,
               stakedTotal,
@@ -193,6 +212,7 @@ export const ConsensusValidatorsTable = ({
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
+          cellRenderer: TotalPenaltiesRenderer,
           width: 120,
         },
         {

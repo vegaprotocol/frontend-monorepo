@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { NodesFragmentFragment } from '../__generated___/Nodes';
 import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
-import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 export enum ValidatorFields {
   RANKING_INDEX = 'rankingIndex',
@@ -23,6 +22,10 @@ export enum ValidatorFields {
   UNNORMALISED_VOTING_POWER = 'unnormalisedVotingPower',
   STAKE_NEEDED_FOR_PROMOTION = 'stakeNeededForPromotion',
   STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION = 'stakeNeededForPromotionDescription',
+  PERFORMANCE_SCORE = 'performanceScore',
+  PERFORMANCE_PENALTY = 'performancePenalty',
+  OVERSTAKED_AMOUNT = 'overstakedAmount',
+  OVERSTAKING_PENALTY = 'overstakingPenalty',
 }
 
 export interface ValidatorsTableProps {
@@ -45,26 +48,6 @@ export const NODE_LIST_GRID_STYLES = `
 export const stakedTotalPercentage = (stakeScore: string) =>
   toBigNum(stakeScore, 0).times(100).dp(2).toString() + '%';
 
-export const totalPenalties = (
-  rawValidatorScore: string | null | undefined,
-  performanceScore: string,
-  stakedTotal: string,
-  totalStake: string
-) => {
-  const totalPenaltiesCalc =
-    rawValidatorScore !== null
-      ? 100 *
-        Math.max(
-          0,
-          1 -
-            (Number(performanceScore) * Number(rawValidatorScore)) /
-              (Number(stakedTotal) / Number(totalStake || 0))
-        )
-      : 0;
-
-  return toBigNum(totalPenaltiesCalc, 0).dp(2).toString() + '%';
-};
-
 export const defaultColDef = {
   sortable: true,
   resizable: true,
@@ -73,6 +56,7 @@ export const defaultColDef = {
   cellStyle: { margin: '10px 0' },
   tooltipComponent: TooltipCellComponent,
   tooltipShowDelay: 0,
+  tooltipHideDelay: 0,
 };
 
 interface ValidatorRendererProps {
@@ -180,6 +164,53 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
       }
     >
       <span>{data.stake}</span>
+    </Tooltip>
+  );
+};
+
+interface TotalPenaltiesRendererProps {
+  data: {
+    performanceScore: string;
+    performancePenalty: string;
+    overstakedAmount: string;
+    overstakedPenalty: string;
+    totalPenalties: string;
+  };
+}
+
+export const TotalPenaltiesRenderer = ({
+  data,
+}: TotalPenaltiesRendererProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Tooltip
+      description={
+        <>
+          <div>
+            <span>
+              {t('performancePenalty')}: {data.performancePenalty}
+            </span>
+            <span className="pl-2">
+              ({t('score')} {data.performanceScore})
+            </span>
+          </div>
+          <div>
+            <span>
+              {t('overstakedPenalty')}: {data.overstakedPenalty}
+            </span>
+            <span className="pl-2">
+              ({t('overstaked')} {data.overstakedAmount})
+            </span>
+          </div>
+          <div>
+            {t('totalPenalties')}:{' '}
+            <span className="font-bold">{data.totalPenalties}</span>
+          </div>
+        </>
+      }
+    >
+      <span>{data.totalPenalties}</span>
     </Tooltip>
   );
 };

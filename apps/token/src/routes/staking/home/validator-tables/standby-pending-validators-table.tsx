@@ -4,15 +4,22 @@ import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
-import { rawValidatorScore } from '../../shared';
+import {
+  getFormattedPerformanceScore,
+  getOverstakedAmount,
+  getOverstakingPenalty,
+  getPerformancePenalty,
+  getRawValidatorScore,
+  getTotalPenalties,
+} from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
   StakeNeededForPromotionRenderer,
   stakedTotalPercentage,
-  totalPenalties,
   ValidatorFields,
   ValidatorRenderer,
+  TotalPenaltiesRenderer,
   TotalStakeRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
@@ -54,6 +61,12 @@ export const StandbyPendingValidatorsTable = ({
         rankingScore: { stakeScore, performanceScore },
         pendingStake,
       }) => {
+        const validatorScore = getRawValidatorScore(previousEpochData, id);
+        const overstakedAmount = getOverstakedAmount(
+          validatorScore,
+          stakedTotal,
+          totalStake
+        );
         let individualStakeNeededForPromotion,
           individualStakeNeededForPromotionDescription;
 
@@ -108,8 +121,17 @@ export const StandbyPendingValidatorsTable = ({
             toBigNum(stakedByOperator, decimals),
             2
           ),
-          [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-            rawValidatorScore(previousEpochData, id),
+          [ValidatorFields.PERFORMANCE_SCORE]:
+            getFormattedPerformanceScore(performanceScore).toString(),
+          [ValidatorFields.PERFORMANCE_PENALTY]:
+            getPerformancePenalty(performanceScore),
+          [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
+          [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
+            overstakedAmount,
+            totalStake
+          ),
+          [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
+            getRawValidatorScore(previousEpochData, id),
             performanceScore,
             stakedTotal,
             totalStake
@@ -168,6 +190,7 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
+          cellRenderer: TotalPenaltiesRenderer,
           width: 120,
         },
         {

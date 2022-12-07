@@ -726,5 +726,9 @@
   "TotalPenaltiesDescription": "Total of penalties taking into account performance (considering proportion of blocks proposed against the number of blocks the validator was expected to propose) and any overstaking.",
   "PendingStakeDescription": "The amount of stake that will be added or removed from the validator from the next epoch.",
   "StakeNeededForPromotionStandbyDescription": "{{prefix}} additional stake needed for promotion to consensus, assuming constant performance in line with previous epoch.",
-  "StakeNeededForPromotionCandidateDescription": "{{prefix}} additional stake needed for promotion to standby, assuming constant performance in line with previous epoch."
+  "StakeNeededForPromotionCandidateDescription": "{{prefix}} additional stake needed for promotion to standby, assuming constant performance in line with previous epoch.",
+  "Score": "Score",
+  "performancePenalty": "Performance penalty",
+  "overstaked": "Overstaked",
+  "overstakedPenalty": "Overstaked penalty"
 }
