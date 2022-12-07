@@ -83,14 +83,10 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     )} more confirmations..`,
     epochTimeout
   ).should('be.visible');
-  // cy.contains(
-  //   'can now participate in governance and nominate a validator',
-  //   txTimeout
-  // ).should('be.visible');
-  cy.get("[data-testid='associated-amount']", txTimeout).should(
-    'contains.text',
-    amount
-  );
+  cy.contains(
+    'can now participate in governance and nominate a validator',
+    {timeout: 120000}
+  ).should('be.visible');
 });
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
