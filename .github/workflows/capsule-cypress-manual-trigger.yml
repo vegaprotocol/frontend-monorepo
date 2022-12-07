@@ -26,10 +26,6 @@ on:
         required: false
         type: boolean
         default: false
-env:
-  GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.63.1'
-
 jobs:
   manual:
     name: Run Cypress tests -- manual trigger
@@ -43,8 +39,6 @@ jobs:
         run: echo SKIP_NX_CACHE="--skip-nx-cache" >> $GITHUB_ENV
 
     outputs:
-      vega-version: ${{env.VEGA_VERSION}}
-      gobin: ${{env.GOBIN}}
       skip-cache: ${{env.SKIP_NX_CACHE}}
       tags: ${{env.TAGS}}
 
@@ -54,7 +48,5 @@ jobs:
     secrets: inherit
     with:
       project: ${{ inputs.project }}
-      vega-version: ${{needs.manual.outputs.vega-version}}
-      gobin: ${{needs.manual.outputs.gobin}}
       skip-cache: ${{needs.manual.outputs.skip-cache}}
       tags: ${{needs.manual.outputs.tags}}
