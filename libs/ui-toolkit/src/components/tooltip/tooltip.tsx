@@ -5,7 +5,6 @@ import {
   Root,
   Trigger,
   Content,
-  Arrow,
   Portal,
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
