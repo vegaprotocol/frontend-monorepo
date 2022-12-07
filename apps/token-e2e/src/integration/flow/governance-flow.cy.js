@@ -633,6 +633,7 @@ context(
           .and('be.visible');
       });
 
+      // 0005-ETXN-004
       it('Unable to create a proposal - when no tokens are associated', function () {
         cy.vega_wallet_teardown();
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
