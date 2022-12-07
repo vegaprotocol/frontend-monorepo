@@ -6,13 +6,15 @@ import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
+import isNumber from 'lodash/isNumber';
+import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 
 interface TxsPerBlockProps {
   blockHeight: string;
   txCount: number;
 }
 
-const truncateLength = 14;
+const truncateLength = 5;
 
 export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   // TODO after https://github.com/vegaprotocol/vega/pull/6958/files is merged and deployed, use filter
@@ -22,8 +24,9 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   } = useFetch<BlockExplorerTransactions>(
     `${
       DATA_SOURCES.blockExplorerUrl
-    }/transactions/before=${blockHeight.toString()}.0&limit=${txCount}`
+    }/transactions?before=${blockHeight.toString()}.0&limit=${txCount}`
   );
+
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
       {data && data.transactions.length > 0 ? (
@@ -34,38 +37,54 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
                 <td>{t('Transaction')}</td>
                 <td>{t('From')}</td>
                 <td>{t('Type')}</td>
+                <td>{t('Status')}</td>
               </TableRow>
             </thead>
             <tbody>
-              {data.transactions.map(({ hash, submitter, type, command }) => {
-                return (
-                  <TableRow
-                    modifier="bordered"
-                    key={hash}
-                    data-testid="transaction-row"
-                  >
-                    <TableCell modifier="bordered" className="pr-12">
-                      <TruncatedLink
-                        to={`/${Routes.TX}/${hash}`}
-                        text={hash}
-                        startChars={truncateLength}
-                        endChars={truncateLength}
-                      />
-                    </TableCell>
-                    <TableCell modifier="bordered" className="pr-12">
-                      <TruncatedLink
-                        to={`/${Routes.PARTIES}/${submitter}`}
-                        text={submitter}
-                        startChars={truncateLength}
-                        endChars={truncateLength}
-                      />
-                    </TableCell>
-                    <TableCell modifier="bordered">
-                      <TxOrderType orderType={type} command={command} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {data.transactions.map(
+                ({ hash, submitter, type, command, code }) => {
+                  return (
+                    <TableRow
+                      modifier="bordered"
+                      key={hash}
+                      data-testid="transaction-row"
+                    >
+                      <TableCell
+                        modifier="bordered"
+                        className="pr-12 font-mono"
+                      >
+                        <TruncatedLink
+                          to={`/${Routes.TX}/${hash}`}
+                          text={hash}
+                          startChars={truncateLength}
+                          endChars={truncateLength}
+                        />
+                      </TableCell>
+                      <TableCell
+                        modifier="bordered"
+                        className="pr-12 font-mono"
+                      >
+                        <TruncatedLink
+                          to={`/${Routes.PARTIES}/${submitter}`}
+                          text={submitter}
+                          startChars={truncateLength}
+                          endChars={truncateLength}
+                        />
+                      </TableCell>
+                      <TableCell modifier="bordered">
+                        <TxOrderType orderType={type} command={command} />
+                      </TableCell>
+                      <TableCell modifier="bordered" className="text">
+                        {isNumber(code) ? (
+                          <ChainResponseCode code={code} hideLabel={true} />
+                        ) : (
+                          code
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+              )}
             </tbody>
           </Table>
         </div>
