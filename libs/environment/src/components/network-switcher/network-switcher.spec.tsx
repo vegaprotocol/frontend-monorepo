@@ -140,6 +140,7 @@ describe('Network switcher', () => {
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
       [Networks.SANDBOX]: 'https://sandbox.net',
+      [Networks.MIRROR]: 'https://mirror.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked
     useEnvironment.mockImplementation(() => ({
@@ -179,6 +180,7 @@ describe('Network switcher', () => {
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
       [Networks.SANDBOX]: 'https://sandbox.net',
+      [Networks.MIRROR]: 'https://mirror.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked
     useEnvironment.mockImplementation(() => ({
@@ -211,6 +213,7 @@ describe('Network switcher', () => {
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
       [Networks.SANDBOX]: 'https://sandbox.net',
+      [Networks.MIRROR]: 'https://mirror.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked
     useEnvironment.mockImplementation(() => ({
