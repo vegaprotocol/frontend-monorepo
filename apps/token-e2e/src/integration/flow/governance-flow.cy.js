@@ -123,12 +123,11 @@ context(
             parseInt(this.minCloseDays + 1),
             'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
-          // cy.reload();
-          // cy.ethereum_wallet_connect();
-          // cy.connectVegaWallet();
+          cy.reload();
+          cy.connectVegaWallet();
           // // For unknown reason eth wallet txs are failing connecting first time in CI
           // associateWithoutAssertion();
-          // cy.vega_wallet_teardown();
+          cy.vega_wallet_teardown();
           // cy.clearLocalStorage();
         }
       );

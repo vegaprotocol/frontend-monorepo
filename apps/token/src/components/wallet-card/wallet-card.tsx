@@ -66,14 +66,14 @@ export const WalletCardRow = ({
           {label}
         </Link>
       ) : (
-        <span className="max-w-[200px]" data-test-id="associated-key">
+        <span className="max-w-[200px]" data-testid="associated-key">
           {label}
         </span>
       )}
       {value && (
         <span
           className="font-mono flex-1 text-right"
-          data-test-id="associated-amount"
+          data-testid="associated-amount"
         >
           <span>{integers}.</span>
           <span>{decimalsPlaces}</span>

@@ -87,7 +87,7 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   //   'can now participate in governance and nominate a validator',
   //   txTimeout
   // ).should('be.visible');
-  cy.getByTestId('associated-amount', txTimeout).should(
+  cy.get("[data-testid='associated-amount']", txTimeout).should(
     'contains.text',
     amount
   );
