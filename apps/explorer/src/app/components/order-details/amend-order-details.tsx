@@ -112,21 +112,6 @@ const AmendOrderDetails = ({
               </div>
             ) : null}
 
-            {amend.timeInForce &&
-            amend.timeInForce !== 'TIME_IN_FORCE_UNSPECIFIED' ? (
-              <div className="">
-                <h2 className="text-2xl font-bold text-dark mb-4">
-                  {t('New TIF')}
-                </h2>
-                <h5
-                  className="text-lg font-medium text-gray-500 mb-0"
-                  title={tifFull[amend.timeInForce]}
-                >
-                  {tifShort[amend.timeInForce]}
-                </h5>
-              </div>
-            ) : null}
-
             {amend.peggedReference &&
             amend.peggedReference !== 'PEGGED_REFERENCE_UNSPECIFIED' ? (
               <div className="">

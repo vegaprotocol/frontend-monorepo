@@ -110,16 +110,6 @@ describe('Amend order details', () => {
     const res = renderExistingAmend('123', 1, amend);
     expect(await res.findByText('New size')).toBeInTheDocument();
   });
-  it('Renders Time in Force (gfa) if provided', async () => {
-    const amend: Amend = {
-      timeInForce: 'TIME_IN_FORCE_GFA',
-    };
-
-    const res = renderExistingAmend('123', 1, amend);
-    expect(await res.findByText('New TIF')).toBeInTheDocument();
-    expect(await res.findByText('GFA')).toBeInTheDocument();
-    expect(await res.findByTitle('Good for Auction')).toBeInTheDocument();
-  });
 
   it('Renders Reference if provided', async () => {
     const amend: Amend = {
