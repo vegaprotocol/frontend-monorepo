@@ -23,7 +23,7 @@ import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
 import {
   ETHEREUM_EAGER_CONNECT,
-  useWeb3ConnectDialog,
+  useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 
 interface FormFields {
@@ -225,7 +225,7 @@ const UseButton = (props: UseButtonProps) => {
 };
 
 const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
-  const openDialog = useWeb3ConnectDialog((state) => state.open);
+  const openDialog = useWeb3ConnectStore((state) => state.open);
   const { isActive, connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 

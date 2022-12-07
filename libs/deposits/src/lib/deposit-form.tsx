@@ -28,7 +28,7 @@ import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   ETHEREUM_EAGER_CONNECT,
-  useWeb3ConnectDialog,
+  useWeb3ConnectStore,
   ChainIdMap,
 } from '@vegaprotocol/web3';
 
@@ -305,7 +305,7 @@ const FormButton = ({
   allowance,
   onApproveClick,
 }: FormButtonProps) => {
-  const { open, desiredChainId } = useWeb3ConnectDialog((store) => ({
+  const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
     open: store.open,
     desiredChainId: store.desiredChainId,
   }));
@@ -399,7 +399,7 @@ const UseButton = (props: UseButtonProps) => {
 };
 
 const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
-  const openDialog = useWeb3ConnectDialog((state) => state.open);
+  const openDialog = useWeb3ConnectStore((state) => state.open);
   const { isActive, connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
 

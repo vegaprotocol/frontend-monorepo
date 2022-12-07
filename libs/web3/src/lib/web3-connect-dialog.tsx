@@ -1,40 +1,16 @@
-import create from 'zustand';
 import { t, useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
-import type { Web3ReactHooks } from '@web3-react/core';
 import type { Connector } from '@web3-react/types';
 import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
-
-interface State {
-  isOpen: boolean;
-  connectors: [Connector, Web3ReactHooks][];
-  desiredChainId?: number;
-}
-interface Actions {
-  initialize: (
-    connectors: [MetaMask | WalletConnect, Web3ReactHooks][],
-    desiredChainId: number
-  ) => void;
-  open: () => void;
-  close: () => void;
-}
-
-export const useWeb3ConnectDialog = create<State & Actions>((set) => ({
-  isOpen: false,
-  connectors: [],
-  initialize: (connectors, desiredChainId) => {
-    set({ connectors, desiredChainId });
-  },
-  open: () => set(() => ({ isOpen: true })),
-  close: () => set(() => ({ isOpen: false })),
-}));
+import type { Web3ReactHooks } from '@web3-react/core';
+import { useWeb3ConnectStore } from './web3-connect-store';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
-  connectors: State['connectors'];
+  connectors: [Connector, Web3ReactHooks][];
   desiredChainId?: number;
 }
 
@@ -79,7 +55,7 @@ export const Web3ConnectDialog = ({
 
 export const Web3ConnectUncontrolledDialog = () => {
   const { isOpen, connectors, open, close, desiredChainId } =
-    useWeb3ConnectDialog();
+    useWeb3ConnectStore();
   const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
   return (

@@ -10,7 +10,7 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import { ChainIdMap, useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import { ChainIdMap, useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
@@ -99,7 +99,7 @@ const ActionButton = ({
   submitWithdraw: (withdrawalId: string) => void;
 }) => {
   const { isActive, chainId } = useWeb3React();
-  const { open, desiredChainId } = useWeb3ConnectDialog((store) => ({
+  const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
     open: store.open,
     desiredChainId: store.desiredChainId,
   }));

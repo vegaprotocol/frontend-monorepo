@@ -6,7 +6,7 @@ import { useCompleteWithdraw } from './use-complete-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { WithdrawalFeedback } from './withdrawal-feedback';
-import { useWeb3ConnectDialog } from '@vegaprotocol/web3';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 interface State {
   isOpen: boolean;
   assetId?: string;
@@ -29,7 +29,7 @@ export const WithdrawalDialog = () => {
   const { pubKey } = useVegaWallet();
   const createWithdraw = useCreateWithdraw();
   const completeWithdraw = useCompleteWithdraw();
-  const connectWalletDialogIsOpen = useWeb3ConnectDialog(
+  const connectWalletDialogIsOpen = useWeb3ConnectStore(
     (state) => state.isOpen
   );
   return (

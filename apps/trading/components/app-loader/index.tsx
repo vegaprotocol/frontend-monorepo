@@ -6,7 +6,7 @@ import {
   useEthereumConfig,
   createConnectors,
   Web3Provider as Web3ProviderInternal,
-  useWeb3ConnectDialog,
+  useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
@@ -25,7 +25,7 @@ export function AppLoader({ children }: AppLoaderProps) {
 export const Web3Provider = ({ children }: { children: ReactNode }) => {
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
-  const [connectors, initializeConnectors] = useWeb3ConnectDialog((store) => [
+  const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
     store.connectors,
     store.initialize,
   ]);

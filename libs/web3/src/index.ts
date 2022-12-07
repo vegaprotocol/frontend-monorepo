@@ -11,4 +11,5 @@ export * from './lib/ethereum-transaction-dialog';
 export * from './lib/web3-provider';
 export * from './lib/web3-connectors';
 export * from './lib/web3-connect-dialog';
+export * from './lib/web3-connect-store';
 export * from './lib/web3-container';
