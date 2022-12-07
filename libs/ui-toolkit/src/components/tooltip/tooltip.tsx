@@ -41,7 +41,7 @@ export const Tooltip = ({
               align={align}
               side={side}
               alignOffset={8}
-              className="max-w-sm border border-neutral-600 bg-neutral-200 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm text-black dark:text-white break-word"
+              className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm text-black dark:text-white break-word"
             >
               <div className="relative z-0">{description}</div>
             </Content>
@@ -55,7 +55,7 @@ export const Tooltip = ({
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
   return (
-    <p className="max-w-sm border border-neutral-600 bg-neutral-200 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
+    <p className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
       {props.value}
     </p>
   );
