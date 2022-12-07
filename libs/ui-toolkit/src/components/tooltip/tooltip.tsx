@@ -60,7 +60,7 @@ export const Tooltip = ({
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
   return (
-    <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
+    <p className="max-w-sm border border-neutral-600 bg-neutral-200 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
       {props.value}
     </p>
   );

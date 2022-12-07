@@ -20,6 +20,7 @@ import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
 
 interface StandbyPendingValidatorsTableProps extends ValidatorsTableProps {
   stakeNeededForPromotion: string | undefined;
+  stakeNeededForPromotionDescription: string;
 }
 
 export const StandbyPendingValidatorsTable = ({
@@ -27,6 +28,7 @@ export const StandbyPendingValidatorsTable = ({
   previousEpochData,
   totalStake,
   stakeNeededForPromotion,
+  stakeNeededForPromotionDescription,
 }: StandbyPendingValidatorsTableProps) => {
   const { t } = useTranslation();
   const {
@@ -113,27 +115,32 @@ export const StandbyPendingValidatorsTable = ({
         {
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
+          headerTooltip: t('StakeDescription').toString(),
           width: 120,
         },
         {
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
           headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
+          headerTooltip: stakeNeededForPromotionDescription,
           width: 210,
           sort: 'asc',
         },
         {
           field: ValidatorFields.STAKE_SHARE,
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
           width: 100,
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
+          headerTooltip: t('TotalPenaltiesDescription').toString(),
           width: 120,
         },
         {
           field: ValidatorFields.PENDING_STAKE,
           headerName: t(ValidatorFields.PENDING_STAKE).toString(),
+          headerTooltip: t('PendingStakeDescription').toString(),
           width: 110,
         },
       ],

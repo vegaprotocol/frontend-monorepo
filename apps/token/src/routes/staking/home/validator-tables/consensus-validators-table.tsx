@@ -151,27 +151,32 @@ export const ConsensusValidatorsTable = ({
         {
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
+          headerTooltip: t('StakeDescription').toString(),
           width: 120,
         },
         {
           field: ValidatorFields.NORMALISED_VOTING_POWER,
           headerName: t(ValidatorFields.NORMALISED_VOTING_POWER).toString(),
+          headerTooltip: t('NormalisedVotingPowerDescription').toString(),
           width: 200,
           sort: 'desc',
         },
         {
           field: ValidatorFields.STAKE_SHARE,
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
           width: 100,
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
+          headerTooltip: t('TotalPenaltiesDescription').toString(),
           width: 120,
         },
         {
           field: ValidatorFields.PENDING_STAKE,
           headerName: t(ValidatorFields.PENDING_STAKE).toString(),
+          headerTooltip: t('PendingStakeDescription').toString(),
           width: 110,
         },
       ],
