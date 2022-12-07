@@ -16,7 +16,7 @@ const assetsInTest = Object.keys(assetData);
 
 // skipped due to existing issue
 // https://github.com/vegaprotocol/frontend-monorepo/issues/2243
-context('Parties page', { tags: '@regression' }, function () {
+context.skip('Parties page', { tags: '@regression' }, function () {
   before('send-faucet assets to connected vega wallet', function () {
     assetsInTest.forEach((asset) => {
       cy.vega_wallet_receive_fauceted_asset(
@@ -81,14 +81,14 @@ context('Parties page', { tags: '@regression' }, function () {
       'should be able to copy the party address id',
       { browser: 'chrome' },
       function () {
-        cy.monitorClipboard().as('clipboard');
+        cy.monitor_clipboard().as('clipboard');
         cy.getByTestId('parties-header')
           .next()
           .within(() => {
             cy.get('button').click();
           });
         cy.get('@clipboard')
-          .getCopiedTextFromClipboard()
+          .get_copied_text_from_clipboard()
           .should('equal', vegaWalletPublicKey);
       }
     );
@@ -97,7 +97,7 @@ context('Parties page', { tags: '@regression' }, function () {
       'should be able to copy an asset id',
       { browser: 'chrome' },
       function () {
-        cy.monitorClipboard().as('clipboard');
+        cy.monitor_clipboard().as('clipboard');
 
         cy.contains(assetData.fDAI.name, txTimeout).should('be.visible');
         cy.contains(assetData.fDAI.name)
@@ -109,7 +109,7 @@ context('Parties page', { tags: '@regression' }, function () {
           });
 
         cy.get('@clipboard')
-          .getCopiedTextFromClipboard()
+          .get_copied_text_from_clipboard()
           .should('equal', assetData.fDAI.id);
       }
     );

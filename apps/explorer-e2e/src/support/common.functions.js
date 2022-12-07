@@ -27,6 +27,22 @@ Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
   cy.get('[data-testid="open-menu"]').click();
 });
 
+Cypress.Commands.add('monitor_clipboard', () => {
+  cy.window().then((win) => {
+    return cy.stub(win, 'prompt').returns(win.prompt);
+  });
+});
+
+Cypress.Commands.add(
+  'get_copied_text_from_clipboard',
+  { prevSubject: true },
+  (clipboard) => {
+    // Must first setup with cy.monitor_clipboard().as('clipboard')
+    // This function then chained off a cy.get('@clipboard')
+    return clipboard.args[0][1];
+  }
+);
+
 Cypress.Commands.add(
   'convert_string_json_to_js_object',
   { prevSubject: true },
