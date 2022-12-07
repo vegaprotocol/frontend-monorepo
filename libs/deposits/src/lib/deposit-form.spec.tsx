@@ -10,6 +10,8 @@ import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@web3-react/core');
 
+const mockConnector = { deactivate: jest.fn() };
+
 function generateAsset(): AssetFieldsFragment {
   return {
     __typename: 'Asset',
@@ -53,7 +55,11 @@ beforeEach(() => {
   };
 
   (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null });
-  (useWeb3React as jest.Mock).mockReturnValue({ account: MOCK_ETH_ADDRESS });
+  (useWeb3React as jest.Mock).mockReturnValue({
+    isActive: true,
+    account: MOCK_ETH_ADDRESS,
+    connector: mockConnector,
+  });
 });
 
 describe('Deposit form', () => {
@@ -192,7 +198,11 @@ describe('Deposit form', () => {
     mockUseVegaWallet.mockReturnValue({ pubKey: null });
 
     const mockUseWeb3React = useWeb3React as jest.Mock;
-    mockUseWeb3React.mockReturnValue({ account: undefined });
+    mockUseWeb3React.mockReturnValue({
+      account: MOCK_ETH_ADDRESS,
+      isActive: true,
+      connector: mockConnector,
+    });
 
     render(
       <DepositForm
@@ -219,7 +229,11 @@ describe('Deposit form', () => {
 
     const account = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
     const mockUseWeb3React = useWeb3React as jest.Mock;
-    mockUseWeb3React.mockReturnValue({ account });
+    mockUseWeb3React.mockReturnValue({
+      account,
+      isActive: true,
+      connector: mockConnector,
+    });
 
     const balance = new BigNumber(50);
     const max = new BigNumber(20);
