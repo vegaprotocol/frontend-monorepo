@@ -15,13 +15,13 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
-    cy.visit('/').navigate_to('staking');
+    cy.visit('/').navigate_to('validators');
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
     describe('description section', function () {
       it('Should have staking tab highlighted', function () {
-        cy.verify_tab_highlighted('staking');
+        cy.verify_tab_highlighted('validators');
       });
 
       it('Should have STAKING ON VEGA header visible', function () {

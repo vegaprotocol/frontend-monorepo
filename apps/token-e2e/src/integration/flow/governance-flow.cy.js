@@ -52,7 +52,6 @@ context(
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
-      cy.verify_page_header('The $VEGA token');
       cy.get_network_parameters().then((network_parameters) => {
         cy.wrap(
           network_parameters['spam.protection.proposal.min.tokens'] /
@@ -132,7 +131,7 @@ context(
         cy.wait_for_spinner();
         cy.connectVegaWallet();
         cy.ethereum_wallet_connect();
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
       });
 
@@ -207,7 +206,7 @@ context(
 
         let arrayOfProposals = [];
 
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
         cy.get(proposalDetailsTitle)
           .each((proposalTitleElement) => {
@@ -223,16 +222,16 @@ context(
 
       it('Able to submit a valid freeform proposal - with minimum required tokens associated - but also staked', function () {
         cy.ensure_specified_unstaked_tokens_are_associated('2');
-        cy.navigate_to_page_if_not_already_loaded('governance');
+        cy.navigate_to_page_if_not_already_loaded('proposals');
         cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
-        cy.navigate_to('staking');
+        cy.navigate_to('validators');
         cy.wait_for_spinner();
         cy.click_on_validator_from_list(0);
         cy.staking_validator_page_add_stake('2');
 
         cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
 
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
         cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
@@ -320,14 +319,14 @@ context(
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
             );
-            cy.navigate_to_page_if_not_already_loaded('governance');
+            cy.navigate_to_page_if_not_already_loaded('proposals');
             cy.get('@submittedProposal').within(() =>
               cy.get(viewProposalButton).click()
             );
             cy.get_proposal_information_from_table('Participation met')
               .contains('👍')
               .should('be.visible');
-            cy.navigate_to('governance');
+            cy.navigate_to('proposals');
             cy.wait_for_spinner();
             cy.get('@submittedProposal').within(() =>
               cy.get(voteStatus).should('have.text', 'Participation met')
@@ -378,7 +377,7 @@ context(
 
             cy.wait_for_proposal_submitted();
             cy.wait_for_proposal_sync();
-            cy.navigate_to('governance');
+            cy.navigate_to('proposals');
             cy.wait_for_spinner();
             cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
               () => cy.get(viewProposalButton).click()
@@ -523,7 +522,7 @@ context(
             cy.ensure_specified_unstaked_tokens_are_associated(
               tokensRequiredToAchieveResult
             );
-            cy.navigate_to_page_if_not_already_loaded('governance');
+            cy.navigate_to_page_if_not_already_loaded('proposals');
             cy.get('@submittedProposal').within(() =>
               cy.get(viewProposalButton).click()
             );
@@ -611,7 +610,7 @@ context(
         cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
         cy.get(dialogCloseButton).click();
         cy.wait_for_proposal_sync();
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
         cy.get(rejectProposalsLink).click().wait_for_spinner();
         cy.get('@rawProposal').then((rawProposal) => {
@@ -808,7 +807,7 @@ context(
         cy.get(newProposalSubmitButton).should('be.visible').click();
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
       }
 
@@ -820,7 +819,7 @@ context(
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
         cy.get(proposalDetailsTitle).invoke('text').as('proposalTitle');
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
       }
 

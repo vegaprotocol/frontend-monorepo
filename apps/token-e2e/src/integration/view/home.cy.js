@@ -1,10 +1,10 @@
 const navSection = 'nav';
-const navHome = '[href="/"]';
-const navVesting = '[href="/vesting"]';
-const navStaking = '[href="/staking"]';
+const navVesting = '[href="/token/tranches"]';
+const navToken = '[href="/token"]';
+const navStaking = '[href="/validators"]';
 const navRewards = '[href="/rewards"]';
-const navWithdraw = '[href="/withdrawals"]';
-const navGovernance = '[href="/governance"]';
+const navWithdraw = '[href="/token/withdraw"]';
+const navGovernance = '[href="/proposals"]';
 
 const tokenDetailsTable = '.token-details';
 const address = '[data-testid="token-address"]';
@@ -25,7 +25,7 @@ const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
 context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   before('visit token home page', function () {
-    cy.visit('/');
+    cy.visit('/token');
   });
 
   describe('with wallets disconnected', function () {
@@ -34,9 +34,9 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     describe('Navigation tabs', function () {
-      it('should have HOME tab', function () {
+      it('should have TOKEN tab', function () {
         cy.get(navSection).within(() => {
-          cy.get(navHome).should('be.visible');
+          cy.get(navToken).should('be.visible');
         });
       });
       it('should have VESTING tab', function () {
@@ -106,14 +106,14 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         cy.get(tranchesLink)
           .should('be.visible')
           .and('have.attr', 'href')
-          .and('equal', '/tranches');
+          .and('equal', '/token/tranches');
       });
       it('should have REDEEM button', function () {
         cy.get(redeemBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/vesting');
+          .and('equal', '/token/redeem');
       });
       it('should have GET VEGA WALLET link', function () {
         cy.get(getVegaWalletLink)
@@ -125,21 +125,21 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         cy.get(associateVegaLink)
           .should('be.visible')
           .and('have.attr', 'href')
-          .and('equal', '/staking/associate');
+          .and('equal', '/validators/associate');
       });
       it('should have STAKING button', function () {
         cy.get(stakingBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/staking');
+          .and('equal', '/validators');
       });
       it('should have GOVERNANCE button', function () {
         cy.get(governanceBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
-          .and('equal', '/governance');
+          .and('equal', '/proposals');
       });
     });
   });

@@ -1,3 +1,5 @@
+import { connectEthereumWallet } from '../support/ethereum-wallet';
+
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
 const amountField = 'input[name="amount"]';
@@ -18,6 +20,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('unable to select assets not enabled', () => {
+    connectEthereumWallet();
     cy.getByTestId('deposit-submit').click();
     // Assets not enabled in mocks
     cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist');
@@ -26,6 +29,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
   });
 
   it('handles empty fields', () => {
+    connectEthereumWallet();
     // Submit form to trigger any empty validation messages
     cy.getByTestId('deposit-submit').click();
 

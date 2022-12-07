@@ -30,6 +30,8 @@ export enum MarketModeValidationType {
   Auction = 'Auction',
 }
 
-export enum AccountValidationType {
+export enum SummaryValidationType {
   NoCollateral = 'NoCollateral',
+  TradingMode = 'MarketTradingMode',
+  MarketState = 'MarketState',
 }

@@ -7,6 +7,7 @@ import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
+import { generateAccounts } from '../support/mocks/generate-accounts';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -622,55 +623,91 @@ describe('suspended market validation', { tags: '@regression' }, () => {
 });
 
 describe('account validation', { tags: '@regression' }, () => {
-  beforeEach(() => {
-    cy.mockTradingPage();
-    cy.mockGQL((req) => {
-      aliasQuery(
-        req,
-        'EstimateOrder',
-        generateEstimateOrder({
-          estimateOrder: {
-            marginLevels: {
-              __typename: 'MarginLevels',
-              initialLevel: '1000000000',
+  describe('zero balance error', () => {
+    beforeEach(() => {
+      cy.mockTradingPage();
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'Accounts',
+          generateAccounts({
+            party: {
+              accountsConnection: {
+                edges: [
+                  {
+                    node: {
+                      type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+                      balance: '0',
+                      market: null,
+                      asset: {
+                        __typename: 'Asset',
+                        id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+                      },
+                    },
+                  },
+                ],
+              },
             },
-          },
-        })
-      );
+          })
+        );
+      });
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.connectVegaWallet();
+      cy.wait('@Market');
     });
-    cy.mockGQLSubscription();
-    cy.visit('/#/markets/market-0');
-    cy.connectVegaWallet();
-    cy.wait('@Market');
+
+    it('should show an error if your balance is zero', () => {
+      cy.getByTestId('place-order').should('not.be.disabled');
+      cy.getByTestId('place-order').click();
+      cy.getByTestId('place-order').should('be.disabled');
+      //7002-SORD-003
+      cy.getByTestId('dealticket-error-message-zero-balance').should(
+        'have.text',
+        'Insufficient balance. Deposit ' + 'tBTC'
+      );
+      cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
+    });
   });
 
-  it('should show an error if your balance is zero', () => {
-    cy.getByTestId('place-order').should('not.be.disabled');
-    cy.getByTestId('place-order').click();
-    cy.getByTestId('place-order').should('be.disabled');
-    //7002-SORD-003
-    cy.getByTestId('dealticket-error-message-zero-balance').should(
-      'have.text',
-      'Insufficient balance. Deposit ' + 'tBTC'
-    );
-    cy.getByTestId('deal-ticket-deposit-dialog-button').should('exist');
-  });
-
-  it('should display info and button for deposit', () => {
-    //7002-SORD-003
-    // warning should show immediately
-    cy.getByTestId('dealticket-warning-margin').should(
-      'contain.text',
-      'You may not have enough margin available to open this position'
-    );
-    cy.getByTestId('dealticket-warning-margin').should(
-      'contain.text',
-      '10,000.00 tBTC currently required, 1,000.00 tBTC available'
-    );
-    cy.getByTestId('deal-ticket-deposit-dialog-button').click();
-    cy.getByTestId('dialog-content')
-      .find('h1')
-      .eq(0)
-      .should('have.text', 'Deposit');
+  describe('not enough balance warning', () => {
+    beforeEach(() => {
+      cy.mockTradingPage();
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'EstimateOrder',
+          generateEstimateOrder({
+            estimateOrder: {
+              marginLevels: {
+                __typename: 'MarginLevels',
+                initialLevel: '1000000000',
+              },
+            },
+          })
+        );
+      });
+      cy.mockGQLSubscription();
+      cy.visit('/#/markets/market-0');
+      cy.connectVegaWallet();
+      cy.wait('@Market');
+    });
+    it('should display info and button for deposit', () => {
+      //7002-SORD-003
+      // warning should show immediately
+      cy.getByTestId('dealticket-warning-margin').should(
+        'contain.text',
+        'You may not have enough margin available to open this position'
+      );
+      cy.getByTestId('dealticket-warning-margin').should(
+        'contain.text',
+        '10,000.00 tBTC currently required, 1,000.00 tBTC available'
+      );
+      cy.getByTestId('deal-ticket-deposit-dialog-button').click();
+      cy.getByTestId('dialog-content')
+        .find('h1')
+        .eq(0)
+        .should('have.text', 'Deposit');
+    });
   });
 });

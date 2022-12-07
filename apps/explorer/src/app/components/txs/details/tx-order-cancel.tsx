@@ -4,7 +4,7 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import DeterministicOrderDetails from '../../deterministic-order-details/deterministic-order-details';
+import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 
 interface TxDetailsOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -35,6 +35,12 @@ export const TxDetailsOrderCancel = ({
           pubKey={pubKey}
           blockData={blockData}
         />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Order')}</TableCell>
+          <TableCell>
+            <code>{orderId}</code>
+          </TableCell>
+        </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Market')}</TableCell>
           <TableCell>
