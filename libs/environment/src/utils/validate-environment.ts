@@ -9,6 +9,7 @@ export enum Networks {
   STAGNET3 = 'STAGNET3',
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
+  MIRROR = 'MIRROR',
 }
 
 const schemaObject = {
