@@ -55,21 +55,19 @@ export const Web3ConnectDialog = ({
     >
       <ul data-testid="web3-connector-list">
         {connectors.map(([connector], i) => {
-          const text = getConnectorText(connector);
-          // @ts-ignore additional field tagged onto class
-          const name = connector.connectorName;
+          const info = getConnectorInfo(connector);
           return (
             <li key={i} className="mb-2 last:mb-0">
               <button
                 className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
-                data-testid={`web3-connector-${name}`}
+                data-testid={`web3-connector-${info.name}`}
                 onClick={async () => {
                   await connector.activate(desiredChainId);
-                  setEagerConnector(name);
+                  setEagerConnector(info.name);
                   setDialogOpen(false);
                 }}
               >
-                {text}
+                {info.text}
               </button>
             </li>
           );
@@ -94,12 +92,18 @@ export const Web3ConnectUncontrolledDialog = () => {
   );
 };
 
-function getConnectorText(connector: Connector) {
+function getConnectorInfo(connector: Connector) {
   if (connector instanceof MetaMask) {
-    return t('MetaMask, Brave or other injected web wallet');
+    return {
+      name: 'MetaMask',
+      text: t('MetaMask, Brave or other injected web wallet'),
+    };
   }
   if (connector instanceof WalletConnect) {
-    return t('WalletConnect');
+    return {
+      name: 'WalletConnect',
+      text: t('WalletConnect'),
+    };
   }
-  return t('Unknown');
+  return { name: 'Unknown', text: t('Unknown') };
 }

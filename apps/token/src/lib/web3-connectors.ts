@@ -7,12 +7,9 @@ import { Url } from './url-connector';
 import type { Connector } from '@web3-react/types';
 import { ENV } from '../config/env';
 
-const [metamask, metamaskHooks] = initializeConnector<MetaMask>((actions) => {
-  const instance = new MetaMask(actions);
-  // @ts-ignore tag with a name so eager connect can work later
-  instance.connectorName = 'MetaMask';
-  return instance;
-});
+const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
+  (actions) => new MetaMask(actions)
+);
 
 const [urlConnector, urlHooks] = initializeConnector<Url>(
   (actions) => new Url(actions, ENV.localProviderUrl)
@@ -28,16 +25,12 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
   }
   const [walletconnect, walletconnectHooks] =
     initializeConnector<WalletConnect>(
-      (actions) => {
-        const instance = new WalletConnect(actions, {
+      (actions) =>
+        new WalletConnect(actions, {
           rpc: {
             [chainId]: providerUrl,
           },
-        });
-        // @ts-ignore tag with a name so eager connect can work later
-        instance.connectorName = 'WalletConnect';
-        return instance;
-      },
+        }),
       [chainId]
     );
   return [

@@ -1,4 +1,8 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import type { Web3ReactHooks } from '@web3-react/core';
+import { MetaMask } from '@web3-react/metamask';
+import type { Connector } from '@web3-react/types';
+import { WalletConnect } from '@web3-react/walletconnect';
 import { useEffect, useRef } from 'react';
 import { useWeb3ConnectDialog } from './web3-connect-dialog';
 
@@ -11,19 +15,29 @@ export const useEagerConnect = () => {
 
   useEffect(() => {
     if (attemptedRef.current || 'Cypress' in window) return;
-    console.log('attempt connect with', eagerConnector);
 
-    const option = connectors.find(([c]) => {
-      // @ts-ignore connector class has connectName added at init
-      // web3-connectors.ts
-      return c.connectorName === eagerConnector;
-    });
+    const stored = getConnector(connectors, eagerConnector);
 
     // found a valid connection option
-    if (option && option[0]?.connectEagerly) {
-      option[0].connectEagerly();
+    if (stored && stored[0].connectEagerly) {
+      stored[0].connectEagerly();
     }
 
     attemptedRef.current = true;
   }, [eagerConnector, connectors]);
+};
+
+const getConnector = (
+  connectors: [Connector, Web3ReactHooks][],
+  connectorName?: string | null
+) => {
+  if (connectorName === 'MetaMask') {
+    return connectors.find(([c]) => c instanceof MetaMask);
+  }
+
+  if (connectorName === 'WalletConnect') {
+    return connectors.find(([c]) => c instanceof WalletConnect);
+  }
+
+  return null;
 };
