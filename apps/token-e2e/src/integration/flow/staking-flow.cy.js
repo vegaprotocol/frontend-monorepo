@@ -46,7 +46,6 @@ context(
           cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('validators');
-          cy.wait_for_spinner();
         }
       );
 
@@ -253,7 +252,6 @@ context(
           .should('contain', 1.0, txTimeout);
 
         cy.navigate_to('validators');
-        cy.wait_for_spinner();
 
         cy.get(`[row-id="${0}"]`).within(() => {
           cy.get(stakeValidatorListTotalStake)

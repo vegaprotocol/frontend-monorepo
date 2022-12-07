@@ -50,7 +50,6 @@ context(
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.navigate_to('proposals');
-      cy.wait_for_spinner();
     });
 
     it('Able to submit valid update network parameter proposal', function () {

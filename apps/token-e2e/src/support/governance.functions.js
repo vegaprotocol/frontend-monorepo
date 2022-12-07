@@ -154,7 +154,6 @@ Cypress.Commands.add('navigate_to_page_if_not_already_loaded', (section) => {
   cy.url().then((url) => {
     if (url != `http://localhost:4210/${section}`) {
       cy.navigate_to(section);
-      cy.wait_for_spinner();
     }
   });
 });
@@ -175,7 +174,6 @@ Cypress.Commands.add('go_to_make_new_proposal', (proposalType) => {
   cy.navigate_to_page_if_not_already_loaded('proposals');
   cy.get(newProposalButton).should('be.visible').click();
   cy.url().should('include', '/proposals/propose');
-  cy.wait_for_spinner();
   cy.get('li').contains(proposalType).click();
 });
 
