@@ -4,13 +4,6 @@ on:
       project:
         required: true
         type: string
-      vega-version:
-        required: true
-        type: string
-      gobin:
-        required: false
-        type: string
-        default: /home/runner/go/bin
       skip-cache:
         required: false
         type: string
@@ -27,8 +20,6 @@ jobs:
     secrets: inherit
     with:
       trigger: ${{ contains(inputs.project, 'console-lite-e2e') || contains(inputs.project, 'console-lite') }}
-      vega-version: ${{ inputs.vega-version }}
-      gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
 
@@ -37,8 +28,6 @@ jobs:
     secrets: inherit
     with:
       trigger: ${{ contains(inputs.project, 'explorer-e2e') || contains(inputs.project, 'explorer') }}
-      vega-version: ${{ inputs.vega-version }}
-      gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
       night-run: ${{ inputs.night-run }}
@@ -60,8 +49,6 @@ jobs:
     secrets: inherit
     with:
       trigger: ${{ contains(inputs.project, 'token-e2e') || contains(inputs.project, 'token') }}
-      vega-version: ${{ inputs.vega-version }}
-      gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
 
@@ -70,7 +57,5 @@ jobs:
     secrets: inherit
     with:
       trigger: ${{ contains(inputs.project, 'trading-e2e') || contains(inputs.project, 'trading') }}
-      vega-version: ${{ inputs.vega-version }}
-      gobin: ${{ inputs.gobin }}
       skip-cache: ${{ inputs.skip-cache }}
       tags: ${{ inputs.tags }}
