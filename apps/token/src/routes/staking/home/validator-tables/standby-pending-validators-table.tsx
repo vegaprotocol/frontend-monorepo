@@ -184,6 +184,7 @@ export const StandbyPendingValidatorsTable = ({
         {
           field: ValidatorFields.STAKE_SHARE,
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
           width: 100,
         },
         {
