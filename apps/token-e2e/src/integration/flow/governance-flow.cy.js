@@ -765,7 +765,7 @@ context(
               '0.9999'
             );
           });
-          cy.navigate_to('governance');
+          cy.navigate_to('proposals');
           cy.wait_for_spinner();
           cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
             () => cy.get(viewProposalButton).click()
@@ -846,7 +846,7 @@ context(
       function associateWithoutAssertion() {
         // purpose of this method is to attempt to associate to a vega wallet
         // Use cy.staking_page_associate_tokens for normal token association
-        cy.get('[href="/staking/associate"]').first().click();
+        cy.get('[href="/validators/associate"]').first().click();
         cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
         cy.getByTestId('token-amount-input', epochTimeout).type('1');
         cy.getByTestId('token-input-submit-button')
