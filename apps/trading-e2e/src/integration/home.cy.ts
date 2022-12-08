@@ -1,6 +1,7 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
 import { Schema } from '@vegaprotocol/types';
+import { generateMarketsData } from '../support/mocks/generate-markets';
 
 const selectMarketOverlay = 'select-market-list';
 
@@ -52,7 +53,6 @@ describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
     cy.mockGQLSubscription();
-    cy.visit('/');
   });
 
   describe('default market found', () => {
@@ -86,7 +86,6 @@ describe('home', { tags: '@regression' }, () => {
             });
           }
         });
-
       cy.getByTestId('dialog-close').click();
       cy.getByTestId(selectMarketOverlay).should('not.exist');
 
@@ -94,6 +93,36 @@ describe('home', { tags: '@regression' }, () => {
       cy.contains('Select a market to get started').should('not.exist');
       cy.contains('Loading...').should('not.exist');
       cy.url().should('eq', Cypress.config().baseUrl + '/#/markets/market-0');
+    });
+  });
+
+  describe('market table should properly rendered', () => {
+    it('redirects to a default market with the landing dialog open', () => {
+      const override = {
+        marketsConnection: {
+          edges: [
+            {
+              node: {
+                data: {
+                  markPrice: '46126900581221212121212121212121212121212121212',
+                },
+              },
+            },
+          ],
+        },
+      };
+      const data = generateMarketsData(override);
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'MarketsData', data);
+      });
+      cy.visit('/');
+      cy.wait('@Market');
+      cy.getByTestId(selectMarketOverlay)
+        .get('table')
+        .invoke('outerWidth')
+        .then((value) => {
+          expect(value).to.be.closeTo(554, 10);
+        });
     });
   });
 
