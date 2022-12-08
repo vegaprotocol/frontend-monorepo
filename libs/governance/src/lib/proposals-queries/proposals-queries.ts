@@ -2,7 +2,7 @@ import compact from 'lodash/compact';
 import filter from 'lodash/filter';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 type Proposal = {
   __typename: 'Proposal';

@@ -1,4 +1,4 @@
-import type { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useMemo } from 'react';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 

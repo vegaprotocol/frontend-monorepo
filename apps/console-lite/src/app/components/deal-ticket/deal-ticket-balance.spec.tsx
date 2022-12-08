@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import type { AccountFragment } from '@vegaprotocol/deal-ticket';
 import { DealTicketBalance } from './deal-ticket-balance';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { MarketDealTicketAsset } from '@vegaprotocol/market-list';
 
 const tDAI: MarketDealTicketAsset = {

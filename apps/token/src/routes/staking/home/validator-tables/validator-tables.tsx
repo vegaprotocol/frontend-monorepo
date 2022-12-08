@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ConsensusValidatorsTable } from './consensus-validators-table';
 import { StandbyPendingValidatorsTable } from './standby-pending-validators-table';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type {
   NodesQuery,
   NodesFragmentFragment,

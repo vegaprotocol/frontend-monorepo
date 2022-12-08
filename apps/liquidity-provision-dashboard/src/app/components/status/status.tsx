@@ -1,11 +1,7 @@
 import { Lozenge, Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 
-import {
-  MarketTradingModeMapping,
-  AuctionTriggerMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 
 import { Indicator } from '../indicator';
@@ -28,10 +24,10 @@ export const Status = ({
         trigger &&
         trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
       ) {
-        return `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`;
+        return `${Schema.MarketTradingModeMapping[tradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`;
       }
     }
-    return MarketTradingModeMapping[tradingMode];
+    return Schema.MarketTradingModeMapping[tradingMode];
   };
 
   const status = getStatus();
@@ -59,15 +55,15 @@ export const Status = ({
 const getTooltipDescription = (status: string) => {
   let tooltipDescription = '';
   switch (status) {
-    case MarketTradingModeMapping.TRADING_MODE_CONTINUOUS:
+    case Schema.MarketTradingModeMapping.TRADING_MODE_CONTINUOUS:
       tooltipDescription =
         'This is the standard trading mode where trades are executed whenever orders are received';
       break;
-    case `${MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION} - ${AuctionTriggerMapping.AUCTION_TRIGGER_LIQUIDITY}`:
+    case `${Schema.MarketTradingModeMapping.TRADING_MODE_MONITORING_AUCTION} - ${Schema.AuctionTriggerMapping.AUCTION_TRIGGER_LIQUIDITY}`:
       tooltipDescription =
         'This market is in auction until it reaches sufficient liquidity';
       break;
-    case MarketTradingModeMapping.TRADING_MODE_OPENING_AUCTION:
+    case Schema.MarketTradingModeMapping.TRADING_MODE_OPENING_AUCTION:
       tooltipDescription =
         'This is a new market in an opening auction to determine a fair mid-price before starting continuous trading.';
       break;

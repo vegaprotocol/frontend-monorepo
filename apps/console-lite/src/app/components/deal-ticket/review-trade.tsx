@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { DealTicketEstimates } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { SIDE_NAMES } from './side-selector';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { MarketExpires } from '@vegaprotocol/market-info';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useMarketTagsQuery } from './__generated__/MarketTags';

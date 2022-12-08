@@ -8,11 +8,7 @@ import {
   useDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
-import {
-  Schema,
-  MarketStateMapping,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,
   AsyncRenderer,
@@ -183,7 +179,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
 
   const keyDetails = {
     ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
-    state: MarketStateMapping[market.state],
+    state: Schema.MarketStateMapping[market.state],
   };
 
   const marketSpecPanels = [
@@ -196,7 +192,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&
-              MarketTradingModeMapping[keyDetails.tradingMode],
+              Schema.MarketTradingModeMapping[keyDetails.tradingMode],
             marketDecimalPlaces: market.decimalPlaces,
             positionDecimalPlaces: market.positionDecimalPlaces,
             settlementAssetDecimalPlaces:

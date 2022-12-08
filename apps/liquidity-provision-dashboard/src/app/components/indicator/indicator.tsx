@@ -1,4 +1,4 @@
-import type { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 import { getColorForStatus } from '../../lib/utils';
 

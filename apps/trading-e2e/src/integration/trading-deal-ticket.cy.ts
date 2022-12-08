@@ -1,8 +1,4 @@
-import {
-  OrderTimeInForceCode,
-  OrderTimeInForceMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
@@ -21,9 +17,9 @@ const errorMessage = 'dealticket-error-message';
 
 const TIFlist = Object.values(Schema.OrderTimeInForce).map((value) => {
   return {
-    code: OrderTimeInForceCode[value],
+    code: Schema.OrderTimeInForceCode[value],
     value,
-    text: OrderTimeInForceMapping[value],
+    text: Schema.OrderTimeInForceMapping[value],
   };
 });
 

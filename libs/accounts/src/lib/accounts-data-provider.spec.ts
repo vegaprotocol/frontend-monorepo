@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { AccountFields, Account } from './accounts-data-provider';
 import { getAccountData, getId } from './accounts-data-provider';
 

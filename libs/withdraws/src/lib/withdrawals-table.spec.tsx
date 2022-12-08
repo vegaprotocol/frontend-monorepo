@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, render, screen } from '@testing-library/react';
 import { getTimeFormat } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { generateWithdrawal } from './test-helpers';
 import { StatusCell } from './withdrawals-table';

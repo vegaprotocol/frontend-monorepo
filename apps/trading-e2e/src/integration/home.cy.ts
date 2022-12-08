@@ -1,6 +1,6 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const selectMarketOverlay = 'select-market-list';
 

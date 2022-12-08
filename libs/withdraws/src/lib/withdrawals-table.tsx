@@ -14,7 +14,7 @@ import type {
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const WithdrawalsTable = (
   props: TypedDataAgGrid<WithdrawalFieldsFragment>

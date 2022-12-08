@@ -8,7 +8,7 @@ import type {
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import type { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;
   isUpdate?: boolean;

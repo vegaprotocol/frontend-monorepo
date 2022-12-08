@@ -2,12 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
-import type { Schema as Types } from '@vegaprotocol/types';
-import {
-  AuctionTriggerMapping,
-  MarketTradingModeMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
@@ -22,8 +17,8 @@ interface Props {
   onSelect?: (marketId: string) => void;
   isHeader?: boolean;
   noUpdate?: boolean;
-  initialMode?: Types.MarketTradingMode;
-  initialTrigger?: Types.AuctionTrigger;
+  initialMode?: Schema.MarketTradingMode;
+  initialTrigger?: Schema.AuctionTrigger;
 }
 
 export const MarketTradingMode = ({
@@ -35,8 +30,8 @@ export const MarketTradingMode = ({
   initialTrigger,
 }: Props) => {
   const [tradingMode, setTradingMode] =
-    useState<Types.MarketTradingMode | null>(initialMode || null);
-  const [trigger, setTrigger] = useState<Types.AuctionTrigger | null>(
+    useState<Schema.MarketTradingMode | null>(initialMode || null);
+  const [trigger, setTrigger] = useState<Schema.AuctionTrigger | null>(
     initialTrigger || null
   );
   const [market, setMarket] = useState<MarketDealTicket | null>(null);
@@ -79,8 +74,8 @@ export const MarketTradingMode = ({
     (tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     trigger &&
     trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-      ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
-      : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode]) ||
+      ? `${Schema.MarketTradingModeMapping[tradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
+      : Schema.MarketTradingModeMapping[tradingMode as Schema.MarketTradingMode]) ||
     '-';
 
   return isHeader ? (

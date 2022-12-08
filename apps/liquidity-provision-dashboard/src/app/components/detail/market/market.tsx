@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 
-import type { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Last24hVolume } from '../last-24h-volume';

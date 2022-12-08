@@ -5,11 +5,7 @@ import { AppStateProvider } from '../../../../contexts/app-state/app-state-provi
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  Schema,
-  ProposalRejectionReason,
-  ProposalState,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/governance';
 import type { ProposalEventSubscription } from '@vegaprotocol/governance';
@@ -102,9 +98,9 @@ describe('Raw proposal form', () => {
               __typename: 'Proposal',
               id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
               reference: 'proposal-reference',
-              state: ProposalState.STATE_OPEN,
+              state: Schema.ProposalState.STATE_OPEN,
               rejectionReason:
-                ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+                Schema.ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
               errorDetails: 'error-details',
             },
           },

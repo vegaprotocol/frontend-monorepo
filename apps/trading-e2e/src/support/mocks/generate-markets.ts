@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
   MarketsQuery,

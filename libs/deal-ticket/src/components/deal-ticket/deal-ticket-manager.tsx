@@ -3,7 +3,7 @@ import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 

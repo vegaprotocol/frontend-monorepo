@@ -1,4 +1,4 @@
-import type { Schema, VoteValue } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export interface DelegateSubmissionBody {
   delegateSubmission: {
@@ -54,7 +54,7 @@ export interface OrderAmendmentBody {
 
 export interface VoteSubmissionBody {
   voteSubmission: {
-    value: VoteValue;
+    value: Schema.VoteValue;
     proposalId: string;
   };
 }
