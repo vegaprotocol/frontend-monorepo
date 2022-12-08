@@ -83,6 +83,7 @@ context(
       });
     });
 
+    // 0004-EWAL-001 0004-EWAL-002
     describe('when Ethereum wallet connected', function () {
       before('connect to Ethereum wallet', function () {
         cy.ethereum_wallet_connect();
@@ -96,6 +97,7 @@ context(
         });
       });
 
+      // 0004-EWAL-005
       it('should have account number visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(accountNo)
@@ -118,6 +120,7 @@ context(
         });
       });
 
+      // 0004-EWAL-007
       it('should have Disconnect button visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(disconnect)

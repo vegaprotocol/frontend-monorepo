@@ -96,6 +96,7 @@ context(
 
         cy.navigate_to('validators');
 
+        // 2002-SINC-007
         cy.validate_validator_list_total_stake_and_share('0', '2.00', '100%');
       });
 
