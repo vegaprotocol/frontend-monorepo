@@ -1,4 +1,4 @@
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { AssetLink } from '../links';
 import { useExplorerAssetQuery } from '../links/asset-link/__generated__/Asset';
 

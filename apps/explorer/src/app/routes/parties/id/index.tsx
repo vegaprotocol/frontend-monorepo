@@ -2,7 +2,6 @@ import {
   t,
   addDecimalsFormatNumber,
   useScreenDimensions,
-  remove0x,
 } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
