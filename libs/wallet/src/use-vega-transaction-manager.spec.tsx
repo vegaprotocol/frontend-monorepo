@@ -1,5 +1,6 @@
 import { useVegaTransactionManager } from './use-vega-transaction-manager';
 import { renderHook } from '@testing-library/react';
+import waitForNextTick from 'flush-promises';
 import type { TransactionResponse } from './connectors/vega-connector';
 import type {
   VegaTransactionStore,
@@ -18,8 +19,6 @@ jest.mock('./use-vega-wallet', () => ({
     pubKey,
   }),
 }));
-
-const flushPromises = () => new Promise((resolve) => setTimeout(resolve));
 
 const transactionHash = 'txHash';
 const signature = 'signature';
@@ -77,17 +76,17 @@ describe('useVegaTransactionManager', () => {
     let result = renderHook(useVegaTransactionManager);
     result.rerender();
     expect(update).not.toBeCalled();
-    await flushPromises();
+    await waitForNextTick();
     expect(update.mock.calls[0]).toEqual([0, pendingTransactionUpdate]);
     expect(update.mock.calls[1]).toEqual([1, pendingTransactionUpdate]);
 
     update.mockReset();
     result = renderHook(useVegaTransactionManager);
-    await flushPromises();
+    await waitForNextTick();
     expect(update).toBeCalled();
     expect(update.mock.calls[0]).toEqual([0, pendingTransactionUpdate]);
     result.rerender();
-    await flushPromises();
+    await waitForNextTick();
     expect(update.mock.calls[1]).toEqual([1, pendingTransactionUpdate]);
   });
 
@@ -95,7 +94,7 @@ describe('useVegaTransactionManager', () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
     mockSendTx.mockResolvedValue(null);
     renderHook(useVegaTransactionManager);
-    await flushPromises();
+    await waitForNextTick();
     expect(update).not.toBeCalled();
     expect(del).toBeCalled();
   });
@@ -104,7 +103,7 @@ describe('useVegaTransactionManager', () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
     mockSendTx.mockRejectedValue(null);
     renderHook(useVegaTransactionManager);
-    await flushPromises();
+    await waitForNextTick();
     expect(update).toBeCalled();
     expect(update.mock.calls[0][1]?.status).toEqual(VegaTxStatus.Error);
   });

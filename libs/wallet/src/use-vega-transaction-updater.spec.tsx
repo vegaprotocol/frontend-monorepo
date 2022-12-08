@@ -1,12 +1,10 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import type { MockedResponse } from '@apollo/client/testing';
-import type { FetchResult } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useVegaTransactionUpdater } from './use-vega-transaction-updater';
+import waitForNextTick from 'flush-promises';
 import { Schema } from '@vegaprotocol/types';
-import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
 import {
   OrderBusEventsDocument,
   TransactionEventDocument,
@@ -38,13 +36,11 @@ jest.mock('./use-vega-wallet', () => ({
   }),
 }));
 
-beforeAll(() => {
-  jest.useFakeTimers();
-});
+const mockWaitForWithdrawalApproval = jest.fn();
 
-afterAll(() => {
-  jest.useRealTimers();
-});
+jest.mock('./wait-for-withdrawal-approval', () => ({
+  waitForWithdrawalApproval: () => mockWaitForWithdrawalApproval(),
+}));
 
 const updateWithdrawal = jest.fn();
 const updateOrder = jest.fn();
@@ -64,107 +60,149 @@ jest.mock('./use-vega-transaction-store', () => ({
   ) => selector(mockTransactionStoreState()),
 }));
 
-describe('useVegaTransactionManager', () => {
-  it('updates order on OrderBusEvents', () => {
-    mockTransactionStoreState.mockReturnValue(defaultState);
-    const orderBusEvent: OrderBusEventFieldsFragment = {
-      __typename: 'Order',
-    } as OrderBusEventFieldsFragment;
-    const result: FetchResult<OrderBusEventsSubscription> = {
+const orderBusEvent: OrderBusEventFieldsFragment = {
+  type: Schema.OrderType.TYPE_LIMIT,
+  id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
+  status: Schema.OrderStatus.STATUS_ACTIVE,
+  rejectionReason: null,
+  createdAt: '2022-07-05T14:25:47.815283706Z',
+  expiresAt: '2022-07-05T14:25:47.815283706Z',
+  size: '10',
+  price: '300000',
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+  side: Schema.Side.SIDE_BUY,
+  market: {
+    id: 'market-id',
+    decimalPlaces: 5,
+    positionDecimalPlaces: 0,
+    tradableInstrument: {
+      __typename: 'TradableInstrument',
+      instrument: {
+        name: 'UNIDAI Monthly (30 Jun 2022)',
+        __typename: 'Instrument',
+      },
+    },
+    __typename: 'Market',
+  },
+  __typename: 'Order',
+};
+const mockedOrderBusEvent: MockedResponse<OrderBusEventsSubscription> = {
+  request: {
+    query: OrderBusEventsDocument,
+    variables: { partyId: pubKey },
+  },
+  result: {
+    data: {
+      busEvents: [
+        {
+          type: Schema.BusEventType.Order,
+          event: orderBusEvent,
+        },
+      ],
+    },
+  },
+};
+
+const transactionResultBusEvent: TransactionEventFieldsFragment = {
+  __typename: 'TransactionResult',
+  partyId: pubKey,
+  hash: 'hash',
+  status: true,
+  error: null,
+};
+const mockedTransactionResultBusEvent: MockedResponse<TransactionEventSubscription> =
+  {
+    request: {
+      query: TransactionEventDocument,
+      variables: { partyId: pubKey },
+    },
+    result: {
       data: {
         busEvents: [
           {
             type: Schema.BusEventType.Order,
-            event: orderBusEvent,
+            event: transactionResultBusEvent,
           },
         ],
       },
-    };
-    const mockedOrderBusEvent: MockedResponse<OrderBusEventsSubscription> = {
-      request: {
-        query: OrderBusEventsDocument,
-        variables: { partyId: pubKey },
-      },
-      result,
-    };
-    act(() => {
-      render([mockedOrderBusEvent]);
-    });
-    expect(updateOrder).toHaveBeenCalledWith([orderBusEvent]);
-  });
+    },
+  };
 
-  it('updates transaction on TransactionResultBusEvents', () => {
-    mockTransactionStoreState.mockReturnValue(defaultState);
-    const transactionBusEvent: TransactionEventFieldsFragment = {
-      __typename: 'TransactionResult',
-    } as TransactionEventFieldsFragment;
-    const result: FetchResult<TransactionEventSubscription> = {
+const withdrawalBusEvent: WithdrawalBusEventFieldsFragment = {
+  id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
+  status: Schema.WithdrawalStatus.STATUS_OPEN,
+  amount: '100',
+  asset: {
+    __typename: 'Asset',
+    id: 'asset-id',
+    name: 'asset-name',
+    symbol: 'asset-symbol',
+    decimals: 2,
+    status: Schema.AssetStatus.STATUS_ENABLED,
+    source: {
+      __typename: 'ERC20',
+      contractAddress: '0x123',
+    },
+  },
+  createdTimestamp: '2022-07-05T14:25:47.815283706Z',
+  withdrawnTimestamp: '2022-07-05T14:25:47.815283706Z',
+  txHash: '0x123',
+  details: {
+    __typename: 'Erc20WithdrawalDetails',
+    receiverAddress: '0x123',
+  },
+  pendingOnForeignChain: false,
+  __typename: 'Withdrawal',
+};
+
+const mockedWithdrawalBusEvent: MockedResponse<WithdrawalBusEventSubscription> =
+  {
+    request: {
+      query: WithdrawalBusEventDocument,
+      variables: { partyId: pubKey },
+    },
+    result: {
       data: {
         busEvents: [
           {
-            type: Schema.BusEventType.TransactionResult,
-            event: transactionBusEvent,
+            event: withdrawalBusEvent,
           },
         ],
       },
-    };
-    const mockedOrderBusEvent: MockedResponse<TransactionEventSubscription> = {
-      request: {
-        query: TransactionEventDocument,
-        variables: { partyId: pubKey },
-      },
-      result,
-    };
-    act(() => {
-      render([mockedOrderBusEvent]);
-    });
-    expect(updateTransactionResult).toHaveBeenCalledWith([transactionBusEvent]);
+    },
+  };
+
+describe('useVegaTransactionManager', () => {
+  it('updates order on OrderBusEvents', async () => {
+    mockTransactionStoreState.mockReturnValue(defaultState);
+    const { waitForNextUpdate } = render([mockedOrderBusEvent]);
+    waitForNextUpdate();
+    await waitForNextTick();
+    expect(updateOrder).toHaveBeenCalledWith(orderBusEvent);
   });
 
-  it('updates withdrawal on WithdrawalBusEvents', () => {
+  it('updates transaction on TransactionResultBusEvents', async () => {
     mockTransactionStoreState.mockReturnValue(defaultState);
-    const withdrawalId = 'withdrawalId';
-    const withdrawalBusEvent: WithdrawalBusEventFieldsFragment = {
-      __typename: 'Withdrawal',
-      id: withdrawalId,
-    } as WithdrawalBusEventFieldsFragment;
-    const erc20WithdrawalApproval: NonNullable<
-      WithdrawalApprovalQuery['erc20WithdrawalApproval']
-    > = {} as NonNullable<WithdrawalApprovalQuery['erc20WithdrawalApproval']>;
-    const mockedWithdrawalBusEvent: MockedResponse<WithdrawalBusEventSubscription> =
-      {
-        request: {
-          query: WithdrawalBusEventDocument,
-          variables: { partyId: pubKey },
-        },
-        result: {
-          data: {
-            busEvents: [
-              {
-                event: withdrawalBusEvent,
-              },
-            ],
-          },
-        },
-      };
-    const mockedWithdrawalApproval: MockedResponse<WithdrawalApprovalQuery> = {
-      request: {
-        query: WithdrawalApprovalDocument,
-        variables: { withdrawalId },
-      },
-      result: {
-        data: {
-          erc20WithdrawalApproval,
-        },
-      },
-    };
+    const { waitForNextUpdate } = render([mockedTransactionResultBusEvent]);
+    waitForNextUpdate();
+    await waitForNextTick();
+    expect(updateTransactionResult).toHaveBeenCalledWith(
+      transactionResultBusEvent
+    );
+  });
 
-    act(() => {
-      render([mockedWithdrawalBusEvent, mockedWithdrawalApproval]);
-    });
-    expect(updateWithdrawal).toHaveBeenCalledWith([
+  it('updates withdrawal on WithdrawalBusEvents', async () => {
+    mockTransactionStoreState.mockReturnValue(defaultState);
+    const erc20WithdrawalApproval = {};
+    mockWaitForWithdrawalApproval.mockResolvedValueOnce(
+      erc20WithdrawalApproval
+    );
+    const { waitForNextUpdate } = render([mockedWithdrawalBusEvent]);
+    waitForNextUpdate();
+    await waitForNextTick();
+    expect(updateWithdrawal).toHaveBeenCalledWith(
       withdrawalBusEvent,
-      erc20WithdrawalApproval,
-    ]);
+      erc20WithdrawalApproval
+    );
   });
 });
