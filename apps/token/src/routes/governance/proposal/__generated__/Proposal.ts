@@ -630,7 +630,7 @@ export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfigu
 export interface Proposal_proposal_terms_change_UpdateMarket_updateMarketConfiguration_riskParameters_UpdateMarketLogNormalRiskModel_logNormal_params {
   __typename: "LogNormalModelParams";
   /**
-   * R parameter, annualised growth rate of the risk-free asset, used for discounting of future cash flows, can be any real number
+   * R parameter
    */
   r: number;
   /**

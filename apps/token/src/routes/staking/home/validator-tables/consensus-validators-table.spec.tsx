@@ -81,6 +81,9 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             rewardScore: {
               rawValidatorScore: '0.25',
             },
+            rankingScore: {
+              performanceScore: '0.9998677767864936',
+            },
           },
         },
         {
@@ -89,6 +92,9 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             rewardScore: {
               rawValidatorScore: '0.3',
             },
+            rankingScore: {
+              performanceScore: '1',
+            },
           },
         },
         {
@@ -96,6 +102,9 @@ const MOCK_PREVIOUS_EPOCH: PreviousEpochQuery = {
             id: '12c81b738e8051152e1afe44376ec37bca9216466e6d44cdd772194bad0ada81',
             rewardScore: {
               rawValidatorScore: '0.35',
+            },
+            rankingScore: {
+              performanceScore: '0.999629748500531',
             },
           },
         },

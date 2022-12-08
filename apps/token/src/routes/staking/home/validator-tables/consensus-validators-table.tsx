@@ -6,11 +6,11 @@ import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
   getFormattedPerformanceScore,
+  getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
   getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
-  getRawValidatorScore,
   getTotalPenalties,
   getUnnormalisedVotingPower,
 } from '../../shared';
@@ -80,13 +80,15 @@ export const ConsensusValidatorsTable = ({
           stakedByDelegates,
           stakedByOperator,
           stakedTotal,
-          rankingScore: { stakeScore, votingPower, performanceScore },
+          rankingScore: { stakeScore, votingPower },
           pendingStake,
           votingPowerRanking,
         }) => {
-          const validatorScore = getRawValidatorScore(previousEpochData, id);
+          const { rawValidatorScore, performanceScore } =
+            getLastEpochScoreAndPerformance(previousEpochData, id);
+
           const overstakedAmount = getOverstakedAmount(
-            validatorScore,
+            rawValidatorScore,
             stakedTotal,
             totalStake
           );
@@ -105,7 +107,7 @@ export const ConsensusValidatorsTable = ({
             [ValidatorFields.NORMALISED_VOTING_POWER]:
               getNormalisedVotingPower(votingPower),
             [ValidatorFields.UNNORMALISED_VOTING_POWER]:
-              getUnnormalisedVotingPower(validatorScore),
+              getUnnormalisedVotingPower(rawValidatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
             [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
               toBigNum(stakedByDelegates, decimals),
@@ -125,7 +127,7 @@ export const ConsensusValidatorsTable = ({
               totalStake
             ),
             [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
-              validatorScore,
+              rawValidatorScore,
               performanceScore,
               stakedTotal,
               totalStake
