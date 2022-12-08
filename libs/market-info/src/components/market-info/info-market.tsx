@@ -30,7 +30,7 @@ import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
 import { TokenLinks } from '@vegaprotocol/react-helpers';
 
-import type { MarketInfoQuery } from './__generated___/MarketInfo';
+import type { MarketInfoQuery } from './__generated__/MarketInfo';
 import { MarketProposalNotification } from '@vegaprotocol/governance';
 
 export interface InfoProps {

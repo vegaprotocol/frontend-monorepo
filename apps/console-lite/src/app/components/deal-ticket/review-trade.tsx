@@ -8,28 +8,10 @@ import classNames from 'classnames';
 import { DealTicketEstimates } from '@vegaprotocol/deal-ticket';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { SIDE_NAMES } from './side-selector';
-import { gql, useQuery } from '@apollo/client';
 import { Schema } from '@vegaprotocol/types';
 import { MarketExpires } from '@vegaprotocol/market-info';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import type {
-  MarketTags,
-  MarketTagsVariables,
-} from './__generated__/MarketTags';
-
-export const MARKET_TAGS_QUERY = gql`
-  query MarketTags($marketId: ID!) {
-    market(id: $marketId) {
-      tradableInstrument {
-        instrument {
-          metadata {
-            tags
-          }
-        }
-      }
-    }
-  }
-`;
+import { useMarketTagsQuery } from './__generated__/MarketTags';
 
 interface Props {
   market: MarketDealTicket;
@@ -57,12 +39,9 @@ export default ({
   notionalSize,
   slippage,
 }: Props) => {
-  const { data: tagsData } = useQuery<MarketTags, MarketTagsVariables>(
-    MARKET_TAGS_QUERY,
-    {
-      variables: { marketId: market.id },
-    }
-  );
+  const { data: tagsData } = useMarketTagsQuery({
+    variables: { marketId: market.id },
+  });
 
   return (
     <div className="mb-8 text-black dark:text-white" data-testid="review-trade">

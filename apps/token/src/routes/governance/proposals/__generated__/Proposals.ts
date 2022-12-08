@@ -1,377 +1,148 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+import * as Types from '@vegaprotocol/types';
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
+const defaultOptions = {} as const;
+export type ProposalFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'NewAsset', name: string, symbol: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', symbol: string } } | null } } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: any, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: any, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null } } };
 
-// ====================================================
-// GraphQL query operation: Proposals
-// ====================================================
+export type ProposalsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
-export interface Proposals_proposalsConnection_edges_node_rationale {
-  __typename: "ProposalRationale";
-  /**
-   * Title to be used to give a short description of the proposal in lists.
-   * This is to be between 0 and 100 unicode characters.
-   * This is mandatory for all proposals.
-   */
-  title: string;
-  /**
-   * Description to show a short title / something in case the link goes offline.
-   * This is to be between 0 and 20k unicode characters.
-   * This is mandatory for all proposals.
-   */
-  description: string;
+
+export type ProposalsQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'NewAsset', name: string, symbol: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', symbol: string } } | null } } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: any, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string, votes?: Array<{ __typename?: 'Vote', value: Types.VoteValue, datetime: any, party: { __typename?: 'Party', id: string, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string } } }> | null } } } } | null> | null } | null };
+
+export const ProposalFieldsFragmentDoc = gql`
+    fragment ProposalFields on Proposal {
+  id
+  rationale {
+    title
+    description
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+  }
+  errorDetails
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      ... on NewMarket {
+        instrument {
+          name
+          code
+          futureProduct {
+            settlementAsset {
+              symbol
+            }
+          }
+        }
+      }
+      ... on UpdateMarket {
+        marketId
+      }
+      ... on NewAsset {
+        __typename
+        name
+        symbol
+        source {
+          ... on BuiltinAsset {
+            maxFaucetAmountMint
+          }
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+      ... on UpdateNetworkParameter {
+        networkParameter {
+          key
+          value
+        }
+      }
+      ... on UpdateAsset {
+        quantum
+        assetId
+        source {
+          ... on UpdateERC20 {
+            lifetimeLimit
+            withdrawThreshold
+          }
+        }
+      }
+    }
+  }
+  votes {
+    yes {
+      totalTokens
+      totalNumber
+      totalEquityLikeShareWeight
+      votes {
+        value
+        party {
+          id
+          stakingSummary {
+            currentStakeAvailable
+          }
+        }
+        datetime
+      }
+    }
+    no {
+      totalTokens
+      totalNumber
+      totalEquityLikeShareWeight
+      votes {
+        value
+        party {
+          id
+          stakingSummary {
+            currentStakeAvailable
+          }
+        }
+        datetime
+      }
+    }
+  }
 }
-
-export interface Proposals_proposalsConnection_edges_node_party {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
+    `;
+export const ProposalsDocument = gql`
+    query Proposals {
+  proposalsConnection {
+    edges {
+      node {
+        ...ProposalFields
+      }
+    }
+  }
 }
+    ${ProposalFieldsFragmentDoc}`;
 
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewFreeform {
-  __typename: "NewFreeform";
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
-  __typename: "Asset";
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct {
-  __typename: "FutureProduct";
-  /**
-   * Product asset
-   */
-  settlementAsset: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument {
-  __typename: "InstrumentConfiguration";
-  /**
-   * Full and fairly descriptive name for the instrument
-   */
-  name: string;
-  /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18)
-   */
-  code: string;
-  /**
-   * Future product specification
-   */
-  futureProduct: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct | null;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket {
-  __typename: "NewMarket";
-  /**
-   * New market instrument configuration
-   */
-  instrument: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket {
-  __typename: "UpdateMarket";
-  marketId: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset {
-  __typename: "BuiltinAsset";
-  /**
-   * Maximum amount that can be requested by a party through the built-in asset faucet at a time
-   */
-  maxFaucetAmountMint: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20 {
-  __typename: "ERC20";
-  /**
-   * The address of the ERC20 contract
-   */
-  contractAddress: string;
-}
-
-export type Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source = Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset | Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20;
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset {
-  __typename: "NewAsset";
-  /**
-   * The full name of the asset (e.g: Great British Pound)
-   */
-  name: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The source of the new asset
-   */
-  source: Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter {
-  __typename: "NetworkParameter";
-  /**
-   * The name of the network parameter
-   */
-  key: string;
-  /**
-   * The value of the network parameter
-   */
-  value: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter {
-  __typename: "UpdateNetworkParameter";
-  networkParameter: Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset_source {
-  __typename: "UpdateERC20";
-  /**
-   * The lifetime limits deposit per address
-   * Note: this is a temporary measure that can be changed by governance
-   */
-  lifetimeLimit: string;
-  /**
-   * The maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-   * There is no limit on the size of a withdrawal
-   * Note: this is a temporary measure that can be changed by governance
-   */
-  withdrawThreshold: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset {
-  __typename: "UpdateAsset";
-  /**
-   * The minimum economically meaningful amount of this specific asset
-   */
-  quantum: string;
-  /**
-   * The asset to update
-   */
-  assetId: string;
-  /**
-   * The source of the updated asset
-   */
-  source: Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset_source;
-}
-
-export type Proposals_proposalsConnection_edges_node_terms_change = Proposals_proposalsConnection_edges_node_terms_change_NewFreeform | Proposals_proposalsConnection_edges_node_terms_change_NewMarket | Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket | Proposals_proposalsConnection_edges_node_terms_change_NewAsset | Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter | Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset;
-
-export interface Proposals_proposalsConnection_edges_node_terms {
-  __typename: "ProposalTerms";
-  /**
-   * RFC3339Nano time and date when voting closes for this proposal.
-   * Constrained by "minClose" and "maxClose" network parameters.
-   */
-  closingDatetime: any;
-  /**
-   * RFC3339Nano time and date when this proposal is executed (if passed). Note that it has to be after closing date time.
-   * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
-   * Note: Optional as free form proposals do not require it.
-   */
-  enactmentDatetime: any | null;
-  /**
-   * Actual change being introduced by the proposal - action the proposal triggers if passed and enacted.
-   */
-  change: Proposals_proposalsConnection_edges_node_terms_change;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary {
-  __typename: "StakingSummary";
-  /**
-   * The stake currently available for the party
-   */
-  currentStakeAvailable: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_yes_votes_party {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
-  /**
-   * The staking information for this Party
-   */
-  stakingSummary: Proposals_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_yes_votes {
-  __typename: "Vote";
-  /**
-   * The vote value cast
-   */
-  value: VoteValue;
-  /**
-   * The party casting the vote
-   */
-  party: Proposals_proposalsConnection_edges_node_votes_yes_votes_party;
-  /**
-   * RFC3339Nano time and date when the vote reached Vega network
-   */
-  datetime: any;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_yes {
-  __typename: "ProposalVoteSide";
-  /**
-   * Total number of governance tokens from the votes cast for this side
-   */
-  totalTokens: string;
-  /**
-   * Total number of votes cast for this side
-   */
-  totalNumber: string;
-  /**
-   * Total equity like share weight for this side (only for UpdateMarket Proposals)
-   */
-  totalEquityLikeShareWeight: string;
-  /**
-   * All votes cast for this side
-   */
-  votes: Proposals_proposalsConnection_edges_node_votes_yes_votes[] | null;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary {
-  __typename: "StakingSummary";
-  /**
-   * The stake currently available for the party
-   */
-  currentStakeAvailable: string;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_no_votes_party {
-  __typename: "Party";
-  /**
-   * Party identifier
-   */
-  id: string;
-  /**
-   * The staking information for this Party
-   */
-  stakingSummary: Proposals_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_no_votes {
-  __typename: "Vote";
-  /**
-   * The vote value cast
-   */
-  value: VoteValue;
-  /**
-   * The party casting the vote
-   */
-  party: Proposals_proposalsConnection_edges_node_votes_no_votes_party;
-  /**
-   * RFC3339Nano time and date when the vote reached Vega network
-   */
-  datetime: any;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes_no {
-  __typename: "ProposalVoteSide";
-  /**
-   * Total number of governance tokens from the votes cast for this side
-   */
-  totalTokens: string;
-  /**
-   * Total number of votes cast for this side
-   */
-  totalNumber: string;
-  /**
-   * Total equity like share weight for this side (only for UpdateMarket Proposals)
-   */
-  totalEquityLikeShareWeight: string;
-  /**
-   * All votes cast for this side
-   */
-  votes: Proposals_proposalsConnection_edges_node_votes_no_votes[] | null;
-}
-
-export interface Proposals_proposalsConnection_edges_node_votes {
-  __typename: "ProposalVotes";
-  /**
-   * Yes votes cast for this proposal
-   */
-  yes: Proposals_proposalsConnection_edges_node_votes_yes;
-  /**
-   * No votes cast for this proposal
-   */
-  no: Proposals_proposalsConnection_edges_node_votes_no;
-}
-
-export interface Proposals_proposalsConnection_edges_node {
-  __typename: "Proposal";
-  /**
-   * Proposal ID that is filled by Vega once proposal reaches the network
-   */
-  id: string | null;
-  /**
-   * Rationale behind the proposal
-   */
-  rationale: Proposals_proposalsConnection_edges_node_rationale;
-  /**
-   * A UUID reference to aid tracking proposals on Vega
-   */
-  reference: string;
-  /**
-   * State of the proposal
-   */
-  state: ProposalState;
-  /**
-   * RFC3339Nano time and date when the proposal reached Vega network
-   */
-  datetime: any;
-  /**
-   * Why the proposal was rejected by the core
-   */
-  rejectionReason: ProposalRejectionReason | null;
-  /**
-   * Party that prepared the proposal
-   */
-  party: Proposals_proposalsConnection_edges_node_party;
-  /**
-   * Error details of the rejectionReason
-   */
-  errorDetails: string | null;
-  /**
-   * Terms of the proposal
-   */
-  terms: Proposals_proposalsConnection_edges_node_terms;
-  /**
-   * Votes cast for this proposal
-   */
-  votes: Proposals_proposalsConnection_edges_node_votes;
-}
-
-export interface Proposals_proposalsConnection_edges {
-  __typename: "ProposalEdge";
-  /**
-   * The proposal data
-   */
-  node: Proposals_proposalsConnection_edges_node;
-}
-
-export interface Proposals_proposalsConnection {
-  __typename: "ProposalsConnection";
-  /**
-   * List of proposals available for the connection
-   */
-  edges: (Proposals_proposalsConnection_edges | null)[] | null;
-}
-
-export interface Proposals {
-  /**
-   * All governance proposals in the Vega network
-   */
-  proposalsConnection: Proposals_proposalsConnection | null;
-}
+/**
+ * __useProposalsQuery__
+ *
+ * To run a query within a React component, call `useProposalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProposalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProposalsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProposalsQuery(baseOptions?: Apollo.QueryHookOptions<ProposalsQuery, ProposalsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProposalsQuery, ProposalsQueryVariables>(ProposalsDocument, options);
+      }
+export function useProposalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProposalsQuery, ProposalsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProposalsQuery, ProposalsQueryVariables>(ProposalsDocument, options);
+        }
+export type ProposalsQueryHookResult = ReturnType<typeof useProposalsQuery>;
+export type ProposalsLazyQueryHookResult = ReturnType<typeof useProposalsLazyQuery>;
+export type ProposalsQueryResult = Apollo.QueryResult<ProposalsQuery, ProposalsQueryVariables>;

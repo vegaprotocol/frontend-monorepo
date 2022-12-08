@@ -7,7 +7,7 @@ import {
 import type {
   MarketsQuery,
   MarketFieldsFragment,
-} from './__generated___/markets';
+} from './__generated__/markets';
 import { marketsDataProvider } from './markets-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
@@ -15,7 +15,7 @@ import type { MarketCandles } from './markets-candles-provider';
 import { useMemo } from 'react';
 import { Schema } from '@vegaprotocol/types';
 import { filterAndSortMarkets } from './utils';
-import { MarketsDocument } from './__generated___/markets';
+import { MarketsDocument } from './__generated__/markets';
 
 import type { Candle } from './market-candles-provider';
 
