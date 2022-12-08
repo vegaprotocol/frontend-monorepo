@@ -175,7 +175,7 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
           headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
           headerTooltip: t(stakeNeededForPromotionDescription, {
-            prefix: 'The',
+            prefix: t('The'),
           }),
           cellRenderer: StakeNeededForPromotionRenderer,
           width: 210,
