@@ -86,10 +86,10 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
   totalCountRef.current = totalCount;
 
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(
-    newRows,
     dataRef,
     totalCountRef,
-    load
+    load,
+    newRows
   );
   return { data, error, loading, addNewRows, getRows };
 };
