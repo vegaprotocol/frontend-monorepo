@@ -12,6 +12,12 @@ type Callbacks = {
   onSubscriptionFailure: () => void;
 };
 
+const SUBSCRIPTION_TIMEOUT = 3000;
+
+/**
+ * Makes a single stats request and attempts a subscrition to VegaTime
+ * to determine whether or not a node is suitable for use
+ */
 export const requestNode = (
   url: string,
   {
@@ -21,6 +27,7 @@ export const requestNode = (
     onSubscriptionFailure,
   }: Callbacks
 ) => {
+  // check url is a valid url
   try {
     new URL(url);
   } catch (err) {
@@ -29,8 +36,11 @@ export const requestNode = (
     return;
   }
 
+  let subscriptionSucceeded = false;
+
   const client = createClient(url);
 
+  // make a query for block height
   client
     .query<StatisticsQuery>({
       query: StatisticsDocument,
@@ -42,6 +52,7 @@ export const requestNode = (
       onStatsFailure();
     });
 
+  // start a subscription for VegaTime and await the first message
   const subscription = client
     .subscribe<BlockTimeSubscription>({
       query: BlockTimeDocument,
@@ -49,6 +60,7 @@ export const requestNode = (
     })
     .subscribe({
       next() {
+        subscriptionSucceeded = true;
         onSubscriptionSuccess();
         subscription.unsubscribe();
       },
@@ -57,6 +69,15 @@ export const requestNode = (
         subscription.unsubscribe();
       },
     });
+
+  // start a timeout, if the above subscription doesn't yield any messages
+  // before the timeout has completed consider it failed
+  setTimeout(() => {
+    if (!subscriptionSucceeded) {
+      onSubscriptionFailure();
+      subscription.unsubscribe();
+    }
+  }, SUBSCRIPTION_TIMEOUT);
 
   return client;
 };
