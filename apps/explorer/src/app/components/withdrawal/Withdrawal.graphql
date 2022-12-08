@@ -5,7 +5,6 @@ fragment ExplorerWithdrawalProperties on Withdrawal {
   withdrawnTimestamp
   ref
   txHash
-  expiry
   details {
     ... on Erc20WithdrawalDetails {
       receiverAddress

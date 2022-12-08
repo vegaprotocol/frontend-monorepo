@@ -1,4 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
+import type { ReactNode } from 'react';
 import { Time } from '../time';
 import { useExplorerWithdrawalQuery } from './__generated__/Withdrawal';
 
@@ -8,20 +9,7 @@ interface TxsStatsInfoProps {
   className?: string;
 }
 
-const classes = {
-  indicatorFailed:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-red-600 bg-red-600 text-center text-white font-bold leading-5',
-  textFailed:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-red-600',
-  indicatorComplete:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-vega-green-dark bg-vega-green-dark text-center text-white leading-5',
-  textComplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-green-dark',
-  indicatorIncomplete:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300 text-center leading-5',
-  textIncomplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500',
-};
+const OK = 0;
 
 /**
  * Shows a user the *current* state of a proposal. Which sound easy, but.. strap in
@@ -41,88 +29,121 @@ const classes = {
  * - 2 -> 3 requires action from the user
  * - Any user with an Ethereum wallet can complete 2 -> 3 as above, but it will likely be the person who owns the vega public key of the source and
  *   the ethereum public key of the recipient. Whoever is looking at this page may be none of those people.
+ * - This renders fine if the useExplorerWithdrawalQuery fails or returns nothing. It will render an error under the rejection if it failed to fetch
  */
 export const WithdrawalProgress = ({ id, txStatus }: TxsStatsInfoProps) => {
-  const { data } = useExplorerWithdrawalQuery({ variables: { id } });
+  const { data, error } = useExplorerWithdrawalQuery({ variables: { id } });
 
   const step2Date = data?.withdrawal?.createdTimestamp || undefined;
   const step3Date = data?.withdrawal?.withdrawnTimestamp || undefined;
 
+  const isStep1Complete = txStatus === OK;
+  const isStep2Complete = isStep1Complete && !!step2Date;
+  const isStep3Complete = isStep2Complete && !!step3Date;
+  const hasApiError = !!error?.message;
   return (
     <div className="p-5 mb-12 max-w-xl">
       <div className="mx-4 p-4">
         <div className="flex items-center">
-          <div className="flex items-center relative">
-            <div
-              className={
-                txStatus === 0
-                  ? classes.indicatorComplete
-                  : classes.indicatorFailed
-              }
-            >
-              {txStatus === 0 ? 1 : '✕'}
-            </div>
-            <div
-              className={
-                txStatus === 0 ? classes.textComplete : classes.textFailed
-              }
-            >
-              {txStatus === 0 ? t('Requested') : t('Rejected')}
-              <br />
-            </div>
-          </div>
-          <div
-            className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-              step2Date ? 'border-vega-green-dark' : 'border-gray-300'
-            }`}
-          ></div>
-          <div className="flex items-center relative">
-            <div
-              className={
-                step2Date
-                  ? classes.indicatorComplete
-                  : classes.indicatorIncomplete
-              }
-            >
-              2
-            </div>
-            <div
-              className={
-                step2Date ? classes.textComplete : classes.textIncomplete
-              }
-            >
-              {step2Date ? t('Prepared') : t('Not prepared')}
-              <br />
-              {step2Date ? <Time date={step2Date} /> : null}
-            </div>
-          </div>
-          <div
-            className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-              step3Date ? 'border-vega-green-dark' : 'border-gray-300'
-            }`}
-          ></div>
-          <div className="flex items-center relative">
-            <div
-              className={
-                step3Date
-                  ? classes.indicatorComplete
-                  : classes.indicatorIncomplete
-              }
-            >
-              3
-            </div>
-            <div
-              className={
-                step3Date ? classes.textComplete : classes.textIncomplete
-              }
-            >
-              {step3Date ? t('Complete') : t('Not complete')}
-              <br />
-              {step3Date ? <Time date={step3Date} /> : null}
-            </div>
-          </div>
+          <WithdrawalProgressIndicator
+            step={isStep1Complete ? 1 : '✕'}
+            isComplete={isStep1Complete}
+            statusDescription={isStep1Complete ? t('Requested') : t('Rejected')}
+          />
+          <WithdrawalProgressSeparator isComplete={isStep1Complete} />
+          <WithdrawalProgressIndicator
+            step={2}
+            isComplete={isStep2Complete}
+            statusDescription={
+              isStep2Complete ? t('Prepared') : t('Not prepared')
+            }
+          >
+            {isStep2Complete ? (
+              <Time date={step2Date} />
+            ) : hasApiError ? (
+              <span>{error?.message}</span>
+            ) : (
+              ''
+            )}
+          </WithdrawalProgressIndicator>
+          <WithdrawalProgressSeparator isComplete={isStep3Complete} />
+          <WithdrawalProgressIndicator
+            step={3}
+            isComplete={isStep3Complete}
+            statusDescription={
+              isStep3Complete ? t('Complete') : t('Not complete')
+            }
+          >
+            {isStep3Complete ? <Time date={step3Date} /> : ''}
+          </WithdrawalProgressIndicator>
         </div>
       </div>
     </div>
   );
 };
+
+const classes = {
+  indicatorFailed:
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-red-600 bg-red-600 text-center text-white font-bold leading-5',
+  textFailed:
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-red-600',
+  indicatorComplete:
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-vega-green-dark bg-vega-green-dark text-center text-white leading-5',
+  textComplete:
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-green-dark',
+  indicatorIncomplete:
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300 text-center leading-5',
+  textIncomplete:
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500',
+};
+
+interface WithdrawalProgressIndicatorProps {
+  step: string | number;
+  isComplete: boolean;
+  statusDescription: string;
+  children?: ReactNode;
+}
+
+export function WithdrawalProgressIndicator({
+  isComplete,
+  statusDescription,
+  step,
+  children,
+}: WithdrawalProgressIndicatorProps) {
+  return (
+    <div className="flex items-center relative">
+      <div
+        className={
+          isComplete ? classes.indicatorComplete : classes.indicatorIncomplete
+        }
+      >
+        {step}
+      </div>
+      <div
+        className={isComplete ? classes.textComplete : classes.textIncomplete}
+      >
+        {statusDescription}
+        <br />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+interface WithdrawalProgressSeparatorProps {
+  isComplete: boolean;
+}
+
+export function WithdrawalProgressSeparator({
+  isComplete,
+}: WithdrawalProgressSeparatorProps) {
+  return (
+    <div
+      className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
+        isComplete ? 'border-vega-green-dark' : 'border-gray-300'
+      }`}
+    ></div>
+  );
+}
+
+export default WithdrawalProgress;
