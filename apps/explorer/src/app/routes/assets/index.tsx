@@ -3,8 +3,8 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import { useExplorerAssetsQuery } from './__generated__/assets';
-import type { AssetsFieldsFragment } from './__generated__/assets';
+import { useExplorerAssetsQuery } from './__generated__/Assets';
+import type { AssetsFieldsFragment } from './__generated__/Assets';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 

@@ -3,7 +3,7 @@ import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { t } from '@vegaprotocol/react-helpers';
-import { useExplorerMarketsQuery } from './__generated__/markets';
+import { useExplorerMarketsQuery } from './__generated__/Markets';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
