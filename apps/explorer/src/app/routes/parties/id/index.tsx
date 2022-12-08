@@ -13,7 +13,7 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
 
 const accountTypeString: Record<Schema.AccountType, string> = {

@@ -75,8 +75,9 @@ export const MarketTradingMode = ({
     trigger &&
     trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
       ? `${Schema.MarketTradingModeMapping[tradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
-      : Schema.MarketTradingModeMapping[tradingMode as Schema.MarketTradingMode]) ||
-    '-';
+      : Schema.MarketTradingModeMapping[
+          tradingMode as Schema.MarketTradingMode
+        ]) || '-';
 
   return isHeader ? (
     <HeaderStat

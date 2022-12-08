@@ -24,7 +24,7 @@ import {
   formatWithAsset,
   displayChange,
 } from '@vegaprotocol/liquidity';
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import { DApp, useLinks } from '@vegaprotocol/environment';
 
 import { HealthBar } from '../../health-bar';

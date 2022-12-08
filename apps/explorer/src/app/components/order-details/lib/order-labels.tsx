@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 
 export interface DeterministicOrderDetailsProps {
   id: string;

@@ -1,4 +1,4 @@
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import type { StatsQuery } from '../components/stats-manager/__generated__/Stats';
 
 type NodeDataKeys = 'stakedTotal' | 'totalNodes' | 'inactiveNodes';

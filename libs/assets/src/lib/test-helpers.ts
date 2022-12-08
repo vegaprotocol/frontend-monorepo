@@ -1,4 +1,4 @@
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import type { Asset } from './asset-data-provider';
 
 export const generateERC20Asset = (

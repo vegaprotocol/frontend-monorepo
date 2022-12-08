@@ -1,5 +1,5 @@
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import * as Schema from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
