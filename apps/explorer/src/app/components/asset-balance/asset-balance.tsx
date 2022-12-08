@@ -16,11 +16,10 @@ const AssetBalance = ({ assetId, price }: AssetBalanceProps) => {
     variables: { id: assetId },
   });
 
-  let label = price;
-
-  if (data && data.asset?.decimals) {
-    label = addDecimalsFormatNumber(price, data.asset.decimals);
-  }
+  const label =
+    data && data.asset?.decimals
+      ? addDecimalsFormatNumber(price, data.asset.decimals)
+      : price;
 
   return (
     <div className="inline-block">
