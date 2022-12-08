@@ -5,11 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
 import { getRejectedProposals } from '@vegaprotocol/governance';
-import type {
-  ProposalFieldsFragment} from '../proposals/__generated__/Proposals';
-import {
-  useProposalsQuery
-} from '../proposals/__generated__/Proposals';
+import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
+import { useProposalsQuery } from '../proposals/__generated__/Proposals';
 
 export const RejectedProposalsContainer = () => {
   const { t } = useTranslation();

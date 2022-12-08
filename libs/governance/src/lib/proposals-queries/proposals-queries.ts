@@ -4,10 +4,9 @@ import * as Schema from '@vegaprotocol/types';
 import type {
   DeepPartial,
   NodeConnection,
-  NodeEdge} from '@vegaprotocol/react-helpers';
-import {
-  getNodes
+  NodeEdge,
 } from '@vegaprotocol/react-helpers';
+import { getNodes } from '@vegaprotocol/react-helpers';
 
 type Proposal = DeepPartial<Schema.Proposal>;
 
