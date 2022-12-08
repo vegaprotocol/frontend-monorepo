@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  formatNumberPercentage,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import {
   Button,
   Tooltip,
@@ -46,7 +50,7 @@ export const NODE_LIST_GRID_STYLES = `
 `;
 
 export const stakedTotalPercentage = (stakeScore: string) =>
-  toBigNum(stakeScore, 0).times(100).dp(2).toString() + '%';
+  formatNumberPercentage(toBigNum(stakeScore, 0).times(100), 2);
 
 export const defaultColDef = {
   sortable: true,

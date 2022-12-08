@@ -56,8 +56,8 @@ describe('getNormalisedVotingPower', () => {
 
 describe('getUnnormalisedVotingPower', () => {
   it('should return the unnormalised voting power', () => {
-    expect(getUnnormalisedVotingPower('0.25')).toEqual('25%');
-    expect(getUnnormalisedVotingPower('0.35')).toEqual('35%');
+    expect(getUnnormalisedVotingPower('0.25')).toEqual('25.00%');
+    expect(getUnnormalisedVotingPower('0.35')).toEqual('35.00%');
   });
 
   it('should return null if the validator score is null', () => {
@@ -69,10 +69,10 @@ describe('getOverstakingPenalty', () => {
   it('should return the overstaking penalty', () => {
     expect(
       getOverstakingPenalty(new BigNumber(100), Number(1000).toString())
-    ).toEqual('10%');
+    ).toEqual('10.00%');
     expect(
       getOverstakingPenalty(new BigNumber(500), Number(2000).toString())
-    ).toEqual('25%');
+    ).toEqual('25.00%');
   });
 });
 
@@ -105,18 +105,18 @@ describe('getFormattedPerformanceScore', () => {
 
 describe('getPerformancePenalty', () => {
   it('should return the performance penalty', () => {
-    expect(getPerformancePenalty('0.25')).toEqual('75%');
-    expect(getPerformancePenalty('0.5')).toEqual('50%');
+    expect(getPerformancePenalty('0.25')).toEqual('75.00%');
+    expect(getPerformancePenalty('0.5')).toEqual('50.00%');
   });
 });
 
 describe('getTotalPenalties', () => {
   it('should return the total penalties', () => {
-    expect(getTotalPenalties('0.25', '1', '5000', '10000')).toEqual('50%');
-    expect(getTotalPenalties('0.25', '0.5', '5000', '10000')).toEqual('75%');
+    expect(getTotalPenalties('0.25', '1', '5000', '10000')).toEqual('50.00%');
+    expect(getTotalPenalties('0.25', '0.5', '5000', '10000')).toEqual('75.00%');
   });
 
   it('should return 0 if the total penalties is negative', () => {
-    expect(getTotalPenalties('0.25', '0.5', '1000', '10000')).toEqual('0%');
+    expect(getTotalPenalties('0.25', '0.5', '1000', '10000')).toEqual('0.00%');
   });
 });

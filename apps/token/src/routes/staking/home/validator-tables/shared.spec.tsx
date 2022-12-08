@@ -34,7 +34,7 @@ describe('totalPenalties', () => {
         '5000',
         '100000'
       )
-    ).toBe('50%');
+    ).toBe('50.00%');
   });
 
   it('should return the correct penalty based on lower performance score than first test', () => {
@@ -45,7 +45,7 @@ describe('totalPenalties', () => {
         '5000',
         '100000'
       )
-    ).toBe('75%');
+    ).toBe('75.00%');
   });
 
   it('should return the correct penalty based on higher amount of stake than other tests (great penalty due to anti-whaling)', () => {
