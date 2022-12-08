@@ -2,25 +2,22 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 export function getNavLinkClassNames(
-  navbarTheme: string,
-  alignRight = false
+  navbarTheme: string
 ): (props: { isActive?: boolean }) => string | undefined {
   return ({ isActive = false }) => {
-    return getActiveNavLinkClassNames(isActive, navbarTheme, alignRight);
+    return getActiveNavLinkClassNames(isActive, navbarTheme);
   };
 }
 
 export const getActiveNavLinkClassNames = (
   isActive: boolean,
-  navbarTheme: string,
-  alignRight = false
+  navbarTheme: string
 ): string | undefined => {
   return classNames('mx-2 py-3 self-end relative', {
     'cursor-default': isActive,
     'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
     'text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-neutral-300':
       !isActive && navbarTheme !== 'yellow',
-    'ml-auto': alignRight,
     'text-black': isActive && navbarTheme === 'yellow',
     'text-black/60 hover:text-black': !isActive && navbarTheme === 'yellow',
   });
