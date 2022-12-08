@@ -40,7 +40,9 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: ProposalFieldsFragment | ProposalQuery['proposal']) =>
+  const filterPredicate = (
+    p: ProposalFieldsFragment | ProposalQuery['proposal']
+  ) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 

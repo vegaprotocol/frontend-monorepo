@@ -37,7 +37,11 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = ({ proposal }: { proposal: ProposalQuery['proposal'] }) => {
+const renderComponent = ({
+  proposal,
+}: {
+  proposal: ProposalQuery['proposal'];
+}) => {
   render(
     <AppStateProvider>
       <MockedProvider mocks={[networkParamsQueryMock]}>

@@ -52,12 +52,12 @@ export const ProposalHeader = ({
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
-            {change.source.__typename === 'ERC20'
-              && `ERC20 ${change.source.contractAddress}`}
-            {change.source.__typename === 'BuiltinAsset'
-              && `${t('Max faucet amount mint')}: ${
-                  change.source.maxFaucetAmountMint
-                }`}
+            {change.source.__typename === 'ERC20' &&
+              `ERC20 ${change.source.contractAddress}`}
+            {change.source.__typename === 'BuiltinAsset' &&
+              `${t('Max faucet amount mint')}: ${
+                change.source.maxFaucetAmountMint
+              }`}
           </Lozenge>
         </>
       );

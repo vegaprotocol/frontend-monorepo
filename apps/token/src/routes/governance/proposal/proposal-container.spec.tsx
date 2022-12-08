@@ -4,7 +4,7 @@ import type { ProposalQuery } from './__generated__/Proposal';
 import { ProposalContainer } from './proposal-container';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { ProposalDocument } from './__generated__/Proposal'
+import { ProposalDocument } from './__generated__/Proposal';
 
 jest.mock('../components/proposal', () => ({
   Proposal: () => <div data-testid="proposal" />,
@@ -14,7 +14,10 @@ jest.mock('../components/proposal-not-found', () => ({
   ProposalNotFound: () => <div data-testid="proposal-not-found" />,
 }));
 
-const renderComponent = (proposal: ProposalQuery['proposal'] | null, id: string) => {
+const renderComponent = (
+  proposal: ProposalQuery['proposal'] | null,
+  id: string
+) => {
   return (
     <MemoryRouter initialEntries={[`/governance/${id}`]}>
       <MockedProvider

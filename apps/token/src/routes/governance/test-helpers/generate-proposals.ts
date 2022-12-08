@@ -57,22 +57,24 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<ProposalQuery['proposal'], PartialDeep<ProposalQuery['proposal']>>(
-    defaultProposal,
-    override,
-    (objValue, srcValue) => {
-      if (!isArray(objValue)) {
-        return;
-      }
-      return srcValue;
+  return mergeWith<
+    ProposalQuery['proposal'],
+    PartialDeep<ProposalQuery['proposal']>
+  >(defaultProposal, override, (objValue, srcValue) => {
+    if (!isArray(objValue)) {
+      return;
     }
-  );
+    return srcValue;
+  });
 }
 
-type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>
-type Votes = Pick<Schema.ProposalVoteSide, '__typename' | 'totalNumber' | 'totalTokens' | 'totalEquityLikeShareWeight'> & {
-  votes: Vote[]
-}
+type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>;
+type Votes = Pick<
+  Schema.ProposalVoteSide,
+  '__typename' | 'totalNumber' | 'totalTokens' | 'totalEquityLikeShareWeight'
+> & {
+  votes: Vote[];
+};
 
 export const generateYesVotes = (
   numberOfVotes = 5,
@@ -94,7 +96,7 @@ export const generateYesVotes = (
               endCursor: '01',
               hasPreviousPage: false,
               hasNextPage: false,
-            }
+            },
           },
           currentStakeAvailable: fixedTokenValue
             ? fixedTokenValue.toString()
@@ -124,8 +126,6 @@ export const generateYesVotes = (
   };
 };
 
-
-
 export const generateNoVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number,
@@ -146,7 +146,7 @@ export const generateNoVotes = (
               endCursor: '01',
               hasPreviousPage: false,
               hasNextPage: false,
-            }
+            },
           },
           currentStakeAvailable: fixedTokenValue
             ? fixedTokenValue.toString()

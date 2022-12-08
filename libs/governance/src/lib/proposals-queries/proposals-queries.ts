@@ -1,9 +1,15 @@
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import * as Schema from '@vegaprotocol/types';
-import { getNodes, DeepPartial, NodeConnection, NodeEdge } from '@vegaprotocol/react-helpers'
+import type {
+  DeepPartial,
+  NodeConnection,
+  NodeEdge} from '@vegaprotocol/react-helpers';
+import {
+  getNodes
+} from '@vegaprotocol/react-helpers';
 
-type Proposal = DeepPartial<Schema.Proposal>
+type Proposal = DeepPartial<Schema.Proposal>;
 
 const orderByDate = (arr: Proposal[]) =>
   orderBy(
@@ -16,16 +22,26 @@ const orderByDate = (arr: Proposal[]) =>
     ['desc', 'desc', 'desc']
   );
 
-export function getNotRejectedProposals<T extends Proposal> (data?: NodeConnection<NodeEdge<T>> | null): T[] {
+export function getNotRejectedProposals<T extends Proposal>(
+  data?: NodeConnection<NodeEdge<T>> | null
+): T[] {
   return flow([
-    data => getNodes<Proposal>(data?.proposalsConnection, p => p ? p?.state !== Schema.ProposalState.STATE_REJECTED : false),
+    (data) =>
+      getNodes<Proposal>(data?.proposalsConnection, (p) =>
+        p ? p?.state !== Schema.ProposalState.STATE_REJECTED : false
+      ),
     orderByDate,
   ])(data);
-};
+}
 
-export function getRejectedProposals<T extends Proposal> (data?: NodeConnection<NodeEdge<Proposal>> | null): T[] {
+export function getRejectedProposals<T extends Proposal>(
+  data?: NodeConnection<NodeEdge<Proposal>> | null
+): T[] {
   return flow([
-    data => getNodes<Proposal>(data?.proposalsConnection, p => p ? p?.state === Schema.ProposalState.STATE_REJECTED : false),
+    (data) =>
+      getNodes<Proposal>(data?.proposalsConnection, (p) =>
+        p ? p?.state === Schema.ProposalState.STATE_REJECTED : false
+      ),
     orderByDate,
   ])(data);
-};
+}

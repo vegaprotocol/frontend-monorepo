@@ -16,7 +16,13 @@ export const ProposalsContainer = () => {
     errorPolicy: 'ignore',
   });
 
-  const proposals = useMemo(() => getNotRejectedProposals<ProposalFieldsFragment>(data?.proposalsConnection), [data]);
+  const proposals = useMemo(
+    () =>
+      getNotRejectedProposals<ProposalFieldsFragment>(
+        data?.proposalsConnection
+      ),
+    [data]
+  );
 
   if (error) {
     return (
