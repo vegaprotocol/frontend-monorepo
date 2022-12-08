@@ -15,11 +15,15 @@ export const Heading = ({
 
   return (
     <header
-      className={classNames('my-0', {
+      className={classNames('mt-12 mb-6', {
         'mx-auto': centerContent,
       })}
     >
-      <h1 className={classNames('font-alpha calt', { 'mb-0': !marginBottom })}>
+      <h1
+        className={classNames('font-alpha calt text-5xl', {
+          'mb-0': !marginBottom,
+        })}
+      >
         {title}
       </h1>
     </header>

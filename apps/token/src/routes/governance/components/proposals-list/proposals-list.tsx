@@ -61,20 +61,18 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           </Button>
         </Link>
       </div>
-      <div>
-        <p className="mb-4">
-          {t(
-            `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
-          )}{' '}
-          <ExternalLink
-            data-testid="proposal-documentation-link"
-            href={ExternalLinks.GOVERNANCE_PAGE}
-            className="text-white"
-          >
-            {t(`Find out more about Vega governance`)}
-          </ExternalLink>
-        </p>
-      </div>
+      <p className="mb-8">
+        {t(
+          `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
+        )}{' '}
+        <ExternalLink
+          data-testid="proposal-documentation-link"
+          href={ExternalLinks.GOVERNANCE_PAGE}
+          className="text-white"
+        >
+          {t(`Find out more about Vega governance`)}
+        </ExternalLink>
+      </p>
       {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}

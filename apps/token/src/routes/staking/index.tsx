@@ -18,7 +18,7 @@ const StakingRouter = ({ name }: RouteChildProps) => {
     } else if (disassociate) {
       return t('pageTitleDisassociate');
     }
-    return t('pageTitleStaking');
+    return t('pageTitleValidators');
   }, [associate, disassociate, t]);
 
   return (

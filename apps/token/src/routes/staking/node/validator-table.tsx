@@ -114,7 +114,7 @@ export const ValidatorTable = ({
       </KeyValueTable>
 
       <div className="mb-6 text-sm">
-        {t('stakingDescription2b')}{' '}
+        {t('validatorTableIntro')}{' '}
         <UTLink
           href={ExternalLinks.VALIDATOR_FORUM}
           target="_blank"
