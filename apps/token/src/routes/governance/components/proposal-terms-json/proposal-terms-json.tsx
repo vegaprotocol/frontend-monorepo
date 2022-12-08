@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import type { DeepPartial } from '@vegaprotocol/react-helpers';
+import type { PartialDeep } from 'type-fest';
 import type * as Schema from '@vegaprotocol/types';
 
 export const ProposalTermsJson = ({
   terms,
 }: {
-  terms: DeepPartial<Schema.ProposalTerms>;
+  terms: PartialDeep<Schema.ProposalTerms>;
 }) => {
   const { t } = useTranslation();
   return (
