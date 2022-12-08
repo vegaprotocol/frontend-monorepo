@@ -59,27 +59,16 @@ export function EpochCountdown({
   return (
     <div data-testid="epoch-countdown" className="epoch-countdown">
       <div className="flex items-end">
-        <h3 className="flex-1">
+        <h3 className="flex-1 mb-4 text-sm">
           {t('Epoch')} {id}
         </h3>
-        <p className="text-sm m-0">
+        <p className="text-sm mt-0 mx-0 mb-4">
           {endsIn
             ? t('Next epoch in {{endText}}', { endText: endsIn })
             : t('Awaiting next epoch')}
         </p>
       </div>
       <ProgressBar value={progress} />
-      <div className="flex text-sm">
-        <p>{format(startDate, DATE_FORMAT_DETAILED)}</p>
-        <div className="flex-1 text-center">
-          <img
-            className="inline-block w-[5px] rotate-180"
-            alt="arrow"
-            src={arrow}
-          />
-        </div>
-        <p>{format(endDate, DATE_FORMAT_DETAILED)}</p>
-      </div>
     </div>
   );
 }
