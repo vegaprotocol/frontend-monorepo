@@ -1,9 +1,10 @@
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 interface ProposalsListItemProps {
-  proposal: Proposal_proposal;
+  proposal?: ProposalFieldsFragment | ProposalQuery['proposal'] | null;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {

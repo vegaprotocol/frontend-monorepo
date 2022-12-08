@@ -1,7 +1,8 @@
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalTermsJson } from '../proposal-terms-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
@@ -17,7 +18,7 @@ export enum ProposalType {
   PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
 }
 interface ProposalProps {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }
 
 export const Proposal = ({ proposal }: ProposalProps) => {

@@ -3,19 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 
 interface ProposalsListProps {
-  proposals: Proposal_proposal[];
+  proposals: ProposalFieldsFragment[];
 }
 
 export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const filterPredicate = (p: Proposal_proposal) =>
-    p.id?.includes(filterString) ||
-    p.party?.id?.toString().includes(filterString);
+  const filterPredicate = (p: ProposalFieldsFragment) =>
+    p?.id?.includes(filterString) ||
+    p?.party?.id?.toString().includes(filterString);
 
   return (
     <>
@@ -25,7 +25,7 @@ export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
         {proposals.length > 0 ? (
           <ul data-testid="rejected-proposals">
             {proposals.filter(filterPredicate).map((proposal) => (
-              <ProposalsListItem key={proposal.id} proposal={proposal} />
+              <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
           </ul>
         ) : (

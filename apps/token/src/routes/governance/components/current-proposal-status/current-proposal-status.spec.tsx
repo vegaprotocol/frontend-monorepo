@@ -7,7 +7,7 @@ import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { CurrentProposalStatus } from './current-proposal-status';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -37,7 +37,7 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = ({ proposal }: { proposal: Proposal_proposal }) => {
+const renderComponent = ({ proposal }: { proposal: ProposalQuery['proposal'] }) => {
   render(
     <AppStateProvider>
       <MockedProvider mocks={[networkParamsQueryMock]}>
@@ -58,7 +58,7 @@ afterEach(() => {
 
 it('Proposal open - renders will fail state if the proposal will fail', async () => {
   const proposal = generateProposal();
-  const failedProposal: Proposal_proposal = {
+  const failedProposal: ProposalQuery['proposal'] = {
     ...proposal,
     votes: {
       __typename: 'ProposalVotes',
@@ -127,7 +127,7 @@ it('Proposal passed - renders vote passed and time since vote closed', async () 
 
 it('Proposal waiting for node vote - will pass  - renders if the vote will pass and status', async () => {
   const proposal = generateProposal();
-  const failedProposal: Proposal_proposal = {
+  const failedProposal: ProposalQuery['proposal'] = {
     ...proposal,
     state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
     votes: {

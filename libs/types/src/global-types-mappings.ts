@@ -405,7 +405,8 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_SEND: 'Transfer sent',
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer received',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market accounts cleared',
-  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: 'Balances restored',
+  TRANSFER_TYPE_CLOSE: 'Transfer closed',
+  TRANSFER_TYPE_WITHDRAW_LOCK: 'Transfer withdraws locked',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -432,6 +433,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: `Funds added to your general account to fulfil a transfer`,
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
-  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE:
-    'When the network is restored from a checkpoint this sets the balances of parties',
+  TRANSFER_TYPE_CLOSE: '???',
+  TRANSFER_TYPE_WITHDRAW_LOCK: '???',
 };

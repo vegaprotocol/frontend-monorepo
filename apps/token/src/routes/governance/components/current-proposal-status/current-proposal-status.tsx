@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ProposalState } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 export const StatusPass = ({ children }: { children: ReactNode }) => (
   <span className="text-vega-green">{children}</span>
@@ -44,7 +45,7 @@ const WillPass = ({
 export const CurrentProposalStatus = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const { willPassByTokenVote, majorityMet, participationMet } =
     useVoteInformation({
@@ -53,26 +54,26 @@ export const CurrentProposalStatus = ({
   const { t } = useTranslation();
 
   const daysClosedAgo = formatDistanceToNow(
-    new Date(proposal.terms.closingDatetime),
+    new Date(proposal?.terms.closingDatetime),
     { addSuffix: true }
   );
 
   const daysEnactedAgo =
-    proposal.terms.enactmentDatetime &&
+    proposal?.terms.enactmentDatetime &&
     formatDistanceToNow(new Date(proposal.terms.enactmentDatetime), {
       addSuffix: true,
     });
 
-  if (proposal.state === ProposalState.STATE_OPEN) {
+  if (proposal?.state === ProposalState.STATE_OPEN) {
     return (
       <WillPass willPass={willPassByTokenVote}>{t('currentlySetTo')}</WillPass>
     );
   }
 
   if (
-    proposal.state === ProposalState.STATE_FAILED ||
-    proposal.state === ProposalState.STATE_DECLINED ||
-    proposal.state === ProposalState.STATE_REJECTED
+    proposal?.state === ProposalState.STATE_FAILED ||
+    proposal?.state === ProposalState.STATE_DECLINED ||
+    proposal?.state === ProposalState.STATE_REJECTED
   ) {
     if (!participationMet) {
       return (
@@ -98,8 +99,8 @@ export const CurrentProposalStatus = ({
       <>
         <span>{t('voteFailedReason')}</span>
         <StatusFail>
-          {proposal.errorDetails ||
-            proposal.rejectionReason ||
+          {proposal?.errorDetails ||
+            proposal?.rejectionReason ||
             t('unknownReason')}
         </StatusFail>
         <span>&nbsp;{daysClosedAgo}</span>
@@ -107,21 +108,21 @@ export const CurrentProposalStatus = ({
     );
   }
   if (
-    proposal.state === ProposalState.STATE_ENACTED ||
-    proposal.state === ProposalState.STATE_PASSED
+    proposal?.state === ProposalState.STATE_ENACTED ||
+    proposal?.state === ProposalState.STATE_PASSED
   ) {
     return (
       <>
         <span>{t('votePassed')}</span>
         <StatusPass>
           &nbsp;
-          {proposal.state === ProposalState.STATE_ENACTED
+          {proposal?.state === ProposalState.STATE_ENACTED
             ? t('Enacted')
             : t('Passed')}
         </StatusPass>
         <span>
           &nbsp;
-          {proposal.state === ProposalState.STATE_ENACTED
+          {proposal?.state === ProposalState.STATE_ENACTED
             ? daysEnactedAgo
             : daysClosedAgo}
         </span>
@@ -129,7 +130,7 @@ export const CurrentProposalStatus = ({
     );
   }
 
-  if (proposal.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
+  if (proposal?.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE) {
     return (
       <WillPass willPass={willPassByTokenVote}>
         <span>{t('WaitingForNodeVote')}</span>{' '}

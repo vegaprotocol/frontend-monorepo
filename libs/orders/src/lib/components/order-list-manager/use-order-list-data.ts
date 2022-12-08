@@ -11,7 +11,7 @@ import type {
   Order,
 } from '../order-data-provider/order-data-provider';
 import type { OrdersQueryVariables } from '../order-data-provider/__generated__/Orders';
-import type { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 export interface Sort {
   colId: string;
   sort: string;

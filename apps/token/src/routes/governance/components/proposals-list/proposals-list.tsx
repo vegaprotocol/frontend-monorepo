@@ -7,17 +7,18 @@ import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
-  proposals: Proposal_proposal[];
+  proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
 }
 
 interface SortedProposalsProps {
-  open: Proposal_proposal[];
-  closed: Proposal_proposal[];
+  open: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
+  closed: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
 }
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
@@ -26,7 +27,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   const sortedProposals = proposals.reduce(
     (acc: SortedProposalsProps, proposal) => {
-      if (isFuture(new Date(proposal.terms.closingDatetime))) {
+      if (isFuture(new Date(proposal?.terms.closingDatetime))) {
         acc.open.push(proposal);
       } else {
         acc.closed.push(proposal);
@@ -39,9 +40,9 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: Proposal_proposal) =>
-    p.id?.includes(filterString) ||
-    p.party?.id?.toString().includes(filterString);
+  const filterPredicate = (p: ProposalFieldsFragment | ProposalQuery['proposal']) =>
+    p?.id?.includes(filterString) ||
+    p?.party?.id?.toString().includes(filterString);
 
   return (
     <>
@@ -83,7 +84,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         {sortedProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
             {sortedProposals.open.filter(filterPredicate).map((proposal) => (
-              <ProposalsListItem key={proposal.id} proposal={proposal} />
+              <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
           </ul>
         ) : (
@@ -97,7 +98,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         {sortedProposals.closed.length > 0 ? (
           <ul data-testid="closed-proposals">
             {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
-              <ProposalsListItem key={proposal.id} proposal={proposal} />
+              <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
           </ul>
         ) : (
