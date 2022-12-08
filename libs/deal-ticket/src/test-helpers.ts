@@ -1,5 +1,5 @@
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 

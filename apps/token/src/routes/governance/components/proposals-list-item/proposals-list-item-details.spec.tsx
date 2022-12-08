@@ -26,10 +26,10 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 const renderComponent = (
-  proposal: Proposal_proposal,
+  proposal: ProposalQuery['proposal'],
   mock = networkParamsQueryMock
 ) =>
   render(

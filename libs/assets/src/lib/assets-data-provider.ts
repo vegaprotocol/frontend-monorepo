@@ -4,7 +4,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AssetsDocument } from './__generated__/Assets';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { AssetsQuery } from './__generated__/Assets';
 import type { Asset } from './asset-data-provider';
 

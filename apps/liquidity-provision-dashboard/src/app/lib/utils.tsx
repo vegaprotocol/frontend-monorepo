@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const marketTradingModeStyle = {
   [Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS]: '#00D46E',

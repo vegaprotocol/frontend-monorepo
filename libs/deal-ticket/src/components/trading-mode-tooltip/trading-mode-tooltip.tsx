@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';

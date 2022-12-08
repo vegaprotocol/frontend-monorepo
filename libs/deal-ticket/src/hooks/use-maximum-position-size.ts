@@ -1,7 +1,7 @@
 import { useMarketPositions } from './use-market-positions';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useSettlementAccount } from './use-settlement-account';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { BigNumber } from 'bignumber.js';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 

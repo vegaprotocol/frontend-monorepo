@@ -22,7 +22,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { IconNames } from '@blueprintjs/icons';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { marketsProvider } from '@vegaprotocol/market-list';

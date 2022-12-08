@@ -1,6 +1,6 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { useUpdateProposal } from '../lib';
 

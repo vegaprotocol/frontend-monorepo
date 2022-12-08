@@ -12,7 +12,7 @@ import {
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Tab,

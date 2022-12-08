@@ -3,7 +3,7 @@ import {
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { MarketDataGridProps } from './market-data-grid';

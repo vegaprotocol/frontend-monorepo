@@ -9,7 +9,7 @@ import {
   useYesterday,
   isNumeric,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import throttle from 'lodash/throttle';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import * as constants from '../constants';

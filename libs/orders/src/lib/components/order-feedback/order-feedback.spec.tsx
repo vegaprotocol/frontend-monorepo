@@ -1,9 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import {
-  OrderRejectionReasonMapping,
-  OrderStatusMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { OrderEventFieldsFragment } from '../../order-hooks';
 import { generateOrder } from '../mocks/generate-orders';
@@ -45,7 +41,7 @@ describe('OrderFeedback', () => {
     const order = generateOrder(orderFields) as OrderEventFieldsFragment;
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
-      `${OrderRejectionReasonMapping[orderFields.rejectionReason]}`
+      `${Schema.OrderRejectionReasonMapping[orderFields.rejectionReason]}`
     );
   });
 
@@ -75,7 +71,7 @@ describe('OrderFeedback', () => {
       order.market!.tradableInstrument.instrument.name
     );
     expect(screen.getByText('Status').nextElementSibling).toHaveTextContent(
-      OrderStatusMapping[order.status]
+      Schema.OrderStatusMapping[order.status]
     );
     expect(screen.getByText('Price').nextElementSibling).toHaveTextContent(
       '1.00'

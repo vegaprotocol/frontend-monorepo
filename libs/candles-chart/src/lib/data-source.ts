@@ -17,7 +17,7 @@ import type {
   CandlesEventsSubscriptionVariables,
 } from './__generated__/Candles';
 import type { Subscription } from 'zen-observable-ts';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const INTERVAL_TO_PENNANT_MAP = {
   [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,

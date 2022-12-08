@@ -21,7 +21,7 @@ import type { MarketData } from '@vegaprotocol/market-list';
 import type {
   MarketDepthUpdateSubscription,
   PriceLevelFieldsFragment,
-} from './__generated___/MarketDepth';
+} from './__generated__/MarketDepth';
 import type { DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
 

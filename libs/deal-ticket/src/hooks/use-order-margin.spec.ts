@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import type { PositionMargin } from './use-market-positions';
 import type { Props } from './use-order-margin';
 import { useOrderMargin } from './use-order-margin';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
 let mockEstimateData = {

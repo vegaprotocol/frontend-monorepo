@@ -1,5 +1,5 @@
 import type { LedgerEntriesQuery } from '@vegaprotocol/ledger';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 const ledgerEntries: LedgerEntriesQuery = {
   ledgerEntries: {

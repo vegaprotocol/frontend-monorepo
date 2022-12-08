@@ -9,7 +9,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { ExternalLinks, toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   getFormattedPerformanceScore,
   getNormalisedVotingPower,
