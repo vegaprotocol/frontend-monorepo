@@ -133,7 +133,7 @@ export type AccountUpdate = {
   balance: Scalars['String'];
   /** Market id (only relevant to margin accounts) */
   marketId?: Maybe<Scalars['ID']>;
-  /** The party owning the accounbt */
+  /** The party owning the account */
   partyId: Scalars['ID'];
   /** Account type (General, Margin, etc) */
   type: AccountType;
@@ -906,7 +906,7 @@ export type Erc20WithdrawalApproval = {
    * 0x + sig1 + sig2 + ... + sigN
    */
   signatures: Scalars['String'];
-  /** The target address which will receive the funds */
+  /** The target address that will receive the funds */
   targetAddress: Scalars['String'];
 };
 
@@ -1148,7 +1148,7 @@ export type LedgerEntry = {
   /** RFC3339Nano time at which the transfer was made */
   timestamp: Scalars['Timestamp'];
   /** Type of ledger entry */
-  type: Scalars['String'];
+  type: TransferType;
 };
 
 export enum LedgerEntryField {
@@ -1299,7 +1299,7 @@ export type LogNormalModelParams = {
   __typename?: 'LogNormalModelParams';
   /** Mu parameter, annualised growth rate of the underlying asset */
   mu: Scalars['Float'];
-  /** R parameter */
+  /** R parameter, annualised growth rate of the risk-free asset, used for discounting of future cash flows, can be any real number */
   r: Scalars['Float'];
   /** Sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number */
   sigma: Scalars['Float'];
@@ -1496,6 +1496,7 @@ export type MarketliquidityProvisionsConnectionArgs = {
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<OrderFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -1706,11 +1707,11 @@ export type MarketTick = {
 export type MarketTimestamps = {
   __typename?: 'MarketTimestamps';
   /** Time when the market is closed */
-  close?: Maybe<Scalars['Timestamp']>;
+  close: Scalars['Timestamp'];
   /** Time when the market is open and ready to accept trades */
-  open?: Maybe<Scalars['Timestamp']>;
+  open: Scalars['Timestamp'];
   /** Time when the market has been voted in and waiting to be created */
-  pending?: Maybe<Scalars['Timestamp']>;
+  pending: Scalars['Timestamp'];
   /** Time when the market is first proposed */
   proposed?: Maybe<Scalars['Timestamp']>;
 };
@@ -2219,6 +2220,13 @@ export type OrderEstimate = {
   totalFeeAmount: Scalars['String'];
 };
 
+export type OrderFilter = {
+  excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
+  status?: InputMaybe<Array<OrderStatus>>;
+  timeInForce?: InputMaybe<Array<OrderTimeInForce>>;
+  types?: InputMaybe<Array<OrderType>>;
+};
+
 /** Why the order was rejected by the core node */
 export enum OrderRejectionReason {
   /** Amending the order failed */
@@ -2508,6 +2516,7 @@ export type PartymarginsConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyordersConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
+  filter?: InputMaybe<OrderFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4220,31 +4229,54 @@ export enum TransferStatus {
 }
 
 export enum TransferType {
+  /** Bond returned to general account after liquidity commitment was reduced */
   TRANSFER_TYPE_BOND_HIGH = 'TRANSFER_TYPE_BOND_HIGH',
+  /** Bond account funded from general account to meet required bond amount */
   TRANSFER_TYPE_BOND_LOW = 'TRANSFER_TYPE_BOND_LOW',
+  /** Bond account penalised when liquidity commitment not met */
   TRANSFER_TYPE_BOND_SLASHING = 'TRANSFER_TYPE_BOND_SLASHING',
+  /** Balances are being restored to the user's account following a checkpoint restart of the network */
+  TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE = 'TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE',
+  /** Market-related accounts emptied because market has closed */
   TRANSFER_TYPE_CLEAR_ACCOUNT = 'TRANSFER_TYPE_CLEAR_ACCOUNT',
-  TRANSFER_TYPE_CLOSE = 'TRANSFER_TYPE_CLOSE',
+  /** Funds deposited to general account */
   TRANSFER_TYPE_DEPOSIT = 'TRANSFER_TYPE_DEPOSIT',
+  /** Infrastructure fee received into general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
+  /** Infrastructure fee paid from general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  /** Liquidity fee received into general account */
   TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE = 'TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE',
+  /** Liquidity fee paid from general account */
   TRANSFER_TYPE_LIQUIDITY_FEE_PAY = 'TRANSFER_TYPE_LIQUIDITY_FEE_PAY',
+  /** Funds deducted after final settlement loss */
   TRANSFER_TYPE_LOSS = 'TRANSFER_TYPE_LOSS',
+  /** Maker fee paid from general account */
   TRANSFER_TYPE_MAKER_FEE_PAY = 'TRANSFER_TYPE_MAKER_FEE_PAY',
+  /** Maker fee received into general account */
   TRANSFER_TYPE_MAKER_FEE_RECEIVE = 'TRANSFER_TYPE_MAKER_FEE_RECEIVE',
+  /** Margin confiscated from margin account to fulfil closeout */
   TRANSFER_TYPE_MARGIN_CONFISCATED = 'TRANSFER_TYPE_MARGIN_CONFISCATED',
+  /** Excess margin amount returned to general account */
   TRANSFER_TYPE_MARGIN_HIGH = 'TRANSFER_TYPE_MARGIN_HIGH',
+  /** Funds transferred from general account to meet margin requirement */
   TRANSFER_TYPE_MARGIN_LOW = 'TRANSFER_TYPE_MARGIN_LOW',
+  /** Funds deducted from margin account after mark to market loss */
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
+  /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  /** Staking reward received */
   TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
+  /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
+  /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */
   TRANSFER_TYPE_TRANSFER_FUNDS_SEND = 'TRANSFER_TYPE_TRANSFER_FUNDS_SEND',
+  /** Default value, always invalid */
   TRANSFER_TYPE_UNSPECIFIED = 'TRANSFER_TYPE_UNSPECIFIED',
+  /** Funds added to general account after final settlement gain */
   TRANSFER_TYPE_WIN = 'TRANSFER_TYPE_WIN',
-  TRANSFER_TYPE_WITHDRAW = 'TRANSFER_TYPE_WITHDRAW',
-  TRANSFER_TYPE_WITHDRAW_LOCK = 'TRANSFER_TYPE_WITHDRAW_LOCK'
+  /** Funds withdrawn from general account */
+  TRANSFER_TYPE_WITHDRAW = 'TRANSFER_TYPE_WITHDRAW'
 }
 
 /** A proposal to update an asset's details */
