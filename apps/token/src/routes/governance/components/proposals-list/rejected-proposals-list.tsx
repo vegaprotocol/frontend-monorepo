@@ -14,7 +14,9 @@ export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const filterPredicate = (p: ProposalFieldsFragment | ProposalQuery['proposal']) =>
+  const filterPredicate = (
+    p: ProposalFieldsFragment | ProposalQuery['proposal']
+  ) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 

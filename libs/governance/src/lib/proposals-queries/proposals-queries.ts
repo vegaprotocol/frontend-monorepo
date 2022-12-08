@@ -2,10 +2,7 @@ import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import type { PartialDeep } from 'type-fest';
 import * as Schema from '@vegaprotocol/types';
-import type {
-  NodeConnection,
-  NodeEdge,
-} from '@vegaprotocol/react-helpers';
+import type { NodeConnection, NodeEdge } from '@vegaprotocol/react-helpers';
 import { getNodes } from '@vegaprotocol/react-helpers';
 
 type Proposal = PartialDeep<Schema.Proposal>;

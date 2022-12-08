@@ -181,8 +181,7 @@ it('Proposal failed - renders vote failed reason and vote closed ago', async () 
 it('Proposal failed - renders rejection reason there are no error details', async () => {
   const proposal = generateProposal({
     state: ProposalState.STATE_FAILED,
-    rejectionReason:
-      ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+    rejectionReason: ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
     terms: {
       closingDatetime: new Date(0).toISOString(),
     },
