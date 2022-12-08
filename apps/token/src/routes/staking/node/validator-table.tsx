@@ -10,8 +10,16 @@ import { formatNumber } from '../../../lib/format-number';
 import { ExternalLinks, toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import * as Schema from '@vegaprotocol/types';
-import { totalPenalties } from '../home/validator-tables/shared';
-import { normalisedVotingPower, rawValidatorScore } from '../shared';
+import {
+  getFormattedPerformanceScore,
+  getNormalisedVotingPower,
+  getOverstakedAmount,
+  getOverstakingPenalty,
+  getPerformancePenalty,
+  getRawValidatorScore,
+  getTotalPenalties,
+  getUnnormalisedVotingPower,
+} from '../shared';
 import type { ReactNode } from 'react';
 import type { StakingNodeFieldsFragment } from './__generated___/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
@@ -60,47 +68,25 @@ export const ValidatorTable = ({
 
   const stakedOnNode = toBigNum(node.stakedTotal, decimals);
 
-  const location = countryData.find((c) => c.code === node.location)?.name;
+  const validatorScore = getRawValidatorScore(previousEpochData, node.id);
 
-  const performanceScore = new BigNumber(node.rankingScore.performanceScore).dp(
-    2
+  const overstakedAmount = getOverstakedAmount(
+    validatorScore,
+    stakedTotal,
+    node.stakedTotal
   );
-
-  const validatorScore = rawValidatorScore(previousEpochData, node.id);
-
-  const overstakedAmount = useMemo(() => {
-    const amount = validatorScore
-      ? new BigNumber(validatorScore).times(total).minus(stakedOnNode).dp(2)
-      : new BigNumber(0);
-
-    return amount.isNegative() ? new BigNumber(0) : amount;
-  }, [stakedOnNode, total, validatorScore]);
 
   const stakePercentage =
     total.isEqualTo(0) || stakedOnNode.isEqualTo(0)
       ? '-'
       : stakedOnNode.dividedBy(total).times(100).dp(2).toString() + '%';
 
-  const performancePenalty =
-    new BigNumber(1).minus(performanceScore).times(100).toString() + '%';
-
-  const totalPenaltiesAmount = totalPenalties(
+  const totalPenaltiesAmount = getTotalPenalties(
     validatorScore,
     node.rankingScore.performanceScore,
     stakedOnNode.toString(),
     total.toString()
   );
-
-  const overstakingPenalty = useMemo(
-    () =>
-      overstakedAmount.dividedBy(stakedOnNode).times(100).dp(2).toString() +
-      '%',
-    [overstakedAmount, stakedOnNode]
-  );
-
-  const unnormalisedVotingPower = validatorScore
-    ? new BigNumber(validatorScore).times(100).dp(2).toString() + '%'
-    : null;
 
   return (
     <div className="mb-8" data-testid="validator-table">
@@ -148,7 +134,8 @@ export const ValidatorTable = ({
         <KeyValueTableRow>
           <span>{t('SERVER LOCATION')}</span>
           <ValidatorTableCell>
-            {location || t('not available')}
+            {countryData.find((c) => c.code === node.location)?.name ||
+              t('not available')}
           </ValidatorTableCell>
         </KeyValueTableRow>
         <KeyValueTableRow>
@@ -210,15 +197,23 @@ export const ValidatorTable = ({
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>{t('OVERSTAKED PENALTY')}</span>
-          <span>{overstakingPenalty}</span>
+          <span>
+            {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>{t('PERFORMANCE SCORE')}</span>
-          <span>{performanceScore.toString()}</span>
+          <span>
+            {getFormattedPerformanceScore(
+              node.rankingScore.performanceScore
+            ).toString()}
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>{t('PERFORMANCE PENALITY')}</span>
-          <span>{performancePenalty}</span>
+          <span>
+            {getPerformancePenalty(node.rankingScore.performanceScore)}
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>
@@ -236,7 +231,7 @@ export const ValidatorTable = ({
       >
         <KeyValueTableRow>
           <span>{t('UNNORMALISED VOTING POWER')}</span>
-          <span>{unnormalisedVotingPower}</span>
+          <span>{getUnnormalisedVotingPower(validatorScore)}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           <span>
@@ -244,7 +239,7 @@ export const ValidatorTable = ({
           </span>
           <span>
             <strong>
-              {normalisedVotingPower(node.rankingScore.votingPower)}
+              {getNormalisedVotingPower(node.rankingScore.votingPower)}
             </strong>
           </span>
         </KeyValueTableRow>
