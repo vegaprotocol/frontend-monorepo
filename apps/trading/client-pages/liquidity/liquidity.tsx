@@ -31,10 +31,96 @@ import { Link, useParams } from 'react-router-dom';
 export const Liquidity = () => {
   const params = useParams();
   const marketId = params.marketId;
-  return <LiquidityContainer marketId={marketId} showTitle={true} />;
+  return <LiquidityViewContainer marketId={marketId} showTitle={true} />;
 };
 
 export const LiquidityContainer = ({
+  marketId,
+}: {
+  marketId: string | undefined;
+}) => {
+  const gridRef = useRef<AgGridReact | null>(null);
+  const { data: marketProvision } = useDataProvider({
+    dataProvider: marketLiquidityDataProvider,
+    skipUpdates: true,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+  const dataRef = useRef<LiquidityProvisionData[] | null>(null);
+
+  const { reload } = useDataProvider({
+    dataProvider: liquidityProvisionsDataProvider,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+
+  const update = useCallback(
+    ({ data }: { data: LiquidityProvisionData[] | null }) => {
+      if (!gridRef.current?.api) {
+        return false;
+      }
+      if (dataRef.current?.length) {
+        dataRef.current = data;
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      }
+      return false;
+    },
+    [gridRef]
+  );
+
+  const {
+    data: liquidityProviders,
+    loading,
+    error,
+  } = useDataProvider({
+    dataProvider: lpAggregatedDataProvider,
+    update,
+    variables: useMemo(() => ({ marketId }), [marketId]),
+  });
+
+  // To be removed when liquidityProvision subscriptions are working
+  useEffect(() => {
+    const interval = setInterval(reload, 10000);
+    return () => clearInterval(interval);
+  }, [reload]);
+
+  const assetDecimalPlaces =
+    marketProvision?.market?.tradableInstrument.instrument.product
+      .settlementAsset.decimals || 0;
+  const symbol =
+    marketProvision?.market?.tradableInstrument.instrument.product
+      .settlementAsset.symbol;
+
+  const { param: stakeToCcySiskas } = useNetworkParam(
+    NetworkParams.market_liquidity_stakeToCcySiskas
+  );
+  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
+
+  const filteredEdges = useMemo(
+    () =>
+      liquidityProviders?.filter((e) =>
+        [
+          Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
+          Schema.LiquidityProvisionStatus.STATUS_UNDEPLOYED,
+          Schema.LiquidityProvisionStatus.STATUS_PENDING,
+        ].includes(e.status)
+      ),
+    [liquidityProviders]
+  );
+
+  return (
+    <AsyncRenderer loading={loading} error={error} data={filteredEdges}>
+      <LiquidityTable
+        ref={gridRef}
+        data={filteredEdges}
+        symbol={symbol}
+        assetDecimalPlaces={assetDecimalPlaces}
+        stakeToCcySiskas={stakeToCcySiska}
+      />
+    </AsyncRenderer>
+  );
+};
+
+export const LiquidityViewContainer = ({
   marketId,
   showTitle = false,
 }: {
