@@ -1,4 +1,3 @@
-import { getNotRejectedProposals } from '@vegaprotocol/governance';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +6,35 @@ import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { useProposalsQuery } from './__generated__/Proposals';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
+import type { NodeConnection, NodeEdge } from '@vegaprotocol/react-helpers';
+import { getNodes } from '@vegaprotocol/react-helpers';
+import flow from 'lodash/flow';
+import { ProposalState } from '@vegaprotocol/types';
+
+import orderBy from 'lodash/orderBy';
+
+const orderByDate = (arr: ProposalFieldsFragment[]) =>
+  orderBy(
+    arr,
+    [
+      (p) => new Date(p?.terms?.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
+      (p) => new Date(p?.terms?.closingDatetime).getTime(),
+      (p) => p.id,
+    ],
+    ['desc', 'desc', 'desc']
+  );
+
+export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
+  data?: NodeConnection<NodeEdge<T>> | null
+): T[] {
+  return flow([
+    (data) =>
+      getNodes<ProposalFieldsFragment>(data, (p) =>
+        p ? p.state !== ProposalState.STATE_REJECTED : false
+      ),
+    orderByDate,
+  ])(data);
+}
 
 export const ProposalsContainer = () => {
   const { t } = useTranslation();

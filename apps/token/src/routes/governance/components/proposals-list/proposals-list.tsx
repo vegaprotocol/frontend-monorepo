@@ -24,7 +24,6 @@ interface SortedProposalsProps {
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
-
   const sortedProposals = proposals.reduce(
     (acc: SortedProposalsProps, proposal) => {
       if (isFuture(new Date(proposal?.terms.closingDatetime))) {
@@ -110,7 +109,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         )}
       </section>
 
-      <Link className="underline" to={'/governance/rejected'}>
+      <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
         {t('seeRejectedProposals')}
       </Link>
     </>
