@@ -14,9 +14,7 @@ interface ERC20Asset {
   };
 }
 
-export function isAssetTypeERC20<T extends Asset, S extends ERC20Asset>(
-  asset?: T | S
-): asset is S {
+export function isAssetTypeERC20(asset?: Asset): asset is ERC20Asset {
   if (!asset?.source) return false;
   return asset.source.__typename === 'ERC20';
 }
