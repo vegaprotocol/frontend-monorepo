@@ -35,7 +35,7 @@ export const TxDetailsBatch = ({
   const countTotal = countSubmissions + countAmendments + countCancellations;
 
   return (
-    <TableWithTbody>
+    <TableWithTbody className="mb-8">
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <TableRow modifier="bordered">
         <TableCell>{t('Batch size')}</TableCell>

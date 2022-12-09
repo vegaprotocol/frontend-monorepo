@@ -6,7 +6,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Web3Provider } from './web3-provider';
 import { useEthereumConfig } from './use-ethereum-config';
-import { useWeb3ConnectDialog } from './web3-connect-dialog';
+import { useWeb3ConnectStore } from './web3-connect-store';
 import { createConnectors } from './web3-connectors';
 
 interface Web3ContainerProps {
@@ -62,7 +62,7 @@ export const Web3Content = ({
   connectors,
 }: Web3ContentProps) => {
   const { isActive, error, connector, chainId } = useWeb3React();
-  const openDialog = useWeb3ConnectDialog((state) => state.open);
+  const openDialog = useWeb3ConnectStore((state) => state.open);
 
   useEffect(() => {
     if (
@@ -98,10 +98,7 @@ export const Web3Content = ({
         <p data-testid="connect-eth-wallet-msg" className="mb-4">
           {t('Connect your Ethereum wallet')}
         </p>
-        <Button
-          onClick={() => openDialog(connectors, chainId)}
-          data-testid="connect-eth-wallet-btn"
-        >
+        <Button onClick={openDialog} data-testid="connect-eth-wallet-btn">
           {t('Connect')}
         </Button>
       </SplashWrapper>

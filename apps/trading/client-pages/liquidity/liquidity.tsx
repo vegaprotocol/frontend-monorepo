@@ -12,7 +12,7 @@ import {
   useDataProvider,
   useNetworkParam,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Tab,
@@ -69,10 +69,7 @@ export const Liquidity = () => {
   } = useDataProvider({
     dataProvider: lpAggregatedDataProvider,
     update,
-    variables: useMemo(
-      () => ({ marketId, partyId: pubKey }),
-      [marketId, pubKey]
-    ),
+    variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
   // To be removed when liquidityProvision subscriptions are working

@@ -1,5 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';

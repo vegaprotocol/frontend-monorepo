@@ -9,7 +9,7 @@ const getLastRow = (
   blockLength: number,
   totalCount?: number
 ) => {
-  let lastRow = -1;
+  let lastRow = undefined;
   if (totalCount !== undefined) {
     if (!totalCount) {
       lastRow = 0;
@@ -50,9 +50,15 @@ export const makeInfiniteScrollGetRows =
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
-      const lastRow =
-        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
-        newRows.current;
+      const currentLastNumber = getLastRow(
+        startRow,
+        endRow,
+        rowsThisBlock.length,
+        totalCount.current
+      );
+      const lastRow = currentLastNumber
+        ? currentLastNumber - newRows.current
+        : currentLastNumber;
       successCallback(rowsThisBlock, lastRow);
     } catch (e) {
       failCallback();

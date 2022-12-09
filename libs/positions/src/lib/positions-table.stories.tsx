@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import type { Story, Meta } from '@storybook/react';
 import { PositionsTable } from './positions-table';
 import type { Position } from './positions-data-providers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export default {
   component: PositionsTable,

@@ -18,33 +18,32 @@ interface TxDetailsChainEventStakeTotalSupplyProps {
 export const TxDetailsChainEventStakeTotalSupply = ({
   update,
 }: TxDetailsChainEventStakeTotalSupplyProps) => {
-  if (!update) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!update || !update.tokenAddress || !update.totalSupply) {
+    return null;
   }
 
-  let totalSupply = update.totalSupply || '';
-  if (totalSupply.length > 0) {
-    totalSupply = formatNumber(toBigNum(totalSupply, 18));
-  }
+  const totalSupply =
+    update.totalSupply.length > 0
+      ? formatNumber(toBigNum(update.totalSupply, 18))
+      : update.totalSupply;
 
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Chain Event type')}</TableCell>
+        <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('Stake total supply update')}</TableCell>
       </TableRow>
 
-      {update.tokenAddress ? (
-        <TableRow modifier="bordered">
-          <TableCell>{t('Source')}</TableCell>
-          <TableCell>
-            <EthExplorerLink
-              id={update.tokenAddress}
-              type={EthExplorerLinkTypes.address}
-            />
-          </TableCell>
-        </TableRow>
-      ) : null}
+      <TableRow modifier="bordered">
+        <TableCell>{t('Source')}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={update.tokenAddress}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
+      </TableRow>
+
       <TableRow modifier="bordered">
         <TableCell>{t('Total supply')}</TableCell>
         <TableCell>{totalSupply}</TableCell>

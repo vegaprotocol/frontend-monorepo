@@ -1,10 +1,10 @@
-import { TxDetailsChainMultisigThreshold } from './tx-multisig-threshold';
-import { TxDetailsChainMultisigSigner } from './tx-multisig-signer';
 import { TxDetailsChainEventBuiltinDeposit } from './tx-builtin-deposit';
+import { TxDetailsChainEventBuiltinWithdrawal } from './tx-builtin-withdrawal';
 import { TxDetailsChainEventStakeDeposit } from './tx-stake-deposit';
 import { TxDetailsChainEventStakeRemove } from './tx-stake-remove';
 import { TxDetailsChainEventStakeTotalSupply } from './tx-stake-totalsupply';
-import { TxDetailsChainEventBuiltinWithdrawal } from './tx-builtin-withdrawal';
+import { TxDetailsChainMultisigThreshold } from './tx-multisig-threshold';
+import { TxDetailsChainMultisigSigner } from './tx-multisig-signer';
 import { TxDetailsChainEventErc20AssetList } from './tx-erc20-asset-list';
 import { TxDetailsChainEventErc20AssetLimitsUpdated } from './tx-erc20-asset-limits-updated';
 import { TxDetailsChainEventErc20BridgePause } from './tx-erc20-bridge-pause';
@@ -13,6 +13,8 @@ import { TxDetailsChainEventDeposit } from './tx-erc20-deposit';
 import isUndefined from 'lodash/isUndefined';
 
 import type { BlockExplorerTransactionResult } from '../../../../routes/types/block-explorer-response';
+import { TxDetailsChainEventWithdrawal } from './tx-erc20-withdrawal';
+import { TxDetailsChainEventErc20AssetDelist } from './tx-erc20-asset-delist';
 
 interface ChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -32,54 +34,58 @@ interface ChainEventProps {
  * @returns React.JSXElement
  */
 export const ChainEvent = ({ txData }: ChainEventProps) => {
-  const e = txData?.command.chainEvent;
-  if (!e) {
+  if (!txData?.command.chainEvent) {
     return null;
   }
 
+  const { builtin, erc20, erc20Multisig, stakingEvent } =
+    txData.command.chainEvent;
+
   // Builtin Asset events
-  if (e.builtin) {
-    if (e.builtin.deposit) {
-      return <TxDetailsChainEventBuiltinDeposit deposit={e.builtin.deposit} />;
+  if (builtin) {
+    if (builtin.deposit) {
+      return <TxDetailsChainEventBuiltinDeposit deposit={builtin.deposit} />;
     }
 
-    if (e.builtin?.withdrawal) {
+    if (builtin?.withdrawal) {
       return (
         <TxDetailsChainEventBuiltinWithdrawal
-          withdrawal={e.builtin?.withdrawal}
+          withdrawal={builtin?.withdrawal}
         />
       );
     }
   }
 
   // ERC20 asset events
-  if (e.erc20) {
-    if (e.erc20.deposit) {
-      return <TxDetailsChainEventDeposit deposit={e.erc20.deposit} />;
+  if (erc20) {
+    if (erc20.deposit) {
+      return <TxDetailsChainEventDeposit deposit={erc20.deposit} />;
     }
 
-    if (e.erc20.withdrawal) {
+    if (erc20.withdrawal) {
+      return <TxDetailsChainEventWithdrawal withdrawal={erc20.withdrawal} />;
+    }
+
+    if (erc20.assetList) {
+      return <TxDetailsChainEventErc20AssetList assetList={erc20.assetList} />;
+    }
+
+    if (erc20.assetDelist) {
       return (
-        <TxDetailsChainEventBuiltinWithdrawal withdrawal={e.erc20.withdrawal} />
+        <TxDetailsChainEventErc20AssetDelist assetDelist={erc20.assetDelist} />
       );
     }
 
-    if (e.erc20.assetList) {
-      return (
-        <TxDetailsChainEventErc20AssetList assetList={e.erc20.assetList} />
-      );
-    }
-
-    if (e.erc20.assetLimitsUpdated) {
+    if (erc20.assetLimitsUpdated) {
       return (
         <TxDetailsChainEventErc20AssetLimitsUpdated
-          assetLimitsUpdated={e.erc20.assetLimitsUpdated}
+          assetLimitsUpdated={erc20.assetLimitsUpdated}
         />
       );
     }
 
-    const bridgeStopped = e.erc20.bridgeStopped;
-    const bridgeResumed = e.erc20.bridgeResumed;
+    const bridgeStopped = erc20.bridgeStopped;
+    const bridgeResumed = erc20.bridgeResumed;
     if (!isUndefined(bridgeStopped) || !isUndefined(bridgeResumed)) {
       const isPaused = bridgeStopped === false || bridgeResumed === true;
       return <TxDetailsChainEventErc20BridgePause isPaused={isPaused} />;
@@ -87,48 +93,48 @@ export const ChainEvent = ({ txData }: ChainEventProps) => {
   }
 
   // ERC20 multisig events
-  if (e.erc20Multisig) {
-    if (e.erc20Multisig.thresholdSet) {
+  if (erc20Multisig) {
+    if (erc20Multisig.thresholdSet) {
       return (
         <TxDetailsChainMultisigThreshold
-          thresholdSet={e.erc20Multisig.thresholdSet}
+          thresholdSet={erc20Multisig.thresholdSet}
         />
       );
     }
 
-    if (e.erc20Multisig.signerAdded) {
+    if (erc20Multisig.signerAdded) {
       return (
-        <TxDetailsChainMultisigSigner signer={e.erc20Multisig.signerAdded} />
+        <TxDetailsChainMultisigSigner signer={erc20Multisig.signerAdded} />
       );
     }
 
-    if (e.erc20Multisig.signerRemoved) {
+    if (erc20Multisig.signerRemoved) {
       return (
-        <TxDetailsChainMultisigSigner signer={e.erc20Multisig.signerRemoved} />
+        <TxDetailsChainMultisigSigner signer={erc20Multisig.signerRemoved} />
       );
     }
   }
 
   // Staking events
-  if (e.stakingEvent) {
-    if (e.stakingEvent.stakeDeposited) {
+  if (stakingEvent) {
+    if (stakingEvent.stakeDeposited) {
       return (
         <TxDetailsChainEventStakeDeposit
-          deposit={e.stakingEvent.stakeDeposited}
+          deposit={stakingEvent.stakeDeposited}
         />
       );
     }
 
-    if (e.stakingEvent.stakeRemoved) {
+    if (stakingEvent.stakeRemoved) {
       return (
-        <TxDetailsChainEventStakeRemove remove={e.stakingEvent.stakeRemoved} />
+        <TxDetailsChainEventStakeRemove remove={stakingEvent.stakeRemoved} />
       );
     }
 
-    if (e.stakingEvent.totalSupply) {
+    if (stakingEvent.totalSupply) {
       return (
         <TxDetailsChainEventStakeTotalSupply
-          update={e.stakingEvent.totalSupply}
+          update={stakingEvent.totalSupply}
         />
       );
     }

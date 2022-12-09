@@ -88,7 +88,7 @@ export const VestingChart = () => {
             stroke={colors.white}
             strokeWidth={2}
             label={{
-              position: 'right',
+              position: 'left',
               value: currentDate,
               fill: colors.white,
             }}

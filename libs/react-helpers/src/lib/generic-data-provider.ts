@@ -4,10 +4,11 @@ import type {
   FetchPolicy,
   OperationVariables,
   TypedDocumentNode,
+  FetchResult,
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 interface UpdateData<Data, Delta> {
   delta?: Delta;
   isUpdate?: boolean;
@@ -362,6 +363,25 @@ function makeDataProviderInternal<
     }
   };
 
+  const onNext = ({
+    data: subscriptionData,
+  }: FetchResult<SubscriptionData>) => {
+    if (!subscriptionData || !getDelta || !update) {
+      return;
+    }
+    const delta = getDelta(subscriptionData, variables);
+    if (loading || !data) {
+      updateQueue.push(delta);
+    } else {
+      const updatedData = update(data, delta, reload, variables);
+      if (updatedData === data) {
+        return;
+      }
+      data = updatedData;
+      notifyAll({ delta, isUpdate: true });
+    }
+  };
+
   const initialize = async () => {
     if (subscription) {
       if (resetTimer) {
@@ -375,6 +395,7 @@ function makeDataProviderInternal<
     if (!client) {
       return;
     }
+
     if (subscriptionQuery && getDelta && update) {
       subscription = client
         .subscribe<SubscriptionData>({
@@ -382,32 +403,14 @@ function makeDataProviderInternal<
           variables,
           fetchPolicy,
         })
-        .subscribe(
-          ({ data: subscriptionData }) => {
-            if (!subscriptionData) {
-              return;
-            }
-            const delta = getDelta(subscriptionData, variables);
-            if (loading || !data) {
-              updateQueue.push(delta);
-            } else {
-              const updatedData = update(data, delta, reload, variables);
-              if (updatedData === data) {
-                return;
-              }
-              data = updatedData;
-              notifyAll({ delta, isUpdate: true });
-            }
-          },
-          (e) => {
-            error = e as Error;
-            if (subscription) {
-              subscription.unsubscribe();
-              subscription = undefined;
-            }
-            notifyAll();
+        .subscribe(onNext, (e) => {
+          error = e as Error;
+          if (subscription) {
+            subscription.unsubscribe();
+            subscription = undefined;
           }
-        );
+          notifyAll();
+        });
     }
     await initialFetch();
   };

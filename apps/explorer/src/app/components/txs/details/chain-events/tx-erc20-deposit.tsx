@@ -17,8 +17,14 @@ interface TxDetailsChainEventProps {
 export const TxDetailsChainEventDeposit = ({
   deposit,
 }: TxDetailsChainEventProps) => {
-  if (!deposit) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (
+    !deposit ||
+    !deposit.sourceEthereumAddress ||
+    !deposit.targetPartyId ||
+    !deposit.vegaAssetId ||
+    !deposit.amount
+  ) {
+    return null;
   }
 
   return (
@@ -27,27 +33,25 @@ export const TxDetailsChainEventDeposit = ({
         <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('ERC20 deposit')}</TableCell>
       </TableRow>
-      {deposit.sourceEthereumAddress ? (
-        <TableRow modifier="bordered">
-          <TableCell>{t('Source')}</TableCell>
-          <TableCell>
-            <EthExplorerLink
-              id={deposit.sourceEthereumAddress}
-              type={EthExplorerLinkTypes.address}
-            />
-          </TableCell>
-        </TableRow>
-      ) : null}
+      <TableRow modifier="bordered">
+        <TableCell>{t('Source')}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={deposit.sourceEthereumAddress}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
+      </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
-          <PartyLink id={deposit.targetPartyId || ''} />
+          <PartyLink id={deposit.targetPartyId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={deposit.vegaAssetId || ''} />
+          <AssetLink id={deposit.vegaAssetId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

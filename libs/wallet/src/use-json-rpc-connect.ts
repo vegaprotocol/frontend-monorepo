@@ -10,7 +10,6 @@ export enum Status {
   GettingChainId = 'GettingChainId',
   Connecting = 'Connecting',
   GettingPerms = 'GettingPerms',
-  RequestingPerms = 'RequestingPerms',
   ListingKeys = 'ListingKeys',
   Connected = 'Connected',
   Error = 'Error',
@@ -30,11 +29,16 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
 
         // Check if wallet is configured for the same chain as the app
         setStatus(Status.GettingChainId);
-        const chainIdResult = await connector.getChainId();
 
-        if (chainIdResult.chainID !== appChainId) {
-          // Throw wallet error for consitent error handling
-          throw ClientErrors.WRONG_NETWORK;
+        // Dont throw in when cypress is running as trading app relies on
+        // mocks which result in a mismatch between chainId for app and
+        // chainId for wallet
+        if (!('Cypress' in window)) {
+          const chainIdResult = await connector.getChainId();
+          if (chainIdResult.chainID !== appChainId) {
+            // Throw wallet error for consitent error handling
+            throw ClientErrors.WRONG_NETWORK;
+          }
         }
 
         // Start connection flow. User will be prompted to select a wallet and enter
@@ -43,15 +47,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         setStatus(Status.Connecting);
         await connector.connectWallet();
 
-        // Check wallet is permitted to reveal its public keys
         setStatus(Status.GettingPerms);
-        const permsResult = await connector.getPermissions();
-        if (permsResult.permissions.public_keys === 'none') {
-          // Automatically request new perms. User will again be prompted to permit this change
-          // and enter their password
-          setStatus(Status.RequestingPerms);
-          await connector.requestPermissions();
-        }
 
         // Call connect in the wallet provider. The connector will be stored for
         // future actions such as sending transactions

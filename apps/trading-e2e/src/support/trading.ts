@@ -1,10 +1,9 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateAsset, generateAssets } from './mocks/generate-assets';
 import { generateCandles } from './mocks/generate-candles';
-import { generateChainId } from './mocks/generate-chain-id';
 import { generateChart } from './mocks/generate-chart';
 import { generateMarket, generateMarketData } from './mocks/generate-market';
 import { generateMarketDepth } from './mocks/generate-market-depth';
@@ -17,7 +16,6 @@ import {
 import { generateNetworkParameters } from './mocks/generate-network-parameters';
 import { generateOrders } from './mocks/generate-orders';
 import { generateMargins, generatePositions } from './mocks/generate-positions';
-import { generateStatistics } from './mocks/generate-statistics';
 import { generateTrades } from './mocks/generate-trades';
 import { generateWithdrawals } from './mocks/generate-withdrawals';
 import {
@@ -27,6 +25,8 @@ import {
   generatePartyMarketData,
 } from './mocks/generate-fees';
 import { generateMarketProposals } from './mocks/generate-proposals';
+import { generateStatistics } from './mocks/generate-statistics';
+import { generateChainId } from './mocks/generate-chain-id';
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
@@ -34,6 +34,7 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
+  // Skipped, to allow v2 wallet connection in tests
   aliasQuery(req, 'ChainId', generateChainId());
   aliasQuery(req, 'Statistics', generateStatistics());
   aliasQuery(
@@ -58,6 +59,7 @@ const mockTradingPage = (
     generateMarketData({
       trigger: trigger,
       marketTradingMode: tradingMode,
+      marketState: state,
     })
   );
   aliasQuery(req, 'MarketsData', generateMarketsData());

@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
-import compact from 'lodash/compact';
 import { useMarketPositionsQuery } from './__generated__/MarketPositions';
+import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
 interface Props {
   marketId: string;
   partyId: string;
@@ -22,8 +22,8 @@ export const useMarketPositions = ({
     fetchPolicy: 'no-cache',
   });
 
-  const accounts = compact(data?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const accounts = removePaginationWrapper(
+    data?.party?.accountsConnection?.edges
   );
   const account = accounts.find((nodes) => nodes.market?.id === marketId);
 

@@ -9,8 +9,8 @@ import type { RouteChildProps } from '..';
 const StakingRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const associate = useMatch('/staking/associate');
-  const disassociate = useMatch('/staking/disassociate');
+  const associate = useMatch('/validators/associate');
+  const disassociate = useMatch('/validators/disassociate');
 
   const title = React.useMemo(() => {
     if (associate) {

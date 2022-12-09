@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import compact from 'lodash/compact';
 import { Stepper } from '../stepper';
 import {
   getDefaultOrder,
@@ -25,6 +24,7 @@ import {
   addDecimalsFormatNumber,
   addDecimal,
   formatNumber,
+  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
@@ -37,7 +37,7 @@ import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
 import { useOrderValidation } from './use-order-validation';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
@@ -70,11 +70,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const step = toDecimal(market.positionDecimalPlaces);
   const order = watch();
   const { pubKey } = useVegaWallet();
-  const estMargin = useOrderMargin({
-    order,
-    market,
-    partyId: pubKey || '',
-  });
   const { message: invalidText, isDisabled } = useOrderValidation({
     market,
     order,
@@ -87,8 +82,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     skip: !pubKey,
   });
 
-  const accounts = compact(partyBalance?.party?.accountsConnection?.edges).map(
-    (e) => e.node
+  const accounts = removePaginationWrapper(
+    partyBalance?.party?.accountsConnection?.edges
   );
   const maxTrade = useMaximumPositionSize({
     partyId: pubKey || '',
@@ -127,10 +122,17 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       );
       return new BigNumber(market?.depth?.lastTrade?.price)
         .multipliedBy(multiplier)
-        .toNumber();
+        .toString();
     }
-    return null;
+    return undefined;
   }, [market?.depth?.lastTrade?.price, order.side, slippage]);
+
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: pubKey || '',
+    derivedPrice: price,
+  });
 
   const formattedPrice =
     price && addDecimalsFormatNumber(price, market.decimalPlaces);

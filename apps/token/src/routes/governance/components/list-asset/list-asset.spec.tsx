@@ -8,7 +8,7 @@ import type {
 } from './__generated___/Asset';
 import { AssetListBundleDocument } from './__generated___/Asset';
 import { ProposalAssetDocument } from './__generated___/Asset';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { AppState } from '../../../../contexts/app-state/app-state-context';

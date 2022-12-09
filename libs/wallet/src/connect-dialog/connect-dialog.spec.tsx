@@ -89,12 +89,9 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(3);
-    expect(screen.getByTestId('connector-gui')).toHaveTextContent(
-      'Desktop wallet app'
-    );
-    expect(screen.getByTestId('connector-cli')).toHaveTextContent(
-      'Command line wallet app'
+    expect(list.children).toHaveLength(2);
+    expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
+      'Connect Vega wallet'
     );
     expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
       'Hosted Fairground wallet'
@@ -208,8 +205,6 @@ describe('VegaConnectDialog', () => {
     let spyOnGetChainId: jest.SpyInstance;
     let spyOnConnectWallet: jest.SpyInstance;
     let spyOnConnect: jest.SpyInstance;
-    let spyOnGetPermissions: jest.SpyInstance;
-    let spyOnRequestPermissions: jest.SpyInstance;
 
     beforeEach(() => {
       spyOnCheckCompat = jest
@@ -221,24 +216,6 @@ describe('VegaConnectDialog', () => {
       spyOnConnectWallet = jest
         .spyOn(connectors.jsonRpc, 'connectWallet')
         .mockImplementation(() => delayedResolve({ token: 'token' }));
-      spyOnGetPermissions = jest
-        .spyOn(connectors.jsonRpc, 'getPermissions')
-        .mockImplementation(() =>
-          delayedResolve({
-            permissions: {
-              public_keys: 'none',
-            },
-          })
-        );
-      spyOnRequestPermissions = jest
-        .spyOn(connectors.jsonRpc, 'requestPermissions')
-        .mockImplementation(() =>
-          delayedResolve({
-            permissions: {
-              public_keys: 'read',
-            },
-          })
-        );
       spyOnConnect = jest
         .spyOn(connectors.jsonRpc, 'connect')
         .mockImplementation(() =>
@@ -276,19 +253,6 @@ describe('VegaConnectDialog', () => {
       // Await user connect
       expect(screen.getByText('Connecting...')).toBeInTheDocument();
       expect(spyOnConnectWallet).toHaveBeenCalled();
-      await act(async () => {
-        jest.advanceTimersByTime(delay);
-      });
-
-      // Perms check
-      expect(spyOnGetPermissions).toHaveBeenCalled();
-      await act(async () => {
-        jest.advanceTimersByTime(delay);
-      });
-
-      // Await user perms update
-      expect(screen.getByText('Update permissions')).toBeInTheDocument();
-      expect(spyOnRequestPermissions).toHaveBeenCalled();
       await act(async () => {
         jest.advanceTimersByTime(delay);
       });
@@ -379,7 +343,7 @@ describe('VegaConnectDialog', () => {
 
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
-      fireEvent.click(await screen.findByTestId('connector-cli'));
+      fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
     }
   });
 });

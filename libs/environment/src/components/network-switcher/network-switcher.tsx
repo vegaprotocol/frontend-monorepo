@@ -20,6 +20,7 @@ export const envNameMapping: Record<Networks, string> = {
   [Networks.STAGNET3]: t('Stagnet3'),
   [Networks.TESTNET]: t('Fairground testnet'),
   [Networks.MAINNET]: t('Mainnet'),
+  [Networks.MIRROR]: t('Mainnet mirror'),
 };
 
 export const envTriggerMapping: Record<Networks, string> = {
@@ -37,6 +38,9 @@ export const envDescriptionMapping: Record<Networks, string> = {
     'Public testnet run by the Vega team, often used for incentives'
   ),
   [Networks.MAINNET]: t('The vega mainnet'),
+  [Networks.MIRROR]: t(
+    'A mirror of the mainnet environment running on an Ethereum test network'
+  ),
 };
 
 const standardNetworkKeys = [Networks.MAINNET, Networks.TESTNET];

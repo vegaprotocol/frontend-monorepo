@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StakingIntro } from './staking-intro';
-import { NodeList } from './node-list';
+import { EpochData } from './epoch-data';
 
 export const Staking = () => {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ export const Staking = () => {
       <StakingIntro />
       <section>
         <h2 className="text-2xl uppercase">{t('Validator nodes')}</h2>
-        <NodeList data-testid="node-list" />
+        <EpochData data-testid="epoch-data" />
       </section>
     </>
   );

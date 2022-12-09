@@ -1,19 +1,19 @@
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AccountFieldsFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string } };
+export type AccountFieldsFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string }, party?: { __typename?: 'Party', id: string } | null };
 
 export type AccountsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string } } } | null> | null } | null } | null };
+export type AccountsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, market?: { __typename?: 'Market', id: string } | null, asset: { __typename?: 'Asset', id: string }, party?: { __typename?: 'Party', id: string } | null } } | null> | null } | null } | null };
 
 export type AccountEventsSubscriptionVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
+  partyId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
@@ -27,6 +27,9 @@ export const AccountFieldsFragmentDoc = gql`
     id
   }
   asset {
+    id
+  }
+  party {
     id
   }
 }
@@ -74,7 +77,7 @@ export type AccountsQueryHookResult = ReturnType<typeof useAccountsQuery>;
 export type AccountsLazyQueryHookResult = ReturnType<typeof useAccountsLazyQuery>;
 export type AccountsQueryResult = Apollo.QueryResult<AccountsQuery, AccountsQueryVariables>;
 export const AccountEventsDocument = gql`
-    subscription AccountEvents($partyId: ID!) {
+    subscription AccountEvents($partyId: ID) {
   accounts(partyId: $partyId) {
     type
     balance
@@ -100,7 +103,7 @@ export const AccountEventsDocument = gql`
  *   },
  * });
  */
-export function useAccountEventsSubscription(baseOptions: Apollo.SubscriptionHookOptions<AccountEventsSubscription, AccountEventsSubscriptionVariables>) {
+export function useAccountEventsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<AccountEventsSubscription, AccountEventsSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<AccountEventsSubscription, AccountEventsSubscriptionVariables>(AccountEventsDocument, options);
       }

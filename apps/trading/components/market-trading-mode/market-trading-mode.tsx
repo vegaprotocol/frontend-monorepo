@@ -2,12 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, TradingModeTooltip } from '@vegaprotocol/deal-ticket';
-import type { Schema as Types } from '@vegaprotocol/types';
-import {
-  AuctionTriggerMapping,
-  MarketTradingModeMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type {
   MarketData,
   MarketDataUpdateFieldsFragment,
@@ -15,16 +10,30 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 interface Props {
   marketId?: string;
   onSelect?: (marketId: string) => void;
+  isHeader?: boolean;
+  noUpdate?: boolean;
+  initialMode?: Schema.MarketTradingMode;
+  initialTrigger?: Schema.AuctionTrigger;
 }
 
-export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
+export const MarketTradingMode = ({
+  marketId,
+  onSelect,
+  isHeader = false,
+  noUpdate = false,
+  initialMode,
+  initialTrigger,
+}: Props) => {
   const [tradingMode, setTradingMode] =
-    useState<Types.MarketTradingMode | null>(null);
-  const [trigger, setTrigger] = useState<Types.AuctionTrigger | null>(null);
+    useState<Schema.MarketTradingMode | null>(initialMode || null);
+  const [trigger, setTrigger] = useState<Schema.AuctionTrigger | null>(
+    initialTrigger || null
+  );
   const [market, setMarket] = useState<MarketDealTicket | null>(null);
   const variables = useMemo(
     () => ({
@@ -41,7 +50,7 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
 
   const update = useCallback(
     ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
+      if (!noUpdate && marketData) {
         setTradingMode(marketData.marketTradingMode);
         setTrigger(marketData.trigger);
         setMarket({
@@ -51,24 +60,26 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
       }
       return true;
     },
-    [data]
+    [noUpdate, data]
   );
 
   useDataProvider<MarketData, MarketDataUpdateFieldsFragment>({
     dataProvider: marketDataProvider,
     update,
     variables,
-    skip: !marketId || !data,
+    skip: noUpdate || !marketId || !data,
   });
 
   const content =
-    tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    (tradingMode === Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
     trigger &&
     trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-      ? `${MarketTradingModeMapping[tradingMode]} - ${AuctionTriggerMapping[trigger]}`
-      : MarketTradingModeMapping[tradingMode as Types.MarketTradingMode];
+      ? `${Schema.MarketTradingModeMapping[tradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
+      : Schema.MarketTradingModeMapping[
+          tradingMode as Schema.MarketTradingMode
+        ]) || '-';
 
-  return (
+  return isHeader ? (
     <HeaderStat
       heading={t('Trading mode')}
       description={
@@ -82,7 +93,18 @@ export const MarketTradingModeComponent = ({ marketId, onSelect }: Props) => {
       }
       testId="market-trading-mode"
     >
-      <div>{content || '-'}</div>
+      <div>{content}</div>
     </HeaderStat>
+  ) : (
+    <Tooltip
+      description={
+        tradingMode &&
+        trigger && (
+          <TradingModeTooltip tradingMode={tradingMode} trigger={trigger} />
+        )
+      }
+    >
+      <span>{content}</span>
+    </Tooltip>
   );
 };

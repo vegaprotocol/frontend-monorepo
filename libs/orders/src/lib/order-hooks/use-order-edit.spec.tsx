@@ -9,7 +9,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Order } from '../components';
 import { generateOrder } from '../components';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const defaultWalletContext = {
   pubKey: null,

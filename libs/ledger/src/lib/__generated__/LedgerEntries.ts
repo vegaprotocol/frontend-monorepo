@@ -1,39 +1,48 @@
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntries', vegaTime: string, quantity: string, partyId?: string | null, assetId?: string | null, marketId?: string | null, accountType?: Types.AccountType | null, transferType?: string | null };
+export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, receiverAccountType?: Types.AccountType | null, receiverMarketId?: string | null, receiverPartyId?: string | null, senderAccountType?: Types.AccountType | null, senderMarketId?: string | null, senderPartyId?: string | null };
 
 export type LedgerEntriesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type LedgerEntriesQuery = { __typename?: 'Query', ledgerEntries: { __typename?: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename?: 'AggregatedLedgerEntriesEdge', node: { __typename?: 'AggregatedLedgerEntries', vegaTime: string, quantity: string, partyId?: string | null, assetId?: string | null, marketId?: string | null, accountType?: Types.AccountType | null, transferType?: string | null } } | null> } };
+export type LedgerEntriesQuery = { __typename?: 'Query', ledgerEntries: { __typename?: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename?: 'AggregatedLedgerEntriesEdge', node: { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, receiverAccountType?: Types.AccountType | null, receiverMarketId?: string | null, receiverPartyId?: string | null, senderAccountType?: Types.AccountType | null, senderMarketId?: string | null, senderPartyId?: string | null } } | null>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } };
 
 export const LedgerEntryFragmentDoc = gql`
-    fragment LedgerEntry on AggregatedLedgerEntries {
+    fragment LedgerEntry on AggregatedLedgerEntry {
   vegaTime
   quantity
-  partyId
   assetId
-  marketId
-  accountType
   transferType
+  receiverAccountType
+  receiverMarketId
+  receiverPartyId
+  senderAccountType
+  senderMarketId
+  senderPartyId
 }
     `;
 export const LedgerEntriesDocument = gql`
-    query LedgerEntries($partyId: ID!) {
+    query LedgerEntries($partyId: ID!, $pagination: Pagination) {
   ledgerEntries(
-    filter: {AccountFromFilter: {partyIds: [$partyId]}}
-    groupOptions: {ByAccountField: [PartyId, AccountType, AssetId, MarketId], ByLedgerEntryField: [TransferType]}
-    pagination: {first: 500}
+    filter: {SenderAccountFilter: {partyIds: [$partyId]}, ReceiverAccountFilter: {partyIds: [$partyId]}}
+    pagination: $pagination
   ) {
     edges {
       node {
         ...LedgerEntry
       }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }
@@ -52,6 +61,7 @@ export const LedgerEntriesDocument = gql`
  * const { data, loading, error } = useLedgerEntriesQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */

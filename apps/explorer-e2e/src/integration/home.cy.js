@@ -50,7 +50,7 @@ context('Home Page', function () {
         .invoke('text')
         .should('match', /\d+d \d+h \d+m \d+s/i);
       cy.get(statsValue).eq(3).should('have.text', '2');
-      cy.get(statsValue).eq(4).should('have.text', '0');
+      cy.get(statsValue).eq(4).should('have.text', '2');
       cy.get(statsValue)
         .eq(5)
         .invoke('text')

@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { AccountsQuery } from '@vegaprotocol/accounts';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 export const generateAccounts = (

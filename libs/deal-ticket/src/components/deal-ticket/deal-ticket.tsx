@@ -1,5 +1,5 @@
 import { removeDecimal, t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
@@ -23,7 +23,7 @@ import {
   validateType,
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
-import { AccountValidationType } from '../../constants';
+import { SummaryValidationType } from '../../constants';
 import { useHasNoBalance } from '../../hooks/use-has-no-balance';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 
@@ -55,17 +55,43 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<DealTicketFormFields>({
     defaultValues: persistedOrder || getDefaultOrder(market),
   });
 
   const order = watch();
-  // When order state changes persist it in local storage
-  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+  const marketStateError = validateMarketState(market.data.marketState);
   const hasNoBalance = useHasNoBalance(
     market.tradableInstrument.instrument.product.settlementAsset.id
   );
+  const marketTradingModeError = validateMarketTradingMode(
+    market.data.marketTradingMode
+  );
+  useEffect(() => {
+    if (
+      (!hasNoBalance &&
+        errors.summary?.type === SummaryValidationType.NoCollateral) ||
+      (marketStateError === true &&
+        errors.summary?.type === SummaryValidationType.MarketState) ||
+      (marketTradingModeError === true &&
+        errors.summary?.type === SummaryValidationType.TradingMode)
+    ) {
+      clearErrors('summary');
+    }
+  }, [
+    hasNoBalance,
+    marketStateError,
+    marketTradingModeError,
+    clearErrors,
+    errors.summary?.message,
+    errors.summary?.type,
+  ]);
+
+  // When order state changes persist it in local storage
+  useEffect(() => setPersistedOrder(order), [order, setPersistedOrder]);
+
   const onSubmit = useCallback(
     (order: OrderSubmissionBody['orderSubmission']) => {
       if (!pubKey) {
@@ -73,22 +99,27 @@ export const DealTicket = ({
         return;
       }
 
-      const marketStateError = validateMarketState(market.state);
       if (marketStateError !== true) {
-        setError('summary', { message: marketStateError });
+        setError('summary', {
+          message: marketStateError,
+          type: SummaryValidationType.MarketState,
+        });
         return;
       }
 
       if (hasNoBalance) {
-        setError('summary', { message: AccountValidationType.NoCollateral });
+        setError('summary', {
+          message: SummaryValidationType.NoCollateral,
+          type: SummaryValidationType.NoCollateral,
+        });
         return;
       }
 
-      const marketTradingModeError = validateMarketTradingMode(
-        market.tradingMode
-      );
       if (marketTradingModeError !== true) {
-        setError('summary', { message: marketTradingModeError });
+        setError('summary', {
+          message: marketTradingModeError,
+          type: SummaryValidationType.TradingMode,
+        });
         return;
       }
 
@@ -108,8 +139,8 @@ export const DealTicket = ({
       hasNoBalance,
       market.positionDecimalPlaces,
       market.decimalPlaces,
-      market.state,
-      market.tradingMode,
+      marketStateError,
+      marketTradingModeError,
       setError,
     ]
   );
@@ -208,7 +239,7 @@ const SummaryMessage = memo(
       market,
       order,
     });
-    if (errorMessage === AccountValidationType.NoCollateral) {
+    if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <ZeroBalanceError
           asset={market.tradableInstrument.instrument.product.settlementAsset}
@@ -240,7 +271,7 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-      ].includes(market.tradingMode)
+      ].includes(market.data.marketTradingMode)
     ) {
       return (
         <div

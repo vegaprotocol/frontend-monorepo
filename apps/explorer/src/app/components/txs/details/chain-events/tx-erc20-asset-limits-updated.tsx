@@ -23,33 +23,35 @@ interface TxDetailsChainEventErc20AssetLimitsUpdatedProps {
 export const TxDetailsChainEventErc20AssetLimitsUpdated = ({
   assetLimitsUpdated,
 }: TxDetailsChainEventErc20AssetLimitsUpdatedProps) => {
-  if (!assetLimitsUpdated) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (
+    !assetLimitsUpdated ||
+    !assetLimitsUpdated.sourceEthereumAddress ||
+    !assetLimitsUpdated.vegaAssetId ||
+    !assetLimitsUpdated.lifetimeLimits ||
+    !assetLimitsUpdated.withdrawThreshold
+  ) {
+    return null;
   }
 
   return (
     <>
       <TableRow modifier="bordered">
         <TableCell>{t('Chain event type')}</TableCell>
-        <TableCell>{t('ERC20 asset limits updated')}</TableCell>
+        <TableCell>{t('ERC20 asset limits update')}</TableCell>
       </TableRow>
-
-      {assetLimitsUpdated.sourceEthereumAddress ? (
-        <TableRow modifier="bordered">
-          <TableCell>{t('ERC20 asset')}</TableCell>
-          <TableCell>
-            <EthExplorerLink
-              id={assetLimitsUpdated.sourceEthereumAddress}
-              type={EthExplorerLinkTypes.address}
-            />
-          </TableCell>
-        </TableRow>
-      ) : null}
-
+      <TableRow modifier="bordered">
+        <TableCell>{t('ERC20 asset')}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={assetLimitsUpdated.sourceEthereumAddress}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
+      </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Vega asset')}</TableCell>
         <TableCell>
-          <AssetLink id={assetLimitsUpdated.vegaAssetId || ''} />
+          <AssetLink id={assetLimitsUpdated.vegaAssetId} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

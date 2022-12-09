@@ -1,5 +1,5 @@
 import type { FillsQuery, FillFieldsFragment } from '@vegaprotocol/fills';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -46,7 +46,7 @@ export const generateFills = (
 
   const defaultResult: FillsQuery = {
     party: {
-      id: 'buyer-id',
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
       tradesConnection: {
         __typename: 'TradeConnection',
         edges: fills.map((f) => {

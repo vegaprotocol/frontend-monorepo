@@ -2,20 +2,25 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import {
+  useEagerConnect as useVegaEagerConnect,
+  VegaWalletProvider,
+} from '@vegaprotocol/wallet';
 import {
   EnvironmentProvider,
   envTriggerMapping,
   Networks,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { AppLoader } from '../components/app-loader';
+import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
 import DialogsContainer from './dialogs-container';
 import { HashRouter, useLocation } from 'react-router-dom';
+import { Connectors } from '../lib/vega-connectors';
+import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -48,36 +53,29 @@ function AppBody({ Component }: AppProps) {
   return (
     <ThemeContext.Provider value={theme}>
       <Head>
+        {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link
-          rel="preload"
-          href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="icon"
-          type="image/x-icon"
-          href="https://static.vega.xyz/favicon.ico"
-        />
-        <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
       </Head>
       <Title />
-      <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
+      <VegaWalletProvider>
         <AppLoader>
-          <Navbar
-            theme={theme}
-            toggleTheme={toggleTheme}
-            navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
-          />
-          <main data-testid={location.pathname}>
-            <Component />
-          </main>
-          <Footer />
-          <DialogsContainer />
+          <Web3Provider>
+            <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
+              <Navbar
+                theme={theme}
+                toggleTheme={toggleTheme}
+                navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
+              />
+              <main data-testid={location.pathname}>
+                <Component />
+              </main>
+              <Footer />
+              <DialogsContainer />
+              <MaybeConnectEagerly />
+            </div>
+          </Web3Provider>
         </AppLoader>
-      </div>
+      </VegaWalletProvider>
     </ThemeContext.Provider>
   );
 }
@@ -97,12 +95,16 @@ function VegaTradingApp(props: AppProps) {
   return (
     <HashRouter>
       <EnvironmentProvider>
-        <VegaWalletProvider>
-          <AppBody {...props} />
-        </VegaWalletProvider>
+        <AppBody {...props} />
       </EnvironmentProvider>
     </HashRouter>
   );
 }
 
 export default VegaTradingApp;
+
+const MaybeConnectEagerly = () => {
+  useVegaEagerConnect(Connectors);
+  useEthereumEagerConnect();
+  return null;
+};

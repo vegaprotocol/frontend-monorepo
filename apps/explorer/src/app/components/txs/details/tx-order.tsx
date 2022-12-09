@@ -4,6 +4,8 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
+import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
+import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -27,15 +29,38 @@ export const TxDetailsOrder = ({
   }
   const marketId = txData.command.orderSubmission.marketId || '-';
 
+  let deterministicId = '';
+
+  const sig = txData?.signature?.value;
+  if (sig) {
+    deterministicId = txSignatureToDeterministicId(sig);
+  }
+
   return (
-    <TableWithTbody>
-      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Market')}</TableCell>
-        <TableCell>
-          <MarketLink id={marketId} />
-        </TableCell>
-      </TableRow>
-    </TableWithTbody>
+    <>
+      <TableWithTbody className="mb-8">
+        <TxDetailsShared
+          txData={txData}
+          pubKey={pubKey}
+          blockData={blockData}
+        />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Order')}</TableCell>
+          <TableCell>
+            <code>{deterministicId}</code>
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Market')}</TableCell>
+          <TableCell>
+            <MarketLink id={marketId} />
+          </TableCell>
+        </TableRow>
+      </TableWithTbody>
+
+      {deterministicId.length > 0 ? (
+        <DeterministicOrderDetails id={deterministicId} version={1} />
+      ) : null}
+    </>
   );
 };

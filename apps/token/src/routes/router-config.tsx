@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import Home from './home';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
@@ -193,61 +193,32 @@ const LazyWithdrawals = React.lazy(
     )
 );
 
-const routerConfig = [
+const redirects = [
   {
     path: Routes.HOME,
-    // Not lazy as loaded when a user first hits the site
-    element: <Home name="Home" />,
-  },
-  {
-    path: Routes.TRANCHES,
-    element: <LazyTranches name="Tranches" />,
-    children: [
-      { index: true, element: <LazyTranchesTranches /> },
-      { path: ':trancheId', element: <LazyTranchesTranche /> },
-    ],
-  },
-  {
-    path: Routes.CLAIM,
-    element: <LazyClaim name="Claim" />,
+    element: <Navigate to={Routes.PROPOSALS} replace />,
   },
   {
     path: Routes.STAKING,
-    element: <LazyStaking name="Staking" />,
-    children: [
-      { path: 'associate', element: <LazyStakingAssociate /> },
-      { path: 'disassociate', element: <LazyStakingDisassociate /> },
-      { path: ':node', element: <LazyStakingNode /> },
-      {
-        index: true,
-        element: <LazyStakingIndex />,
-      },
-    ],
+    element: <Navigate to={Routes.VALIDATORS} replace />,
   },
   {
-    path: Routes.REWARDS,
-    element: <LazyRewards name="Rewards" />,
+    path: '/tranches',
+    element: <Navigate to={Routes.TRANCHES} replace />,
   },
   {
-    path: Routes.WITHDRAWALS,
-    element: <LazyWithdrawals name="Withdrawals" />,
+    path: '/withdrawals',
+    element: <Navigate to={Routes.WITHDRAWALS} replace />,
   },
   {
-    path: Routes.VESTING,
-    element: <LazyRedemption name="Vesting" />,
-    children: [
-      {
-        index: true,
-        element: <LazyRedemptionIndex />,
-      },
-      {
-        path: ':id',
-        element: <LazyRedemptionTranche />,
-      },
-    ],
+    path: '/vesting',
+    element: <Navigate to={Routes.REDEEM} replace />,
   },
+];
+
+const routerConfig = [
   {
-    path: Routes.GOVERNANCE,
+    path: Routes.PROPOSALS,
     element: <LazyGovernance name="Governance" />,
     children: [
       { index: true, element: <LazyGovernanceProposals /> },
@@ -282,6 +253,63 @@ const routerConfig = [
     ],
   },
   {
+    path: Routes.VALIDATORS,
+    element: <LazyStaking name="Staking" />,
+    children: [
+      { path: 'associate', element: <LazyStakingAssociate /> },
+      { path: 'disassociate', element: <LazyStakingDisassociate /> },
+      { path: ':node', element: <LazyStakingNode /> },
+      {
+        index: true,
+        element: <LazyStakingIndex />,
+      },
+    ],
+  },
+  {
+    path: Routes.REWARDS,
+    element: <LazyRewards name="Rewards" />,
+  },
+  {
+    path: Routes.TOKEN,
+    // Not lazy as loaded when a user first hits the site
+    children: [
+      {
+        element: <Home name="Home" />,
+        index: true,
+      },
+      {
+        path: Routes.TRANCHES,
+        element: <LazyTranches name="Tranches" />,
+        children: [
+          { index: true, element: <LazyTranchesTranches /> },
+          { path: ':trancheId', element: <LazyTranchesTranche /> },
+        ],
+      },
+      {
+        path: Routes.WITHDRAWALS,
+        element: <LazyWithdrawals name="Withdrawals" />,
+      },
+      {
+        path: Routes.REDEEM,
+        element: <LazyRedemption name="Vesting" />,
+        children: [
+          {
+            index: true,
+            element: <LazyRedemptionIndex />,
+          },
+          {
+            path: ':id',
+            element: <LazyRedemptionTranche />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: Routes.CLAIM,
+    element: <LazyClaim name="Claim" />,
+  },
+  {
     path: Routes.NOT_PERMITTED,
     // Not lazy as loaded when a user first hits the site
     element: <NotPermitted name="Not permitted" />,
@@ -295,6 +323,7 @@ const routerConfig = [
     // Not lazy as loaded when a user first hits the site
     element: <NotFound name="NotFound" />,
   },
+  ...redirects,
 ];
 
 export default routerConfig;

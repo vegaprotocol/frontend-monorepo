@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
   MarketData,
@@ -91,6 +91,7 @@ export const generateMarketData = (
     targetStake: '1000000',
     suppliedStake: '1000',
     marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    marketState: Schema.MarketState.STATE_ACTIVE,
     staticMidPrice: '0',
     indicativePrice: '0',
     bestStaticBidPrice: '0',

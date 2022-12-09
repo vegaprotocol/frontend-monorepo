@@ -1,0 +1,34 @@
+fragment ExplorerDeterministicOrderFields on Order {
+  id
+  type
+  reference
+  status
+  version
+  createdAt
+  updatedAt
+  expiresAt
+  timeInForce
+  price
+  side
+  remaining
+  size
+  rejectionReason
+  party {
+    id
+  }
+  market {
+    id
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+  }
+}
+
+query ExplorerDeterministicOrder($orderId: ID!, $version: Int) {
+  orderByID(id: $orderId, version: $version) {
+    ...ExplorerDeterministicOrderFields
+  }
+}

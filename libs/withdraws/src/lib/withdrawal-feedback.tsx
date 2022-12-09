@@ -10,6 +10,8 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
+import { ChainIdMap, useWeb3ConnectStore } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
@@ -75,17 +77,7 @@ export const WithdrawalFeedback = ({
         </KeyValueTable>
       )}
       {isAvailable ? (
-        <Button
-          disabled={withdrawal === null ? true : false}
-          data-testid="withdraw-funds"
-          onClick={() => {
-            if (withdrawal) {
-              submitWithdraw(withdrawal.id);
-            }
-          }}
-        >
-          {t('Withdraw funds')}
-        </Button>
+        <ActionButton withdrawal={withdrawal} submitWithdraw={submitWithdraw} />
       ) : (
         <p className="text-danger">
           {t(
@@ -96,5 +88,53 @@ export const WithdrawalFeedback = ({
         </p>
       )}
     </div>
+  );
+};
+
+const ActionButton = ({
+  withdrawal,
+  submitWithdraw,
+}: {
+  withdrawal: WithdrawalFieldsFragment | null;
+  submitWithdraw: (withdrawalId: string) => void;
+}) => {
+  const { isActive, chainId } = useWeb3React();
+  const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
+    open: store.open,
+    desiredChainId: store.desiredChainId,
+  }));
+
+  if (!isActive) {
+    return (
+      <Button onClick={() => open()}>
+        {t('Connect Ethereum wallet to complete')}
+      </Button>
+    );
+  }
+
+  if (chainId !== desiredChainId) {
+    const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
+    return (
+      <>
+        <p className="text-danger mb-2">
+          {t(`This app only works on ${chainName}. Please change chain.`)}
+        </p>
+        <Button disabled={true}>{t('Withdraw funds')}</Button>
+      </>
+    );
+  }
+
+  return (
+    <Button
+      disabled={withdrawal === null ? true : false}
+      data-testid="withdraw-funds"
+      onClick={() => {
+        if (withdrawal) {
+          submitWithdraw(withdrawal.id);
+        }
+      }}
+    >
+      {t('Withdraw funds')}
+    </Button>
   );
 };

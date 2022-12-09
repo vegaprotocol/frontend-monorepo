@@ -1,41 +1,42 @@
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AgGridColumn } from 'ag-grid-react';
+import { DApp, useLinks } from '@vegaprotocol/environment';
+import type { Market } from '@vegaprotocol/liquidity';
+import {
+  displayChange,
+  formatWithAsset,
+  useMarketsLiquidity,
+} from '@vegaprotocol/liquidity';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  t,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
+import type * as Schema from '@vegaprotocol/types';
+import {
+  AsyncRenderer,
+  Icon,
+  PriceCellChange,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import type {
-  ValueFormatterParams,
   GetRowIdParams,
   RowClickedEvent,
+  ValueFormatterParams,
 } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import {
-  t,
-  addDecimalsFormatNumber,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
-import {
-  Icon,
-  AsyncRenderer,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
-import type { Market } from '@vegaprotocol/liquidity';
-import {
-  useMarketsLiquidity,
-  formatWithAsset,
-  displayChange,
-} from '@vegaprotocol/liquidity';
-import type { Schema } from '@vegaprotocol/types';
+import { AgGridColumn } from 'ag-grid-react';
+import { useCallback, useState } from 'react';
 
-import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
+import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
-  const navigate = useNavigate();
+  const consoleLink = useLinks(DApp.Console);
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
@@ -50,7 +51,11 @@ export const MarketList = () => {
         <Grid
           gridOptions={{
             onRowClicked: ({ data }: RowClickedEvent) => {
-              navigate(`/markets/${data.id}`);
+              window.open(
+                liquidityDetailsConsoleLink(data.id, consoleLink),
+                '_blank',
+                'noopener,noreferrer'
+              );
             },
           }}
           rowData={localData}
@@ -93,6 +98,48 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Market Code')}
+            headerTooltip={t(
+              'The market code is a unique identifier for this market'
+            )}
+            field="tradableInstrument.instrument.code"
+          />
+
+          <AgGridColumn
+            headerName={t('Type')}
+            headerTooltip={t('Type')}
+            field="tradableInstrument.instrument.product.__typename"
+          />
+
+          <AgGridColumn
+            headerName={t('Last Price')}
+            headerTooltip={t('Latest price for this market')}
+            field="data.markPrice"
+            valueFormatter={({ value, data }: ValueFormatterParams) =>
+              formatWithAsset(
+                value,
+                data.tradableInstrument.instrument.product.settlementAsset
+              )
+            }
+          />
+
+          <AgGridColumn
+            headerName={t('Change (24h)')}
+            headerTooltip={t('Change in price over the last 24h')}
+            cellRenderer={({ data }: { data: Market }) => {
+              if (data.candles) {
+                const prices = data.candles.map((candle) => candle.close);
+                return (
+                  <PriceCellChange
+                    candles={prices}
+                    decimalPlaces={data?.decimalPlaces}
+                  />
+                );
+              } else return <div>{t('No data')}</div>;
+            }}
+          />
+
+          <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
@@ -106,7 +153,7 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
-            headerName={t('Committed bond')}
+            headerName={t('Total staked by LPs')}
             field="liquidityCommitted"
             valueFormatter={({ value, data }: ValueFormatterParams) =>
               formatWithAsset(
@@ -223,3 +270,8 @@ export const MarketList = () => {
     </AsyncRenderer>
   );
 };
+
+const liquidityDetailsConsoleLink = (
+  marketId: string,
+  consoleLink: (url: string | undefined) => string
+) => consoleLink(`/#/liquidity/${marketId}`);

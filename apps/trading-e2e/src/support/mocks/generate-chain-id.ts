@@ -8,7 +8,7 @@ export const generateChainId = (
   const defaultResult = {
     statistics: {
       __typename: 'Statistics',
-      chainId: 'test-chain-id',
+      chainId: 'stagnet3',
     },
   };
 

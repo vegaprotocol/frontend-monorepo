@@ -10,7 +10,7 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header className="w-screen xl:px-4 pt-4 border-b border-default">
+    <header className="w-screen xl:px-4 pt-3 border-b border-default">
       <div className="xl:flex xl:gap-4  items-start">
         <div className="mb-4 xl:mb-0 px-4 xl:px-0">{title}</div>
         <div
@@ -43,7 +43,7 @@ export const HeaderStat = ({
   testId?: string;
 }) => {
   const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default mt-1';
   const itemHeading = 'text-neutral-500 dark:text-neutral-400';
 
   return (

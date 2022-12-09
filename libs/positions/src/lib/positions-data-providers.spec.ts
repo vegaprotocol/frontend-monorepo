@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/market-list';
 import type { PositionsQuery, MarginsQuery } from './__generated__/Positions';

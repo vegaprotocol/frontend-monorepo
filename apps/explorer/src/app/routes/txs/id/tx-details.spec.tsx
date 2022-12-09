@@ -21,6 +21,9 @@ const txData: BlockExplorerTransactionResult = {
   cursor: `${height}.0`,
   type: 'type',
   command: {} as ValidatorHeartbeat,
+  signature: {
+    value: '123',
+  },
 };
 
 const renderComponent = (txData: BlockExplorerTransactionResult) => (

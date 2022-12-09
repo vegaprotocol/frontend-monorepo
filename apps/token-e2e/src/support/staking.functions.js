@@ -3,8 +3,8 @@ const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const tokenInputApprove = '[data-testid="token-input-approve-button"]';
 const addStakeRadioButton = '[data-testid="add-stake-radio"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
-const ethWalletAssociateButton = '[href="/staking/associate"]';
-const ethWalletDissociateButton = '[href="/staking/disassociate"]';
+const ethWalletAssociateButton = '[href="/validators/associate"]';
+const ethWalletDissociateButton = '[href="/validators/disassociate"]';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
@@ -12,8 +12,8 @@ const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const associateContractRadioButton = '[data-testid="associate-radio-contract"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
-const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
-const stakeValidatorListTotalShare = '[col-id="share"]';
+const stakeValidatorListTotalStake = '[col-id="stake"] > div > span';
+const stakeValidatorListTotalShare = '[col-id="stakeShare"] > div > span';
 const stakeValidatorListName = '[col-id="validator"]';
 const vegaKeySelector = '#vega-key-selector';
 
@@ -150,7 +150,6 @@ Cypress.Commands.add(
   (validatorNumber, validatorName = null) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.contains('Total stake this epoch').should('be.visible');
     cy.wait_for_beginning_of_epoch();
     // below is to ensure validator list is shown
     cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
@@ -171,18 +170,11 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'validate_validator_list_total_stake_and_share',
-  (
-    positionOnList,
-    expectedValidatorName,
-    expectedTotalStake,
-    expectedTotalShare
-  ) => {
+  (positionOnList, expectedTotalStake, expectedTotalShare) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.contains('Total stake this epoch').should('be.visible');
     cy.wait_for_beginning_of_epoch();
     cy.get(`[row-id="${positionOnList}"]`).within(() => {
-      cy.get(stakeValidatorListName).should('have.text', expectedValidatorName);
       cy.get(stakeValidatorListTotalStake, epochTimeout).should(
         'have.text',
         expectedTotalStake

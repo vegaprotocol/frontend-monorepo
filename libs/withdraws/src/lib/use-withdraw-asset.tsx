@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
@@ -37,16 +37,18 @@ export const useWithdrawAsset = (
         : new BigNumber(0);
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it
-      let threshold;
-      let delay;
+      let threshold = new BigNumber(0);
+      let delay = 0;
+
       try {
         const result = await Promise.all([getThreshold(asset), getDelay()]);
         threshold = result[0];
         delay = result[1];
-        update({ asset, balance, min, threshold, delay });
       } catch (err) {
         captureException(err);
       }
+
+      update({ asset, balance, min, threshold, delay });
     },
     [accounts, assets, update, getThreshold, getDelay]
   );

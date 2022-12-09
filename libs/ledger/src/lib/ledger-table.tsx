@@ -3,11 +3,15 @@ import {
   fromNanoSeconds,
   getDateTimeFormat,
   t,
+  truncateByChars,
 } from '@vegaprotocol/react-helpers';
-import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type {
+  VegaValueFormatterParams,
+  VegaICellRendererParams,
+} from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Types from '@vegaprotocol/types';
 import {
   AccountTypeMapping,
   DescriptionTransferTypeMapping,
@@ -18,7 +22,7 @@ import type { LedgerEntry } from './ledger-entries-data-provider';
 export const TransferTooltipCellComponent = ({
   value,
 }: {
-  value: Schema.TransferType;
+  value: Types.TransferType;
 }) => {
   return (
     <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
@@ -27,11 +31,63 @@ export const TransferTooltipCellComponent = ({
   );
 };
 
+type LedgerCellRendererProps = {
+  accountType?: Types.AccountType | null;
+  partyId?: string | null;
+  marketName?: string;
+};
+
+const LedgerCellRenderer = ({
+  accountType,
+  partyId,
+  marketName,
+}: LedgerCellRendererProps) => {
+  return (
+    <div className="flex flex-col justify-around leading-5 h-full">
+      <div
+        className="flex"
+        title={`${t('ID')}: ${truncateByChars(partyId || '-')}`}
+      >
+        {truncateByChars(partyId || '')}
+      </div>
+      <div
+        className="flex"
+        title={`${t('Account type')}: ${
+          accountType ? AccountTypeMapping[accountType] : '-'
+        }`}
+      >
+        {accountType && AccountTypeMapping[accountType]}
+      </div>
+      <div className="flex" title={`${t('Market')}: ${marketName || '-'}`}>
+        {marketName}
+      </div>
+    </div>
+  );
+};
+const SenderCellRenderer = ({ data }: VegaICellRendererParams<LedgerEntry>) => {
+  const props = {
+    accountType: data?.senderAccountType,
+    partyId: data?.senderPartyId,
+    marketName: data?.marketSender?.tradableInstrument?.instrument?.code,
+  };
+  return <LedgerCellRenderer {...props} />;
+};
+const ReceiverCellRenderer = ({
+  data,
+}: VegaICellRendererParams<LedgerEntry>) => {
+  const props = {
+    accountType: data?.receiverAccountType,
+    partyId: data?.receiverPartyId,
+    marketName: data?.marketReceiver?.tradableInstrument?.instrument?.code,
+  };
+  return <LedgerCellRenderer {...props} />;
+};
+
 export const LedgerTable = ({ ...props }) => (
   <AgGrid
     style={{ width: '100%', height: '100%' }}
     overlayNoRowsTemplate={t('No entries')}
-    rowHeight={34}
+    rowHeight={70}
     getRowId={({ data }) => data.id}
     tooltipShowDelay={500}
     defaultColDef={{
@@ -43,13 +99,14 @@ export const LedgerTable = ({ ...props }) => (
     {...props}
   >
     <AgGridColumn
-      headerName={t('Account Type')}
-      field="accountType"
-      valueFormatter={({
-        value,
-      }: VegaValueFormatterParams<LedgerEntry, 'accountType'>) =>
-        value ? AccountTypeMapping[value] : ''
-      }
+      headerName={t('Sender')}
+      field="senderAccountType"
+      cellRenderer={SenderCellRenderer}
+    />
+    <AgGridColumn
+      headerName={t('Receiver')}
+      field="receiverAccountType"
+      cellRenderer={ReceiverCellRenderer}
     />
     <AgGridColumn
       headerName={t('Transfer Type')}
@@ -70,7 +127,7 @@ export const LedgerTable = ({ ...props }) => (
         value,
         data,
       }: VegaValueFormatterParams<LedgerEntry, 'quantity'>) => {
-        const marketDecimalPlaces = data?.market?.decimalPlaces;
+        const marketDecimalPlaces = data?.marketSender?.decimalPlaces;
         const assetDecimalPlaces = data?.asset?.decimals || 0;
         return value
           ? addDecimalsFormatNumber(
@@ -92,19 +149,10 @@ export const LedgerTable = ({ ...props }) => (
       }
     />
     <AgGridColumn
-      headerName={t('Market')}
-      field="marketId"
-      valueFormatter={({
-        data,
-      }: VegaValueFormatterParams<LedgerEntry, 'market'>) =>
-        data?.market?.tradableInstrument.instrument.code || '-'
-      }
-    />
-    <AgGridColumn
       headerName={t('Vega Time')}
       field="vegaTime"
-      valueFormatter={({ value }: { value: string }) =>
-        getDateTimeFormat().format(fromNanoSeconds(value))
+      valueFormatter={({ value }: { value?: string }) =>
+        value ? getDateTimeFormat().format(fromNanoSeconds(value)) : '-'
       }
       filter="agDateColumnFilter"
       filterParams={{
