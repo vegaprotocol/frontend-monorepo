@@ -1,11 +1,12 @@
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { BigNumber } from '../../../lib/bignumber';
-import type { Proposal_proposal } from '../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../proposal/__generated__/Proposal';
 
 export const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_updateMarket_requiredMajority,
@@ -33,7 +34,7 @@ export const useProposalNetworkParams = ({
     };
   }
 
-  switch (proposal.terms.change.__typename) {
+  switch (proposal?.terms.change.__typename) {
     case 'UpdateMarket':
       return {
         requiredMajority:

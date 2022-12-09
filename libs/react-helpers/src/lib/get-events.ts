@@ -1,4 +1,4 @@
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 
 type Event = {
   __typename?: string;

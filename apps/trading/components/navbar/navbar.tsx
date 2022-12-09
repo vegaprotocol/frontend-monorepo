@@ -4,7 +4,7 @@ import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
 import { Routes } from '../../pages/client-router';
@@ -52,15 +52,18 @@ export const Navbar = ({
         path={Routes.PORTFOLIO}
         navbarTheme={navbarTheme}
       />
-      <div className="flex items-center gap-2 ml-auto">
-        <a
-          href={`${VEGA_TOKEN_URL}/governance`}
-          target="_blank"
-          rel="noreferrer"
-          className={getActiveNavLinkClassNames(false, navbarTheme, true)}
-        >
+      <a
+        href={`${VEGA_TOKEN_URL}/governance`}
+        target="_blank"
+        rel="noreferrer"
+        className={getActiveNavLinkClassNames(false, navbarTheme)}
+      >
+        <span className="flex items-center gap-2">
           {t('Governance')}
-        </a>
+          <NewTab />
+        </span>
+      </a>
+      <div className="flex items-center gap-2 ml-auto">
         <VegaWalletConnectButton />
         <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
       </div>
@@ -73,7 +76,6 @@ interface AppNavLinkProps {
   path: string;
   navbarTheme: NavbarTheme;
   testId?: string;
-  alignRight?: boolean;
   target?: HTMLAttributeAnchorTarget;
 }
 
@@ -81,7 +83,6 @@ const AppNavLink = ({
   name,
   path,
   navbarTheme,
-  alignRight,
   target,
   testId = name,
 }: AppNavLinkProps) => {
@@ -93,7 +94,7 @@ const AppNavLink = ({
     <NavLink
       data-testid={testId}
       to={{ pathname: path }}
-      className={getNavLinkClassNames(navbarTheme, alignRight)}
+      className={getNavLinkClassNames(navbarTheme)}
       target={target}
     >
       {({ isActive }) => {

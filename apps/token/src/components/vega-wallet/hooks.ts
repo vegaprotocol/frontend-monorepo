@@ -11,10 +11,12 @@ import { BigNumber } from '../../lib/bignumber';
 import type { WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
-import type { ERC20Asset } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/assets';
-import { Schema } from '@vegaprotocol/types';
-import { removePaginationWrapper, toBigNum } from '@vegaprotocol/react-helpers';
+import * as Schema from '@vegaprotocol/types';
+import {
+  isAssetTypeERC20,
+  removePaginationWrapper,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type {
@@ -94,9 +96,8 @@ export const usePollForDelegations = () => {
                 )
                 .map((a) => {
                   const isVega =
-                    isAssetTypeERC20(a.asset as ERC20Asset) &&
-                    (a.asset as ERC20Asset).source.contractAddress ===
-                      vegaToken.address;
+                    isAssetTypeERC20(a.asset) &&
+                    a.asset.source.contractAddress === vegaToken.address;
 
                   return {
                     isVega,
@@ -109,8 +110,8 @@ export const usePollForDelegations = () => {
                     ),
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,
-                    address: isAssetTypeERC20(a.asset as ERC20Asset)
-                      ? (a.asset as ERC20Asset).source.contractAddress
+                    address: isAssetTypeERC20(a.asset)
+                      ? a.asset.source.contractAddress
                       : undefined,
                   };
                 })

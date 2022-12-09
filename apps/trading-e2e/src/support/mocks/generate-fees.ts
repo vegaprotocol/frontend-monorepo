@@ -1,6 +1,6 @@
 import type { PartialDeep } from 'type-fest';
 import merge from 'lodash/merge';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import type {
   EstimateOrderQuery,
   MarketMarkPriceQuery,

@@ -4,14 +4,25 @@ import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
-import { normalisedVotingPower, rawValidatorScore } from '../../shared';
+import {
+  getFormattedPerformanceScore,
+  getNormalisedVotingPower,
+  getOverstakedAmount,
+  getOverstakingPenalty,
+  getPerformancePenalty,
+  getRawValidatorScore,
+  getTotalPenalties,
+  getUnnormalisedVotingPower,
+} from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
   stakedTotalPercentage,
-  totalPenalties,
+  TotalPenaltiesRenderer,
+  TotalStakeRenderer,
   ValidatorFields,
   ValidatorRenderer,
+  VotingPowerRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -66,11 +77,20 @@ export const ConsensusValidatorsTable = ({
           id,
           name,
           avatarUrl,
+          stakedByDelegates,
+          stakedByOperator,
           stakedTotal,
           rankingScore: { stakeScore, votingPower, performanceScore },
           pendingStake,
           votingPowerRanking,
         }) => {
+          const validatorScore = getRawValidatorScore(previousEpochData, id);
+          const overstakedAmount = getOverstakedAmount(
+            validatorScore,
+            stakedTotal,
+            totalStake
+          );
+
           return {
             id,
             [ValidatorFields.RANKING_INDEX]: votingPowerRanking,
@@ -83,10 +103,29 @@ export const ConsensusValidatorsTable = ({
               2
             ),
             [ValidatorFields.NORMALISED_VOTING_POWER]:
-              normalisedVotingPower(votingPower),
+              getNormalisedVotingPower(votingPower),
+            [ValidatorFields.UNNORMALISED_VOTING_POWER]:
+              getUnnormalisedVotingPower(validatorScore),
             [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
-            [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-              rawValidatorScore(previousEpochData, id),
+            [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
+              toBigNum(stakedByDelegates, decimals),
+              2
+            ),
+            [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
+              toBigNum(stakedByOperator, decimals),
+              2
+            ),
+            [ValidatorFields.PERFORMANCE_SCORE]:
+              getFormattedPerformanceScore(performanceScore).toString(),
+            [ValidatorFields.PERFORMANCE_PENALTY]:
+              getPerformancePenalty(performanceScore),
+            [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
+            [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
+              overstakedAmount,
+              totalStake
+            ),
+            [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
+              validatorScore,
               performanceScore,
               stakedTotal,
               totalStake
@@ -151,27 +190,35 @@ export const ConsensusValidatorsTable = ({
         {
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
+          headerTooltip: t('StakeDescription').toString(),
+          cellRenderer: TotalStakeRenderer,
           width: 120,
         },
         {
           field: ValidatorFields.NORMALISED_VOTING_POWER,
           headerName: t(ValidatorFields.NORMALISED_VOTING_POWER).toString(),
+          headerTooltip: t('NormalisedVotingPowerDescription').toString(),
+          cellRenderer: VotingPowerRenderer,
           width: 200,
           sort: 'desc',
         },
         {
           field: ValidatorFields.STAKE_SHARE,
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
+          headerTooltip: t('StakeShareDescription').toString(),
           width: 100,
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
+          headerTooltip: t('TotalPenaltiesDescription').toString(),
+          cellRenderer: TotalPenaltiesRenderer,
           width: 120,
         },
         {
           field: ValidatorFields.PENDING_STAKE,
           headerName: t(ValidatorFields.PENDING_STAKE).toString(),
+          headerTooltip: t('PendingStakeDescription').toString(),
           width: 110,
         },
       ],

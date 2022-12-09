@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import { useClosePosition } from './use-close-position';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';

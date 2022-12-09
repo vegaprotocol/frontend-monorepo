@@ -3,13 +3,13 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import {
   MarketDataDocument,
   MarketDataUpdateDocument,
-} from './__generated___/market-data';
+} from './__generated__/market-data';
 import type {
   MarketDataQuery,
   MarketDataFieldsFragment,
   MarketDataUpdateSubscription,
   MarketDataUpdateFieldsFragment,
-} from './__generated___/market-data';
+} from './__generated__/market-data';
 
 export type MarketData = MarketDataFieldsFragment;
 

@@ -4,7 +4,7 @@ import { determineId } from '@vegaprotocol/wallet';
 import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useOrderEvent } from '@vegaprotocol/orders';
 import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
 

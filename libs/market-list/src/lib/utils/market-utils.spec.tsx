@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Market } from '../markets-provider';
 import { filterAndSortMarkets, totalFeesPercentage } from './market-utils';
 const { MarketState, MarketTradingMode } = Schema;

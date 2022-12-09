@@ -105,7 +105,6 @@ interface AppNavLinkProps {
   path: string;
   navbarTheme: NavbarTheme;
   testId?: string;
-  alignRight?: boolean;
   target?: HTMLAttributeAnchorTarget;
 }
 
@@ -113,7 +112,6 @@ const AppNavLink = ({
   name,
   path,
   navbarTheme,
-  alignRight,
   target,
   testId = name,
 }: AppNavLinkProps) => {
@@ -125,7 +123,7 @@ const AppNavLink = ({
     <NavLink
       data-testid={testId}
       to={{ pathname: path }}
-      className={getNavLinkClassNames(navbarTheme, alignRight)}
+      className={getNavLinkClassNames(navbarTheme)}
       target={target}
       end={true}
     >

@@ -13,8 +13,9 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
@@ -37,6 +38,8 @@ const accountTypeString: Record<Schema.AccountType, string> = {
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
+
+  useDocumentTitle(['Parties', party || '-']);
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
@@ -46,14 +49,14 @@ const Party = () => {
     filters,
   });
 
-  const { data } = useExplorerPartyAssetsQuery({
+  const partyRes = useExplorerPartyAssetsQuery({
     // Don't cache data for this query, party information can move quite quickly
     fetchPolicy: 'network-only',
     variables: { partyId: partyId },
     skip: !party,
   });
 
-  const p = data?.partiesConnection?.edges[0].node;
+  const p = partyRes.data?.partiesConnection?.edges[0].node;
 
   const header = p?.id ? (
     <PageHeader
@@ -133,7 +136,7 @@ const Party = () => {
       >
         {t('Party')}
       </h1>
-      {data ? (
+      {partyRes.data ? (
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>

@@ -12,7 +12,7 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 interface Props {
   partyId: string;

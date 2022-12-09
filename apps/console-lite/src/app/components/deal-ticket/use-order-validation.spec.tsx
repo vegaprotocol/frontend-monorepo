@@ -3,11 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import {
-  MarketStateMapping,
-  Schema as Types,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations, useOrderValidation } from './use-order-validation';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
@@ -78,7 +74,7 @@ const market: MarketDealTicket = {
     bestBidPrice: '1605489971',
     bestOfferPrice: '1606823730',
     markPrice: '1606823730',
-    trigger: Types.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+    trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     staticMidPrice: '1606156850',
     marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     marketState: Schema.MarketState.STATE_ACTIVE,
@@ -245,7 +241,7 @@ describe('useOrderValidation', () => {
       });
       expect(result.current).toStrictEqual({
         isDisabled: false,
-        message: `This market is ${MarketStateMapping[
+        message: `This market is ${Schema.MarketStateMapping[
           state as Schema.MarketState
         ].toLowerCase()} and only accepting liquidity commitment orders`,
         section: 'sec-summary',

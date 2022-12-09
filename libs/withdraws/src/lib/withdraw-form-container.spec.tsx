@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Account } from '@vegaprotocol/accounts';
 import { WithdrawFormContainer } from './withdraw-form-container';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import { useWeb3React } from '@web3-react/core';
 let mockData: Account[] | null = null;
 jest.mock('@vegaprotocol/react-helpers', () => ({

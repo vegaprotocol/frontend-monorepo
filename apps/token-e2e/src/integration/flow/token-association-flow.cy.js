@@ -27,6 +27,7 @@ context(
   function () {
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
+      // 0005-ETXN-001
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
@@ -54,8 +55,12 @@ context(
         //1004-ASSO-014
         //1004-ASSO-015
         //1004-ASSO-030
+        //0005-ETXN-006
+        //0005-ETXN-003
+        //0005-ETXN-005
         cy.staking_page_associate_tokens('2');
 
+        // 0005-ETXN-002
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
           .parent(txTimeout)
@@ -77,6 +82,7 @@ context(
         // 1004-ASSO-027
         // 1004-ASSO-028
         // 1004-ASSO-029
+        // 1004-ASSO-031
 
         cy.staking_page_associate_tokens('2');
 

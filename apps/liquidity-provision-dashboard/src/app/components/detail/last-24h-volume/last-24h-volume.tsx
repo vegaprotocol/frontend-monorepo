@@ -5,7 +5,7 @@ import {
   useDataProvider,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   calcDayVolume,
   getChange,

@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import { formatForInput } from '../format/date';

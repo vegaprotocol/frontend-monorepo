@@ -37,7 +37,7 @@ import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { DealTicketSlippage } from './deal-ticket-slippage';
 import { useOrderValidation } from './use-order-validation';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';

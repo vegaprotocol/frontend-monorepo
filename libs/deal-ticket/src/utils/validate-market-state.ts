@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { MarketStateMapping, Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const validateMarketState = (state: Schema.MarketState) => {
   if (
@@ -32,6 +32,6 @@ const marketTranslations = (marketState: Schema.MarketState) => {
     case Schema.MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
-      return t(MarketStateMapping[marketState]).toLowerCase();
+      return t(Schema.MarketStateMapping[marketState]).toLowerCase();
   }
 };

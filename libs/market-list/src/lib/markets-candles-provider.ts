@@ -1,6 +1,6 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import { MarketsCandlesDocument } from './__generated___/markets-candles';
-import type { MarketsCandlesQuery } from './__generated___/markets-candles';
+import { MarketsCandlesDocument } from './__generated__/markets-candles';
+import type { MarketsCandlesQuery } from './__generated__/markets-candles';
 import type { Candle } from './market-candles-provider';
 
 export interface MarketCandles {
