@@ -19,6 +19,9 @@ jobs:
     if: ${{ inputs.trigger == 'true' }}
     runs-on: self-hosted
     steps:
+      - name: Vega version
+        run: vega version
+
       # Checkout front ends
       - name: Checkout frontend mono repo
         uses: actions/checkout@v3

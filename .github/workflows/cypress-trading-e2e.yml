@@ -20,8 +20,9 @@ jobs:
     timeout-minutes: 30
     runs-on: self-hosted
     steps:
-      - name: check version
+      - name: Vega version
         run: vega version
+
       # Checkout front ends
       - name: Checkout frontend mono repo
         uses: actions/checkout@v3
