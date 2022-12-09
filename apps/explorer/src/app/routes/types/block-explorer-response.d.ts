@@ -13,6 +13,7 @@ export interface BlockExplorerTransactionResult {
   signature: {
     value: string;
   };
+  error?: string;
 }
 
 export interface BlockExplorerTransactions {
