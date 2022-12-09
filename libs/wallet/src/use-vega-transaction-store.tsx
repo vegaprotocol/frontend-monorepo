@@ -37,6 +37,7 @@ import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
+  updatedAt: Date;
   body: Transaction;
   transactionResult?: TransactionEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
@@ -69,9 +70,11 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
     transactions: [] as VegaStoredTxState[],
     create: (body: Transaction) => {
       const transactions = get().transactions;
+      const now = new Date();
       const transaction: VegaStoredTxState = {
         id: transactions.length,
-        createdAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
         body,
         error: null,
         txHash: null,
@@ -88,6 +91,8 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             Object.assign(transaction, update);
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -98,6 +103,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             transaction.dialogOpen = false;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -127,6 +133,8 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
             transaction.withdrawal = withdrawal;
             transaction.withdrawalApproval = withdrawalApproval;
             transaction.status = VegaTxStatus.Complete;
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -147,6 +155,8 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           if (transaction) {
             transaction.order = order;
             transaction.status = VegaTxStatus.Complete;
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -164,6 +174,8 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         })
       );

@@ -43,14 +43,16 @@ type ContractMethod =
   | keyof Token
   | keyof TokenFaucetable;
 
-interface EthStoredTxState extends EthTxState {
+export interface EthStoredTxState extends EthTxState {
   id: number;
   createdAt: Date;
+  updatedAt: Date;
   contract: Contract;
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
+  assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
 }
 
@@ -60,6 +62,7 @@ interface EthTransactionStore {
     contract: Contract,
     methodName: ContractMethod,
     args: string[],
+    assetId?: string,
     requiredConfirmations?: number,
     requiresConfirmation?: boolean
   ) => number;
@@ -84,13 +87,16 @@ export const useEthTransactionStore = create<EthTransactionStore>(
       contract: Contract,
       methodName: ContractMethod,
       args: string[] = [],
+      assetId = '',
       requiredConfirmations = 1,
       requiresConfirmation = false
     ) => {
       const transactions = get().transactions;
+      const now = new Date();
       const transaction: EthStoredTxState = {
         id: transactions.length,
-        createdAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
         contract,
         methodName,
         args,
@@ -102,6 +108,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
+        assetId,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
@@ -117,6 +124,8 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           );
           if (transaction) {
             Object.assign(transaction, update);
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         }),
       });
@@ -127,6 +136,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             transaction.dialogOpen = false;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -145,6 +155,8 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           }
           transaction.status = EthTxStatus.Confirmed;
           transaction.deposit = deposit;
+          transaction.dialogOpen = true;
+          transaction.updatedAt = new Date();
         })
       );
     },
@@ -285,9 +297,10 @@ export enum ApprovalStatus {
   Error = 'Error',
   Ready = 'Ready',
 }
-interface EthWithdrawalApprovalState {
+export interface EthWithdrawalApprovalState {
   id: number;
   createdAt: Date;
+  updatedAt: Date;
   status: ApprovalStatus;
   message?: string; //#TODO message is not use anywhere
   threshold?: BigNumber;
@@ -327,13 +340,15 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
       approval?: EthWithdrawalApprovalState['approval']
     ) => {
       const transactions = get().transactions;
+      const now = new Date();
       const transaction: EthWithdrawalApprovalState = {
         id: transactions.length,
-        createdAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
         status: ApprovalStatus.Idle,
         withdrawal,
         approval,
-        dialogOpen: true,
+        dialogOpen: false,
       };
       // dismiss possible vega transaction dialog/toast
       const vegaTransaction = useVegaTransactionStore
@@ -365,7 +380,8 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
             (transaction) => transaction?.id === id
           );
           if (transaction) {
-            Object.assign(transaction, update);
+            Object.assign(transaction, { dialogOpen: true, ...update });
+            transaction.updatedAt = new Date();
           }
         }),
       }),
@@ -375,6 +391,7 @@ export const useEthWithdrawApprovalsStore = create<EthWithdrawApprovalStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             transaction.dialogOpen = false;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -462,6 +479,7 @@ export const useWithdrawApprovalsManager = () => {
       approval,
       dialogOpen: false,
     });
+    const assetId = transaction.withdrawal.asset.id;
     const signer = provider.getSigner();
     createEthTransaction(
       new CollateralBridge(
@@ -476,7 +494,8 @@ export const useWithdrawApprovalsManager = () => {
         approval.creation,
         approval.nonce,
         approval.signatures,
-      ]
+      ],
+      assetId
     );
   })();
 };

@@ -95,11 +95,11 @@ function AppBody({ Component }: AppProps) {
             <Component />
           </main>
           <Footer />
-          <DialogsContainer />
-          <ToastsManager />
           <Web3Container connectEagerly childrenOnly>
             <TransactionsHandler />
           </Web3Container>
+          <DialogsContainer />
+          <ToastsManager />
         </AppLoader>
       </div>
     </ThemeContext.Provider>
