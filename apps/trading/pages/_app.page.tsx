@@ -10,7 +10,7 @@ import {
 import {
   useEthTransactionManager,
   useEthTransactionUpdater,
-  useWithdrawApprovalsManager,
+  useEthWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
 import {
   EnvironmentProvider,
@@ -56,7 +56,7 @@ const TransactionsHandler = () => {
   useVegaTransactionUpdater();
   useEthTransactionManager();
   useEthTransactionUpdater();
-  useWithdrawApprovalsManager();
+  useEthWithdrawApprovalsManager();
   return null;
 };
 

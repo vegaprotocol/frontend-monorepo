@@ -57,8 +57,6 @@ const intentMap = {
   Ready: Intent.Success,
 };
 
-type SortableToast = Toast & { updatedAt: Date };
-
 const TransactionDetails = ({
   label,
   amount,
@@ -107,9 +105,9 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
   if (!data) return null;
 
   const ETH_WITHDRAW =
-    tx.methodName === 'withdraw_asset' && tx.args.length > 2 && tx.assetId;
+    tx.methodName === 'withdraw_asset' && tx.args.length > 2 && tx.asset;
   if (ETH_WITHDRAW) {
-    const asset = data.find((a) => a.id === tx.assetId);
+    const asset = data.find((a) => a.id === tx.asset);
 
     if (asset) {
       return (
@@ -165,7 +163,7 @@ export const ToastsManager = () => {
   const etherscanLink = useEtherscanLink();
 
   const fromVegaTransaction = useCallback(
-    (tx: VegaStoredTxState): SortableToast => {
+    (tx: VegaStoredTxState): Toast => {
       let toast: Partial<Toast> = {};
       const defaultValues = {
         id: `vega-${tx.id}`,
@@ -174,7 +172,6 @@ export const ToastsManager = () => {
           return <VegaTransaction transaction={tx} />;
         },
         onClose: () => dismissVegaTransaction(tx.id),
-        updatedAt: tx.updatedAt,
       };
       if (tx.status === VegaTxStatus.Requested) {
         toast = {
@@ -307,7 +304,7 @@ export const ToastsManager = () => {
   );
 
   const fromEthTransaction = useCallback(
-    (tx: EthStoredTxState): SortableToast => {
+    (tx: EthStoredTxState): Toast => {
       let toast: Partial<Toast> = {};
       const defaultValues = {
         id: `eth-${tx.id}`,
@@ -316,7 +313,6 @@ export const ToastsManager = () => {
           return <TransactionContent {...tx} />;
         },
         onClose: () => dismissEthTransaction(tx.id),
-        updatedAt: tx.updatedAt,
       };
       if (tx.status === EthTxStatus.Requested) {
         toast = {
@@ -415,7 +411,7 @@ export const ToastsManager = () => {
   );
 
   const fromWithdrawalApproval = useCallback(
-    (tx: EthWithdrawalApprovalState): SortableToast => ({
+    (tx: EthWithdrawalApprovalState): Toast => ({
       id: `withdrawal-${tx.id}`,
       intent: intentMap[tx.status],
       render: () => {
@@ -442,7 +438,7 @@ export const ToastsManager = () => {
         );
       },
       onClose: () => dismissWithdrawApproval(tx.id),
-      updatedAt: tx.updatedAt,
+
       loader: tx.status === ApprovalStatus.Pending,
     }),
     [dismissWithdrawApproval]
@@ -455,7 +451,7 @@ export const ToastsManager = () => {
         ...compact(ethTransactions).map(fromEthTransaction),
         ...compact(withdrawApprovals).map(fromWithdrawalApproval),
       ],
-      ['updatedBy']
+      ['createdBy']
     );
   }, [
     fromEthTransaction,

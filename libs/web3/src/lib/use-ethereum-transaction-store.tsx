@@ -9,6 +9,7 @@ import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
+import type { Asset } from '@vegaprotocol/assets';
 
 type Contract = MultisigControl | CollateralBridge | Token | TokenFaucetable;
 type ContractMethod =
@@ -26,7 +27,7 @@ export interface EthStoredTxState extends EthTxState {
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
-  assetId?: string;
+  asset?: string;
   deposit?: DepositBusEventFieldsFragment;
 }
 
@@ -36,7 +37,7 @@ export interface EthTransactionStore {
     contract: Contract,
     methodName: ContractMethod,
     args: string[],
-    assetId?: string,
+    asset?: string,
     requiredConfirmations?: number,
     requiresConfirmation?: boolean
   ) => number;
@@ -61,7 +62,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
       contract: Contract,
       methodName: ContractMethod,
       args: string[] = [],
-      assetId = '',
+      asset,
       requiredConfirmations = 1,
       requiresConfirmation = false
     ) => {
@@ -82,7 +83,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
-        assetId,
+        asset,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
