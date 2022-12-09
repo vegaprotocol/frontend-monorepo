@@ -27,7 +27,7 @@ jobs:
       - name: Vega version
         run: vega version
 
-      - name: Vega version
+      - name: Vegacapsule version
         run: vegacapsule version
 
       # Checkout front ends
