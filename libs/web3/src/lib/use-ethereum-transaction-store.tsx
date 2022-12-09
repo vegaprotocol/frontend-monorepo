@@ -28,7 +28,7 @@ export interface EthStoredTxState extends EthTxState {
   deposit?: DepositBusEventFieldsFragment;
 }
 
-interface EthTransactionStore {
+export interface EthTransactionStore {
   transactions: (EthStoredTxState | undefined)[];
   create: (
     contract: Contract,

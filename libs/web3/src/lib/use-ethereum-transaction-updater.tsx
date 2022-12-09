@@ -10,7 +10,7 @@ export const useEthTransactionUpdater = () => {
   const { pubKey } = useVegaWallet();
   const updateDeposit = useEthTransactionStore((state) => state.updateDeposit);
   const variables = { partyId: pubKey || '' };
-  const skip = !!pubKey;
+  const skip = !pubKey;
   useDepositBusEventSubscription({
     variables,
     skip,
