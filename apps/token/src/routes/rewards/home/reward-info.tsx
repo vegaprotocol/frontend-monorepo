@@ -1,4 +1,3 @@
-import compact from 'lodash/compact';
 import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +10,11 @@ import type {
   RewardFieldsFragment,
   DelegationFieldsFragment,
 } from './__generated___/Rewards';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  removePaginationWrapper,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 interface RewardInfoProps {
@@ -25,10 +28,7 @@ export const RewardInfo = ({ data, currVegaKey }: RewardInfoProps) => {
   const rewards = React.useMemo(() => {
     if (!data?.party || !data.party.rewardsConnection?.edges?.length) return [];
 
-    return (
-      compact(data.party.rewardsConnection.edges.map((edge) => edge?.node)) ||
-      []
-    );
+    return removePaginationWrapper(data.party.rewardsConnection.edges);
   }, [data]);
 
   const delegations = React.useMemo(() => {
@@ -36,11 +36,7 @@ export const RewardInfo = ({ data, currVegaKey }: RewardInfoProps) => {
       return [];
     }
 
-    return (
-      compact(
-        data.party.delegationsConnection.edges.map((edge) => edge?.node)
-      ) || []
-    );
+    return removePaginationWrapper(data.party.delegationsConnection.edges);
   }, [data]);
 
   return (
@@ -112,7 +108,8 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
         <KeyValueTableRow>
           {t('reward')}
           <span>
-            {formatNumber(toBigNum(reward.amount, decimals))} {t('VEGA')}
+            {formatNumber(toBigNum(reward.amount, decimals))}{' '}
+            {reward.asset.symbol}
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>

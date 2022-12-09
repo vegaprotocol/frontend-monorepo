@@ -7,14 +7,16 @@ import {
 import {
   addDecimalsFormatNumber,
   formatNumber,
+  removePaginationWrapper,
+  suitableForSyntaxHighlighter,
   t,
+  useNetworkParamsQuery,
 } from '@vegaprotocol/react-helpers';
-import { suitableForSyntaxHighlighter } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import orderBy from 'lodash/orderBy';
 import type { NetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import { useNetworkParamsQuery } from '@vegaprotocol/react-helpers';
-import compact from 'lodash/compact';
+import { useScrollToLocation } from '../../hooks/scroll-to-location';
+import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const PERCENTAGE_PARAMS = [
   'governance.proposal.asset.requiredMajority',
@@ -58,6 +60,7 @@ export const NetworkParameterRow = ({
   row: { key: string; value: string };
 }) => {
   const isSyntaxRow = suitableForSyntaxHighlighter(value);
+  useDocumentTitle(['Network Parameters']);
 
   return (
     <KeyValueTableRow
@@ -65,7 +68,7 @@ export const NetworkParameterRow = ({
       inline={!isSyntaxRow}
       id={key}
       className={
-        'group target:bg-vega-pink target:text-white dark:target:bg-vega-yellow dark:target:text-black'
+        'group focus:bg-vega-pink focus:text-white dark:focus:bg-vega-yellow dark:focus:text-black'
       }
     >
       {key}
@@ -107,9 +110,7 @@ export const NetworkParametersTable = ({
       error={error}
       render={(data) => {
         const ascParams = orderBy(
-          compact(data.networkParametersConnection.edges).map(
-            ({ node }) => node
-          ) || [],
+          removePaginationWrapper(data.networkParametersConnection.edges),
           (param) => param.key,
           'asc'
         );
@@ -127,5 +128,6 @@ export const NetworkParametersTable = ({
 
 export const NetworkParameters = () => {
   const { data, loading, error } = useNetworkParamsQuery();
+  useScrollToLocation();
   return <NetworkParametersTable data={data} error={error} loading={loading} />;
 };

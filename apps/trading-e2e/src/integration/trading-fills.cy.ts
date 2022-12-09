@@ -1,12 +1,22 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateFills } from '../support/mocks/generate-fills';
-import { connectVegaWallet } from '../support/vega-wallet';
 
 describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
+    // Ensure page loads with correct key
+    cy.window().then((window) => {
+      cy.wrap(
+        window.localStorage.setItem(
+          'vega_wallet_key',
+          Cypress.env('VEGA_PUBLIC_KEY')
+        )
+      );
+    });
     cy.mockTradingPage();
+    const fills = generateFills();
+    console.log(fills);
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Fills', generateFills());
+      aliasQuery(req, 'Fills', fills);
     });
     cy.mockGQLSubscription();
   });
@@ -16,7 +26,7 @@ describe('fills', { tags: '@regression' }, () => {
     cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     validateFillsDisplayed();
   });
 
@@ -24,8 +34,11 @@ describe('fills', { tags: '@regression' }, () => {
     cy.mockTradingPage();
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').contains('Please connect Vega wallet');
-    connectVegaWallet();
+    cy.getByTestId('tab-fills').should(
+      'contain.text',
+      'Connect your Vega wallet'
+    );
+    cy.connectVegaWallet();
     validateFillsDisplayed();
   });
 
@@ -44,17 +57,17 @@ describe('fills', { tags: '@regression' }, () => {
       .each(($amount) => {
         cy.wrap($amount).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="price"]')
       .each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="price_1"]')
       .each(($total) => {
         cy.wrap($total).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get('[role="gridcell"][col-id="aggressor"]')
       .each(($role) => {
         cy.wrap($role)
@@ -64,7 +77,7 @@ describe('fills', { tags: '@regression' }, () => {
             expect(roles.indexOf(text.trim())).to.be.greaterThan(-1);
           });
       });
-    cy.getByTestId('tab-positions')
+    cy.getByTestId('tab-fills')
       .get(
         '[role="gridcell"][col-id="market.tradableInstrument.instrument.product"]'
       )

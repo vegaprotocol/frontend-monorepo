@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
 import { updateQuery } from './use-withdrawals';
 import type {

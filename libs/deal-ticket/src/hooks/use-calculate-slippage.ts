@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { marketDepthProvider } from '@vegaprotocol/market-depth';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { marketProvider } from '@vegaprotocol/market-list';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';

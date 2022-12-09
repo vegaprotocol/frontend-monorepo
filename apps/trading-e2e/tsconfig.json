@@ -5,7 +5,7 @@
     "sourceMap": false,
     "outDir": "../../dist/out-tsc",
     "allowJs": true,
-    "types": ["cypress", "node", "cypress-real-events", "cypress-grep"],
+    "types": ["cypress", "node", "cypress-real-events", "@cypress/grep"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

@@ -2,8 +2,8 @@ const walletContainer = '[data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectToEthButton = '[data-testid="connect-to-eth-wallet-button"]';
 const connectorList = '[data-testid="web3-connector-list"]';
-const associate = '[href="/staking/associate"]';
-const disassociate = '[href="/staking/disassociate"]';
+const associate = '[href="/validators/associate"]';
+const disassociate = '[href="/validators/disassociate"]';
 const disconnect = '[data-testid="disconnect-from-eth-wallet-button"]';
 const accountNo = '[data-testid="ethereum-account-truncated"]';
 const currencyTitle = '[data-testid="currency-title"]';
@@ -83,6 +83,7 @@ context(
       });
     });
 
+    // 0004-EWAL-001 0004-EWAL-002
     describe('when Ethereum wallet connected', function () {
       before('connect to Ethereum wallet', function () {
         cy.ethereum_wallet_connect();
@@ -96,6 +97,7 @@ context(
         });
       });
 
+      // 0004-EWAL-005
       it('should have account number visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(accountNo)
@@ -118,6 +120,7 @@ context(
         });
       });
 
+      // 0004-EWAL-007
       it('should have Disconnect button visible', function () {
         cy.get(walletContainer).within(() => {
           cy.get(disconnect)

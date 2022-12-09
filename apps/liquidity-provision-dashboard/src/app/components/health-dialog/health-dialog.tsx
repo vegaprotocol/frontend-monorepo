@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';
 
 import { HealthBar } from '../health-bar';

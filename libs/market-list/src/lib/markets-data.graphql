@@ -1,4 +1,4 @@
-fragment MarketDataFields on MarketData {
+fragment MarketsDataFields on MarketData {
   market {
     id
   }
@@ -23,7 +23,7 @@ query MarketsData {
     edges {
       node {
         data {
-          ...MarketDataFields
+          ...MarketsDataFields
         }
       }
     }

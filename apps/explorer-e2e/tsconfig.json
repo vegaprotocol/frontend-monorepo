@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "sourceMap": false,
     "outDir": "../../dist/out-tsc",
-    "types": ["cypress", "node", "cypress-grep"],
+    "types": ["cypress", "node", "@cypress/grep"],
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

@@ -136,7 +136,15 @@ export const useDataProvider = <
       return unsubscribe();
     };
   }, [client, initialized, dataProvider, callback, variables, skip, update]);
-  return { data, loading, error, flush, reload, load, totalCount };
+  return {
+    data,
+    loading,
+    error,
+    flush,
+    reload,
+    load,
+    totalCount,
+  };
 };
 
 export const useThrottledDataProvider = <Data, Delta>(

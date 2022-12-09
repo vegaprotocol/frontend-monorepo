@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 import {
   SelectAllMarketsTableBody,
@@ -12,6 +12,7 @@ import type {
   MarketData,
 } from '@vegaprotocol/market-list';
 import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
 type Market = MarketWithCandles & MarketWithData;
 
 type PartialMarket = Partial<
@@ -63,6 +64,8 @@ const MARKET_A: PartialMarket = {
     },
     markPrice: '90',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    marketState: Schema.MarketState.STATE_PENDING,
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
     indicativeVolume: '1000',
   },
   candles: [
@@ -91,6 +94,7 @@ const MARKET_B: PartialMarket = {
   __typename: 'Market',
   id: '2',
   decimalPlaces: 2,
+  positionDecimalPlaces: 0,
   tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   tradableInstrument: {
     __typename: 'TradableInstrument',
@@ -132,6 +136,8 @@ const MARKET_B: PartialMarket = {
     },
     markPrice: '123.123',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_OPENING,
+    marketState: Schema.MarketState.STATE_PENDING,
+    marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
     indicativeVolume: '2000',
   },
   candles: [
@@ -158,7 +164,8 @@ describe('SelectMarket', () => {
           onCellClick={onCellClick}
           onSelect={onSelect}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper: MockedProvider }
     );
     expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
     expect(screen.getByText('25.00%')).toBeTruthy(); // price change
@@ -178,7 +185,8 @@ describe('SelectMarket', () => {
           onCellClick={onCellClick}
           onSelect={onSelect}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper: MockedProvider }
     );
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');

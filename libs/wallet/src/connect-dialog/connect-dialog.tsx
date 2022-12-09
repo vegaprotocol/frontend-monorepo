@@ -25,7 +25,7 @@ import { useJsonRpcConnect } from '../use-json-rpc-connect';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-type WalletType = 'gui' | 'cli' | 'hosted';
+type WalletType = 'jsonRpc' | 'hosted';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -146,16 +146,23 @@ const ConnectDialogContainer = ({
 
   const { connect, ...jsonRpcState } = useJsonRpcConnect(delayedOnConnect);
 
-  const handleSelect = (type: WalletType) => {
-    // Only cli is currently uses JsonRpc, this will need to be updated
-    // when gui does too
-    const connector =
-      type === 'cli' ? connectors['jsonRpc'] : connectors['rest'];
+  const handleSelect = (type: WalletType, isHosted = false) => {
+    let connector;
 
-    // If the user has selected hosted wallet ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
-    // otherwise use the default walletUrl or what has been put in the input
-    connector.url =
-      type === 'hosted' && HOSTED_WALLET_URL ? HOSTED_WALLET_URL : walletUrl;
+    if (isHosted) {
+      // If the user has selected hosted wallet ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
+      // otherwise use the default walletUrl or what has been put in the input
+      connector = connectors['rest'];
+      connector.url = HOSTED_WALLET_URL || walletUrl;
+    } else {
+      connector = connectors[type];
+      connector.url = walletUrl;
+    }
+
+    if (!connector) {
+      throw new Error(`Connector type: ${type} not configured`);
+    }
+
     setSelectedConnector(connector);
     setWalletType(type);
 
@@ -191,7 +198,7 @@ const ConnectorList = ({
   setWalletUrl,
   isMainnet,
 }: {
-  onSelect: (type: WalletType) => void;
+  onSelect: (type: WalletType, isHosted?: boolean) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
   isMainnet: boolean;
@@ -202,18 +209,11 @@ const ConnectorList = ({
         <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
         <CustomUrlInput walletUrl={walletUrl} setWalletUrl={setWalletUrl} />
         <ul data-testid="connectors-list" className="mb-6">
-          <li className="mb-4">
-            <ConnectionOption
-              type="gui"
-              text={t('Desktop wallet app')}
-              onClick={() => onSelect('gui')}
-            />
-          </li>
           <li className="mb-4 last:mb-0">
             <ConnectionOption
-              type="cli"
-              text={t('Command line wallet app')}
-              onClick={() => onSelect('cli')}
+              type="jsonRpc"
+              text={t('Connect Vega wallet')}
+              onClick={() => onSelect('jsonRpc')}
             />
           </li>
           {!isMainnet && (
@@ -221,7 +221,7 @@ const ConnectorList = ({
               <ConnectionOption
                 type="hosted"
                 text={t('Hosted Fairground wallet')}
-                onClick={() => onSelect('hosted')}
+                onClick={() => onSelect('hosted', true)}
               />
             </li>
           )}

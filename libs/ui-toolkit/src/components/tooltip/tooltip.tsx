@@ -5,7 +5,6 @@ import {
   Root,
   Trigger,
   Content,
-  Arrow,
   Portal,
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
@@ -41,14 +40,9 @@ export const Tooltip = ({
               align={align}
               side={side}
               alignOffset={8}
-              className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word"
+              className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm text-black dark:text-white break-word"
             >
               <div className="relative z-0">{description}</div>
-              <Arrow
-                width={10}
-                height={5}
-                className="fill-neutral-200 z-0 translate-x-[1px] translate-y-[-1px]"
-              />
             </Content>
           </Portal>
         )}
@@ -60,7 +54,7 @@ export const Tooltip = ({
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
   return (
-    <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
+    <p className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white">
       {props.value}
     </p>
   );

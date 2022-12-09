@@ -17,8 +17,12 @@ interface TxDetailsChainEventWithdrawalProps {
 export const TxDetailsChainEventWithdrawal = ({
   withdrawal,
 }: TxDetailsChainEventWithdrawalProps) => {
-  if (!withdrawal) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (
+    !withdrawal ||
+    !withdrawal.targetEthereumAddress ||
+    !withdrawal.vegaAssetId
+  ) {
+    return null;
   }
 
   return (
@@ -28,22 +32,20 @@ export const TxDetailsChainEventWithdrawal = ({
         <TableCell>{t('ERC20 withdrawal')}</TableCell>
       </TableRow>
 
-      {withdrawal.targetEthereumAddress ? (
-        <TableRow modifier="bordered">
-          <TableCell>{t('Recipient')}</TableCell>
-          <TableCell>
-            <EthExplorerLink
-              id={withdrawal.targetEthereumAddress}
-              type={EthExplorerLinkTypes.address}
-            />
-          </TableCell>
-        </TableRow>
-      ) : null}
+      <TableRow modifier="bordered">
+        <TableCell>{t('Recipient')}</TableCell>
+        <TableCell>
+          <EthExplorerLink
+            id={withdrawal.targetEthereumAddress}
+            type={EthExplorerLinkTypes.address}
+          />
+        </TableCell>
+      </TableRow>
 
       <TableRow modifier="bordered">
         <TableCell>{t('Asset')}</TableCell>
         <TableCell>
-          <AssetLink id={withdrawal.vegaAssetId || ''} />
+          <AssetLink id={withdrawal.vegaAssetId} />
         </TableCell>
       </TableRow>
     </>

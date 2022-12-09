@@ -1,6 +1,5 @@
-import { connectVegaWallet } from '../support/vega-wallet';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 
-const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const assetSelectField = 'select[name="asset"]';
 const toAddressField = 'input[name="to"]';
 const amountField = 'input[name="amount"]';
@@ -14,15 +13,23 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Deposits').click();
-
     cy.getByTestId('tab-deposits').contains('Connect your Vega wallet');
-    connectVegaWallet();
-    // validateFillsDisplayed();
+    cy.connectVegaWallet();
     cy.getByTestId('deposit-button').click();
     cy.wait('@Assets');
   });
 
+  it('unable to select assets not enabled', () => {
+    connectEthereumWallet();
+    cy.getByTestId('deposit-submit').click();
+    // Assets not enabled in mocks
+    cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 3)').should('not.exist');
+    cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist');
+  });
+
   it('handles empty fields', () => {
+    connectEthereumWallet();
     // Submit form to trigger any empty validation messages
     cy.getByTestId('deposit-submit').click();
 
@@ -52,28 +59,5 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
       .type('100')
       .next(`[data-testid="${formFieldError}"]`)
       .should('have.text', 'Insufficient amount in Ethereum wallet');
-  });
-
-  it('unable to select assets not enabled', () => {
-    cy.getByTestId('deposit-submit').click();
-    // Assets not enabled in mocks
-    cy.get(assetSelectField + ' option:contains(Asset 2)').should('not.exist');
-    cy.get(assetSelectField + ' option:contains(Asset 3)').should('not.exist');
-    cy.get(assetSelectField + ' option:contains(Asset 4)').should('not.exist');
-  });
-
-  it('able to disconnect eth wallet', () => {
-    const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
-
-    cy.get('#ethereum-address').should('have.value', ethWalletAddress).click();
-    cy.getByTestId('dialog-content').within(() => {
-      cy.get('p').should('have.text', `Connected with ${ethWalletAddress}`);
-      cy.getByTestId('disconnect-ethereum-wallet')
-        .should('have.text', 'Disconnect Ethereum Wallet')
-        .click();
-    });
-
-    cy.getByTestId('connect-eth-wallet-msg').should('exist');
-    cy.getByTestId(connectEthWalletBtn).should('exist');
   });
 });

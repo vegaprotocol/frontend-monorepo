@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type {
   MarketsQuery,
   Market,
@@ -1413,6 +1413,7 @@ export const generateMarketData = (): MarketDataQuery => {
               },
               marketTradingMode:
                 Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+              marketState: Schema.MarketState.STATE_ACTIVE,
               staticMidPrice: '0',
               indicativePrice: '0',
               bestStaticBidPrice: '0',

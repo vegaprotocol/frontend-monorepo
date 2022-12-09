@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type {
   MarketDepthUpdateSubscription,
   PriceLevelFieldsFragment,
-} from './__generated___/MarketDepth';
+} from './__generated__/MarketDepth';
 import {
   compactRows,
   updateCompactedRows,

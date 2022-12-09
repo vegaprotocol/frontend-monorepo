@@ -57,7 +57,7 @@ const Home = ({ name }: RouteChildProps) => {
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
         </p>
-        <Link to={Routes.VESTING}>
+        <Link to={Routes.REDEEM}>
           <Button
             variant="primary"
             size="md"
@@ -93,7 +93,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <Link
             data-testid="associate-vega-tokens-link-on-homepage"
-            to={`${Routes.STAKING}/associate`}
+            to={`${Routes.VALIDATORS}/associate`}
             className="underline text-white"
           >
             {t('Associate VEGA tokens')}
@@ -110,7 +110,7 @@ const Home = ({ name }: RouteChildProps) => {
               )}
             </p>
             <p>
-              <Link to={Routes.STAKING}>
+              <Link to={Routes.VALIDATORS}>
                 <Button size="md" data-testid="staking-button-on-homepage">
                   {t('Nominate a validator')}
                 </Button>
@@ -127,7 +127,7 @@ const Home = ({ name }: RouteChildProps) => {
               )}
             </p>
             <p>
-              <Link to={Routes.GOVERNANCE}>
+              <Link to={Routes.PROPOSALS}>
                 <Button size="md" data-testid="governance-button-on-homepage">
                   {t('View Governance proposals')}
                 </Button>

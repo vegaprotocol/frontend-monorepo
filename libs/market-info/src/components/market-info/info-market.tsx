@@ -3,15 +3,12 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { totalFeesPercentage } from '@vegaprotocol/market-list';
 import {
   formatNumber,
+  removePaginationWrapper,
   t,
   useDataProvider,
   useYesterday,
 } from '@vegaprotocol/react-helpers';
-import {
-  Schema,
-  MarketStateMapping,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   Accordion,
   AsyncRenderer,
@@ -21,7 +18,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import pick from 'lodash/pick';
-import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { generatePath, Link } from 'react-router-dom';
 
@@ -30,7 +26,8 @@ import { MarketInfoTable } from './info-key-value-table';
 import { marketInfoDataProvider } from './market-info-data-provider';
 import { TokenLinks } from '@vegaprotocol/react-helpers';
 
-import type { MarketInfoQuery } from './__generated___/MarketInfo';
+import type { MarketInfoQuery } from './__generated__/MarketInfo';
+import { MarketProposalNotification } from '@vegaprotocol/governance';
 
 export interface InfoProps {
   market: MarketInfoQuery['market'];
@@ -101,8 +98,8 @@ export const Info = ({ market, onSelect }: InfoProps) => {
 
   if (!market) return null;
 
-  const marketAccounts = compact(market.accountsConnection?.edges).map(
-    (e) => e.node
+  const marketAccounts = removePaginationWrapper(
+    market.accountsConnection?.edges
   );
 
   const marketDataPanels = [
@@ -182,7 +179,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
 
   const keyDetails = {
     ...pick(market, 'decimalPlaces', 'positionDecimalPlaces', 'tradingMode'),
-    state: MarketStateMapping[market.state],
+    state: Schema.MarketStateMapping[market.state],
   };
 
   const marketSpecPanels = [
@@ -195,7 +192,12 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             marketID: market.id,
             tradingMode:
               keyDetails.tradingMode &&
-              MarketTradingModeMapping[keyDetails.tradingMode],
+              Schema.MarketTradingModeMapping[keyDetails.tradingMode],
+            marketDecimalPlaces: market.decimalPlaces,
+            positionDecimalPlaces: market.positionDecimalPlaces,
+            settlementAssetDecimalPlaces:
+              market.tradableInstrument.instrument.product.settlementAsset
+                .decimals,
           }}
         />
       ),
@@ -405,6 +407,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
         <Accordion panels={marketDataPanels} />
       </div>
       <div className="mb-8">
+        <MarketProposalNotification marketId={market.id} />
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>

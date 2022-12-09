@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import MarketNameRenderer from './simple-market-renderer';
 import type { Market } from '@vegaprotocol/market-list';
 

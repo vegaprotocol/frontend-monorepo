@@ -1,5 +1,4 @@
 import orderBy from 'lodash/orderBy';
-import compact from 'lodash/compact';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
@@ -14,6 +13,7 @@ import type {
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables,
 } from './__generated__/Withdrawal';
+import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
 
 type WithdrawalEdges = { node: WithdrawalFieldsFragment }[];
 
@@ -47,7 +47,7 @@ export const useWithdrawals = () => {
     }
 
     return orderBy(
-      compact(data.party.withdrawalsConnection.edges).map((edge) => edge.node),
+      removePaginationWrapper(data.party.withdrawalsConnection.edges),
       'createdTimestamp',
       'desc'
     );

@@ -11,6 +11,10 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxContent } from '../../../routes/txs/id/tx-content';
 import { TxDetailsNodeVote } from './tx-node-vote';
+import { TxDetailsOrderCancel } from './tx-order-cancel';
+import get from 'lodash/get';
+import { TxDetailsOrderAmend } from './tx-order-amend';
+import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -26,7 +30,8 @@ export const TxDetailsWrapper = ({
   const {
     state: { data: blockData },
   } = useFetch<TendermintBlocksResponse>(
-    `${DATA_SOURCES.tendermintUrl}/block?height=${height}`
+    `${DATA_SOURCES.tendermintUrl}/block?height=${height}`,
+    { cache: 'force-cache' }
   );
 
   const child = useMemo(() => getTransactionComponent(txData), [txData]);
@@ -34,6 +39,8 @@ export const TxDetailsWrapper = ({
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
+
+  const raw = get(blockData, `result.block.data.txs[${txData.index}]`);
 
   return (
     <>
@@ -44,12 +51,12 @@ export const TxDetailsWrapper = ({
         <TxContent data={txData} />
       </details>
 
-      <details title={t('Raw transaction')} className="mt-3">
-        <summary className="cursor-pointer">{t('Raw transaction')}</summary>
-        <code className="break-all font-mono text-xs">
-          {blockData?.result.block.data.txs[txData.index]}
-        </code>
-      </details>
+      {raw ? (
+        <details title={t('Raw transaction')} className="mt-3">
+          <summary className="cursor-pointer">{t('Raw transaction')}</summary>
+          <code className="break-all font-mono text-xs">{raw}</code>
+        </details>
+      ) : null}
     </>
   );
 };
@@ -68,6 +75,10 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
   switch (txData.type) {
     case 'Submit Order':
       return TxDetailsOrder;
+    case 'Cancel Order':
+      return TxDetailsOrderCancel;
+    case 'Amend Order':
+      return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
     case 'Amend LiquidityProvision Order':
@@ -78,6 +89,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsChainEvent;
     case 'Node Vote':
       return TxDetailsNodeVote;
+    case 'Withdraw':
+      return TxDetailsWithdrawSubmission;
     default:
       return TxDetailsGeneric;
   }

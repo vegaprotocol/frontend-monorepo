@@ -34,12 +34,16 @@ fragment ProposalFields on Proposal {
         __typename
         name
         symbol
+        decimals
+        quantum
         source {
           ... on BuiltinAsset {
             maxFaucetAmountMint
           }
           ... on ERC20 {
             contractAddress
+            withdrawThreshold
+            lifetimeLimit
           }
         }
       }

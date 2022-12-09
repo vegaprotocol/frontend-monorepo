@@ -10,13 +10,7 @@ import {
   SetFilter,
   DateRangeFilter,
 } from '@vegaprotocol/react-helpers';
-import {
-  OrderRejectionReasonMapping,
-  OrderStatusMapping,
-  OrderTimeInForceMapping,
-  OrderTypeMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -225,7 +219,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="type"
           filter={SetFilter}
           filterParams={{
-            set: OrderTypeMapping,
+            set: Schema.OrderTypeMapping,
           }}
           valueFormatter={({
             data: order,
@@ -238,27 +232,38 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (!value) return '-';
             if (order?.peggedOrder) return t('Pegged');
             if (order?.liquidityProvision) return t('Liquidity provision');
-            return OrderTypeMapping[value];
+            return Schema.OrderTypeMapping[value];
           }}
         />
         <AgGridColumn
           field="status"
           filter={SetFilter}
           filterParams={{
-            set: OrderStatusMapping,
+            set: Schema.OrderStatusMapping,
           }}
           valueFormatter={({
             value,
             data,
           }: VegaValueFormatterParams<Order, 'status'>) => {
             if (value === Schema.OrderStatus.STATUS_REJECTED) {
-              return `${OrderStatusMapping[value]}: ${
+              return `${Schema.OrderStatusMapping[value]}: ${
                 data?.rejectionReason &&
-                OrderRejectionReasonMapping[data.rejectionReason]
+                Schema.OrderRejectionReasonMapping[data.rejectionReason]
               }`;
             }
-            return value ? OrderStatusMapping[value] : '';
+            return value ? Schema.OrderStatusMapping[value] : '';
           }}
+          cellRenderer={({
+            valueFormatted,
+            data,
+          }: {
+            valueFormatted: string;
+            data: Order;
+          }) => (
+            <span data-testId={`order-status-${data?.id}`}>
+              {valueFormatted}
+            </span>
+          )}
         />
         <AgGridColumn
           headerName={t('Filled')}
@@ -312,7 +317,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="timeInForce"
           filter={SetFilter}
           filterParams={{
-            set: OrderTimeInForceMapping,
+            set: Schema.OrderTimeInForceMapping,
           }}
           valueFormatter={({
             value,
@@ -325,10 +330,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               const expiry = getDateTimeFormat().format(
                 new Date(data.expiresAt)
               );
-              return `${OrderTimeInForceMapping[value]}: ${expiry}`;
+              return `${Schema.OrderTimeInForceMapping[value]}: ${expiry}`;
             }
 
-            return value ? OrderTimeInForceMapping[value] : '';
+            return value ? Schema.OrderTimeInForceMapping[value] : '';
           }}
         />
         <AgGridColumn

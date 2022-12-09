@@ -16,7 +16,7 @@ module.exports = defineConfig({
   },
   e2e: {
     setupNodeEvents(on, config) {
-      require('cypress-grep/src/plugin')(config);
+      require('@cypress/grep/src/plugin')(config);
       return config;
     },
     baseUrl: 'http://localhost:4200',
@@ -37,7 +37,6 @@ module.exports = defineConfig({
     requestTimeout: 20000,
   },
   env: {
-    TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',
     ETHEREUM_PROVIDER_URL:
       'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
     VEGA_PUBLIC_KEY:

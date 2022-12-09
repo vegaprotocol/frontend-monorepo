@@ -2,11 +2,11 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { MarketDocument } from './__generated___/market';
+import { MarketDocument } from './__generated__/market';
 import type {
   MarketQuery,
   SingleMarketFieldsFragment,
-} from './__generated___/market';
+} from './__generated__/market';
 import type { MarketData } from './market-data-provider';
 import { marketDataProvider } from './market-data-provider';
 

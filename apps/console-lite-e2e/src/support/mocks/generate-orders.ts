@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { OrdersQuery, OrderFieldsFragment } from '@vegaprotocol/orders';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const generateOrders = (
   override?: PartialDeep<OrdersQuery>

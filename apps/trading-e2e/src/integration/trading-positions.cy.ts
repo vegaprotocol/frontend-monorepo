@@ -1,5 +1,3 @@
-import { connectVegaWallet } from '../support/vega-wallet';
-
 beforeEach(() => {
   cy.mockTradingPage();
 
@@ -10,15 +8,18 @@ describe('positions', { tags: '@smoke' }, () => {
   it('renders positions on trading page', () => {
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Positions').click();
-    cy.getByTestId('tab-positions').contains('Please connect Vega wallet');
+    cy.getByTestId('tab-positions').should(
+      'contain.text',
+      'Connect your Vega wallet'
+    );
 
-    connectVegaWallet();
+    cy.connectVegaWallet();
     validatePositionsDisplayed();
   });
 
   it('renders positions on portfolio page', () => {
     cy.visit('/#/portfolio');
-    connectVegaWallet();
+    cy.connectVegaWallet();
     validatePositionsDisplayed();
   });
 

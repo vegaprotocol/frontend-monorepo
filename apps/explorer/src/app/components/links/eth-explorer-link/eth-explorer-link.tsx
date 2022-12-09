@@ -21,7 +21,7 @@ export const EthExplorerLink = ({
   const link = `${DATA_SOURCES.ethExplorerUrl}/${type}/${id}`;
   return (
     <a
-      className="underline external"
+      className="underline external font-mono"
       target="_blank"
       rel="noopener noreferrer"
       {...props}

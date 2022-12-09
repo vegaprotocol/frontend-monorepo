@@ -11,11 +11,6 @@ on:
       - reopened
       - synchronize
       - ready_for_review
-
-env:
-  GOBIN: /home/runner/go/bin
-  VEGA_VERSION: 'v0.62.1'
-
 jobs:
   pr:
     runs-on: ubuntu-latest
@@ -56,8 +51,6 @@ jobs:
 
     outputs:
       projects: ${{ env.AFFECTED }}
-      vega-version: ${{ env.VEGA_VERSION }}
-      gobin: ${{ env.GOBIN }}
 
   dispatch:
     needs: pr
@@ -65,6 +58,4 @@ jobs:
     secrets: inherit
     with:
       project: ${{ needs.pr.outputs.projects }}
-      vega-version: ${{needs.pr.outputs.vega-version}}
-      gobin: ${{needs.pr.outputs.gobin}}
-      tags: "--env.grepTags='@smoke'"
+      tags: "--env.grepTags='[ @smoke, @regression ]'"

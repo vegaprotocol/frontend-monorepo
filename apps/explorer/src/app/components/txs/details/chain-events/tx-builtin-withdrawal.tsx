@@ -15,14 +15,19 @@ interface TxDetailsChainEventBuiltinDepositProps {
 export const TxDetailsChainEventBuiltinWithdrawal = ({
   withdrawal,
 }: TxDetailsChainEventBuiltinDepositProps) => {
-  if (!withdrawal) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (
+    !withdrawal ||
+    !withdrawal.partyId ||
+    !withdrawal.vegaAssetId ||
+    !withdrawal.amount
+  ) {
+    return null;
   }
 
   return (
     <>
       <TableRow modifier="bordered">
-        <TableCell>{t('Chain Event type')}</TableCell>
+        <TableCell>{t('Chain event type')}</TableCell>
         <TableCell>{t('Built-in asset withdrawal')}</TableCell>
       </TableRow>
       <TableRow modifier="bordered">

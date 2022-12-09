@@ -1,6 +1,6 @@
 import BreakdownTable from './breakdown-table';
 import { act, render, screen } from '@testing-library/react';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 

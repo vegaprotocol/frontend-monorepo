@@ -8,6 +8,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks, ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
+import Routes from '../../../routes/routes';
 
 export const StakingIntro = () => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ export const StakingIntro = () => {
           <li>
             {t('stakingDescription1')}{' '}
             <Link
-              to="/staking/associate"
+              to={Routes.ASSOCIATE}
               className="underline"
               data-testid="staking-associate-link"
             >
@@ -32,7 +33,7 @@ export const StakingIntro = () => {
             </Link>
           </li>
           <li>
-            {t('stakingDescription2')}{' '}
+            {t('stakingDescription2a')} {t('stakingDescription2b')}{' '}
             <UTLink
               href={ExternalLinks.VALIDATOR_FORUM}
               target="_blank"

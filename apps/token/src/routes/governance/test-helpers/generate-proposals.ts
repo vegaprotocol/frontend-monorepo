@@ -1,22 +1,16 @@
-import { ProposalState, VoteValue } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import * as faker from 'faker';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
-import type { DeepPartial } from '../../../lib/type-helpers';
-import type {
-  Proposal_proposal,
-  Proposal_proposal_votes_yes,
-  Proposal_proposal_votes_yes_votes,
-  Proposal_proposal_votes_no,
-  Proposal_proposal_votes_no_votes,
-} from '../proposal/__generated__/Proposal';
+import type { PartialDeep } from 'type-fest';
+import type { ProposalQuery } from '../proposal/__generated__/Proposal';
 
 export function generateProposal(
-  override: DeepPartial<Proposal_proposal> = {}
-): Proposal_proposal {
-  const defaultProposal: Proposal_proposal = {
+  override: PartialDeep<ProposalQuery['proposal']> = {}
+): ProposalQuery['proposal'] {
+  const defaultProposal: ProposalQuery['proposal'] = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
     rationale: {
@@ -25,7 +19,7 @@ export function generateProposal(
       description: '',
     },
     reference: 'ref' + faker.datatype.uuid(),
-    state: ProposalState.STATE_OPEN,
+    state: Schema.ProposalState.STATE_OPEN,
     datetime: faker.date.past().toISOString(),
     rejectionReason: null,
     errorDetails: null,
@@ -36,15 +30,15 @@ export function generateProposal(
     terms: {
       __typename: 'ProposalTerms',
       closingDatetime:
-        !override.state || // defaults to Open
-        override.state === ProposalState.STATE_OPEN ||
-        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
+        !override?.state || // defaults to Open
+        override.state === Schema.ProposalState.STATE_OPEN ||
+        override.state === Schema.ProposalState.STATE_WAITING_FOR_NODE_VOTE
           ? faker.date.soon().toISOString()
           : faker.date.past().toISOString(),
       enactmentDatetime:
-        !override.state || // defaults to Open
-        override.state === ProposalState.STATE_OPEN ||
-        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
+        !override?.state || // defaults to Open
+        override.state === Schema.ProposalState.STATE_OPEN ||
+        override.state === Schema.ProposalState.STATE_WAITING_FOR_NODE_VOTE
           ? faker.date.future().toISOString()
           : faker.date.past().toISOString(),
       change: {
@@ -63,32 +57,47 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<Proposal_proposal, DeepPartial<Proposal_proposal>>(
-    defaultProposal,
-    override,
-    (objValue, srcValue) => {
-      if (!isArray(objValue)) {
-        return;
-      }
-      return srcValue;
+  return mergeWith<
+    ProposalQuery['proposal'],
+    PartialDeep<ProposalQuery['proposal']>
+  >(defaultProposal, override, (objValue, srcValue) => {
+    if (!isArray(objValue)) {
+      return;
     }
-  );
+    return srcValue;
+  });
 }
+
+type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>;
+type Votes = Pick<
+  Schema.ProposalVoteSide,
+  '__typename' | 'totalNumber' | 'totalTokens' | 'totalEquityLikeShareWeight'
+> & {
+  votes: Vote[];
+};
 
 export const generateYesVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number,
   totalEquityLikeShareWeight?: string
-): Proposal_proposal_votes_yes => {
+): Votes => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
-    const vote: Proposal_proposal_votes_yes_votes = {
+    const vote: Vote = {
       __typename: 'Vote',
-      value: VoteValue.VALUE_YES,
+      value: Schema.VoteValue.VALUE_YES,
       party: {
         __typename: 'Party',
         id: faker.datatype.uuid(),
         stakingSummary: {
           __typename: 'StakingSummary',
+          linkings: {
+            pageInfo: {
+              startCursor: '00',
+              endCursor: '01',
+              hasPreviousPage: false,
+              hasNextPage: false,
+            },
+          },
           currentStakeAvailable: fixedTokenValue
             ? fixedTokenValue.toString()
             : faker.datatype
@@ -121,16 +130,24 @@ export const generateNoVotes = (
   numberOfVotes = 5,
   fixedTokenValue?: number,
   totalEquityLikeShareWeight?: string
-): Proposal_proposal_votes_no => {
+): Votes => {
   const votes = Array.from(Array(numberOfVotes)).map(() => {
-    const vote: Proposal_proposal_votes_no_votes = {
+    const vote: Vote = {
       __typename: 'Vote',
-      value: VoteValue.VALUE_NO,
+      value: Schema.VoteValue.VALUE_NO,
       party: {
         id: faker.datatype.uuid(),
         __typename: 'Party',
         stakingSummary: {
           __typename: 'StakingSummary',
+          linkings: {
+            pageInfo: {
+              startCursor: '00',
+              endCursor: '01',
+              hasPreviousPage: false,
+              hasNextPage: false,
+            },
+          },
           currentStakeAvailable: fixedTokenValue
             ? fixedTokenValue.toString()
             : faker.datatype

@@ -9,6 +9,7 @@ import type {
 } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage';
+import { WalletError } from './connectors/vega-connector';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -50,6 +51,9 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
         return null;
       }
     } catch (err) {
+      if (err instanceof WalletError) {
+        throw err;
+      }
       return null;
     }
   }, []);
@@ -64,6 +68,13 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       return true;
     } catch (err) {
       console.error(err);
+      if (err instanceof WalletError && err.code === 100) {
+        setPubKeys(null);
+        setPubKey(null);
+        connector.current = null;
+        LocalStorage.removeItem(WALLET_KEY);
+        return true;
+      }
       return false;
     }
   }, []);

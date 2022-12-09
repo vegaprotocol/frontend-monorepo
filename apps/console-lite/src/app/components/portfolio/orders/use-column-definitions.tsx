@@ -14,20 +14,14 @@ import {
 import type { OrderFieldsFragment, Order } from '@vegaprotocol/orders';
 import type { OrderCancellationBody } from '@vegaprotocol/wallet';
 import { isOrderActive } from '@vegaprotocol/orders';
-import {
-  OrderRejectionReasonMapping,
-  OrderStatusMapping,
-  OrderTypeMapping,
-  Schema,
-  OrderTimeInForceMapping,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 import BigNumber from 'bignumber.js';
 import { Button } from '@vegaprotocol/ui-toolkit';
 
-type StatusKey = keyof typeof OrderStatusMapping;
-type RejectReasonKey = keyof typeof OrderRejectionReasonMapping;
-type OrderTimeKey = keyof typeof OrderTimeInForceMapping;
+type StatusKey = keyof typeof Schema.OrderStatusMapping;
+type RejectReasonKey = keyof typeof Schema.OrderRejectionReasonMapping;
+type OrderTimeKey = keyof typeof Schema.OrderTimeInForceMapping;
 interface Props {
   setEditOrder: (order: Order) => void;
   orderCancel: {
@@ -81,7 +75,7 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
           value,
         }: ValueFormatterParams & {
           value?: OrderFieldsFragment['type'];
-        }) => OrderTypeMapping[value as Schema.OrderType],
+        }) => Schema.OrderTypeMapping[value as Schema.OrderType],
       },
       {
         colId: 'status',
@@ -95,14 +89,14 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
         }) => {
           if (value && data && data.market) {
             if (value === Schema.OrderStatus.STATUS_REJECTED) {
-              return `${OrderStatusMapping[value as StatusKey]}: ${
+              return `${Schema.OrderStatusMapping[value as StatusKey]}: ${
                 data.rejectionReason &&
-                OrderRejectionReasonMapping[
+                Schema.OrderRejectionReasonMapping[
                   data.rejectionReason as RejectReasonKey
                 ]
               }`;
             }
-            return OrderStatusMapping[value as StatusKey] as string;
+            return Schema.OrderStatusMapping[value as StatusKey] as string;
           }
           return '-';
         },
@@ -176,11 +170,11 @@ const useColumnDefinitions = ({ setEditOrder, orderCancel }: Props) => {
                 new Date(data.expiresAt)
               );
               return `${
-                OrderTimeInForceMapping[value as OrderTimeKey]
+                Schema.OrderTimeInForceMapping[value as OrderTimeKey]
               }: ${expiry}`;
             }
 
-            return OrderTimeInForceMapping[value as OrderTimeKey];
+            return Schema.OrderTimeInForceMapping[value as OrderTimeKey];
           }
           return '-';
         },

@@ -33,19 +33,15 @@ context(
     beforeEach('Navigate to withdrawal page', function () {
       cy.reload();
       cy.visit('/');
-      cy.navigate_to('withdrawals');
+      cy.navigate_to('withdraw');
       cy.wait_for_spinner();
-      cy.vega_wallet_connect();
+      cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.vega_wallet_teardown();
     });
 
     it('Able to open withdrawal form with vega wallet connected', function () {
       // needs to reload page for withdrawal form to be displayed in ci - not reproducible outside of ci
-      cy.getByTestId(withdraw).should('be.visible').click();
-      cy.visit('/');
-      cy.navigate_to('withdrawals');
-      cy.ethereum_wallet_connect();
       cy.getByTestId(withdraw).should('be.visible').click();
       cy.getByTestId(selectAsset)
         .find('option')

@@ -17,13 +17,16 @@ import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { NodeLink } from '../../../components/links';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
+  useDocumentTitle(['Blocks', `Block #${block}`]);
   const {
     state: { data: blockData, loading, error },
   } = useFetch<TendermintBlocksResponse>(
-    `${DATA_SOURCES.tendermintUrl}/block?height=${block}`
+    `${DATA_SOURCES.tendermintUrl}/block?height=${block}`,
+    { cache: 'force-cache' }
   );
 
   return (
@@ -58,6 +61,24 @@ const Block = () => {
             <>
               <TableWithTbody className="mb-8">
                 <TableRow modifier="bordered">
+                  <TableHeader scope="row">{t('Block hash')}</TableHeader>
+                  <TableCell modifier="bordered">
+                    <code>{blockData.result.block_id.hash}</code>
+                  </TableCell>
+                </TableRow>
+                <TableRow modifier="bordered">
+                  <TableHeader scope="row">{t('Data hash')}</TableHeader>
+                  <TableCell modifier="bordered">
+                    <code>{blockData.result.block.header.data_hash}</code>
+                  </TableCell>
+                </TableRow>
+                <TableRow modifier="bordered">
+                  <TableHeader scope="row">{t('Consensus hash')}</TableHeader>
+                  <TableCell modifier="bordered">
+                    <code>{blockData.result.block.header.consensus_hash}</code>
+                  </TableCell>
+                </TableRow>
+                <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
                   <TableCell modifier="bordered">
                     <NodeLink
@@ -87,7 +108,10 @@ const Block = () => {
                 </TableRow>
               </TableWithTbody>
               {blockData.result.block.data.txs.length > 0 ? (
-                <TxsPerBlock blockHeight={block} />
+                <TxsPerBlock
+                  blockHeight={blockData.result.block.header.height}
+                  txCount={blockData.result.block.data.txs.length}
+                />
               ) : null}
             </>
           )}
