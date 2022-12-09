@@ -1,5 +1,4 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children } from 'react';
 import { cloneElement } from 'react';
@@ -11,16 +10,12 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header
-      className={classNames('xl:px-4 pt-3 border-b border-default', {
-        'w-screen': !!title,
-      })}
-    >
+    <header className="w-screen xl:px-4 pt-3 border-b border-default">
       <div className="xl:flex xl:gap-4  items-start">
-        {!!title && <div className="mb-4 xl:mb-0 px-4 xl:px-0">{title}</div>}
+        <div className="mb-4 xl:mb-0 px-4 xl:px-0">{title}</div>
         <div
           data-testid="header-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs first:border-0"
+          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs"
         >
           {Children.map(children, (child, index) => {
             if (!child) return null;
