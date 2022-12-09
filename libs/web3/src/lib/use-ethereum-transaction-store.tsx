@@ -20,11 +20,13 @@ type ContractMethod =
 export interface EthStoredTxState extends EthTxState {
   id: number;
   createdAt: Date;
+  updatedAt: Date;
   contract: Contract;
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
+  asset?: string;
   deposit?: DepositBusEventFieldsFragment;
 }
 
@@ -34,6 +36,7 @@ export interface EthTransactionStore {
     contract: Contract,
     methodName: ContractMethod,
     args: string[],
+    assetId?: string,
     requiredConfirmations?: number,
     requiresConfirmation?: boolean
   ) => number;
@@ -58,13 +61,16 @@ export const useEthTransactionStore = create<EthTransactionStore>(
       contract: Contract,
       methodName: ContractMethod,
       args: string[] = [],
+      asset,
       requiredConfirmations = 1,
       requiresConfirmation = false
     ) => {
       const transactions = get().transactions;
+      const now = new Date();
       const transaction: EthStoredTxState = {
         id: transactions.length,
-        createdAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
         contract,
         methodName,
         args,
@@ -76,6 +82,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
+        asset: asset,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
@@ -91,6 +98,8 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           );
           if (transaction) {
             Object.assign(transaction, update);
+            transaction.dialogOpen = true;
+            transaction.updatedAt = new Date();
           }
         }),
       });
@@ -101,6 +110,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           const transaction = state.transactions[index];
           if (transaction) {
             transaction.dialogOpen = false;
+            transaction.updatedAt = new Date();
           }
         })
       );
@@ -119,6 +129,8 @@ export const useEthTransactionStore = create<EthTransactionStore>(
           }
           transaction.status = EthTxStatus.Confirmed;
           transaction.deposit = deposit;
+          transaction.dialogOpen = true;
+          transaction.updatedAt = new Date();
         })
       );
     },

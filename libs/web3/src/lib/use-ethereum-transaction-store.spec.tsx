@@ -19,6 +19,7 @@ describe('useEthTransactionStore', () => {
   const args = ['arg1'];
   const requiredConfirmations = 3;
   const requiresConfirmation = true;
+  const asset = undefined;
 
   it('creates transaction with default values', () => {
     useEthTransactionStore
@@ -27,6 +28,7 @@ describe('useEthTransactionStore', () => {
         contract,
         methodName,
         args,
+        asset,
         requiredConfirmations,
         requiresConfirmation
       );

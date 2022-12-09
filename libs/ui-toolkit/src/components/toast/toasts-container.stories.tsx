@@ -83,12 +83,16 @@ const usePrice = create<PriceStore>((set) => ({
 const Template: ComponentStory<typeof ToastsContainer> = (args) => {
   const setPrice = usePrice((state) => state.setPrice);
 
-  const { add, close, closeAll, update } = useToasts((state) => ({
-    add: state.add,
-    close: state.close,
-    closeAll: state.closeAll,
-    update: state.update,
-  }));
+  const { add, close, closeAll, update, remove, toasts } = useToasts(
+    (state) => ({
+      add: state.add,
+      close: state.close,
+      closeAll: state.closeAll,
+      update: state.update,
+      remove: state.remove,
+      toasts: state.toasts,
+    })
+  );
 
   useEffect(() => {
     const i = setInterval(() => {
@@ -97,7 +101,10 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
     return () => clearInterval(i);
   }, [setPrice]);
 
-  const addRandomToast = () => add(randomToast());
+  const addRandomToast = () => {
+    const t = randomToast();
+    add({ ...t, onClose: () => remove(t.id) });
+  };
   const addRandomToastWithAction = () => {
     const t = randomToast();
     const words = [
@@ -134,6 +141,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
           </div>
         </>
       ),
+      onClose: () => remove(t.id),
     });
   };
 
@@ -157,6 +165,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
     add({
       ...t,
       render: () => <ToastContent />,
+      onClose: () => remove(t.id),
     });
   };
 
@@ -186,7 +195,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
       >
         🧽
       </button>
-      <ToastsContainer {...args} />
+      <ToastsContainer {...args} toasts={toasts} />
     </div>
   );
 };

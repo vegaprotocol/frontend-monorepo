@@ -48,6 +48,7 @@ export const WithdrawalFeedback = ({
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const isAvailable =
     availableTimestamp === null || Date.now() > availableTimestamp;
+
   return (
     <div>
       <p className="mb-2">

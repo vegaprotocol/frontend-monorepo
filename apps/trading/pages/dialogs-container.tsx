@@ -12,6 +12,7 @@ import { WelcomeNoticeDialog } from '../components/welcome-notice';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
+
   return (
     <>
       <VegaConnectDialog connectors={Connectors} />

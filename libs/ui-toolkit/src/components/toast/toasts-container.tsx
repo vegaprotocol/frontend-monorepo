@@ -1,21 +1,15 @@
 import classNames from 'classnames';
-import { useCallback } from 'react';
 import { Toast } from './toast';
-import { useToasts } from './use-toasts';
 
 type ToastsContainerProps = {
+  toasts: Toast[];
   order: 'asc' | 'desc';
 };
 
-export const ToastsContainer = ({ order = 'asc' }: ToastsContainerProps) => {
-  const { toasts, remove } = useToasts();
-  const onClose = useCallback(
-    (id: string) => {
-      remove(id);
-    },
-    [remove]
-  );
-
+export const ToastsContainer = ({
+  toasts,
+  order = 'asc',
+}: ToastsContainerProps) => {
   return (
     <ul
       className={classNames(
@@ -25,13 +19,14 @@ export const ToastsContainer = ({ order = 'asc' }: ToastsContainerProps) => {
         }
       )}
     >
-      {toasts.map((toast) => {
-        return (
-          <li key={toast.id}>
-            <Toast onClose={onClose} {...toast} />
-          </li>
-        );
-      })}
+      {toasts &&
+        toasts.map((toast) => {
+          return (
+            <li key={toast.id}>
+              <Toast {...toast} />
+            </li>
+          );
+        })}
     </ul>
   );
 };
