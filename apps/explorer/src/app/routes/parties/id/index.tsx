@@ -15,6 +15,7 @@ import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
 import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
@@ -37,6 +38,8 @@ const accountTypeString: Record<Schema.AccountType, string> = {
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
+
+  useDocumentTitle(['Parties', party || '-']);
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
