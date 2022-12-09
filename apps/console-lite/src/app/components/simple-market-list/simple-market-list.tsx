@@ -13,7 +13,7 @@ import SimpleMarketToolbar from './simple-market-toolbar';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import { ConsoleLiteGrid } from '../console-lite-grid';
 import type { Market } from '@vegaprotocol/market-list';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { marketsWithCandlesProvider } from '@vegaprotocol/market-list';
 
 export type MarketWithPercentChange = Market & {

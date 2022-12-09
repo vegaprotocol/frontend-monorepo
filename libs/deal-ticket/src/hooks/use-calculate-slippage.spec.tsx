@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useCalculateSlippage } from './use-calculate-slippage';
 

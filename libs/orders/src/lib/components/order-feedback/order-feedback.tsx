@@ -1,12 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEventFieldsFragment } from '../../order-hooks/__generated__/OrderEvent';
 import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
-import {
-  OrderRejectionReasonMapping,
-  OrderStatusMapping,
-  OrderTimeInForceMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { Link } from '@vegaprotocol/ui-toolkit';
 
@@ -33,7 +28,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         )}
         <div>
           <p className={labelClass}>{t(`Status`)}</p>
-          <p>{t(`${OrderStatusMapping[order.status]}`)}</p>
+          <p>{t(`${Schema.OrderStatusMapping[order.status]}`)}</p>
         </div>
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
           <div>
@@ -86,12 +81,12 @@ const getRejectionReason = (order: OrderEventFieldsFragment): string | null => {
     case Schema.OrderStatus.STATUS_STOPPED:
       return t(
         `Your ${
-          OrderTimeInForceMapping[order.timeInForce]
+          Schema.OrderTimeInForceMapping[order.timeInForce]
         } order was not filled and it has been stopped`
       );
     case Schema.OrderStatus.STATUS_REJECTED:
       return order.rejectionReason
-        ? t(OrderRejectionReasonMapping[order.rejectionReason])
+        ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
         : null;
     default:
       return null;

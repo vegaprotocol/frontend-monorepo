@@ -7,6 +7,7 @@ interface RenderFetchedProps {
   error: Error | undefined;
   loading: boolean | undefined;
   className?: string;
+  errorMessage?: string;
 }
 
 export const RenderFetched = ({
@@ -14,6 +15,7 @@ export const RenderFetched = ({
   loading,
   children,
   className,
+  errorMessage = t('Error retrieving data'),
 }: RenderFetchedProps) => {
   if (loading) {
     return (
@@ -22,11 +24,7 @@ export const RenderFetched = ({
   }
 
   if (error) {
-    return (
-      <StatusMessage className={className}>
-        {t('Error retrieving data')}
-      </StatusMessage>
-    );
+    return <StatusMessage className={className}>{errorMessage}</StatusMessage>;
   }
 
   return children;

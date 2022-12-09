@@ -16,7 +16,7 @@ it('Renders all data for table', () => {
   const proposal = generateProposal();
   render(<ProposalChangeTable proposal={proposal} />);
   expect(screen.getByText('ID')).toBeInTheDocument();
-  expect(screen.getByText(proposal.id as string)).toBeInTheDocument();
+  expect(screen.getByText(proposal?.id as string)).toBeInTheDocument();
 
   expect(screen.getByText('State')).toBeInTheDocument();
   expect(screen.getByText('STATE_OPEN')).toBeInTheDocument();
@@ -24,7 +24,7 @@ it('Renders all data for table', () => {
   expect(screen.getByText('Closes on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal.terms.closingDatetime), DATE_FORMAT_DETAILED)
+      format(new Date(proposal?.terms.closingDatetime), DATE_FORMAT_DETAILED)
     )
   ).toBeInTheDocument();
 
@@ -32,23 +32,23 @@ it('Renders all data for table', () => {
   expect(
     screen.getByText(
       format(
-        new Date(proposal.terms.enactmentDatetime || 0),
+        new Date(proposal?.terms.enactmentDatetime || 0),
         DATE_FORMAT_DETAILED
       )
     )
   ).toBeInTheDocument();
 
   expect(screen.getByText('Proposed by')).toBeInTheDocument();
-  expect(screen.getByText(proposal.party.id)).toBeInTheDocument();
+  expect(screen.getByText(proposal?.party.id ?? '')).toBeInTheDocument();
 
   expect(screen.getByText('Proposed on')).toBeInTheDocument();
   expect(
-    screen.getByText(format(new Date(proposal.datetime), DATE_FORMAT_DETAILED))
+    screen.getByText(format(new Date(proposal?.datetime), DATE_FORMAT_DETAILED))
   ).toBeInTheDocument();
 
   expect(screen.getByText('Type')).toBeInTheDocument();
   expect(
-    screen.getByText(proposal.terms.change.__typename)
+    screen.getByText(proposal?.terms.change.__typename ?? '')
   ).toBeInTheDocument();
 });
 
@@ -64,7 +64,7 @@ it('Changes data based on if data is in future or past', () => {
   expect(screen.getByText('Closed on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal.terms.closingDatetime), DATE_FORMAT_DETAILED)
+      format(new Date(proposal?.terms.closingDatetime), DATE_FORMAT_DETAILED)
     )
   ).toBeInTheDocument();
 
@@ -72,7 +72,7 @@ it('Changes data based on if data is in future or past', () => {
   expect(
     screen.getByText(
       format(
-        new Date(proposal.terms.enactmentDatetime || 0),
+        new Date(proposal?.terms.enactmentDatetime || 0),
         DATE_FORMAT_DETAILED
       )
     )
@@ -94,7 +94,7 @@ it('Does not render enactment time for freeform proposal', () => {
   expect(
     screen.queryByText(
       format(
-        new Date(proposal.terms.enactmentDatetime || 0),
+        new Date(proposal?.terms.enactmentDatetime || 0),
         DATE_FORMAT_DETAILED
       )
     )

@@ -11,7 +11,7 @@ import type {
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
-import type { Schema as Types } from '@vegaprotocol/types';
+import type * as Types from '@vegaprotocol/types';
 import {
   AccountTypeMapping,
   DescriptionTransferTypeMapping,

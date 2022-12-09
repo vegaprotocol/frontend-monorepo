@@ -1,5 +1,5 @@
 import type { Account } from './accounts-data-provider';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 interface Props {
   accounts: Account[] | null;

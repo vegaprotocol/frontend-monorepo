@@ -1,5 +1,5 @@
 import { removeDecimal, t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';

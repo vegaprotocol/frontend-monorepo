@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { MarketModeValidationType } from '../constants';
 import { isMarketInAuction } from './is-market-in-auction';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';

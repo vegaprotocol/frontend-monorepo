@@ -20,7 +20,7 @@ import {
   useResizeObserver,
   formatNumberFixed,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
 import { Icon, Splash } from '@vegaprotocol/ui-toolkit';

@@ -4,7 +4,7 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 interface WithdrawFormContainerProps {
   partyId?: string;

@@ -15,7 +15,8 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -37,18 +38,18 @@ const ParticipationNotReached = () => {
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
-  const { state } = proposal;
+  const state = proposal?.state;
   const { willPassByTokenVote, majorityMet, participationMet } =
     useVoteInformation({
       proposal,
     });
   const { t } = useTranslation();
   const { voteState } = useUserVote(
-    proposal.id,
-    proposal.votes.yes.votes,
-    proposal.votes.no.votes
+    proposal?.id ?? '',
+    proposal?.votes.yes.votes ?? null,
+    proposal?.votes.no.votes ?? null
   );
 
   let proposalStatus: ReactNode;
@@ -62,10 +63,10 @@ export const ProposalsListItemDetails = ({
           {t('voteState_Enacted')} <Icon name={'tick'} />
         </>
       );
-      voteDetails = proposal.terms.enactmentDatetime && (
+      voteDetails = proposal?.terms.enactmentDatetime && (
         <>
           {format(
-            new Date(proposal.terms.enactmentDatetime),
+            new Date(proposal?.terms.enactmentDatetime),
             DATE_FORMAT_DETAILED
           )}
         </>
@@ -78,10 +79,10 @@ export const ProposalsListItemDetails = ({
           {t('voteState_Passed')} <Icon name={'tick'} />
         </>
       );
-      voteDetails = proposal.terms.change.__typename !== 'NewFreeform' && (
+      voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
-          {proposal.terms.enactmentDatetime &&
+          {proposal?.terms.enactmentDatetime &&
             format(
               new Date(proposal.terms.enactmentDatetime),
               DATE_FORMAT_DETAILED
@@ -96,10 +97,10 @@ export const ProposalsListItemDetails = ({
           {t('voteState_WaitingForNodeVote')} <Icon name={'time'} />
         </>
       );
-      voteDetails = proposal.terms.change.__typename !== 'NewFreeform' && (
+      voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
-          {proposal.terms.enactmentDatetime &&
+          {proposal?.terms.enactmentDatetime &&
             format(
               new Date(proposal.terms.enactmentDatetime),
               DATE_FORMAT_DETAILED
@@ -126,7 +127,7 @@ export const ProposalsListItemDetails = ({
         )) || (
           <>
             {formatDistanceToNowStrict(
-              new Date(proposal.terms.closingDatetime)
+              new Date(proposal?.terms.closingDatetime)
             )}{' '}
             {t('left to vote')}
           </>
@@ -163,7 +164,7 @@ export const ProposalsListItemDetails = ({
           <Icon name={'warning-sign'} />
         </>
       );
-      voteStatus = proposal.rejectionReason && (
+      voteStatus = proposal?.rejectionReason && (
         <>{t(ProposalRejectionReasonMapping[proposal.rejectionReason])}</>
       );
       break;
@@ -194,7 +195,7 @@ export const ProposalsListItemDetails = ({
           {voteStatus}
         </div>
       )}
-      {proposal.id && (
+      {proposal?.id && (
         <div className="col-start-2 row-start-2 justify-self-end">
           <Link to={`${Routes.PROPOSALS}/${proposal.id}`}>
             <Button data-testid="view-proposal-btn" size="sm">

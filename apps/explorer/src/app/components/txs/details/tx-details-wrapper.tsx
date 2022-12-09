@@ -13,6 +13,7 @@ import { TxContent } from '../../../routes/txs/id/tx-content';
 import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
 import get from 'lodash/get';
+import { TxDetailsOrderAmend } from './tx-order-amend';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -75,6 +76,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsOrder;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
+    case 'Amend Order':
+      return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
       return TxDetailsHeartbeat;
     case 'Amend LiquidityProvision Order':

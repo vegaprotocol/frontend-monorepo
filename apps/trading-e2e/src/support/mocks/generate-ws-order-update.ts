@@ -6,7 +6,7 @@ import type {
 } from '@vegaprotocol/orders';
 
 import type { onMessage } from '@vegaprotocol/cypress';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 let sendOrderUpdate: (data: OrdersUpdateSubscription) => void;
 const getOnOrderUpdate = () => {

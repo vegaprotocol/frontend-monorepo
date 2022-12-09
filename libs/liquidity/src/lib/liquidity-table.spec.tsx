@@ -1,6 +1,6 @@
 import LiquidityTable from './liquidity-table';
 import { act, render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 
 const singleRow = {

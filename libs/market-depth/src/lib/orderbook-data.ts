@@ -3,9 +3,9 @@ import uniqBy from 'lodash/uniqBy';
 import reverse from 'lodash/reverse';
 import cloneDeep from 'lodash/cloneDeep';
 import { VolumeType } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { MarketData } from '@vegaprotocol/market-list';
-import type { PriceLevelFieldsFragment } from './__generated___/MarketDepth';
+import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 export interface CumulativeVol {
   bid: number;
   relativeBid?: number;

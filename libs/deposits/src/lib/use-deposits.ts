@@ -4,7 +4,7 @@ import { getNodes, getEvents } from '@vegaprotocol/react-helpers';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEffect, useMemo } from 'react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   useDepositsQuery,
   DepositEventDocument,

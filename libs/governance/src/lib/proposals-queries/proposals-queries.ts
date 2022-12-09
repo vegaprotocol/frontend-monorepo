@@ -1,62 +1,43 @@
-import compact from 'lodash/compact';
-import filter from 'lodash/filter';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
-import { Schema } from '@vegaprotocol/types';
+import type { PartialDeep } from 'type-fest';
+import * as Schema from '@vegaprotocol/types';
+import type { NodeConnection, NodeEdge } from '@vegaprotocol/react-helpers';
+import { getNodes } from '@vegaprotocol/react-helpers';
 
-type Proposal = {
-  __typename: 'Proposal';
-  id: string | null;
-  state: Schema.ProposalState;
-  terms: {
-    enactmentDatetime: string | null;
-    closingDatetime: string;
-  };
-};
-type ProposalEdge = {
-  node: Proposal;
-};
-type ProposalEdges = {
-  edges: (ProposalEdge | null)[] | null;
-};
-type ProposalsConnection = {
-  proposalsConnection: ProposalEdges | null;
-};
-
-export const getProposals = (data?: ProposalsConnection) => {
-  const proposals = data?.proposalsConnection?.edges
-    ?.filter((e) => e?.node)
-    .map((e) => e?.node);
-  return proposals ? (proposals as Proposal[]) : [];
-};
+type Proposal = PartialDeep<Schema.Proposal>;
 
 const orderByDate = (arr: Proposal[]) =>
   orderBy(
     arr,
     [
-      (p) => new Date(p.terms.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
-      (p) => new Date(p.terms.closingDatetime).getTime(),
+      (p) => new Date(p?.terms?.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
+      (p) => new Date(p?.terms?.closingDatetime).getTime(),
       (p) => p.id,
     ],
     ['desc', 'desc', 'desc']
   );
 
-export const getNotRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getProposals(data);
+export function getNotRejectedProposals<T extends Proposal>(
+  data?: NodeConnection<NodeEdge<T>> | null
+): T[] {
   return flow([
-    compact,
-    (arr: Proposal[]) =>
-      filter(arr, ({ state }) => state !== Schema.ProposalState.STATE_REJECTED),
+    (data) =>
+      getNodes<Proposal>(data?.proposalsConnection, (p) =>
+        p ? p?.state !== Schema.ProposalState.STATE_REJECTED : false
+      ),
     orderByDate,
-  ])(proposals);
-};
+  ])(data);
+}
 
-export const getRejectedProposals = (data?: ProposalsConnection) => {
-  const proposals = getProposals(data);
+export function getRejectedProposals<T extends Proposal>(
+  data?: NodeConnection<NodeEdge<Proposal>> | null
+): T[] {
   return flow([
-    compact,
-    (arr: Proposal[]) =>
-      filter(arr, ({ state }) => state === Schema.ProposalState.STATE_REJECTED),
+    (data) =>
+      getNodes<Proposal>(data?.proposalsConnection, (p) =>
+        p ? p?.state === Schema.ProposalState.STATE_REJECTED : false
+      ),
     orderByDate,
-  ])(proposals);
-};
+  ])(data);
+}

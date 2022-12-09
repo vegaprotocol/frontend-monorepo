@@ -13,7 +13,7 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
@@ -46,14 +46,14 @@ const Party = () => {
     filters,
   });
 
-  const { data } = useExplorerPartyAssetsQuery({
+  const partyRes = useExplorerPartyAssetsQuery({
     // Don't cache data for this query, party information can move quite quickly
     fetchPolicy: 'network-only',
     variables: { partyId: partyId },
     skip: !party,
   });
 
-  const p = data?.partiesConnection?.edges[0].node;
+  const p = partyRes.data?.partiesConnection?.edges[0].node;
 
   const header = p?.id ? (
     <PageHeader
@@ -133,7 +133,7 @@ const Party = () => {
       >
         {t('Party')}
       </h1>
-      {data ? (
+      {partyRes.data ? (
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
