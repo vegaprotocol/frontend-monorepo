@@ -4,6 +4,7 @@ export default {
   VALIDATORS: '/validators',
   REWARDS: '/rewards',
   PROPOSALS: '/proposals',
+  PROPOSALS_REJECTED: '/proposals/rejected',
   NOT_PERMITTED: '/not-permitted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
