@@ -225,13 +225,16 @@ export const LiquidityViewContainer = ({
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            <Link to={`/markets/${marketId}`}>
-              <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
-                {`${
-                  marketProvision?.market?.tradableInstrument.instrument.name
-                } ${t('liquidity provision')}`}
-              </UiToolkitLink>
-            </Link>
+            marketProvision?.market?.tradableInstrument.instrument.name &&
+            marketId && (
+              <Link to={`/markets/${marketId}`}>
+                <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
+                  {`${
+                    marketProvision?.market?.tradableInstrument.instrument.name
+                  } ${t('liquidity provision')}`}
+                </UiToolkitLink>
+              </Link>
+            )
           }
         >
           <HeaderStat
