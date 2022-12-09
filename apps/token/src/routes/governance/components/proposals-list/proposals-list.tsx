@@ -24,7 +24,6 @@ interface SortedProposalsProps {
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
-  console.log(proposals);
   const sortedProposals = proposals.reduce(
     (acc: SortedProposalsProps, proposal) => {
       if (isFuture(new Date(proposal?.terms.closingDatetime))) {
