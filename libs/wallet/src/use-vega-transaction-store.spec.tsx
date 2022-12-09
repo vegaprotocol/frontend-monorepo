@@ -1,8 +1,4 @@
-import {
-  useVegaTransactionStore,
-  useVegaWalletTransactionUpdater,
-  useVegaWalletTransactionManager,
-} from './use-vega-transaction-store';
+import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './use-vega-transaction';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import type {
@@ -14,6 +10,7 @@ jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
   determineId: jest.fn((v) => v),
 }));
+
 describe('useVegaTransactionStore', () => {
   const orderCancellation: OrderCancellationBody = { orderCancellation: {} };
   const withdrawSubmission: WithdrawSubmissionBody = {
@@ -92,28 +89,8 @@ describe('useVegaTransactionStore', () => {
     useVegaTransactionStore
       .getState()
       .updateWithdrawal(withdrawal, withdrawalApproval);
-    const transction = useVegaTransactionStore.getState().transactions[0];
-    expect(transction?.withdrawalApproval).toEqual(withdrawalApproval);
-    expect(transction?.withdrawal).toEqual(withdrawal);
-  });
-});
-
-describe('useVegaWalletTransactionManager', () => {
-  it('sendTx of first pending transaction', () => {
-    expect(true).toEqual(false);
-  });
-});
-
-describe('useVegaWalletTransactionUpdater', () => {
-  it('calls updateOrder on order bus event', () => {
-    expect(true).toEqual(false);
-  });
-
-  it('calls updateWithdrawal on withdrawal bus event', () => {
-    expect(true).toEqual(false);
-  });
-
-  it('calls updateTransaction on transaction event', () => {
-    expect(true).toEqual(false);
+    const transaction = useVegaTransactionStore.getState().transactions[0];
+    expect(transaction?.withdrawalApproval).toEqual(withdrawalApproval);
+    expect(transaction?.withdrawal).toEqual(withdrawal);
   });
 });
