@@ -3,9 +3,8 @@ import type { BlockExplorerTransactionResult } from '../../../routes/types/block
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
-import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 import { NodeLink } from '../../links';
+import GovernanceAssetBalance from '../../asset-balance/governance-asset-balance';
 
 interface TxDetailsDelegateProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -17,7 +16,10 @@ interface TxDetailsDelegateProps {
  * An order type is probably the most interesting type we'll see! Except until:
  * https://github.com/vegaprotocol/vega/issues/6832 is complete, we can only
  * fetch the actual transaction and not more details about the order. So for now
- * this view is very basic
+ * this view is very basic.
+ *
+ * The signature can be turned in to an id with txSignatureToDeterministicId but
+ * for now there are no details to fetch.
  */
 export const TxDetailsDelegate = ({
   txData,
@@ -26,12 +28,6 @@ export const TxDetailsDelegate = ({
 }: TxDetailsDelegateProps) => {
   if (!txData || !txData.command.delegateSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
-  }
-  let deterministicId = '';
-
-  const sig = txData?.signature?.value;
-  if (sig) {
-    deterministicId = txSignatureToDeterministicId(sig);
   }
 
   return (
@@ -45,7 +41,11 @@ export const TxDetailsDelegate = ({
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Amount')}</TableCell>
-        <TableCell>{txData?.command.delegateSubmission.amount}</TableCell>
+        <TableCell>
+          <GovernanceAssetBalance
+            price={txData?.command.delegateSubmission.amount}
+          />
+        </TableCell>
       </TableRow>
     </TableWithTbody>
   );
