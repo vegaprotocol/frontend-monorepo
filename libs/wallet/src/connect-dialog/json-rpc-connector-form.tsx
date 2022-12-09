@@ -63,7 +63,6 @@ const Connecting = ({
   appChainId: string;
   reset: () => void;
 }) => {
-  console.log('status', status);
   if (status === Status.Error) {
     return (
       <Error

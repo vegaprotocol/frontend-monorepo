@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import {
@@ -5,6 +6,7 @@ import {
   WalletError,
   useVegaWallet,
   useVegaWalletDialogStore,
+  ClientErrors,
 } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
@@ -12,7 +14,6 @@ import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
 import * as Schema from '@vegaprotocol/types';
 import { Button, Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { useCallback, useMemo } from 'react';
 
 export interface DealTicketManagerProps {
   market: MarketDealTicket;
@@ -36,7 +37,10 @@ const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
   return useMemo(() => {
     const { error } = transaction;
     if (error) {
-      if (error instanceof WalletError && error.code === 100) {
+      if (
+        error instanceof WalletError &&
+        error.code === ClientErrors.NO_SERVICE.code
+      ) {
         return (
           <ul data-testid="connectors-list" className="mb-6">
             <li className="mb-2 last:mb-0" data-testid={transaction.status}>
