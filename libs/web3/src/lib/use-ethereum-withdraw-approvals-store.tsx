@@ -13,7 +13,7 @@ export enum ApprovalStatus {
   Error = 'Error',
   Ready = 'Ready',
 }
-interface EthWithdrawalApprovalState {
+export interface EthWithdrawalApprovalState {
   id: number;
   createdAt: Date;
   status: ApprovalStatus;
