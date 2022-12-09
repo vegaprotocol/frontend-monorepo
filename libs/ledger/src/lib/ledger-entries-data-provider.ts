@@ -98,7 +98,6 @@ const getPageInfo = (responseData: LedgerEntriesQuery): PageInfo | null =>
 
 const ledgerEntriesOnlyProvider = makeDataProvider({
   query: LedgerEntriesDocument,
-  subscriptionQuery: LedgerEntriesDocument,
   getData,
   getDelta: getData,
   update,
@@ -134,18 +133,15 @@ interface Props {
   partyId: string;
   filter?: Filter;
   gridRef: RefObject<AgGridReact>;
-  scrolledToTop: RefObject<boolean>;
 }
 
 export const useLedgerEntriesDataProvider = ({
   partyId,
   filter,
   gridRef,
-  scrolledToTop,
 }: Props) => {
   const dataRef = useRef<(AggregatedLedgerEntriesEdge | null)[] | null>(null);
   const totalCountRef = useRef<number>();
-  const newRows = useRef(0);
 
   const variables = useMemo<LedgerEntriesQueryVariables>(
     () => ({
@@ -155,33 +151,8 @@ export const useLedgerEntriesDataProvider = ({
     [partyId, filter]
   );
 
-  const addNewRows = useCallback(() => {
-    if (newRows.current === 0) {
-      return;
-    }
-    if (totalCountRef.current !== undefined) {
-      totalCountRef.current += newRows.current;
-    }
-    newRows.current = 0;
-    gridRef.current?.api?.refreshInfiniteCache();
-  }, [gridRef]);
-
   const update = useCallback(
-    ({
-      data,
-      delta,
-    }: {
-      data: (AggregatedLedgerEntriesEdge | null)[] | null;
-      delta?: AggregatedLedgerEntriesEdge[];
-    }) => {
-      if (dataRef.current?.length && delta?.length && !scrolledToTop.current) {
-        const createdAt = dataRef.current?.[0]?.node.vegaTime;
-        if (createdAt) {
-          newRows.current += (delta || []).filter(
-            (trade) => trade.node.vegaTime > createdAt
-          ).length;
-        }
-      }
+    ({ data }: { data: (AggregatedLedgerEntriesEdge | null)[] | null }) => {
       const avoidRerender = !!(
         (dataRef.current?.length && data?.length) ||
         (!dataRef.current?.length && !data?.length)
@@ -190,7 +161,7 @@ export const useLedgerEntriesDataProvider = ({
       gridRef.current?.api?.refreshInfiniteCache();
       return avoidRerender;
     },
-    [gridRef, scrolledToTop]
+    [gridRef]
   );
 
   const insert = useCallback(
@@ -218,10 +189,9 @@ export const useLedgerEntriesDataProvider = ({
   totalCountRef.current = totalCount;
 
   const getRows = makeInfiniteScrollGetRows<AggregatedLedgerEntriesEdge>(
-    newRows,
     dataRef,
     totalCountRef,
     load
   );
-  return { loading, error, data, addNewRows, getRows };
+  return { loading, error, data, getRows };
 };

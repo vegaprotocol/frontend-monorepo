@@ -1,11 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type { Schema } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type {
-  BodyScrollEndEvent,
-  BodyScrollEvent,
-  FilterChangedEvent,
-} from 'ag-grid-community';
+import type { FilterChangedEvent } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { useRef, useState } from 'react';
 import { useLedgerEntriesDataProvider } from './ledger-entries-data-provider';
@@ -20,26 +16,13 @@ export interface Filter {
 type LedgerManagerProps = { partyId: string };
 export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const scrolledToTop = useRef(true);
   const [filter, setFilter] = useState<Filter | undefined>();
 
-  const { data, error, loading, addNewRows, getRows } =
-    useLedgerEntriesDataProvider({
-      partyId,
-      filter,
-      gridRef,
-      scrolledToTop,
-    });
-
-  const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
-    if (event.top === 0) {
-      addNewRows();
-    }
-  };
-
-  const onBodyScroll = (event: BodyScrollEvent) => {
-    scrolledToTop.current = event.top <= 0;
-  };
+  const { data, error, loading, getRows } = useLedgerEntriesDataProvider({
+    partyId,
+    filter,
+    gridRef,
+  });
 
   const onFilterChanged = (event: FilterChangedEvent) => {
     const updatedFilter = event.api.getFilterModel();
@@ -56,8 +39,6 @@ export const LedgerManager = ({ partyId }: LedgerManagerProps) => {
         ref={gridRef}
         rowModelType="infinite"
         datasource={{ getRows }}
-        onBodyScrollEnd={onBodyScrollEnd}
-        onBodyScroll={onBodyScroll}
         onFilterChanged={onFilterChanged}
       />
       <div className="pointer-events-none absolute inset-0 top-5">
