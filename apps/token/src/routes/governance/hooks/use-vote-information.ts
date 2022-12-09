@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
-import type { Proposal_proposal } from '../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../proposal/__generated__/Proposal';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useVoteInformation = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const {
     appState: { totalSupply, decimals },
@@ -54,19 +55,19 @@ export const useVoteInformation = ({
       : new BigNumber(100);
 
     const noTokens = new BigNumber(
-      addDecimal(proposal.votes.no.totalTokens, decimals)
+      addDecimal(proposal?.votes.no.totalTokens ?? 0, decimals)
     );
 
-    const noEquityLikeShareWeight = !proposal.votes.no
+    const noEquityLikeShareWeight = !proposal?.votes.no
       .totalEquityLikeShareWeight
       ? new BigNumber(0)
       : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight);
 
     const yesTokens = new BigNumber(
-      addDecimal(proposal.votes.yes.totalTokens, decimals)
+      addDecimal(proposal?.votes.yes.totalTokens ?? 0, decimals)
     );
 
-    const yesEquityLikeShareWeight = !proposal.votes.yes
+    const yesEquityLikeShareWeight = !proposal?.votes.yes
       .totalEquityLikeShareWeight
       ? new BigNumber(0)
       : new BigNumber(proposal.votes.yes.totalEquityLikeShareWeight);
@@ -159,10 +160,10 @@ export const useVoteInformation = ({
     };
   }, [
     decimals,
-    proposal.votes.no.totalEquityLikeShareWeight,
-    proposal.votes.no.totalTokens,
-    proposal.votes.yes.totalEquityLikeShareWeight,
-    proposal.votes.yes.totalTokens,
+    proposal?.votes.no.totalEquityLikeShareWeight,
+    proposal?.votes.no.totalTokens,
+    proposal?.votes.yes.totalEquityLikeShareWeight,
+    proposal?.votes.yes.totalTokens,
     requiredMajority,
     requiredMajorityLP,
     requiredParticipation,
@@ -187,10 +188,10 @@ export const useVoteInformation = ({
     noEquityLikeShareWeight,
     yesTokens,
     yesEquityLikeShareWeight,
-    yesVotes: new BigNumber(proposal.votes.yes.totalNumber),
-    noVotes: new BigNumber(proposal.votes.no.totalNumber),
-    totalVotes: new BigNumber(proposal.votes.yes.totalNumber).plus(
-      proposal.votes.no.totalNumber
+    yesVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0),
+    noVotes: new BigNumber(proposal?.votes.no.totalNumber ?? 0),
+    totalVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0).plus(
+      proposal?.votes.no.totalNumber ?? 0
     ),
     requiredMajorityPercentage,
     requiredMajorityLPPercentage,

@@ -2,7 +2,7 @@ import { waitFor, fireEvent, render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';

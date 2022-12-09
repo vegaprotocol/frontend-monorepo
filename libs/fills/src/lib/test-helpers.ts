@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Trade } from './fills-data-provider';
 
 const { MarketState, MarketTradingMode } = Schema;

@@ -11,7 +11,7 @@ import {
   t,
   toBigNum,
 } from '@vegaprotocol/react-helpers';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,

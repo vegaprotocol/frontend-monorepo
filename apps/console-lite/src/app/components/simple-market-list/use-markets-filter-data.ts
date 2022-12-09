@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { MarketWithCandles } from '@vegaprotocol/market-list';
 import type { RouterParams } from './simple-market-list';
 

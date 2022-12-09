@@ -1,5 +1,5 @@
 import type { MarketPositionsQuery } from '@vegaprotocol/deal-ticket';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const generateMarketPositions = (): MarketPositionsQuery => {
   return {

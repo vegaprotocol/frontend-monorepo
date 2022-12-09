@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
@@ -40,13 +40,13 @@ jest.mock('../list-asset', () => ({
 
 it('Renders with data-testid', async () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal as Proposal_proposal} />);
+  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
   expect(await screen.findByTestId('proposal')).toBeInTheDocument();
 });
 
 it('renders each section', async () => {
   const proposal = generateProposal();
-  render(<Proposal proposal={proposal as Proposal_proposal} />);
+  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-terms-json')).toBeInTheDocument();
@@ -72,6 +72,6 @@ it('renders whitelist section if proposal is new asset and source is erc20', asy
       },
     },
   });
-  render(<Proposal proposal={proposal as Proposal_proposal} />);
+  render(<Proposal proposal={proposal as ProposalQuery['proposal']} />);
   expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });

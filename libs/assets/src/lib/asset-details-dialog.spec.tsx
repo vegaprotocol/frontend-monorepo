@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { AssetDetailsDialog } from './asset-details-dialog';
 import { AssetDetail, testId } from './asset-details-table';
 import { AssetsDocument } from './__generated__/Assets';

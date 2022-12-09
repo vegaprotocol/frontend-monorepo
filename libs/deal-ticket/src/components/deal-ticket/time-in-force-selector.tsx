@@ -5,7 +5,7 @@ import {
   Select,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';

@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import * as dataHook from '../use-request-close-position-data';
 import { Requested } from './requested';
 

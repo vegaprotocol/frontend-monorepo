@@ -1,6 +1,6 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketInfoQuery } from './__generated___/MarketInfo';
-import { MarketInfoDocument } from './__generated___/MarketInfo';
+import type { MarketInfoQuery } from './__generated__/MarketInfo';
+import { MarketInfoDocument } from './__generated__/MarketInfo';
 
 export const marketInfoDataProvider = makeDataProvider<
   MarketInfoQuery,

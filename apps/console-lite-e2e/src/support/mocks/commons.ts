@@ -1,5 +1,5 @@
 import type { Market } from '@vegaprotocol/market-list';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 
 export const protoCandles = [

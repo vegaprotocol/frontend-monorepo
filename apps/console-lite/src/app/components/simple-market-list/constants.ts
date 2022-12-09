@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import colors from 'tailwindcss/colors';
 import type { Market } from '@vegaprotocol/market-list';
 import { IS_MARKET_TRADABLE } from '../../constants';

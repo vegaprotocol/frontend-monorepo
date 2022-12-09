@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const isMarketInAuction = (market: {
   data: {

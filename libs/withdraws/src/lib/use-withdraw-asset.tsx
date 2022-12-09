@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/react';
 import type { Asset } from '@vegaprotocol/assets';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
