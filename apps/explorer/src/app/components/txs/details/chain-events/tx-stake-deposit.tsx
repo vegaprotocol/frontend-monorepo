@@ -6,7 +6,6 @@ import {
   EthExplorerLink,
   EthExplorerLinkTypes,
 } from '../../../links/eth-explorer-link/eth-explorer-link';
-import type * as Schema from '@vegaprotocol/types';
 
 interface TxDetailsChainEventStakeDepositProps {
   deposit: components['schemas']['vegaStakeDeposited'];
