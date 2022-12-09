@@ -68,6 +68,13 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       return true;
     } catch (err) {
       console.error(err);
+      if (err instanceof WalletError && err.code === 100) {
+        setPubKeys(null);
+        setPubKey(null);
+        connector.current = null;
+        LocalStorage.removeItem(WALLET_KEY);
+        return true;
+      }
       return false;
     }
   }, []);
