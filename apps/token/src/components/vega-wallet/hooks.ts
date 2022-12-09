@@ -11,7 +11,7 @@ import { BigNumber } from '../../lib/bignumber';
 import type { WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   isAssetTypeERC20,
   removePaginationWrapper,
