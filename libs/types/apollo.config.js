@@ -13,6 +13,7 @@ module.exports = {
     ],
     excludes: [
       '../../apps/explorer/**',
+      '../../apps/trading/**',
       '**/generic-data-provider.ts',
       '**/__generated___/*',
       '../../libs/accounts/**',
