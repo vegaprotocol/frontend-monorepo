@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { useEffect } from 'react';
 import type * as Schema from '@vegaprotocol/types';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
@@ -68,8 +69,11 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
         event.target.value &&
         new Date(event.target.value).toISOString().replace('Z', '000000Z'),
     });
-    props?.filterChangedCallback();
   };
+
+  useEffect(() => {
+    props?.filterChangedCallback();
+  }, [value, props]);
 
   const start = (value.start && formatForInput(new Date(value.start))) || '';
   const end = (value.end && formatForInput(new Date(value.end))) || '';
