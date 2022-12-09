@@ -116,10 +116,10 @@ export const useOrderListData = ({
   totalCountRef.current = totalCount;
 
   const getRows = makeInfiniteScrollGetRows<OrderEdge>(
-    newRows,
     dataRef,
     totalCountRef,
-    load
+    load,
+    newRows
   );
   return { loading, error, data, addNewRows, getRows };
 };
