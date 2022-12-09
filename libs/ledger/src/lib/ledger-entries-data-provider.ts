@@ -10,7 +10,7 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 import type { AgGridReact } from 'ag-grid-react';
 import produce from 'immer';
 import orderBy from 'lodash/orderBy';
