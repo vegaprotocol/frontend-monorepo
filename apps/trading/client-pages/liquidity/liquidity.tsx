@@ -31,7 +31,7 @@ import { Link, useParams } from 'react-router-dom';
 export const Liquidity = () => {
   const params = useParams();
   const marketId = params.marketId;
-  return <LiquidityViewContainer marketId={marketId} showTitle={true} />;
+  return <LiquidityViewContainer marketId={marketId} />;
 };
 
 export const LiquidityContainer = ({
@@ -122,10 +122,8 @@ export const LiquidityContainer = ({
 
 export const LiquidityViewContainer = ({
   marketId,
-  showTitle = false,
 }: {
   marketId: string | undefined;
-  showTitle?: boolean;
 }) => {
   const { pubKey } = useVegaWallet();
   const gridRef = useRef<AgGridReact | null>(null);
@@ -227,15 +225,13 @@ export const LiquidityViewContainer = ({
       <div className="h-full grid grid-rows-[min-content_1fr]">
         <Header
           title={
-            showTitle && (
-              <Link to={`/markets/${marketId}`}>
-                <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
-                  {`${
-                    marketProvision?.market?.tradableInstrument.instrument.name
-                  } ${t('liquidity provision')}`}
-                </UiToolkitLink>
-              </Link>
-            )
+            <Link to={`/markets/${marketId}`}>
+              <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
+                {`${
+                  marketProvision?.market?.tradableInstrument.instrument.name
+                } ${t('liquidity provision')}`}
+              </UiToolkitLink>
+            </Link>
           }
         >
           <HeaderStat
