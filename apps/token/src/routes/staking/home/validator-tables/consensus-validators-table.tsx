@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,21 +26,86 @@ import {
   VotingPowerRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, RowHeightParams } from 'ag-grid-community';
 import type { ValidatorsTableProps } from './shared';
-import { formatNumber, toBigNum } from '@vegaprotocol/react-helpers';
+import {
+  formatNumber,
+  formatNumberPercentage,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
 
 interface CanonisedConsensusNodeProps {
   id: string;
+  [ValidatorFields.RANKING_INDEX]: number;
   [ValidatorFields.VALIDATOR]: {
     avatarUrl: string | null | undefined;
     name: string;
   };
   [ValidatorFields.STAKE]: string;
-  [ValidatorFields.STAKE_SHARE]: string;
-  [ValidatorFields.PENDING_STAKE]: string;
   [ValidatorFields.NORMALISED_VOTING_POWER]: string;
+  [ValidatorFields.UNNORMALISED_VOTING_POWER]: string | null;
+  [ValidatorFields.STAKE_SHARE]: string;
+  [ValidatorFields.STAKED_BY_DELEGATES]: string;
+  [ValidatorFields.STAKED_BY_OPERATOR]: string;
+  [ValidatorFields.PERFORMANCE_SCORE]: string;
+  [ValidatorFields.PERFORMANCE_PENALTY]: string;
+  [ValidatorFields.OVERSTAKED_AMOUNT]: string;
+  [ValidatorFields.OVERSTAKING_PENALTY]: string;
+  [ValidatorFields.TOTAL_PENALTIES]: string;
+  [ValidatorFields.PENDING_STAKE]: string;
 }
+
+const getRowHeight = (params: RowHeightParams) => {
+  if (params.data.placeholderForTopThird) {
+    // Note: this value will change if the height of the top third cell renderer changes
+    return 138;
+  }
+  return 52;
+};
+
+const TopThirdCellRenderer = (
+  // @ts-ignore no exported type that matches params from AG-grid
+  params,
+  setHideTopThird: Dispatch<SetStateAction<boolean>>
+) => {
+  const { t } = useTranslation();
+
+  return (
+    <a
+      href="/"
+      onClick={(e) => {
+        e.preventDefault();
+        setHideTopThird(false);
+      }}
+      className="grid grid-cols-[60px_1fr] w-full h-full py-4 px-0 text-sm text-white text-center overflow-scroll"
+    >
+      <div className="text-xs text-left px-3">
+        {params?.data?.rankingDisplay}
+      </div>
+      <div className="whitespace-normal px-3">
+        <div className="mb-4">
+          <Button
+            data-testid="show-all-validators"
+            rightIcon="arrow-right"
+            className="inline-flex items-center"
+          >
+            {t('Reveal top validators')}
+          </Button>
+        </div>
+        <p className="font-semibold text-white mb-0">
+          {t(
+            'Validators with too great a stake share will have the staking rewards for their delegators penalised.'
+          )}
+        </p>
+        <p>
+          {t(
+            'To avoid penalties and increase decentralisation of the network, delegate to validators below.'
+          )}
+        </p>
+      </div>
+    </a>
+  );
+};
 
 export const ConsensusValidatorsTable = ({
   data,
@@ -147,24 +213,86 @@ export const ConsensusValidatorsTable = ({
     // 1/3 of the validators and we really want people not to stake any more to
     // that group, because we want to make it require as many difference
     // validators to collude as possible to halt the network, so we hide them.
-    const removeTopThirdOfStakeScores = canonisedNodes.reduce(
+    const { topThird, remaining } = canonisedNodes.reduce(
       (acc, node) => {
-        if (acc.cumulativeScore < 3333) {
-          acc.cumulativeScore += Number(
+        if (acc.cumulativeScore < 100 / 3) {
+          acc.cumulativeScore += parseFloat(
             node[ValidatorFields.NORMALISED_VOTING_POWER]
           );
+          acc.topThird.push(node);
           return acc;
         }
         acc.remaining.push(node);
         return acc;
       },
-      { remaining: [], cumulativeScore: 0 } as {
+      { topThird: [], remaining: [], cumulativeScore: 0 } as {
+        topThird: CanonisedConsensusNodeProps[];
         remaining: CanonisedConsensusNodeProps[];
         cumulativeScore: number;
       }
     );
 
-    return removeTopThirdOfStakeScores.remaining;
+    // We need to combine the top third of validators into a single node, this
+    // way the combined values can be passed to AG grid so that the combined cell's
+    // values are correct for ordering.
+    const combinedTopThird = topThird.reduce((acc, node) => {
+      const {
+        [ValidatorFields.STAKE]: stake,
+        [ValidatorFields.STAKE_SHARE]: stakeShare,
+        [ValidatorFields.PENDING_STAKE]: pendingStake,
+        [ValidatorFields.NORMALISED_VOTING_POWER]: normalisedVotingPower,
+        [ValidatorFields.TOTAL_PENALTIES]: totalPenalties,
+      } = node;
+
+      const {
+        [ValidatorFields.STAKE]: accStake,
+        [ValidatorFields.STAKE_SHARE]: accStakeShare,
+        [ValidatorFields.PENDING_STAKE]: accPendingStake,
+        [ValidatorFields.NORMALISED_VOTING_POWER]: accNormalisedVotingPower,
+        [ValidatorFields.TOTAL_PENALTIES]: accTotalPenalties,
+      } = acc;
+
+      return {
+        ...acc,
+        [ValidatorFields.STAKE]: formatNumber(
+          toBigNum(accStake, decimals).plus(toBigNum(stake, decimals)),
+          2
+        ),
+        [ValidatorFields.STAKE_SHARE]: formatNumberPercentage(
+          new BigNumber(parseFloat(accStakeShare)).plus(
+            new BigNumber(parseFloat(stakeShare))
+          ),
+          2
+        ),
+        [ValidatorFields.PENDING_STAKE]: formatNumber(
+          toBigNum(accPendingStake, decimals).plus(
+            toBigNum(pendingStake, decimals)
+          ),
+          2
+        ),
+        [ValidatorFields.NORMALISED_VOTING_POWER]: formatNumberPercentage(
+          new BigNumber(parseFloat(accNormalisedVotingPower)).plus(
+            new BigNumber(parseFloat(normalisedVotingPower))
+          ),
+          2
+        ),
+        [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
+          new BigNumber(parseFloat(accTotalPenalties)).plus(
+            new BigNumber(parseFloat(totalPenalties))
+          ),
+          2
+        ),
+      };
+    });
+
+    return [
+      {
+        placeholderForTopThird: true,
+        rankingDisplay: topThird.length === 1 ? '1' : `1 - ${topThird.length}`,
+        ...combinedTopThird,
+      },
+      ...remaining,
+    ];
   }, [data, decimals, hideTopThird, previousEpochData, totalStake]);
 
   const ConsensusTable = forwardRef<AgGridReact>((_, gridRef) => {
@@ -173,7 +301,7 @@ export const ConsensusValidatorsTable = ({
         {
           field: ValidatorFields.RANKING_INDEX,
           headerName: '#',
-          width: 40,
+          width: 60,
           pinned: 'left',
         },
         {
@@ -227,36 +355,12 @@ export const ConsensusValidatorsTable = ({
 
     return (
       <div data-testid="consensus-validators-table">
-        {hideTopThird && (
-          <div className="mb-6 py-4 px-4 md:px-12 bg-neutral-900  text-sm text-center">
-            <div className="mb-4">
-              <Button
-                data-testid="show-all-validators"
-                icon="list"
-                className="inline-flex items-center"
-                onClick={() => setHideTopThird(false)}
-              >
-                {t('Reveal top validators')}
-              </Button>
-            </div>
-            <p className="font-semibold">
-              {t(
-                'Validators with too great a stake share will have the staking rewards for their delegators penalised.'
-              )}
-            </p>
-            <p className="mb-0">
-              {t(
-                'To avoid penalties and increase decentralisation of the network, delegate to validators below.'
-              )}
-            </p>
-          </div>
-        )}
         {nodes.length > 0 && (
           <AgGrid
             domLayout="autoHeight"
             style={{ width: '100%' }}
             customThemeParams={NODE_LIST_GRID_STYLES}
-            rowHeight={52}
+            getRowHeight={(params: RowHeightParams) => getRowHeight(params)}
             defaultColDef={defaultColDef}
             animateRows={true}
             suppressCellFocus={true}
@@ -267,6 +371,13 @@ export const ConsensusValidatorsTable = ({
             onCellClicked={(event) => {
               navigate(event.data.id);
             }}
+            isFullWidthRow={(params) =>
+              params.rowNode.data.placeholderForTopThird
+            }
+            // @ts-ignore no exported type that matches params from AG-grid
+            fullWidthCellRenderer={(params) =>
+              TopThirdCellRenderer(params, setHideTopThird)
+            }
           />
         )}
       </div>

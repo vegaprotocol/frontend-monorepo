@@ -29,6 +29,8 @@ interface SortedValidatorsProps {
   pendingValidators: NodesFragmentFragment[];
 }
 
+const validatorTableHeadingStyles = 'font-alpha calt uppercase';
+
 export const ValidatorTables = ({
   data,
   previousEpochData,
@@ -99,7 +101,9 @@ export const ValidatorTables = ({
     <div data-testid="validator-tables">
       {consensusValidators.length > 0 && (
         <>
-          <h2>{t('status-tendermint')}</h2>
+          <h2 className={validatorTableHeadingStyles}>
+            {t('status-tendermint')}
+          </h2>
           <ConsensusValidatorsTable
             data={consensusValidators}
             previousEpochData={previousEpochData}
@@ -109,7 +113,7 @@ export const ValidatorTables = ({
       )}
       {standbyValidators.length > 0 && (
         <>
-          <h2>{t('status-ersatz')}</h2>
+          <h2 className={validatorTableHeadingStyles}>{t('status-ersatz')}</h2>
           <p>
             <Trans
               i18nKey="ersatzDescription"
@@ -129,7 +133,7 @@ export const ValidatorTables = ({
       )}
       {pendingValidators.length > 0 && (
         <>
-          <h2>{t('status-pending')}</h2>
+          <h2 className={validatorTableHeadingStyles}>{t('status-pending')}</h2>
           <p>
             {VEGA_DOCS_URL && (
               <>

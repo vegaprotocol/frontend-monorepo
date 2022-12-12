@@ -106,6 +106,9 @@ export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   return `${formatNumber(value, decimalPlaces)}%`;
 };
 
+export const formatPercentageToDecimal = (percentage: string) =>
+  parseFloat(percentage) / 100;
+
 export const toNumberParts = (
   value: BigNumber | null | undefined,
   decimals = 18

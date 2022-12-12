@@ -10,7 +10,7 @@ export const Staking = () => {
 
   return (
     <section>
-      <p className="mb-8">
+      <p className="mb-12">
         {t('stakingIntro')}{' '}
         {VEGA_DOCS_URL && (
           <ExternalLink

@@ -5,6 +5,7 @@ import {
   compactNumber,
   formatNumber,
   formatNumberPercentage,
+  formatPercentageToDecimal,
   isNumeric,
   toNumberParts,
 } from './number';

@@ -58,11 +58,11 @@ export function EpochCountdown({
 
   return (
     <div data-testid="epoch-countdown" className="epoch-countdown">
-      <div className="flex items-end">
-        <h3 className="flex-1 mb-4 text-sm">
+      <div className="flex items-end mb-3">
+        <h3 className="flex-1 m-0 text-sm">
           {t('Epoch')} {id}
         </h3>
-        <p className="text-sm mt-0 mx-0 mb-4">
+        <p className="text-sm m-0">
           {endsIn
             ? t('Next epoch in {{endText}}', { endText: endsIn })
             : t('Awaiting next epoch')}
