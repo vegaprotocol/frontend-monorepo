@@ -13,6 +13,7 @@ export type AssetBalanceProps = {
  */
 const AssetBalance = ({ assetId, price }: AssetBalanceProps) => {
   const { data } = useExplorerAssetQuery({
+    fetchPolicy: 'cache-first',
     variables: { id: assetId },
   });
 
@@ -23,7 +24,8 @@ const AssetBalance = ({ assetId, price }: AssetBalanceProps) => {
 
   return (
     <div className="inline-block">
-      <span>{label}</span> <AssetLink id={data?.asset?.id || ''} />
+      <span>{label}</span>{' '}
+      {data?.asset?.id ? <AssetLink id={data.asset.id} /> : null}
     </div>
   );
 };
