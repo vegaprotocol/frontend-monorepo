@@ -4,7 +4,6 @@ import create from 'zustand';
 interface GlobalStore {
   networkSwitcherDialog: boolean;
   landingDialog: boolean;
-  riskNoticeDialog: boolean;
   marketId: string | null;
   welcomeNoticeDialog: boolean;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
@@ -18,7 +17,6 @@ interface PageTitleStore {
 export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
   landingDialog: false,
-  riskNoticeDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
   welcomeNoticeDialog: false,
   update: (state) => {

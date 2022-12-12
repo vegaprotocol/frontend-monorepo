@@ -18,10 +18,8 @@ import type {
 import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { ColumnKind, SelectMarketDialog } from '../../components/select-market';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EMPTY_MARKET_ID } from '../../components/constants';
-import { useWelcomeNoticeDialog } from '../../components/welcome-notice';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -47,20 +45,14 @@ export const Market = ({
   const marketId = isEmpty ? undefined : params.marketId;
 
   const { w } = useWindowSize();
-  const { landingDialog, riskNoticeDialog, update } = useGlobalStore(
-    (store) => ({
-      landingDialog: store.landingDialog,
-      riskNoticeDialog: store.riskNoticeDialog,
-      update: store.update,
-    })
-  );
+  const { update } = useGlobalStore((store) => ({
+    update: store.update,
+  }));
 
   const { pageTitle, updateTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
     updateTitle: store.updateTitle,
   }));
-
-  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const onSelect = useCallback(
     (id: string) => {
@@ -113,8 +105,6 @@ export const Market = ({
     skip: !marketId || !data,
   });
 
-  useWelcomeNoticeDialog();
-
   const tradeView = useMemo(() => {
     if (w > 960) {
       return <TradeGrid market={data} onSelect={onSelect} />;
@@ -140,23 +130,7 @@ export const Market = ({
         if (!data && !isEmpty) {
           return <Splash>{t('Market not found')}</Splash>;
         }
-        return (
-          <>
-            {tradeView}
-            <SelectMarketDialog
-              dialogOpen={landingDialog && !riskNoticeDialog}
-              setDialogOpen={(isOpen: boolean) =>
-                update({ landingDialog: isOpen })
-              }
-              onSelect={onSelect}
-              onCellClick={(e, kind, value) => {
-                if (value && kind === ColumnKind.Asset) {
-                  openAssetDetailsDialog(value, e.target as HTMLElement);
-                }
-              }}
-            />
-          </>
-        );
+        return <>{tradeView}</>;
       }}
     />
   );

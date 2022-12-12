@@ -18,6 +18,11 @@ const mockEnvDefinitions = {
 };
 
 describe('Risk notice dialog', () => {
+  const mockOnClose = jest.fn();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it.each`
     assertion             | network
     ${'displays'}         | ${Networks.MAINNET}
@@ -33,7 +38,7 @@ describe('Risk notice dialog', () => {
           definitions={{ ...mockEnvDefinitions, VEGA_ENV: network }}
           config={{ hosts: [] }}
         >
-          <RiskNoticeDialog />
+          <RiskNoticeDialog onClose={mockOnClose} />
         </EnvironmentProvider>
       );
 
@@ -53,7 +58,7 @@ describe('Risk notice dialog', () => {
         definitions={{ ...mockEnvDefinitions, VEGA_ENV: Networks.MAINNET }}
         config={{ hosts: [] }}
       >
-        <RiskNoticeDialog />
+        <RiskNoticeDialog onClose={mockOnClose} />
       </EnvironmentProvider>
     );
 
@@ -69,7 +74,7 @@ describe('Risk notice dialog', () => {
         definitions={{ ...mockEnvDefinitions, VEGA_ENV: Networks.MAINNET }}
         config={{ hosts: [] }}
       >
-        <RiskNoticeDialog />
+        <RiskNoticeDialog onClose={mockOnClose} />
       </EnvironmentProvider>
     );
 

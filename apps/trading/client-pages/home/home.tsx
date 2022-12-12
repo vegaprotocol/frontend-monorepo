@@ -17,8 +17,7 @@ export const Home = () => {
   const { data, error, loading } = useDataProvider({
     dataProvider: marketsWithDataProvider,
   });
-  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
-    riskNoticeDialog: store.riskNoticeDialog,
+  const { update } = useGlobalStore((store) => ({
     update: store.update,
   }));
 
@@ -29,7 +28,6 @@ export const Home = () => {
 
   useEffect(() => {
     if (data) {
-      update({ landingDialog: data.length > 0 });
       const marketId = data[0]?.id;
       const marketName = data[0]?.tradableInstrument.instrument.name;
       const marketPrice = data[0]?.data?.markPrice
@@ -50,7 +48,7 @@ export const Home = () => {
         navigate(`/markets/${EMPTY_MARKET_ID}`);
       }
     }
-  }, [data, navigate, riskNoticeDialog, update, pageTitle, updateTitle]);
+  }, [data, navigate, update, pageTitle, updateTitle]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>
