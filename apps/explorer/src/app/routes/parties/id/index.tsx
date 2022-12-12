@@ -15,6 +15,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 import AssetBalance from '../../../components/asset-balance/asset-balance';
 import { AssetLink, MarketLink } from '../../../components/links';
 import { Table, TableRow } from '../../../components/table';
+import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
@@ -71,10 +72,10 @@ const Party = () => {
   );
 
   const accounts = (
-    <Table>
+    <Table className="max-w-5xl min-w-fit">
       <thead>
         <TableRow modifier="bordered" className="font-mono">
-          <td>{t('Account type')}</td>
+          <td>{t('Type')}</td>
           <td>{t('Market')}</td>
           <td className="text-right pr-2">{t('Balance')}</td>
           <td>{t('Asset')}</td>
@@ -98,7 +99,7 @@ const Party = () => {
                 {account?.market?.id ? (
                   <MarketLink id={account.market?.id} />
                 ) : (
-                  '-'
+                  <p className="text-center">-</p>
                 )}
               </td>
               <td className="text-md text-right pr-2">
@@ -121,16 +122,13 @@ const Party = () => {
   const staking = (
     <section>
       {p?.stakingSummary?.currentStakeAvailable ? (
-        <InfoPanel
-          title={t('Current Stake Available')}
-          id={p?.stakingSummary?.currentStakeAvailable}
-          copy={false}
-        />
-      ) : (
-        <Panel>
-          <p>Nothing staked for {party}</p>
-        </Panel>
-      )}
+        <p className="mt-4 leading-3">
+          <strong className="font-semibold">{t('Staking Balance: ')}</strong>
+          <GovernanceAssetBalance
+            price={p.stakingSummary.currentStakeAvailable}
+          />
+        </p>
+      ) : null}
     </section>
   );
 
@@ -147,7 +145,6 @@ const Party = () => {
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
           {accounts}
-          <SubHeading>{t('Staking')}</SubHeading>
           {staking}
 
           <SubHeading>{t('Transactions')}</SubHeading>
