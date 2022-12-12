@@ -15,7 +15,7 @@ export const Heading = ({
 
   return (
     <header
-      className={classNames('mt-12 mb-6', {
+      className={classNames('mt-10 mb-6', {
         'mx-auto': centerContent,
       })}
     >
