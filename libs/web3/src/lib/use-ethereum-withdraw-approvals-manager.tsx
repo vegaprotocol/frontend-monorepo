@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import BigNumber from 'bignumber.js';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
@@ -40,11 +40,12 @@ export const useEthWithdrawApprovalsManager = () => {
         !processed.current.has(transaction.id)
     )
   );
-  if (!transaction) {
-    return;
-  }
-  processed.current.add(transaction.id);
-  (async () => {
+  useEffect(() => {
+    if (!transaction) {
+      return;
+    }
+
+    processed.current.add(transaction.id);
     const { withdrawal } = transaction;
     let { approval } = transaction;
     if (withdrawal.asset.source.__typename !== 'ERC20') {
@@ -65,61 +66,71 @@ export const useEthWithdrawApprovalsManager = () => {
       addDecimal(withdrawal.amount, withdrawal.asset.decimals)
     );
 
-    const threshold = await getThreshold(withdrawal.asset);
+    (async () => {
+      const threshold = await getThreshold(withdrawal.asset);
 
-    if (threshold && amount.isGreaterThan(threshold)) {
-      const delaySecs = await getDelay();
-      const completeTimestamp =
-        new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
+      if (threshold && amount.isGreaterThan(threshold)) {
+        const delaySecs = await getDelay();
+        const completeTimestamp =
+          new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
 
-      if (Date.now() < completeTimestamp) {
+        if (Date.now() < completeTimestamp) {
+          update(transaction.id, {
+            status: ApprovalStatus.Delayed,
+            threshold,
+            completeTimestamp,
+          });
+          return;
+        }
+      }
+      if (!approval) {
+        const res = await query<
+          WithdrawalApprovalQuery,
+          WithdrawalApprovalQueryVariables
+        >({
+          query: WithdrawalApprovalDocument,
+          variables: { withdrawalId: withdrawal.id },
+        });
+
+        approval = res.data.erc20WithdrawalApproval;
+      }
+      if (!(provider && config && approval) || approval.signatures.length < 3) {
         update(transaction.id, {
-          status: ApprovalStatus.Delayed,
-          threshold,
-          completeTimestamp,
+          status: ApprovalStatus.Error,
+          message: t(`Withdraw dependencies not met.`),
         });
         return;
       }
-    }
-    if (!approval) {
-      const res = await query<
-        WithdrawalApprovalQuery,
-        WithdrawalApprovalQueryVariables
-      >({
-        query: WithdrawalApprovalDocument,
-        variables: { withdrawalId: withdrawal.id },
-      });
-
-      approval = res.data.erc20WithdrawalApproval;
-    }
-    if (!(provider && config && approval) || approval.signatures.length < 3) {
       update(transaction.id, {
-        status: ApprovalStatus.Error,
-        message: t(`Withdraw dependencies not met.`),
+        status: ApprovalStatus.Ready,
+        approval,
+        dialogOpen: false,
       });
-      return;
-    }
-    update(transaction.id, {
-      status: ApprovalStatus.Ready,
-      approval,
-      dialogOpen: false,
-    });
-    const signer = provider.getSigner();
-    createEthTransaction(
-      new CollateralBridge(
-        config.collateral_bridge_contract.address,
-        signer || provider
-      ),
-      'withdraw_asset',
-      [
-        approval.assetSource,
-        approval.amount,
-        approval.targetAddress,
-        approval.creation,
-        approval.nonce,
-        approval.signatures,
-      ],
-      withdrawal.asset.id
-    );
-  })();
+      const signer = provider.getSigner();
+      createEthTransaction(
+        new CollateralBridge(
+          config.collateral_bridge_contract.address,
+          signer || provider
+        ),
+        'withdraw_asset',
+        [
+          approval.assetSource,
+          approval.amount,
+          approval.targetAddress,
+          approval.creation,
+          approval.nonce,
+          approval.signatures,
+        ]
+      );
+    })();
+  }, [
+    getThreshold,
+    getDelay,
+    config,
+    createEthTransaction,
+    provider,
+    query,
+    transaction,
+    update,
+  ]);
 };

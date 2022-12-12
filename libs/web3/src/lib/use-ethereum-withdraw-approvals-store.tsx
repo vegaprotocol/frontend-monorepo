@@ -24,7 +24,7 @@ export interface EthWithdrawalApprovalState {
   withdrawal: WithdrawalBusEventFieldsFragment;
   approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
 }
-interface EthWithdrawApprovalStore {
+export interface EthWithdrawApprovalStore {
   transactions: (EthWithdrawalApprovalState | undefined)[];
   create: (
     withdrawal: EthWithdrawalApprovalState['withdrawal'],
