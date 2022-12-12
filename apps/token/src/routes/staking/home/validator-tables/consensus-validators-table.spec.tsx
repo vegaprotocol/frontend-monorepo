@@ -207,16 +207,10 @@ describe('Consensus validators table', () => {
     renderValidatorsTable(mockNode, MOCK_PREVIOUS_EPOCH);
 
     expect(
-      await screen.findByTestId('show-all-validators')
+      await screen.findByTestId('consensus-validators-table')
     ).toBeInTheDocument();
 
     const grid = screen.getByTestId('consensus-validators-table');
-
-    screen.debug(grid);
-
-    act(() => {
-      fireEvent.click(screen.getByTestId('show-all-validators'));
-    });
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="validator"]')
