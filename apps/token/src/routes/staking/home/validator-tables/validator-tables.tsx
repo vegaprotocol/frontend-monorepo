@@ -3,11 +3,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { ConsensusValidatorsTable } from './consensus-validators-table';
 import { StandbyPendingValidatorsTable } from './standby-pending-validators-table';
 import * as Schema from '@vegaprotocol/types';
-import type {
-  NodesQuery,
-  NodesFragmentFragment,
-} from '../__generated___/Nodes';
-import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 import { formatNumber } from '../../../../lib/format-number';
 import {
   createDocsLinks,
@@ -15,8 +10,14 @@ import {
   toBigNum,
 } from '@vegaprotocol/react-helpers';
 import { Link as UTLink } from '@vegaprotocol/ui-toolkit';
+import { SubHeading } from '../../../../components/heading';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import type {
+  NodesQuery,
+  NodesFragmentFragment,
+} from '../__generated___/Nodes';
+import type { PreviousEpochQuery } from '../../__generated___/PreviousEpoch';
 
 export interface ValidatorsTableProps {
   data: NodesQuery | undefined;
@@ -28,8 +29,6 @@ interface SortedValidatorsProps {
   standbyValidators: NodesFragmentFragment[];
   pendingValidators: NodesFragmentFragment[];
 }
-
-const validatorTableHeadingStyles = 'font-alpha calt uppercase';
 
 export const ValidatorTables = ({
   data,
@@ -101,9 +100,7 @@ export const ValidatorTables = ({
     <div data-testid="validator-tables">
       {consensusValidators.length > 0 && (
         <>
-          <h2 className={validatorTableHeadingStyles}>
-            {t('status-tendermint')}
-          </h2>
+          <SubHeading title={t('status-tendermint')} />
           <ConsensusValidatorsTable
             data={consensusValidators}
             previousEpochData={previousEpochData}
@@ -113,7 +110,7 @@ export const ValidatorTables = ({
       )}
       {standbyValidators.length > 0 && (
         <>
-          <h2 className={validatorTableHeadingStyles}>{t('status-ersatz')}</h2>
+          <SubHeading title={t('status-ersatz')} />
           <p>
             <Trans
               i18nKey="ersatzDescription"
@@ -133,7 +130,7 @@ export const ValidatorTables = ({
       )}
       {pendingValidators.length > 0 && (
         <>
-          <h2 className={validatorTableHeadingStyles}>{t('status-pending')}</h2>
+          <SubHeading title={t('status-pending')} />
           <p>
             {VEGA_DOCS_URL && (
               <>
