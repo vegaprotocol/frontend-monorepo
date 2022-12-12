@@ -50,7 +50,6 @@ export function useUserVote(proposalId: string | null | undefined) {
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !proposalId,
   });
-  console.log(data);
 
   const userVote = removePaginationWrapper(
     data?.party?.votesConnection?.edges
