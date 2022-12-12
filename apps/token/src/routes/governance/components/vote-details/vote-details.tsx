@@ -43,11 +43,7 @@ export const VoteDetails = ({
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
-  const { voteState, voteDatetime } = useUserVote(
-    proposal?.id ?? '',
-    proposal?.votes.yes.votes ?? null,
-    proposal?.votes.no.votes ?? null
-  );
+  const { voteState, voteDatetime } = useUserVote(proposal?.id);
   const defaultDecimals = 2;
   const daysLeft = t('daysLeft', {
     daysLeft: formatDistanceToNow(new Date(proposal?.terms.closingDatetime)),

@@ -288,31 +288,11 @@ query Proposal($proposalId: ID!) {
         totalTokens
         totalNumber
         totalEquityLikeShareWeight
-        votes {
-          value
-          party {
-            id
-            stakingSummary {
-              currentStakeAvailable
-            }
-          }
-          datetime
-        }
       }
       no {
         totalTokens
         totalNumber
         totalEquityLikeShareWeight
-        votes {
-          value
-          party {
-            id
-            stakingSummary {
-              currentStakeAvailable
-            }
-          }
-          datetime
-        }
       }
     }
   }

@@ -2,7 +2,9 @@ import { captureMessage } from '@sentry/minimal';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VoteValue } from '@vegaprotocol/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useUserVoteQuery } from './__generated__/Vote';
+import { removePaginationWrapper } from '@vegaprotocol/react-helpers';
 
 export enum VoteState {
   NotCast = 'NotCast',
@@ -37,28 +39,22 @@ export function getUserVote(pubkey: string, yesVotes?: Votes, noVotes?: Votes) {
  * Finds the status of a users given vote in a given proposal and provides
  * a function to send a vote transaction to your wallet
  */
-export function useUserVote(
-  proposalId: string | null,
-  yesVotes: Votes | null,
-  noVotes: Votes | null
-) {
+export function useUserVote(proposalId: string | null | undefined) {
   const { pubKey } = useVegaWallet();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [timeout, setTimeoutValue] = useState<any>(null);
-  const yes = useMemo(() => yesVotes || [], [yesVotes]);
-  const no = useMemo(() => noVotes || [], [noVotes]);
-
   const [voteState, setVoteState] = useState<VoteState | null>(
     VoteState.NotCast
   );
+  const { data } = useUserVoteQuery({
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey || !proposalId,
+  });
+  console.log(data);
 
-  // Find the users vote everytime yes or no votes change
-  const userVote = useMemo(() => {
-    if (pubKey) {
-      return getUserVote(pubKey, yes, no);
-    }
-    return null;
-  }, [pubKey, yes, no]);
+  const userVote = removePaginationWrapper(
+    data?.party?.votesConnection?.edges
+  ).find(({ proposalId: pId }) => proposalId === pId);
 
   // If user vote changes update the vote state
   useEffect(() => {
@@ -66,7 +62,9 @@ export function useUserVote(
       setVoteState(VoteState.NotCast);
     } else {
       setVoteState(
-        userVote.value === VoteValue.VALUE_YES ? VoteState.Yes : VoteState.No
+        userVote.vote.value === VoteValue.VALUE_YES
+          ? VoteState.Yes
+          : VoteState.No
       );
     }
   }, [userVote]);
@@ -90,6 +88,6 @@ export function useUserVote(
   return {
     voteState,
     userVote,
-    voteDatetime: userVote ? new Date(userVote.datetime) : null,
+    voteDatetime: userVote ? new Date(userVote.vote.datetime) : null,
   };
 }
