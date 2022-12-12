@@ -29,3 +29,23 @@ export const Heading = ({
     </header>
   );
 };
+
+export const SubHeading = ({
+  title,
+  centerContent = false,
+  marginBottom = true,
+}: HeadingProps) => {
+  if (!title) return null;
+
+  return (
+    <h2
+      className={classNames('text-2xl font-alpha calt uppercase', {
+        'mx-auto': centerContent,
+        'mb-0': !marginBottom,
+        'mb-4': marginBottom,
+      })}
+    >
+      {title}
+    </h2>
+  );
+};

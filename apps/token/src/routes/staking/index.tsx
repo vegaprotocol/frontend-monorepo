@@ -21,12 +21,7 @@ const StakingRouter = ({ name }: RouteChildProps) => {
     return t('pageTitleValidators');
   }, [associate, disassociate, t]);
 
-  return (
-    <>
-      <Heading title={title} />
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 };
 
 export default StakingRouter;
