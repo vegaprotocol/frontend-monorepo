@@ -207,7 +207,7 @@ const redirects = [
   },
   {
     path: '/tranches',
-    element: <Navigate to={Routes.TRANCHES} replace />,
+    element: <Navigate to={Routes.SUPPLY} replace />,
   },
   {
     path: '/withdrawals',
@@ -286,7 +286,7 @@ const routerConfig = [
         index: true,
       },
       {
-        path: Routes.TRANCHES,
+        path: Routes.SUPPLY,
         element: <LazyTranches name="Tranches" />,
         children: [
           { index: true, element: <LazyTranchesTranches /> },

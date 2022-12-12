@@ -12,6 +12,6 @@ export default {
   TOKEN: '/token',
   REDEEM: '/token/redeem',
   WITHDRAWALS: '/token/withdraw',
-  TRANCHES: '/token/tranches',
+  SUPPLY: '/token/tranches',
   ASSOCIATE: '/token/associate',
 };

@@ -9,8 +9,12 @@ import vegaWhite from '../../images/vega_white.png';
 import debounce from 'lodash/debounce';
 import { NavDrawer } from './nav-draw';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
   getNavLinkClassNames,
   Nav as ToolkitNav,
+  DropdownMenuItem,
 } from '@vegaprotocol/ui-toolkit';
 
 const useDebouncedResize = () => {
@@ -30,6 +34,61 @@ const useDebouncedResize = () => {
   return {
     windowWidth,
   };
+};
+
+const TokenDropDown = () => {
+  const { t } = useTranslation();
+  const [isOpen, setOpen] = useState(false);
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={(open) => setOpen(open)}>
+      <DropdownMenuTrigger
+        className="mr-2 w-auto text-capMenu text-black dark:text-white"
+        data-testid="state-trigger"
+        onClick={() => setOpen(!isOpen)}
+      >
+        <AppNavLink
+          name={t('Token').toString()}
+          path={Routes.TOKEN}
+          navbarTheme={'inherit'}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>
+          <AppNavLink
+            name={t('Token').toString()}
+            path={Routes.TOKEN}
+            navbarTheme={'inherit'}
+            end={true}
+            fullWidth={true}
+          />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <AppNavLink
+            name={t('Supply & Vesting').toString()}
+            path={Routes.SUPPLY}
+            navbarTheme={'inherit'}
+            fullWidth={true}
+          />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <AppNavLink
+            name={t('Withdraw').toString()}
+            path={Routes.WITHDRAWALS}
+            navbarTheme={'inherit'}
+            fullWidth={true}
+          />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <AppNavLink
+            name={t('Redeem').toString()}
+            path={Routes.REDEEM}
+            navbarTheme={'inherit'}
+            fullWidth={true}
+          />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
@@ -56,22 +115,6 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
       name: t('Rewards'),
       path: Routes.REWARDS,
     },
-    {
-      name: t('Token'),
-      path: Routes.TOKEN,
-    },
-    {
-      name: t('Redeem'),
-      path: Routes.REDEEM,
-    },
-    {
-      name: t('Withdraw'),
-      path: Routes.WITHDRAWALS,
-    },
-    {
-      name: t('Supply & Vesting'),
-      path: Routes.TRANCHES,
-    },
   ];
 
   return (
@@ -90,6 +133,7 @@ export const Nav = ({ navbarTheme = 'inherit' }: NavbarProps) => {
           {routes.map((r) => (
             <AppNavLink {...r} navbarTheme={navbarTheme} />
           ))}
+          <TokenDropDown />
         </nav>
       ) : (
         <nav className="flex items-center flex-1 px-2 justify-end">
@@ -106,6 +150,8 @@ interface AppNavLinkProps {
   navbarTheme: NavbarTheme;
   testId?: string;
   target?: HTMLAttributeAnchorTarget;
+  end?: boolean;
+  fullWidth?: boolean;
 }
 
 const AppNavLink = ({
@@ -114,6 +160,8 @@ const AppNavLink = ({
   navbarTheme,
   target,
   testId = name,
+  end = false,
+  fullWidth = false,
 }: AppNavLinkProps) => {
   const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
     'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
@@ -121,11 +169,12 @@ const AppNavLink = ({
   });
   return (
     <NavLink
+      key={path}
       data-testid={testId}
       to={{ pathname: path }}
-      className={getNavLinkClassNames(navbarTheme)}
+      className={getNavLinkClassNames(navbarTheme, fullWidth)}
       target={target}
-      end={true}
+      end={end}
     >
       {({ isActive }) => {
         return (

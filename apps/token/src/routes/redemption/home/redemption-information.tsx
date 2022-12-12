@@ -59,7 +59,7 @@ export const RedemptionInformation = () => {
               i18nKey="noVestingTokens"
               components={{
                 tranchesLink: (
-                  <Link className="underline text-white" to={Routes.TRANCHES} />
+                  <Link className="underline text-white" to={Routes.SUPPLY} />
                 ),
               }}
             />
