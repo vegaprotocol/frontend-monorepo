@@ -1,8 +1,4 @@
-import {
-  t,
-  addDecimalsFormatNumber,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
+import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
@@ -16,6 +12,9 @@ import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
 import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
+import AssetBalance from '../../../components/asset-balance/asset-balance';
+import { AssetLink, MarketLink } from '../../../components/links';
+import { Table, TableRow } from '../../../components/table';
 
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
@@ -72,9 +71,17 @@ const Party = () => {
   );
 
   const accounts = (
-    <section>
-      {p?.accountsConnection?.edges?.length ? (
-        p.accountsConnection?.edges?.map((a) => {
+    <Table>
+      <thead>
+        <TableRow modifier="bordered" className="font-mono">
+          <td>{t('Account type')}</td>
+          <td>{t('Market')}</td>
+          <td className="text-right pr-2">{t('Balance')}</td>
+          <td>{t('Asset')}</td>
+        </TableRow>
+      </thead>
+      <tbody>
+        {p?.accountsConnection?.edges?.map((a) => {
           const account = a?.node;
           if (!account || !account.asset) {
             return '';
@@ -82,34 +89,33 @@ const Party = () => {
           const m = get(account, 'market.tradableInstrument.instrument.name');
 
           return (
-            <InfoPanel
+            <TableRow
               title={account.asset.name}
               id={`${accountTypeString[account.type]} ${m ? ` - ${m}` : ''}`}
             >
-              <section>
-                <dl className="flex gap-2 flex-wrap">
-                  <dt className="text-zinc-500 dark:text-zinc-400 text-md">
-                    <p>
-                      {t('Balance')} ({account.asset.symbol})
-                    </p>
-                  </dt>
-                  <dd className="text-md">
-                    {addDecimalsFormatNumber(
-                      account.balance,
-                      account.asset.decimals
-                    )}
-                  </dd>
-                </dl>
-              </section>
-            </InfoPanel>
+              <td className="text-md">{accountTypeString[account.type]}</td>
+              <td className="text-md">
+                {account?.market?.id ? (
+                  <MarketLink id={account.market?.id} />
+                ) : (
+                  '-'
+                )}
+              </td>
+              <td className="text-md text-right pr-2">
+                <AssetBalance
+                  assetId={account.asset.id}
+                  price={account.balance}
+                  hideAssetLink={true}
+                />
+              </td>
+              <td className="text-md">
+                <AssetLink id={account.asset.id} />
+              </td>
+            </TableRow>
           );
-        })
-      ) : (
-        <Panel>
-          <p>No Data</p>
-        </Panel>
-      )}
-    </section>
+        })}
+      </tbody>
+    </Table>
   );
 
   const staking = (
