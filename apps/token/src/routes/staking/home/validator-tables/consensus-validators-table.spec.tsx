@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { NodesDocument } from '../__generated___/Nodes';
 import { PreviousEpochDocument } from '../../__generated___/PreviousEpoch';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { PartialDeep } from 'type-fest';
@@ -21,6 +21,8 @@ const nodeFactory = (
     avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
     pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
     stakedTotal: '14182454495731682635157',
+    stakedByOperator: '1000000000000000000000',
+    stakedByDelegates: '13182454495731682635157',
     pendingStake: '0',
     rankingScore: {
       rankingScore: '0.67845061012234727427532760837568',

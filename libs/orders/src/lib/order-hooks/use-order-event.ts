@@ -8,7 +8,7 @@ import type {
 } from './__generated__/OrderEvent';
 import type { Subscription } from 'zen-observable-ts';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 type WaitFunc = (
   orderId: string,

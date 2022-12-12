@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 import type { TransactionEventSubscription } from './__generated__/TransactionResult';
 import { TransactionEventDocument } from './__generated__/TransactionResult';
 import { useTransactionResult } from './use-transaction-result';

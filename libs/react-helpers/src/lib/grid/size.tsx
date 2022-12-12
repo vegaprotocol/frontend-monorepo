@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '../format';

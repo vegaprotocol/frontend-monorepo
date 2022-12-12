@@ -1,5 +1,5 @@
 import type { FillsQuery, FillFieldsFragment } from '@vegaprotocol/fills';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 

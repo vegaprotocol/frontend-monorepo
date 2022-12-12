@@ -1,6 +1,6 @@
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { MarketsDataQuery } from './__generated___/markets-data';
-import { MarketsDataDocument } from './__generated___/markets-data';
+import type { MarketsDataQuery } from './__generated__/markets-data';
+import { MarketsDataDocument } from './__generated__/markets-data';
 import type { MarketData } from './market-data-provider';
 
 const getData = (responseData: MarketsDataQuery): MarketData[] | null =>

@@ -1,10 +1,18 @@
+import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
+import {
+  VegaTxStatus,
+  WalletError,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+  ClientErrors,
+} from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
-import { Schema } from '@vegaprotocol/types';
-import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
+import * as Schema from '@vegaprotocol/types';
+import { Button, Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 export interface DealTicketManagerProps {
@@ -12,12 +20,54 @@ export interface DealTicketManagerProps {
   children?: ReactNode | ReactNode[];
 }
 
+interface ErrorContentProps {
+  transaction: VegaTxState;
+  reset: () => void;
+}
+const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
+  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+    openVegaWalletDialog: store.openVegaWalletDialog,
+  }));
+  const { disconnect } = useVegaWallet();
+  const reconnect = useCallback(async () => {
+    reset();
+    await disconnect();
+    openVegaWalletDialog();
+  }, [reset, disconnect, openVegaWalletDialog]);
+  return useMemo(() => {
+    const { error } = transaction;
+    if (error) {
+      if (
+        error instanceof WalletError &&
+        error.code === ClientErrors.NO_SERVICE.code
+      ) {
+        return (
+          <ul data-testid="connectors-list" className="mb-6">
+            <li className="mb-2 last:mb-0" data-testid={transaction.status}>
+              {t('The connection to your Vega Wallet has been lost.')}
+            </li>
+            <li className="mb-0 pt-2">
+              <Button onClick={reconnect}>{t('Connect vega wallet')}</Button>
+            </li>
+          </ul>
+        );
+      }
+      return (
+        <p data-testid={transaction.status}>
+          {error.message}: {error.data}
+        </p>
+      );
+    }
+    return null;
+  }, [transaction, reconnect]);
+};
+
 export const DealTicketManager = ({
   market,
   children,
 }: DealTicketManagerProps) => {
-  const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
-
+  const { submit, transaction, finalizedOrder, Dialog, reset } =
+    useOrderSubmit();
   return (
     <>
       {children || (
@@ -40,6 +90,7 @@ export const DealTicketManager = ({
           Complete: (
             <OrderFeedback transaction={transaction} order={finalizedOrder} />
           ),
+          Error: <ErrorContent transaction={transaction} reset={reset} />,
         }}
       />
     </>

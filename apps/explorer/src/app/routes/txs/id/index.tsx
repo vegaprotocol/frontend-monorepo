@@ -10,11 +10,14 @@ import { PageHeader } from '../../../components/page-header';
 import { Routes } from '../../../routes/route-names';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '@vegaprotocol/ui-toolkit';
+import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
   const hash = txHash ? toNonHex(txHash) : '';
   let errorMessage: string | undefined = undefined;
+
+  useDocumentTitle(['Transactions', `TX ${txHash}`]);
 
   const {
     state: { data, loading, error },

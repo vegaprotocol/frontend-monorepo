@@ -4,6 +4,7 @@ import type { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermin
 import { TxList } from '../../components/txs';
 import { RouteTitle } from '../../components/route-title';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
+import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const PendingTxs = () => {
   const {
@@ -11,6 +12,8 @@ const PendingTxs = () => {
   } = useFetch<TendermintUnconfirmedTransactionsResponse>(
     `${DATA_SOURCES.tendermintUrl}/unconfirmed_txs`
   );
+
+  useDocumentTitle(['Pending transactions']);
 
   return (
     <section>

@@ -1,5 +1,4 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import {
   ethereumAddress,
   t,
@@ -9,6 +8,7 @@ import {
   maxSafe,
   addDecimal,
   useLocalStorage,
+  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,

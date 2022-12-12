@@ -2,7 +2,7 @@ import type {
   ProposalListFieldsFragment,
   ProposalsListQuery,
 } from '@vegaprotocol/governance';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 export const marketUpdateProposal: ProposalListFieldsFragment = {
   id: '123',

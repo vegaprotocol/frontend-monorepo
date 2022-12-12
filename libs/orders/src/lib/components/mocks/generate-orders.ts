@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Order } from '../';
 import type { PartialDeep } from 'type-fest';
 

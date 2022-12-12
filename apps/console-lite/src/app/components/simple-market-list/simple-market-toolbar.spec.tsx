@@ -14,7 +14,7 @@ import {
   getAllByText,
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import { markets as filterData } from './mocks/market-filters.json';

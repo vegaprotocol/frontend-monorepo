@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { AccountFragment } from '@vegaprotocol/deal-ticket';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { useSettlementAccount } from '@vegaprotocol/deal-ticket';

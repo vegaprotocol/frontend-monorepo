@@ -10,11 +10,12 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalType } from '../proposal/proposal';
 
 interface ProposalVotesTableProps {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   proposalType: ProposalType | null;
 }
 

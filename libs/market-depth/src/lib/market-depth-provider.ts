@@ -6,11 +6,11 @@ import { captureException } from '@sentry/react';
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,
-} from './__generated___/MarketDepth';
+} from './__generated__/MarketDepth';
 import type {
   MarketDepthQuery,
   MarketDepthUpdateSubscription,
-} from './__generated___/MarketDepth';
+} from './__generated__/MarketDepth';
 
 export const update: Update<
   ReturnType<typeof getData>,

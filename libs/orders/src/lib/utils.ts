@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 // More detail in https://docs.vega.xyz/mainnet/graphql/enums/order-time-in-force
 export const timeInForceLabel = (tif: string) => {

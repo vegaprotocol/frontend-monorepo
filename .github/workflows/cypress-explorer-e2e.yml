@@ -24,6 +24,12 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
+      - name: Vega version
+        run: vega version
+
+      - name: Vegacapsule version
+        run: vegacapsule version
+
       # Checkout front ends
       - name: Checkout frontend mono repo
         uses: actions/checkout@v3

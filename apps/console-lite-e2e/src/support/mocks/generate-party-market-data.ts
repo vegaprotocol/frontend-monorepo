@@ -1,5 +1,5 @@
 import type { PartyMarketDataQuery } from '@vegaprotocol/deal-ticket';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 export const generatePartyMarketData = (): PartyMarketDataQuery => {
   return {

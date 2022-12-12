@@ -1,5 +1,5 @@
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useTranslation } from 'react-i18next';

@@ -13,7 +13,7 @@ import {
   DropdownMenuItemIndicator,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import { HorizontalMenu } from '../horizontal-menu';
 import type { HorizontalMenuItem } from '../horizontal-menu';

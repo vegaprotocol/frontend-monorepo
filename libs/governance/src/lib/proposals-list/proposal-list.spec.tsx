@@ -8,7 +8,7 @@ import {
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
 import type { ProposalListFieldsFragment } from '../proposals-data-provider';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 const votesMock = {
   yes: {

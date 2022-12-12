@@ -4,7 +4,7 @@ import {
   updateCompactedRows,
 } from './orderbook-data';
 import type { OrderbookRowData } from './orderbook-data';
-import type { PriceLevelFieldsFragment } from './__generated___/MarketDepth';
+import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
 describe('compactRows', () => {
   const numberOfRows = 100;

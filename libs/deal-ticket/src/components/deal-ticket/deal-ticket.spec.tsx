@@ -9,7 +9,7 @@ import {
 } from '@testing-library/react';
 import { generateMarket } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
