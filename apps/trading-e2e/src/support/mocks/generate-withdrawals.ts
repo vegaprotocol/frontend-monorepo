@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { WithdrawalsQuery } from '@vegaprotocol/withdraws';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';

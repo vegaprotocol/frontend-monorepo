@@ -1,25 +1,25 @@
-import { ProposalState } from '@vegaprotocol/types';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import * as Schema from '@vegaprotocol/types';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 export const CurrentProposalState = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
-  const { state } = proposal;
   let className = 'text-white';
 
   if (
-    state === ProposalState.STATE_DECLINED ||
-    state === ProposalState.STATE_FAILED ||
-    state === ProposalState.STATE_REJECTED
+    proposal?.state === Schema.ProposalState.STATE_DECLINED ||
+    proposal?.state === Schema.ProposalState.STATE_FAILED ||
+    proposal?.state === Schema.ProposalState.STATE_REJECTED
   ) {
     className = 'text-danger';
   } else if (
-    state === ProposalState.STATE_ENACTED ||
-    state === ProposalState.STATE_PASSED
+    proposal?.state === Schema.ProposalState.STATE_ENACTED ||
+    proposal?.state === Schema.ProposalState.STATE_PASSED
   ) {
     className = 'text-white';
   }
-  return <span className={className}>{state}</span>;
+  return <span className={className}>{proposal?.state}</span>;
 };

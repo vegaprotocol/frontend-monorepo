@@ -1,6 +1,6 @@
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
 
 /**

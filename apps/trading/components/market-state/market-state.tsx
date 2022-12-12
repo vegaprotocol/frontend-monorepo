@@ -6,7 +6,7 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider } from '@vegaprotocol/market-list';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import { MarketStateMapping, Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import * as constants from '../constants';
@@ -53,7 +53,7 @@ export const MarketState = ({
       description={getMarketStateTooltip(marketState)}
       testId="market-state"
     >
-      {marketState ? MarketStateMapping[marketState] : '-'}
+      {marketState ? Schema.MarketStateMapping[marketState] : '-'}
     </HeaderStat>
   );
 };

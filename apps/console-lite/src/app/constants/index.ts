@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Market } from '@vegaprotocol/market-list';
 

@@ -14,6 +14,9 @@ import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
 import get from 'lodash/get';
 import { TxDetailsOrderAmend } from './tx-order-amend';
+import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
+import { TxDetailsDelegate } from './tx-delegation';
+import { TxDetailsUndelegate } from './tx-undelegation';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -88,6 +91,12 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsChainEvent;
     case 'Node Vote':
       return TxDetailsNodeVote;
+    case 'Withdraw':
+      return TxDetailsWithdrawSubmission;
+    case 'Delegate':
+      return TxDetailsDelegate;
+    case 'Undelegate':
+      return TxDetailsUndelegate;
     default:
       return TxDetailsGeneric;
   }

@@ -3,11 +3,11 @@ import type {
   MarketCandlesQuery,
   MarketCandlesUpdateSubscription,
   MarketCandlesFieldsFragment,
-} from './__generated___/market-candles';
+} from './__generated__/market-candles';
 import {
   MarketCandlesDocument,
   MarketCandlesUpdateDocument,
-} from './__generated___/market-candles';
+} from './__generated__/market-candles';
 
 export type Candle = MarketCandlesFieldsFragment;
 

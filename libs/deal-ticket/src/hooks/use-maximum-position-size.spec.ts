@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
 import { BigNumber } from 'bignumber.js';
 import { useMaximumPositionSize } from './use-maximum-position-size';

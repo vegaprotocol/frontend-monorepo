@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import { renderHook } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 import type {
   ProposalListFieldsFragment,

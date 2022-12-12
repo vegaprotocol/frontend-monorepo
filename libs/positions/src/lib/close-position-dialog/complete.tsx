@@ -1,7 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
 import { t, truncateByChars } from '@vegaprotocol/react-helpers';
-import { OrderRejectionReasonMapping, Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import type { TransactionResult, VegaTxState } from '@vegaprotocol/wallet';
 import type { ClosingOrder as IClosingOrder } from '../use-close-position';
@@ -93,7 +93,7 @@ const Error = ({
 }) => {
   const reason =
     closingOrderResult.rejectionReason &&
-    OrderRejectionReasonMapping[closingOrderResult.rejectionReason];
+    Schema.OrderRejectionReasonMapping[closingOrderResult.rejectionReason];
   return (
     <div className="text-vega-red">
       {reason ? (

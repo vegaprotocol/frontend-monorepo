@@ -7,7 +7,7 @@ import {
   useYesterday,
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange } from '@vegaprotocol/ui-toolkit';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { CandleClose } from '@vegaprotocol/types';
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';

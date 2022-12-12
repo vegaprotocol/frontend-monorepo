@@ -16,7 +16,7 @@ import type {
   GroupCellRendererParams,
   ColDef,
 } from 'ag-grid-community';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { Intent, ProgressBarCell } from '@vegaprotocol/ui-toolkit';
 

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { useSettlementAccount } from './use-settlement-account';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 
 describe('useSettlementAccount Hook', () => {

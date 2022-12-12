@@ -4,14 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
-import { rawValidatorScore } from '../../shared';
+import {
+  getFormattedPerformanceScore,
+  getOverstakedAmount,
+  getOverstakingPenalty,
+  getPerformancePenalty,
+  getRawValidatorScore,
+  getTotalPenalties,
+} from '../../shared';
 import {
   defaultColDef,
   NODE_LIST_GRID_STYLES,
+  StakeNeededForPromotionRenderer,
   stakedTotalPercentage,
-  totalPenalties,
   ValidatorFields,
   ValidatorRenderer,
+  TotalPenaltiesRenderer,
+  TotalStakeRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -46,11 +55,20 @@ export const StandbyPendingValidatorsTable = ({
         id,
         name,
         avatarUrl,
+        stakedByDelegates,
+        stakedByOperator,
         stakedTotal,
         rankingScore: { stakeScore, performanceScore },
         pendingStake,
       }) => {
-        let individualStakeNeededForPromotion = undefined;
+        const validatorScore = getRawValidatorScore(previousEpochData, id);
+        const overstakedAmount = getOverstakedAmount(
+          validatorScore,
+          stakedTotal,
+          totalStake
+        );
+        let individualStakeNeededForPromotion,
+          individualStakeNeededForPromotionDescription;
 
         if (stakeNeededForPromotion) {
           const stakedTotalBigNum = new BigNumber(stakedTotal);
@@ -61,9 +79,23 @@ export const StandbyPendingValidatorsTable = ({
             .dividedBy(performanceScoreBigNum)
             .minus(stakedTotalBigNum);
 
-          individualStakeNeededForPromotion = calc.isGreaterThan(0)
-            ? calc.toString()
-            : '0';
+          if (calc.isGreaterThan(0)) {
+            individualStakeNeededForPromotion = calc.toString();
+            individualStakeNeededForPromotionDescription = t(
+              stakeNeededForPromotionDescription,
+              {
+                prefix: formatNumber(calc, 2).toString(),
+              }
+            );
+          } else {
+            individualStakeNeededForPromotion = '0';
+            individualStakeNeededForPromotionDescription = t(
+              stakeNeededForPromotionDescription,
+              {
+                prefix: formatNumber(0, 2).toString(),
+              }
+            );
+          }
         }
 
         return {
@@ -77,10 +109,29 @@ export const StandbyPendingValidatorsTable = ({
             2
           ),
           [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
-            individualStakeNeededForPromotion || t('n/a'),
+            individualStakeNeededForPromotion || null,
+          [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
+            individualStakeNeededForPromotionDescription || t('n/a'),
           [ValidatorFields.STAKE_SHARE]: stakedTotalPercentage(stakeScore),
-          [ValidatorFields.TOTAL_PENALTIES]: totalPenalties(
-            rawValidatorScore(previousEpochData, id),
+          [ValidatorFields.STAKED_BY_DELEGATES]: formatNumber(
+            toBigNum(stakedByDelegates, decimals),
+            2
+          ),
+          [ValidatorFields.STAKED_BY_OPERATOR]: formatNumber(
+            toBigNum(stakedByOperator, decimals),
+            2
+          ),
+          [ValidatorFields.PERFORMANCE_SCORE]:
+            getFormattedPerformanceScore(performanceScore).toString(),
+          [ValidatorFields.PERFORMANCE_PENALTY]:
+            getPerformancePenalty(performanceScore),
+          [ValidatorFields.OVERSTAKED_AMOUNT]: overstakedAmount.toString(),
+          [ValidatorFields.OVERSTAKING_PENALTY]: getOverstakingPenalty(
+            overstakedAmount,
+            totalStake
+          ),
+          [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
+            getRawValidatorScore(previousEpochData, id),
             performanceScore,
             stakedTotal,
             totalStake
@@ -97,6 +148,7 @@ export const StandbyPendingValidatorsTable = ({
     decimals,
     previousEpochData,
     stakeNeededForPromotion,
+    stakeNeededForPromotionDescription,
     t,
     totalStake,
   ]);
@@ -116,12 +168,16 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.STAKE,
           headerName: t(ValidatorFields.STAKE).toString(),
           headerTooltip: t('StakeDescription').toString(),
+          cellRenderer: TotalStakeRenderer,
           width: 120,
         },
         {
           field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,
           headerName: t(ValidatorFields.STAKE_NEEDED_FOR_PROMOTION).toString(),
-          headerTooltip: stakeNeededForPromotionDescription,
+          headerTooltip: t(stakeNeededForPromotionDescription, {
+            prefix: t('The'),
+          }),
+          cellRenderer: StakeNeededForPromotionRenderer,
           width: 210,
           sort: 'asc',
         },
@@ -135,6 +191,7 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.TOTAL_PENALTIES,
           headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
           headerTooltip: t('TotalPenaltiesDescription').toString(),
+          cellRenderer: TotalPenaltiesRenderer,
           width: 120,
         },
         {

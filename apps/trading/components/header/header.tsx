@@ -15,7 +15,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
         <div className="mb-4 xl:mb-0 px-4 xl:px-0">{title}</div>
         <div
           data-testid="header-summary"
-          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
+          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs"
         >
           {Children.map(children, (child, index) => {
             if (!child) return null;

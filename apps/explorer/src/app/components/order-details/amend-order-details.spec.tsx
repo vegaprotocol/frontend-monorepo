@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AmendOrderDetails from './amend-order-details';
 import { ExplorerDeterministicOrderDocument } from './__generated__/Order';
 import { render } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { ExplorerMarketDocument } from '../links/market-link/__generated__/Market';
 
 type Amend = components['schemas']['v1OrderAmendment'];

@@ -25,6 +25,7 @@ import type { SingleMarketFieldsFragment } from '@vegaprotocol/market-list';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { TradeMarketHeader } from './trade-market-header';
 import { NO_MARKET } from './constants';
+import { LiquidityContainer } from '../liquidity/liquidity';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -46,6 +47,7 @@ const requiresMarket = (View: MarketDependantView) => {
 const TradingViews = {
   Candles: requiresMarket(CandlesChartContainer),
   Depth: requiresMarket(DepthChartContainer),
+  Liquidity: requiresMarket(LiquidityContainer),
   Ticket: requiresMarket(DealTicketContainer),
   Info: requiresMarket(MarketInfoContainer),
   Orderbook: requiresMarket(OrderbookContainer),
@@ -85,6 +87,9 @@ const MainGrid = ({
               </Tab>
               <Tab id="depth" name={t('Depth')}>
                 <TradingViews.Depth marketId={marketId} />
+              </Tab>
+              <Tab id="liquidity" name={t('Liquidity')}>
+                <TradingViews.Liquidity marketId={marketId} />
               </Tab>
             </Tabs>
           </TradeGridChild>

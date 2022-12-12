@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
