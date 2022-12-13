@@ -220,7 +220,7 @@ export const usePollForDelegations = () => {
             // will just continue to fail
             clearInterval(interval);
           });
-      }, 1000);
+      }, 100000);
     }
 
     return () => {
