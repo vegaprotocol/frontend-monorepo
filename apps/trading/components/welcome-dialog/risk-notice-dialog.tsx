@@ -5,11 +5,11 @@ import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { RISK_ACCEPTED_KEY } from '../constants';
 
 interface Props {
-  onClose: (isOpen: boolean) => void;
+  onClose: () => void;
 }
 export const RiskNoticeDialog = ({ onClose }: Props) => {
   const handleAcceptRisk = useCallback(() => {
-    onClose(false);
+    onClose();
     LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
   }, [onClose]);
 

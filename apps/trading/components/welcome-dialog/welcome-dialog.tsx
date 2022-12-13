@@ -51,7 +51,7 @@ export const WelcomeDialog = () => {
         break;
       case pathname === '/' && (data?.length || 0) > 0:
         setDialog({
-          content: <WelcomeLandingDialog setDialogOpen={onClose} />,
+          content: <WelcomeLandingDialog onClose={onClose} />,
           onClose,
         });
         break;

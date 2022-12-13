@@ -18,10 +18,10 @@ import { ProposedMarkets } from './proposed-markets';
 
 export const SelectMarketLandingTable = ({
   markets,
-  setDialogOpen,
+  onClose,
 }: {
   markets: Market[] | null;
-  setDialogOpen: (isOpen: boolean) => void;
+  onClose: () => void;
 }) => {
   const params = useParams();
   const navigate = useNavigate();
@@ -45,9 +45,9 @@ export const SelectMarketLandingTable = ({
   const onSelectMarket = useCallback(
     (id: string) => {
       onSelect(id);
-      setDialogOpen(false);
+      onClose();
     },
-    [onSelect, setDialogOpen]
+    [onSelect, onClose]
   );
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const onCellClick = useCallback<OnCellClickHandler>(
@@ -89,7 +89,7 @@ export const SelectMarketLandingTable = ({
         <Link
           to="/markets"
           data-testid="view-market-list-link"
-          onClick={() => setDialogOpen(false)}
+          onClick={() => onClose()}
         >
           <UILink>{'Or view full market list'} </UILink>
         </Link>
@@ -100,11 +100,11 @@ export const SelectMarketLandingTable = ({
 };
 
 interface LandingDialogContainerProps {
-  setDialogOpen: (isOpen: boolean) => void;
+  onClose: () => void;
 }
 
 export const WelcomeLandingDialog = ({
-  setDialogOpen,
+  onClose,
 }: LandingDialogContainerProps) => {
   const { data, loading, error } = useMarketList();
   if (error) {
@@ -126,7 +126,7 @@ export const WelcomeLandingDialog = ({
   return (
     <>
       <WelcomeDialogHeader />
-      <SelectMarketLandingTable markets={data} setDialogOpen={setDialogOpen} />
+      <SelectMarketLandingTable markets={data} onClose={onClose} />
     </>
   );
 };
