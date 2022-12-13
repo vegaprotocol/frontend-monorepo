@@ -15,7 +15,7 @@ import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
 import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
-import { useVoteButtonsQuery } from './__generated___/Stake';
+import { useVoteButtonsQuery } from './__generated__/Stake';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;

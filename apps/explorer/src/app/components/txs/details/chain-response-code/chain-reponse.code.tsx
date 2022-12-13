@@ -13,6 +13,7 @@ export const successCodes = new Set([0]);
 interface ChainResponseCodeProps {
   code: number;
   hideLabel?: boolean;
+  error?: string;
 }
 
 /**
@@ -23,6 +24,7 @@ interface ChainResponseCodeProps {
 export const ChainResponseCode = ({
   code,
   hideLabel = false,
+  error,
 }: ChainResponseCodeProps) => {
   const isSuccess = successCodes.has(code);
 
@@ -39,6 +41,9 @@ export const ChainResponseCode = ({
         {icon}
       </span>
       {hideLabel ? null : <span>{label}</span>}
+      {!hideLabel && !!error ? (
+        <span className="ml-1">&mdash;&nbsp;{error}</span>
+      ) : null}
     </div>
   );
 };

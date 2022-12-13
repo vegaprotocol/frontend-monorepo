@@ -38,7 +38,13 @@ export interface FeeLevels {
 }
 
 export type Market = MarketWithData &
-  MarketWithCandles & { feeLevels: FeeLevels[]; target: string };
+  MarketWithCandles & {
+    feeLevels: FeeLevels[];
+    target: string;
+    dayVolume: string;
+    liquidityCommitted: number;
+    volumeChange: string;
+  };
 
 export interface Markets {
   markets: Market[];
