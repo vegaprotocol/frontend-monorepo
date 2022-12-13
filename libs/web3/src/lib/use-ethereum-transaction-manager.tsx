@@ -53,15 +53,8 @@ export const useEthTransactionManager = () => {
       }
 
       try {
-        // @ts-ignore method vary depends on contract
-        const method = contract[methodName];
-
-        if (!method || typeof method !== 'function') {
-          throw new Error('method not found on contract');
-        }
-
         // @ts-ignore args will vary depends on contract and method
-        const tx = await method.call(contract, ...args);
+        const tx = await contract[methodName].call(contract, ...args);
 
         let receipt: ethers.ContractReceipt | null = null;
 
