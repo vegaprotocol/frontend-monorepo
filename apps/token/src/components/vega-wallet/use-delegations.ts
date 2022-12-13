@@ -65,12 +65,13 @@ export const usePartyDelegations = (partyId: string | undefined) => {
       }
     };
   }, [refetchDelegations]);
-  return useMemo<DelegationsNode[] | undefined>(
-    () =>
-      delegeationsData.data?.delegations.map((d) => ({
-        ...d,
-        node: nodesData.data?.nodes.find(({ id }) => d.nodeId === id),
-      })),
-    [delegeationsData.data?.delegations, nodesData.data?.nodes]
-  );
+
+  const delegations = useMemo<DelegationsNode[] | undefined>(() => {
+    if (!delegeationsData.data) return [];
+    return delegeationsData.data?.delegations.map((d) => ({
+      ...d,
+      node: nodesData.data?.nodes.find(({ id }) => d.nodeId === id),
+    }));
+  }, [delegeationsData.data, nodesData.data?.nodes]);
+  return delegations;
 };

@@ -42,11 +42,11 @@ export const useFetch = <T>(
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case ActionType.LOADING:
-        return { ...initialState, loading: true };
+        return { ...state, loading: true };
       case ActionType.FETCHED:
-        return { ...initialState, data: action.payload, loading: false };
+        return { ...state, data: action.payload, loading: false };
       case ActionType.ERROR:
-        return { ...initialState, error: action.error, loading: false };
+        return { ...state, error: action.error, loading: false };
     }
   };
 

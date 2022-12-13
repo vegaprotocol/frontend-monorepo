@@ -21,34 +21,6 @@ export interface Staking_party_stake {
   currentStakeAvailableFormatted: string;
 }
 
-export interface Staking_party_delegations_node {
-  __typename: "Node";
-  /**
-   * The node url eg n01.vega.xyz
-   */
-  id: string;
-}
-
-export interface Staking_party_delegations {
-  __typename: "Delegation";
-  /**
-   * Amount delegated
-   */
-  amount: string;
-  /**
-   * The amount field formatted by the client
-   */
-  amountFormatted: string;
-  /**
-   * Epoch of delegation
-   */
-  epoch: number;
-  /**
-   * URL of node you are delegating to
-   */
-  node: Staking_party_delegations_node;
-}
-
 export interface Staking_party {
   __typename: "Party";
   /**
@@ -59,7 +31,6 @@ export interface Staking_party {
    * The staking information for this Party
    */
   stake: Staking_party_stake;
-  delegations: Staking_party_delegations[] | null;
 }
 
 export interface Staking_epoch_timestamps {

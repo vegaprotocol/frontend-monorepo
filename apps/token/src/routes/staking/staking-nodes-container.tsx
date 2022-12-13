@@ -15,14 +15,6 @@ export const STAKING_QUERY = gql`
         currentStakeAvailable
         currentStakeAvailableFormatted @client
       }
-      delegations {
-        amount
-        amountFormatted @client
-        epoch
-        node {
-          id
-        }
-      }
     }
     epoch {
       id

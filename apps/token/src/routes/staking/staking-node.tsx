@@ -12,6 +12,9 @@ import { StakingNodesContainer } from './staking-nodes-container';
 import { StakingWalletsContainer } from './staking-wallets-container';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
+import { usePartyDelegations } from '../../components/vega-wallet/use-delegations';
+import { useAppState } from '../../contexts/app-state/app-state-context';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const StakingNodeContainer = () => {
   return (
@@ -36,6 +39,9 @@ interface StakingNodeProps {
 
 export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
   const { node } = useParams<{ node: string }>();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const { t } = useTranslation();
 
   const nodeInfo = React.useMemo(() => {
@@ -45,36 +51,36 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
   const currentEpoch = React.useMemo(() => {
     return data?.epoch.id;
   }, [data?.epoch.id]);
-
+  const partyDelegations = usePartyDelegations(vegaKey.pub);
   const stakeThisEpoch = React.useMemo(() => {
-    const delegations = data?.party?.delegations || [];
+    const delegations = partyDelegations || [];
     const amountsThisEpoch = delegations
-      .filter((d) => d.node.id === node)
-      .filter((d) => d.epoch === Number(currentEpoch))
-      .map((d) => new BigNumber(d.amountFormatted));
+      .filter((d) => d.nodeId === node)
+      .filter((d) => d.epochSeq === currentEpoch)
+      .map((d) => toBigNum(d.amount, decimals));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsThisEpoch]);
-  }, [data?.party?.delegations, node, currentEpoch]);
+  }, [partyDelegations, node, currentEpoch, decimals]);
 
   const stakeNextEpoch = React.useMemo(() => {
-    const delegations = data?.party?.delegations || [];
+    const delegations = partyDelegations || [];
     const amountsNextEpoch = delegations
-      .filter((d) => d.node.id === node)
-      .filter((d) => d.epoch === Number(currentEpoch) + 1)
-      .map((d) => new BigNumber(d.amountFormatted));
+      .filter((d) => d.nodeId === node)
+      .filter((d) => Number(d.epochSeq) === Number(currentEpoch) + 1)
+      .map((d) => toBigNum(d.amount, decimals));
 
     if (!amountsNextEpoch.length) {
       return stakeThisEpoch;
     }
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsNextEpoch]);
-  }, [currentEpoch, data?.party?.delegations, node, stakeThisEpoch]);
+  }, [currentEpoch, decimals, node, partyDelegations, stakeThisEpoch]);
 
   const currentDelegationAmount = React.useMemo(() => {
-    if (!data?.party?.delegations) return new BigNumber(0);
-    const amounts = data.party.delegations
-      .filter((d) => d.epoch === Number(currentEpoch) + 1)
-      .map((d) => new BigNumber(d.amountFormatted));
+    if (!partyDelegations?.length) return new BigNumber(0);
+    const amounts = partyDelegations
+      .filter((d) => Number(d.epochSeq) === Number(currentEpoch) + 1)
+      .map((d) => toBigNum(d.amount, decimals));
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amounts]);
-  }, [currentEpoch, data?.party?.delegations]);
+  }, [currentEpoch, decimals, partyDelegations]);
 
   const unstaked = React.useMemo(() => {
     const value = new BigNumber(
