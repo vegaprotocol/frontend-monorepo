@@ -150,20 +150,20 @@ const MARKET_B: PartialMarket = {
 
 describe('WelcomeLandingDialog', () => {
   it('should call onSelect callback on SelectMarketLandingTable', () => {
-    const setDialogOpen = jest.fn();
+    const onClose = jest.fn();
 
     render(
       <MemoryRouter>
         <SelectMarketLandingTable
           markets={[MARKET_A as Market, MARKET_B as Market]}
-          setDialogOpen={setDialogOpen}
+          onClose={onClose}
         />
       </MemoryRouter>,
       { wrapper: MockedProvider }
     );
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
-    expect(setDialogOpen).toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalled();
     fireEvent.click(screen.getAllByTestId(`market-link-2`)[0]);
-    expect(setDialogOpen).toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalled();
   });
 });
