@@ -29,6 +29,7 @@ import { Grid } from '../../grid';
 import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
+import { formatDistanceToNow } from 'date-fns';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -284,6 +285,16 @@ export const MarketList = () => {
             )}
             sortable={false}
             cellStyle={{ overflow: 'unset' }}
+          />
+          <AgGridColumn
+            headerName={t('Age')}
+            field="marketTimestamps.open"
+            headerTooltip={t('Age of the market')}
+            valueFormatter={({
+              value,
+            }: VegaValueFormatterParams<Market, 'marketTimestamps.open'>) => {
+              return value ? formatDistanceToNow(new Date(value)) : '-';
+            }}
           />
         </Grid>
 
