@@ -125,6 +125,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       </section>
       <section>
         <StakingForm
+          currentEpoch={data?.epoch.id}
           pubkey={vegaKey.pub}
           nodeId={nodeInfo.id}
           nodeName={nodeInfo.name}
