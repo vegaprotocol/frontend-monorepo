@@ -1,6 +1,7 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { format } from 'date-fns';
@@ -27,14 +28,48 @@ import {
   nextWeek,
 } from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { UserVoteDocument } from '../vote-details/__generated__/Vote';
+import faker from 'faker';
+
+const createUserVoteQueryMock = (
+  proposalId: string | undefined | null,
+  value: VoteValue
+) => ({
+  request: {
+    query: UserVoteDocument,
+    variables: {
+      partyId: mockPubkey.publicKey,
+    },
+  },
+  result: {
+    data: {
+      party: {
+        votesConnection: {
+          edges: [
+            {
+              node: {
+                proposalId,
+                vote: {
+                  value,
+                  datetime: faker.date.past().toISOString(),
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+});
 
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
-  mock = networkParamsQueryMock
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mocks: MockedResponse<any>[] = [networkParamsQueryMock]
 ) =>
   render(
     <Router>
-      <MockedProvider mocks={[mock]}>
+      <MockedProvider mocks={mocks}>
         <AppStateProvider>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposalsListItemDetails proposal={proposal} />
@@ -146,76 +181,38 @@ describe('Proposals list item details', () => {
     );
   });
 
-  it('Renders proposal state: Open - user voted for', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        votes: {
-          __typename: 'ProposalVotes',
-          yes: {
-            votes: [
-              {
-                __typename: 'Vote',
-                value: VoteValue.VALUE_YES,
-                datetime: lastWeek.toString(),
-                party: {
-                  __typename: 'Party',
-                  id: mockPubkey.publicKey,
-                  stakingSummary: {
-                    __typename: 'StakingSummary',
-                    currentStakeAvailable: '1000',
-                  },
-                },
-              },
-            ],
-          },
-          no: generateNoVotes(0),
-        },
-        terms: {
-          closingDatetime: nextWeek.toString(),
-        },
-      })
-    );
+  it('Renders proposal state: Open - user voted for', async () => {
+    const proposal = generateProposal({
+      state: ProposalState.STATE_OPEN,
+      terms: {
+        closingDatetime: nextWeek.toString(),
+      },
+    });
+    renderComponent(proposal, [
+      networkParamsQueryMock,
+      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_YES),
+    ]);
+    screen.debug();
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
-    expect(screen.getByTestId('vote-details')).toHaveTextContent(
-      'You voted For'
-    );
+
+    expect(await screen.findByText('You voted')).toBeInTheDocument();
+    expect(await screen.findByText('For')).toBeInTheDocument();
   });
 
-  it('Renders proposal state: Open - user voted against', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        votes: {
-          __typename: 'ProposalVotes',
-          no: {
-            votes: [
-              {
-                __typename: 'Vote',
-                value: VoteValue.VALUE_NO,
-                datetime: lastWeek.toString(),
-                party: {
-                  __typename: 'Party',
-                  id: mockPubkey.publicKey,
-                  stakingSummary: {
-                    __typename: 'StakingSummary',
-                    currentStakeAvailable: '1000',
-                  },
-                },
-              },
-            ],
-          },
-          yes: generateYesVotes(0),
-        },
-        terms: {
-          closingDatetime: nextWeek.toString(),
-        },
-      })
-    );
+  it('Renders proposal state: Open - user voted against', async () => {
+    const proposal = generateProposal({
+      state: ProposalState.STATE_OPEN,
+      terms: {
+        closingDatetime: nextWeek.toString(),
+      },
+    });
+    renderComponent(proposal, [
+      networkParamsQueryMock,
+      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_NO),
+    ]);
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
-    expect(screen.getByTestId('vote-details')).toHaveTextContent(
-      'You voted Against'
-    );
+    expect(await screen.findByText('You voted')).toBeInTheDocument();
+    expect(await screen.findByText('Against')).toBeInTheDocument();
   });
 
   it('Renders proposal state: Open - participation not reached', () => {
