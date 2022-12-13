@@ -6,5 +6,5 @@ export const MAINNET_WELCOME_HEADER = t(
   'Trade cash settled futures on the fully decentralised Vega network.'
 );
 export const TESTNET_WELCOME_HEADER = t(
-  'Try out trading cash settled futures on the fully decentralised Vega networt (Testnet).'
+  'Try out trading cash settled futures on the fully decentralised Vega network (Testnet).'
 );
