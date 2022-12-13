@@ -1,40 +1,17 @@
-import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { getNodes, t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
 import { Panel } from '../../../components/panel';
-import { InfoPanel } from '../../../components/info-panel';
 import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useExplorerPartyAssetsQuery } from './__generated__/Party-assets';
-import type * as Schema from '@vegaprotocol/types';
-import get from 'lodash/get';
+import type { ExplorerPartyAssetsAccountsFragment } from './__generated__/Party-assets';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import AssetBalance from '../../../components/asset-balance/asset-balance';
-import { AssetLink, MarketLink } from '../../../components/links';
-import { Table, TableRow } from '../../../components/table';
 import GovernanceAssetBalance from '../../../components/asset-balance/governance-asset-balance';
-
-const accountTypeString: Record<Schema.AccountType, string> = {
-  ACCOUNT_TYPE_BOND: t('Bond'),
-  ACCOUNT_TYPE_EXTERNAL: t('External'),
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: t('Fees (Infrastructure)'),
-  ACCOUNT_TYPE_FEES_LIQUIDITY: t('Fees (Liquidity)'),
-  ACCOUNT_TYPE_FEES_MAKER: t('Fees (Maker)'),
-  ACCOUNT_TYPE_GENERAL: t('General'),
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: t('Global Insurance Pool'),
-  ACCOUNT_TYPE_GLOBAL_REWARD: t('Global Reward Pool'),
-  ACCOUNT_TYPE_INSURANCE: t('Insurance'),
-  ACCOUNT_TYPE_MARGIN: t('Margin'),
-  ACCOUNT_TYPE_PENDING_TRANSFERS: t('Pending Transfers'),
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: t('Reward - LP Fees received'),
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: t('Reward - Maker fees paid'),
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: t('Reward - Maker fees received'),
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: t('Reward - Market proposers'),
-  ACCOUNT_TYPE_SETTLEMENT: t('Settlement'),
-};
+import { PartyAccounts } from './components/party-accounts';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -71,54 +48,6 @@ const Party = () => {
     </Panel>
   );
 
-  const accounts = (
-    <Table className="max-w-5xl min-w-fit">
-      <thead>
-        <TableRow modifier="bordered" className="font-mono">
-          <td>{t('Type')}</td>
-          <td>{t('Market')}</td>
-          <td className="text-right pr-2">{t('Balance')}</td>
-          <td>{t('Asset')}</td>
-        </TableRow>
-      </thead>
-      <tbody>
-        {p?.accountsConnection?.edges?.map((a) => {
-          const account = a?.node;
-          if (!account || !account.asset) {
-            return '';
-          }
-          const m = get(account, 'market.tradableInstrument.instrument.name');
-
-          return (
-            <TableRow
-              title={account.asset.name}
-              id={`${accountTypeString[account.type]} ${m ? ` - ${m}` : ''}`}
-            >
-              <td className="text-md">{accountTypeString[account.type]}</td>
-              <td className="text-md">
-                {account?.market?.id ? (
-                  <MarketLink id={account.market?.id} />
-                ) : (
-                  <p>-</p>
-                )}
-              </td>
-              <td className="text-md text-right pr-2">
-                <AssetBalance
-                  assetId={account.asset.id}
-                  price={account.balance}
-                  hideAssetLink={true}
-                />
-              </td>
-              <td className="text-md">
-                <AssetLink id={account.asset.id} />
-              </td>
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </Table>
-  );
-
   const staking = (
     <section>
       {p?.stakingSummary?.currentStakeAvailable ? (
@@ -132,6 +61,9 @@ const Party = () => {
     </section>
   );
 
+
+  const accounts = getNodes<ExplorerPartyAssetsAccountsFragment>(p?.accountsConnection)
+
   return (
     <section>
       <h1
@@ -144,7 +76,7 @@ const Party = () => {
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
-          {accounts}
+          { accounts ? <PartyAccounts accounts={accounts}/> : null }
           {staking}
 
           <SubHeading>{t('Transactions')}</SubHeading>
