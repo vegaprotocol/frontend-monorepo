@@ -8,7 +8,7 @@ import { toNonHex } from '../../../components/search/detect-search';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
-import { useExplorerPartyAssetsQuery } from './__generated__/party-assets';
+import { useExplorerPartyAssetsQuery } from './__generated__/Party-assets';
 import type * as Schema from '@vegaprotocol/types';
 import get from 'lodash/get';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
@@ -99,7 +99,7 @@ const Party = () => {
                 {account?.market?.id ? (
                   <MarketLink id={account.market?.id} />
                 ) : (
-                  <p className="text-center">-</p>
+                  <p>-</p>
                 )}
               </td>
               <td className="text-md text-right pr-2">
