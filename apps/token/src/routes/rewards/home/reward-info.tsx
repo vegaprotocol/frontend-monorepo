@@ -86,6 +86,10 @@ export const RewardInfo = ({ currVegaKey, rewardAssetId }: RewardInfoProps) => {
   );
 };
 
+const convertNanosecondToMilliseconds = (nanoseconds: number) => {
+  return nanoseconds / 1000000;
+};
+
 interface RewardTableProps {
   reward: Reward;
 }
@@ -122,7 +126,9 @@ export const RewardTable = ({ reward }: RewardTableProps) => {
           {t('received')}
           <span>
             {format(
-              new Date(Number(reward.receivedAt) / 1000000),
+              new Date(
+                convertNanosecondToMilliseconds(Number(reward.receivedAt))
+              ),
               DATE_FORMAT_DETAILED
             )}
           </span>
