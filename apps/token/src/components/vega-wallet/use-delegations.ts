@@ -1,5 +1,5 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface Delegation {
   party: string;
@@ -52,12 +52,19 @@ export interface DelegationsNode extends Delegation {
 
 export const usePartyDelegations = (partyId: string | undefined) => {
   const delegationsUrl = `${process.env['NX_VEGA_REST']}delegations?party=${partyId}`;
-  const { state: delegeationsData } =
+  const { state: delegeationsData, refetch: refetchDelegations } =
     useFetch<DelegationsQuery>(delegationsUrl);
   const { state: nodesData } = useFetch<NodesQuery>(
     `${process.env['NX_VEGA_REST']}nodes`
   );
-  console.log(nodesData.data?.nodes);
+  useEffect(() => {
+    const interval = setInterval(() => refetchDelegations(), 10000);
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [refetchDelegations]);
   return useMemo<DelegationsNode[] | undefined>(
     () =>
       delegeationsData.data?.delegations.map((d) => ({
