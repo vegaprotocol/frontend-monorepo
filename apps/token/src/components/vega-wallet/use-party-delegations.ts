@@ -52,7 +52,7 @@ export interface DelegationsNode extends Delegation {
 
 export const usePartyDelegations = (partyId: string | undefined) => {
   const delegationsUrl = `${process.env['NX_VEGA_REST']}delegations?party=${partyId}`;
-  const { state: delegeationsData, refetch: refetchDelegations } =
+  const { state: delegationsData, refetch: refetchDelegations } =
     useFetch<DelegationsQuery>(delegationsUrl);
   const { state: nodesData } = useFetch<NodesQuery>(
     `${process.env['NX_VEGA_REST']}nodes`
@@ -67,11 +67,11 @@ export const usePartyDelegations = (partyId: string | undefined) => {
   }, [refetchDelegations]);
 
   const delegations = useMemo<DelegationsNode[] | undefined>(() => {
-    if (!delegeationsData.data) return [];
-    return delegeationsData.data?.delegations.map((d) => ({
+    if (!delegationsData.data) return [];
+    return delegationsData.data?.delegations.map((d) => ({
       ...d,
       node: nodesData.data?.nodes.find(({ id }) => d.nodeId === id),
     }));
-  }, [delegeationsData.data, nodesData.data?.nodes]);
+  }, [delegationsData.data, nodesData.data?.nodes]);
   return delegations;
 };
