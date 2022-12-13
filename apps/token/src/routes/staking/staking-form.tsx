@@ -31,25 +31,7 @@ import type {
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
-
-export const PARTY_DELEGATIONS_QUERY = gql`
-  query PartyDelegations($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      delegations {
-        amount
-        amountFormatted @client
-        node {
-          id
-        }
-        epoch
-      }
-    }
-    epoch {
-      id
-    }
-  }
-`;
+import { usePartyDelegations } from '../../components/vega-wallet/use-party-delegations';
 
 enum FormState {
   Default,
@@ -75,6 +57,7 @@ interface StakingFormProps {
   nodeName: string;
   availableStakeToAdd: BigNumber;
   availableStakeToRemove: BigNumber;
+  currentEpoch: string | undefined;
 }
 
 export const StakingForm = ({
@@ -83,6 +66,7 @@ export const StakingForm = ({
   nodeName,
   availableStakeToAdd,
   availableStakeToRemove,
+  currentEpoch,
 }: StakingFormProps) => {
   const params = useSearchParams();
   const navigate = useNavigate();
@@ -99,6 +83,7 @@ export const StakingForm = ({
     RemoveType.EndOfEpoch
   );
   // Clear the amount when the staking method changes
+  const delegations = usePartyDelegations(pubkey);
   React.useEffect(() => {
     setAmount('');
   }, [action, setAmount]);
@@ -159,39 +144,18 @@ export const StakingForm = ({
   }
 
   React.useEffect(() => {
-    // eslint-disable-next-line
-    let interval: any;
-
     if (formState === FormState.Pending) {
-      // start polling for delegation
-      interval = setInterval(() => {
-        client
-          .query<PartyDelegations, PartyDelegationsVariables>({
-            query: PARTY_DELEGATIONS_QUERY,
-            variables: { partyId: pubkey },
-            fetchPolicy: 'network-only',
-          })
-          .then((res) => {
-            const delegation = res.data.party?.delegations?.find((d) => {
-              return (
-                d.node.id === nodeId &&
-                d.epoch === Number(res.data.epoch.id) + 1
-              );
-            });
+      const delegation = delegations?.find((d) => {
+        return (
+          d.nodeId === nodeId && Number(d.epochSeq) === Number(currentEpoch) + 1
+        );
+      });
 
-            if (delegation) {
-              setFormState(FormState.Success);
-              clearInterval(interval);
-            }
-          })
-          .catch((err) => {
-            Sentry.captureException(err);
-          });
-      }, 1000);
+      if (delegation) {
+        setFormState(FormState.Success);
+      }
     }
-
-    return () => clearInterval(interval);
-  }, [formState, client, pubkey, nodeId]);
+  }, [formState, client, pubkey, nodeId, delegations, currentEpoch]);
 
   if (formState === FormState.Failure) {
     return <StakeFailure nodeName={nodeName} />;
