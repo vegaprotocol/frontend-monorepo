@@ -20,7 +20,7 @@ fragment ExplorerPartyAssetsAccounts on AccountBalance {
         name
       }
     }
-  } 
+  }
 }
 
 query ExplorerPartyAssets($partyId: ID!) {
@@ -46,7 +46,7 @@ query ExplorerPartyAssets($partyId: ID!) {
         accountsConnection {
           edges {
             node {
-              ... ExplorerPartyAssetsAccounts 
+              ...ExplorerPartyAssetsAccounts
             }
           }
         }

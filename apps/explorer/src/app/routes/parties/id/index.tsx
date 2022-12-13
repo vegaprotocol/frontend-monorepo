@@ -61,8 +61,9 @@ const Party = () => {
     </section>
   );
 
-
-  const accounts = getNodes<ExplorerPartyAssetsAccountsFragment>(p?.accountsConnection)
+  const accounts = getNodes<ExplorerPartyAssetsAccountsFragment>(
+    p?.accountsConnection
+  );
 
   return (
     <section>
@@ -76,7 +77,7 @@ const Party = () => {
         <>
           {header}
           <SubHeading>{t('Asset data')}</SubHeading>
-          { accounts ? <PartyAccounts accounts={accounts}/> : null }
+          {accounts ? <PartyAccounts accounts={accounts} /> : null}
           {staking}
 
           <SubHeading>{t('Transactions')}</SubHeading>

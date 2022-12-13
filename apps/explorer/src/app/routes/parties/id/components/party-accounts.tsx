@@ -6,7 +6,6 @@ import { Table, TableRow } from '../../../../components/table';
 import type * as Schema from '@vegaprotocol/types';
 import type { ExplorerPartyAssetsAccountsFragment } from '../__generated__/Party-assets';
 
-
 const accountTypeString: Record<Schema.AccountType, string> = {
   ACCOUNT_TYPE_BOND: t('Bond'),
   ACCOUNT_TYPE_EXTERNAL: t('External'),
@@ -27,7 +26,7 @@ const accountTypeString: Record<Schema.AccountType, string> = {
 };
 
 interface PartyAccountsProps {
-  accounts: ExplorerPartyAssetsAccountsFragment[]
+  accounts: ExplorerPartyAssetsAccountsFragment[];
 }
 
 /**
@@ -47,7 +46,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
         </TableRow>
       </thead>
       <tbody>
-        {accounts.map(account => {
+        {accounts.map((account) => {
           const m = get(account, 'market.tradableInstrument.instrument.name');
 
           return (
