@@ -47,7 +47,6 @@ export const ProposalsListItemDetails = ({
     });
   const { t } = useTranslation();
   const { voteState } = useUserVote(proposal?.id);
-
   let proposalStatus: ReactNode;
   let voteDetails: ReactNode;
   let voteStatus: ReactNode;
