@@ -1,17 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
 import * as Schema from '@vegaprotocol/types';
-
-import { SelectAllMarketsTableBody } from './select-market';
-
 import type {
   MarketWithCandles,
   MarketWithData,
   MarketData,
 } from '@vegaprotocol/market-list';
-import { MemoryRouter } from 'react-router-dom';
-import { MockedProvider } from '@apollo/client/testing';
-type Market = MarketWithCandles & MarketWithData;
+import { SelectMarketLandingTable } from './welcome-landing-dialog';
 
+type Market = MarketWithCandles & MarketWithData;
 type PartialMarket = Partial<
   Omit<Market, 'data'> & { data: Partial<MarketData> }
 >;
@@ -150,24 +148,22 @@ const MARKET_B: PartialMarket = {
   ],
 };
 
-describe('SelectMarket', () => {
-  it('should render the SelectAllMarketsTableBody', () => {
-    const onSelect = jest.fn();
-    const onCellClick = jest.fn();
-    const { container } = render(
+describe('WelcomeLandingDialog', () => {
+  it('should call onSelect callback on SelectMarketLandingTable', () => {
+    const onClose = jest.fn();
+
+    render(
       <MemoryRouter>
-        <SelectAllMarketsTableBody
+        <SelectMarketLandingTable
           markets={[MARKET_A as Market, MARKET_B as Market]}
-          onCellClick={onCellClick}
-          onSelect={onSelect}
+          onClose={onClose}
         />
       </MemoryRouter>,
       { wrapper: MockedProvider }
     );
-    expect(screen.getByText('ABCDEF')).toBeTruthy(); // name
-    expect(screen.getByText('25.00%')).toBeTruthy(); // price change
-    expect(container).toHaveTextContent(/1,000/); // volume
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
-    expect(onSelect).toHaveBeenCalledWith('1');
+    expect(onClose).toHaveBeenCalled();
+    fireEvent.click(screen.getAllByTestId(`market-link-2`)[0]);
+    expect(onClose).toHaveBeenCalled();
   });
 });
