@@ -12,7 +12,7 @@ import { StakingNodesContainer } from './staking-nodes-container';
 import { StakingWalletsContainer } from './staking-wallets-container';
 import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
-import { usePartyDelegations } from '../../components/vega-wallet/use-delegations';
+import { usePartyDelegations } from '../../components/vega-wallet/use-party-delegations';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { toBigNum } from '@vegaprotocol/react-helpers';
 

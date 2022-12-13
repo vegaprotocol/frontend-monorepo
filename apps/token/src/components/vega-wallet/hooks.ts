@@ -15,7 +15,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { isAssetTypeERC20, toBigNum } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
-import { usePartyDelegations } from './use-delegations';
+import { usePartyDelegations } from './use-party-delegations';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 
 const DELEGATIONS_QUERY = gql`

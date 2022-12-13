@@ -31,7 +31,7 @@ import type {
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useNetworkParam } from '@vegaprotocol/react-helpers';
-import { usePartyDelegations } from '../../components/vega-wallet/use-delegations';
+import { usePartyDelegations } from '../../components/vega-wallet/use-party-delegations';
 
 enum FormState {
   Default,
