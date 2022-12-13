@@ -25,6 +25,7 @@ import { usePollForDelegations } from './hooks';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -122,12 +123,13 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     usePollForDelegations();
 
   const unstaked = React.useMemo(() => {
-    const totalDelegated = delegations.reduce<BigNumber>(
-      (acc, cur) => acc.plus(cur.amountFormatted),
-      new BigNumber(0)
-    );
+    const totalDelegated =
+      delegations?.reduce<BigNumber>(
+        (acc, cur) => acc.plus(toBigNum(cur.amount, decimals)),
+        new BigNumber(0)
+      ) || new BigNumber(0);
     return BigNumber.max(currentStakeAvailable.minus(totalDelegated), 0);
-  }, [currentStakeAvailable, delegations]);
+  }, [currentStakeAvailable, decimals, delegations]);
 
   const footer = (
     <div className="flex justify-end">

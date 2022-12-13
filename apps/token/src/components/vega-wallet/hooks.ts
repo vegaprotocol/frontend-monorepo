@@ -2,7 +2,7 @@ import { gql, useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import noIcon from '../../images/token-no-icon.png';
@@ -12,13 +12,18 @@ import { addDecimal } from '../../lib/decimals';
 import type { WalletCardAssetProps } from '../wallet-card';
 import type {
   Delegations,
-  Delegations_party_delegations,
   DelegationsVariables,
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
-import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import {
+  isAssetTypeERC20,
+  toBigNum,
+  useFetch,
+} from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
+import { usePartyDelegations, DelegationsNode } from './use-delegations';
+import { useAppState } from '../../contexts/app-state/app-state-context';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -27,15 +32,6 @@ const DELEGATIONS_QUERY = gql`
     }
     party(id: $partyId) {
       id
-      delegations {
-        amountFormatted @client
-        amount
-        node {
-          id
-          name
-        }
-        epoch
-      }
       stake {
         currentStakeAvailable
         currentStakeAvailableFormatted @client
@@ -61,25 +57,30 @@ const DELEGATIONS_QUERY = gql`
 `;
 
 export const usePollForDelegations = () => {
+  const {
+    appState: { decimals },
+  } = useAppState();
   const { token: vegaToken } = useContracts();
   const { t } = useTranslation();
   const { keypair } = useVegaWallet();
   const client = useApolloClient();
-  const [delegations, setDelegations] = React.useState<
-    Delegations_party_delegations[]
-  >([]);
-  const [delegatedNodes, setDelegatedNodes] = React.useState<
+  const [sortedDelegations, setSortedDelegations] = useState<
+    DelegationsNode[] | undefined
+  >(undefined);
+  const delegations = usePartyDelegations(keypair?.pub);
+  const [delegatedNodes, setDelegatedNodes] = useState<
     {
       nodeId: string;
-      name: string;
+      name: string | undefined;
       hasStakePending: boolean;
       currentEpochStake?: BigNumber;
       nextEpochStake?: BigNumber;
     }[]
   >([]);
-  const [accounts, setAccounts] = React.useState<WalletCardAssetProps[]>([]);
-  const [currentStakeAvailable, setCurrentStakeAvailable] =
-    React.useState<BigNumber>(new BigNumber(0));
+  const [accounts, setAccounts] = useState<WalletCardAssetProps[]>([]);
+  const [currentStakeAvailable, setCurrentStakeAvailable] = useState<BigNumber>(
+    new BigNumber(0)
+  );
 
   React.useEffect(() => {
     // eslint-disable-next-line
@@ -98,15 +99,13 @@ export const usePollForDelegations = () => {
           .then((res) => {
             if (!mounted) return;
             const filter =
-              res.data.party?.delegations?.filter((d) => {
-                return d.epoch.toString() === res.data.epoch.id;
+              delegations?.filter((d) => {
+                return d.epochSeq === res.data.epoch.id;
               }) || [];
             const sortedDelegations = [...filter].sort((a, b) => {
-              return new BigNumber(b.amountFormatted)
-                .minus(a.amountFormatted)
-                .toNumber();
+              return new BigNumber(b.amount).minus(a.amount).toNumber();
             });
-            setDelegations(sortedDelegations);
+            setSortedDelegations(sortedDelegations);
             setCurrentStakeAvailable(
               new BigNumber(
                 res.data.party?.stake.currentStakeAvailableFormatted || 0
@@ -156,22 +155,22 @@ export const usePollForDelegations = () => {
                 })
             );
             const delegatedNextEpoch = keyBy(
-              res.data.party?.delegations?.filter((d) => {
-                return d.epoch === Number(res.data.epoch.id) + 1;
+              delegations?.filter((d) => {
+                return Number(d.epochSeq) === Number(res.data.epoch.id) + 1;
               }) || [],
-              'node.id'
+              'nodeId'
             );
             const delegatedThisEpoch = keyBy(
-              res.data.party?.delegations?.filter((d) => {
-                return d.epoch === Number(res.data.epoch.id);
+              delegations?.filter((d) => {
+                return d.epochSeq === res.data.epoch.id;
               }) || [],
-              'node.id'
+              'nodeId'
             );
             const nodesDelegated = uniq([
               ...Object.keys(delegatedNextEpoch),
               ...Object.keys(delegatedThisEpoch),
             ]);
-
+            console.log(delegatedNextEpoch);
             const delegatedAmounts = nodesDelegated
               .map((d) => ({
                 nodeId: d,
@@ -179,18 +178,18 @@ export const usePollForDelegations = () => {
                   delegatedThisEpoch[d]?.node?.name ||
                   delegatedNextEpoch[d]?.node?.name,
                 hasStakePending: !!(
-                  (delegatedThisEpoch[d]?.amountFormatted ||
-                    delegatedNextEpoch[d]?.amountFormatted) &&
-                  delegatedThisEpoch[d]?.amountFormatted !==
-                    delegatedNextEpoch[d]?.amountFormatted &&
+                  (delegatedThisEpoch[d]?.amount ||
+                    delegatedNextEpoch[d]?.amount) &&
+                  delegatedThisEpoch[d]?.amount !==
+                    delegatedNextEpoch[d]?.amount &&
                   delegatedNextEpoch[d] !== undefined
                 ),
                 currentEpochStake:
                   delegatedThisEpoch[d] &&
-                  new BigNumber(delegatedThisEpoch[d].amountFormatted),
+                  toBigNum(delegatedThisEpoch[d].amount, decimals),
                 nextEpochStake:
                   delegatedNextEpoch[d] &&
-                  new BigNumber(delegatedNextEpoch[d].amountFormatted),
+                  toBigNum(delegatedNextEpoch[d].amount, decimals),
               }))
               .sort((a, b) => {
                 if (
@@ -205,8 +204,10 @@ export const usePollForDelegations = () => {
                   )
                 )
                   return -1;
-                if ((!a.name && b.name) || a.name < b.name) return 1;
-                if ((!b.name && a.name) || a.name > b.name) return -1;
+                if ((!a.name && b.name) || a.name || '' < (b.name || ''))
+                  return 1;
+                if ((!b.name && a.name) || a.name || '' > (b.name || ''))
+                  return -1;
                 if (a.nodeId > b.nodeId) return 1;
                 if (a.nodeId < b.nodeId) return -1;
                 return 0;
@@ -220,14 +221,19 @@ export const usePollForDelegations = () => {
             // will just continue to fail
             clearInterval(interval);
           });
-      }, 100000);
+      }, 1000);
     }
 
     return () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, keypair?.pub, t, vegaToken.address]);
+  }, [client, delegations, keypair?.pub, t, vegaToken.address]);
 
-  return { delegations, currentStakeAvailable, delegatedNodes, accounts };
+  return {
+    delegations: sortedDelegations,
+    currentStakeAvailable,
+    delegatedNodes,
+    accounts,
+  };
 };
