@@ -1,13 +1,17 @@
-import { fromNanoSeconds, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  fromNanoSeconds,
+  t,
+  useThemeSwitcher,
+} from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
-import { extent } from 'd3-array';
-import { scaleLinear, scaleTime } from 'd3-scale';
-import { line } from 'd3-shape';
+import type { ChangeEvent } from 'react';
 import { useMemo, useState } from 'react';
-import type { AccountHistoryQuery } from './__generated___/AccountHistory';
-import { useAccountHistoryQuery } from './__generated___/AccountHistory';
-import { Schema } from '@vegaprotocol/types';
+import type { AccountHistoryQuery } from './__generated__/AccountHistory';
+import { useAccountsWithBalanceQuery } from './__generated__/AccountHistory';
+import { useAccountHistoryQuery } from './__generated__/AccountHistory';
+import * as Schema from '@vegaprotocol/types';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import {
@@ -15,8 +19,62 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Toggle,
 } from '@vegaprotocol/ui-toolkit';
 import { AccountTypeMapping } from '@vegaprotocol/types';
+import { PriceChart } from 'pennant';
+import 'pennant/dist/style.css';
+
+const calculateStartDate = (range: string): string | undefined => {
+  const now = new Date();
+  switch (range) {
+    case '1D':
+      return new Date(now.setDate(now.getDate() - 1)).toISOString();
+    case '7D':
+      return new Date(now.setDate(now.getDate() - 7)).toISOString();
+    case '1M':
+      return new Date(now.setMonth(now.getMonth() - 1)).toISOString();
+    case '3M':
+      return new Date(now.setMonth(now.getMonth() - 3)).toISOString();
+    case '1Y':
+      return new Date(now.setFullYear(now.getFullYear() - 1)).toISOString();
+    case 'YTD':
+      return new Date(now.setMonth(0)).toISOString();
+    default:
+      return undefined;
+  }
+};
+
+const dateRangeToggleItems = [
+  {
+    label: t('1D'),
+    value: '1D',
+  },
+  {
+    label: t('7D'),
+    value: '7D',
+  },
+  {
+    label: t('1M'),
+    value: '1M',
+  },
+  {
+    label: t('3M'),
+    value: '3M',
+  },
+  {
+    label: t('1Y'),
+    value: '1Y',
+  },
+  {
+    label: t('YTD'),
+    value: 'YTD',
+  },
+  {
+    label: t('All'),
+    value: 'All',
+  },
+];
 
 export const AccountHistoryContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -30,87 +88,138 @@ export const AccountHistoryContainer = () => {
     return <div>Loading...</div>;
   }
 
-  return <AccountHistoryManager pubKey={pubKey} assets={assets} />;
+  return <AccountHistoryManager pubKey={pubKey} assetData={assets} />;
 };
 
 const AccountHistoryManager = ({
   pubKey,
-  assets,
+  assetData,
 }: {
   pubKey: string;
-  assets: AssetFieldsFragment[];
+  assetData: AssetFieldsFragment[];
 }) => {
-  const [asset, setAsset] = useState(() => {
-    // return assets.find(
-    //   (a) =>
-    //     a.id ===
-    //     'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663'
-    // );
-    return assets[0];
-  });
+  const [range, setRange] = useState<string>('All');
+  const [asset, setAsset] = useState<AssetFieldsFragment>();
   const [accountType, setAccountType] = useState<Schema.AccountType>(
     Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
 
-  const { data } = useAccountHistoryQuery({
-    variables: {
+  const variablesForOneTimeQuery = useMemo(
+    () => ({
+      partyId: pubKey,
+      dateRange:
+        range === 'All' ? undefined : { start: calculateStartDate(range) },
+    }),
+    [pubKey, range]
+  );
+
+  const assetsWithBalanceHistory = useAccountsWithBalanceQuery({
+    variables: variablesForOneTimeQuery,
+    skip: !pubKey,
+  });
+
+  const assetsWithBalance = useMemo(
+    () =>
+      assetsWithBalanceHistory.data?.balanceChanges.edges.map(
+        (e) => e?.node.assetId
+      ) || [],
+    [assetsWithBalanceHistory.data?.balanceChanges.edges]
+  );
+
+  const assets = useMemo(
+    () => assetData.filter((a) => assetsWithBalance.includes(a.id)),
+    [assetData, assetsWithBalance]
+  );
+
+  const variables = useMemo(
+    () => ({
       partyId: pubKey,
       assetId: asset?.id || '',
       accountTypes: accountType ? [accountType] : undefined,
-    },
-    skip: !asset,
-  });
+      dateRange:
+        range === 'All' ? undefined : { start: calculateStartDate(range) },
+    }),
+    [pubKey, asset, accountType, range]
+  );
 
-  console.log({ asset });
+  console.log({ variables });
+
+  const { data } = useAccountHistoryQuery({
+    variables,
+    skip: !asset || !pubKey,
+  });
 
   return (
     <div>
-      <div className="flex gap-2 m-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            {asset ? asset.symbol : t('Select asset')}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {assets.map((a) => (
-              <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>
-                {a.symbol}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            {accountType
-              ? `${
-                  AccountTypeMapping[
-                    accountType as keyof typeof Schema.AccountType
-                  ]
-                } Account`
-              : t('Select account type')}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {Object.keys(Schema.AccountType).map((type) => (
-              <DropdownMenuItem
-                key={type}
-                onClick={() => setAccountType(type as Schema.AccountType)}
-              >
-                {AccountTypeMapping[type as keyof typeof Schema.AccountType]}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div>TODO: Date range</div>
+      <div className="flex w-full">
+        <div className=" gap-2 m-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              {accountType
+                ? `${
+                    AccountTypeMapping[
+                      accountType as keyof typeof Schema.AccountType
+                    ]
+                  } Account`
+                : t('Select account type')}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {Object.keys(Schema.AccountType).map((type) => (
+                <DropdownMenuItem
+                  key={type}
+                  onClick={() => setAccountType(type as Schema.AccountType)}
+                >
+                  {AccountTypeMapping[type as keyof typeof Schema.AccountType]}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              {asset ? asset.symbol : t('Select asset')}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {assets.map((a) => (
+                <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>
+                  {a.symbol}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="pt-1 justify-items-end">
+          <Toggle
+            id="account-history-date-range"
+            name="account-history-date-range"
+            toggles={dateRangeToggleItems}
+            checkedValue={range}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setRange(e.target.value)
+            }
+          />
+        </div>
       </div>
-      <AccountHistoryChart data={data} />
+      {asset && (
+        <AccountHistoryChart
+          data={data}
+          accountType={accountType}
+          asset={asset}
+        />
+      )}
     </div>
   );
 };
 
-const AccountHistoryChart = ({
+export const AccountHistoryChart = ({
   data,
+  accountType,
+  asset,
 }: {
   data: AccountHistoryQuery | undefined;
+  accountType: Schema.AccountType;
+  asset: AssetFieldsFragment;
 }) => {
+  const [theme] = useThemeSwitcher();
   const values = useMemo(() => {
     if (!data?.balanceChanges.edges.length) {
       return [];
@@ -118,65 +227,28 @@ const AccountHistoryChart = ({
 
     return compact(data.balanceChanges.edges)
       .filter((edge) => {
-        return (
-          edge.node.accountType === Schema.AccountType.ACCOUNT_TYPE_GENERAL
-        );
+        return edge.node.accountType === accountType;
       })
       .map((edge) => {
         return {
           datetime: fromNanoSeconds(edge.node.timestamp), // Date
-          balance: Number(edge.node.balance), // number
+          balance: Number(addDecimal(edge.node.balance, asset.decimals)), // number
         };
       });
-    // return [
-    //   // ...res,
-    //   { datetime: new Date('2022-11-20'), balance: 200 },
-    //   { datetime: new Date('2022-11-21'), balance: 300 },
-    //   { datetime: new Date('2022-11-22'), balance: 250 },
-    //   { datetime: new Date('2022-11-23'), balance: 250 },
-    //   { datetime: new Date('2022-11-24'), balance: 650 },
-    //   { datetime: new Date('2022-11-25'), balance: 250 },
-    // ];
-  }, [data]);
+  }, [accountType, asset.decimals, data?.balanceChanges.edges]);
   if (!values.length) {
     return <div>{t('No data')}</div>;
   }
 
-  const pathProps = {
-    className: '[vector-effect:non-scaling-stroke] stroke-vega-green',
-    stroke: 'strokeCurrent',
-    strokeWidth: 1,
-    fill: 'transparent',
+  const chartData: { cols: string[]; rows: [Date, ...number[]][] } = {
+    cols: ['Date', asset.symbol],
+    rows: values.map((d) => [d.datetime, d.balance]),
   };
 
-  const width = 500;
-  const height = 300;
-  const xExtents = extent(values, (d) => d.datetime) as [Date, Date];
-  const yExtents = extent(values, (d) => d.balance) as [number, number];
-  const xScale = scaleTime().domain(xExtents).range([0, width]);
-  const yScale = scaleLinear().domain(yExtents).range([height, 0]);
-
-  console.log(xExtents, yExtents);
-
-  const lineSeries = line()
-    // @ts-ignore dunno why d3 dont work here
-    .x((d) => xScale(d.datetime))
-    // @ts-ignore dunno why d3 dont work here
-    .y((d) => yScale(d.balance));
-
-  const path = lineSeries(values as any);
-
+  console.log(chartData);
   return (
-    <div>
-      <svg
-        className="bg-neutral-100"
-        width={width}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="none"
-      >
-        {path && <path {...pathProps} d={path} />}
-      </svg>
+    <div className="w-200 h-200">
+      <PriceChart data={chartData} theme={theme} />
     </div>
   );
 };
