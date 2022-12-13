@@ -86,7 +86,11 @@ export const SelectMarketLandingTable = ({
         </table>
       </div>
       <div className="mt-4 text-md">
-        <Link to="/markets" data-testid="view-market-list-link">
+        <Link
+          to="/markets"
+          data-testid="view-market-list-link"
+          onClick={() => setDialogOpen(false)}
+        >
           <UILink>{'Or view full market list'} </UILink>
         </Link>
       </div>
