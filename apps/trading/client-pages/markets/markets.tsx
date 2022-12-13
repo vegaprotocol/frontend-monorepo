@@ -8,7 +8,7 @@ export const Markets = () => {
   const { update } = useGlobalStore((store) => ({ update: store.update }));
   const handleOnSelect = useCallback(
     (marketId: string) => {
-      update({ marketId, welcomeNoticeDialog: false });
+      update({ marketId });
       navigate(`/markets/${marketId}`);
     },
     [update, navigate]

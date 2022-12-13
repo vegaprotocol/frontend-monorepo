@@ -3,9 +3,7 @@ import create from 'zustand';
 
 interface GlobalStore {
   networkSwitcherDialog: boolean;
-  landingDialog: boolean;
   marketId: string | null;
-  welcomeNoticeDialog: boolean;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
 }
 
@@ -16,9 +14,7 @@ interface PageTitleStore {
 
 export const useGlobalStore = create<GlobalStore>((set) => ({
   networkSwitcherDialog: false,
-  landingDialog: false,
   marketId: LocalStorage.getItem('marketId') || null,
-  welcomeNoticeDialog: false,
   update: (state) => {
     set(state);
     if (state.marketId) {
