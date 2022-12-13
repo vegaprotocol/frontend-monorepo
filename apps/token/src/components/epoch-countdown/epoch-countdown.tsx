@@ -1,9 +1,6 @@
-import { format, formatDistanceStrict } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-
-import arrow from '../../images/back.png';
-import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { ProgressBar } from '../progress-bar';
 
 export interface EpochCountdownProps {

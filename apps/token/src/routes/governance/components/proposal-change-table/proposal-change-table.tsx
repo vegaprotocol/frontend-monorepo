@@ -6,7 +6,6 @@ import {
   KeyValueTableRow,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import { SubHeading } from '../../../../components/heading';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { CurrentProposalState } from '../current-proposal-state';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
