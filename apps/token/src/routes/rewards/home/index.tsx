@@ -21,39 +21,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useNetworkParams } from '@vegaprotocol/react-helpers';
 
 export const REWARDS_QUERY = gql`
-  query Rewards($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      rewardDetails {
-        asset {
-          id
-          symbol
-        }
-        rewards {
-          rewardType
-          asset {
-            id
-          }
-          party {
-            id
-          }
-          epoch {
-            id
-          }
-          amount
-          amountFormatted @client
-          percentageOfTotal
-          receivedAt
-        }
-        totalAmount
-        totalAmountFormatted @client
-      }
-      delegations {
-        amount
-        amountFormatted @client
-        epoch
-      }
-    }
+  query Rewards {
     epoch {
       id
       timestamps {
@@ -69,10 +37,7 @@ export const RewardsIndex = () => {
   const { t } = useTranslation();
   const { keypair, keypairs } = useVegaWallet();
   const { appDispatch } = useAppState();
-  const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
-    variables: { partyId: keypair?.pub },
-    skip: !keypair?.pub,
-  });
+  const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY);
   const {
     data: rewardAssetData,
     loading: rewardAssetLoading,
@@ -144,7 +109,6 @@ export const RewardsIndex = () => {
         {keypair && keypairs?.length ? (
           <RewardInfo
             currVegaKey={keypair}
-            data={data}
             rewardAssetId={rewardAssetData[0]}
           />
         ) : (

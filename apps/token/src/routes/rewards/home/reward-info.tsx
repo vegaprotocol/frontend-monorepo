@@ -3,52 +3,63 @@ import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../../lib/date-formats';
-import type {
-  Rewards,
-  Rewards_party_delegations,
-  Rewards_party_rewardDetails_rewards,
-} from './__generated__/Rewards';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import { formatNumber, toBigNum, useFetch } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 
 interface RewardInfoProps {
-  data: Rewards | undefined;
   currVegaKey: VegaKeyExtended;
   rewardAssetId: string;
 }
 
-export const RewardInfo = ({
-  data,
-  currVegaKey,
-  rewardAssetId,
-}: RewardInfoProps) => {
-  const { t } = useTranslation();
+export interface Reward {
+  assetId: string;
+  partyId: string;
+  epoch: string;
+  amount: string;
+  percentageOfTotal: string;
+  receivedAt: string;
+  marketId: string;
+  rewardType: string;
+}
 
+export interface RewardsResponse {
+  rewards: Reward[];
+}
+
+export const RewardInfo = ({ currVegaKey, rewardAssetId }: RewardInfoProps) => {
+  const { t } = useTranslation();
+  const { state } = useFetch<RewardsResponse>(
+    `${process.env['NX_VEGA_REST']}parties/${currVegaKey.pub}/rewards`
+  );
   // Create array of rewards per epoch
   const vegaTokenRewards = React.useMemo(() => {
-    if (!data?.party || !data.party.rewardDetails?.length) return [];
+    if (!state.data?.rewards?.length) return [];
 
-    const vegaTokenRewards = data.party.rewardDetails.find(
-      (r) => r?.asset.id === rewardAssetId
+    const vegaTokenRewards = state.data.rewards.filter(
+      (r) => r?.assetId === rewardAssetId
     );
 
     // We only issue rewards as Vega tokens for now so there should only be one
     // item in the rewardDetails array
     if (!vegaTokenRewards) {
-      const rewardAssets = data.party.rewardDetails
-        .map((r) => r?.asset.symbol)
-        .join(', ');
+      const rewardAssets = state.data.rewards.map((r) => r?.assetId).join(', ');
       Sentry.captureMessage(
         `Could not find VEGA token rewards ${rewardAssets}`
       );
       return [];
     }
 
-    if (!vegaTokenRewards?.rewards?.length) return [];
+    if (!vegaTokenRewards?.length) return [];
 
-    const sorted = Array.from(vegaTokenRewards.rewards).sort((a, b) => {
+    const sorted = Array.from(vegaTokenRewards).sort((a, b) => {
       if (!a || !b) return 0;
       if (a.epoch > b.epoch) return -1;
       if (a.epoch < b.epoch) return 1;
@@ -56,8 +67,8 @@ export const RewardInfo = ({
     });
 
     return sorted;
-  }, [data, rewardAssetId]);
-
+  }, [rewardAssetId, state?.data?.rewards]);
+  if (state.loading) return <Loader />;
   return (
     <div>
       <p>
@@ -66,13 +77,7 @@ export const RewardInfo = ({
       {vegaTokenRewards.length ? (
         vegaTokenRewards.map((reward, i) => {
           if (!reward) return null;
-          return (
-            <RewardTable
-              key={i}
-              reward={reward}
-              delegations={data?.party?.delegations || []}
-            />
-          );
+          return <RewardTable key={i} reward={reward} />;
         })
       ) : (
         <p>{t('noRewards')}</p>
@@ -81,36 +86,24 @@ export const RewardInfo = ({
   );
 };
 
+const convertNanosecondToMilliseconds = (nanoseconds: number) => {
+  return nanoseconds / 1000000;
+};
+
 interface RewardTableProps {
-  reward: Rewards_party_rewardDetails_rewards;
-  delegations: Rewards_party_delegations[];
+  reward: Reward;
 }
 
-export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
+export const RewardTable = ({ reward }: RewardTableProps) => {
   const { t } = useTranslation();
-
-  // Get your stake for epoch in which you have rewards
-  const stakeForEpoch = React.useMemo(() => {
-    if (!delegations.length) return '0';
-
-    const delegationsForEpoch = delegations
-      .filter((d) => d.epoch.toString() === reward.epoch.id)
-      .map((d) => new BigNumber(d.amountFormatted));
-
-    if (delegationsForEpoch.length) {
-      return BigNumber.sum.apply(null, [
-        new BigNumber(0),
-        ...delegationsForEpoch,
-      ]);
-    }
-
-    return new BigNumber(0);
-  }, [delegations, reward.epoch]);
+  const {
+    appState: { decimals },
+  } = useAppState();
 
   return (
     <div className="mb-24">
       <h3 className="text-lg text-white mb-4">
-        {t('Epoch')} {reward.epoch.id}
+        {t('Epoch')} {reward.epoch}
       </h3>
       <KeyValueTable>
         <KeyValueTableRow>
@@ -118,13 +111,9 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
           <span>{reward.rewardType}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          {t('yourStake')}
-          <span>{stakeForEpoch.toString()}</span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
           {t('reward')}
           <span>
-            {reward.amountFormatted} {t('VEGA')}
+            {formatNumber(toBigNum(reward.amount, decimals))} {t('VEGA')}
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
@@ -136,7 +125,12 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
         <KeyValueTableRow>
           {t('received')}
           <span>
-            {format(new Date(reward.receivedAt), DATE_FORMAT_DETAILED)}
+            {format(
+              new Date(
+                convertNanosecondToMilliseconds(Number(reward.receivedAt))
+              ),
+              DATE_FORMAT_DETAILED
+            )}
           </span>
         </KeyValueTableRow>
       </KeyValueTable>
