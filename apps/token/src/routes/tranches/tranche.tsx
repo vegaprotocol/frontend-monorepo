@@ -60,7 +60,7 @@ export const Tranche = () => {
       />
       <div
         className="flex justify-between gap-x-4 py-2 px-4"
-        data-test-id="redeemed-tranche-tokens"
+        data-testid="redeemed-tranche-tokens"
       >
         <span>{t('alreadyRedeemed')}</span>
         <span className="font-mono">{formatNumber(tranche.total_removed)}</span>

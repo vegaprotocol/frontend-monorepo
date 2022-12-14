@@ -83,7 +83,7 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     `Associating with Vega key. Waiting for ${Cypress.env(
       'blockConfirmations'
     )} more confirmations..`,
-    epochTimeout
+    txTimeout
   ).should('be.visible');
   cy.contains(
     'can now participate in governance and nominate a validator',

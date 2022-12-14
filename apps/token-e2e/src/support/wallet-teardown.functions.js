@@ -101,7 +101,7 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
           cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
         }
       });
-    cy.get('[data-test-id="associated-amount"]', { timeout: 30000 }).should(
+    cy.get('[data-testid="associated-amount"]', { timeout: 30000 }).should(
       'contain.text',
       '0.00'
     );
