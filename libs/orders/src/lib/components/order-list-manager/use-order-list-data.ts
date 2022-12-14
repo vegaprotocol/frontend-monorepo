@@ -117,7 +117,7 @@ export const useOrderListData = ({
       totalCountRef.current = totalCount;
       return true;
     },
-    []
+    [marketId]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({
