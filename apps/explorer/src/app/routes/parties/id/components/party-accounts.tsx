@@ -66,7 +66,7 @@ export const PartyAccounts = ({ accounts }: PartyAccountsProps) => {
                 <AssetBalance
                   assetId={account.asset.id}
                   price={account.balance}
-                  hideAssetLink={true}
+                  showAssetLink={false}
                 />
               </td>
               <td className="text-md">

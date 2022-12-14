@@ -5,7 +5,7 @@ import { useExplorerAssetQuery } from '../links/asset-link/__generated__/Asset';
 export type AssetBalanceProps = {
   assetId: string;
   price: string;
-  hideAssetLink?: boolean;
+  showAssetLink?: boolean;
 };
 
 /**
@@ -15,7 +15,7 @@ export type AssetBalanceProps = {
 const AssetBalance = ({
   assetId,
   price,
-  hideAssetLink = false,
+  showAssetLink = true,
 }: AssetBalanceProps) => {
   const { data } = useExplorerAssetQuery({
     fetchPolicy: 'cache-first',
@@ -30,7 +30,7 @@ const AssetBalance = ({
   return (
     <div className="inline-block">
       <span>{label}</span>{' '}
-      {hideAssetLink === false && data?.asset?.id ? (
+      {showAssetLink && data?.asset?.id ? (
         <AssetLink id={data.asset.id} />
       ) : null}
     </div>
