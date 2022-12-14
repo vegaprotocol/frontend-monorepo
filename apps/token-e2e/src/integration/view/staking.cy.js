@@ -25,7 +25,7 @@ context('Staking Page - verify elements on page', function () {
       });
 
       it('Should have STAKING ON VEGA header visible', function () {
-        cy.verify_page_header('Staking');
+        cy.verify_page_header('Validators');
       });
 
       it('Should have Staking Guide link visible', function () {
