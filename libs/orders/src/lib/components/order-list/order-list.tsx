@@ -174,9 +174,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             'market.tradableInstrument.instrument.code'
           >) =>
             data?.market?.id ? (
-              <Link href={`/markets/${data?.market?.id}`} target="_blank">
-                {value}
-              </Link>
+              <Link href={`/#/markets/${data?.market?.id}`}>{value}</Link>
             ) : (
               value
             )
