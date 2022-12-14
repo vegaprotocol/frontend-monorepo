@@ -1,41 +1,39 @@
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AgGridColumn } from 'ag-grid-react';
-import type {
-  ValueFormatterParams,
-  GetRowIdParams,
-  RowClickedEvent,
-} from 'ag-grid-community';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import {
-  t,
-  addDecimalsFormatNumber,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/react-helpers';
-import {
-  Icon,
-  AsyncRenderer,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
+import { DApp, useLinks } from '@vegaprotocol/environment';
 import type { Market } from '@vegaprotocol/liquidity';
 import {
-  useMarketsLiquidity,
-  formatWithAsset,
   displayChange,
+  formatWithAsset,
+  useMarketsLiquidity,
 } from '@vegaprotocol/liquidity';
-import type { Schema } from '@vegaprotocol/types';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  t,
+  toBigNum,
+} from '@vegaprotocol/react-helpers';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type * as Schema from '@vegaprotocol/types';
+import {
+  AsyncRenderer,
+  Icon,
+  PriceCellChange,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
+import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { AgGridColumn } from 'ag-grid-react';
+import { useCallback, useState } from 'react';
 
-import { HealthBar } from '../../health-bar';
 import { Grid } from '../../grid';
+import { HealthBar } from '../../health-bar';
 import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
   const [isHealthDialogOpen, setIsHealthDialogOpen] = useState(false);
-  const navigate = useNavigate();
+  const consoleLink = useLinks(DApp.Console);
 
   const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
@@ -50,7 +48,11 @@ export const MarketList = () => {
         <Grid
           gridOptions={{
             onRowClicked: ({ data }: RowClickedEvent) => {
-              navigate(`/markets/${data.id}`);
+              window.open(
+                liquidityDetailsConsoleLink(data.id, consoleLink),
+                '_blank',
+                'noopener,noreferrer'
+              );
             },
           }}
           rowData={localData}
@@ -93,26 +95,85 @@ export const MarketList = () => {
           />
 
           <AgGridColumn
+            headerName={t('Market Code')}
+            headerTooltip={t(
+              'The market code is a unique identifier for this market'
+            )}
+            field="tradableInstrument.instrument.code"
+          />
+
+          <AgGridColumn
+            headerName={t('Type')}
+            headerTooltip={t('Type')}
+            field="tradableInstrument.instrument.product.__typename"
+          />
+
+          <AgGridColumn
+            headerName={t('Last Price')}
+            headerTooltip={t('Latest price for this market')}
+            field="data.markPrice"
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'data.markPrice'>) =>
+              value && data
+                ? formatWithAsset(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
+            }
+          />
+
+          <AgGridColumn
+            headerName={t('Change (24h)')}
+            headerTooltip={t('Change in price over the last 24h')}
+            cellRenderer={({
+              data,
+            }: VegaValueFormatterParams<Market, 'data.candles'>) => {
+              if (data && data.candles) {
+                const prices = data.candles.map((candle) => candle.close);
+                return (
+                  <PriceCellChange
+                    candles={prices}
+                    decimalPlaces={data?.decimalPlaces}
+                  />
+                );
+              } else return <div>{t('-')}</div>;
+            }}
+          />
+
+          <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              `${addDecimalsFormatNumber(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-                  .decimals
-              )} (${displayChange(data.volumeChange)})`
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'dayVolume'>) =>
+              value && data
+                ? `${addDecimalsFormatNumber(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                      .decimals
+                  )} (${displayChange(data.volumeChange)})`
+                : '-'
             }
             headerTooltip={t('The trade volume over the last 24h')}
           />
 
           <AgGridColumn
-            headerName={t('Committed bond')}
+            headerName={t('Total staked by LPs')}
             field="liquidityCommitted"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'liquidityCommitted'>) =>
+              data && value
+                ? formatWithAsset(
+                    value.toString(),
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
             }
             headerTooltip={t(
               'The amount of funds allocated to provide liquidity'
@@ -122,11 +183,16 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Target stake')}
             field="target"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'target'>) =>
+              data && value
+                ? formatWithAsset(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
             }
             headerTooltip={t(
               'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
@@ -135,15 +201,21 @@ export const MarketList = () => {
 
           <AgGridColumn
             headerName={t('% Target stake met')}
-            valueFormatter={({ data }: ValueFormatterParams) => {
-              const roundedPercentage =
-                parseInt(
-                  (data.liquidityCommitted / parseFloat(data.target)).toFixed(0)
-                ) * 100;
-              const display = Number.isNaN(roundedPercentage)
-                ? 'N/A'
-                : formatNumberPercentage(toBigNum(roundedPercentage, 2));
-              return display;
+            valueFormatter={({
+              data,
+            }: VegaValueFormatterParams<Market, ''>) => {
+              if (data) {
+                const roundedPercentage =
+                  parseInt(
+                    (data.liquidityCommitted / parseFloat(data.target)).toFixed(
+                      0
+                    )
+                  ) * 100;
+                const display = Number.isNaN(roundedPercentage)
+                  ? 'N/A'
+                  : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+                return display;
+              } else return '-';
             }}
             headerTooltip={t('% Target stake met')}
           />
@@ -151,8 +223,10 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Fee levels')}
             field="fees"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              `${value.factors.liquidityFee}%`
+            valueFormatter={({
+              value,
+            }: VegaValueFormatterParams<Market, 'fees'>) =>
+              value ? `${value.factors.liquidityFee}%` : '-'
             }
             headerTooltip={t('Fee level for this market')}
           />
@@ -223,3 +297,8 @@ export const MarketList = () => {
     </AsyncRenderer>
   );
 };
+
+const liquidityDetailsConsoleLink = (
+  marketId: string,
+  consoleLink: (url: string | undefined) => string
+) => consoleLink(`/#/liquidity/${marketId}`);

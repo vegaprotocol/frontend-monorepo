@@ -31,10 +31,19 @@ const Item = ({ index, style, isLoading, error }: ItemProps) => {
   } else if (isLoading) {
     content = t('Loading...');
   } else {
-    const { hash, submitter, type, command, block, index: blockIndex } = index;
+    const {
+      hash,
+      submitter,
+      type,
+      command,
+      block,
+      code,
+      index: blockIndex,
+    } = index;
     content = (
       <TxsInfiniteListItem
         type={type}
+        code={code}
         command={command}
         submitter={submitter}
         hash={hash}
@@ -82,7 +91,7 @@ export const TxsInfiniteList = ({
         <div className="col-span-3">Submitted By</div>
         <div className="col-span-2">Type</div>
         <div className="col-span-1">Block</div>
-        <div className="col-span-1">Index</div>
+        <div className="col-span-1">Success</div>
       </div>
       <div data-testid="infinite-scroll-wrapper">
         <InfiniteLoader

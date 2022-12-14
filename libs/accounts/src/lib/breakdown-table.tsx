@@ -49,7 +49,9 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           valueFormatter={({
             value,
           }: VegaValueFormatterParams<AccountFields, 'type'>) =>
-            value ? AccountTypeMapping[value] : ''
+            value
+              ? AccountTypeMapping[value as keyof typeof AccountTypeMapping]
+              : ''
           }
         />
         <AgGridColumn

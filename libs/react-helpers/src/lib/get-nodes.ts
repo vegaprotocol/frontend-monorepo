@@ -1,17 +1,17 @@
-import type { Schema } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 
-type Edge<T> = {
+export type NodeEdge<T> = {
   node: T;
 };
 
-type Connection<A> = {
+export type NodeConnection<A> = {
   edges?: Schema.Maybe<Array<Schema.Maybe<A>>>;
 };
 
 export function getNodes<
   T,
-  A extends Edge<T> = Edge<T>,
-  B extends Connection<A> = Connection<A>
+  A extends NodeEdge<T> = NodeEdge<T>,
+  B extends NodeConnection<A> = NodeConnection<A>
 >(data?: B | null, filterBy?: (item?: T | null) => boolean) {
   const edges = data?.edges || [];
   return edges.reduce<T[]>((acc, edge) => {

@@ -6,4 +6,15 @@
  * @param str A
  * @returns str A
  */
-export const t = (str: string) => str;
+export const t = (str: string, replacements?: string | string[]) => {
+  if (replacements) {
+    let i = 0;
+    return str.replace(/%s/g, () => {
+      return (
+        (Array.isArray(replacements) ? replacements : [replacements])[i++] ||
+        '%s'
+      );
+    });
+  }
+  return str;
+};

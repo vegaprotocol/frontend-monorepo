@@ -8,7 +8,6 @@ export const generateChainId = (
   const defaultResult = {
     statistics: {
       __typename: 'Statistics',
-      // this needs to match the network set up for vegawallet-dummy in .github/actions/setup-vegawallet/action.yml
       chainId: 'stagnet3',
     },
   };

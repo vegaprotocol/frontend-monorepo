@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { SubHeading } from '../../components/heading';
 import { TrancheItem } from '../redemption/tranche-item';
 import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
@@ -29,7 +30,7 @@ export const Tranches = () => {
 
   return (
     <section>
-      <h2>{t('chartTitle')}</h2>
+      <SubHeading title={t('chartTitle')} />
       <p>{t('chartAbove')}</p>
       <VestingChart />
       <p>{t('chartBelow')}</p>

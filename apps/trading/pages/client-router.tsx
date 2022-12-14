@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/react-helpers';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -49,6 +50,14 @@ const routerConfig = [
   {
     path: Routes.PORTFOLIO,
     element: <LazyPortfolio />,
+  },
+  {
+    path: '*',
+    element: (
+      <Splash>
+        <p>{t('Not found')}</p>
+      </Splash>
+    ),
   },
 ];
 

@@ -1,18 +1,9 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMarketList } from '@vegaprotocol/market-list';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
-import {
-  Dialog,
-  ExternalLink,
-  Icon,
-  Intent,
-  Link as UILink,
-  Loader,
-  Popover,
-} from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Icon, Loader, Popover } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-
 import {
   columnHeaders,
   columnHeadersPositionMarkets,
@@ -24,7 +15,6 @@ import {
   SelectMarketTableRow,
   SelectMarketTableRowSplash,
 } from './select-market-table';
-
 import type { ReactNode } from 'react';
 import type {
   MarketWithCandles,
@@ -32,7 +22,6 @@ import type {
 } from '@vegaprotocol/market-list';
 import type { PositionFieldsFragment } from '@vegaprotocol/positions';
 import type { Column, OnCellClickHandler } from './select-market-columns';
-import { Link } from 'react-router-dom';
 import {
   DApp,
   TOKEN_NEW_MARKET_PROPOSAL,
@@ -40,48 +29,7 @@ import {
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
 
-type Market = MarketWithCandles & MarketWithData;
-
-export const SelectMarketLandingTable = ({
-  markets,
-  onSelect,
-  onCellClick,
-}: {
-  markets: Market[] | null;
-  onSelect: (id: string) => void;
-  onCellClick: OnCellClickHandler;
-}) => {
-  return (
-    <>
-      <div
-        className="max-h-[60vh] overflow-x-auto"
-        data-testid="select-market-list"
-      >
-        <table className="text-sm relative h-full min-w-full whitespace-nowrap">
-          <thead className="sticky top-0 z-10 bg-white dark:bg-black">
-            <SelectMarketTableHeader />
-          </thead>
-          <tbody>
-            {markets?.map((market, i) => (
-              <SelectMarketTableRow
-                marketId={market.id}
-                key={i}
-                detailed={false}
-                onSelect={onSelect}
-                columns={columns(market, onSelect, onCellClick)}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-4 text-md">
-        <Link to="/markets" data-testid="view-market-list-link">
-          <UILink>{'Or view full market list'} </UILink>
-        </Link>
-      </div>
-    </>
-  );
-};
+export type Market = MarketWithCandles & MarketWithData;
 
 export const SelectAllMarketsTableBody = ({
   markets,
@@ -263,73 +211,5 @@ const TableTitle = ({ children }: { children: ReactNode }) => {
         </th>
       </tr>
     </thead>
-  );
-};
-
-export const SelectMarketDialog = ({
-  dialogOpen,
-  setDialogOpen,
-  onSelect,
-  onCellClick,
-}: {
-  dialogOpen: boolean;
-  setDialogOpen: (open: boolean) => void;
-  title?: string;
-  onSelect: (id: string) => void;
-  onCellClick: OnCellClickHandler;
-}) => {
-  const onSelectMarket = (id: string) => {
-    onSelect(id);
-    setDialogOpen(false);
-  };
-
-  return (
-    <Dialog
-      title={t('Select a market to get started')}
-      intent={Intent.Primary}
-      open={dialogOpen}
-      onChange={() => setDialogOpen(false)}
-      size="small"
-    >
-      <LandingDialogContainer
-        onSelect={onSelectMarket}
-        onCellClick={onCellClick}
-      />
-    </Dialog>
-  );
-};
-
-interface LandingDialogContainerProps {
-  onSelect: (id: string) => void;
-  onCellClick: OnCellClickHandler;
-}
-
-const LandingDialogContainer = ({
-  onSelect,
-  onCellClick,
-}: LandingDialogContainerProps) => {
-  const { data, loading, error } = useMarketList();
-  if (error) {
-    return (
-      <div className="flex justify-center items-center">
-        <p className="my-8">{t('Failed to load markets')}</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center">
-        <p className="my-8">{t('Loading...')}</p>
-      </div>
-    );
-  }
-
-  return (
-    <SelectMarketLandingTable
-      markets={data}
-      onSelect={onSelect}
-      onCellClick={onCellClick}
-    />
   );
 };

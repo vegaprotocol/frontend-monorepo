@@ -3,6 +3,8 @@ fragment NodesFragment on Node {
   id
   name
   pubkey
+  stakedByOperator
+  stakedByDelegates
   stakedTotal
   pendingStake
   rankingScore {

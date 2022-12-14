@@ -15,17 +15,17 @@ const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
-    cy.visit('/').navigate_to('staking');
+    cy.visit('/').navigate_to('validators');
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
     describe('description section', function () {
       it('Should have staking tab highlighted', function () {
-        cy.verify_tab_highlighted('staking');
+        cy.verify_tab_highlighted('validators');
       });
 
       it('Should have STAKING ON VEGA header visible', function () {
-        cy.verify_page_header('Staking');
+        cy.verify_page_header('Validators');
       });
 
       it('Should have Staking Guide link visible', function () {
@@ -94,20 +94,16 @@ context('Staking Page - verify elements on page', function () {
             cy.wrap($pendingStake).should('contain.text', '0.00');
           });
       });
-
-      it('Should be able to see button to unhide top validators', function () {
-        cy.get('[data-testid="show-all-validators"]').should('be.visible');
-      });
     }
   );
 
   // 2001-STKE-050
   describe(
     'Should be able to see static information about a validator',
-    { tags: '@smoke' },
+    { tags: '@slow' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.vega_wallet_connect();
+        cy.connectVegaWallet();
         cy.click_on_validator_from_list(0);
       });
 

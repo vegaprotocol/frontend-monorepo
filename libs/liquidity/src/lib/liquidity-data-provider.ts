@@ -3,7 +3,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import produce from 'immer';
 

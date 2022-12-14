@@ -41,16 +41,15 @@ context(
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
-      cy.verify_page_header('The $VEGA token');
       cy.vega_wallet_set_specified_approval_amount('1000');
     });
 
     beforeEach('visit governance tab', function () {
       cy.reload();
       cy.wait_for_spinner();
-      cy.vega_wallet_connect();
+      cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
-      cy.navigate_to('governance');
+      cy.navigate_to('proposals');
       cy.wait_for_spinner();
     });
 
@@ -74,7 +73,7 @@ context(
     });
 
     it('Unable to submit network parameter with missing/invalid fields', function () {
-      cy.navigate_to_page_if_not_already_loaded('governance');
+      cy.navigate_to_page_if_not_already_loaded('proposals');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.get(inputError).should('have.length', 3);
@@ -99,7 +98,7 @@ context(
     });
 
     it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
-      cy.navigate_to_page_if_not_already_loaded('governance');
+      cy.navigate_to_page_if_not_already_loaded('proposals');
       cy.go_to_make_new_proposal(governanceProposalType.NETWORK_PARAMETER);
       cy.get(newProposalTitle).type('Test update network parameter proposal');
       cy.get(newProposalDescription).type('invalid deadlines');

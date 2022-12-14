@@ -1,5 +1,5 @@
 import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type { Market, Candle } from '../';

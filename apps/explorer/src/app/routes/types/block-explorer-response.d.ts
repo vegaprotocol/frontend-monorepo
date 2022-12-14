@@ -9,7 +9,11 @@ export interface BlockExplorerTransactionResult {
   type: string;
   code: number;
   cursor: string;
-  command: components['schemas']['v1InputData'];
+  command: components['schemas']['blockexplorerv1transaction'];
+  signature: {
+    value: string;
+  };
+  error?: string;
 }
 
 export interface BlockExplorerTransactions {

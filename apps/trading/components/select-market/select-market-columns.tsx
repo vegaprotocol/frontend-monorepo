@@ -20,12 +20,13 @@ import type {
 import { Link } from 'react-router-dom';
 import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
-import { MarketTradingModeComponent } from '../market-trading-mode';
+import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
 
 type Market = MarketWithData & MarketWithCandles;
 
-export const cellClassNames = 'py-1 first:text-left text-right';
+const ellipsisClasses = 'whitespace-nowrap overflow-hidden text-ellipsis';
+export const cellClassNames = `py-1 first:text-left text-right ${ellipsisClasses}`;
 
 const FeesInfo = () => {
   return (
@@ -82,7 +83,7 @@ const headers: Column[] = [
   {
     kind: ColumnKind.ProductType,
     value: t('Type'),
-    className: `py-2 text-left hidden sm:table-cell`,
+    className: 'py-2 text-left hidden sm:table-cell',
     onlyOnDetailed: false,
   },
   {
@@ -204,13 +205,13 @@ export const columns = (
           <UILink>{market.tradableInstrument.instrument.code}</UILink>
         </Link>
       ),
-      className: cellClassNames,
+      className: `${cellClassNames} max-w-[110px]`,
       onlyOnDetailed: false,
     },
     {
       kind: ColumnKind.ProductType,
       value: market.tradableInstrument.instrument.product.__typename,
-      className: `py-2 text-left hidden sm:table-cell`,
+      className: `py-2 text-left hidden sm:table-cell max-w-[50px] ${ellipsisClasses}`,
       onlyOnDetailed: false,
     },
     {
@@ -223,7 +224,7 @@ export const columns = (
           noUpdate={noUpdate}
         />
       ),
-      className: cellClassNames,
+      className: `${cellClassNames} max-w-[100px]`,
       onlyOnDetailed: false,
     },
     {
@@ -236,7 +237,7 @@ export const columns = (
           initialValue={candlesClose}
         />
       ),
-      className: cellClassNames,
+      className: `${cellClassNames} max-w-[150px]`,
       onlyOnDetailed: false,
     },
     {
@@ -249,7 +250,7 @@ export const columns = (
           data={candlesClose?.map((c: string) => Number(c)) || []}
         />
       ),
-      className: `${cellClassNames} hidden lg:table-cell`,
+      className: `${cellClassNames} hidden lg:table-cell max-w-[80px]`,
       onlyOnDetailed: false && candlesClose,
     },
     {
@@ -271,7 +272,7 @@ export const columns = (
         </button>
       ),
       dataTestId: 'settlement-asset',
-      className: `${cellClassNames} hidden sm:table-cell`,
+      className: `${cellClassNames} hidden sm:table-cell max-w-[100px]`,
       onlyOnDetailed: false,
     },
     {
@@ -325,7 +326,7 @@ export const columns = (
     {
       kind: ColumnKind.TradingMode,
       value: (
-        <MarketTradingModeComponent
+        <MarketTradingMode
           marketId={market?.id}
           noUpdate={noUpdate}
           initialMode={market.tradingMode}
@@ -513,7 +514,7 @@ export const columnsPositionMarkets = (
     {
       kind: ColumnKind.TradingMode,
       value: (
-        <MarketTradingModeComponent
+        <MarketTradingMode
           marketId={market?.id}
           noUpdate={noUpdate}
           initialMode={market.tradingMode}

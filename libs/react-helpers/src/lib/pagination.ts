@@ -9,7 +9,7 @@ const getLastRow = (
   blockLength: number,
   totalCount?: number
 ) => {
-  let lastRow = -1;
+  let lastRow = undefined;
   if (totalCount !== undefined) {
     if (!totalCount) {
       lastRow = 0;
@@ -24,10 +24,10 @@ const getLastRow = (
 
 export const makeInfiniteScrollGetRows =
   <T extends { node: any }>( // eslint-disable-line @typescript-eslint/no-explicit-any
-    newRows: MutableRefObject<number>,
     data: MutableRefObject<(T | null)[] | null>,
     totalCount: MutableRefObject<number | undefined>,
-    load: Load<(T | null)[]>
+    load: Load<(T | null)[]>,
+    newRows?: MutableRefObject<number>
   ) =>
   async ({
     successCallback,
@@ -35,8 +35,8 @@ export const makeInfiniteScrollGetRows =
     startRow,
     endRow,
   }: IGetRowsParams) => {
-    startRow += newRows.current;
-    endRow += newRows.current;
+    startRow += newRows?.current ?? 0;
+    endRow += newRows?.current ?? 0;
     try {
       if (data.current) {
         const firstMissingRowIndex = data.current.indexOf(null);
@@ -50,9 +50,15 @@ export const makeInfiniteScrollGetRows =
       const rowsThisBlock = data.current
         ? data.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
-      const lastRow =
-        getLastRow(startRow, endRow, rowsThisBlock.length, totalCount.current) -
-        newRows.current;
+      const currentLastNumber = getLastRow(
+        startRow,
+        endRow,
+        rowsThisBlock.length,
+        totalCount.current
+      );
+      const lastRow = currentLastNumber
+        ? currentLastNumber - (newRows?.current ?? 0)
+        : currentLastNumber;
       successCallback(rowsThisBlock, lastRow);
     } catch (e) {
       failCallback();

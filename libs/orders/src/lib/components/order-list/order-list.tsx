@@ -10,13 +10,7 @@ import {
   SetFilter,
   DateRangeFilter,
 } from '@vegaprotocol/react-helpers';
-import {
-  OrderRejectionReasonMapping,
-  OrderStatusMapping,
-  OrderTimeInForceMapping,
-  OrderTypeMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -42,7 +36,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 import type { OrderEventFieldsFragment } from '../../order-hooks';
 
-type OrderListProps = TypedDataAgGrid<Order>;
+type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 
 export const TransactionComplete = ({
   transaction,
@@ -90,7 +84,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel({});
+            orderCancel.cancel({ marketId: props.marketId });
           }}
           cancel={(order: Order) => {
             if (!order.market) return;
@@ -180,9 +174,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             'market.tradableInstrument.instrument.code'
           >) =>
             data?.market?.id ? (
-              <Link href={`/markets/${data?.market?.id}`} target="_blank">
-                {value}
-              </Link>
+              <Link href={`/#/markets/${data?.market?.id}`}>{value}</Link>
             ) : (
               value
             )
@@ -225,7 +217,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="type"
           filter={SetFilter}
           filterParams={{
-            set: OrderTypeMapping,
+            set: Schema.OrderTypeMapping,
           }}
           valueFormatter={({
             data: order,
@@ -238,26 +230,26 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (!value) return '-';
             if (order?.peggedOrder) return t('Pegged');
             if (order?.liquidityProvision) return t('Liquidity provision');
-            return OrderTypeMapping[value];
+            return Schema.OrderTypeMapping[value];
           }}
         />
         <AgGridColumn
           field="status"
           filter={SetFilter}
           filterParams={{
-            set: OrderStatusMapping,
+            set: Schema.OrderStatusMapping,
           }}
           valueFormatter={({
             value,
             data,
           }: VegaValueFormatterParams<Order, 'status'>) => {
             if (value === Schema.OrderStatus.STATUS_REJECTED) {
-              return `${OrderStatusMapping[value]}: ${
+              return `${Schema.OrderStatusMapping[value]}: ${
                 data?.rejectionReason &&
-                OrderRejectionReasonMapping[data.rejectionReason]
+                Schema.OrderRejectionReasonMapping[data.rejectionReason]
               }`;
             }
-            return value ? OrderStatusMapping[value] : '';
+            return value ? Schema.OrderStatusMapping[value] : '';
           }}
           cellRenderer={({
             valueFormatted,
@@ -266,7 +258,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             valueFormatted: string;
             data: Order;
           }) => (
-            <span data-testId={`order-status-${data?.id}`}>
+            <span data-testid={`order-status-${data?.id}`}>
               {valueFormatted}
             </span>
           )}
@@ -323,7 +315,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="timeInForce"
           filter={SetFilter}
           filterParams={{
-            set: OrderTimeInForceMapping,
+            set: Schema.OrderTimeInForceMapping,
           }}
           valueFormatter={({
             value,
@@ -336,10 +328,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               const expiry = getDateTimeFormat().format(
                 new Date(data.expiresAt)
               );
-              return `${OrderTimeInForceMapping[value]}: ${expiry}`;
+              return `${Schema.OrderTimeInForceMapping[value]}: ${expiry}`;
             }
 
-            return value ? OrderTimeInForceMapping[value] : '';
+            return value ? Schema.OrderTimeInForceMapping[value] : '';
           }}
         />
         <AgGridColumn

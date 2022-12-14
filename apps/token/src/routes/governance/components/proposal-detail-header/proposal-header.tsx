@@ -1,29 +1,31 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
 import { shorten } from '@vegaprotocol/react-helpers';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import { SubHeading } from '../../../../components/heading';
+import type { ReactNode } from 'react';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 export const ProposalHeader = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }) => {
   const { t } = useTranslation();
-  const { change } = proposal.terms;
+  const change = proposal?.terms.change;
 
   let details: ReactNode;
 
-  let title = proposal.rationale.title.trim();
-  let description = proposal.rationale.description.trim();
-  if (title.length === 0 && description.length > 0) {
+  let title = proposal?.rationale.title.trim();
+  let description = proposal?.rationale.description.trim();
+  if (title?.length === 0 && description && description.length > 0) {
     title = description;
     description = '';
   }
 
-  const titleContent = shorten(title, 100);
+  const titleContent = shorten(title ?? '', 100);
 
-  switch (change.__typename) {
+  switch (change?.__typename) {
     case 'NewMarket': {
       details = (
         <>
@@ -51,11 +53,12 @@ export const ProposalHeader = ({
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
-            {change.source.__typename === 'ERC20'
-              ? `ERC20 ${change.source.contractAddress}`
-              : `${t('Max faucet amount mint')}: ${
-                  change.source.maxFaucetAmountMint
-                }`}
+            {change.source.__typename === 'ERC20' &&
+              `ERC20 ${change.source.contractAddress}`}
+            {change.source.__typename === 'BuiltinAsset' &&
+              `${t('Max faucet amount mint')}: ${
+                change.source.maxFaucetAmountMint
+              }`}
           </Lozenge>
         </>
       );
@@ -77,7 +80,7 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      details = `${t('FreeformProposal')}: ${proposal.id}`;
+      details = `${t('FreeformProposal')}: ${proposal?.id}`;
       break;
     }
     case 'UpdateAsset': {
@@ -94,12 +97,7 @@ export const ProposalHeader = ({
   return (
     <div className="text-sm mb-2">
       <header data-testid="proposal-title">
-        <h2
-          {...(title && title.length > titleContent.length && { title: title })}
-          className="text-lg mx-0 mt-0 mb-1 font-semibold"
-        >
-          {titleContent || t('Unknown proposal')}
-        </h2>
+        <SubHeading title={titleContent || t('Unknown proposal')} />
       </header>
       {description && (
         <div className="mb-4" data-testid="proposal-description">

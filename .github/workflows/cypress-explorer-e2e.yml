@@ -7,13 +7,6 @@ on:
         required: true
         type: string
         default: 'false'
-      vega-version:
-        required: true
-        type: string
-      gobin:
-        required: false
-        type: string
-        default: /home/runner/go/bin
       skip-cache:
         required: false
         type: string
@@ -31,9 +24,11 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
-      # Add GOBIN to PATH
-      - name: Add GOBIN to PATH
-        run: echo ${{ inputs.gobin }} >> $GITHUB_PATH
+      - name: Vega version
+        run: vega version
+
+      - name: Vegacapsule version
+        run: vegacapsule version
 
       # Checkout front ends
       - name: Checkout frontend mono repo
@@ -60,22 +55,15 @@ jobs:
       ## Build and run Vegacapsule network
       #######
 
-      - name: Install Vega binaries
-        uses: ./frontend-monorepo/.github/actions/install-vega-binaries
-        with:
-          version: ${{ inputs.vega-version }}
-          gobin: ${{ inputs.gobin }}
-
       - name: Build and run Vegacapsule network
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
-        with:
-          github-token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       ######
       ## Setup a Vega wallet for our user
       ######
 
       - name: Set up Vegawallet for docker
+        id: setup-vega
         uses: ./frontend-monorepo/.github/actions/setup-vegawallet-docker
         with:
           passphrase: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
@@ -97,6 +85,7 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPRESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_NIGHTLY_RUN: ${{ inputs.night-run }}
+          CYPRESS_VEGA_WALLET_API_TOKEN: ${{ steps.setup-vega.outputs.token }}
 
       ######
       ## Upload logs

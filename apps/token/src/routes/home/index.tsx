@@ -2,7 +2,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Heading } from '../../components/heading';
+import { Heading, SubHeading } from '../../components/heading';
 import { ExternalLinks } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
@@ -32,7 +32,7 @@ const Home = ({ name }: RouteChildProps) => {
         />
       </HomeSection>
       <HomeSection>
-        <h2>{t('Token Vesting')}</h2>
+        <SubHeading title={t('Token Vesting')} />
         <p>
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
@@ -57,7 +57,7 @@ const Home = ({ name }: RouteChildProps) => {
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
         </p>
-        <Link to={Routes.VESTING}>
+        <Link to={Routes.REDEEM}>
           <Button
             variant="primary"
             size="md"
@@ -68,7 +68,7 @@ const Home = ({ name }: RouteChildProps) => {
         </Link>
       </HomeSection>
       <HomeSection>
-        <h2 className="uppercase">{t('Use your Vega tokens')}</h2>
+        <SubHeading title={t('Use your Vega tokens')} />
         <p>
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
@@ -93,7 +93,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <Link
             data-testid="associate-vega-tokens-link-on-homepage"
-            to={`${Routes.STAKING}/associate`}
+            to={`${Routes.VALIDATORS}/associate`}
             className="underline text-white"
           >
             {t('Associate VEGA tokens')}
@@ -103,14 +103,14 @@ const Home = ({ name }: RouteChildProps) => {
       <div className="flex gap-12">
         <div className="flex-1">
           <HomeSection>
-            <h2>{t('Staking')}</h2>
+            <SubHeading title={t('Staking')} />
             <p>
               {t(
                 'VEGA token holders can nominate a validator node and receive staking rewards.'
               )}
             </p>
             <p>
-              <Link to={Routes.STAKING}>
+              <Link to={Routes.VALIDATORS}>
                 <Button size="md" data-testid="staking-button-on-homepage">
                   {t('Nominate a validator')}
                 </Button>
@@ -120,14 +120,14 @@ const Home = ({ name }: RouteChildProps) => {
         </div>
         <div className="flex-1">
           <HomeSection>
-            <h2>{t('Governance')}</h2>
+            <SubHeading title={t('Governance')} />
             <p>
               {t(
                 'VEGA token holders can vote on proposed changes to the network and create proposals.'
               )}
             </p>
             <p>
-              <Link to={Routes.GOVERNANCE}>
+              <Link to={Routes.PROPOSALS}>
                 <Button size="md" data-testid="governance-button-on-homepage">
                   {t('View Governance proposals')}
                 </Button>
@@ -143,5 +143,5 @@ const Home = ({ name }: RouteChildProps) => {
 export default Home;
 
 export const HomeSection = ({ children }: { children: React.ReactNode }) => {
-  return <section className="mb-8">{children}</section>;
+  return <section className="mb-12">{children}</section>;
 };

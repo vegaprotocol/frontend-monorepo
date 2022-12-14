@@ -45,7 +45,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/network-parameter`}
+                to={`${Routes.PROPOSALS}/propose/network-parameter`}
               >
                 {t('NetworkParameter')}
               </Link>
@@ -55,7 +55,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/new-market`}
+                to={`${Routes.PROPOSALS}/propose/new-market`}
               >
                 {t('NewMarket')}
               </Link>
@@ -65,7 +65,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/update-market`}
+                to={`${Routes.PROPOSALS}/propose/update-market`}
               >
                 {t('UpdateMarket')}
               </Link>
@@ -75,7 +75,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/new-asset`}
+                to={`${Routes.PROPOSALS}/propose/new-asset`}
               >
                 {t('NewAsset')}
               </Link>
@@ -85,7 +85,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/update-asset`}
+                to={`${Routes.PROPOSALS}/propose/update-asset`}
               >
                 {t('UpdateAsset')}
               </Link>
@@ -95,7 +95,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/freeform`}
+                to={`${Routes.PROPOSALS}/propose/freeform`}
               >
                 {t('Freeform')}
               </Link>
@@ -105,7 +105,7 @@ export const Propose = () => {
             <p>
               <Link
                 className="underline"
-                to={`${Routes.GOVERNANCE}/propose/raw`}
+                to={`${Routes.PROPOSALS}/propose/raw`}
               >
                 {t('RawProposal')}
               </Link>

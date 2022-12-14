@@ -4,7 +4,7 @@ import { determineId } from '@vegaprotocol/wallet';
 import { useVegaWallet, useTransactionResult } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useOrderEvent } from '@vegaprotocol/orders';
 import type { OrderEventFieldsFragment } from '@vegaprotocol/orders';
 
@@ -43,7 +43,7 @@ export const useClosePosition = () => {
       setClosingOrder(undefined);
 
       try {
-        // figure out if opsition is long or short and make side the opposite
+        // figure out if position is long or short and make side the opposite
         const side = openVolume.startsWith('-')
           ? Schema.Side.SIDE_BUY
           : Schema.Side.SIDE_SELL;

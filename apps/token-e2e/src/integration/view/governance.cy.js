@@ -1,4 +1,4 @@
-const proposalDocumentationLink = '[data-testid="external-link"]';
+const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';
@@ -9,12 +9,12 @@ context(
   { tags: '@smoke' },
   function () {
     before('navigate to governance page', function () {
-      cy.visit('/').navigate_to('governance');
+      cy.visit('/').navigate_to('proposals');
     });
 
     describe('with no network change proposals', function () {
       it('should have governance tab highlighted', function () {
-        cy.verify_tab_highlighted('governance');
+        cy.verify_tab_highlighted('proposals');
       });
 
       it('should have GOVERNANCE header visible', function () {
@@ -49,7 +49,7 @@ context(
           .should('be.visible')
           .and('have.text', 'New proposal')
           .and('have.attr', 'href')
-          .and('equal', '/governance/propose');
+          .and('equal', '/proposals/propose');
       });
 
       // Skipping this test for now, the new proposal button no longer takes a user directly
@@ -60,7 +60,7 @@ context(
         cy.get(connectToVegaWalletButton)
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet');
-        cy.navigate_to('governance');
+        cy.navigate_to('proposals');
         cy.wait_for_spinner();
       });
     });

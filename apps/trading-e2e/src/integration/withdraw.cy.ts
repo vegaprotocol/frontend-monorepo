@@ -22,10 +22,11 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     // Withdraw page requires vega wallet connection
     cy.connectVegaWallet();
 
+    cy.getByTestId('withdraw-dialog-button').click();
+
     // It also requires connection Ethereum wallet
     connectEthereumWallet();
 
-    cy.getByTestId('withdraw-dialog-button').click();
     cy.wait('@Accounts');
     cy.wait('@Assets');
   });
@@ -78,10 +79,10 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     // Withdraw page requires vega wallet connection
     cy.connectVegaWallet();
 
-    // It also requires connection Ethereum wallet
+    cy.getByTestId('withdraw-dialog-button').click();
+
     connectEthereumWallet();
 
-    cy.getByTestId('withdraw-dialog-button').click();
     cy.wait('@Accounts');
     cy.wait('@Assets');
     cy.mockVegaWalletTransaction();

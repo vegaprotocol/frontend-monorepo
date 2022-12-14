@@ -1,6 +1,6 @@
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
 
 /**
@@ -11,9 +11,9 @@ export const getMarketPrice = (market: MarketDealTicket) => {
     // 0 can never be a valid uncrossing price
     // as it would require there being orders on the book at that price.
     if (
-      market.data?.indicativePrice &&
+      market.data.indicativePrice &&
       market.data.indicativePrice !== '0' &&
-      BigInt(market.data?.indicativePrice) !== BigInt(0)
+      BigInt(market.data.indicativePrice) !== BigInt(0)
     ) {
       return market.data.indicativePrice;
     }

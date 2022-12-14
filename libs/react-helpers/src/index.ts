@@ -12,5 +12,6 @@ export * from './lib/storage';
 export * from './lib/time';
 export * from './lib/validate';
 export * from './lib/links';
+export * from './lib/is-asset-erc20';
 export * from './lib/remove-pagination-wrapper';
 export * from './lib/__generated__/ChainId';

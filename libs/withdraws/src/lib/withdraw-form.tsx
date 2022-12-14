@@ -5,8 +5,9 @@ import {
   t,
   removeDecimal,
   required,
+  useLocalStorage,
+  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
-import { isAssetTypeERC20 } from '@vegaprotocol/assets';
 import {
   Button,
   FormGroup,
@@ -16,10 +17,14 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
+import {
+  ETHEREUM_EAGER_CONNECT,
+  useWeb3ConnectStore,
+} from '@vegaprotocol/web3';
 
 interface FormFields {
   asset: string;
@@ -133,16 +138,12 @@ export const WithdrawForm = ({
           label={t('To (Ethereum address)')}
           labelFor="ethereum-address"
         >
-          {address && (
-            <UseButton
-              onClick={() => {
-                setValue('to', address);
-                clearErrors('to');
-              }}
-            >
-              {t('Use connected')}
-            </UseButton>
-          )}
+          <EthereumButton
+            clearAddress={() => {
+              setValue('to', '');
+              clearErrors('to');
+            }}
+          />
           <Input
             id="ethereum-address"
             data-testid="eth-address-input"
@@ -198,7 +199,12 @@ export const WithdrawForm = ({
             </UseButton>
           )}
         </FormGroup>
-        <Button data-testid="submit-withdrawal" type="submit" variant="primary">
+        <Button
+          data-testid="submit-withdrawal"
+          type="submit"
+          variant="primary"
+          fill={true}
+        >
           Release funds
         </Button>
       </form>
@@ -206,18 +212,41 @@ export const WithdrawForm = ({
   );
 };
 
-interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
+type UseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const UseButton = ({ children, ...rest }: UseButtonProps) => {
+const UseButton = (props: UseButtonProps) => {
   return (
     <button
-      {...rest}
+      {...props}
       type="button"
       className="ml-auto text-sm absolute top-0 right-0 underline"
+    />
+  );
+};
+
+const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+  const openDialog = useWeb3ConnectStore((state) => state.open);
+  const { isActive, connector } = useWeb3React();
+  const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+
+  if (!isActive) {
+    return (
+      <UseButton onClick={openDialog} data-testid="connect-eth-wallet-btn">
+        {t('Connect')}
+      </UseButton>
+    );
+  }
+
+  return (
+    <UseButton
+      onClick={() => {
+        connector.deactivate();
+        clearAddress();
+        removeEagerConnector();
+      }}
+      data-testid="disconnect-ethereum-wallet"
     >
-      {children}
-    </button>
+      {t('Disconnect')}
+    </UseButton>
   );
 };

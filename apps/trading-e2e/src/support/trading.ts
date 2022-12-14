@@ -1,5 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateAsset, generateAssets } from './mocks/generate-assets';
@@ -59,6 +59,7 @@ const mockTradingPage = (
     generateMarketData({
       trigger: trigger,
       marketTradingMode: tradingMode,
+      marketState: state,
     })
   );
   aliasQuery(req, 'MarketsData', generateMarketsData());

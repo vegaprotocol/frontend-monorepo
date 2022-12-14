@@ -1,14 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  act,
+  waitFor,
+} from '@testing-library/react';
 import { generateMarket } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
 import { ChainIdDocument, addDecimal } from '@vegaprotocol/react-helpers';
+import * as utils from '../../utils';
+
+let mockHasNoBalance = false;
+jest.mock('../../hooks/use-has-no-balance', () => {
+  return {
+    useHasNoBalance: () => mockHasNoBalance,
+  };
+});
 
 const market = generateMarket();
 const submit = jest.fn();
@@ -31,7 +45,7 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
   };
   return (
     <MockedProvider mocks={[chainIdMock]}>
-      <VegaWalletContext.Provider value={{} as any}>
+      <VegaWalletContext.Provider value={{ pubKey: mockChainId } as any}>
         <DealTicket
           defaultOrder={order}
           market={market}
@@ -45,7 +59,11 @@ function generateJsx(order?: OrderSubmissionBody['orderSubmission']) {
 
 describe('DealTicket', () => {
   beforeEach(() => window.localStorage.clear());
-  afterEach(() => window.localStorage.clear());
+  afterEach(() => {
+    window.localStorage.clear();
+    jest.clearAllMocks();
+  });
+
   it('should display ticket defaults', () => {
     render(generateJsx());
 
@@ -164,5 +182,49 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
+  });
+
+  it('validation should be reset', async () => {
+    mockHasNoBalance = true;
+    jest.spyOn(utils, 'validateMarketState').mockReturnValue('Wrong state');
+    jest
+      .spyOn(utils, 'validateMarketTradingMode')
+      .mockReturnValue('Wrong trading mode');
+    const { rerender } = render(generateJsx());
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('place-order'));
+    });
+    await waitFor(async () => {
+      expect(
+        await screen.getByTestId('dealticket-error-message-summary')
+      ).toHaveTextContent('Wrong state');
+    });
+
+    jest.spyOn(utils, 'validateMarketState').mockReturnValue(true);
+    await act(async () => {
+      rerender(generateJsx());
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('place-order'));
+    });
+    await waitFor(async () => {
+      expect(
+        await screen.getByTestId('dealticket-error-message-zero-balance')
+      ).toHaveTextContent('Insufficient balance.');
+    });
+
+    mockHasNoBalance = false;
+    await act(async () => {
+      rerender(generateJsx());
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('place-order'));
+    });
+    await waitFor(async () => {
+      expect(
+        await screen.getByTestId('dealticket-error-message-summary')
+      ).toHaveTextContent('Wrong trading mode');
+    });
   });
 });

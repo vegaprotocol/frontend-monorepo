@@ -1,6 +1,6 @@
 import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
 import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';

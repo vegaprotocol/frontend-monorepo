@@ -32,7 +32,7 @@ export const TxDetailsChainEvent = ({
   }
 
   return (
-    <TableWithTbody>
+    <TableWithTbody className="mb-8">
       <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
       <ChainEvent txData={txData} />
     </TableWithTbody>

@@ -25,3 +25,31 @@ export const aliasQuery = (
     }
   }
 };
+
+const hasMethod = (req: CyHttpMessages.IncomingHttpRequest, method: string) => {
+  const { body } = req;
+  return 'method' in body && body.method === method;
+};
+
+// Alias wallet query if method matches
+export const aliasWalletQuery = (
+  req: CyHttpMessages.IncomingHttpRequest,
+  method: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any
+) => {
+  const body = {
+    jsonrpc: '2.0',
+    id: '0',
+    result: data,
+  };
+  if (hasMethod(req, method)) {
+    req.alias = method;
+    if (data !== undefined) {
+      req.reply({
+        statusCode: 200,
+        body: body,
+      });
+    }
+  }
+};

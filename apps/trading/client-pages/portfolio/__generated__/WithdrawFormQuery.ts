@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Schema } from "@vegaprotocol/types";
+import * as Schema from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: WithdrawFormQuery

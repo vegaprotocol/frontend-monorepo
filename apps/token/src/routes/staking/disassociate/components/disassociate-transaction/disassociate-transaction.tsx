@@ -39,7 +39,7 @@ export const DisassociateTransaction = ({
             })
       }
       completeFooter={
-        <Link to={Routes.STAKING}>
+        <Link to={Routes.VALIDATORS}>
           <Button>{t('backToStaking')}</Button>
         </Link>
       }

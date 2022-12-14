@@ -37,6 +37,11 @@ query ExplorerPartyAssets($partyId: ID!) {
               balance
               market {
                 id
+                tradableInstrument {
+                  instrument {
+                    name
+                  }
+                }
               }
             }
           }

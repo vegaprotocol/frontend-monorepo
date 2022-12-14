@@ -1,13 +1,7 @@
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import {
-  OrderRejectionReasonMapping,
-  OrderTimeInForceMapping,
-  OrderTypeMapping,
-  OrderStatusMapping,
-  Schema,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
@@ -79,11 +73,11 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
-      OrderStatusMapping[marketOrder.status],
+      Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
+      Schema.OrderStatusMapping[marketOrder.status],
       '5',
       '-',
-      OrderTimeInForceMapping[marketOrder.timeInForce],
+      Schema.OrderTimeInForceMapping[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
       '-',
       'Edit',
@@ -102,12 +96,12 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
-      OrderStatusMapping[limitOrder.status],
+      Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
+      Schema.OrderStatusMapping[limitOrder.status],
       '5',
       '-',
       `${
-        OrderTimeInForceMapping[limitOrder.timeInForce]
+        Schema.OrderTimeInForceMapping[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
       '-',
@@ -130,8 +124,8 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[3]).toHaveTextContent(
-      `${OrderStatusMapping[rejectedOrder.status]}: ${
-        OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
+      `${Schema.OrderStatusMapping[rejectedOrder.status]}: ${
+        Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
       }`
     );
   });
