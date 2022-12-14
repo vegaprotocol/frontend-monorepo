@@ -47,6 +47,16 @@ export const MarketListTable = forwardRef<
       <AgGridColumn
         headerName={t('Market')}
         field="tradableInstrument.instrument.code"
+        cellRenderer={({
+          value,
+          data,
+        }: VegaICellRendererParams<
+          MarketWithData,
+          'tradableInstrument.instrument.code'
+        >) => {
+          if (!data) return null;
+          return <span data-testid={`market-${data.id}`}>{value}</span>;
+        }}
       />
       <AgGridColumn
         headerName={t('Settlement asset')}
