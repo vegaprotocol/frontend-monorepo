@@ -72,7 +72,7 @@ const MainGrid = ({
   marketId: string;
   onSelect?: (marketId: string) => void;
 }) => {
-  const [showMarketOnly, setShowMarketOnly] = useState(true);
+  const [showMarketOnly, setShowMarketOnly] = useState(false);
   return (
     <ResizableGrid vertical>
       <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
