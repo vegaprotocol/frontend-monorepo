@@ -31,6 +31,14 @@
       "options": {
         "command": "yarn tsc --project ./apps/trading-e2e/"
       }
+    },
+    "prepare-tests": {
+      "executor": "@nrwl/workspace:run-commands",
+      "configurations": {
+        "create-market": {
+          "commands": ["node apps/trading-e2e/src/support/test.mjs"]
+        }
+      }
     }
   },
   "tags": [],
