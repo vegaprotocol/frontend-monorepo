@@ -260,7 +260,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             valueFormatted: string;
             data: Order;
           }) => (
-            <span data-testId={`order-status-${data?.id}`}>
+            <span data-testid={`order-status-${data?.id}`}>
               {valueFormatted}
             </span>
           )}
