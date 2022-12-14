@@ -3,20 +3,24 @@ import type { ReactNode } from 'react';
 
 export interface RoundedWrapperProps {
   children?: ReactNode;
+  border?: boolean;
   paddingBottom?: boolean;
+  marginBottomLarge?: boolean;
 }
 
 export const RoundedWrapper = ({
   children,
+  border = true,
   paddingBottom = false,
+  marginBottomLarge = false,
 }: RoundedWrapperProps) => (
   <div
-    className={classnames(
-      'rounded-xl mb-10 pt-4 px-4 border border-neutral-700',
-      {
-        'pb-4': paddingBottom,
-      }
-    )}
+    className={classnames('rounded-xl pt-4 px-4 overflow-hidden', {
+      'border border-neutral-700': border,
+      'pb-4': paddingBottom,
+      'mb-10': marginBottomLarge,
+      'mb-4': !marginBottomLarge,
+    })}
   >
     {children}
   </div>

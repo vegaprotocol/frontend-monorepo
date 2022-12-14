@@ -1,20 +1,23 @@
 import { useTranslation } from 'react-i18next';
-import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Intent, Lozenge } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/react-helpers';
-import { SubHeading } from '../../../../components/heading';
+import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 export const ProposalHeader = ({
   proposal,
+  useSubHeading = true,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  useSubHeading?: boolean;
 }) => {
   const { t } = useTranslation();
   const change = proposal?.terms.change;
 
   let details: ReactNode;
+  let proposalType: ReactNode;
 
   let title = proposal?.rationale.title.trim();
   let description = proposal?.rationale.description.trim();
@@ -27,6 +30,7 @@ export const ProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
+      proposalType = t('NewMarket');
       details = (
         <>
           {t('Code')}: {change.instrument.code}.{' '}
@@ -45,10 +49,12 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateMarket': {
+      proposalType = t('UpdateMarket');
       details = `${t('Market change')}: ${change.marketId}`;
       break;
     }
     case 'NewAsset': {
+      proposalType = t('NewAsset');
       details = (
         <>
           {t('Symbol')}: {change.symbol}.{' '}
@@ -65,6 +71,7 @@ export const ProposalHeader = ({
       break;
     }
     case 'UpdateNetworkParameter': {
+      proposalType = t('NetworkParameter');
       const parametersClasses = 'font-mono leading-none';
       details = (
         <>
@@ -80,10 +87,12 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
+      proposalType = t('Freeform');
       details = `${t('FreeformProposal')}: ${proposal?.id}`;
       break;
     }
     case 'UpdateAsset': {
+      proposalType = t('UpdateAsset');
       details = (
         <>
           `${t('Update asset')}`;
@@ -96,14 +105,28 @@ export const ProposalHeader = ({
 
   return (
     <div className="text-sm mb-2">
-      <header data-testid="proposal-title">
-        <SubHeading title={titleContent || t('Unknown proposal')} />
-      </header>
-      {description && (
-        <div className="mb-4" data-testid="proposal-description">
-          {description}
-        </div>
-      )}
+      <div data-testid="proposal-title">
+        {useSubHeading ? (
+          <header>
+            <SubHeading title={titleContent || t('Unknown proposal')} />
+          </header>
+        ) : (
+          <Heading title={titleContent || t('Unknown proposal')} />
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 mb-4">
+        {proposalType && (
+          <div data-testid="proposal-type">
+            <Lozenge variant={Intent.None}>{proposalType}</Lozenge>
+          </div>
+        )}
+
+        {description && (
+          <div data-testid="proposal-description">{description}</div>
+        )}
+      </div>
+
       {details && <div data-testid="proposal-details">{details}</div>}
     </div>
   );

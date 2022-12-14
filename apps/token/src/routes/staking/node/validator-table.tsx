@@ -123,7 +123,7 @@ export const ValidatorTable = ({
         </KeyValueTable>
       </RoundedWrapper>
 
-      <div className="mt-[-1.5rem] mb-10">
+      <div className="mb-10">
         {t('validatorTableIntro')}{' '}
         <UTLink
           href={ExternalLinks.VALIDATOR_FORUM}
@@ -135,7 +135,7 @@ export const ValidatorTable = ({
       </div>
 
       <SubHeading title={t('ADDRESS')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-address">
           <KeyValueTableRow>
             <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
@@ -166,7 +166,7 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('STAKE')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-stake">
           <KeyValueTableRow>
             <span>{t('STAKED BY OPERATOR')}</span>
@@ -204,7 +204,7 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('PENALTIES')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-penalties">
           <KeyValueTableRow>
             <span>{t('OVERSTAKED AMOUNT')}</span>
@@ -242,7 +242,7 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('VOTING POWER')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-voting-power">
           <KeyValueTableRow>
             <span>{t('UNNORMALISED VOTING POWER')}</span>

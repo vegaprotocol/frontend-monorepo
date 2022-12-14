@@ -11,7 +11,7 @@
   "pageTitle404": "Page not found",
   "pageTitleNotPermitted": "Can not proceed!",
   "pageTitleDisassociate": "Disassociate $VEGA tokens from a Vega key",
-  "pageTitleGovernance": "Governance",
+  "pageTitleProposals": "Proposals",
   "pageTitleDepositLp": "Deposit liquidity token for $VEGA rewards",
   "pageTitleWithdrawLp": "Withdraw SLP and Rewards",
   "pageTitleRewards": "Rewards",
@@ -530,6 +530,8 @@
   "validatorTableIntro": "View the validator profile pitches and discussion",
   "onTheForum": "on the forum",
   "readMoreStaking": "Read more about staking on Vega",
+  "readMoreGovernance": "Read more about Vega governance",
+  "readMoreValidators": "Read more about validators",
   "networkDown": "This site is not currently connecting to the network please try again later.",
   "ethTransactionModalTitle": "Ethereum Transactions",
   "confirmed": "Confirmed",
@@ -719,5 +721,13 @@
   "Score": "Score",
   "performancePenalty": "Performance penalty",
   "overstaked": "Overstaked",
-  "overstakedPenalty": "Overstaked penalty"
+  "overstakedPenalty": "Overstaked penalty",
+  "homeProposalsIntro": "Decisions on the Vega network are on-chain, with tokenholders creating proposals that other tokenholders vote to approve or reject.",
+  "homeProposalsButtonText": "Browse, vote, and propose",
+  "homeValidatorsIntro": "Vega runs on a delegated proof of stake blockchain, where validators earn fees for validating block transactions. Tokenholders can nominate validators by staking tokens to them.",
+  "homeValidatorsButtonText": "Browse, and stake",
+  "homeRewardsIntro": "Track rewards you've earned for trading, liquidity provision, market creation, and staking.",
+  "homeRewardsButtonText": "See rewards",
+  "homeVegaTokenIntro": "VEGA Token is a governance asset used to make and vote on proposals, and nominate validators.",
+  "homeVegaTokenButtonText": "Manage tokens"
 }

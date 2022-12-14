@@ -81,7 +81,7 @@ afterAll(() => {
 describe('Proposals list', () => {
   it('Render a page title and link to the make proposal form', () => {
     render(renderComponent([]));
-    expect(screen.getByText('Governance')).toBeInTheDocument();
+    expect(screen.getByText('Proposals')).toBeInTheDocument();
     expect(screen.getByTestId('new-proposal-link')).toBeInTheDocument();
   });
 

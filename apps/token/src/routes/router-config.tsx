@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import Home from './home';
+import Home from './token';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
 import Routes from './routes';
@@ -88,94 +88,94 @@ const LazyStakingNode = React.lazy(
     )
 );
 
-const LazyGovernanceHome = React.lazy(
+const LazyHome = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-home", webpackPrefetch: true */ './governance-home'
+      /* webpackChunkName: "route-governance-home", webpackPrefetch: true */ './home'
     )
 );
 
-const LazyGovernance = React.lazy(
+const LazyProposals = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance", webpackPrefetch: true */ './governance'
+      /* webpackChunkName: "route-governance", webpackPrefetch: true */ './proposals'
     )
 );
 
-const LazyGovernanceProposal = React.lazy(
+const LazyProposal = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-proposal", webpackPrefetch: true */ './governance/proposal'
+      /* webpackChunkName: "route-governance-proposal", webpackPrefetch: true */ './proposals/proposal'
     )
 );
 
-const LazyGovernanceProposals = React.lazy(
+const LazyProposalsList = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './governance/proposals'
+      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './proposals/proposals'
     )
 );
 
-const LazyRejectedGovernanceProposals = React.lazy(
+const LazyRejectedProposalsList = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './governance/rejected'
+      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './proposals/rejected'
     )
 );
 
-const LazyGovernancePropose = React.lazy(
+const LazyPropose = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose'
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './proposals/propose'
     )
 );
 
-const LazyGovernanceProposeNetworkParameter = React.lazy(
+const LazyProposeNetworkParameter = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-network-parameter", webpackPrefetch: true */ './governance/propose/network-parameter'
+      /* webpackChunkName: "route-governance-propose-network-parameter", webpackPrefetch: true */ './proposals/propose/network-parameter'
     )
 );
 
-const LazyGovernanceProposeNewMarket = React.lazy(
+const LazyProposeNewMarket = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-new-market", webpackPrefetch: true */ './governance/propose/new-market'
+      /* webpackChunkName: "route-governance-propose-new-market", webpackPrefetch: true */ './proposals/propose/new-market'
     )
 );
 
-const LazyGovernanceProposeUpdateMarket = React.lazy(
+const LazyProposeUpdateMarket = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-update-market", webpackPrefetch: true */ './governance/propose/update-market'
+      /* webpackChunkName: "route-governance-propose-update-market", webpackPrefetch: true */ './proposals/propose/update-market'
     )
 );
 
-const LazyGovernanceProposeNewAsset = React.lazy(
+const LazyProposeNewAsset = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-new-asset", webpackPrefetch: true */ './governance/propose/new-asset'
+      /* webpackChunkName: "route-governance-propose-new-asset", webpackPrefetch: true */ './proposals/propose/new-asset'
     )
 );
 
-const LazyGovernanceProposeUpdateAsset = React.lazy(
+const LazyProposeUpdateAsset = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-update-asset", webpackPrefetch: true */ './governance/propose/update-asset'
+      /* webpackChunkName: "route-governance-propose-update-asset", webpackPrefetch: true */ './proposals/propose/update-asset'
     )
 );
 
-const LazyGovernanceProposeFreeform = React.lazy(
+const LazyProposeFreeform = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-freeform", webpackPrefetch: true */ './governance/propose/freeform'
+      /* webpackChunkName: "route-governance-propose-freeform", webpackPrefetch: true */ './proposals/propose/freeform'
     )
 );
 
-const LazyGovernanceProposeRaw = React.lazy(
+const LazyProposeRaw = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "route-governance-propose-raw", webpackPrefetch: true */ './governance/propose/raw'
+      /* webpackChunkName: "route-governance-propose-raw", webpackPrefetch: true */ './proposals/propose/raw'
     )
 );
 
@@ -202,10 +202,6 @@ const LazyWithdrawals = React.lazy(
 
 const redirects = [
   {
-    path: Routes.HOME,
-    element: <Navigate to={Routes.PROPOSALS} replace />,
-  },
-  {
     path: Routes.STAKING,
     element: <Navigate to={Routes.VALIDATORS} replace />,
   },
@@ -225,39 +221,43 @@ const redirects = [
 
 const routerConfig = [
   {
+    path: Routes.HOME,
+    element: <LazyHome name="Token" />,
+  },
+  {
     path: Routes.PROPOSALS,
-    element: <LazyGovernance name="Governance" />,
+    element: <LazyProposals name="Proposals" />,
     children: [
-      { index: true, element: <LazyGovernanceHome name="Governance" /> },
+      { index: true, element: <LazyProposalsList /> },
       {
         path: 'propose',
         element: <Outlet />,
         children: [
-          { index: true, element: <LazyGovernancePropose /> },
+          { index: true, element: <LazyPropose /> },
           {
             path: 'network-parameter',
-            element: <LazyGovernanceProposeNetworkParameter />,
+            element: <LazyProposeNetworkParameter />,
           },
           {
             path: 'new-market',
-            element: <LazyGovernanceProposeNewMarket />,
+            element: <LazyProposeNewMarket />,
           },
           {
             path: 'update-market',
-            element: <LazyGovernanceProposeUpdateMarket />,
+            element: <LazyProposeUpdateMarket />,
           },
-          { path: 'new-asset', element: <LazyGovernanceProposeNewAsset /> },
+          { path: 'new-asset', element: <LazyProposeNewAsset /> },
           {
             path: 'update-asset',
-            element: <LazyGovernanceProposeUpdateAsset />,
+            element: <LazyProposeUpdateAsset />,
           },
-          { path: 'freeform', element: <LazyGovernanceProposeFreeform /> },
-          { path: 'raw', element: <LazyGovernanceProposeRaw /> },
+          { path: 'freeform', element: <LazyProposeFreeform /> },
+          { path: 'raw', element: <LazyProposeRaw /> },
         ],
       },
-      { path: 'proposals', element: <LazyGovernanceProposals /> },
-      { path: ':proposalId', element: <LazyGovernanceProposal /> },
-      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
+      { path: 'proposals', element: <LazyProposalsList /> },
+      { path: ':proposalId', element: <LazyProposal /> },
+      { path: 'rejected', element: <LazyRejectedProposalsList /> },
     ],
   },
   {
