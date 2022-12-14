@@ -141,10 +141,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Active'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Active');
   });
   it('must see an expired order', () => {
     // 7002-SORD-042
@@ -152,10 +149,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_EXPIRED,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Expired'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Expired');
   });
 
   it('must see a cancelled order', () => {
@@ -165,10 +159,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_CANCELLED,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Cancelled'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Cancelled');
   });
 
   it('must see a stopped order', () => {
@@ -178,10 +169,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_STOPPED,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Stopped'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Stopped');
   });
 
   it('must see a partially filled order', () => {
@@ -192,11 +180,11 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       size: '5',
       remaining: '1',
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
+    cy.getByTestId(`order-status-${orderId}`).should(
       'have.text',
       'PartiallyFilled'
     );
-    cy.get(`[data-testid=order-status-${orderId}]`)
+    cy.getByTestId(`order-status-${orderId}`)
       .parent()
       .siblings(`[col-id=${orderRemaining}]`)
       .should('have.text', '4/5');
@@ -209,10 +197,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_FILLED,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Filled'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Filled');
   });
 
   it('must see a rejected order', () => {
@@ -222,7 +207,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_REJECTED,
       rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_INTERNAL_ERROR,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
+    cy.getByTestId(`order-status-${orderId}`).should(
       'have.text',
       'Rejected: Internal error'
     );
@@ -235,9 +220,6 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_PARKED,
     });
-    cy.get(`[data-testid=order-status-${orderId}]`).should(
-      'have.text',
-      'Parked'
-    );
+    cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
   });
 });
