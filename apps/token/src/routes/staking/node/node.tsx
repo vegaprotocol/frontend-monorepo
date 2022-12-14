@@ -8,6 +8,8 @@ import {
   removePaginationWrapper,
   toBigNum,
 } from '@vegaprotocol/react-helpers';
+import { Link } from 'react-router-dom';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { BigNumber } from '../../../lib/bignumber';
 import { ConnectToVega } from '../../../components/connect-to-vega';
@@ -16,6 +18,8 @@ import { ValidatorTable } from './validator-table';
 import { YourStake } from './your-stake';
 import NodeContainer from './nodes-container';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { Heading, SubHeading } from '../../../components/heading';
+import Routes from '../../routes';
 import type { StakingQuery } from './__generated___/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
 
@@ -100,11 +104,18 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
 
   return (
     <div data-testid="staking-node">
-      <h2 data-test-id="validator-node-title" className="text-2xl break-word">
-        {nodeInfo.name
-          ? t('validatorTitle', { nodeName: nodeInfo.name })
-          : t('validatorTitle', { nodeName: t('validatorTitleFallback') })}
-      </h2>
+      <div className="flex items-center gap-1">
+        <Icon name={'chevron-left'} />
+        <Link className="underline" to={Routes.VALIDATORS}>
+          {t('All validators')}
+        </Link>
+      </div>
+      <Heading
+        title={
+          nodeInfo.name ||
+          t('validatorTitle', { nodeName: t('validatorTitleFallback') })
+        }
+      />
       <section className="mb-4">
         <ValidatorTable
           node={nodeInfo}
@@ -113,7 +124,7 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
         />
       </section>
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
-        <section className="mb-4">
+        <section className="mb-10">
           <EpochCountdown
             id={data.epoch.id}
             startDate={new Date(data?.epoch.timestamps.start)}
@@ -142,7 +153,7 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
         </>
       ) : (
         <>
-          <h2>{t('Connect to see your stake')}</h2>
+          <SubHeading title={t('Connect to see your stake')} />
           <ConnectToVega />
         </>
       )}

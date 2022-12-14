@@ -212,10 +212,6 @@ describe('Consensus validators table', () => {
 
     const grid = screen.getByTestId('consensus-validators-table');
 
-    act(() => {
-      fireEvent.click(screen.getByTestId('show-all-validators'));
-    });
-
     expect(
       grid.querySelector('[role="gridcell"][col-id="validator"]')
     ).toHaveTextContent('T-800 Terminator');

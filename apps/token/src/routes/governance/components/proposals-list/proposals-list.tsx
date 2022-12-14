@@ -1,7 +1,7 @@
 import { isFuture } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Heading } from '../../../../components/heading';
+import { Heading, SubHeading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
@@ -47,7 +47,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   return (
     <>
-      <div className="grid xs:grid-cols-2 items-center mb-4">
+      <div className="grid xs:grid-cols-2 items-center">
         <Heading
           centerContent={false}
           marginBottom={false}
@@ -63,25 +63,23 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           </Button>
         </Link>
       </div>
-      <div>
-        <p className="mb-4">
-          {t(
-            `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
-          )}{' '}
-          <ExternalLink
-            data-testid="proposal-documentation-link"
-            href={ExternalLinks.GOVERNANCE_PAGE}
-            className="text-white"
-          >
-            {t(`Find out more about Vega governance`)}
-          </ExternalLink>
-        </p>
-      </div>
+      <p className="mb-8">
+        {t(
+          `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
+        )}{' '}
+        <ExternalLink
+          data-testid="proposal-documentation-link"
+          href={ExternalLinks.GOVERNANCE_PAGE}
+          className="text-white"
+        >
+          {t(`Find out more about Vega governance`)}
+        </ExternalLink>
+      </p>
       {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
       <section className="-mx-4 p-4 mb-8 bg-neutral-800">
-        <h2 className="text-xl mb-2">{t('openProposals')}</h2>
+        <SubHeading title={t('openProposals')} />
         {sortedProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
             {sortedProposals.open.filter(filterPredicate).map((proposal) => (
@@ -95,7 +93,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         )}
       </section>
       <section>
-        <h2 className="text-xl mb-2">{t('closedProposals')}</h2>
+        <SubHeading title={t('closedProposals')} />
         {sortedProposals.closed.length > 0 ? (
           <ul data-testid="closed-proposals">
             {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
