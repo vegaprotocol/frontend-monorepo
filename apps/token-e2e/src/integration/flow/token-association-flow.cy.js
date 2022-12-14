@@ -41,7 +41,6 @@ context(
           cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('validators');
-          cy.wait_for_spinner();
         }
       );
 
