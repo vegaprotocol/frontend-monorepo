@@ -21,7 +21,7 @@ import type { TransactionResult } from '@vegaprotocol/wallet';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
@@ -78,13 +78,20 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     const [editOrder, setEditOrder] = useState<Order | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
+    const cancelVariables = useMemo(
+      () => ({
+        marketId: props.marketId,
+      }),
+      [props.marketId]
+    );
+    console.log('OrderList', props.marketId);
 
     return (
       <>
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel({ marketId: props.marketId });
+            orderCancel.cancel(cancelVariables);
           }}
           cancel={(order: Order) => {
             if (!order.market) return;

@@ -159,7 +159,7 @@ const MainGrid = ({
                   {t('Show orders for this market only')}
                 </label>
                 <TradingViews.Orders
-                  marketId={showMarketOnly ? marketId : ''}
+                  marketId={showMarketOnly ? marketId : undefined}
                 />
               </VegaWalletContainer>
             </Tab>
@@ -174,7 +174,9 @@ const MainGrid = ({
                   />
                   {t('Show fills for this market only')}
                 </label>
-                <TradingViews.Fills marketId={showMarketOnly ? marketId : ''} />
+                <TradingViews.Fills
+                  marketId={showMarketOnly ? marketId : undefined}
+                />
               </VegaWalletContainer>
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
