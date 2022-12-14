@@ -3,7 +3,6 @@ import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-
 import { usePartyDelegationsLazyQuery } from './__generated___/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
@@ -16,11 +15,6 @@ import {
   Radio,
   RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  DelegateSubmissionBody,
-  UndelegateSubmissionBody,
-} from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useNetworkParam,
   NetworkParams,
@@ -29,6 +23,12 @@ import {
   removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import { useBalances } from '../../../lib/balances/balances-store';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { SubHeading } from '../../../components/heading';
+import type {
+  DelegateSubmissionBody,
+  UndelegateSubmissionBody,
+} from '@vegaprotocol/wallet';
 
 export enum FormState {
   Default,
@@ -186,15 +186,17 @@ export const StakingForm = ({
 
   return (
     <>
-      <h2>{t('Manage your stake')}</h2>
+      <SubHeading title={t('Manage your stake')} />
       {formState === FormState.Default &&
         availableStakeToAdd.isEqualTo(0) &&
         availableStakeToRemove.isEqualTo(0) && (
-          <div>
+          <div className="mb-4">
             {lien.isGreaterThan(0) ? (
-              <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>
+              <span className="text-vega-red">
+                {t('stakeNodeWrongVegaKey')}
+              </span>
             ) : (
-              <span className="text-red">{t('stakeNodeNone')}</span>
+              <span className="text-vega-orange">{t('stakeNodeNone')}</span>
             )}
           </div>
         )}

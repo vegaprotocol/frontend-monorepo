@@ -57,7 +57,7 @@ export const defaultColDef = {
   resizable: true,
   autoHeight: true,
   comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
-  cellStyle: { margin: '10px 0' },
+  cellStyle: { margin: '10px 0', padding: '0 12px' },
   tooltipComponent: TooltipCellComponent,
   tooltipShowDelay: 0,
   tooltipHideDelay: 0,

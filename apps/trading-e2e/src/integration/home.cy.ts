@@ -86,6 +86,14 @@ describe('home', { tags: '@regression' }, () => {
             });
           }
         });
+
+      cy.getByTestId('welcome-notice-proposed-markets')
+        .children('div.pt-1.flex.justify-between')
+        .should('have.length', 3)
+        .each((item) => {
+          cy.wrap(item).getByTestId('external-link').should('exist');
+        });
+
       cy.getByTestId('dialog-close').click();
       cy.getByTestId(selectMarketOverlay).should('not.exist');
 
@@ -96,7 +104,7 @@ describe('home', { tags: '@regression' }, () => {
     });
   });
 
-  describe('market table should properly rendered', () => {
+  describe('market table should be properly rendered', () => {
     it('redirects to a default market with the landing dialog open', () => {
       const override = {
         marketsConnection: {
@@ -159,6 +167,61 @@ describe('home', { tags: '@regression' }, () => {
         'contain.text',
         'AAAZZZ'
       );
+    });
+  });
+
+  describe('no proposal found', () => {
+    it('there is a link to propose market', () => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'ProposalsList', {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: null,
+          },
+        });
+      });
+      cy.visit('/');
+      cy.wait('@Markets');
+      cy.wait('@MarketsData');
+      cy.getByTestId(selectMarketOverlay)
+        .get('table tr')
+        .then((row) => {
+          expect(row.length >= 3).to.be.true;
+        });
+      cy.getByTestId('external-link')
+        .contains('Propose a market')
+        .should('exist');
+    });
+  });
+
+  describe('no proposal nor markets found', () => {
+    it('there are welcome text and a link to propose market', () => {
+      cy.mockGQL((req) => {
+        const data = {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: [],
+          },
+        };
+        aliasQuery(req, 'Markets', data);
+        aliasQuery(req, 'MarketsData', data);
+        aliasQuery(req, 'ProposalsList', {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: null,
+          },
+        });
+      });
+      cy.visit('/');
+      cy.wait('@Markets');
+      cy.wait('@MarketsData');
+      cy.getByTestId('welcome-notice-title').should(
+        'contain.text',
+        'Welcome to Console'
+      );
+      cy.getByTestId('external-link')
+        .contains('Propose a market')
+        .should('exist');
     });
   });
 });

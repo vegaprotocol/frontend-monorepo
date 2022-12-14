@@ -9,6 +9,7 @@ import { useVoteInformation } from '../../hooks';
 import { useUserVote } from './use-user-vote';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { VoteButtonsContainer } from './vote-buttons';
+import { SubHeading } from '../../../../components/heading';
 import { ProposalType } from '../proposal/proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -43,11 +44,7 @@ export const VoteDetails = ({
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
-  const { voteState, voteDatetime } = useUserVote(
-    proposal?.id ?? '',
-    proposal?.votes.yes.votes ?? null,
-    proposal?.votes.no.votes ?? null
-  );
+  const { voteState, voteDatetime } = useUserVote(proposal?.id);
   const defaultDecimals = 2;
   const daysLeft = t('daysLeft', {
     daysLeft: formatDistanceToNow(new Date(proposal?.terms.closingDatetime)),
@@ -57,7 +54,7 @@ export const VoteDetails = ({
     <>
       {proposalType === ProposalType.PROPOSAL_UPDATE_MARKET && (
         <section>
-          <h3 className="text-xl mb-2">{t('liquidityVotes')}</h3>
+          <SubHeading title={t('liquidityVotes')} />
           <p>
             <span>
               <CurrentProposalStatus proposal={proposal} />
@@ -106,7 +103,7 @@ export const VoteDetails = ({
         </section>
       )}
       <section>
-        <h3 className="text-xl mb-2">{t('tokenVotes')}</h3>
+        <SubHeading title={t('tokenVotes')} />
         <p>
           <span>
             <CurrentProposalStatus proposal={proposal} />
@@ -180,8 +177,8 @@ export const VoteDetails = ({
           <p>{t('votingThresholdInfo')}</p>
         )}
         {pubKey ? (
-          <>
-            <h3 className="text-xl mb-2">{t('yourVote')}</h3>
+          <section className="mt-10">
+            <SubHeading title={t('yourVote')} />
             {proposal && (
               <VoteButtonsContainer
                 voteState={voteState}
@@ -193,7 +190,7 @@ export const VoteDetails = ({
                 className="flex"
               />
             )}
-          </>
+          </section>
         ) : (
           <ConnectToVega />
         )}

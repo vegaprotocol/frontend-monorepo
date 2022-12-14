@@ -7,13 +7,15 @@ import { useFillsList } from './use-fills-list';
 
 interface FillsManagerProps {
   partyId: string;
+  marketId?: string;
 }
 
-export const FillsManager = ({ partyId }: FillsManagerProps) => {
+export const FillsManager = ({ partyId, marketId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const { data, error, loading, addNewRows, getRows } = useFillsList({
     partyId,
+    marketId,
     gridRef,
     scrolledToTop,
   });
