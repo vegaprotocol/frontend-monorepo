@@ -88,10 +88,10 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   });
   totalCountRef.current = totalCount;
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(
-    newRows,
     dataRef,
     totalCountRef,
-    load
+    load,
+    newRows
   );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
