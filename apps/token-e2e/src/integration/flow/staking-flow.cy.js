@@ -559,7 +559,7 @@ context(
         cy.validate_validator_list_total_stake_and_share('0', '0.00', '0.00%');
       });
 
-      it.only('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
+      it('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
         cy.staking_page_associate_tokens('3', { type: 'contract' });
 
         cy.get(vegaWalletUnstakedBalance, txTimeout).should(
