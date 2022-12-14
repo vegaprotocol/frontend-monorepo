@@ -43,6 +43,12 @@ export const Navbar = ({
       }
     >
       <AppNavLink
+        name={t('Markets')}
+        path={Routes.MARKETS}
+        navbarTheme={navbarTheme}
+        end
+      />
+      <AppNavLink
         name={t('Trading')}
         path={tradingPath}
         navbarTheme={navbarTheme}
@@ -77,6 +83,7 @@ interface AppNavLinkProps {
   navbarTheme: NavbarTheme;
   testId?: string;
   target?: HTMLAttributeAnchorTarget;
+  end?: boolean;
 }
 
 const AppNavLink = ({
@@ -85,6 +92,7 @@ const AppNavLink = ({
   navbarTheme,
   target,
   testId = name,
+  end,
 }: AppNavLinkProps) => {
   const borderClasses = classNames('absolute h-1 w-full bottom-[-1px] left-0', {
     'bg-black dark:bg-vega-yellow': navbarTheme !== 'yellow',
@@ -96,6 +104,7 @@ const AppNavLink = ({
       to={{ pathname: path }}
       className={getNavLinkClassNames(navbarTheme)}
       target={target}
+      end={end}
     >
       {({ isActive }) => {
         return (
