@@ -113,7 +113,8 @@ export const RewardTable = ({ reward }: RewardTableProps) => {
         <KeyValueTableRow>
           {t('reward')}
           <span>
-            {formatNumber(toBigNum(reward.amount, decimals))} {t('VEGA')}
+            {formatNumber(toBigNum(reward.amount, decimals), decimals)}{' '}
+            {t('VEGA')}
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
