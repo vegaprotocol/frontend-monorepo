@@ -53,9 +53,9 @@ const TradingViews = {
   Orderbook: requiresMarket(OrderbookContainer),
   Trades: requiresMarket(TradesContainer),
   Positions: PositionsContainer,
-  Orders: OrderListContainer,
+  Orders: requiresMarket(OrderListContainer),
   Collateral: AccountsContainer,
-  Fills: FillsContainer,
+  Fills: requiresMarket(FillsContainer),
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -147,12 +147,12 @@ const MainGrid = ({
           </Tab>
           <Tab id="orders" name={t('Orders')}>
             <VegaWalletContainer>
-              <TradingViews.Orders />
+              <TradingViews.Orders marketId={marketId} />
             </VegaWalletContainer>
           </Tab>
           <Tab id="fills" name={t('Fills')}>
             <VegaWalletContainer>
-              <TradingViews.Fills />
+              <TradingViews.Fills marketId={marketId} />
             </VegaWalletContainer>
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>

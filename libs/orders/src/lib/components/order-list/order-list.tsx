@@ -36,7 +36,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 import type { OrderEventFieldsFragment } from '../../order-hooks';
 
-type OrderListProps = TypedDataAgGrid<Order>;
+type OrderListProps = TypedDataAgGrid<Order> & { marketId?: string };
 
 export const TransactionComplete = ({
   transaction,
@@ -84,7 +84,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel({});
+            orderCancel.cancel({ marketId: props.marketId });
           }}
           cancel={(order: Order) => {
             if (!order.market) return;
@@ -260,7 +260,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             valueFormatted: string;
             data: Order;
           }) => (
-            <span data-testId={`order-status-${data?.id}`}>
+            <span data-testid={`order-status-${data?.id}`}>
               {valueFormatted}
             </span>
           )}

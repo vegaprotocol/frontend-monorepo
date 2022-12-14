@@ -10,7 +10,10 @@ import type {
   OrderEdge,
   Order,
 } from '../order-data-provider/order-data-provider';
-import type { OrdersQueryVariables } from '../order-data-provider/__generated__/Orders';
+import type {
+  OrdersQueryVariables,
+  OrdersUpdateSubscriptionVariables,
+} from '../order-data-provider/__generated__/Orders';
 import type * as Types from '@vegaprotocol/types';
 export interface Sort {
   colId: string;
@@ -32,6 +35,7 @@ export interface Filter {
 }
 interface Props {
   partyId: string;
+  marketId?: string;
   filter?: Filter;
   sort?: Sort[];
   gridRef: RefObject<AgGridReact>;
@@ -40,6 +44,7 @@ interface Props {
 
 export const useOrderListData = ({
   partyId,
+  marketId,
   sort,
   filter,
   gridRef,
@@ -49,9 +54,11 @@ export const useOrderListData = ({
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
 
-  const variables = useMemo<OrdersQueryVariables>(
-    () => ({ partyId, dateRange: filter?.updatedAt?.value }),
-    [partyId, filter]
+  const variables = useMemo<
+    OrdersQueryVariables & OrdersUpdateSubscriptionVariables
+  >(
+    () => ({ partyId, dateRange: filter?.updatedAt?.value, marketId }),
+    [partyId, marketId, filter]
   );
 
   const addNewRows = useCallback(() => {
@@ -85,11 +92,14 @@ export const useOrderListData = ({
         (dataRef.current?.length && data?.length) ||
         (!dataRef.current?.length && !data?.length)
       );
-      dataRef.current = data;
+      dataRef.current =
+        !!marketId && !!data
+          ? data.filter((d) => d?.node.market?.id === marketId)
+          : data;
       gridRef.current?.api?.refreshInfiniteCache();
       return avoidRerender;
     },
-    [gridRef, scrolledToTop]
+    [gridRef, scrolledToTop, marketId]
   );
 
   const insert = useCallback(
@@ -100,7 +110,10 @@ export const useOrderListData = ({
       data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current = data;
+      dataRef.current =
+        !!marketId && !!data
+          ? data.filter((d) => d?.node.market?.id === marketId)
+          : data;
       totalCountRef.current = totalCount;
       return true;
     },
