@@ -55,7 +55,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Orders: OrderListContainer,
   Collateral: AccountsContainer,
-  Fills: requiresMarket(FillsContainer),
+  Fills: FillsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -165,7 +165,16 @@ const MainGrid = ({
             </Tab>
             <Tab id="fills" name={t('Fills')}>
               <VegaWalletContainer>
-                <TradingViews.Fills marketId={marketId} />
+                <label className="flex align-right whitespace-nowrap overflow-hidden text-ellipsis m-1 text-xs">
+                  <input
+                    className="mr-1"
+                    type="checkbox"
+                    checked={showMarketOnly}
+                    onChange={() => setShowMarketOnly(!showMarketOnly)}
+                  />
+                  {t('Show fills for this market only')}
+                </label>
+                <TradingViews.Fills marketId={showMarketOnly ? marketId : ''} />
               </VegaWalletContainer>
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
