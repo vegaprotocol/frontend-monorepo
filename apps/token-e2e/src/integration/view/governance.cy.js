@@ -1,4 +1,4 @@
-const proposalDocumentationLink = '[data-testid="external-link"]';
+const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalLink = '[data-testid="new-proposal-link"]';
 const governanceDocsUrl = 'https://vega.xyz/governance';

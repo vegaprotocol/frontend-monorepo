@@ -94,10 +94,6 @@ context('Staking Page - verify elements on page', function () {
             cy.wrap($pendingStake).should('contain.text', '0.00');
           });
       });
-
-      it('Should be able to see button to unhide top validators', function () {
-        cy.get('[data-testid="show-all-validators"]').should('be.visible');
-      });
     }
   );
 
