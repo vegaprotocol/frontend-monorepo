@@ -61,7 +61,9 @@ export const CandlesChartContainer = ({
     <div className="h-full flex flex-col">
       <div className="px-4 py-2 flex flex-row flex-wrap gap-4">
         <DropdownMenu>
-          <DropdownMenuTrigger>{t('Interval')}</DropdownMenuTrigger>
+          <DropdownMenuTrigger>
+            {t(`Interval: ${intervalLabels[interval]}`)}
+          </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
               value={interval}

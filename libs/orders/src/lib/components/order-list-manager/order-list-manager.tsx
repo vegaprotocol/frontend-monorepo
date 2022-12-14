@@ -15,9 +15,13 @@ import type { Filter, Sort } from './use-order-list-data';
 
 export interface OrderListManagerProps {
   partyId: string;
+  marketId?: string;
 }
 
-export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
+export const OrderListManager = ({
+  partyId,
+  marketId,
+}: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const scrolledToTop = useRef(true);
   const [sort, setSort] = useState<Sort[] | undefined>();
@@ -25,6 +29,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
 
   const { data, error, loading, addNewRows, getRows } = useOrderListData({
     partyId,
+    marketId,
     sort,
     filter,
     gridRef,
@@ -74,6 +79,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
         onBodyScroll={onBodyScroll}
         onFilterChanged={onFilterChanged}
         onSortChanged={onSortChange}
+        marketId={marketId}
       />
       <div className="pointer-events-none absolute inset-0 top-5">
         <AsyncRenderer
