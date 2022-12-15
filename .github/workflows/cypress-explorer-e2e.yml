@@ -93,8 +93,10 @@ jobs:
 
       - name: Logs
         run: vegacapsule network logs > vega-capsule-logs.txt
+        if: ${{ always() }}
 
       - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt
