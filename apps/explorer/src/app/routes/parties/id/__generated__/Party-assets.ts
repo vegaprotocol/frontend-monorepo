@@ -3,6 +3,8 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type ExplorerPartyAssetsAccountsFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null };
+
 export type ExplorerPartyAssetsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -10,7 +12,32 @@ export type ExplorerPartyAssetsQueryVariables = Types.Exact<{
 
 export type ExplorerPartyAssetsQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null } } | null> | null } | null } }> } | null };
 
-
+export const ExplorerPartyAssetsAccountsFragmentDoc = gql`
+    fragment ExplorerPartyAssetsAccounts on AccountBalance {
+  asset {
+    name
+    id
+    decimals
+    symbol
+    source {
+      __typename
+      ... on ERC20 {
+        contractAddress
+      }
+    }
+  }
+  type
+  balance
+  market {
+    id
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+  }
+}
+    `;
 export const ExplorerPartyAssetsDocument = gql`
     query ExplorerPartyAssets($partyId: ID!) {
   partiesConnection(id: $partyId) {
@@ -35,28 +62,7 @@ export const ExplorerPartyAssetsDocument = gql`
         accountsConnection {
           edges {
             node {
-              asset {
-                name
-                id
-                decimals
-                symbol
-                source {
-                  __typename
-                  ... on ERC20 {
-                    contractAddress
-                  }
-                }
-              }
-              type
-              balance
-              market {
-                id
-                tradableInstrument {
-                  instrument {
-                    name
-                  }
-                }
-              }
+              ...ExplorerPartyAssetsAccounts
             }
           }
         }
@@ -64,7 +70,7 @@ export const ExplorerPartyAssetsDocument = gql`
     }
   }
 }
-    `;
+    ${ExplorerPartyAssetsAccountsFragmentDoc}`;
 
 /**
  * __useExplorerPartyAssetsQuery__

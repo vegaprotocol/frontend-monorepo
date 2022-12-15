@@ -1,34 +1,20 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import { useEnvironment, Networks } from '@vegaprotocol/environment';
-import { useGlobalStore } from '../../stores';
+import { RISK_ACCEPTED_KEY } from '../constants';
 
-export const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
-
-export const RiskNoticeDialog = () => {
-  const { riskNoticeDialog, update } = useGlobalStore((store) => ({
-    riskNoticeDialog: store.riskNoticeDialog,
-    update: store.update,
-  }));
-  const { VEGA_ENV } = useEnvironment();
-
-  useEffect(() => {
-    const isRiskAccepted = LocalStorage.getItem(RISK_ACCEPTED_KEY) === 'true';
-    if (!isRiskAccepted && VEGA_ENV === Networks.MAINNET) {
-      update({ riskNoticeDialog: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [update, VEGA_ENV]);
-
-  const handleAcceptRisk = () => {
-    update({ riskNoticeDialog: false });
+interface Props {
+  onClose: () => void;
+}
+export const RiskNoticeDialog = ({ onClose }: Props) => {
+  const handleAcceptRisk = useCallback(() => {
+    onClose();
     LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
-  };
+  }, [onClose]);
 
   return (
-    <Dialog open={riskNoticeDialog} title={t('WARNING')} size="medium">
+    <>
       <h4 className="text-xl mb-2 mt-4">
         {t('Regulation may apply to use of this app')}
       </h4>
@@ -46,6 +32,6 @@ export const RiskNoticeDialog = () => {
         )}
       </p>
       <Button onClick={handleAcceptRisk}>{t('I understand, Continue')}</Button>
-    </Dialog>
+    </>
   );
 };

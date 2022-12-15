@@ -1,0 +1,5 @@
+query ExplorerGovernanceAsset {
+  networkParameter(key: "reward.asset") {
+    value
+  }
+}

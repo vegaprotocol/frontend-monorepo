@@ -73,7 +73,7 @@ export const TxDetailsShared = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Response code')}</TableCell>
         <TableCell>
-          <ChainResponseCode code={txData.code} />
+          <ChainResponseCode code={txData.code} error={txData.error} />
         </TableCell>
       </TableRow>
     </>

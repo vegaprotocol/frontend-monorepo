@@ -3,8 +3,8 @@ import type { BlockExplorerTransactionResult } from '../../../routes/types/block
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import type { ExplorerNodeVoteQueryResult } from './__generated___/Node-vote';
-import { useExplorerNodeVoteQuery } from './__generated___/Node-vote';
+import type { ExplorerNodeVoteQueryResult } from './__generated__/Node-vote';
+import { useExplorerNodeVoteQuery } from './__generated__/Node-vote';
 import { PartyLink } from '../../links';
 import { Time } from '../../time';
 import {
