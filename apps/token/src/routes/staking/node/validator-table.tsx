@@ -17,11 +17,11 @@ import * as Schema from '@vegaprotocol/types';
 import { SubHeading } from '../../../components/heading';
 import {
   getFormattedPerformanceScore,
+  getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
   getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
-  getRawValidatorScore,
   getTotalPenalties,
   getUnnormalisedVotingPower,
 } from '../shared';
@@ -73,10 +73,11 @@ export const ValidatorTable = ({
 
   const stakedOnNode = toBigNum(node.stakedTotal, decimals);
 
-  const validatorScore = getRawValidatorScore(previousEpochData, node.id);
+  const { rawValidatorScore, performanceScore } =
+    getLastEpochScoreAndPerformance(previousEpochData, node.id);
 
   const overstakedAmount = getOverstakedAmount(
-    validatorScore,
+    rawValidatorScore,
     stakedTotal,
     node.stakedTotal
   );
@@ -87,8 +88,8 @@ export const ValidatorTable = ({
       : stakedOnNode.dividedBy(total).times(100).dp(2).toString() + '%';
 
   const totalPenaltiesAmount = getTotalPenalties(
-    validatorScore,
-    node.rankingScore.performanceScore,
+    rawValidatorScore,
+    performanceScore,
     stakedOnNode.toString(),
     total.toString()
   );
@@ -219,16 +220,12 @@ export const ValidatorTable = ({
           <KeyValueTableRow>
             <span>{t('PERFORMANCE SCORE')}</span>
             <span>
-              {getFormattedPerformanceScore(
-                node.rankingScore.performanceScore
-              ).toString()}
+              {getFormattedPerformanceScore(performanceScore).toString()}
             </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
             <span>{t('PERFORMANCE PENALITY')}</span>
-            <span>
-              {getPerformancePenalty(node.rankingScore.performanceScore)}
-            </span>
+            <span>{getPerformancePenalty(performanceScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
             <span>
@@ -246,7 +243,7 @@ export const ValidatorTable = ({
         <KeyValueTable data-testid="validator-table-voting-power">
           <KeyValueTableRow>
             <span>{t('UNNORMALISED VOTING POWER')}</span>
-            <span>{getUnnormalisedVotingPower(validatorScore)}</span>
+            <span>{getUnnormalisedVotingPower(rawValidatorScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
             <span>

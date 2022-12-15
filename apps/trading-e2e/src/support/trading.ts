@@ -27,6 +27,7 @@ import {
 import { generateMarketProposals } from './mocks/generate-proposals';
 import { generateStatistics } from './mocks/generate-statistics';
 import { generateChainId } from './mocks/generate-chain-id';
+import { generateDeposits } from './mocks/generate-deposits';
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
@@ -98,6 +99,7 @@ const mockTradingPage = (
   aliasQuery(req, 'MarketPositions', generatePositions());
   aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
   aliasQuery(req, 'ProposalsList', generateMarketProposals());
+  aliasQuery(req, 'Deposits', generateDeposits());
 };
 
 declare global {

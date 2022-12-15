@@ -72,7 +72,6 @@ const MainGrid = ({
   marketId: string;
   onSelect?: (marketId: string) => void;
 }) => {
-  const [showMarketOnly, setShowMarketOnly] = useState(false);
   return (
     <ResizableGrid vertical>
       <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
@@ -149,32 +148,12 @@ const MainGrid = ({
             </Tab>
             <Tab id="orders" name={t('Orders')}>
               <VegaWalletContainer>
-                <label className="flex align-right whitespace-nowrap overflow-hidden text-ellipsis m-1 text-xs">
-                  <input
-                    className="mr-1"
-                    type="checkbox"
-                    checked={showMarketOnly}
-                    onChange={() => setShowMarketOnly(!showMarketOnly)}
-                  />
-                  {t('Show orders for this market only')}
-                </label>
-                <TradingViews.Orders
-                  marketId={showMarketOnly ? marketId : ''}
-                />
+                <TradingViews.Orders marketId={marketId} />
               </VegaWalletContainer>
             </Tab>
             <Tab id="fills" name={t('Fills')}>
               <VegaWalletContainer>
-                <label className="flex align-right whitespace-nowrap overflow-hidden text-ellipsis m-1 text-xs">
-                  <input
-                    className="mr-1"
-                    type="checkbox"
-                    checked={showMarketOnly}
-                    onChange={() => setShowMarketOnly(!showMarketOnly)}
-                  />
-                  {t('Show fills for this market only')}
-                </label>
-                <TradingViews.Fills marketId={showMarketOnly ? marketId : ''} />
+                <TradingViews.Fills marketId={marketId} />
               </VegaWalletContainer>
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
