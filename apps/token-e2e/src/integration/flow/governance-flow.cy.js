@@ -847,7 +847,7 @@ context(
         );
         // Wait is needed to allow time for transaction to complete
         // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(5000);
+        cy.wait(10000);
         cy.vega_wallet_teardown();
         cy.clearLocalStorage();
       }
