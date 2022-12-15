@@ -73,7 +73,9 @@ export const getTotalPenalties = (
   totalStake: string
 ) => {
   const calc =
-    rawValidatorScore && performanceScore
+    rawValidatorScore &&
+    performanceScore &&
+    new BigNumber(totalStake).isGreaterThan(0)
       ? new BigNumber(1).minus(
           new BigNumber(performanceScore)
             .times(new BigNumber(rawValidatorScore))
