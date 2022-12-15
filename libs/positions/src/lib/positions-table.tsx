@@ -138,7 +138,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }}
         />
         <AgGridColumn
-          headerName={t('Notional size')}
+          headerName={t('Notional')}
+          headerTooltip={t('Mark price x open volume.')}
           field="notional"
           type="rightAligned"
           cellClass="font-mono text-right"
