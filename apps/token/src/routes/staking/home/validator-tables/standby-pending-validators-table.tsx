@@ -6,10 +6,10 @@ import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
   getFormattedPerformanceScore,
+  getLastEpochScoreAndPerformance,
   getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
-  getRawValidatorScore,
   getTotalPenalties,
 } from '../../shared';
 import {
@@ -58,19 +58,21 @@ export const StandbyPendingValidatorsTable = ({
         stakedByDelegates,
         stakedByOperator,
         stakedTotal,
-        rankingScore: { stakeScore, performanceScore },
+        rankingScore: { stakeScore },
         pendingStake,
       }) => {
-        const validatorScore = getRawValidatorScore(previousEpochData, id);
+        const { rawValidatorScore, performanceScore } =
+          getLastEpochScoreAndPerformance(previousEpochData, id);
+
         const overstakedAmount = getOverstakedAmount(
-          validatorScore,
+          rawValidatorScore,
           stakedTotal,
           totalStake
         );
         let individualStakeNeededForPromotion,
           individualStakeNeededForPromotionDescription;
 
-        if (stakeNeededForPromotion) {
+        if (stakeNeededForPromotion && performanceScore) {
           const stakedTotalBigNum = new BigNumber(stakedTotal);
           const stakeNeededBigNum = new BigNumber(stakeNeededForPromotion);
           const performanceScoreBigNum = new BigNumber(performanceScore);
@@ -131,7 +133,7 @@ export const StandbyPendingValidatorsTable = ({
             totalStake
           ),
           [ValidatorFields.TOTAL_PENALTIES]: getTotalPenalties(
-            getRawValidatorScore(previousEpochData, id),
+            rawValidatorScore,
             performanceScore,
             stakedTotal,
             totalStake
