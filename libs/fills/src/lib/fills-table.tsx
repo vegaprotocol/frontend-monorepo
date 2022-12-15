@@ -9,7 +9,7 @@ import {
   t,
   isNumeric,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';

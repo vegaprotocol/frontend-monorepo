@@ -4,7 +4,7 @@ import { InView } from 'react-intersection-observer';
 import { useDataProvider, useYesterday } from '@vegaprotocol/react-helpers';
 import type { Candle } from '@vegaprotocol/market-list';
 import { marketCandlesProvider } from '@vegaprotocol/market-list';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 interface Props {
   candles: (Candle | null)[] | null;

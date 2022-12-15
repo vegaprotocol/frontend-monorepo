@@ -16,6 +16,7 @@ export type AssetLinkProps = Partial<ComponentProps<typeof Link>> & {
  */
 const AssetLink = ({ id, ...props }: AssetLinkProps) => {
   const { data } = useExplorerAssetQuery({
+    fetchPolicy: 'cache-first',
     variables: { id },
   });
 

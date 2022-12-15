@@ -10,11 +10,17 @@ import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface Props {
   partyId: string;
+  marketId?: string;
   gridRef: RefObject<AgGridReact>;
   scrolledToTop: RefObject<boolean>;
 }
 
-export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
+export const useFillsList = ({
+  partyId,
+  marketId,
+  gridRef,
+  scrolledToTop,
+}: Props) => {
   const dataRef = useRef<(TradeEdge | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
@@ -72,7 +78,7 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
     []
   );
 
-  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const variables = useMemo(() => ({ partyId, marketId }), [partyId, marketId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
     (TradeEdge | null)[],
@@ -86,10 +92,10 @@ export const useFillsList = ({ partyId, gridRef, scrolledToTop }: Props) => {
   totalCountRef.current = totalCount;
 
   const getRows = makeInfiniteScrollGetRows<TradeEdge>(
-    newRows,
     dataRef,
     totalCountRef,
-    load
+    load,
+    newRows
   );
   return { data, error, loading, addNewRows, getRows };
 };

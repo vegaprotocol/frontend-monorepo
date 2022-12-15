@@ -19,7 +19,7 @@ import type {
   WithdrawalFieldsFragment,
 } from './__generated__/Withdrawal';
 import { WithdrawalEventDocument } from './__generated__/Withdrawal';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 function setup(
   vegaWalletContext: Partial<VegaWalletContextShape>,

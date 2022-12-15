@@ -11,18 +11,15 @@ import {
   t,
   toBigNum,
 } from '@vegaprotocol/react-helpers';
-import type { Schema } from '@vegaprotocol/types';
+import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
+import type * as Schema from '@vegaprotocol/types';
 import {
   AsyncRenderer,
   Icon,
   PriceCellChange,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  GetRowIdParams,
-  RowClickedEvent,
-  ValueFormatterParams,
-} from 'ag-grid-community';
+import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { AgGridColumn } from 'ag-grid-react';
@@ -115,19 +112,26 @@ export const MarketList = () => {
             headerName={t('Last Price')}
             headerTooltip={t('Latest price for this market')}
             field="data.markPrice"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'data.markPrice'>) =>
+              value && data
+                ? formatWithAsset(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
             }
           />
 
           <AgGridColumn
             headerName={t('Change (24h)')}
             headerTooltip={t('Change in price over the last 24h')}
-            cellRenderer={({ data }: { data: Market }) => {
-              if (data.candles) {
+            cellRenderer={({
+              data,
+            }: VegaValueFormatterParams<Market, 'data.candles'>) => {
+              if (data && data.candles) {
                 const prices = data.candles.map((candle) => candle.close);
                 return (
                   <PriceCellChange
@@ -135,19 +139,24 @@ export const MarketList = () => {
                     decimalPlaces={data?.decimalPlaces}
                   />
                 );
-              } else return <div>{t('No data')}</div>;
+              } else return <div>{t('-')}</div>;
             }}
           />
 
           <AgGridColumn
             headerName={t('Volume (24h)')}
             field="dayVolume"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              `${addDecimalsFormatNumber(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-                  .decimals
-              )} (${displayChange(data.volumeChange)})`
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'dayVolume'>) =>
+              value && data
+                ? `${addDecimalsFormatNumber(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                      .decimals
+                  )} (${displayChange(data.volumeChange)})`
+                : '-'
             }
             headerTooltip={t('The trade volume over the last 24h')}
           />
@@ -155,11 +164,16 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Total staked by LPs')}
             field="liquidityCommitted"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'liquidityCommitted'>) =>
+              data && value
+                ? formatWithAsset(
+                    value.toString(),
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
             }
             headerTooltip={t(
               'The amount of funds allocated to provide liquidity'
@@ -169,11 +183,16 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Target stake')}
             field="target"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<Market, 'target'>) =>
+              data && value
+                ? formatWithAsset(
+                    value,
+                    data.tradableInstrument.instrument.product.settlementAsset
+                  )
+                : '-'
             }
             headerTooltip={t(
               'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
@@ -182,15 +201,21 @@ export const MarketList = () => {
 
           <AgGridColumn
             headerName={t('% Target stake met')}
-            valueFormatter={({ data }: ValueFormatterParams) => {
-              const roundedPercentage =
-                parseInt(
-                  (data.liquidityCommitted / parseFloat(data.target)).toFixed(0)
-                ) * 100;
-              const display = Number.isNaN(roundedPercentage)
-                ? 'N/A'
-                : formatNumberPercentage(toBigNum(roundedPercentage, 2));
-              return display;
+            valueFormatter={({
+              data,
+            }: VegaValueFormatterParams<Market, ''>) => {
+              if (data) {
+                const roundedPercentage =
+                  parseInt(
+                    (data.liquidityCommitted / parseFloat(data.target)).toFixed(
+                      0
+                    )
+                  ) * 100;
+                const display = Number.isNaN(roundedPercentage)
+                  ? 'N/A'
+                  : formatNumberPercentage(toBigNum(roundedPercentage, 2));
+                return display;
+              } else return '-';
             }}
             headerTooltip={t('% Target stake met')}
           />
@@ -198,8 +223,10 @@ export const MarketList = () => {
           <AgGridColumn
             headerName={t('Fee levels')}
             field="fees"
-            valueFormatter={({ value, data }: ValueFormatterParams) =>
-              `${value.factors.liquidityFee}%`
+            valueFormatter={({
+              value,
+            }: VegaValueFormatterParams<Market, 'fees'>) =>
+              value ? `${value.factors.liquidityFee}%` : '-'
             }
             headerTooltip={t('Fee level for this market')}
           />

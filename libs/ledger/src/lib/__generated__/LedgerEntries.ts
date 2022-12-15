@@ -1,4 +1,4 @@
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
@@ -8,6 +8,7 @@ export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntry', vegaTi
 export type LedgerEntriesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
@@ -28,10 +29,11 @@ export const LedgerEntryFragmentDoc = gql`
 }
     `;
 export const LedgerEntriesDocument = gql`
-    query LedgerEntries($partyId: ID!, $pagination: Pagination) {
+    query LedgerEntries($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
   ledgerEntries(
     filter: {SenderAccountFilter: {partyIds: [$partyId]}, ReceiverAccountFilter: {partyIds: [$partyId]}}
     pagination: $pagination
+    dateRange: $dateRange
   ) {
     edges {
       node {
@@ -62,6 +64,7 @@ export const LedgerEntriesDocument = gql`
  *   variables: {
  *      partyId: // value for 'partyId'
  *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */

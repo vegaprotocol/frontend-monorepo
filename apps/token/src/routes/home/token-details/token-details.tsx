@@ -2,7 +2,11 @@ import { useTranslation } from 'react-i18next';
 
 import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  RoundedWrapper,
+} from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
@@ -43,48 +47,50 @@ export const TokenDetails = ({
 
   return (
     <div className="token-details">
-      <KeyValueTable>
-        <KeyValueTableRow>
-          {t('Token address').toUpperCase()}
-          <Link
-            data-testid="token-address"
-            title={t('View on Etherscan (opens in a new tab)')}
-            className="font-mono text-white text-right"
-            href={`${ETHERSCAN_URL}/address/${token.address}`}
-            target="_blank"
-          >
-            {token.address}
-          </Link>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('Vesting contract').toUpperCase()}
-          <Link
-            data-testid="token-contract"
-            title={t('View on Etherscan (opens in a new tab)')}
-            className="font-mono text-white text-right"
-            href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
-            target="_blank"
-          >
-            {config.token_vesting_contract.address}
-          </Link>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('Total supply').toUpperCase()}
-          <span className="font-mono" data-testid="total-supply">
-            {formatNumber(totalSupply, 2)}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('Circulating supply').toUpperCase()}
-          <TokenDetailsCirculating tranches={tranches} />
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('Staked on Vega validator').toUpperCase()}
-          <span data-testid="staked" className="font-mono">
-            {formatNumber(totalAssociated, 2)}
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+      <RoundedWrapper>
+        <KeyValueTable>
+          <KeyValueTableRow>
+            {t('Token address').toUpperCase()}
+            <Link
+              data-testid="token-address"
+              title={t('View on Etherscan (opens in a new tab)')}
+              className="font-mono text-white text-right"
+              href={`${ETHERSCAN_URL}/address/${token.address}`}
+              target="_blank"
+            >
+              {token.address}
+            </Link>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('Vesting contract').toUpperCase()}
+            <Link
+              data-testid="token-contract"
+              title={t('View on Etherscan (opens in a new tab)')}
+              className="font-mono text-white text-right"
+              href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
+              target="_blank"
+            >
+              {config.token_vesting_contract.address}
+            </Link>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('Total supply').toUpperCase()}
+            <span className="font-mono" data-testid="total-supply">
+              {formatNumber(totalSupply, 2)}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            {t('Circulating supply').toUpperCase()}
+            <TokenDetailsCirculating tranches={tranches} />
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            {t('Staked on Vega validator').toUpperCase()}
+            <span data-testid="staked" className="font-mono">
+              {formatNumber(totalAssociated, 2)}
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
     </div>
   );
 };

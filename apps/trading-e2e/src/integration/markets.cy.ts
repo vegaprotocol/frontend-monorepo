@@ -1,4 +1,4 @@
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 describe('markets table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       .click();
     cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets');
     cy.contains('AAPL.MF21').should('be.visible');
-    cy.contains('Market').click(); // sort by market name
+    cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
     for (let i = 0; i < ExpectedSortedMarkets.length; i++) {
       cy.get(`[row-index=${i}]`)
         .find('[col-id="tradableInstrument.instrument.code"]')

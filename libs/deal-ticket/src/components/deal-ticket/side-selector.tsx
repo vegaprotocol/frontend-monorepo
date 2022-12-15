@@ -1,7 +1,7 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 interface SideSelectorProps {
   value: Schema.Side;

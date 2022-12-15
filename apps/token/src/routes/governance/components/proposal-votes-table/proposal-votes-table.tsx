@@ -3,18 +3,21 @@ import {
   KeyValueTable,
   KeyValueTableRow,
   Thumbs,
+  RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/react-helpers';
+import { SubHeading } from '../../../../components/heading';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import { ProposalType } from '../proposal/proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 interface ProposalVotesTableProps {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   proposalType: ProposalType | null;
 }
 
@@ -54,104 +57,112 @@ export const ProposalVotesTable = ({
     : t('byLiquidityVote');
 
   return (
-    <KeyValueTable
-      title={t('voteBreakdown')}
-      data-testid="proposal-votes-table"
-      numerical={true}
-      headingLevel={4}
-    >
-      <KeyValueTableRow>
-        {t('expectedToPass')}
-        {isUpdateMarket ? (
-          updateMarketWillPass ? (
-            <Thumbs up={true} text={updateMarketVotePassMethod} />
-          ) : (
-            <Thumbs up={false} />
-          )
-        ) : willPassByTokenVote ? (
-          <Thumbs up={true} />
-        ) : (
-          <Thumbs up={false} />
-        )}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('majorityMet')}
-        {majorityMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
-      </KeyValueTableRow>
-      {isUpdateMarket && (
-        <KeyValueTableRow>
-          {t('majorityLPMet')}
-          {majorityLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
-        </KeyValueTableRow>
-      )}
-      <KeyValueTableRow>
-        {t('participationMet')}
-        {participationMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
-      </KeyValueTableRow>
-      {isUpdateMarket && (
-        <KeyValueTableRow>
-          {t('participationLPMet')}
-          {participationLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
-        </KeyValueTableRow>
-      )}
-      <KeyValueTableRow>
-        {t('tokenForProposal')}
-        {formatNumber(yesTokens, 2)}
-      </KeyValueTableRow>
-      {isUpdateMarket && (
-        <KeyValueTableRow>
-          {t('tokenLPForProposal')}
-          {formatNumber(yesEquityLikeShareWeight, 2)}
-        </KeyValueTableRow>
-      )}
-      <KeyValueTableRow>
-        {t('totalSupply')}
-        {formatNumber(totalSupply, 2)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('tokensAgainstProposal')}
-        {formatNumber(noTokens, 2)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('participationRequired')}
-        {formatNumberPercentage(requiredParticipation)}
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        {t('majorityRequired')}
-        {formatNumberPercentage(requiredMajorityPercentage)}
-      </KeyValueTableRow>
-      {!isUpdateMarket && (
-        <>
+    <>
+      <SubHeading title={t('voteBreakdown')} />
+      <RoundedWrapper>
+        <KeyValueTable
+          data-testid="proposal-votes-table"
+          numerical={true}
+          headingLevel={4}
+        >
           <KeyValueTableRow>
-            {t('numberOfVotingParties')}
-            {formatNumber(totalVotes, 0)}
+            {t('expectedToPass')}
+            {isUpdateMarket ? (
+              updateMarketWillPass ? (
+                <Thumbs up={true} text={updateMarketVotePassMethod} />
+              ) : (
+                <Thumbs up={false} />
+              )
+            ) : willPassByTokenVote ? (
+              <Thumbs up={true} />
+            ) : (
+              <Thumbs up={false} />
+            )}
           </KeyValueTableRow>
           <KeyValueTableRow>
-            {t('totalTokensVotes')}
-            {formatNumber(totalTokensVoted, 2)}
+            {t('majorityMet')}
+            {majorityMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
+          </KeyValueTableRow>
+          {isUpdateMarket && (
+            <KeyValueTableRow>
+              {t('majorityLPMet')}
+              {majorityLPMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
+            </KeyValueTableRow>
+          )}
+          <KeyValueTableRow>
+            {t('participationMet')}
+            {participationMet ? <Thumbs up={true} /> : <Thumbs up={false} />}
+          </KeyValueTableRow>
+          {isUpdateMarket && (
+            <KeyValueTableRow>
+              {t('participationLPMet')}
+              {participationLPMet ? (
+                <Thumbs up={true} />
+              ) : (
+                <Thumbs up={false} />
+              )}
+            </KeyValueTableRow>
+          )}
+          <KeyValueTableRow>
+            {t('tokenForProposal')}
+            {formatNumber(yesTokens, 2)}
+          </KeyValueTableRow>
+          {isUpdateMarket && (
+            <KeyValueTableRow>
+              {t('tokenLPForProposal')}
+              {formatNumber(yesEquityLikeShareWeight, 2)}
+            </KeyValueTableRow>
+          )}
+          <KeyValueTableRow>
+            {t('totalSupply')}
+            {formatNumber(totalSupply, 2)}
           </KeyValueTableRow>
           <KeyValueTableRow>
-            {t('totalTokenVotedPercentage')}
-            {formatNumberPercentage(totalTokensPercentage, 2)}
+            {t('tokensAgainstProposal')}
+            {formatNumber(noTokens, 2)}
           </KeyValueTableRow>
           <KeyValueTableRow>
-            {t('numberOfForVotes')}
-            {formatNumber(yesVotes, 0)}
+            {t('participationRequired')}
+            {formatNumberPercentage(requiredParticipation)}
           </KeyValueTableRow>
           <KeyValueTableRow>
-            {t('numberOfAgainstVotes')}
-            {formatNumber(noVotes, 0)}
+            {t('majorityRequired')}
+            {formatNumberPercentage(requiredMajorityPercentage)}
           </KeyValueTableRow>
-          <KeyValueTableRow>
-            {t('yesPercentage')}
-            {formatNumberPercentage(yesPercentage, 2)}
-          </KeyValueTableRow>
-          <KeyValueTableRow>
-            {t('noPercentage')}
-            {formatNumberPercentage(noPercentage, 2)}
-          </KeyValueTableRow>
-        </>
-      )}
-    </KeyValueTable>
+          {!isUpdateMarket && (
+            <>
+              <KeyValueTableRow>
+                {t('numberOfVotingParties')}
+                {formatNumber(totalVotes, 0)}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('totalTokensVotes')}
+                {formatNumber(totalTokensVoted, 2)}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('totalTokenVotedPercentage')}
+                {formatNumberPercentage(totalTokensPercentage, 2)}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('numberOfForVotes')}
+                {formatNumber(yesVotes, 0)}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('numberOfAgainstVotes')}
+                {formatNumber(noVotes, 0)}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('yesPercentage')}
+                {formatNumberPercentage(yesPercentage, 2)}
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                {t('noPercentage')}
+                {formatNumberPercentage(noPercentage, 2)}
+              </KeyValueTableRow>
+            </>
+          )}
+        </KeyValueTable>
+      </RoundedWrapper>
+    </>
   );
 };

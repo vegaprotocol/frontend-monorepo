@@ -1,7 +1,8 @@
 import { NetworkParams, useNetworkParams } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalTermsJson } from '../proposal-terms-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
@@ -17,7 +18,7 @@ export enum ProposalType {
   PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
 }
 interface ProposalProps {
-  proposal: Proposal_proposal;
+  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
 }
 
 export const Proposal = ({ proposal }: ProposalProps) => {
@@ -74,7 +75,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
         <ProposalHeader proposal={proposal} />
-        <div className="mb-8">
+        <div className="mb-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
         {proposal.terms.change.__typename === 'NewAsset' &&
@@ -86,7 +87,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
           />
         ) : null}
-        <div className="mb-8">
+        <div className="mb-12">
           <VoteDetails
             proposal={proposal}
             proposalType={proposalType}
@@ -94,7 +95,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             spamProtectionMinTokens={params?.spam_protection_voting_min_tokens}
           />
         </div>
-        <div className="mb-8">
+        <div className="mb-10">
           <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
         </div>
         <ProposalTermsJson terms={proposal.terms} />

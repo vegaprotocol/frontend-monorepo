@@ -1,24 +1,12 @@
 import type { ChangeEvent } from 'react';
-import type { Schema } from '@vegaprotocol/types';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { useEffect } from 'react';
+import type * as Schema from '@vegaprotocol/types';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
-import { isValidDate } from '../format/date';
+import { formatForInput } from '../format/date';
+import { t } from '../i18n';
 
 const defaultFilterValue: Schema.DateRange = {};
-
-const toInputValue = (value: string) => {
-  const date = new Date(value);
-  if (!isValidDate(date)) {
-    return;
-  }
-  return `${date.getFullYear()}-${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}T${(
-    date.getHours() + 1
-  )
-    .toString()
-    .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-};
 
 export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
   const [value, setValue] = useState<Schema.DateRange>(defaultFilterValue);
@@ -84,16 +72,16 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
   };
 
   useEffect(() => {
-    props.filterChangedCallback();
-  }, [value]); //eslint-disable-line react-hooks/exhaustive-deps
+    props?.filterChangedCallback();
+  }, [value, props]);
 
-  const start = (value.start && toInputValue(value.start)) || '';
-  const end = (value.end && toInputValue(value.end)) || '';
+  const start = (value.start && formatForInput(new Date(value.start))) || '';
+  const end = (value.end && formatForInput(new Date(value.end))) || '';
   return (
     <div className="ag-filter-body-wrapper">
       <fieldset className="ag-simple-filter-body-wrapper">
         <label className="block" key="start">
-          <span className="block">start</span>
+          <span className="block">{t('Start')}</span>
           <input
             type="datetime-local"
             name="start"
@@ -102,7 +90,7 @@ export const DateRangeFilter = forwardRef((props: IFilterParams, ref) => {
           />
         </label>
         <label className="block" key="end">
-          <span className="block">end</span>
+          <span className="block">{t('End')}</span>
           <input
             type="datetime-local"
             name="end"

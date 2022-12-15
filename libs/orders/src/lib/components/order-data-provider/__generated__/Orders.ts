@@ -1,4 +1,4 @@
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
@@ -18,6 +18,7 @@ export type OrderUpdateFieldsFragment = { __typename?: 'OrderUpdate', id: string
 
 export type OrdersUpdateSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
@@ -121,8 +122,8 @@ export type OrdersQueryHookResult = ReturnType<typeof useOrdersQuery>;
 export type OrdersLazyQueryHookResult = ReturnType<typeof useOrdersLazyQuery>;
 export type OrdersQueryResult = Apollo.QueryResult<OrdersQuery, OrdersQueryVariables>;
 export const OrdersUpdateDocument = gql`
-    subscription OrdersUpdate($partyId: ID!) {
-  orders(partyId: $partyId) {
+    subscription OrdersUpdate($partyId: ID!, $marketId: ID) {
+  orders(partyId: $partyId, marketId: $marketId) {
     ...OrderUpdateFields
   }
 }
@@ -141,6 +142,7 @@ export const OrdersUpdateDocument = gql`
  * const { data, loading, error } = useOrdersUpdateSubscription({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      marketId: // value for 'marketId'
  *   },
  * });
  */

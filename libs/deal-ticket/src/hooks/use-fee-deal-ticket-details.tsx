@@ -5,7 +5,7 @@ import {
   formatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';

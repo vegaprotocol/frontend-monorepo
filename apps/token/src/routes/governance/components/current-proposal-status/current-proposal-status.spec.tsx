@@ -7,7 +7,7 @@ import { NetworkParamsDocument } from '@vegaprotocol/react-helpers';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { CurrentProposalStatus } from './current-proposal-status';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -37,7 +37,11 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = ({ proposal }: { proposal: Proposal_proposal }) => {
+const renderComponent = ({
+  proposal,
+}: {
+  proposal: ProposalQuery['proposal'];
+}) => {
   render(
     <AppStateProvider>
       <MockedProvider mocks={[networkParamsQueryMock]}>
@@ -57,27 +61,23 @@ afterEach(() => {
 });
 
 it('Proposal open - renders will fail state if the proposal will fail', async () => {
-  const proposal = generateProposal();
-  const failedProposal: Proposal_proposal = {
-    ...proposal,
+  const failedProposal = generateProposal({
     votes: {
       __typename: 'ProposalVotes',
       yes: {
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
-        votes: null,
         totalEquityLikeShareWeight: '0',
       },
       no: {
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
-        votes: null,
         totalEquityLikeShareWeight: '0',
       },
     },
-  };
+  });
   renderComponent({ proposal: failedProposal });
   expect(await screen.findByText('Currently expected to')).toBeInTheDocument();
   expect(await screen.findByText('fail.')).toBeInTheDocument();
@@ -92,43 +92,33 @@ it('Proposal open - renders will pass state if the proposal will pass', async ()
 });
 
 it('Proposal enacted - renders vote passed and time since enactment', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_ENACTED,
-      terms: {
-        ...proposal.terms,
-        enactmentDatetime: new Date(0).toISOString(),
-      },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_ENACTED,
+    terms: {
+      enactmentDatetime: new Date(0).toISOString(),
     },
   });
+
+  renderComponent({ proposal });
   expect(await screen.findByText('Vote passed.')).toBeInTheDocument();
   expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
 });
 
 it('Proposal passed - renders vote passed and time since vote closed', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_PASSED,
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
-      },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_PASSED,
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
     },
   });
+
+  renderComponent({ proposal });
   expect(await screen.findByText('Vote passed.')).toBeInTheDocument();
   expect(await screen.findByText('about 1 hour ago')).toBeInTheDocument();
 });
 
 it('Proposal waiting for node vote - will pass  - renders if the vote will pass and status', async () => {
-  const proposal = generateProposal();
-  const failedProposal: Proposal_proposal = {
-    ...proposal,
+  const failedProposal = generateProposal({
     state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
     votes: {
       __typename: 'ProposalVotes',
@@ -136,18 +126,16 @@ it('Proposal waiting for node vote - will pass  - renders if the vote will pass 
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
-        votes: null,
         totalEquityLikeShareWeight: '0',
       },
       no: {
         __typename: 'ProposalVoteSide',
         totalNumber: '0',
         totalTokens: '0',
-        votes: null,
         totalEquityLikeShareWeight: '0',
       },
     },
-  };
+  });
   renderComponent({ proposal: failedProposal });
   expect(
     await screen.findByText('Waiting for nodes to validate asset.')
@@ -157,14 +145,11 @@ it('Proposal waiting for node vote - will pass  - renders if the vote will pass 
 });
 
 it('Proposal waiting for node vote - will fail - renders if the vote will pass and status', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
-    },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Waiting for nodes to validate asset.')
   ).toBeInTheDocument();
@@ -173,19 +158,15 @@ it('Proposal waiting for node vote - will fail - renders if the vote will pass a
 });
 
 it('Proposal failed - renders vote failed reason and vote closed ago', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_FAILED,
-      errorDetails: 'foo',
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
-      },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_FAILED,
+    errorDetails: 'foo',
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
     },
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();
@@ -194,20 +175,15 @@ it('Proposal failed - renders vote failed reason and vote closed ago', async () 
 });
 
 it('Proposal failed - renders rejection reason there are no error details', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_FAILED,
-      rejectionReason:
-        ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
-      },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_FAILED,
+    rejectionReason: ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
     },
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();
@@ -218,18 +194,14 @@ it('Proposal failed - renders rejection reason there are no error details', asyn
 });
 
 it('Proposal failed - renders unknown reason if there are no error details or rejection reason', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_FAILED,
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
-      },
+  const proposal = generateProposal({
+    state: ProposalState.STATE_FAILED,
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
     },
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();
@@ -238,35 +210,29 @@ it('Proposal failed - renders unknown reason if there are no error details or re
 });
 
 it('Proposal failed - renders participation not met if participation is not met', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_FAILED,
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
+  const proposal = generateProposal({
+    state: ProposalState.STATE_FAILED,
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
+    },
+    votes: {
+      __typename: 'ProposalVotes',
+      yes: {
+        __typename: 'ProposalVoteSide',
+        totalNumber: '0',
+        totalTokens: '0',
+        totalEquityLikeShareWeight: '0',
       },
-      votes: {
-        __typename: 'ProposalVotes',
-        yes: {
-          __typename: 'ProposalVoteSide',
-          totalNumber: '0',
-          totalTokens: '0',
-          votes: null,
-          totalEquityLikeShareWeight: '0',
-        },
-        no: {
-          __typename: 'ProposalVoteSide',
-          totalNumber: '0',
-          totalTokens: '0',
-          votes: null,
-          totalEquityLikeShareWeight: '0',
-        },
+      no: {
+        __typename: 'ProposalVoteSide',
+        totalNumber: '0',
+        totalTokens: '0',
+        totalEquityLikeShareWeight: '0',
       },
     },
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();
@@ -275,35 +241,29 @@ it('Proposal failed - renders participation not met if participation is not met'
 });
 
 it('Proposal failed - renders majority not met if majority is not met', async () => {
-  const proposal = generateProposal();
-
-  renderComponent({
-    proposal: {
-      ...proposal,
-      state: ProposalState.STATE_FAILED,
-      terms: {
-        ...proposal.terms,
-        closingDatetime: new Date(0).toISOString(),
+  const proposal = generateProposal({
+    state: ProposalState.STATE_FAILED,
+    terms: {
+      closingDatetime: new Date(0).toISOString(),
+    },
+    votes: {
+      __typename: 'ProposalVotes',
+      yes: {
+        __typename: 'ProposalVoteSide',
+        totalNumber: '0',
+        totalTokens: '0',
+        totalEquityLikeShareWeight: '0',
       },
-      votes: {
-        __typename: 'ProposalVotes',
-        yes: {
-          __typename: 'ProposalVoteSide',
-          totalNumber: '0',
-          totalTokens: '0',
-          votes: null,
-          totalEquityLikeShareWeight: '0',
-        },
-        no: {
-          __typename: 'ProposalVoteSide',
-          totalNumber: '1',
-          totalTokens: '25242474195500835440000',
-          votes: null,
-          totalEquityLikeShareWeight: '0',
-        },
+      no: {
+        __typename: 'ProposalVoteSide',
+        totalNumber: '1',
+        totalTokens: '25242474195500835440000',
+        totalEquityLikeShareWeight: '0',
       },
     },
   });
+
+  renderComponent({ proposal });
   expect(
     await screen.findByText('Vote closed. Failed due to:')
   ).toBeInTheDocument();

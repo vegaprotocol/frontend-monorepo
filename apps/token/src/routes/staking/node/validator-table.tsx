@@ -4,12 +4,17 @@ import { useTranslation } from 'react-i18next';
 import countryData from '../../../components/country-selector/country-data';
 import { Link as UTLink, Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  RoundedWrapper,
+} from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { ExternalLinks, toBigNum } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
+import { SubHeading } from '../../../components/heading';
 import {
   getFormattedPerformanceScore,
   getLastEpochScoreAndPerformance,
@@ -90,32 +95,37 @@ export const ValidatorTable = ({
   );
 
   return (
-    <div className="mb-8" data-testid="validator-table">
-      <KeyValueTable data-testid="validator-table-profile" title={t('PROFILE')}>
-        <KeyValueTableRow>
-          <span>{t('id')}</span>
-          <ValidatorTableCell dataTestId="validator-id">
-            {node.id}
-          </ValidatorTableCell>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('ABOUT THIS VALIDATOR')}</span>
-          <span>
-            <a href={node.infoUrl}>{node.infoUrl}</a>
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>
-            <strong>{t('STATUS')}</strong>
-          </span>
-          <span data-testid="validator-status">
-            <strong>{t(statusTranslationKey(node.rankingScore.status))}</strong>
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+    <div className="my-12" data-testid="validator-table">
+      <SubHeading title={t('profile')} />
+      <RoundedWrapper>
+        <KeyValueTable data-testid="validator-table-profile">
+          <KeyValueTableRow>
+            <span>{t('id')}</span>
+            <ValidatorTableCell dataTestId="validator-id">
+              {node.id}
+            </ValidatorTableCell>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('ABOUT THIS VALIDATOR')}</span>
+            <span>
+              <a href={node.infoUrl}>{node.infoUrl}</a>
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            <span>
+              <strong>{t('STATUS')}</strong>
+            </span>
+            <span data-testid="validator-status">
+              <strong>
+                {t(statusTranslationKey(node.rankingScore.status))}
+              </strong>
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
 
-      <div className="mb-6 text-sm">
-        {t('stakingDescription2b')}{' '}
+      <div className="mt-[-1.5rem] mb-10">
+        {t('validatorTableIntro')}{' '}
         <UTLink
           href={ExternalLinks.VALIDATOR_FORUM}
           target="_blank"
@@ -125,122 +135,130 @@ export const ValidatorTable = ({
         </UTLink>
       </div>
 
-      <KeyValueTable data-testid="validator-table-address" title={t('ADDRESS')}>
-        <KeyValueTableRow>
-          <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
-          <ValidatorTableCell dataTestId="validator-public-key">
-            {node.pubkey}
-          </ValidatorTableCell>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('SERVER LOCATION')}</span>
-          <ValidatorTableCell>
-            {countryData.find((c) => c.code === node.location)?.name ||
-              t('not available')}
-          </ValidatorTableCell>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('ETHEREUM ADDRESS')}</span>
-          <span>
-            <Link
-              title={t('View on Etherscan (opens in a new tab)')}
-              href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
-              target="_blank"
-            >
-              {node.ethereumAddress}
-            </Link>
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+      <SubHeading title={t('ADDRESS')} />
+      <RoundedWrapper>
+        <KeyValueTable data-testid="validator-table-address">
+          <KeyValueTableRow>
+            <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
+            <ValidatorTableCell dataTestId="validator-public-key">
+              {node.pubkey}
+            </ValidatorTableCell>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('SERVER LOCATION')}</span>
+            <ValidatorTableCell>
+              {countryData.find((c) => c.code === node.location)?.name ||
+                t('not available')}
+            </ValidatorTableCell>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            <span>{t('ETHEREUM ADDRESS')}</span>
+            <span>
+              <Link
+                title={t('View on Etherscan (opens in a new tab)')}
+                href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
+                target="_blank"
+              >
+                {node.ethereumAddress}
+              </Link>
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
 
-      <KeyValueTable data-testid="validator-table-stake" title={t('STAKE')}>
-        <KeyValueTableRow>
-          <span>{t('STAKED BY OPERATOR')}</span>
-          <span data-testid="staked-by-operator">
-            {formatNumber(toBigNum(node.stakedByOperator, decimals))}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('STAKED BY DELEGATES')}</span>
-          <span data-testid="staked-by-delegates">
-            {formatNumber(toBigNum(node.stakedByDelegates, decimals))}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>
-            <strong>{t('TOTAL STAKE')}</strong>
-          </span>
-          <span data-testid="total-stake">
-            <strong>
-              {formatNumber(toBigNum(node.stakedTotal, decimals))}
-            </strong>
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('PENDING STAKE')}</span>
-          <span data-testid="pending-stake">
-            {formatNumber(toBigNum(node.pendingStake, decimals))}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('STAKE SHARE')}</span>
-          <span data-testid="stake-percentage">{stakePercentage}</span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+      <SubHeading title={t('STAKE')} />
+      <RoundedWrapper>
+        <KeyValueTable data-testid="validator-table-stake">
+          <KeyValueTableRow>
+            <span>{t('STAKED BY OPERATOR')}</span>
+            <span data-testid="staked-by-operator">
+              {formatNumber(toBigNum(node.stakedByOperator, decimals))}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('STAKED BY DELEGATES')}</span>
+            <span data-testid="staked-by-delegates">
+              {formatNumber(toBigNum(node.stakedByDelegates, decimals))}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>
+              <strong>{t('TOTAL STAKE')}</strong>
+            </span>
+            <span data-testid="total-stake">
+              <strong>
+                {formatNumber(toBigNum(node.stakedTotal, decimals))}
+              </strong>
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('PENDING STAKE')}</span>
+            <span data-testid="pending-stake">
+              {formatNumber(toBigNum(node.pendingStake, decimals))}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            <span>{t('STAKE SHARE')}</span>
+            <span data-testid="stake-percentage">{stakePercentage}</span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
 
-      <KeyValueTable
-        data-testid="validator-table-penalties"
-        title={t('PENALTIES')}
-      >
-        <KeyValueTableRow>
-          <span>{t('OVERSTAKED AMOUNT')}</span>
-          <span>{overstakedAmount.toString()}</span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('OVERSTAKED PENALTY')}</span>
-          <span>
-            {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('PERFORMANCE SCORE')}</span>
-          <span>
-            {getFormattedPerformanceScore(performanceScore).toString()}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('PERFORMANCE PENALITY')}</span>
-          <span>{getPerformancePenalty(performanceScore)}</span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>
-            <strong>{t('TOTAL PENALTIES')}</strong>
-          </span>
-          <span>
-            <strong>{totalPenaltiesAmount}</strong>
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+      <SubHeading title={t('PENALTIES')} />
+      <RoundedWrapper>
+        <KeyValueTable data-testid="validator-table-penalties">
+          <KeyValueTableRow>
+            <span>{t('OVERSTAKED AMOUNT')}</span>
+            <span>{overstakedAmount.toString()}</span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('OVERSTAKED PENALTY')}</span>
+            <span>
+              {getOverstakingPenalty(overstakedAmount, node.stakedTotal)}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('PERFORMANCE SCORE')}</span>
+            <span>
+              {getFormattedPerformanceScore(performanceScore).toString()}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('PERFORMANCE PENALITY')}</span>
+            <span>
+              {getPerformancePenalty(performanceScore)}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            <span>
+              <strong>{t('TOTAL PENALTIES')}</strong>
+            </span>
+            <span>
+              <strong>{totalPenaltiesAmount}</strong>
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
 
-      <KeyValueTable
-        data-testid="validator-table-voting-power"
-        title={t('VOTING POWER')}
-      >
-        <KeyValueTableRow>
-          <span>{t('UNNORMALISED VOTING POWER')}</span>
-          <span>{getUnnormalisedVotingPower(rawValidatorScore)}</span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>
-            <strong>{t('NORMALISED VOTING POWER')}</strong>
-          </span>
-          <span>
-            <strong>
-              {getNormalisedVotingPower(node.rankingScore.votingPower)}
-            </strong>
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+      <SubHeading title={t('VOTING POWER')} />
+      <RoundedWrapper>
+        <KeyValueTable data-testid="validator-table-voting-power">
+          <KeyValueTableRow>
+            <span>{t('UNNORMALISED VOTING POWER')}</span>
+            <span>{getUnnormalisedVotingPower(rawValidatorScore)}</span>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder={true}>
+            <span>
+              <strong>{t('NORMALISED VOTING POWER')}</strong>
+            </span>
+            <span>
+              <strong>
+                {getNormalisedVotingPower(node.rankingScore.votingPower)}
+              </strong>
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </RoundedWrapper>
     </div>
   );
 };

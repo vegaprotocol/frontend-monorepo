@@ -2,7 +2,7 @@ import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Position } from './positions-data-providers';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',

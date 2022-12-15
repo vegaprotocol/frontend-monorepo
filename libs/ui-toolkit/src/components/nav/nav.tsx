@@ -40,13 +40,16 @@ export const Nav = ({
   titleContent,
   title,
 }: NavbarProps) => {
-  const themeWrapperClasses = classNames('w-full', {
-    dark: navbarTheme === 'dark',
-  });
+  const themeWrapperClasses = classNames(
+    'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden',
+    {
+      dark: navbarTheme === 'dark',
+    }
+  );
 
   const isYellow = navbarTheme === 'yellow';
   const navbarClasses = classNames(
-    'flex items-stretch border-b px-4 border-default',
+    'min-w-max w-full flex items-stretch border-b px-4 border-default',
     {
       'dark:bg-black dark:text-white': !isYellow,
       'bg-vega-yellow text-black bg-right-top bg-no-repeat bg-contain':
@@ -55,7 +58,7 @@ export const Nav = ({
   );
 
   return (
-    <div className={themeWrapperClasses}>
+    <div className={themeWrapperClasses} data-testid="navbar">
       <div className={navbarClasses}>
         <div className="flex gap-4 items-center">
           {icon}

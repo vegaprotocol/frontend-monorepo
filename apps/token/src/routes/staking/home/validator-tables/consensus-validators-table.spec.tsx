@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { NodesDocument } from '../__generated___/Nodes';
 import { PreviousEpochDocument } from '../../__generated___/PreviousEpoch';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { PartialDeep } from 'type-fest';
@@ -220,10 +220,6 @@ describe('Consensus validators table', () => {
     ).toBeInTheDocument();
 
     const grid = screen.getByTestId('consensus-validators-table');
-
-    act(() => {
-      fireEvent.click(screen.getByTestId('show-all-validators'));
-    });
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="validator"]')

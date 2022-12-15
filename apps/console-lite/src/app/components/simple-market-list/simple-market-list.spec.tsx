@@ -9,7 +9,7 @@ import {
 } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/market-list';
 import SimpleMarketList from './simple-market-list';
 

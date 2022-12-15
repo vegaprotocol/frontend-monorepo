@@ -44,9 +44,9 @@ Link.displayName = 'Link';
 export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   <Link
     className={classNames(className, 'inline-flex items-baseline')}
-    {...props}
     target="_blank"
     data-testid="external-link"
+    {...props}
   >
     {typeof children === 'string' ? (
       <>

@@ -14,11 +14,7 @@ import type {
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import {
-  Schema,
-  MarketTradingModeMapping,
-  AuctionTriggerMapping,
-} from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { MarketWithData } from '../../';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
@@ -89,9 +85,9 @@ export const MarketListTable = forwardRef<
             MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
             trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-            ? `${MarketTradingModeMapping[tradingMode]}
-            - ${AuctionTriggerMapping[trigger]}`
-            : MarketTradingModeMapping[tradingMode];
+            ? `${Schema.MarketTradingModeMapping[tradingMode]}
+            - ${Schema.AuctionTriggerMapping[trigger]}`
+            : Schema.MarketTradingModeMapping[tradingMode];
         }}
       />
       <AgGridColumn

@@ -1,9 +1,6 @@
-import { format, formatDistanceStrict } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-
-import arrow from '../../images/back.png';
-import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { ProgressBar } from '../progress-bar';
 
 export interface EpochCountdownProps {
@@ -58,8 +55,8 @@ export function EpochCountdown({
 
   return (
     <div data-testid="epoch-countdown" className="epoch-countdown">
-      <div className="flex items-end">
-        <h3 className="flex-1">
+      <div className="flex items-end mb-3">
+        <h3 className="flex-1 m-0 text-sm">
           {t('Epoch')} {id}
         </h3>
         <p className="text-sm m-0">
@@ -69,17 +66,6 @@ export function EpochCountdown({
         </p>
       </div>
       <ProgressBar value={progress} />
-      <div className="flex text-sm">
-        <p>{format(startDate, DATE_FORMAT_DETAILED)}</p>
-        <div className="flex-1 text-center">
-          <img
-            className="inline-block w-[5px] rotate-180"
-            alt="arrow"
-            src={arrow}
-          />
-        </div>
-        <p>{format(endDate, DATE_FORMAT_DETAILED)}</p>
-      </div>
     </div>
   );
 }

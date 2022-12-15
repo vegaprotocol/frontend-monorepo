@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import type { PartyBalanceQuery } from '@vegaprotocol/deal-ticket';
 import type { PartialDeep } from 'type-fest';
-import { Schema as Types } from '@vegaprotocol/types';
+import * as Types from '@vegaprotocol/types';
 
 export const generatePartyBalance = (
   override?: PartialDeep<PartyBalanceQuery>

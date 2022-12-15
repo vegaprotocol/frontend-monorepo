@@ -34,12 +34,16 @@ fragment ProposalFields on Proposal {
         __typename
         name
         symbol
+        decimals
+        quantum
         source {
           ... on BuiltinAsset {
             maxFaucetAmountMint
           }
           ... on ERC20 {
             contractAddress
+            withdrawThreshold
+            lifetimeLimit
           }
         }
       }
@@ -66,31 +70,11 @@ fragment ProposalFields on Proposal {
       totalTokens
       totalNumber
       totalEquityLikeShareWeight
-      votes {
-        value
-        party {
-          id
-          stakingSummary {
-            currentStakeAvailable
-          }
-        }
-        datetime
-      }
     }
     no {
       totalTokens
       totalNumber
       totalEquityLikeShareWeight
-      votes {
-        value
-        party {
-          id
-          stakingSummary {
-            currentStakeAvailable
-          }
-        }
-        datetime
-      }
     }
   }
 }

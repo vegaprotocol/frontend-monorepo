@@ -3,7 +3,7 @@ import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { MarketStateMapping, Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import {
@@ -39,7 +39,7 @@ export const marketTranslations = (marketState: Schema.MarketState) => {
     case Schema.MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
-      return t(MarketStateMapping[marketState]).toLowerCase();
+      return t(Schema.MarketStateMapping[marketState]).toLowerCase();
   }
 };
 

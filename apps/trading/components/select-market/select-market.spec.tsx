@@ -1,10 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
-import {
-  SelectAllMarketsTableBody,
-  SelectMarketLandingTable,
-} from './select-market';
+import { SelectAllMarketsTableBody } from './select-market';
 
 import type {
   MarketWithCandles,
@@ -172,25 +169,5 @@ describe('SelectMarket', () => {
     expect(container).toHaveTextContent(/1,000/); // volume
     fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
     expect(onSelect).toHaveBeenCalledWith('1');
-  });
-
-  it('should call onSelect callback on SelectMarketLandingTable', () => {
-    const onSelect = jest.fn();
-    const onCellClick = jest.fn();
-
-    render(
-      <MemoryRouter>
-        <SelectMarketLandingTable
-          markets={[MARKET_A as Market, MARKET_B as Market]}
-          onCellClick={onCellClick}
-          onSelect={onSelect}
-        />
-      </MemoryRouter>,
-      { wrapper: MockedProvider }
-    );
-    fireEvent.click(screen.getAllByTestId(`market-link-1`)[0]);
-    expect(onSelect).toHaveBeenCalledWith('1');
-    fireEvent.click(screen.getAllByTestId(`market-link-2`)[0]);
-    expect(onSelect).toHaveBeenCalledWith('2');
   });
 });

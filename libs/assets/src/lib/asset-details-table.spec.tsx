@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import type { Asset } from './asset-data-provider';
 import {
   AssetDetail,

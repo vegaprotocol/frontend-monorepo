@@ -67,6 +67,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           tooltipComponent: TooltipCellComponent,
           sortable: true,
         }}
+        enableCellTextSelection={true}
         rowData={data}
       >
         <AgGridColumn

@@ -7,7 +7,7 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { useOrderCancel } from './use-order-cancel';
 import type { OrderEventSubscription } from './';
 import { OrderEventDocument } from './';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 
 const defaultWalletContext = {
   pubKey: null,

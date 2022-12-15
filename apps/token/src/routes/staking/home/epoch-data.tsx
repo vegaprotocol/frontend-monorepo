@@ -45,7 +45,7 @@ export const EpochData = () => {
       {data?.epoch &&
         data.epoch.timestamps.start &&
         data?.epoch.timestamps.expiry && (
-          <div className="mb-8">
+          <div className="mb-10">
             <EpochCountdown
               id={data.epoch.id}
               startDate={new Date(data.epoch.timestamps.start)}

@@ -1,0 +1,15 @@
+query UserVote($partyId: ID!) {
+  party(id: $partyId) {
+    votesConnection {
+      edges {
+        node {
+          proposalId
+          vote {
+            value
+            datetime
+          }
+        }
+      }
+    }
+  }
+}

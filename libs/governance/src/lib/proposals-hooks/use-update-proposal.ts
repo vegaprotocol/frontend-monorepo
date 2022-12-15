@@ -1,5 +1,5 @@
 import { proposalsListDataProvider } from '..';
-import { Schema } from '@vegaprotocol/types';
+import * as Schema from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 import first from 'lodash/first';
