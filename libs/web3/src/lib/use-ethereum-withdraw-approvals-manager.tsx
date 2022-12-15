@@ -68,13 +68,12 @@ export const useEthWithdrawApprovalsManager = () => {
 
     (async () => {
       const threshold = await getThreshold(withdrawal.asset);
-
       if (threshold && amount.isGreaterThan(threshold)) {
         const delaySecs = await getDelay();
         const completeTimestamp =
           new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
-
-        if (Date.now() < completeTimestamp) {
+        const now = Date.now();
+        if (now < completeTimestamp) {
           update(transaction.id, {
             status: ApprovalStatus.Delayed,
             threshold,
@@ -91,12 +90,12 @@ export const useEthWithdrawApprovalsManager = () => {
           query: WithdrawalApprovalDocument,
           variables: { withdrawalId: withdrawal.id },
         });
-
         approval = res.data.erc20WithdrawalApproval;
       }
       if (!(provider && config && approval) || approval.signatures.length < 3) {
         update(transaction.id, {
           status: ApprovalStatus.Error,
+          approval,
           message: t(`Withdraw dependencies not met.`),
         });
         return;
