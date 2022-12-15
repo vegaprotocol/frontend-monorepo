@@ -16,7 +16,7 @@ export const ProgressBar = ({ value }: ProgressBarProps) => {
       className="relative h-2 bg-neutral-600 rounded-full overflow-hidden"
     >
       <div
-        className="rounded-full bg-clouds bg-vega-yellow h-full absolute transition-[width] ease-in-out"
+        className="rounded-full bg-gradient-to-r from-[#4e05cf] to-vega-pink h-full absolute transition-[width] ease-in-out"
         style={{ width }}
       />
     </div>
