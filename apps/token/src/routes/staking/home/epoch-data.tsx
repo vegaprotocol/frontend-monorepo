@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { useNodesQuery } from './__generated___/Nodes';
