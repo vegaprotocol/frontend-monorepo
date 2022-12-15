@@ -15,13 +15,37 @@ export const Heading = ({
 
   return (
     <header
-      className={classNames('my-0', {
+      className={classNames('mt-10 mb-6', {
         'mx-auto': centerContent,
       })}
     >
-      <h1 className={classNames('font-alpha calt', { 'mb-0': !marginBottom })}>
+      <h1
+        className={classNames('font-alpha calt text-5xl', {
+          'mb-0': !marginBottom,
+        })}
+      >
         {title}
       </h1>
     </header>
+  );
+};
+
+export const SubHeading = ({
+  title,
+  centerContent = false,
+  marginBottom = true,
+}: HeadingProps) => {
+  if (!title) return null;
+
+  return (
+    <h2
+      className={classNames('text-2xl font-alpha calt uppercase', {
+        'mx-auto': centerContent,
+        'mb-0': !marginBottom,
+        'mb-4': marginBottom,
+      })}
+    >
+      {title}
+    </h2>
   );
 };

@@ -25,7 +25,7 @@ context('Staking Page - verify elements on page', function () {
       });
 
       it('Should have STAKING ON VEGA header visible', function () {
-        cy.verify_page_header('Staking');
+        cy.verify_page_header('Validators');
       });
 
       it('Should have Staking Guide link visible', function () {
@@ -93,10 +93,6 @@ context('Staking Page - verify elements on page', function () {
           .each(($pendingStake) => {
             cy.wrap($pendingStake).should('contain.text', '0.00');
           });
-      });
-
-      it('Should be able to see button to unhide top validators', function () {
-        cy.get('[data-testid="show-all-validators"]').should('be.visible');
       });
     }
   );

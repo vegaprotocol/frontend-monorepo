@@ -1,0 +1,32 @@
+fragment AssetsFields on Asset {
+  id
+  name
+  symbol
+  decimals
+  source {
+    ... on ERC20 {
+      contractAddress
+    }
+    ... on BuiltinAsset {
+      maxFaucetAmountMint
+    }
+  }
+
+  infrastructureFeeAccount {
+    type
+    balance
+    market {
+      id
+    }
+  }
+}
+
+query ExplorerAssets {
+  assetsConnection {
+    edges {
+      node {
+        ...AssetsFields
+      }
+    }
+  }
+}

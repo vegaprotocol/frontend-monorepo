@@ -3,7 +3,7 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import { useExplorerProposalsQuery } from './__generated__/proposals';
+import { useExplorerProposalsQuery } from './__generated__/Proposals';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Governance = () => {

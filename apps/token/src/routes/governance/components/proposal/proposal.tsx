@@ -75,7 +75,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
         <ProposalHeader proposal={proposal} />
-        <div className="mb-8">
+        <div className="mb-10">
           <ProposalChangeTable proposal={proposal} />
         </div>
         {proposal.terms.change.__typename === 'NewAsset' &&
@@ -87,7 +87,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
           />
         ) : null}
-        <div className="mb-8">
+        <div className="mb-12">
           <VoteDetails
             proposal={proposal}
             proposalType={proposalType}
@@ -95,7 +95,7 @@ export const Proposal = ({ proposal }: ProposalProps) => {
             spamProtectionMinTokens={params?.spam_protection_voting_min_tokens}
           />
         </div>
-        <div className="mb-8">
+        <div className="mb-10">
           <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
         </div>
         <ProposalTermsJson terms={proposal.terms} />

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { SubHeading } from '../../../../components/heading';
 import type { PartialDeep } from 'type-fest';
 import type * as Schema from '@vegaprotocol/types';
 
@@ -11,7 +12,7 @@ export const ProposalTermsJson = ({
   const { t } = useTranslation();
   return (
     <section>
-      <h2>{t('proposalTerms')}</h2>
+      <SubHeading title={t('proposalTerms')} />
       <SyntaxHighlighter data={terms} />
     </section>
   );

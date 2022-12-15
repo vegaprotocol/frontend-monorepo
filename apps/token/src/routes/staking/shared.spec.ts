@@ -1,6 +1,6 @@
 import { BigNumber } from '../../lib/bignumber';
 import {
-  getRawValidatorScore,
+  getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
   getUnnormalisedVotingPower,
   getOverstakingPenalty,
@@ -10,7 +10,7 @@ import {
   getTotalPenalties,
 } from './shared';
 
-describe('getRawValidatorScore', () => {
+describe('getLastEpochScoreAndPerformance', () => {
   const mockPreviousEpochData = {
     epoch: {
       id: '123',
@@ -22,6 +22,9 @@ describe('getRawValidatorScore', () => {
               rewardScore: {
                 rawValidatorScore: '0.25',
               },
+              rankingScore: {
+                performanceScore: '0.75',
+              },
             },
           },
           {
@@ -30,6 +33,9 @@ describe('getRawValidatorScore', () => {
               rewardScore: {
                 rawValidatorScore: '0.35',
               },
+              rankingScore: {
+                performanceScore: '0.85',
+              },
             },
           },
         ],
@@ -37,13 +43,19 @@ describe('getRawValidatorScore', () => {
     },
   };
 
-  it('should return the rawValidatorScore for the given validator id', () => {
-    expect(getRawValidatorScore(mockPreviousEpochData, '0x123')).toEqual(
-      '0.25'
-    );
-    expect(getRawValidatorScore(mockPreviousEpochData, '0x234')).toEqual(
-      '0.35'
-    );
+  it("should return last epoch's performance and raw validator score for the given validator id", () => {
+    expect(
+      getLastEpochScoreAndPerformance(mockPreviousEpochData, '0x123')
+    ).toEqual({
+      rawValidatorScore: '0.25',
+      performanceScore: '0.75',
+    });
+    expect(
+      getLastEpochScoreAndPerformance(mockPreviousEpochData, '0x234')
+    ).toEqual({
+      rawValidatorScore: '0.35',
+      performanceScore: '0.85',
+    });
   });
 });
 

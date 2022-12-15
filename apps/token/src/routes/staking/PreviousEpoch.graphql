@@ -8,6 +8,9 @@ query PreviousEpoch($epochId: ID) {
           rewardScore {
             rawValidatorScore
           }
+          rankingScore {
+            performanceScore
+          }
         }
       }
     }

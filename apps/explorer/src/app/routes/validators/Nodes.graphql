@@ -1,0 +1,26 @@
+query ExplorerNodes {
+  nodesConnection {
+    edges {
+      node {
+        id
+        name
+        infoUrl
+        avatarUrl
+        pubkey
+        tmPubkey
+        ethereumAddress
+        location
+        status
+        stakedByOperator
+        stakedByDelegates
+        stakedTotal
+        pendingStake
+        epochData {
+          total
+          offline
+          online
+        }
+      }
+    }
+  }
+}
