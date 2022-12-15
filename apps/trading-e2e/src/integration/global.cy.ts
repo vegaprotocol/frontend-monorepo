@@ -1,6 +1,5 @@
-import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
+import { mockConnectWallet } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const connectVegaBtn = 'connect-vega-wallet';
