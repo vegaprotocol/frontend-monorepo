@@ -3,12 +3,16 @@ import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import type { PartyBalanceQuery } from './__generated__/PartyBalance';
 import { useOrderCloseOut } from './use-order-closeout';
 
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: jest.fn().mockReturnValue('wallet-pub-key'),
+}));
+let mockMarketMargin: string | undefined = undefined;
+jest.mock('@vegaprotocol/positions', () => ({
+  ...jest.requireActual('@vegaprotocol/positions'),
+  useMarketMargin: () => mockMarketMargin,
 }));
 
 describe('useOrderCloseOut', () => {
@@ -29,43 +33,32 @@ describe('useOrderCloseOut', () => {
         },
       },
     },
-  };
-  const partyData = {
-    party: {
-      accountsConnection: {
-        edges: [
-          {
-            node: {
-              balance: '200000',
-              asset: {
-                id: 'assetId',
-                decimals: 5,
-              },
-            },
-          },
-        ],
-      },
+    data: {
+      markPrice: 100000,
     },
-  };
+  } as unknown as MarketDealTicket;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should return proper null value', () => {
+    mockMarketMargin = '-1';
     const { result } = renderHook(
       () =>
         useOrderCloseOut({
           order: order as OrderSubmissionBody['orderSubmission'],
-          market: market as MarketDealTicket,
-          // partyData: partyData as PartyBalanceQuery,
+          market: { ...market, data: { ...market.data, markPrice: '0' } },
         }),
       {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-          <MockedProvider mocks={[]}>{children}</MockedProvider>
-        ),
+        wrapper: MockedProvider,
       }
     );
     expect(result.current).toEqual(null);
   });
 
   it('should return proper sell value', () => {
+    mockMarketMargin = '0';
     const { result } = renderHook(
       () =>
         useOrderCloseOut({
@@ -73,13 +66,10 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market as MarketDealTicket,
-          // partyData: partyData as PartyBalanceQuery,
+          market: market,
         }),
       {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-          <MockedProvider mocks={[]}>{children}</MockedProvider>
-        ),
+        wrapper: MockedProvider,
       }
     );
     expect(result.current).toEqual('1.00');
@@ -93,12 +83,10 @@ describe('useOrderCloseOut', () => {
             ...order,
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
-          market: market as MarketDealTicket,
+          market: { ...market, data: { ...market.data, markPrice: '0' } },
         }),
       {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-          <MockedProvider mocks={[]}>{children}</MockedProvider>
-        ),
+        wrapper: MockedProvider,
       }
     );
     expect(result.current).toEqual('0.00');

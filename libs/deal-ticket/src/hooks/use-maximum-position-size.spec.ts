@@ -7,8 +7,8 @@ import type { AccountFragment as Account } from './__generated__/PartyBalance';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 const defaultMockMarketPositions = {
-  openVolume: new BigNumber(1),
-  balance: new BigNumber(100000),
+  openVolume: '1',
+  balance: '100000',
 };
 
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
