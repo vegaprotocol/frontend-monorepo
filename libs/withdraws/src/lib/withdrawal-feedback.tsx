@@ -15,25 +15,6 @@ import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 
-/*
-
-import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
-
-const getThreshold = useGetWithdrawThreshold();
-  const getDelay = useGetWithdrawDelay();
-
-const result = await Promise.all([getThreshold(asset), getDelay()]);
-threshold = result[0];
-delay = result[1];
-
-availableTimestamp:
-  new BigNumber(amount).isGreaterThan(threshold) && delay
-    ? Date.now() + delay * 1000
-    : null,
-
-*/
-
 export const WithdrawalFeedback = ({
   transaction,
   withdrawal,
