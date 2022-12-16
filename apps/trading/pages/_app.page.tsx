@@ -13,7 +13,6 @@ import {
   useEthTransactionManager,
   useEthTransactionUpdater,
   useEthWithdrawApprovalsManager,
-  Web3Container,
 } from '@vegaprotocol/web3';
 import {
   EnvironmentProvider,
@@ -90,9 +89,7 @@ function AppBody({ Component }: AppProps) {
               <Footer />
               <DialogsContainer />
               <ToastsManager />
-              <Web3Container connectEagerly childrenOnly>
-                <TransactionsHandler />
-              </Web3Container>
+              <TransactionsHandler />
               <MaybeConnectEagerly />
             </div>
           </Web3Provider>
