@@ -107,7 +107,7 @@ export const PendingWithdrawalsTable = (
         field="status"
         flex={2}
         cellRendererParams={{
-          complete: async (withdrawal: WithdrawalFieldsFragment) => {
+          complete: (withdrawal: WithdrawalFieldsFragment) => {
             createWithdrawApproval(withdrawal);
           },
         }}
