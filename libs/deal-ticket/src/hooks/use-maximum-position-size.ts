@@ -31,7 +31,7 @@ export const useMaximumPositionSize = ({
     Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
 
-  const marketPositions = useMarketPositions({ marketId: marketId, partyId });
+  const marketPositions = useMarketPositions({ marketId: marketId });
 
   if (
     !settlementAccount?.balance ||
@@ -47,9 +47,9 @@ export const useMaximumPositionSize = ({
   }
 
   const isSameSide =
-    (marketPositions.openVolume.isPositive() &&
+    (new BigNumber(marketPositions.openVolume).isPositive() &&
       order.side === Schema.Side.SIDE_BUY) ||
-    (marketPositions.openVolume.isNegative() &&
+    (new BigNumber(marketPositions.openVolume).isNegative() &&
       order.side === Schema.Side.SIDE_SELL);
 
   const adjustedForVolume = new BigNumber(size)[isSameSide ? 'minus' : 'plus'](

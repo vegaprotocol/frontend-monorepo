@@ -54,7 +54,7 @@ describe('useOrderCloseOut', () => {
         useOrderCloseOut({
           order: order as OrderSubmissionBody['orderSubmission'],
           market: market as MarketDealTicket,
-          partyData: partyData as PartyBalanceQuery,
+          // partyData: partyData as PartyBalanceQuery,
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
@@ -74,7 +74,7 @@ describe('useOrderCloseOut', () => {
             side: 'SIDE_SELL',
           } as OrderSubmissionBody['orderSubmission'],
           market: market as MarketDealTicket,
-          partyData: partyData as PartyBalanceQuery,
+          // partyData: partyData as PartyBalanceQuery,
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (

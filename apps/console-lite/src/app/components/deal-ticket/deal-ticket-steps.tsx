@@ -98,7 +98,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const estCloseOut = useOrderCloseOut({
     order,
     market,
-    partyData: partyBalance,
   });
   const slippage = useCalculateSlippage({ marketId: market.id, order });
   const [slippageValue, setSlippageValue] = useState(
