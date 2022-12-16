@@ -16,3 +16,30 @@ subscription ProposalEvent($partyId: ID!) {
     }
   }
 }
+
+fragment UpdateNetworkParameterFields on Proposal {
+  id
+  state
+  datetime
+  terms {
+    enactmentDatetime
+    change {
+      ... on UpdateNetworkParameter {
+        networkParameter {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+
+subscription OnUpdateNetworkParameters {
+  busEvents(types: [TimeUpdate], batchSize: 0) {
+    event {
+      ... on Proposal {
+        ...UpdateNetworkParameterFields
+      }
+    }
+  }
+}
