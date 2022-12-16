@@ -123,7 +123,8 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       },
       goodThreshold: (blockDuration: string) => {
         if (blockDuration?.includes('ms')) {
-          // only show ms if less than 1s
+          // we only get ms from the api if duration is less than 1s, so this
+          // automatically passes
           return true;
         } else if (blockDuration?.includes('s')) {
           return parseFloat(blockDuration) <= 2;
