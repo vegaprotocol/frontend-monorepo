@@ -75,7 +75,7 @@ export const generateOrders = (
       id: '94737d2bafafa4bc3b80a56ef084ae52a983b91aa067c31e243c61a0f962a836',
       market: {
         __typename: 'Market',
-        id: 'market-3',
+        id: 'market-0',
       },
       size: '1',
       type: Schema.OrderType.TYPE_LIMIT,
@@ -96,7 +96,7 @@ export const generateOrders = (
       id: '94aead3ca92dc932efcb503631b03a410e2a5d4606cae6083e2406dc38e52f78',
       market: {
         __typename: 'Market',
-        id: 'market-3',
+        id: 'market-0',
       },
       size: '10',
       type: Schema.OrderType.TYPE_LIMIT,
