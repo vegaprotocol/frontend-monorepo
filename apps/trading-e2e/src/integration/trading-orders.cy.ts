@@ -91,17 +91,11 @@ describe('orders list', { tags: '@smoke' }, () => {
   });
 
   it('orders are sorted by most recent order', () => {
-    const expectedOrderList = [
-      'BTCUSD.MF21',
-      'SOLUSD',
-      'AAPL.MF21',
-      'ETHBTC.QM21',
-      'ETHBTC.QM21',
-    ];
+    const expectedOrderList = ['BTCUSD.MF21', 'BTCUSD.MF21'];
 
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
-      .should('have.length.at.least', 5)
+      .should('have.length.at.least', expectedOrderList.length)
       .then(($symbols) => {
         const symbolNames: string[] = [];
         cy.wrap($symbols)

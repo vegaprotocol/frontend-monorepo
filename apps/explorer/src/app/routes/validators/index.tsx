@@ -6,7 +6,7 @@ import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { TendermintValidatorsResponse } from './tendermint-validator-response';
-import { useExplorerNodesQuery } from './__generated__/nodes';
+import { useExplorerNodesQuery } from './__generated__/Nodes';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Validators = () => {

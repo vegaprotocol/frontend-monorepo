@@ -2,8 +2,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { InfoBlock } from '../../components/info-block';
 import { Panel } from '../../components/panel';
-import { useExplorerStatsQuery } from './__generated__/explorer-stats';
-import type { ExplorerStatsFieldsFragment } from './__generated__/explorer-stats';
+import { useExplorerStatsQuery } from './__generated__/Explorer-stats';
+import type { ExplorerStatsFieldsFragment } from './__generated__/Explorer-stats';
 
 interface StatsMap {
   field: keyof ExplorerStatsFieldsFragment;

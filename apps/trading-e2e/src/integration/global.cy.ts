@@ -1,6 +1,5 @@
-import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
+import { mockConnectWallet } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
-import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 const connectEthWalletBtn = 'connect-eth-wallet-btn';
 const connectVegaBtn = 'connect-vega-wallet';
@@ -98,9 +97,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     cy.mockWeb3Provider();
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
     cy.visit('/#/portfolio');
-    cy.mockGQL((req) => {
-      aliasQuery(req, 'NetworkParams', generateNetworkParameters());
-    });
+    cy.mockTradingPage();
     cy.mockGQLSubscription();
     cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.connectVegaWallet();
@@ -128,5 +125,35 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
       .should('have.text', 'Disconnect')
       .click();
     cy.getByTestId(connectEthWalletBtn).should('exist');
+  });
+});
+
+describe('Navbar', { tags: '@smoke' }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+    cy.mockGQLSubscription();
+    cy.visit('/');
+    cy.getByTestId('dialog-close').click();
+  });
+
+  it('should be properly rendered', () => {
+    const links = ['Markets', 'Trading', 'Portfolio'];
+    const hashes = ['#/markets', '#/markets/market-0', '#/portfolio'];
+    let i = 0;
+    cy.getByTestId('navbar').within(() => {
+      cy.get('a[data-testid]', { log: true })
+        .should('have.length', 3)
+        .each((item) => {
+          cy.wrap(item).click();
+          cy.wrap(item).get('span.absolute.h-1.w-full').should('exist');
+          cy.location('hash').should('equal', hashes[i]);
+          cy.wrap(item).should('have.data', 'testid', links[i++]);
+        });
+    });
+  });
+
+  it('should look nicer on mobile', () => {
+    cy.viewport(560, 890);
+    cy.getByTestId('theme-switcher').scrollIntoView().click();
   });
 });

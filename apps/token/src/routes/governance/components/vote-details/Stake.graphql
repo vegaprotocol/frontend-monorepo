@@ -1,8 +1,0 @@
-query VoteButtons($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    stakingSummary {
-      currentStakeAvailable
-    }
-  }
-}

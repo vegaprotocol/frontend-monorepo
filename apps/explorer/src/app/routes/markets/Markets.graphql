@@ -1,0 +1,140 @@
+query ExplorerMarkets {
+  marketsConnection {
+    edges {
+      node {
+        id
+        fees {
+          factors {
+            makerFee
+            infrastructureFee
+            liquidityFee
+          }
+        }
+        tradableInstrument {
+          instrument {
+            name
+            metadata {
+              tags
+            }
+            code
+            product {
+              ... on Future {
+                settlementAsset {
+                  id
+                  name
+                  decimals
+                  globalRewardPoolAccount {
+                    balance
+                  }
+                }
+              }
+            }
+          }
+          riskModel {
+            ... on LogNormalRiskModel {
+              tau
+              riskAversionParameter
+              params {
+                r
+                sigma
+                mu
+              }
+            }
+            ... on SimpleRiskModel {
+              params {
+                factorLong
+                factorShort
+              }
+            }
+          }
+          marginCalculator {
+            scalingFactors {
+              searchLevel
+              initialMargin
+              collateralRelease
+            }
+          }
+        }
+        decimalPlaces
+        openingAuction {
+          durationSecs
+          volume
+        }
+        priceMonitoringSettings {
+          parameters {
+            triggers {
+              horizonSecs
+              probability
+              auctionExtensionSecs
+            }
+          }
+        }
+        liquidityMonitoringParameters {
+          triggeringRatio
+          targetStakeParameters {
+            timeWindow
+            scalingFactor
+          }
+        }
+        tradingMode
+        state
+        proposal {
+          id
+        }
+        state
+        accountsConnection {
+          edges {
+            node {
+              asset {
+                id
+                name
+              }
+              balance
+              type
+            }
+          }
+        }
+        data {
+          markPrice
+          bestBidPrice
+          bestBidVolume
+          bestOfferPrice
+          bestOfferVolume
+          bestStaticBidPrice
+          bestStaticBidVolume
+          bestStaticOfferPrice
+          bestStaticOfferVolume
+          midPrice
+          staticMidPrice
+          timestamp
+          openInterest
+          auctionEnd
+          auctionStart
+          indicativePrice
+          indicativeVolume
+          trigger
+          extensionTrigger
+          targetStake
+          suppliedStake
+          priceMonitoringBounds {
+            minValidPrice
+            maxValidPrice
+            trigger {
+              auctionExtensionSecs
+              probability
+            }
+            referencePrice
+          }
+          marketValueProxy
+          liquidityProviderFeeShare {
+            party {
+              id
+            }
+            equityLikeShare
+            averageEntryValuation
+          }
+        }
+      }
+    }
+  }
+}

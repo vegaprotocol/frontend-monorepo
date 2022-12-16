@@ -5,16 +5,18 @@ import {
 import type { PreviousEpochQuery } from './__generated___/PreviousEpoch';
 import { BigNumber } from '../../lib/bignumber';
 
-export const getRawValidatorScore = (
+export const getLastEpochScoreAndPerformance = (
   previousEpochData: PreviousEpochQuery | undefined,
   id: string
 ) => {
-  return previousEpochData
-    ? removePaginationWrapper(
-        previousEpochData.epoch?.validatorsConnection?.edges
-      ).find((validator) => validator?.id === id)?.rewardScore
-        ?.rawValidatorScore
-    : null;
+  const validator = removePaginationWrapper(
+    previousEpochData?.epoch?.validatorsConnection?.edges
+  ).find((validator) => validator?.id === id);
+
+  return {
+    rawValidatorScore: validator?.rewardScore?.rawValidatorScore,
+    performanceScore: validator?.rankingScore?.performanceScore,
+  };
 };
 
 export const getNormalisedVotingPower = (votingPower: string) =>
@@ -27,10 +29,12 @@ export const getUnnormalisedVotingPower = (
     ? formatNumberPercentage(new BigNumber(validatorScore).times(100), 2)
     : null;
 
-export const getFormattedPerformanceScore = (performanceScore: string) =>
-  new BigNumber(performanceScore).dp(2);
+export const getFormattedPerformanceScore = (performanceScore?: string) =>
+  performanceScore
+    ? new BigNumber(performanceScore).dp(2)
+    : new BigNumber(0).dp(2);
 
-export const getPerformancePenalty = (performanceScore: string) =>
+export const getPerformancePenalty = (performanceScore?: string) =>
   formatNumberPercentage(
     new BigNumber(1)
       .minus(getFormattedPerformanceScore(performanceScore))
@@ -64,19 +68,22 @@ export const getOverstakingPenalty = (
 
 export const getTotalPenalties = (
   rawValidatorScore: string | null | undefined,
-  performanceScore: string,
+  performanceScore: string | undefined,
   stakedOnNode: string,
   totalStake: string
 ) => {
-  const calc = rawValidatorScore
-    ? new BigNumber(1).minus(
-        new BigNumber(performanceScore)
-          .times(new BigNumber(rawValidatorScore))
-          .dividedBy(
-            new BigNumber(stakedOnNode).dividedBy(new BigNumber(totalStake))
-          )
-      )
-    : new BigNumber(0);
+  const calc =
+    rawValidatorScore &&
+    performanceScore &&
+    new BigNumber(totalStake).isGreaterThan(0)
+      ? new BigNumber(1).minus(
+          new BigNumber(performanceScore)
+            .times(new BigNumber(rawValidatorScore))
+            .dividedBy(
+              new BigNumber(stakedOnNode).dividedBy(new BigNumber(totalStake))
+            )
+        )
+      : new BigNumber(0);
 
   return formatNumberPercentage(
     calc.isPositive() ? calc.times(100) : new BigNumber(0),

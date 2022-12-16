@@ -57,6 +57,11 @@ describe('positions', { tags: '@smoke' }, () => {
       cy.get('[col-id="notional"]').should('contain.text', '276,761.40348'); // Total tDAI position
       cy.get('[col-id="realisedPNL"]').should('contain.text', '0.001'); // Total Realised PNL
       cy.get('[col-id="unrealisedPNL"]').should('contain.text', '8.95'); // Total Unrealised PNL
+
+      cy.get('.ag-header-row [col-id="notional"]')
+        .should('contain.text', 'Notional')
+        .realHover();
+      cy.get('.ag-popup').should('contain.text', 'Mark price x open volume');
     });
 
     cy.getByTestId('close-position').should('be.visible').and('have.length', 3);

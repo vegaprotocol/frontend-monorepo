@@ -17,11 +17,11 @@ import * as Schema from '@vegaprotocol/types';
 import { SubHeading } from '../../../components/heading';
 import {
   getFormattedPerformanceScore,
+  getLastEpochScoreAndPerformance,
   getNormalisedVotingPower,
   getOverstakedAmount,
   getOverstakingPenalty,
   getPerformancePenalty,
-  getRawValidatorScore,
   getTotalPenalties,
   getUnnormalisedVotingPower,
 } from '../shared';
@@ -73,10 +73,11 @@ export const ValidatorTable = ({
 
   const stakedOnNode = toBigNum(node.stakedTotal, decimals);
 
-  const validatorScore = getRawValidatorScore(previousEpochData, node.id);
+  const { rawValidatorScore, performanceScore } =
+    getLastEpochScoreAndPerformance(previousEpochData, node.id);
 
   const overstakedAmount = getOverstakedAmount(
-    validatorScore,
+    rawValidatorScore,
     stakedTotal,
     node.stakedTotal
   );
@@ -87,8 +88,8 @@ export const ValidatorTable = ({
       : stakedOnNode.dividedBy(total).times(100).dp(2).toString() + '%';
 
   const totalPenaltiesAmount = getTotalPenalties(
-    validatorScore,
-    node.rankingScore.performanceScore,
+    rawValidatorScore,
+    performanceScore,
     stakedOnNode.toString(),
     total.toString()
   );
@@ -123,7 +124,7 @@ export const ValidatorTable = ({
         </KeyValueTable>
       </RoundedWrapper>
 
-      <div className="mt-[-1.5rem] mb-10">
+      <div className="mb-10">
         {t('validatorTableIntro')}{' '}
         <UTLink
           href={ExternalLinks.VALIDATOR_FORUM}
@@ -135,7 +136,7 @@ export const ValidatorTable = ({
       </div>
 
       <SubHeading title={t('ADDRESS')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-address">
           <KeyValueTableRow>
             <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
@@ -166,7 +167,7 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('STAKE')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-stake">
           <KeyValueTableRow>
             <span>{t('STAKED BY OPERATOR')}</span>
@@ -204,7 +205,7 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('PENALTIES')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-penalties">
           <KeyValueTableRow>
             <span>{t('OVERSTAKED AMOUNT')}</span>
@@ -219,16 +220,12 @@ export const ValidatorTable = ({
           <KeyValueTableRow>
             <span>{t('PERFORMANCE SCORE')}</span>
             <span>
-              {getFormattedPerformanceScore(
-                node.rankingScore.performanceScore
-              ).toString()}
+              {getFormattedPerformanceScore(performanceScore).toString()}
             </span>
           </KeyValueTableRow>
           <KeyValueTableRow>
             <span>{t('PERFORMANCE PENALITY')}</span>
-            <span>
-              {getPerformancePenalty(node.rankingScore.performanceScore)}
-            </span>
+            <span>{getPerformancePenalty(performanceScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
             <span>
@@ -242,11 +239,11 @@ export const ValidatorTable = ({
       </RoundedWrapper>
 
       <SubHeading title={t('VOTING POWER')} />
-      <RoundedWrapper>
+      <RoundedWrapper marginBottomLarge={true}>
         <KeyValueTable data-testid="validator-table-voting-power">
           <KeyValueTableRow>
             <span>{t('UNNORMALISED VOTING POWER')}</span>
-            <span>{getUnnormalisedVotingPower(validatorScore)}</span>
+            <span>{getUnnormalisedVotingPower(rawValidatorScore)}</span>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
             <span>
