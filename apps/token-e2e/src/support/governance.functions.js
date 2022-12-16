@@ -140,10 +140,7 @@ Cypress.Commands.add('wait_for_proposal_sync', () => {
   });
 
   // waiting for two network calls
-  cy.wait(
-    ['@proposalDelegationsCompletion', '@proposalDelegationsCompletion'],
-    proposalTimeout
-  );
+  cy.wait(['@proposalDelegationsCompletion', '@proposalDelegationsCompletion']);
 
   // Turn off this intercept from here on in
   cy.intercept('POST', '/query', (req) => {
