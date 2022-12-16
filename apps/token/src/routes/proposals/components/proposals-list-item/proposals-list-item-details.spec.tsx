@@ -192,7 +192,6 @@ describe('Proposals list item details', () => {
       networkParamsQueryMock,
       createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_YES),
     ]);
-    screen.debug();
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
 
     expect(await screen.findByText('You voted')).toBeInTheDocument();

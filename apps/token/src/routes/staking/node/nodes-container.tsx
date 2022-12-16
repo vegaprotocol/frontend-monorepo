@@ -8,6 +8,7 @@ import { SplashLoader } from '../../../components/splash-loader';
 import { usePreviousEpochQuery } from '../__generated___/PreviousEpoch';
 import type { StakingQuery } from './__generated___/Staking';
 import type { PreviousEpochQuery } from '../__generated___/PreviousEpoch';
+import { useRefreshValidators } from '../../../hooks/use-refresh-validators';
 
 // TODO should only request a single node. When migrating from deprecated APIs we should address this.
 
@@ -36,24 +37,7 @@ export const NodeContainer = ({
     skip: !data?.epoch.id,
   });
 
-  // @todo - this epoch querying needs to be hoisted as the validator tables rely
-  // on it too
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (!data?.epoch.timestamps.expiry) return;
-      const now = Date.now();
-      const expiry = new Date(data.epoch.timestamps.expiry).getTime();
-
-      if (now > expiry) {
-        refetch();
-        clearInterval(interval);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [data?.epoch.timestamps.expiry, refetch]);
+  useRefreshValidators(data?.epoch.timestamps.expiry, refetch);
 
   if (error) {
     return (

@@ -51,7 +51,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <Heading
           centerContent={false}
           marginBottom={false}
-          title={t('pageTitleGovernance')}
+          title={t('pageTitleProposals')}
         />
         <Link
           className="xs:justify-self-end"
