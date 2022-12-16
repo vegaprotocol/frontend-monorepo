@@ -89,6 +89,7 @@ Cypress.Commands.add('get_proposal_id_from_list', (proposalTitle) => {
   cy.contains(proposalTitle)
     .parent()
     .parent()
+    .parent()
     .within(() => {
       cy.get(proposalDetails)
         .invoke('text')
