@@ -6,7 +6,6 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import type { Stats, StatFields } from './types';
-import BigNumber from 'bignumber.js';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
 // contain the associated data and methods we need to render. A single query
