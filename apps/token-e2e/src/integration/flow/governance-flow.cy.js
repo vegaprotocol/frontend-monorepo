@@ -734,6 +734,7 @@ context(
         function () {
           const proposalTitle = generateProposalTitle();
 
+          cy.vega_wallet_teardown();
           cy.ensure_specified_unstaked_tokens_are_associated(
             this.minProposerBalance
           );
