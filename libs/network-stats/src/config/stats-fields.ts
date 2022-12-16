@@ -6,6 +6,7 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import type { Stats, StatFields } from './types';
+import BigNumber from 'bignumber.js';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
 // contain the associated data and methods we need to render. A single query
@@ -110,9 +111,17 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   blockDuration: [
     {
       title: t('Block time'),
-      formatter: (duration: number) => (duration / 1000000000).toFixed(3),
-      goodThreshold: (blockDuration: number) =>
-        blockDuration > 0 && blockDuration <= 2000000000,
+      formatter: (duration: string) => {
+        if (duration?.includes('ms')) {
+          return (parseFloat(duration) / 1000).toFixed(2).toString();
+        } else if (duration?.includes('s')) {
+          return parseFloat(duration).toFixed(2).toString();
+        }
+        return undefined;
+      },
+      goodThreshold: (blockDuration: string) =>
+        blockDuration?.includes('ms') ||
+        (blockDuration.includes('s') && parseFloat(blockDuration) <= 2),
       description: t('Seconds between the two most recent blocks'),
     },
   ],
