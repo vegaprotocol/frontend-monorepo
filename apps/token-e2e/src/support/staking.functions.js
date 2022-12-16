@@ -31,7 +31,6 @@ Cypress.Commands.add('wait_for_beginning_of_epoch', () => {
 
 Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
   cy.highlight(`Adding a stake of ${stake}`);
-  cy.wait_for_spinner();
   cy.get(addStakeRadioButton, epochTimeout).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
   cy.wait_for_beginning_of_epoch();
@@ -44,7 +43,6 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
 
 Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
   cy.highlight(`Removing a stake of ${stake}`);
-  cy.wait_for_spinner();
   cy.get(removeStakeRadioButton, epochTimeout).click();
   cy.get(tokenAmountInputBox).type(stake);
   cy.wait_for_beginning_of_epoch();
@@ -83,7 +81,7 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     `Associating with Vega key. Waiting for ${Cypress.env(
       'blockConfirmations'
     )} more confirmations..`,
-    epochTimeout
+    txTimeout
   ).should('be.visible');
   cy.contains(
     'can now participate in governance and nominate a validator',
@@ -148,7 +146,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'click_on_validator_from_list',
   (validatorNumber, validatorName = null) => {
-    cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.wait_for_beginning_of_epoch();
     // below is to ensure validator list is shown
@@ -171,7 +168,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'validate_validator_list_total_stake_and_share',
   (positionOnList, expectedTotalStake, expectedTotalShare) => {
-    cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.wait_for_beginning_of_epoch();
     cy.get(`[row-id="${positionOnList}"]`).within(() => {

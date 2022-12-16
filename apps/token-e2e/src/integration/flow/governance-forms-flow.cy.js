@@ -50,7 +50,6 @@ context(
       cy.connectVegaWallet();
       cy.ethereum_wallet_connect();
       cy.navigate_to('proposals');
-      cy.wait_for_spinner();
     });
 
     it('Able to submit valid update network parameter proposal', function () {
@@ -61,7 +60,7 @@ context(
       // 3002-PROP-007
       cy.get(newProposalDescription).type('E2E test for proposals');
 
-      cy.get(proposalParameterSelect).find('option').should('have.length', 109);
+      cy.get(proposalParameterSelect).find('option').should('have.length', 114);
       cy.get(proposalParameterSelect).select(
         // 3007-PNEC-002
         'governance_proposal_asset_minEnact'
