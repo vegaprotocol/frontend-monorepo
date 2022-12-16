@@ -110,9 +110,30 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   blockDuration: [
     {
       title: t('Block time'),
-      formatter: (duration: number) => (duration / 1000000000).toFixed(3),
-      goodThreshold: (blockDuration: number) =>
-        blockDuration > 0 && blockDuration <= 2000000000,
+      formatter: (duration: string) => {
+        const dp = 3;
+        if (duration?.includes('ms')) {
+          return (parseFloat(duration) / 1000).toFixed(dp).toString();
+        } else if (duration?.includes('s')) {
+          return parseFloat(duration).toFixed(dp).toString();
+        }
+        return duration
+          ? (Number(duration) / 1000000000).toFixed(dp)
+          : undefined;
+      },
+      goodThreshold: (blockDuration: string) => {
+        if (blockDuration?.includes('ms')) {
+          // we only get ms from the api if duration is less than 1s, so this
+          // automatically passes
+          return true;
+        } else if (blockDuration?.includes('s')) {
+          return parseFloat(blockDuration) <= 2;
+        } else {
+          return (
+            Number(blockDuration) > 0 && Number(blockDuration) <= 2000000000
+          );
+        }
+      },
       description: t('Seconds between the two most recent blocks'),
     },
   ],
