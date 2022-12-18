@@ -5,8 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useDepositStore } from './deposit-store';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
@@ -28,45 +27,36 @@ interface DepositManagerProps {
   setDialogStyleProps?: DepositDialogStylePropsSetter;
 }
 
-const useDepositAsset = (assets: Asset[], assetId?: string) => {
-  const { asset, balance, allowance, deposited, max, update } =
-    useDepositStore();
-
-  const handleSelectAsset = useCallback(
-    (id: string) => {
-      const asset = assets.find((a) => a.id === id);
-      update({ asset });
-    },
-    [assets, update]
-  );
-
-  useEffect(() => {
-    handleSelectAsset(assetId || '');
-  }, [assetId, handleSelectAsset]);
-
-  return { asset, balance, allowance, deposited, max, handleSelectAsset };
-};
-
 const getProps = (txContent?: EthTransaction['TxContent']) =>
   txContent ? pick(txContent, ['title', 'icon', 'intent']) : undefined;
 
 export const DepositManager = ({
-  assetId,
+  assetId: initialAssetId,
   assets,
   isFaucetable,
   setDialogStyleProps,
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const { config } = useEthereumConfig();
-  const { asset, balance, allowance, deposited, max, handleSelectAsset } =
-    useDepositAsset(assets, assetId);
+  const [assetId, setAssetId] = useState(initialAssetId);
+  const asset = assets.find((a) => a.id === assetId);
   const bridgeContract = useBridgeContract();
   const closeDepositDialog = useDepositDialog((state) => state.close);
 
-  useDepositBalances(isFaucetable);
+  const { balance, allowance, deposited, max } = useDepositBalances(
+    asset,
+    isFaucetable
+  );
+  console.log({
+    balance: balance.toFixed(),
+    allowance: allowance.toFixed(),
+    deposited: deposited.toFixed(),
+    max: max.toFixed(),
+    asset,
+  });
 
   // Set up approve transaction
-  const approve = useSubmitApproval();
+  const approve = useSubmitApproval(asset);
 
   // Set up faucet transaction
   const faucet = useSubmitFaucet();
@@ -108,7 +98,7 @@ export const DepositManager = ({
         <DepositForm
           balance={balance}
           selectedAsset={asset}
-          onSelectAsset={handleSelectAsset}
+          onSelectAsset={setAssetId}
           assets={sortBy(assets, 'name')}
           submitApprove={() => approve.perform()}
           submitDeposit={submitDeposit}

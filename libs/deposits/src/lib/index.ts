@@ -3,7 +3,6 @@ export * from './deposit-container';
 export * from './deposit-form';
 export * from './deposit-limits';
 export * from './deposit-manager';
-export * from './deposit-store';
 export * from './deposits-table';
 export * from './use-deposit-balances';
 export * from './use-deposits';
