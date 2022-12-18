@@ -32,8 +32,6 @@ export type TransactionStatus = 'default' | 'pending';
 export interface DealTicketProps {
   market: MarketDealTicket;
   submit: (order: OrderSubmissionBody['orderSubmission']) => void;
-  transactionStatus: TransactionStatus;
-  defaultOrder?: OrderSubmissionBody['orderSubmission'];
 }
 
 export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
@@ -42,11 +40,7 @@ export type DealTicketFormFields = OrderSubmissionBody['orderSubmission'] & {
   summary: string;
 };
 
-export const DealTicket = ({
-  market,
-  submit,
-  transactionStatus,
-}: DealTicketProps) => {
+export const DealTicket = ({ market, submit }: DealTicketProps) => {
   const { pubKey } = useVegaWallet();
   const [persistedOrder, setPersistedOrder] = usePersistedOrder(market);
   const {
@@ -207,10 +201,7 @@ export const DealTicket = ({
             )}
           />
         )}
-      <DealTicketButton
-        disabled={Object.keys(errors).length >= 1}
-        transactionStatus={transactionStatus}
-      />
+      <DealTicketButton disabled={Object.keys(errors).length >= 1} />
       <SummaryMessage
         errorMessage={errors.summary?.message}
         market={market}

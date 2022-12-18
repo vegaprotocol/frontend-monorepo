@@ -3,26 +3,24 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
 interface Props {
-  transactionStatus: 'default' | 'pending';
   disabled: boolean;
 }
 
-export const DealTicketButton = ({ transactionStatus, disabled }: Props) => {
+export const DealTicketButton = ({ disabled }: Props) => {
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
-  const isPending = transactionStatus === 'pending';
   return pubKey ? (
     <div className="mb-4">
       <Button
         variant="primary"
         fill
         type="submit"
-        disabled={disabled || isPending}
+        disabled={disabled}
         data-testid="place-order"
       >
-        {isPending ? t('Pending...') : t('Place order')}
+        {t('Place order')}
       </Button>
     </div>
   ) : (

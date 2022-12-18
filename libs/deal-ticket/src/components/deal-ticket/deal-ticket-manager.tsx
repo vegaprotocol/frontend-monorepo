@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import type { VegaTxState } from '@vegaprotocol/wallet';
+import type { VegaTxState, OrderSubmissionBody } from '@vegaprotocol/wallet';
 import {
   VegaTxStatus,
   WalletError,
   useVegaWallet,
   useVegaWalletDialogStore,
   ClientErrors,
+  useVegaTransactionStore,
 } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
@@ -66,33 +67,15 @@ export const DealTicketManager = ({
   market,
   children,
 }: DealTicketManagerProps) => {
-  const { submit, transaction, finalizedOrder, Dialog, reset } =
-    useOrderSubmit();
+  const create = useVegaTransactionStore((state) => state.create);
   return (
     <>
       {children || (
         <DealTicket
           market={market}
-          submit={(order) => submit(order)}
-          transactionStatus={
-            transaction.status === VegaTxStatus.Requested ||
-            transaction.status === VegaTxStatus.Pending
-              ? 'pending'
-              : 'default'
-          }
+          submit={(orderSubmission) => create({ orderSubmission })}
         />
       )}
-      <Dialog
-        title={getOrderDialogTitle(finalizedOrder?.status)}
-        intent={getOrderDialogIntent(finalizedOrder?.status)}
-        icon={getOrderDialogIcon(finalizedOrder?.status)}
-        content={{
-          Complete: (
-            <OrderFeedback transaction={transaction} order={finalizedOrder} />
-          ),
-          Error: <ErrorContent transaction={transaction} reset={reset} />,
-        }}
-      />
     </>
   );
 };
