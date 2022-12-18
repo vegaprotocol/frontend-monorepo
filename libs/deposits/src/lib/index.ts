@@ -11,6 +11,5 @@ export * from './use-get-balance-of-erc20-token';
 export * from './use-get-deposit-maximum';
 export * from './use-get-deposited-amount';
 export * from './use-submit-approval';
-export * from './use-submit-deposit';
 export * from './use-submit-faucet';
 export * from './deposit-dialog';
