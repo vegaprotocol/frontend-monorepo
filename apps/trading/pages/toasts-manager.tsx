@@ -105,9 +105,9 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
   if (!data) return null;
 
   const ETH_WITHDRAW =
-    tx.methodName === 'withdraw_asset' && tx.args.length > 2 && tx.asset;
+    tx.methodName === 'withdraw_asset' && tx.args.length > 2 && tx.assetId;
   if (ETH_WITHDRAW) {
-    const asset = data.find((a) => a.id === tx.asset);
+    const asset = data.find((a) => a.id === tx.assetId);
 
     if (asset) {
       return (
@@ -461,17 +461,6 @@ export const ToastsManager = () => {
     vegaTransactions,
     withdrawApprovals,
   ]);
-
-  useEffect(
-    () =>
-      console.log([
-        ...vegaTransactions,
-        ...ethTransactions,
-        ...withdrawApprovals,
-      ]),
-    [ethTransactions, vegaTransactions, withdrawApprovals]
-  );
-  useEffect(() => console.log(toasts), [toasts]);
 
   return <ToastsContainer order="desc" toasts={toasts} />;
 };

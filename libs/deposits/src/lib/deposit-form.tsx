@@ -322,7 +322,6 @@ const FormButton = ({
       </Button>
     );
   } else if (chainId !== desiredChainId) {
-    console.log(chainId, desiredChainId);
     const chainName = desiredChainId ? ChainIdMap[desiredChainId] : 'Unknown';
     message = t(`This app only works on ${chainName}.`);
     button = (
