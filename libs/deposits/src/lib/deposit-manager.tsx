@@ -47,19 +47,12 @@ export const DepositManager = ({
     asset,
     isFaucetable
   );
-  console.log({
-    balance: balance.toFixed(),
-    allowance: allowance.toFixed(),
-    deposited: deposited.toFixed(),
-    max: max.toFixed(),
-    asset,
-  });
 
   // Set up approve transaction
   const approve = useSubmitApproval(asset);
 
   // Set up faucet transaction
-  const faucet = useSubmitFaucet();
+  const faucet = useSubmitFaucet(asset);
 
   const transactionInProgress = [approve.TxContent, faucet.TxContent].filter(
     (t) => t.status !== EthTxStatus.Default
