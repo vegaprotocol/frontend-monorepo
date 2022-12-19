@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
-import { BigNumber } from 'bignumber.js';
 import { useMaximumPositionSize } from './use-maximum-position-size';
 import type { AccountFragment as Account } from './__generated__/PartyBalance';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';

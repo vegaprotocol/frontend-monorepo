@@ -33,7 +33,7 @@ export const useMarketPositionOpenVolume = (marketId: string) => {
       }
       return true;
     },
-    [setOpenVolume, marketId]
+    [openVolume, setOpenVolume, marketId]
   );
 
   useDataProvider<

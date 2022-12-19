@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';

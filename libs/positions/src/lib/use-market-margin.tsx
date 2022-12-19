@@ -34,7 +34,7 @@ export const useMarketMargin = (marketId: string) => {
       }
       return true;
     },
-    [setMarginLevel]
+    [marginLevel, setMarginLevel, marketId]
   );
 
   useDataProvider<
