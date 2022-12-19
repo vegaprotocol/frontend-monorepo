@@ -99,9 +99,8 @@ const AccountHistoryManager = ({
   const variablesForOneTimeQuery = useMemo(
     () => ({
       partyId: pubKey,
-      dateRange: { start: calculateStartDate(range) },
     }),
-    [pubKey, range]
+    [pubKey]
   );
 
   const assetsWithBalanceHistory = useAccountsWithBalanceQuery({
@@ -118,9 +117,9 @@ const AccountHistoryManager = ({
   );
 
   const assets = useMemo(() => {
-    const assetsFiltered = assetData.filter((a) =>
-      assetsWithBalance.includes(a.id)
-    );
+    const assetsFiltered = assetData
+      .filter((a) => assetsWithBalance.includes(a.id))
+      .sort((a, b) => a.name.localeCompare(b.name));
     if (assetsFiltered && !asset) {
       setAsset(assetsFiltered[0]);
     }
@@ -228,8 +227,8 @@ export const AccountHistoryChart = ({
       .reverse()
       .map((edge) => {
         return {
-          datetime: fromNanoSeconds(edge.node.timestamp), // Date
-          balance: Number(addDecimal(edge.node.balance, asset.decimals)), // number
+          datetime: fromNanoSeconds(edge.node.timestamp),
+          balance: Number(addDecimal(edge.node.balance, asset.decimals)),
         };
       });
   }, [accountType, asset.decimals, data?.balanceChanges.edges]);
