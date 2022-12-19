@@ -1,13 +1,11 @@
 import { useParams } from 'react-router-dom';
 import {
   DealTicketManager,
-  usePartyBalanceQuery,
 } from '@vegaprotocol/deal-ticket';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   t,
   useDataProvider,
-  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DealTicketSteps } from './deal-ticket-steps';

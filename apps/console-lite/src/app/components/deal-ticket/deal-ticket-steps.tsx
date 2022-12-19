@@ -6,7 +6,6 @@ import {
   getDefaultOrder,
   useOrderCloseOut,
   useOrderMargin,
-  usePartyBalanceQuery,
   useMaximumPositionSize,
   useCalculateSlippage,
   validateAmount,
@@ -24,7 +23,6 @@ import {
   addDecimalsFormatNumber,
   addDecimal,
   formatNumber,
-  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,

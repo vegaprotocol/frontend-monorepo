@@ -1,9 +1,23 @@
 import { renderHook } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
 import * as Schema from '@vegaprotocol/types';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import type { PositionMargin } from './use-market-positions';
 import { useMaximumPositionSize } from './use-maximum-position-size';
-import type { AccountFragment as Account } from './__generated__/PartyBalance';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+
+jest.mock('@vegaprotocol/wallet', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet'),
+  useVegaWallet: jest.fn().mockReturnValue('wallet-pub-key'),
+}));
+
+let mockAccountBalance: {
+  accountBalance: string;
+  accountDecimals: number | null;
+} = { accountBalance: '200000', accountDecimals: 5 };
+jest.mock('@vegaprotocol/accounts', () => ({
+  ...jest.requireActual('@vegaprotocol/accounts'),
+  useAccountBalance: jest.fn(() => mockAccountBalance),
+}));
 
 const defaultMockMarketPositions = {
   openVolume: '1',
@@ -12,19 +26,6 @@ const defaultMockMarketPositions = {
 
 let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
-const mockAccount: Account = {
-  __typename: 'AccountBalance',
-  type: Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-  balance: '200000',
-  asset: {
-    __typename: 'Asset',
-    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-    symbol: 'tBTC',
-    name: 'tBTC TEST',
-    decimals: 5,
-  },
-};
-
 const mockOrder: OrderSubmissionBody['orderSubmission'] = {
   type: Schema.OrderType.TYPE_MARKET,
   size: '1',
@@ -32,12 +33,6 @@ const mockOrder: OrderSubmissionBody['orderSubmission'] = {
   timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
   marketId: 'market-id',
 };
-
-jest.mock('./use-settlement-account', () => {
-  return {
-    useSettlementAccount: jest.fn(() => mockAccount),
-  };
-});
 
 jest.mock('./use-market-positions', () => ({
   useMarketPositions: ({
@@ -54,15 +49,15 @@ describe('useMaximumPositionSize', () => {
     mockMarketPositions = null;
     const price = '50';
     const expected = 4000;
-    const { result } = renderHook(() =>
-      useMaximumPositionSize({
-        marketId: '',
-        partyId: '',
-        price,
-        settlementAssetId: '',
-        order: mockOrder,
-        accounts: [mockAccount],
-      })
+    const { result } = renderHook(
+      () =>
+        useMaximumPositionSize({
+          marketId: '',
+          price,
+          settlementAssetId: '',
+          order: mockOrder,
+        }),
+      { wrapper: MockedProvider }
     );
     expect(result.current).toBe(expected);
   });
@@ -71,15 +66,15 @@ describe('useMaximumPositionSize', () => {
     const price = '50';
     mockMarketPositions = defaultMockMarketPositions;
     const expected = 3999;
-    const { result } = renderHook(() =>
-      useMaximumPositionSize({
-        marketId: '',
-        partyId: '',
-        price,
-        settlementAssetId: '',
-        order: mockOrder,
-        accounts: [mockAccount],
-      })
+    const { result } = renderHook(
+      () =>
+        useMaximumPositionSize({
+          marketId: '',
+          price,
+          settlementAssetId: '',
+          order: mockOrder,
+        }),
+      { wrapper: MockedProvider }
     );
     expect(result.current).toBe(expected);
   });
@@ -89,33 +84,36 @@ describe('useMaximumPositionSize', () => {
     mockOrder.side = Schema.Side.SIDE_SELL;
     mockMarketPositions = defaultMockMarketPositions;
     const expected = 4001;
-    const { result } = renderHook(() =>
-      useMaximumPositionSize({
-        marketId: '',
-        partyId: '',
-        price,
-        settlementAssetId: '',
-        order: mockOrder,
-        accounts: [mockAccount],
-      })
+    const { result } = renderHook(
+      () =>
+        useMaximumPositionSize({
+          marketId: '',
+          price,
+          settlementAssetId: '',
+          order: mockOrder,
+        }),
+      { wrapper: MockedProvider }
     );
     expect(result.current).toBe(expected);
   });
 
   it('should return zero if no account balance', () => {
-    mockAccount.balance = '0';
+    mockAccountBalance = {
+      accountBalance: '0',
+      accountDecimals: 5,
+    };
     const price = '50';
     mockMarketPositions = defaultMockMarketPositions;
     const expected = 0;
-    const { result } = renderHook(() =>
-      useMaximumPositionSize({
-        marketId: '',
-        partyId: '',
-        price,
-        settlementAssetId: '',
-        order: mockOrder,
-        accounts: [],
-      })
+    const { result } = renderHook(
+      () =>
+        useMaximumPositionSize({
+          marketId: '',
+          price,
+          settlementAssetId: '',
+          order: mockOrder,
+        }),
+      { wrapper: MockedProvider }
     );
     expect(result.current).toBe(expected);
   });
