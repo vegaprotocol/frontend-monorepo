@@ -1,5 +1,6 @@
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
+const proposalListItem = '[data-testid="proposals-list-item"]';
 const newProposalTitle = '[data-testid="proposal-title"]';
 const newProposalDescription = '[data-testid="proposal-description"]';
 const proposalDetails = '[data-testid="proposal-details"]';
@@ -87,8 +88,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add('get_proposal_id_from_list', (proposalTitle) => {
   cy.contains(proposalTitle)
-    .parent()
-    .parent()
+    .parentsUntil(proposalListItem)
     .within(() => {
       cy.get(proposalDetails)
         .invoke('text')
