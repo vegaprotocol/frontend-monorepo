@@ -10,7 +10,7 @@ import {
 import { AsyncRenderer, Button, Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig, Web3Provider } from '@vegaprotocol/web3';
-import { ThemeContext, useThemeSwitcher, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { ENV } from './config/env';
 import { ContractsProvider } from './config/contracts/contracts-provider';
 import {
@@ -55,7 +55,6 @@ function App() {
   const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [theme, toggleTheme] = useThemeSwitcher();
 
   useEffect(() => {
     Sentry.init({
@@ -73,25 +72,23 @@ function App() {
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <AsyncRenderer loading={loading} data={config} error={error}>
-        <Web3Provider connectors={Connectors}>
-          <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
-            <EthWalletContainer
-              dialogOpen={dialogOpen}
-              setDialogOpen={setDialogOpen}
-            >
-              <ContractsProvider>
-                <div className={pageWrapperClasses}>
-                  <Header theme={theme} toggleTheme={toggleTheme} />
-                  <ConnectedApp config={config} />
-                </div>
-              </ContractsProvider>
-            </EthWalletContainer>
-          </Web3Connector>
-        </Web3Provider>
-      </AsyncRenderer>
-    </ThemeContext.Provider>
+    <AsyncRenderer loading={loading} data={config} error={error}>
+      <Web3Provider connectors={Connectors}>
+        <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
+          <EthWalletContainer
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+          >
+            <ContractsProvider>
+              <div className={pageWrapperClasses}>
+                <Header />
+                <ConnectedApp config={config} />
+              </div>
+            </ContractsProvider>
+          </EthWalletContainer>
+        </Web3Connector>
+      </Web3Provider>
+    </AsyncRenderer>
   );
 }
 

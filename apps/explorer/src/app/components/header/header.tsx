@@ -8,18 +8,11 @@ import type { Dispatch, SetStateAction } from 'react';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 
 interface ThemeToggleProps {
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Header = ({
-  theme,
-  toggleTheme,
-  menuOpen,
-  setMenuOpen,
-}: ThemeToggleProps) => {
+export const Header = ({ menuOpen, setMenuOpen }: ThemeToggleProps) => {
   const headerClasses = classnames(
     'md:col-span-2',
     'grid grid-rows-2 md:grid-rows-1 grid-cols-[1fr_auto] md:grid-cols-[auto_1fr_auto] items-center',
@@ -48,7 +41,7 @@ export const Header = ({
         <Icon name={menuOpen ? 'cross' : 'menu'} />
       </button>
       <Search />
-      <ThemeSwitcher theme={theme} onToggle={toggleTheme} className="-my-4" />
+      <ThemeSwitcher className="-my-4" />
     </header>
   );
 };

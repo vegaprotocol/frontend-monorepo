@@ -16,7 +16,7 @@ export const Header = ({ theme, toggleTheme }: HeaderProps) => {
       <div className="relative flex justify-center px-2 dark:bg-black bg-white">
         <div className="w-full max-w-3xl p-5 flex items-center justify-between">
           <VegaLogo />
-          <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
+          <ThemeSwitcher />
         </div>
       </div>
     </header>

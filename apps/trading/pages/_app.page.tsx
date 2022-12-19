@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
-import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
   VegaWalletProvider,

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { useLocation } from 'react-router-dom';
-import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
   EnvironmentProvider,
   NetworkLoader,
@@ -19,7 +18,6 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 
 function App() {
   const { VEGA_ENV } = useEnvironment();
-  const [theme, toggleTheme] = useThemeSwitcher();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const location = useLocation();
@@ -57,25 +55,18 @@ function App() {
   );
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <TendermintWebsocketProvider>
-        <NetworkLoader cache={cacheConfig}>
-          <div className={layoutClasses}>
-            <Header
-              theme={theme}
-              toggleTheme={toggleTheme}
-              menuOpen={menuOpen}
-              setMenuOpen={setMenuOpen}
-            />
-            <Nav menuOpen={menuOpen} />
-            <Main />
-            <footer className="grid grid-rows-2 grid-cols-[1fr_auto] text-sm md:text-md md:flex md:col-span-2 p-4 gap-4 border-t border-neutral-700 dark:border-neutral-300">
-              <NetworkInfo />
-            </footer>
-          </div>
-        </NetworkLoader>
-      </TendermintWebsocketProvider>
-    </ThemeContext.Provider>
+    <TendermintWebsocketProvider>
+      <NetworkLoader cache={cacheConfig}>
+        <div className={layoutClasses}>
+          <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+          <Nav menuOpen={menuOpen} />
+          <Main />
+          <footer className="grid grid-rows-2 grid-cols-[1fr_auto] text-sm md:text-md md:flex md:col-span-2 p-4 gap-4 border-t border-neutral-700 dark:border-neutral-300">
+            <NetworkInfo />
+          </footer>
+        </div>
+      </NetworkLoader>
+    </TendermintWebsocketProvider>
   );
 }
 
