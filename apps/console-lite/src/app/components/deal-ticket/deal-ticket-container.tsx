@@ -1,8 +1,5 @@
 import { useParams } from 'react-router-dom';
-import {
-  DealTicketManager,
-  usePartyBalanceQuery,
-} from '@vegaprotocol/deal-ticket';
+import { usePartyBalanceQuery } from '@vegaprotocol/deal-ticket';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   t,
@@ -67,10 +64,10 @@ export const DealTicketContainer = () => {
     );
 
     const container = (
-      <DealTicketManager market={data}>
+      <>
         {loading ? loader : balance}
         <DealTicketSteps market={data} />
-      </DealTicketManager>
+      </>
     );
 
     return (

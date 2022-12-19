@@ -8,6 +8,7 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
+import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -119,11 +120,15 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
 
       submit({
         ...order,
-        price: order.price && removeDecimal(order.price, market.decimalPlaces),
+        price:
+          order.type === Schema.OrderType.TYPE_LIMIT && order.price
+            ? removeDecimal(order.price, market.decimalPlaces)
+            : undefined,
         size: removeDecimal(order.size, market.positionDecimalPlaces),
         expiresAt:
+          order.expiresAt &&
           order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-            ? order.expiresAt
+            ? toNanoSeconds(order.expiresAt)
             : undefined,
       });
     },
