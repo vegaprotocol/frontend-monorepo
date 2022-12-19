@@ -16,16 +16,10 @@ import {
 
 type NavbarTheme = 'inherit' | 'dark' | 'yellow';
 interface NavbarProps {
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
   navbarTheme?: NavbarTheme;
 }
 
-export const Navbar = ({
-  theme,
-  toggleTheme,
-  navbarTheme = 'inherit',
-}: NavbarProps) => {
+export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
   const { VEGA_TOKEN_URL } = useEnvironment();
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
@@ -71,7 +65,7 @@ export const Navbar = ({
       </a>
       <div className="flex items-center gap-2 ml-auto">
         <VegaWalletConnectButton />
-        <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
+        <ThemeSwitcher />
       </div>
     </Nav>
   );
