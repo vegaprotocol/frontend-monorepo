@@ -32,7 +32,7 @@ export const decorators = [
         }
       });
 
-      observer.observe(document.body, { attributes: true });
+      observer.observe(document.documentElement, { attributes: true });
 
       return () => {
         observer.disconnect();

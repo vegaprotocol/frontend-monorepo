@@ -57,8 +57,6 @@ const withTheme = (Story, context) => {
     theme === 'dark' ? darkThemeClasses : lightThemeClasses
   }`;
 
-  document.body.classList.toggle('dark', theme === 'dark');
-
   return theme === 'sideBySide' ? (
     <>
       <div className={lightThemeClasses}>
