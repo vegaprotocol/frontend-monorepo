@@ -74,7 +74,7 @@ export type AccountHistoryLazyQueryHookResult = ReturnType<typeof useAccountHist
 export type AccountHistoryQueryResult = Apollo.QueryResult<AccountHistoryQuery, AccountHistoryQueryVariables>;
 export const AccountsWithBalanceDocument = gql`
     query AccountsWithBalance($partyId: ID!, $dateRange: DateRange) {
-  balanceChanges(filter: {partyIds: [$partyId]}) {
+  balanceChanges(filter: {partyIds: [$partyId]}, dateRange: $dateRange) {
     edges {
       node {
         assetId

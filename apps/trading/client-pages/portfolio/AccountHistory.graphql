@@ -26,7 +26,7 @@ query AccountHistory(
 }
 
 query AccountsWithBalance($partyId: ID!, $dateRange: DateRange) {
-  balanceChanges(filter: { partyIds: [$partyId] }) {
+  balanceChanges(filter: { partyIds: [$partyId] }, dateRange: $dateRange) {
     edges {
       node {
         assetId
