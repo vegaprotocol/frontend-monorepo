@@ -19,7 +19,7 @@ export type AccountsWithBalanceQueryVariables = Types.Exact<{
 }>;
 
 
-export type AccountsWithBalanceQuery = { __typename?: 'Query', balanceChanges: { __typename?: 'AggregatedBalanceConnection', edges: Array<{ __typename?: 'AggregatedBalanceEdge', node: { __typename?: 'AggregatedBalance', assetId?: string | null } } | null> } };
+export type AccountsWithBalanceQuery = { __typename?: 'Query', balanceChanges: { __typename?: 'AggregatedBalanceConnection', edges: Array<{ __typename?: 'AggregatedBalanceEdge', node: { __typename?: 'AggregatedBalance', assetId?: string | null, accountType?: Types.AccountType | null } } | null> } };
 
 
 export const AccountHistoryDocument = gql`
@@ -74,10 +74,11 @@ export type AccountHistoryLazyQueryHookResult = ReturnType<typeof useAccountHist
 export type AccountHistoryQueryResult = Apollo.QueryResult<AccountHistoryQuery, AccountHistoryQueryVariables>;
 export const AccountsWithBalanceDocument = gql`
     query AccountsWithBalance($partyId: ID!, $dateRange: DateRange) {
-  balanceChanges(filter: {partyIds: [$partyId]}, dateRange: $dateRange) {
+  balanceChanges(filter: {partyIds: [$partyId]}) {
     edges {
       node {
         assetId
+        accountType
       }
     }
   }
