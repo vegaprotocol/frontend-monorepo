@@ -9,13 +9,7 @@ import type {
   ValueProps,
   VegaICellRendererParams,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  Button,
-  ButtonLink,
-  Dialog,
-  Intent,
-  progressBarCellRendererSelector,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -134,12 +128,36 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName={t('Used')}
             field="used"
-            flex={2}
-            minWidth={150}
-            maxWidth={500}
-            headerComponentParams={progressBarHeaderComponentParams}
-            cellRendererSelector={progressBarCellRendererSelector}
-            valueFormatter={progressBarValueFormatter}
+            headerTooltip={t(
+              'This is the amount of collateral used from your general account.'
+            )}
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<AccountFields, 'used'>) =>
+              data &&
+              data.asset &&
+              isNumeric(value) &&
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
+            maxWidth={300}
+          />
+          <AgGridColumn
+            headerName={t('Available')}
+            field="available"
+            headerTooltip={t(
+              'This is the amount of collateral available in your general account.'
+            )}
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<AccountFields, 'available'>) =>
+              data &&
+              data.asset &&
+              isNumeric(value) &&
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
+            maxWidth={300}
           />
           <AgGridColumn
             headerName=""
