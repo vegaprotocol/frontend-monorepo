@@ -20,6 +20,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Splash,
   Toggle,
 } from '@vegaprotocol/ui-toolkit';
 import { AccountTypeMapping } from '@vegaprotocol/types';
@@ -71,11 +72,11 @@ export const AccountHistoryContainer = () => {
   const { data: assets } = useAssetsDataProvider();
 
   if (!pubKey) {
-    return <div>Connect wallet</div>;
+    return <Splash>Connect wallet</Splash>;
   }
 
   if (!assets) {
-    return <div>Loading...</div>;
+    return <Splash>Loading...</Splash>;
   }
 
   return <AccountHistoryManager pubKey={pubKey} assetData={assets} />;
@@ -234,11 +235,7 @@ export const AccountHistoryChart = ({
   }, [accountType, asset.decimals, data?.balanceChanges.edges]);
 
   if (!data || !values.length) {
-    return (
-      <div className="text-xs h-full w-full text-center m-auto text-gray-50 flex items-center justify-center">
-        {t('No account history data')}
-      </div>
-    );
+    return <Splash> {t('No account history data')}</Splash>;
   }
 
   const chartData: { cols: string[]; rows: [Date, ...number[]][] } = {
