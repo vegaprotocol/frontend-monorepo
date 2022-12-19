@@ -2,11 +2,12 @@ import {
   addDecimal,
   fromNanoSeconds,
   t,
-  useThemeSwitcher,
+  ThemeContext,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
 import type { ChangeEvent } from 'react';
+import { useContext } from 'react';
 import { useMemo, useState } from 'react';
 import type { AccountHistoryQuery } from './__generated__/AccountHistory';
 import { useAccountsWithBalanceQuery } from './__generated__/AccountHistory';
@@ -25,20 +26,30 @@ import { AccountTypeMapping } from '@vegaprotocol/types';
 import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
 
+enum DateRange {
+  RANGE_1D = '1D',
+  RANGE_7D = '7D',
+  RANGE_1M = '1M',
+  RANGE_3M = '3M',
+  RANGE_1Y = '1Y',
+  RANGE_YTD = 'YTD',
+  RANGE_ALL = 'All',
+}
+
 const calculateStartDate = (range: string): string | undefined => {
   const now = new Date();
   switch (range) {
-    case '1D':
+    case DateRange.RANGE_1D:
       return new Date(now.setDate(now.getDate() - 1)).toISOString();
-    case '7D':
+    case DateRange.RANGE_7D:
       return new Date(now.setDate(now.getDate() - 7)).toISOString();
-    case '1M':
+    case DateRange.RANGE_1M:
       return new Date(now.setMonth(now.getMonth() - 1)).toISOString();
-    case '3M':
+    case DateRange.RANGE_3M:
       return new Date(now.setMonth(now.getMonth() - 3)).toISOString();
-    case '1Y':
+    case DateRange.RANGE_1Y:
       return new Date(now.setFullYear(now.getFullYear() - 1)).toISOString();
-    case 'YTD':
+    case DateRange.RANGE_YTD:
       return new Date(now.setMonth(0)).toISOString();
     default:
       return undefined;
@@ -46,35 +57,14 @@ const calculateStartDate = (range: string): string | undefined => {
 };
 
 const dateRangeToggleItems = [
-  {
-    label: t('1D'),
-    value: '1D',
-  },
-  {
-    label: t('7D'),
-    value: '7D',
-  },
-  {
-    label: t('1M'),
-    value: '1M',
-  },
-  {
-    label: t('3M'),
-    value: '3M',
-  },
-  {
-    label: t('1Y'),
-    value: '1Y',
-  },
-  {
-    label: t('YTD'),
-    value: 'YTD',
-  },
-  {
-    label: t('All'),
-    value: 'All',
-  },
-];
+  DateRange.RANGE_1D,
+  DateRange.RANGE_7D,
+  DateRange.RANGE_1M,
+  DateRange.RANGE_3M,
+  DateRange.RANGE_1Y,
+  DateRange.RANGE_YTD,
+  DateRange.RANGE_ALL,
+].map((range) => ({ label: t(range), value: range }));
 
 export const AccountHistoryContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -100,6 +90,7 @@ const AccountHistoryManager = ({
 }) => {
   const [range, setRange] = useState<string>('All');
   const [asset, setAsset] = useState<AssetFieldsFragment>();
+
   const [accountType, setAccountType] = useState<Schema.AccountType>(
     Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
@@ -107,8 +98,7 @@ const AccountHistoryManager = ({
   const variablesForOneTimeQuery = useMemo(
     () => ({
       partyId: pubKey,
-      dateRange:
-        range === 'All' ? undefined : { start: calculateStartDate(range) },
+      dateRange: { start: calculateStartDate(range) },
     }),
     [pubKey, range]
   );
@@ -126,10 +116,15 @@ const AccountHistoryManager = ({
     [assetsWithBalanceHistory.data?.balanceChanges.edges]
   );
 
-  const assets = useMemo(
-    () => assetData.filter((a) => assetsWithBalance.includes(a.id)),
-    [assetData, assetsWithBalance]
-  );
+  const assets = useMemo(() => {
+    const assetsFiltered = assetData.filter((a) =>
+      assetsWithBalance.includes(a.id)
+    );
+    if (assetsFiltered && !asset) {
+      setAsset(assetsFiltered[0]);
+    }
+    return assetsFiltered;
+  }, [asset, assetData, assetsWithBalance]);
 
   const variables = useMemo(
     () => ({
@@ -142,17 +137,15 @@ const AccountHistoryManager = ({
     [pubKey, asset, accountType, range]
   );
 
-  console.log({ variables });
-
   const { data } = useAccountHistoryQuery({
     variables,
     skip: !asset || !pubKey,
   });
 
   return (
-    <div>
-      <div className="flex w-full">
-        <div className=" gap-2 m-2">
+    <div className="h-full w-full flex flex-col gap-8">
+      <div className="w-full flex flex-col-reverse lg:flex-row items-start lg:items-center justify-between gap-4 px-2">
+        <div className="flex items-center gap-4 shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger>
               {accountType
@@ -199,13 +192,15 @@ const AccountHistoryManager = ({
           />
         </div>
       </div>
-      {asset && (
-        <AccountHistoryChart
-          data={data}
-          accountType={accountType}
-          asset={asset}
-        />
-      )}
+      <div className="h-5/6">
+        {asset && (
+          <AccountHistoryChart
+            data={data}
+            accountType={accountType}
+            asset={asset}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -219,7 +214,7 @@ export const AccountHistoryChart = ({
   accountType: Schema.AccountType;
   asset: AssetFieldsFragment;
 }) => {
-  const [theme] = useThemeSwitcher();
+  const theme = useContext(ThemeContext);
   const values = useMemo(() => {
     if (!data?.balanceChanges.edges.length) {
       return [];
@@ -229,6 +224,7 @@ export const AccountHistoryChart = ({
       .filter((edge) => {
         return edge.node.accountType === accountType;
       })
+      .reverse()
       .map((edge) => {
         return {
           datetime: fromNanoSeconds(edge.node.timestamp), // Date
@@ -236,19 +232,18 @@ export const AccountHistoryChart = ({
         };
       });
   }, [accountType, asset.decimals, data?.balanceChanges.edges]);
-  if (!values.length) {
-    return <div>{t('No data')}</div>;
+
+  if (!data || !values.length) {
+    return (
+      <div className="text-xs h-full w-full text-center m-auto text-gray-50 flex items-center justify-center">
+        {t('No account history data')}
+      </div>
+    );
   }
 
   const chartData: { cols: string[]; rows: [Date, ...number[]][] } = {
-    cols: ['Date', asset.symbol],
+    cols: ['Date', `${asset.symbol} account balance`],
     rows: values.map((d) => [d.datetime, d.balance]),
   };
-
-  console.log(chartData);
-  return (
-    <div className="w-200 h-200">
-      <PriceChart data={chartData} theme={theme} />
-    </div>
-  );
+  return <PriceChart data={chartData} theme={theme} />;
 };
