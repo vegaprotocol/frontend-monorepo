@@ -7,7 +7,7 @@ beforeEach(() => {
 describe('positions', { tags: '@smoke' }, () => {
   it('renders positions on trading page', () => {
     cy.visit('/#/markets/market-0');
-    cy.getByTestId('Positions').click();
+    cy.getByTestId('positions').click();
     cy.getByTestId('tab-positions').should(
       'contain.text',
       'Connect your Vega wallet'

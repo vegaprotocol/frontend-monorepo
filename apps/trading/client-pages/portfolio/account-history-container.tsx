@@ -221,16 +221,16 @@ export const AccountHistoryChart = ({
     }
 
     return compact(data.balanceChanges.edges)
-      .filter((edge) => {
-        return edge.node.accountType === accountType;
-      })
-      .reverse()
-      .map((edge) => {
-        return {
-          datetime: fromNanoSeconds(edge.node.timestamp),
-          balance: Number(addDecimal(edge.node.balance, asset.decimals)),
-        };
-      });
+      .reduce((acc, edge) => {
+        if (edge.node.accountType === accountType) {
+          acc?.push({
+            datetime: fromNanoSeconds(edge.node.timestamp),
+            balance: Number(addDecimal(edge.node.balance, asset.decimals)),
+          });
+        }
+        return acc;
+      }, [] as { datetime: Date; balance: number }[])
+      .reverse();
   }, [accountType, asset.decimals, data?.balanceChanges.edges]);
 
   if (!data || !values.length) {
