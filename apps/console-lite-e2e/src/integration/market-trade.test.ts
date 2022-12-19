@@ -7,11 +7,7 @@ import {
   generateMarketData,
 } from '../support/mocks/generate-markets';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
-import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
-import { generatePartyBalance } from '../support/mocks/generate-party-balance';
-import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
-import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import type { MarketsQuery, Market } from '@vegaprotocol/market-list';
 import { generateChainId } from '../support/mocks/generate-chain-id';
@@ -31,11 +27,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'MarketTags', generateMarketTags());
-      aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
-      aliasQuery(req, 'PartyBalance', generatePartyBalance());
-      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
-      aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
       aliasQuery(req, 'Accounts', generateAccounts());
       aliasQuery(req, 'Assets', generateAssets());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
