@@ -29,11 +29,6 @@ export const DealTicketContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const { pubKey } = useVegaWallet();
 
-  const { data: partyData } = usePartyBalanceQuery({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
-
   const variables = useMemo(
     () => ({
       marketId: marketId || '',
@@ -49,10 +44,6 @@ export const DealTicketContainer = () => {
     skip: !marketId,
   });
 
-  const accounts = removePaginationWrapper(
-    partyData?.party?.accountsConnection?.edges
-  );
-
   const loader = <Loader />;
   if (marketId && data) {
     const balance = (
@@ -61,7 +52,6 @@ export const DealTicketContainer = () => {
         settlementAsset={
           data.tradableInstrument.instrument.product?.settlementAsset
         }
-        accounts={accounts || []}
         isWalletConnected={!!pubKey}
       />
     );

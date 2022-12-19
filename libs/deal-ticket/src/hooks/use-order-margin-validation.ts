@@ -14,7 +14,7 @@ interface Props {
 
 export const useOrderMarginValidation = ({ market, order }: Props) => {
   const { pubKey } = useVegaWallet();
-  const estMargin: OrderMargin | null = useOrderMargin({
+  const estMargin = useOrderMargin({
     order,
     market,
     partyId: pubKey || '',

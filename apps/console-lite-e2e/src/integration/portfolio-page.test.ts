@@ -108,7 +108,7 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
     });
 
     it('data should be properly rendered', () => {
-      cy.get('.ag-center-cols-container .ag-row').should('have.length', 2);
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 1);
     });
   });
 
