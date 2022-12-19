@@ -1,6 +1,5 @@
 import type { PartialDeep } from 'type-fest';
 import merge from 'lodash/merge';
-import * as Types from '@vegaprotocol/types';
 import type { EstimateOrderQuery } from '@vegaprotocol/deal-ticket';
 
 const estimateOrderMock: EstimateOrderQuery = {
