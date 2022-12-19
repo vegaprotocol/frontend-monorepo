@@ -21,7 +21,7 @@ import type { TransactionResult } from '@vegaprotocol/wallet';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';

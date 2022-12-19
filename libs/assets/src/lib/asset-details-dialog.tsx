@@ -70,7 +70,7 @@ export const AssetDetailsDialog = ({
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {
         /**
-         * This mimics radix's default behavior that focuses the dialog's
+         * This mimics radix's default behaviour that focuses the dialog's
          * trigger after closing itself
          */
         if (trigger) {
