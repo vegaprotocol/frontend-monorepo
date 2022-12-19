@@ -78,20 +78,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     const [editOrder, setEditOrder] = useState<Order | null>(null);
     const orderCancel = useOrderCancel();
     const orderEdit = useOrderEdit(editOrder);
-    const cancelVariables = useMemo(
-      () => ({
-        marketId: props.marketId,
-      }),
-      [props.marketId]
-    );
-    console.log('OrderList', props.marketId);
 
     return (
       <>
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel(cancelVariables);
+            orderCancel.cancel({
+              marketId: props.marketId,
+            });
           }}
           cancel={(order: Order) => {
             if (!order.market) return;

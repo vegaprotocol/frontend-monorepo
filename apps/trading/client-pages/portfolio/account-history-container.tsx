@@ -192,7 +192,7 @@ const AccountHistoryManager = ({
           />
         </div>
       </div>
-      <div className="h-5/6">
+      <div className="h-5/6 px-4">
         {asset && (
           <AccountHistoryChart
             data={data}
