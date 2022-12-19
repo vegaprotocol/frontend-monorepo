@@ -9,6 +9,8 @@ import {
   truncateByChars,
   SetFilter,
   DateRangeFilter,
+  removeDecimal,
+  toNanoSeconds,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -23,9 +25,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import BigNumber from 'bignumber.js';
 import { forwardRef, useState } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/ui-toolkit';
-import { useOrderCancel } from '../../order-hooks/use-order-cancel';
-import { useOrderEdit } from '../../order-hooks/use-order-edit';
-import { OrderFeedback } from '../order-feedback';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from './order-edit-dialog';
 
 import type {
@@ -76,50 +76,30 @@ export const TransactionComplete = ({
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
     const [editOrder, setEditOrder] = useState<Order | null>(null);
-    const orderCancel = useOrderCancel();
-    const orderEdit = useOrderEdit(editOrder);
+    const create = useVegaTransactionStore((state) => state.create);
 
     return (
       <>
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel({ marketId: props.marketId });
+            create({
+              orderCancellation: {
+                marketId: props.marketId,
+              },
+            });
           }}
           cancel={(order: Order) => {
             if (!order.market) return;
-            orderCancel.cancel({
-              orderId: order.id,
-              marketId: order.market.id,
+            create({
+              orderCancellation: {
+                orderId: order.id,
+                marketId: order.market.id,
+              },
             });
           }}
           ref={ref}
           setEditOrder={setEditOrder}
-        />
-        <orderCancel.Dialog
-          title={getCancelDialogTitle(orderCancel)}
-          intent={getCancelDialogIntent(orderCancel)}
-          content={{
-            Complete: orderCancel.cancelledOrder ? (
-              <OrderFeedback
-                transaction={orderCancel.transaction}
-                order={orderCancel.cancelledOrder}
-              />
-            ) : (
-              <TransactionComplete {...orderCancel} />
-            ),
-          }}
-        />
-        <orderEdit.Dialog
-          title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
-          content={{
-            Complete: (
-              <OrderFeedback
-                transaction={orderEdit.transaction}
-                order={orderEdit.updatedOrder}
-              />
-            ),
-          }}
         />
         {editOrder && (
           <OrderEditDialog
@@ -129,8 +109,34 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             }}
             order={editOrder}
             onSubmit={(fields) => {
+              if (!editOrder.market) {
+                return;
+              }
+              create({
+                orderAmendment: {
+                  orderId: editOrder.id,
+                  marketId: editOrder.market.id,
+                  price: removeDecimal(
+                    fields.limitPrice,
+                    editOrder.market.decimalPlaces
+                  ),
+                  timeInForce: editOrder.timeInForce,
+                  sizeDelta: fields.size
+                    ? new BigNumber(
+                        removeDecimal(
+                          fields.size,
+                          editOrder.market.positionDecimalPlaces
+                        )
+                      )
+                        .minus(editOrder.size)
+                        .toNumber()
+                    : 0,
+                  expiresAt: editOrder.expiresAt
+                    ? toNanoSeconds(editOrder.expiresAt) // Wallet expects timestamp in nanoseconds
+                    : undefined,
+                },
+              });
               setEditOrder(null);
-              orderEdit.edit({ price: fields.limitPrice, size: fields.size });
             }}
           />
         )}
