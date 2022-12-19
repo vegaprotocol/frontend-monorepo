@@ -734,6 +734,7 @@ context(
         function () {
           const proposalTitle = generateProposalTitle();
 
+          cy.vega_wallet_teardown();
           cy.ensure_specified_unstaked_tokens_are_associated(
             this.minProposerBalance
           );
@@ -741,7 +742,6 @@ context(
           cy.enter_unique_freeform_proposal_body('50', proposalTitle);
           cy.get(newProposalSubmitButton).should('be.visible').click();
           cy.wait_for_proposal_submitted();
-          cy.wait_for_proposal_sync();
           cy.staking_page_disassociate_tokens('0.0001');
           cy.get(vegaWallet).within(() => {
             cy.get(vegaWalletAssociatedBalance, txTimeout).should(
