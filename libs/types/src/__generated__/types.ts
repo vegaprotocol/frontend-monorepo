@@ -4266,7 +4266,7 @@ export enum TransferType {
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
   /** Staking reward received */
-  TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
+  TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */
