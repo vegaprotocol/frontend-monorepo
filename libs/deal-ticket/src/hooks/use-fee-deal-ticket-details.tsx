@@ -16,7 +16,6 @@ import {
   EST_MARGIN_TOOLTIP_TEXT,
   NOTIONAL_SIZE_TOOLTIP_TEXT,
 } from '../constants';
-import { usePartyBalanceQuery } from './__generated__/PartyBalance';
 import { useCalculateSlippage } from './use-calculate-slippage';
 import { useOrderCloseOut } from './use-order-closeout';
 import { useOrderMargin } from './use-order-margin';
@@ -49,22 +48,16 @@ export const useFeeDealTicketDetails = (
     return null;
   }, [derivedPrice, order.side, slippage]);
 
-  const estMargin: OrderMargin | null = useOrderMargin({
+  const estMargin = useOrderMargin({
     order,
     market,
     partyId: pubKey || '',
     derivedPrice,
   });
 
-  const { data: partyBalance } = usePartyBalanceQuery({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
-
   const estCloseOut = useOrderCloseOut({
     order,
     market,
-    partyData: partyBalance,
   });
 
   const notionalSize = useMemo(() => {
@@ -87,7 +80,6 @@ export const useFeeDealTicketDetails = (
       estCloseOut,
       slippage,
       slippageAdjustedPrice,
-      partyData: partyBalance,
     };
   }, [
     market,
@@ -97,7 +89,6 @@ export const useFeeDealTicketDetails = (
     estCloseOut,
     slippage,
     slippageAdjustedPrice,
-    partyBalance,
   ]);
 };
 

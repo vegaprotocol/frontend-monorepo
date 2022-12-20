@@ -84,7 +84,9 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         <OrderListTable
           {...props}
           cancelAll={() => {
-            orderCancel.cancel({ marketId: props.marketId });
+            orderCancel.cancel({
+              marketId: props.marketId,
+            });
           }}
           cancel={(order: Order) => {
             if (!order.market) return;

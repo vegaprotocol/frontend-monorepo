@@ -1392,12 +1392,15 @@ export const generatePositionsMarkets = () => {
   };
 };
 
-export const generateMarket = (): MarketQuery => {
-  return {
+export const generateMarket = (
+  override?: PartialDeep<MarketQuery>
+): MarketQuery => {
+  const defaultResult = {
     market: {
       ...singleMarket,
     },
   };
+  return merge(defaultResult, override);
 };
 
 export const generateMarketData = (): MarketDataQuery => {

@@ -7,15 +7,14 @@ import {
   generateMarketData,
 } from '../support/mocks/generate-markets';
 import { generateMarketTags } from '../support/mocks/generate-market-tags';
-import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
-import { generatePartyBalance } from '../support/mocks/generate-party-balance';
-import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
-import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import type { MarketsQuery, Market } from '@vegaprotocol/market-list';
 import { generateChainId } from '../support/mocks/generate-chain-id';
 import { generateStatistics } from '../support/mocks/generate-statistics';
+import { generateAccounts } from '../support/mocks/generate-accounts';
+import { generateAssets } from '../support/mocks/generate-assets';
+import { generatePositions } from '../support/mocks/generate-positions';
 
 describe('Market trade', { tags: '@smoke' }, () => {
   let markets: Market[];
@@ -28,14 +27,13 @@ describe('Market trade', { tags: '@smoke' }, () => {
       aliasQuery(req, 'MarketsData', generateMarketsData());
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'MarketTags', generateMarketTags());
-      aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
-      aliasQuery(req, 'PartyBalance', generatePartyBalance());
-      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
-      aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
+      aliasQuery(req, 'Accounts', generateAccounts());
+      aliasQuery(req, 'Assets', generateAssets());
       aliasQuery(req, 'MarketDepth', generateMarketDepth());
       aliasQuery(req, 'Market', generateMarket());
       aliasQuery(req, 'MarketData', generateMarketData());
+      aliasQuery(req, 'Positions', generatePositions());
     });
     cy.visit('/markets');
     cy.wait('@Markets').then((response) => {
@@ -112,6 +110,24 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
   it('size slider should work well', () => {
     if (markets?.length) {
+      const marketId = markets[1].id;
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'Market',
+          generateMarket({
+            market: {
+              id: marketId,
+              tradableInstrument: {
+                instrument: {
+                  product: { settlementAsset: { id: 'asset-id-2' } },
+                },
+              },
+            },
+          })
+        );
+      });
+      cy.visit(`/trading/${marketId}`);
       cy.visit(`/trading/${markets[1].id}`);
       cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
@@ -134,7 +150,24 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
   it('percentage selection should work well', () => {
     if (markets?.length) {
-      cy.visit(`/trading/${markets[1].id}`);
+      const marketId = markets[1].id;
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'Market',
+          generateMarket({
+            market: {
+              id: marketId,
+              tradableInstrument: {
+                instrument: {
+                  product: { settlementAsset: { id: 'asset-id-2' } },
+                },
+              },
+            },
+          })
+        );
+      });
+      cy.visit(`/trading/${marketId}`);
       cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
@@ -145,7 +178,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
         .find('button')
         .should('have.text', '1');
 
-      cy.getByTestId('max-label').should('have.text', '21');
+      cy.getByTestId('max-label').should('have.text', '11');
 
       cy.getByTestId('percentage-selector')
         .find('button')
@@ -155,7 +188,7 @@ describe('Market trade', { tags: '@smoke' }, () => {
         .find('dd')
         .eq(0)
         .find('button')
-        .should('have.text', '21');
+        .should('have.text', '11');
     }
   });
 
@@ -189,7 +222,24 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
   it('slippage value should be displayed', () => {
     if (markets?.length) {
-      cy.visit(`/trading/${markets[1].id}`);
+      const marketId = markets[1].id;
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'Market',
+          generateMarket({
+            market: {
+              id: marketId,
+              tradableInstrument: {
+                instrument: {
+                  product: { settlementAsset: { id: 'asset-id-2' } },
+                },
+              },
+            },
+          })
+        );
+      });
+      cy.visit(`/trading/${marketId}`);
       cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
@@ -205,7 +255,24 @@ describe('Market trade', { tags: '@smoke' }, () => {
 
   it('allow slippage value to be adjusted', () => {
     if (markets?.length) {
-      cy.visit(`/trading/${markets[1].id}`);
+      const marketId = markets[1].id;
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'Market',
+          generateMarket({
+            market: {
+              id: marketId,
+              tradableInstrument: {
+                instrument: {
+                  product: { settlementAsset: { id: 'asset-id-2' } },
+                },
+              },
+            },
+          })
+        );
+      });
+      cy.visit(`/trading/${marketId}`);
       cy.connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();

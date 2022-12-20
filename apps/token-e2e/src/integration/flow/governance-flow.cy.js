@@ -29,7 +29,7 @@ const voteButtons = '[data-testid="vote-buttons"]';
 const votingDate = '[data-testid="voting-date"]';
 const voteTwoMinExtraNote = '[data-testid="voting-2-mins-extra"]';
 const voteStatus = '[data-testid="vote-status"]';
-const rejectProposalsLink = '[href="/governance/rejected"]';
+const rejectProposalsLink = '[href="/proposals/rejected"]';
 const feedbackError = '[data-testid="Error"]';
 const noOpenProposals = '[data-testid="no-open-proposals"]';
 const noClosedProposals = '[data-testid="no-closed-proposals"]';
@@ -123,6 +123,8 @@ context(
             parseInt(this.minCloseDays + 1),
             'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
           );
+          // workaround for first eth tx hanging
+          associateTokenStartOfTests();
         }
       );
 
@@ -132,7 +134,6 @@ context(
         cy.connectVegaWallet();
         cy.ethereum_wallet_connect();
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
       });
 
       it('Should be able to see that no proposals exist', function () {
@@ -207,7 +208,6 @@ context(
         let arrayOfProposals = [];
 
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
         cy.get(proposalDetailsTitle)
           .each((proposalTitleElement) => {
             arrayOfProposals.push(proposalTitleElement.text());
@@ -225,14 +225,12 @@ context(
         cy.navigate_to_page_if_not_already_loaded('proposals');
         cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', '2');
         cy.navigate_to('validators');
-        cy.wait_for_spinner();
         cy.click_on_validator_from_list(0);
         cy.staking_validator_page_add_stake('2');
 
         cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
 
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
         cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
         cy.enter_unique_freeform_proposal_body('50', generateProposalTitle());
         cy.get(newProposalSubmitButton).should('be.visible').click();
@@ -327,7 +325,6 @@ context(
               .contains('👍')
               .should('be.visible');
             cy.navigate_to('proposals');
-            cy.wait_for_spinner();
             cy.get('@submittedProposal').within(() =>
               cy.get(voteStatus).should('have.text', 'Participation met')
             );
@@ -378,7 +375,6 @@ context(
             cy.wait_for_proposal_submitted();
             cy.wait_for_proposal_sync();
             cy.navigate_to('proposals');
-            cy.wait_for_spinner();
             cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
               () => cy.get(viewProposalButton).click()
             );
@@ -485,7 +481,6 @@ context(
         cy.get_proposal_information_from_table('Tokens for proposal')
           .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
           .and('be.visible');
-        cy.wait_for_spinner();
         cy.get(changeVoteButton).should('be.visible').click();
         cy.vote_for_proposal('against');
         cy.get(proposalVoteProgressAgainstPercentage)
@@ -611,8 +606,7 @@ context(
         cy.get(dialogCloseButton).click();
         cy.wait_for_proposal_sync();
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
-        cy.get(rejectProposalsLink).click().wait_for_spinner();
+        cy.get(rejectProposalsLink).click();
         cy.get('@rawProposal').then((rawProposal) => {
           cy.get_submitted_proposal_from_proposal_list(
             rawProposal.rationale.title
@@ -650,7 +644,7 @@ context(
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
         cy.get(feedbackError).should(
           'have.text',
-          'party has insufficient associated governance tokens in their staking account to submit proposal request'
+          'Network error: the network blocked the transaction through the spam protection'
         );
         cy.get(dialogCloseButton).click();
       });
@@ -669,7 +663,7 @@ context(
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
         cy.get(feedbackError).should(
           'have.text',
-          'party has insufficient associated governance tokens in their staking account to submit proposal request'
+          'Network error: the network blocked the transaction through the spam protection'
         );
         cy.get(dialogCloseButton).click();
       });
@@ -698,7 +692,7 @@ context(
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
         cy.get(feedbackError).should(
           'have.text',
-          '*: unknown field "unexpected" in vega.commands.v1.ProposalSubmission'
+          'Invalid params: the transaction is malformed'
         );
         cy.get(dialogCloseButton).click();
       });
@@ -728,48 +722,50 @@ context(
         cy.contains('Transaction failed', proposalTimeout).should('be.visible');
         cy.get(feedbackError).should(
           'have.text',
-          '*: unknown field "unexpectedField" in vega.ProposalTerms'
+          'Invalid params: the transaction is malformed'
         );
         cy.get(dialogCloseButton).click();
       });
 
       // 1005-PROP-009
-      it('Unable to vote on a freeform proposal - when some but not enough vega associated', function () {
-        const proposalTitle = generateProposalTitle();
+      it(
+        'Unable to vote on a freeform proposal - when some but not enough vega associated',
+        { tags: '@smoke' },
+        function () {
+          const proposalTitle = generateProposalTitle();
 
-        cy.ensure_specified_unstaked_tokens_are_associated(
-          this.minProposerBalance
-        );
-        cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
-        cy.enter_unique_freeform_proposal_body('50', proposalTitle);
-        cy.get(newProposalSubmitButton).should('be.visible').click();
-        cy.wait_for_proposal_submitted();
-        cy.wait_for_proposal_sync();
-        cy.staking_page_disassociate_tokens('0.0001');
-        cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-            'contain',
-            '0.9999'
+          cy.vega_wallet_teardown();
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            this.minProposerBalance
           );
-        });
-        cy.navigate_to('governance');
-        cy.wait_for_spinner();
-        cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(() =>
-          cy.get(viewProposalButton).click()
-        );
-        cy.contains('Vote breakdown').should('be.visible', {
-          timeout: 10000,
-        });
-        cy.get(voteButtons).should('not.exist');
-        cy.getByTestId('min-proposal-requirements').should(
-          'have.text',
-          `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
-        );
-      });
+          cy.go_to_make_new_proposal(governanceProposalType.FREEFORM);
+          cy.enter_unique_freeform_proposal_body('50', proposalTitle);
+          cy.get(newProposalSubmitButton).should('be.visible').click();
+          cy.wait_for_proposal_submitted();
+          cy.staking_page_disassociate_tokens('0.0001');
+          cy.get(vegaWallet).within(() => {
+            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+              'contain',
+              '0.9999'
+            );
+          });
+          cy.navigate_to('proposals');
+          cy.get_submitted_proposal_from_proposal_list(proposalTitle).within(
+            () => cy.get(viewProposalButton).click()
+          );
+          cy.contains('Vote breakdown').should('be.visible', {
+            timeout: 10000,
+          });
+          cy.get(voteButtons).should('not.exist');
+          cy.getByTestId('min-proposal-requirements').should(
+            'have.text',
+            `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
+          );
+        }
+      );
 
       it('Unable to vote on a proposal - when vega wallet disconnected - option to connect from within', function () {
         createRawProposal(this.minProposerBalance);
-        cy.wait_for_spinner();
         cy.get('[data-testid="manage-vega-wallet"]').click();
         cy.get('[data-testid="disconnect"]').click();
         cy.get('@rawProposal').then((rawProposal) => {
@@ -809,7 +805,6 @@ context(
         cy.wait_for_proposal_submitted();
         cy.wait_for_proposal_sync();
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
       }
 
       function createFreeformProposal(proposerBalance, proposalTitle) {
@@ -821,12 +816,40 @@ context(
         cy.wait_for_proposal_sync();
         cy.get(proposalDetailsTitle).invoke('text').as('proposalTitle');
         cy.navigate_to('proposals');
-        cy.wait_for_spinner();
       }
 
       function generateProposalTitle() {
         const randomNum = Math.floor(Math.random() * 1000) + 1;
         return randomNum + ': Freeform e2e proposal';
+      }
+
+      // This is a workaround function to begin tests with associating tokens without failing
+      // Should be removed when eth transaction bug is fixed
+      function associateTokenStartOfTests() {
+        cy.highlight(`Associating tokens for first time`);
+        cy.ethereum_wallet_connect();
+        cy.connectVegaWallet();
+        cy.get('[href="/validators/associate"]').first().click();
+        cy.getByTestId('associate-radio-wallet', { timeout: 30000 }).click();
+        cy.getByTestId('token-amount-input', epochTimeout).type('1');
+        cy.getByTestId('token-input-submit-button', txTimeout)
+          .should('be.enabled')
+          .click();
+        cy.contains(
+          `Associating with Vega key. Waiting for ${Cypress.env(
+            'blockConfirmations'
+          )} more confirmations..`,
+          txTimeout
+        ).should('be.visible');
+        cy.getByTestId('associated-amount', txTimeout).should(
+          'contain.text',
+          '1'
+        );
+        // Wait is needed to allow time for transaction to complete
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(10000);
+        cy.vega_wallet_teardown();
+        cy.clearLocalStorage();
       }
     });
   }

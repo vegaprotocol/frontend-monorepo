@@ -6,3 +6,4 @@ export * from './accounts-manager';
 export * from './breakdown-table';
 export * from './use-account-balance';
 export * from './get-settlement-account';
+export * from './use-market-account-balance';

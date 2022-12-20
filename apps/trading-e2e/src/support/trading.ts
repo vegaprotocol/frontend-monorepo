@@ -18,12 +18,7 @@ import { generateOrders } from './mocks/generate-orders';
 import { generateMargins, generatePositions } from './mocks/generate-positions';
 import { generateTrades } from './mocks/generate-trades';
 import { generateWithdrawals } from './mocks/generate-withdrawals';
-import {
-  generateEstimateOrder,
-  generateMarkPrice,
-  generatePartyBalance,
-  generatePartyMarketData,
-} from './mocks/generate-fees';
+import { generateEstimateOrder } from './mocks/generate-fees';
 import { generateMarketProposals } from './mocks/generate-proposals';
 import { generateStatistics } from './mocks/generate-statistics';
 import { generateChainId } from './mocks/generate-chain-id';
@@ -94,10 +89,7 @@ const mockTradingPage = (
   aliasQuery(req, 'Withdrawals', generateWithdrawals());
   aliasQuery(req, 'NetworkParams', generateNetworkParameters());
   aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
-  aliasQuery(req, 'MarketMarkPrice', generateMarkPrice());
-  aliasQuery(req, 'PartyBalance', generatePartyBalance());
   aliasQuery(req, 'MarketPositions', generatePositions());
-  aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
   aliasQuery(req, 'ProposalsList', generateMarketProposals());
   aliasQuery(req, 'Deposits', generateDeposits());
 };
