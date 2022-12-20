@@ -35,6 +35,7 @@ const getCurrentTheme = () => {
 
   const theme =
     typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' && // jest test environment matchMedia is undefined
     window.matchMedia('(prefers-color-scheme: dark)').matches
       ? Themes.DARK
       : Themes.LIGHT;
