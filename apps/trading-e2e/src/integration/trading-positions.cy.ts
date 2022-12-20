@@ -19,6 +19,7 @@ describe('positions', { tags: '@smoke' }, () => {
 
   it('renders positions on portfolio page', () => {
     cy.visit('/#/portfolio');
+    cy.getByTestId('Positions').click();
     cy.connectVegaWallet();
     validatePositionsDisplayed();
   });
