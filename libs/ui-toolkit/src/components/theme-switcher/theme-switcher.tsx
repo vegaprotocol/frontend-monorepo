@@ -6,13 +6,7 @@ export const ThemeSwitcher = ({ className }: { className?: string }) => {
   return (
     <button
       type="button"
-      onClick={() => {
-        if (theme === 'dark') {
-          setTheme('light');
-        } else {
-          setTheme('dark');
-        }
-      }}
+      onClick={() => setTheme()}
       className={className}
       data-testid="theme-switcher"
     >

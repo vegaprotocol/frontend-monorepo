@@ -1,62 +1,72 @@
 import create from 'zustand';
 import { LocalStorage } from '../lib/storage';
 
-const darkTheme = 'dark';
-const lightTheme = 'light';
-type Theme = typeof darkTheme | typeof lightTheme;
+const STORAGE_KEY = 'theme';
+const Themes = {
+  DARK: 'dark',
+  LIGHT: 'light',
+} as const;
 
-const darkThemeCssClass = darkTheme;
+type Theme = typeof Themes[keyof typeof Themes];
 
-const isValidTheme = (theme: string): theme is Theme => {
+const validateTheme = (theme: string): theme is Theme => {
   if (theme === 'light' || theme === 'dark') return true;
+  LocalStorage.removeItem(STORAGE_KEY);
   return false;
 };
 
-const setTheme = (theme: Theme) => {
-  if (typeof window === 'undefined') return;
-
-  if (theme === 'dark') {
-    document.documentElement.classList.add(darkThemeCssClass);
-    LocalStorage.setItem('theme', darkTheme);
-  } else {
-    document.documentElement.classList.remove(darkThemeCssClass);
-    LocalStorage.setItem('theme', lightTheme);
+const setThemeClassName = (theme: Theme) => {
+  if (typeof window !== 'undefined') {
+    if (theme === Themes.DARK) {
+      document.documentElement.classList.add(Themes.DARK);
+    } else {
+      document.documentElement.classList.remove(Themes.DARK);
+    }
   }
 };
 
 const getCurrentTheme = () => {
-  const theme = LocalStorage.getItem('theme');
+  const storedTheme = LocalStorage.getItem(STORAGE_KEY);
 
-  if (theme && isValidTheme(theme)) {
-    setTheme(theme);
-    return theme;
-  } else {
-    LocalStorage.removeItem('theme');
+  if (storedTheme && validateTheme(storedTheme)) {
+    setThemeClassName(storedTheme);
+    return storedTheme;
   }
 
-  if (
-    !theme &&
+  const theme =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
-    setTheme(darkTheme);
-    return darkTheme;
-  }
+      ? Themes.DARK
+      : Themes.LIGHT;
 
-  setTheme(lightTheme);
-  return lightTheme;
+  setThemeClassName(theme);
+  return theme;
 };
 
 type ThemeStore = {
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  setTheme: (theme?: Theme) => void;
 };
 
-const useThemeStore = create<ThemeStore>((set, get) => ({
+const useThemeStore = create<ThemeStore>((set) => ({
   theme: getCurrentTheme(),
-  setTheme: (theme: Theme) => {
-    setTheme(theme);
-    set({ theme });
+  setTheme: (newTheme) => {
+    set((state) => {
+      let theme: Theme =
+        state.theme === Themes.LIGHT ? Themes.DARK : Themes.LIGHT;
+
+      if (newTheme) {
+        theme = newTheme;
+      }
+
+      LocalStorage.setItem(STORAGE_KEY, theme);
+
+      setThemeClassName(theme);
+
+      return {
+        theme,
+      };
+    });
   },
 }));
 
