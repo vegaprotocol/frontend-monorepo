@@ -7,6 +7,7 @@ import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
 import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 
 const initialState = {
@@ -41,6 +42,8 @@ export const useDepositBalances = (
     setState(initialState);
   }
 
+  const { accountBalance } = useAccountBalance(asset?.id);
+
   useEffect(() => {
     const getBalances = async () => {
       try {
@@ -65,7 +68,14 @@ export const useDepositBalances = (
     if (asset) {
       getBalances();
     }
-  }, [asset, getDepositMaximum, getDepositedAmount, getAllowance, getBalance]);
+  }, [
+    asset,
+    getDepositMaximum,
+    getDepositedAmount,
+    getAllowance,
+    getBalance,
+    accountBalance,
+  ]);
 
   return state;
 };
