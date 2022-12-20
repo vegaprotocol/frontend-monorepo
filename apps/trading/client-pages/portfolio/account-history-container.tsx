@@ -28,15 +28,20 @@ import { AccountTypeMapping } from '@vegaprotocol/types';
 import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
 
-enum DateRange {
-  RANGE_1D = '1D',
-  RANGE_7D = '7D',
-  RANGE_1M = '1M',
-  RANGE_3M = '3M',
-  RANGE_1Y = '1Y',
-  RANGE_YTD = 'YTD',
-  RANGE_ALL = 'All',
-}
+const DateRange = {
+  RANGE_1D: '1D',
+  RANGE_7D: '7D',
+  RANGE_1M: '1M',
+  RANGE_3M: '3M',
+  RANGE_1Y: '1Y',
+  RANGE_YTD: 'YTD',
+  RANGE_ALL: 'All',
+};
+
+const dateRangeToggleItems = Object.entries(DateRange).map(([_, value]) => ({
+  label: t(value),
+  value: value,
+}));
 
 const calculateStartDate = (range: string): string | undefined => {
   const now = new Date();
@@ -57,16 +62,6 @@ const calculateStartDate = (range: string): string | undefined => {
       return undefined;
   }
 };
-
-const dateRangeToggleItems = [
-  DateRange.RANGE_1D,
-  DateRange.RANGE_7D,
-  DateRange.RANGE_1M,
-  DateRange.RANGE_3M,
-  DateRange.RANGE_1Y,
-  DateRange.RANGE_YTD,
-  DateRange.RANGE_ALL,
-].map((range) => ({ label: t(range), value: range }));
 
 export const AccountHistoryContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -122,7 +117,9 @@ const AccountHistoryManager = ({
     [assetData, assetsWithBalance]
   );
   const [asset, setAsset] = useState<AssetFieldsFragment>(assets[0]);
-  const [range, setRange] = useState<DateRange>(DateRange.RANGE_1M);
+  const [range, setRange] = useState<typeof DateRange[keyof typeof DateRange]>(
+    DateRange.RANGE_1M
+  );
 
   const variables = useMemo(
     () => ({
@@ -185,7 +182,7 @@ const AccountHistoryManager = ({
             toggles={dateRangeToggleItems}
             checkedValue={range}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setRange(e.target.value as DateRange)
+              setRange(e.target.value as keyof typeof DateRange)
             }
           />
         </div>
