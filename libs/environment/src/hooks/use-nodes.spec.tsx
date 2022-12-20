@@ -24,7 +24,7 @@ const initialState = {
     hasError: false,
     value: undefined,
   },
-  ssl: {
+  subscription: {
     isLoading: false,
     hasError: false,
     value: undefined,
@@ -84,8 +84,8 @@ describe('useNodes hook', () => {
         ...initialState.chain,
         isLoading: true,
       },
-      ssl: {
-        ...initialState.ssl,
+      subscription: {
+        ...initialState.subscription,
         isLoading: true,
       },
     });
@@ -122,7 +122,7 @@ describe('useNodes hook', () => {
     const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[node].ssl).toEqual({
+      expect(result.current.state[node].subscription).toEqual({
         isLoading: false,
         hasError: false,
         value: true,
@@ -182,7 +182,7 @@ describe('useNodes hook', () => {
     const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[node].ssl).toEqual({
+      expect(result.current.state[node].subscription).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
@@ -273,7 +273,7 @@ describe('useNodes hook', () => {
       expect(result.current.state[node].block.hasError).toBe(true);
       expect(result.current.state[node].chain.hasError).toBe(true);
       expect(result.current.state[node].responseTime.hasError).toBe(true);
-      expect(result.current.state[node].ssl.hasError).toBe(true);
+      expect(result.current.state[node].subscription.hasError).toBe(true);
     });
   });
 
@@ -331,7 +331,7 @@ describe('useNodes hook', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.state[node].ssl).toEqual({
+      expect(result.current.state[node].subscription).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
