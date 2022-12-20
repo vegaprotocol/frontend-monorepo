@@ -40,7 +40,9 @@ const getBlockDisplayValue = (
   return '-';
 };
 
-const getSubscriptionDisplayValue = (subscription?: NodeData['subscription']) => {
+const getSubscriptionDisplayValue = (
+  subscription?: NodeData['subscription']
+) => {
   if (subscription?.value) {
     return t('Yes');
   }

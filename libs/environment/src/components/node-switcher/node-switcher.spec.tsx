@@ -494,7 +494,9 @@ describe('Node switcher', () => {
 
       if (state === STATES.HAS_ERROR) {
         const expectedErrorType =
-          dataProp === 'subscription' ? ErrorType.SUBSCRIPTION_ERROR : ErrorType.CONNECTION_ERROR;
+          dataProp === 'subscription'
+            ? ErrorType.SUBSCRIPTION_ERROR
+            : ErrorType.CONNECTION_ERROR;
         const error = getErrorByType(
           expectedErrorType,
           Networks.TESTNET,
