@@ -170,7 +170,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               data,
             }: VegaICellRendererParams<AccountFields>) => {
               return data ? (
-                <div className="flex gap-2 justify-end">
+                <div className="flex gap-2 justify-end items-center h-full">
                   <Button
                     size="xs"
                     data-testid="deposit"
