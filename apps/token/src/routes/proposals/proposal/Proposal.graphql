@@ -32,7 +32,6 @@ query Proposal($proposalId: ID!) {
                 quantum
               }
               quoteName
-              settlementDataDecimals
               dataSourceSpecForSettlementData {
                 sourceType {
                   ... on DataSourceDefinitionInternal {
