@@ -9,4 +9,5 @@ export * from './use-resize-observer';
 export * from './use-resize';
 export * from './use-screen-dimensions';
 export * from './use-theme-switcher';
+export * from './use-storybook-theme-observer';
 export * from './use-yesterday';

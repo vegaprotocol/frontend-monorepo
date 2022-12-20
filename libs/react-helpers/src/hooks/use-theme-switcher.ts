@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import create from 'zustand';
 import { LocalStorage } from '../lib/storage';
 
@@ -50,15 +49,14 @@ const getCurrentTheme = () => {
 
 type ThemeStore = {
   theme: Theme;
-  setTheme: (theme?: Theme) => void;
+  setTheme: (theme: Theme) => void;
 };
 
 const useThemeStore = create<ThemeStore>((set, get) => ({
   theme: getCurrentTheme(),
-  setTheme: () => {
-    const newTheme = get().theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    set({ theme: newTheme });
+  setTheme: (theme: Theme) => {
+    setTheme(theme);
+    set({ theme });
   },
 }));
 
