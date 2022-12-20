@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { LocalStorage } from '../lib/storage';
 
-const STORAGE_KEY = 'theme';
+const THEME_STORAGE_KEY = 'theme';
 const Themes = {
   DARK: 'dark',
   LIGHT: 'light',
@@ -11,7 +11,7 @@ type Theme = typeof Themes[keyof typeof Themes];
 
 const validateTheme = (theme: string): theme is Theme => {
   if (theme === 'light' || theme === 'dark') return true;
-  LocalStorage.removeItem(STORAGE_KEY);
+  LocalStorage.removeItem(THEME_STORAGE_KEY);
   return false;
 };
 
@@ -26,7 +26,7 @@ const setThemeClassName = (theme: Theme) => {
 };
 
 const getCurrentTheme = () => {
-  const storedTheme = LocalStorage.getItem(STORAGE_KEY);
+  const storedTheme = LocalStorage.getItem(THEME_STORAGE_KEY);
 
   if (storedTheme && validateTheme(storedTheme)) {
     setThemeClassName(storedTheme);
@@ -60,7 +60,7 @@ const useThemeStore = create<ThemeStore>((set) => ({
         theme = newTheme;
       }
 
-      LocalStorage.setItem(STORAGE_KEY, theme);
+      LocalStorage.setItem(THEME_STORAGE_KEY, theme);
 
       setThemeClassName(theme);
 
