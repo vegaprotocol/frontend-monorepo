@@ -31,6 +31,19 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('taker-fee').should('contain.text', '%');
     cy.getByTestId('market-volume').should('not.be.empty');
     cy.getByTestId('market-name').should('not.be.empty');
+
+    cy.getByTestId('trading-mode-col')
+      .contains('Monitoring auction - liquidity')
+      .eq(0)
+      .realHover();
+    cy.get('[data-testid="trading-mode-tooltip"] p').should('have.class', '');
+    cy.get(
+      '[data-testid="market-trading-mode"] [data-testid="item-value"]'
+    ).realHover();
+    cy.get('[data-testid="trading-mode-tooltip"] p').should(
+      'have.class',
+      'mb-4'
+    );
   });
 
   it('able to select market from dropdown', () => {

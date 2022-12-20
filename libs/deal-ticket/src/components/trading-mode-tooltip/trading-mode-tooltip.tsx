@@ -1,11 +1,11 @@
+import type { ReactNode } from 'react';
+import classNames from 'classnames';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { createDocsLinks } from '@vegaprotocol/react-helpers';
 import { MarketDataGrid } from './market-data-grid';
-
-import type { ReactNode } from 'react';
-import { useEnvironment } from '@vegaprotocol/environment';
 
 type TradingModeTooltipProps = {
   tradingMode: Schema.MarketTradingMode | null;
@@ -32,7 +32,7 @@ export const TradingModeTooltip = ({
     case Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <section data-testid="trading-mode-tooltip">
-          <p className="mb-4">
+          <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
             <span>
               {t(
                 'This new market is in an opening auction to determine a fair mid-price before starting continuous trading.'
@@ -55,7 +55,7 @@ export const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className="mb-4">
+              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -79,7 +79,7 @@ export const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className="mb-4">
+              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
