@@ -16,6 +16,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import {
+  AsyncRenderer,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -75,11 +76,11 @@ export const AccountHistoryContainer = () => {
     return <Splash>Connect wallet</Splash>;
   }
 
-  if (!assets) {
-    return <Splash>Loading...</Splash>;
-  }
-
-  return <AccountHistoryManager pubKey={pubKey} assetData={assets} />;
+  return (
+    <AsyncRenderer loading={!assets} error={undefined} data={assets}>
+      {assets && <AccountHistoryManager pubKey={pubKey} assetData={assets} />}
+    </AsyncRenderer>
+  );
 };
 
 const AccountHistoryManager = ({
@@ -89,9 +90,6 @@ const AccountHistoryManager = ({
   pubKey: string;
   assetData: AssetFieldsFragment[];
 }) => {
-  const [range, setRange] = useState<string>('All');
-  const [asset, setAsset] = useState<AssetFieldsFragment>();
-
   const [accountType, setAccountType] = useState<Schema.AccountType>(
     Schema.AccountType.ACCOUNT_TYPE_GENERAL
   );
@@ -116,15 +114,15 @@ const AccountHistoryManager = ({
     [assetsWithBalanceHistory.data?.balanceChanges.edges]
   );
 
-  const assets = useMemo(() => {
-    const assetsFiltered = assetData
-      .filter((a) => assetsWithBalance.includes(a.id))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    if (assetsFiltered && !asset) {
-      setAsset(assetsFiltered[0]);
-    }
-    return assetsFiltered;
-  }, [asset, assetData, assetsWithBalance]);
+  const assets = useMemo(
+    () =>
+      assetData
+        .filter((a) => assetsWithBalance.includes(a.id))
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    [assetData, assetsWithBalance]
+  );
+  const [asset, setAsset] = useState<AssetFieldsFragment>(assets[0]);
+  const [range, setRange] = useState<DateRange>(DateRange.RANGE_1M);
 
   const variables = useMemo(
     () => ({
@@ -187,7 +185,7 @@ const AccountHistoryManager = ({
             toggles={dateRangeToggleItems}
             checkedValue={range}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setRange(e.target.value)
+              setRange(e.target.value as DateRange)
             }
           />
         </div>
@@ -215,31 +213,32 @@ export const AccountHistoryChart = ({
   asset: AssetFieldsFragment;
 }) => {
   const theme = useContext(ThemeContext);
-  const values = useMemo(() => {
-    if (!data?.balanceChanges.edges.length) {
-      return [];
-    }
+  const values: { cols: string[]; rows: [Date, ...number[]][] } | null =
+    useMemo(() => {
+      if (!data?.balanceChanges.edges.length) {
+        return null;
+      }
 
-    return compact(data.balanceChanges.edges)
-      .reduce((acc, edge) => {
-        if (edge.node.accountType === accountType) {
-          acc?.push({
-            datetime: fromNanoSeconds(edge.node.timestamp),
-            balance: Number(addDecimal(edge.node.balance, asset.decimals)),
-          });
-        }
-        return acc;
-      }, [] as { datetime: Date; balance: number }[])
-      .reverse();
-  }, [accountType, asset.decimals, data?.balanceChanges.edges]);
+      const valuesData = compact(data.balanceChanges.edges)
+        .reduce((acc, edge) => {
+          if (edge.node.accountType === accountType) {
+            acc?.push({
+              datetime: fromNanoSeconds(edge.node.timestamp),
+              balance: Number(addDecimal(edge.node.balance, asset.decimals)),
+            });
+          }
+          return acc;
+        }, [] as { datetime: Date; balance: number }[])
+        .reverse();
+      return {
+        cols: ['Date', `${asset.symbol} account balance`],
+        rows: compact(valuesData).map((d) => [d.datetime, d.balance]),
+      };
+    }, [accountType, asset.decimals, asset.symbol, data?.balanceChanges.edges]);
 
-  if (!data || !values.length) {
+  if (!data || !values?.rows.length) {
     return <Splash> {t('No account history data')}</Splash>;
   }
 
-  const chartData: { cols: string[]; rows: [Date, ...number[]][] } = {
-    cols: ['Date', `${asset.symbol} account balance`],
-    rows: values.map((d) => [d.datetime, d.balance]),
-  };
-  return <PriceChart data={chartData} theme={theme} />;
+  return <PriceChart data={values} theme={theme} />;
 };
