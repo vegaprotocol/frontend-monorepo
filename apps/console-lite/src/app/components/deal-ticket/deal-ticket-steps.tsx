@@ -6,7 +6,6 @@ import {
   getDefaultOrder,
   useOrderCloseOut,
   useOrderMargin,
-  usePartyBalanceQuery,
   useMaximumPositionSize,
   useCalculateSlippage,
   validateAmount,
@@ -24,7 +23,6 @@ import {
   addDecimalsFormatNumber,
   addDecimal,
   formatNumber,
-  removePaginationWrapper,
 } from '@vegaprotocol/react-helpers';
 import {
   useOrderSubmit,
@@ -77,17 +75,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   });
   const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
-  const { data: partyBalance } = usePartyBalanceQuery({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
-
-  const accounts = removePaginationWrapper(
-    partyBalance?.party?.accountsConnection?.edges
-  );
   const maxTrade = useMaximumPositionSize({
-    partyId: pubKey || '',
-    accounts: accounts,
     marketId: market.id,
     settlementAssetId:
       market.tradableInstrument.instrument.product.settlementAsset.id,
@@ -98,7 +86,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const estCloseOut = useOrderCloseOut({
     order,
     market,
-    partyData: partyBalance,
   });
   const slippage = useCalculateSlippage({ marketId: market.id, order });
   const [slippageValue, setSlippageValue] = useState(
