@@ -59,7 +59,6 @@ export const ValidatorTables = ({
             case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
               acc.pendingValidators.push(validator);
           }
-          console.log(data?.nodesConnection.edges);
           return acc;
         },
         {
