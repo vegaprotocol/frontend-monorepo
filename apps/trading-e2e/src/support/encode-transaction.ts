@@ -1,8 +1,6 @@
-import { ethers } from "ethers";
-import type {
-    Transaction,
-  } from '@vegaprotocol/wallet';
- 
+import { ethers } from 'ethers';
+import type { Transaction } from '@vegaprotocol/wallet';
+
 /**
  * Base64 encode a transaction object
  */

@@ -48,6 +48,6 @@ const vegaWalletTransaction = (transaction: Transaction) => {
         ?.token,
       publicKey: Cypress.env('VEGA_PUBLIC_KEY2'),
       sendingMode: 'TYPE_SYNC',
-      encodedTransaction:  encodeTransaction(transaction)
+      encodedTransaction: encodeTransaction(transaction),
     });
-}
+};
