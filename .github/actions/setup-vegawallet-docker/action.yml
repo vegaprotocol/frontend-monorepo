@@ -8,10 +8,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Create passphrase
-      shell: bash
-      run: echo "${{ inputs.passphrase }}" > ./passphrase
-
     - name: Initialize wallet
       shell: bash
       run: vega wallet init -f --home ~/.vegacapsule/testnet/wallet
