@@ -473,35 +473,6 @@ export type ContinuousTrading = {
   tickSize: Scalars['String'];
 };
 
-/** Connection type for retrieving cursor-based paginated core snapshot data */
-export type CoreSnapshotConnection = {
-  __typename?: 'CoreSnapshotConnection';
-  /** The positions in this connection */
-  edges?: Maybe<Array<CoreSnapshotEdge>>;
-  /** The pagination information */
-  pageInfo?: Maybe<PageInfo>;
-};
-
-/** A snapshot taken by the core */
-export type CoreSnapshotData = {
-  __typename?: 'CoreSnapshotData';
-  /** The block hash at the snapshot block height */
-  blockHash: Scalars['String'];
-  /** At which block the snapshot was taken */
-  blockHeight: Scalars['String'];
-  /** The current version of vega core */
-  vegaCoreVersion: Scalars['String'];
-};
-
-/** Edge type containing the core snapshot cursor information */
-export type CoreSnapshotEdge = {
-  __typename?: 'CoreSnapshotEdge';
-  /** Cursor identifying the core snapashot data */
-  cursor: Scalars['String'];
-  /** The core snapshot data */
-  node: CoreSnapshotData;
-};
-
 /** A data source contains the data sent by a data source */
 export type Data = {
   __typename?: 'Data';
@@ -888,33 +859,6 @@ export type EpochParticipation = {
   online?: Maybe<Scalars['Timestamp']>;
   /** Total amount rewarded for participation in the given epoch */
   totalRewards?: Maybe<Scalars['Float']>;
-};
-
-/** an aggregated reward summary for a combination of epoch/asset/market/reward type */
-export type EpochRewardSummary = {
-  __typename?: 'EpochRewardSummary';
-  /** Total quantity of rewards awarded in this asset/market/reward type in this epoch */
-  amount: Scalars['String'];
-  /** ID of the Asset */
-  assetId: Scalars['ID'];
-  /** The epoch for which summary is generated */
-  epoch: Scalars['Int'];
-  /** ID of the market */
-  marketId?: Maybe<Scalars['ID']>;
-  /** Type of the reward */
-  rewardType: AccountType;
-};
-
-export type EpochRewardSummaryConnection = {
-  __typename?: 'EpochRewardSummaryConnection';
-  edges?: Maybe<Array<Maybe<EpochRewardSummaryEdge>>>;
-  pageInfo?: Maybe<PageInfo>;
-};
-
-export type EpochRewardSummaryEdge = {
-  __typename?: 'EpochRewardSummaryEdge';
-  cursor: Scalars['String'];
-  node: EpochRewardSummary;
 };
 
 /** Describes in both human readable and block time when an epoch spans. */
@@ -1488,8 +1432,6 @@ export type Market = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
   /** Timestamps for state changes in the market */
   marketTimestamps: MarketTimestamps;
   /**
@@ -1869,8 +1811,6 @@ export type NewMarket = {
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** New market risk configuration */
@@ -3196,16 +3136,12 @@ export type Query = {
   assetsConnection?: Maybe<AssetsConnection>;
   /** Get historical balances for an account within the given date range */
   balanceChanges: AggregatedBalanceConnection;
-  /** List core snapshots */
-  coreSnapshots?: Maybe<CoreSnapshotConnection>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
   deposits?: Maybe<DepositsConnection>;
   /** Get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch */
   epoch: Epoch;
-  /** List reward summary per epoch by asset, market, reward type */
-  epochRewardSummaries?: Maybe<EpochRewardSummaryConnection>;
   /** Get the signatures bundle to allowlist an ERC20 token in the collateral bridge */
   erc20ListAssetBundle?: Maybe<Erc20ListAssetBundle>;
   /** Get the signature bundle to add a particular validator to the signer list of the multisig contract */
@@ -3312,12 +3248,6 @@ export type QuerybalanceChangesArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
-export type QuerycoreSnapshotsArgs = {
-  pagination?: InputMaybe<Pagination>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerydepositArgs = {
   id: Scalars['ID'];
 };
@@ -3333,14 +3263,6 @@ export type QuerydepositsArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryepochArgs = {
   id?: InputMaybe<Scalars['ID']>;
-};
-
-
-/** Queries allow a caller to read data and filter data via GraphQL. */
-export type QueryepochRewardSummariesArgs = {
-  fromEpoch?: InputMaybe<Scalars['Int']>;
-  pagination?: InputMaybe<Pagination>;
-  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -4343,8 +4265,8 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
-  /** Reward payout received */
-  TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
+  /** Staking reward received */
+  TRANSFER_TYPE_STAKE_REWARD = 'TRANSFER_TYPE_STAKE_REWARD',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */
