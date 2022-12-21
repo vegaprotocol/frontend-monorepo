@@ -39,13 +39,13 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   totalNodes: [
     {
       title: t('Total nodes'),
+      promoted: true,
       description: t('The total number of nodes registered on the network'),
     },
   ],
   validatingNodes: [
     {
       title: t('Validating nodes'),
-      promoted: true,
       description: t('Nodes participating in consensus'),
     },
   ],

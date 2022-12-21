@@ -53,13 +53,13 @@ const compileData = (data?: NetworkStats) => {
     (acc, [key, value]) => {
       const statKey = key as keyof IStats;
       const statData = returned[statKey];
-
       value.forEach((x) => {
         const stat = {
           ...x,
           value: statData,
         };
-
+        // TODO REMOVE -- hacky around a bad API
+        if (['validatingNodes', 'inactiveNodes'].includes(statKey)) return;
         stat.promoted ? acc.promoted.push(stat) : acc.table.push(stat);
       });
 
