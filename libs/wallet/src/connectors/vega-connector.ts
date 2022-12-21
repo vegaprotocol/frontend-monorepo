@@ -26,12 +26,12 @@ export interface OrderSubmission {
   expiresAt?: string;
 }
 
-interface OrderCancellation {
+export interface OrderCancellation {
   orderId?: string;
   marketId?: string;
 }
 
-interface OrderAmendment {
+export interface OrderAmendment {
   marketId: string;
   orderId: string;
   reference?: string;
