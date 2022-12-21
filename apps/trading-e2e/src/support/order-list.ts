@@ -16,12 +16,10 @@ export const encodeTransaction = (tx: Transaction): string => {
   );
 };
 
-
 export const editOrder = (
   order: OrderAmendment,
   expected?: Partial<OrderAmendment>
 ) => {
-
   const expectedOrder = {
     ...order,
     ...expected,
@@ -36,12 +34,10 @@ export const editOrder = (
   VegaWalletTransaction(transaction);
 };
 
-
 export const cancelOrder = (
   order: OrderCancellation,
   expected?: Partial<OrderCancellation>
 ) => {
-
   const expectedOrder = {
     ...order,
     ...expected,

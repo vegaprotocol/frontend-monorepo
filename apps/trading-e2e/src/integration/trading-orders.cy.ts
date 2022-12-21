@@ -19,7 +19,6 @@ const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
 const closePopUpBtn = 'dialog-close';
 
-
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
@@ -130,7 +129,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.wait('@Orders').then(() => {
       expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
     });
-  });  
+  });
   const orderId = '1234567890';
   //7002-SORD-053
   //7002-SORD-040
@@ -238,7 +237,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     });
     cy.mockVegaWalletTransaction();
   });
-  
+
   const orderId = '1234567890';
   it('must be able to amend the price of an order', () => {
     //7003-MORD-012
@@ -248,24 +247,24 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`).find('[data-testid="edit"]').should(
-      'have.text',
-      'Edit'
-    ).then(($btn) => {
-      cy.wrap($btn).click();
-      cy.getByTestId('dialog-title').should('have.text', 'Edit order')
-      cy.get('#limitPrice').focus().clear().type('100')
-      cy.getByTestId('edit-order').find('[type="submit"]').click();
-      const order: OrderAmendment = {
-        orderId: orderId,
-        marketId: 'market-0',
-        price: '10000000',
-        timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-        sizeDelta: 0,       
-      };
-      editOrder(order)
-      cy.getByTestId(closePopUpBtn).click()
-    })
+    cy.get(`[row-id=${orderId}]`)
+      .find('[data-testid="edit"]')
+      .should('have.text', 'Edit')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        cy.getByTestId('dialog-title').should('have.text', 'Edit order');
+        cy.get('#limitPrice').focus().clear().type('100');
+        cy.getByTestId('edit-order').find('[type="submit"]').click();
+        const order: OrderAmendment = {
+          orderId: orderId,
+          marketId: 'market-0',
+          price: '10000000',
+          timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+          sizeDelta: 0,
+        };
+        editOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
   });
   it('must be able to cancel an individual order', () => {
     //7003-MORD-009
@@ -275,36 +274,33 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[row-id=${orderId}]`).find(`[data-testid="cancel"]`).should(
-      'have.text',
-      'Cancel'
-    ).then(($btn) => {
-      cy.wrap($btn).click()
-      const order: OrderCancellation = {
-        orderId: orderId,
-        marketId: 'market-0',       
-      };
-      cancelOrder(order)
-      cy.getByTestId(closePopUpBtn).click()
-    })
-  
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('have.text', 'Cancel')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        const order: OrderCancellation = {
+          orderId: orderId,
+          marketId: 'market-0',
+        };
+        cancelOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
   });
   it('must be able to cancel all orders on a market', () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
-    cy.get(`[data-testid="cancelAll"]`).should(
-      'have.text',
-      'Cancel all'
-    ).then(($btn) => {
-      cy.wrap($btn).click()
-      const order: OrderCancellation = {
-        marketId: 'market-0',       
-      };
-      cancelOrder(order)
-      cy.getByTestId(closePopUpBtn).click()
-    })
-  
+    cy.get(`[data-testid="cancelAll"]`)
+      .should('have.text', 'Cancel all')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        const order: OrderCancellation = {
+          marketId: 'market-0',
+        };
+        cancelOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
   });
-})
+});
