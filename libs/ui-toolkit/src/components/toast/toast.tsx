@@ -101,6 +101,7 @@ export const Toast = ({
 
   return (
     <div
+      data-testid="toast"
       data-toast-id={id}
       ref={toastRef}
       className={classNames(
