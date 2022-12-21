@@ -5,16 +5,7 @@ import type {
   OrderCancellationBody,
   Transaction,
 } from '@vegaprotocol/wallet';
-import { ethers } from 'ethers';
-
-/**
- * Base64 encode a transaction object
- */
-export const encodeTransaction = (tx: Transaction): string => {
-  return ethers.utils.base64.encode(
-    ethers.utils.toUtf8Bytes(JSON.stringify(tx))
-  );
-};
+import { encodeTransaction } from './encode-transaction';
 
 export const editOrder = (
   order: OrderAmendment,
@@ -31,7 +22,7 @@ export const editOrder = (
   const transaction: OrderAmendmentBody = {
     orderAmendment: expectedOrder,
   };
-  VegaWalletTransaction(transaction);
+  vegaWalletTransaction(transaction);
 };
 
 export const cancelOrder = (
@@ -46,10 +37,10 @@ export const cancelOrder = (
   const transaction: OrderCancellationBody = {
     orderCancellation: expectedOrder,
   };
-  VegaWalletTransaction(transaction);
+  vegaWalletTransaction(transaction);
 };
 
-function VegaWalletTransaction(transaction: any) {
+const vegaWalletTransaction = (transaction: Transaction) => {
   cy.wait('@VegaWalletTransaction')
     .its('request.body.params')
     .should('deep.equal', {
@@ -57,6 +48,6 @@ function VegaWalletTransaction(transaction: any) {
         ?.token,
       publicKey: Cypress.env('VEGA_PUBLIC_KEY2'),
       sendingMode: 'TYPE_SYNC',
-      encodedTransaction: encodeTransaction(transaction),
+      encodedTransaction:  encodeTransaction(transaction)
     });
 }
