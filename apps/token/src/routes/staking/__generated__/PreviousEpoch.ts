@@ -8,7 +8,7 @@ export type PreviousEpochQueryVariables = Types.Exact<{
 }>;
 
 
-export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string } | null } } | null> | null } | null } };
+export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string } | null, rankingScore: { __typename?: 'RankingScore', performanceScore: string } } } | null> | null } | null } };
 
 
 export const PreviousEpochDocument = gql`
@@ -21,6 +21,9 @@ export const PreviousEpochDocument = gql`
           id
           rewardScore {
             rawValidatorScore
+          }
+          rankingScore {
+            performanceScore
           }
         }
       }
