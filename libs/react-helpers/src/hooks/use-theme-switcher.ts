@@ -10,7 +10,7 @@ const Themes = {
 type Theme = typeof Themes[keyof typeof Themes];
 
 const validateTheme = (theme: string): theme is Theme => {
-  if (theme === 'light' || theme === 'dark') return true;
+  if (Object.values(Themes).includes(theme as Theme)) return true;
   LocalStorage.removeItem(THEME_STORAGE_KEY);
   return false;
 };
