@@ -42,13 +42,6 @@ export const statsFields: { [key in keyof Stats]: StatFields[] } = {
       description: t('The total number of nodes registered on the network'),
     },
   ],
-  validatingNodes: [
-    {
-      title: t('Validating nodes'),
-      promoted: true,
-      description: t('Nodes participating in consensus'),
-    },
-  ],
   inactiveNodes: [
     {
       title: t('Inactive nodes'),
