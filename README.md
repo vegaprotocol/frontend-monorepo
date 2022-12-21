@@ -156,6 +156,23 @@ In order to run the bootstrap command to generate and start a new network, we mu
 vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl
 ```
 
+In order to setup and run vegawallet for e2e capsule tests, in a separate terminal window:
+
+1. cd into `./vegacapsule`
+2. run:
+
+```bash
+bash setup-vegawallet.sh
+```
+
+3. copy generated `api-token` and paste the token into `CYPRESS_VEGA_WALLET_API_TOKEN` environment variable in either `apps/token-e2e/.env` or `apps/explorer-e2e/.env` depending on which project needs testing.
+
+Note: The script is only needed if capsule was built for first time or fresh. To run existing wallet service for capsule:
+
+```bash
+vega wallet service run -n DV --load-tokens --tokens-passphrase-file passphrase --no-version-check --automatic-consent --home ~/.vegacapsule/testnet/wallet
+```
+
 # 📑 License
 
 [MIT](./LICENSE)
