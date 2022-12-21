@@ -4,13 +4,14 @@ import {
 } from '@vegaprotocol/assets';
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
-import { WithdrawalDialog } from '@vegaprotocol/withdraws';
+import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { DepositDialog } from '@vegaprotocol/deposits';
 import { Web3ConnectUncontrolledDialog } from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
+
   return (
     <>
       <VegaConnectDialog connectors={Connectors} />
@@ -23,7 +24,7 @@ const DialogsContainer = () => {
       <WelcomeDialog />
       <DepositDialog />
       <Web3ConnectUncontrolledDialog />
-      <WithdrawalDialog />
+      <CreateWithdrawalDialog />
     </>
   );
 };

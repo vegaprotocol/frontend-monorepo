@@ -107,10 +107,7 @@ describe('withdraw actions', { tags: '@regression' }, () => {
     cy.getByTestId('DELAY_TIME_value').should('have.text', 'None');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(submitWithdrawBtn).click();
-    cy.getByTestId('dialog-title').should(
-      'have.text',
-      'Awaiting network confirmation'
-    );
+    cy.getByTestId('toast').should('contain.text', 'Awaiting confirmation');
   });
 
   it.skip('creates a withdrawal on submit'); // Needs capsule

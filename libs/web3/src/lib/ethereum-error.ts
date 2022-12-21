@@ -20,7 +20,7 @@ export const isEthereumError = (err: unknown): err is EthereumError => {
 export const isExpectedEthereumError = (error: unknown) => {
   const EXPECTED_ERRORS = [4001];
 
-  if (isEthereumError(error) && EXPECTED_ERRORS.indexOf(error.code) >= 0) {
+  if (isEthereumError(error) && EXPECTED_ERRORS.includes(error.code)) {
     return true;
   }
 

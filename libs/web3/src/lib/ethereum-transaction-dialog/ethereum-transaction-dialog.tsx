@@ -7,17 +7,17 @@ import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 
 export interface EthereumTransactionDialogProps {
   title: string;
-  onChange: (isOpen: boolean) => void;
   transaction: EthTxState;
+  onChange?: (isOpen: boolean) => void;
   // Undefined means this dialog isn't expecting an additional event for a complete state, a boolean
   // value means it is but hasn't been received yet
   requiredConfirmations?: number;
 }
 
 export const EthereumTransactionDialog = ({
-  onChange,
   title,
   transaction,
+  onChange,
   requiredConfirmations = 1,
 }: EthereumTransactionDialogProps) => {
   const { status, error, confirmations, txHash } = transaction;
@@ -76,7 +76,7 @@ export const getTransactionContent = ({
   };
 };
 
-const TransactionContent = ({
+export const TransactionContent = ({
   status,
   error,
   txHash,

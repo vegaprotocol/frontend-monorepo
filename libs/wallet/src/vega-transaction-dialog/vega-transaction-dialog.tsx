@@ -10,8 +10,8 @@ export type VegaTransactionContentMap = {
 };
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
-  onChange: (isOpen: boolean) => void;
   transaction: VegaTxState;
+  onChange?: (isOpen: boolean) => void;
   intent?: Intent;
   title?: string;
   icon?: ReactNode;
@@ -20,8 +20,8 @@ export interface VegaTransactionDialogProps {
 
 export const VegaTransactionDialog = ({
   isOpen,
-  onChange,
   transaction,
+  onChange,
   intent,
   title,
   icon,
