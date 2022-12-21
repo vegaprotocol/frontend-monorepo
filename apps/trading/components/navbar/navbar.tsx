@@ -1,13 +1,18 @@
 import classNames from 'classnames';
 import { NavLink, Link } from 'react-router-dom';
-import { NetworkSwitcher, useEnvironment } from '@vegaprotocol/environment';
+import {
+  DApp,
+  NetworkSwitcher,
+  TOKEN_GOVERNANCE,
+  useLinks,
+} from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
-import { Routes } from '../../pages/client-router';
+import { Links } from '../../pages/client-router';
 import {
   getNavLinkClassNames,
   getActiveNavLinkClassNames,
@@ -20,11 +25,13 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
+  const tokenLink = useLinks(DApp.Token);
   const { marketId } = useGlobalStore((store) => ({
     marketId: store.marketId,
   }));
-  const tradingPath = marketId ? `/markets/${marketId}` : '/markets';
+  const tradingPath = marketId
+    ? Links.MARKET(marketId)
+    : Links.SKELETON_MARKET();
   return (
     <Nav
       navbarTheme={navbarTheme}
@@ -38,7 +45,7 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     >
       <AppNavLink
         name={t('Markets')}
-        path={Routes.MARKETS}
+        path={Links.MARKETS()}
         navbarTheme={navbarTheme}
         end
       />
@@ -49,11 +56,11 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
       />
       <AppNavLink
         name={t('Portfolio')}
-        path={Routes.PORTFOLIO}
+        path={Links.PORTFOLIO()}
         navbarTheme={navbarTheme}
       />
       <a
-        href={`${VEGA_TOKEN_URL}/governance`}
+        href={tokenLink(TOKEN_GOVERNANCE)}
         target="_blank"
         rel="noreferrer"
         className={getActiveNavLinkClassNames(false, navbarTheme)}

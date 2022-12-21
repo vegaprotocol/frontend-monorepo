@@ -26,9 +26,22 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
 
 export enum Routes {
   HOME = '/',
-  MARKETS = '/markets',
+  SKELETON_MARKET = '/markets',
+  MARKET = '/markets/:marketId',
+  MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
+  LIQUIDITY = 'liquidity/:marketId',
 }
+
+export const Links = {
+  HOME: () => Routes.HOME,
+  SKELETON_MARKET: () => Routes.SKELETON_MARKET,
+  MARKET: (marketId: string) => Routes.MARKET.replace(':marketId', marketId),
+  MARKETS: () => Routes.MARKETS,
+  PORTFOLIO: () => Routes.PORTFOLIO,
+  LIQUIDITY: (marketId: string) =>
+    Routes.LIQUIDITY.replace(':marketId', marketId),
+};
 
 const routerConfig = [
   {
@@ -40,11 +53,15 @@ const routerConfig = [
     element: <LazyMarkets />,
   },
   {
-    path: 'markets/:marketId',
+    path: Routes.SKELETON_MARKET,
+    element: <LazyMarket skeleton={true} />,
+  },
+  {
+    path: Routes.MARKET,
     element: <LazyMarket />,
   },
   {
-    path: 'liquidity/:marketId',
+    path: Routes.LIQUIDITY,
     element: <LazyLiquidity />,
   },
   {

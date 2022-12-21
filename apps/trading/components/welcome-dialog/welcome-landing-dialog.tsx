@@ -12,9 +12,9 @@ import {
 } from '../select-market';
 import { WelcomeDialogHeader } from './welcome-dialog-header';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { EMPTY_MARKET_ID } from '../constants';
 import { useGlobalStore } from '../../stores';
 import { ProposedMarkets } from './proposed-markets';
+import { Links } from '../../pages/client-router';
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -25,8 +25,7 @@ export const SelectMarketLandingTable = ({
 }) => {
   const params = useParams();
   const navigate = useNavigate();
-  const isEmpty = params.marketId === EMPTY_MARKET_ID;
-  const marketId = isEmpty ? undefined : params.marketId;
+  const marketId = params.marketId;
 
   const { update } = useGlobalStore((store) => ({
     update: store.update,
@@ -36,7 +35,7 @@ export const SelectMarketLandingTable = ({
     (id: string) => {
       if (id && id !== marketId) {
         update({ marketId: id });
-        navigate(`/markets/${id}`);
+        navigate(Links.MARKET(id));
       }
     },
     [marketId, update, navigate]
@@ -87,7 +86,7 @@ export const SelectMarketLandingTable = ({
       </div>
       <div className="mt-4 text-md">
         <Link
-          to="/markets"
+          to={Links.MARKETS()}
           data-testid="view-market-list-link"
           onClick={() => onClose()}
         >
