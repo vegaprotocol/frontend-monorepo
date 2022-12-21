@@ -87,7 +87,7 @@ jobs:
       ######
 
       - name: Logs
-        run: vegacapsule network logs > vega-capsule-logs.txt
+        run: vegacapsule network logs > token-capsule-logs.txt
         if: ${{ always() }}
 
       - uses: actions/upload-artifact@v2
