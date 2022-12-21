@@ -1,21 +1,11 @@
 import { forwardRef, useState } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   isNumeric,
   t,
 } from '@vegaprotocol/react-helpers';
-import type {
-  ValueProps,
-  VegaICellRendererParams,
-} from '@vegaprotocol/ui-toolkit';
-import {
-  Button,
-  ButtonLink,
-  Dialog,
-  Intent,
-  progressBarCellRendererSelector,
-} from '@vegaprotocol/ui-toolkit';
+import type { VegaICellRendererParams } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -24,33 +14,6 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { VegaValueFormatterParams } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 import type { AccountFields } from './accounts-data-provider';
-
-export const progressBarValueFormatter = ({
-  data,
-  node,
-}: ValueFormatterParams): ValueProps['valueFormatted'] | undefined => {
-  if (!data || node?.rowPinned) {
-    return undefined;
-  }
-  const min = BigInt(data.used);
-  const mid = BigInt(data.available);
-  const max = BigInt(data.deposited);
-  const range = max > min ? max : min;
-  return {
-    low: addDecimalsFormatNumber(min.toString(), data.asset.decimals, 4),
-    high: addDecimalsFormatNumber(mid.toString(), data.asset.decimals, 4),
-    value: range ? Number((min * BigInt(100)) / range) : 0,
-    intent: Intent.Warning,
-  };
-};
-
-export const progressBarHeaderComponentParams = {
-  template:
-    '<div class="ag-cell-label-container" role="presentation">' +
-    `  <span>${t('Available')}</span>` +
-    '  <span ref="eText" class="ag-header-cell-text"></span>' +
-    '</div>',
-};
 
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
@@ -134,12 +97,36 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
           <AgGridColumn
             headerName={t('Used')}
             field="used"
-            flex={2}
-            minWidth={150}
-            maxWidth={500}
-            headerComponentParams={progressBarHeaderComponentParams}
-            cellRendererSelector={progressBarCellRendererSelector}
-            valueFormatter={progressBarValueFormatter}
+            headerTooltip={t(
+              'This is the amount of collateral used from your general account.'
+            )}
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<AccountFields, 'used'>) =>
+              data &&
+              data.asset &&
+              isNumeric(value) &&
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
+            maxWidth={300}
+          />
+          <AgGridColumn
+            headerName={t('Available')}
+            field="available"
+            headerTooltip={t(
+              'This is the amount of collateral available in your general account.'
+            )}
+            valueFormatter={({
+              value,
+              data,
+            }: VegaValueFormatterParams<AccountFields, 'available'>) =>
+              data &&
+              data.asset &&
+              isNumeric(value) &&
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
+            maxWidth={300}
           />
           <AgGridColumn
             headerName=""

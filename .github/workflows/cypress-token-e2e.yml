@@ -94,4 +94,4 @@ jobs:
         if: ${{ always() }}
         with:
           name: logs
-          path: ./vega-capsule-logs.txt
+          path: ./token-capsule-logs.txt

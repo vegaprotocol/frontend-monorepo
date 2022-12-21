@@ -9,6 +9,7 @@ import { useLayoutEffect } from 'react';
 import { useRef } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import { Loader } from '../loader';
 
 type ToastContentProps = { id: string };
 type ToastContent = (props: ToastContentProps) => JSX.Element;
@@ -20,12 +21,13 @@ export type Toast = {
   intent: Intent;
   render: ToastContent;
   closeAfter?: number;
+  onClose?: () => void;
   signal?: 'close';
+  loader?: boolean;
 };
 
 type ToastProps = Toast & {
   state?: ToastState;
-  onClose?: (id: string) => void;
 };
 
 const toastIconMapping: { [i in Intent]: IconName } = {
@@ -55,6 +57,7 @@ export const Toast = ({
   signal,
   state = 'initial',
   onClose,
+  loader = false,
 }: ToastProps) => {
   const toastRef = useRef<HTMLDivElement>(null);
 
@@ -66,9 +69,9 @@ export const Toast = ({
       }
     });
     setTimeout(() => {
-      onClose?.(id);
+      onClose?.();
     }, CLOSE_DELAY);
-  }, [id, onClose]);
+  }, [onClose]);
 
   useLayoutEffect(() => {
     const req = requestAnimationFrame(() => {
@@ -98,10 +101,11 @@ export const Toast = ({
 
   return (
     <div
+      data-testid="toast"
       data-toast-id={id}
       ref={toastRef}
       className={classNames(
-        'relative w-[300px] top-0 right-0 rounded-md border overflow-hidden mb-2',
+        'relative w-[300px] top-0 rounded-md border overflow-hidden mb-2',
         'text-black bg-white dark:border-zinc-700',
         {
           [styles['initial']]: state === 'initial',
@@ -121,9 +125,18 @@ export const Toast = ({
         <div
           className={classNames(getToastAccent(intent), 'p-2 pt-3 text-center')}
         >
-          <Icon name={toastIconMapping[intent]} size={4} className="!block" />
+          {loader ? (
+            <div className="w-4 h-4">
+              <Loader size="small" forceTheme="dark" />
+            </div>
+          ) : (
+            <Icon name={toastIconMapping[intent]} size={4} className="!block" />
+          )}
         </div>
-        <div className="flex-1 p-2 pr-6 text-sm" data-testid="toast-content">
+        <div
+          className="flex-1 p-2 pr-6 text-sm overflow-auto"
+          data-testid="toast-content"
+        >
           {render({ id })}
         </div>
       </div>

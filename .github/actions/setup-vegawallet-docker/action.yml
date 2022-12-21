@@ -8,21 +8,17 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Create passphrase
-      shell: bash
-      run: echo "${{ inputs.passphrase }}" > ./passphrase
-
     - name: Initialize wallet
       shell: bash
       run: vega wallet init -f --home ~/.vegacapsule/testnet/wallet
 
     - name: Import wallet
       shell: bash
-      run: vega wallet import -w capsule_wallet --recovery-phrase-file ./frontend-monorepo/vegacapsule/recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      run: vega wallet import -w capsule_wallet --recovery-phrase-file ./frontend-monorepo/vegacapsule/recovery -p ./frontend-monorepo/vegacapsule/passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Generate second public key
       shell: bash
-      run: vega wallet key generate -w capsule_wallet -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      run: vega wallet key generate -w capsule_wallet -p ./frontend-monorepo/vegacapsule/passphrase --home ~/.vegacapsule/testnet/wallet
 
     - name: Import network
       shell: bash
@@ -30,13 +26,13 @@ runs:
 
     - name: Init api-token
       shell: bash
-      run: vega wallet api-token init --home ~/.vegacapsule/testnet/wallet --passphrase-file passphrase
+      run: vega wallet api-token init --home ~/.vegacapsule/testnet/wallet --passphrase-file ./frontend-monorepo/vegacapsule/passphrase
 
     - name: Generate api-token
       id: generate-api-token
       shell: bash
-      run: echo api-token=$(vega wallet api-token generate --wallet-name capsule_wallet --tokens-passphrase-file passphrase  --wallet-passphrase-file passphrase --home ~/.vegacapsule/testnet/wallet | grep -Eo '[a-zA-Z0-9]{64}') >> $GITHUB_OUTPUT
+      run: echo api-token=$(vega wallet api-token generate --wallet-name capsule_wallet --tokens-passphrase-file ./frontend-monorepo/vegacapsule/passphrase  --wallet-passphrase-file ./frontend-monorepo/vegacapsule/passphrase --home ~/.vegacapsule/testnet/wallet | grep -Eo '[a-zA-Z0-9]{64}') >> $GITHUB_OUTPUT
 
     - name: Start service using capsule network
       shell: bash
-      run: vega wallet service run -n DV --load-tokens --tokens-passphrase-file passphrase --no-version-check --automatic-consent --home ~/.vegacapsule/testnet/wallet &
+      run: vega wallet service run -n DV --load-tokens --tokens-passphrase-file ./frontend-monorepo/vegacapsule/passphrase --no-version-check --automatic-consent --home ~/.vegacapsule/testnet/wallet &
