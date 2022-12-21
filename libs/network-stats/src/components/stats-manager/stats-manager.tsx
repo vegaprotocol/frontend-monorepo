@@ -53,7 +53,6 @@ const compileData = (data?: NetworkStats) => {
     (acc, [key, value]) => {
       const statKey = key as keyof IStats;
       const statData = returned[statKey];
-      console.log(statKey);
       value.forEach((x) => {
         const stat = {
           ...x,
