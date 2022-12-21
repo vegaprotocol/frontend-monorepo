@@ -1,14 +1,11 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
 import classNames from 'classnames';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { ThemeContext, useScreenDimensions } from '@vegaprotocol/react-helpers';
+import {
+  useScreenDimensions,
+  useThemeSwitcher,
+} from '@vegaprotocol/react-helpers';
 import type {
   GridOptions,
   GetRowIdParams,
@@ -43,7 +40,7 @@ const ConsoleLiteGrid = <T extends { id?: string }>(
 ) => {
   const { isMobile, screenSize } = useScreenDimensions();
   const gridRef = useRef<AgGridReact | null>(null);
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
   const handleOnGridReady = useCallback(() => {
     (
       (ref as React.RefObject<AgGridReact>) || gridRef

@@ -1,9 +1,8 @@
 import type { ReactNode, FunctionComponent } from 'react';
-import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 
 interface GridProps {
@@ -33,7 +32,7 @@ export const AgGridThemed = ({
   gridRef?: React.ForwardedRef<AgGridReact>;
   customThemeParams?: string;
 }) => {
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
   const defaultProps = { rowHeight: 22, headerHeight: 22 };
   return (
     <div

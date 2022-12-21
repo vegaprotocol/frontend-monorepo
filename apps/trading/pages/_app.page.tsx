@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
-import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import {
   useEagerConnect as useVegaEagerConnect,
   VegaWalletProvider,
@@ -48,10 +48,9 @@ const Title = () => {
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
-  const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
-    <ThemeContext.Provider value={theme}>
+    <>
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -62,8 +61,6 @@ function AppBody({ Component }: AppProps) {
           <Web3Provider>
             <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
               <Navbar
-                theme={theme}
-                toggleTheme={toggleTheme}
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
               <main data-testid={location.pathname}>
@@ -76,7 +73,7 @@ function AppBody({ Component }: AppProps) {
           </Web3Provider>
         </AppLoader>
       </VegaWalletProvider>
-    </ThemeContext.Provider>
+    </>
   );
 }
 

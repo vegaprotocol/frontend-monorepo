@@ -13,9 +13,9 @@ import {
 } from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,7 +46,7 @@ export const CandlesChartContainer = ({
 }: CandlesChartContainerProps) => {
   const client = useApolloClient();
   const { pubKey } = useVegaWallet();
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
 
   const [interval, setInterval] = useState<Interval>(Interval.I15M);
   const [chartType, setChartType] = useState<ChartType>(ChartType.CANDLE);

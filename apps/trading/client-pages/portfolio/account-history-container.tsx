@@ -2,12 +2,11 @@ import {
   addDecimal,
   fromNanoSeconds,
   t,
-  ThemeContext,
+  useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import compact from 'lodash/compact';
 import type { ChangeEvent } from 'react';
-import { useContext } from 'react';
 import { useMemo, useState } from 'react';
 import type { AccountHistoryQuery } from './__generated__/AccountHistory';
 import { useAccountsWithBalanceQuery } from './__generated__/AccountHistory';
@@ -209,7 +208,7 @@ export const AccountHistoryChart = ({
   accountType: Schema.AccountType;
   asset: AssetFieldsFragment;
 }) => {
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
   const values: { cols: string[]; rows: [Date, ...number[]][] } | null =
     useMemo(() => {
       if (!data?.balanceChanges.edges.length) {

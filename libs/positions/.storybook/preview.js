@@ -1,6 +1,5 @@
 import './styles.scss';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
-import { useEffect, useState } from 'react';
+import { useStorybookThemeObserver } from '@vegaprotocol/react-helpers';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   backgrounds: { disable: true },
@@ -14,36 +13,12 @@ export const parameters = {
 };
 
 export const decorators = [
-  (Story, context) => {
-    // storybook-addon-themes doesnt seem to provide the current selected
-    // theme in context, we need to provid it in JS as some components
-    // rely on it for rendering
-    const [theme, setTheme] = useState(context.parameters.themes.default);
-
-    useEffect(() => {
-      const observer = new MutationObserver((mutationList) => {
-        if (mutationList.length) {
-          const body = mutationList[0].target;
-          if (body.classList.contains('dark')) {
-            setTheme('dark');
-          } else {
-            setTheme('light');
-          }
-        }
-      });
-
-      observer.observe(document.body, { attributes: true });
-
-      return () => {
-        observer.disconnect();
-      };
-    }, []);
+  (Story) => {
+    useStorybookThemeObserver();
 
     return (
       <div style={{ width: '100%', height: 500 }}>
-        <ThemeContext.Provider value={theme}>
-          <Story />
-        </ThemeContext.Provider>
+        <Story />
       </div>
     );
   },
