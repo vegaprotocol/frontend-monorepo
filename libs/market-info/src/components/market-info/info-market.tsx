@@ -114,7 +114,7 @@ export const Info = ({ market, onSelect }: InfoProps) => {
             }}
             asPercentage={true}
           />
-          <p className="text-sm">
+          <p className="text-xs">
             {t(
               'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
             )}

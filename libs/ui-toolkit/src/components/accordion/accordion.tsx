@@ -49,7 +49,7 @@ export const AccordionItem = ({
 }: AccordionPanelProps) => {
   const triggerClassNames = classNames(
     'w-full py-2',
-    'flex items-center justify-between border-b border-neutral-500'
+    'flex items-center justify-between border-b border-neutral-500 text-sm'
   );
   return (
     <AccordionPrimitive.Item value={itemId}>

@@ -32,7 +32,7 @@ const Row = ({
   unformatted,
   assetSymbol = '',
 }: RowProps) => {
-  const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
+  const className = 'text-black dark:text-white text-ui !px-0';
 
   const getFormattedValue = (value: unknown) => {
     if (typeof value !== 'string' && typeof value !== 'number') return null;
