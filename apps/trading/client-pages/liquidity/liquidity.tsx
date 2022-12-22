@@ -27,7 +27,7 @@ import { Header, HeaderStat } from '../../components/header';
 import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 
 export const Liquidity = () => {
   const params = useParams();
