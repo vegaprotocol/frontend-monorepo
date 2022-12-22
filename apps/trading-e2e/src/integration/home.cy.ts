@@ -158,7 +158,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
       cy.wait('@MarketsData');
-      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/empty`);
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets`);
       cy.getByTestId('welcome-notice-title').should(
         'contain.text',
         'Welcome to Console'

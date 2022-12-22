@@ -1,8 +1,10 @@
 import { Suspense } from 'react';
+import type { RouteObject } from 'react-router-dom';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import trimEnd from 'lodash/trimEnd';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -26,11 +28,24 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
 
 export enum Routes {
   HOME = '/',
-  MARKETS = '/markets',
+  MARKET = '/markets',
+  MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
+  LIQUIDITY = 'liquidity/:marketId',
 }
 
-const routerConfig = [
+type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
+export const Links: ConsoleLinks = {
+  [Routes.HOME]: () => Routes.HOME,
+  [Routes.MARKET]: (marketId: string | null | undefined) =>
+    marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
+  [Routes.MARKETS]: () => Routes.MARKETS,
+  [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
+  [Routes.LIQUIDITY]: (marketId: string) =>
+    Routes.LIQUIDITY.replace(':marketId', marketId),
+};
+
+const routerConfig: RouteObject[] = [
   {
     index: true,
     element: <LazyHome />,
@@ -40,11 +55,20 @@ const routerConfig = [
     element: <LazyMarkets />,
   },
   {
-    path: 'markets/:marketId',
-    element: <LazyMarket />,
+    path: Routes.MARKET,
+    children: [
+      {
+        index: true,
+        element: <LazyMarket />,
+      },
+      {
+        path: ':marketId',
+        element: <LazyMarket />,
+      },
+    ],
   },
   {
-    path: 'liquidity/:marketId',
+    path: Routes.LIQUIDITY,
     element: <LazyLiquidity />,
   },
   {
