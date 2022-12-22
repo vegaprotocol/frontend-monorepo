@@ -12,8 +12,8 @@ import type {
   Erc20ApprovalQuery,
   Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
-import { PendingWithdrawalFragmentDoc } from './__generated__/Withdrawal';
-import type { PendingWithdrawalFragment } from './__generated__/Withdrawal';
+import { PendingWithdrawalFragmentDoc } from '@vegaprotocol/wallet';
+import type { PendingWithdrawalFragment } from '@vegaprotocol/wallet';
 
 export const useCompleteWithdraw = () => {
   const { query, cache } = useApolloClient();

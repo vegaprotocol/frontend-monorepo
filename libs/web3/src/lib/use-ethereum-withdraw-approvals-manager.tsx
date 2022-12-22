@@ -119,7 +119,8 @@ export const useEthWithdrawApprovalsManager = () => {
           approval.creation,
           approval.nonce,
           approval.signatures,
-        ]
+        ],
+        { withdrawal }
       );
     })();
   }, [

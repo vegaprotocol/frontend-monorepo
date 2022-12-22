@@ -5,7 +5,12 @@ import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import type { TokenFaucetable } from '@vegaprotocol/smart-contracts';
 
-import type { DepositBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import type {
+  DepositBusEventFieldsFragment,
+  WithdrawalBusEventFieldsFragment,
+} from '@vegaprotocol/wallet';
+
+import type { Asset } from '@vegaprotocol/assets';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';
@@ -26,17 +31,18 @@ export interface EthStoredTxState extends EthTxState {
   args: string[];
   requiredConfirmations: number;
   requiresConfirmation: boolean;
-  assetId?: string;
+  asset?: Asset;
+  withdrawal?: WithdrawalBusEventFieldsFragment;
   deposit?: DepositBusEventFieldsFragment;
 }
 
 export interface EthTransactionStore {
   transactions: (EthStoredTxState | undefined)[];
   create: (
-    contract: Contract | null,
-    methodName: ContractMethod,
-    args: string[],
-    assetId?: string,
+    contract: EthStoredTxState['contract'],
+    methodName: EthStoredTxState['methodName'],
+    args: EthStoredTxState['args'],
+    meta: Pick<EthStoredTxState, 'withdrawal' | 'asset'>,
     requiredConfirmations?: number,
     requiresConfirmation?: boolean
   ) => number;
@@ -58,10 +64,10 @@ export const useEthTransactionStore = create<EthTransactionStore>(
   (set, get) => ({
     transactions: [] as EthStoredTxState[],
     create: (
-      contract: Contract | null,
-      methodName: ContractMethod,
-      args: string[] = [],
-      assetId?: string,
+      contract: EthStoredTxState['contract'],
+      methodName: EthStoredTxState['methodName'],
+      args: EthStoredTxState['args'],
+      meta: Pick<EthStoredTxState, 'withdrawal' | 'asset'>,
       requiredConfirmations = 1,
       requiresConfirmation = false
     ) => {
@@ -82,7 +88,7 @@ export const useEthTransactionStore = create<EthTransactionStore>(
         dialogOpen: true,
         requiredConfirmations,
         requiresConfirmation,
-        assetId,
+        ...meta,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;

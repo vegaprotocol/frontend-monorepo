@@ -1,4 +1,4 @@
-import { removeDecimal, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { memo, useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,10 +8,9 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
-import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useOrderMarginValidation } from '../../hooks/use-order-margin-validation';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
@@ -118,19 +117,13 @@ export const DealTicket = ({ market, submit }: DealTicketProps) => {
         return;
       }
 
-      submit({
-        ...order,
-        price:
-          order.type === Schema.OrderType.TYPE_LIMIT && order.price
-            ? removeDecimal(order.price, market.decimalPlaces)
-            : undefined,
-        size: removeDecimal(order.size, market.positionDecimalPlaces),
-        expiresAt:
-          order.expiresAt &&
-          order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-            ? toNanoSeconds(order.expiresAt)
-            : undefined,
-      });
+      submit(
+        normalizeOrderSubmission(
+          order,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )
+      );
     },
     [
       submit,

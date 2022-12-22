@@ -5,7 +5,7 @@ import {
   ProgressBar,
   ToastsContainer,
 } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   useEthTransactionStore,
   useEthWithdrawApprovalsStore,
@@ -30,7 +30,6 @@ import type {
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import type {
   VegaStoredTxState,
-  WithdrawSubmissionBody,
   WithdrawalBusEventFieldsFragment,
 } from '@vegaprotocol/wallet';
 import type { Asset } from '@vegaprotocol/assets';
@@ -80,9 +79,8 @@ const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
   const { data } = useAssetsDataProvider();
   if (!data) return null;
 
-  const VEGA_WITHDRAW = isWithdrawTransaction(tx.body);
-  if (VEGA_WITHDRAW) {
-    const transactionDetails = tx.body as WithdrawSubmissionBody;
+  const transactionDetails = tx.body;
+  if (isWithdrawTransaction(transactionDetails)) {
     const asset = data?.find(
       (a) => a.id === transactionDetails.withdrawSubmission.asset
     );
@@ -101,36 +99,27 @@ const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 };
 
 const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
-  const { data } = useAssetsDataProvider();
-  if (!data) return null;
-
-  const ETH_WITHDRAW =
-    tx.methodName === 'withdraw_asset' && tx.args.length > 2 && tx.assetId;
-  if (ETH_WITHDRAW) {
-    const asset = data.find((a) => a.id === tx.assetId);
-
-    if (asset) {
-      return (
-        <>
-          <TransactionDetails
-            label={t('Withdraw')}
-            amount={tx.args[1]}
-            asset={asset}
-          />
-          {tx.requiresConfirmation && (
-            <div className="mt-[10px]">
-              <span className="font-mono text-xs">
-                {t('Awaiting confirmations')}{' '}
-                {`(${tx.confirmations}/${tx.requiredConfirmations})`}
-              </span>
-              <ProgressBar
-                value={(tx.confirmations / tx.requiredConfirmations) * 100}
-              />
-            </div>
-          )}
-        </>
-      );
-    }
+  if (tx.methodName === 'withdraw_asset' && tx.withdrawal) {
+    return (
+      <>
+        <TransactionDetails
+          label={t('Withdraw')}
+          amount={tx.withdrawal.amount}
+          asset={tx.withdrawal.asset}
+        />
+        {tx.requiresConfirmation && (
+          <div className="mt-[10px]">
+            <span className="font-mono text-xs">
+              {t('Awaiting confirmations')}{' '}
+              {`(${tx.confirmations}/${tx.requiredConfirmations})`}
+            </span>
+            <ProgressBar
+              value={(tx.confirmations / tx.requiredConfirmations) * 100}
+            />
+          </div>
+        )}
+      </>
+    );
   }
 
   return null;

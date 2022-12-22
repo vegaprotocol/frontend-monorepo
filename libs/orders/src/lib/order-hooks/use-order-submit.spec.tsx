@@ -4,6 +4,7 @@ import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import * as Schema from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
+import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { useOrderSubmit } from './use-order-submit';
 import type { OrderEventSubscription } from './';
 import { OrderEventDocument } from './';
@@ -168,7 +169,9 @@ describe('useOrderSubmit', () => {
       expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
-      result.current.submit({ ...order, marketId: defaultMarket.id });
+      result.current.submit(
+        normalizeOrderSubmission({ ...order, marketId: defaultMarket.id }, 0, 0)
+      );
     });
 
     expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
@@ -205,7 +208,9 @@ describe('useOrderSubmit', () => {
       expiresAt: new Date('2022-01-01').toISOString(),
     };
     await act(async () => {
-      result.current.submit({ ...order, marketId: defaultMarket.id });
+      result.current.submit(
+        normalizeOrderSubmission({ ...order, marketId: defaultMarket.id }, 0, 0)
+      );
     });
 
     expect(mockSendTx).toHaveBeenCalledWith(publicKeyObj.publicKey, {

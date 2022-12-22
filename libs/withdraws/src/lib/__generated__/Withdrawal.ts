@@ -3,8 +3,6 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type PendingWithdrawalFragment = { __typename?: 'Withdrawal', pendingOnForeignChain: boolean, txHash?: string | null };
-
 export type WithdrawalFieldsFragment = { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
 
 export type WithdrawalsQueryVariables = Types.Exact<{
@@ -21,12 +19,6 @@ export type WithdrawalEventSubscriptionVariables = Types.Exact<{
 
 export type WithdrawalEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'AccountEvent' } | { __typename?: 'Asset' } | { __typename?: 'AuctionEvent' } | { __typename?: 'Deposit' } | { __typename?: 'LiquidityProvision' } | { __typename?: 'LossSocialization' } | { __typename?: 'MarginLevels' } | { __typename?: 'Market' } | { __typename?: 'MarketData' } | { __typename?: 'MarketEvent' } | { __typename?: 'MarketTick' } | { __typename?: 'NodeSignature' } | { __typename?: 'OracleSpec' } | { __typename?: 'Order' } | { __typename?: 'Party' } | { __typename?: 'PositionResolution' } | { __typename?: 'Proposal' } | { __typename?: 'RiskFactor' } | { __typename?: 'SettleDistressed' } | { __typename?: 'SettlePosition' } | { __typename?: 'TimeUpdate' } | { __typename?: 'Trade' } | { __typename?: 'TransactionResult' } | { __typename?: 'TransferResponses' } | { __typename?: 'Vote' } | { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } }> | null };
 
-export const PendingWithdrawalFragmentDoc = gql`
-    fragment PendingWithdrawal on Withdrawal {
-  pendingOnForeignChain @client
-  txHash
-}
-    `;
 export const WithdrawalFieldsFragmentDoc = gql`
     fragment WithdrawalFields on Withdrawal {
   id

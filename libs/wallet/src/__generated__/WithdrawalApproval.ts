@@ -3,6 +3,8 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type PendingWithdrawalFragment = { __typename?: 'Withdrawal', pendingOnForeignChain: boolean, txHash?: string | null };
+
 export type WithdrawalApprovalQueryVariables = Types.Exact<{
   withdrawalId: Types.Scalars['ID'];
 }>;
@@ -10,7 +12,12 @@ export type WithdrawalApprovalQueryVariables = Types.Exact<{
 
 export type WithdrawalApprovalQuery = { __typename?: 'Query', erc20WithdrawalApproval?: { __typename?: 'Erc20WithdrawalApproval', assetSource: string, amount: string, nonce: string, signatures: string, targetAddress: string, expiry: any, creation: string } | null };
 
-
+export const PendingWithdrawalFragmentDoc = gql`
+    fragment PendingWithdrawal on Withdrawal {
+  pendingOnForeignChain @client
+  txHash
+}
+    `;
 export const WithdrawalApprovalDocument = gql`
     query WithdrawalApproval($withdrawalId: ID!) {
   erc20WithdrawalApproval(withdrawalId: $withdrawalId) {

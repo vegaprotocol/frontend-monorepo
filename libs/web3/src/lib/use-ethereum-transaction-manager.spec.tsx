@@ -6,10 +6,12 @@ import type {
   EthTransactionStore,
   EthStoredTxState,
 } from './use-ethereum-transaction-store';
+import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
 
 import { EthTxStatus } from './use-ethereum-transaction';
 
 const txHash = 'txHash';
+const withdrawalId = 'withdrawalId';
 
 const requestedTransactionUpdate = {
   status: EthTxStatus.Requested,
@@ -68,11 +70,19 @@ jest.mock('./use-ethereum-transaction-store', () => ({
   ) => selector(mockTransactionStoreState()),
 }));
 
+const mockWriteFragment = jest.fn();
+
+jest.mock('@apollo/client', () => ({
+  ...jest.requireActual('@apollo/client'),
+  useApolloClient: () => ({ cache: { writeFragment: mockWriteFragment } }),
+}));
+
 describe('useVegaTransactionManager', () => {
   beforeEach(() => {
     mockTransactionStoreState.mockReset();
     update.mockClear();
     mockTxWait.mockClear();
+    mockWriteFragment.mockClear();
   });
 
   it('sendTx of first pending transaction', async () => {
@@ -151,12 +161,24 @@ describe('useVegaTransactionManager', () => {
   it('sets status to pending and updates tx hash', async () => {
     mockTransactionStoreState.mockReturnValue({
       update,
-      transactions: [createTransaction()],
+      transactions: [
+        createTransaction({
+          withdrawal: { id: withdrawalId } as WithdrawalBusEventFieldsFragment,
+        }),
+      ],
     });
     renderHook(useEthTransactionManager);
     await waitForNextTick();
     expect(update.mock.calls[1][1]).toEqual({
       status: EthTxStatus.Pending,
+      txHash,
+    });
+    expect(mockWriteFragment.mock.calls[0][0].id).toEqual(
+      `Withdrawal:${withdrawalId}`
+    );
+    expect(mockWriteFragment.mock.calls[0][0].data).toEqual({
+      __typename: 'Withdrawal',
+      pendingOnForeignChain: true,
       txHash,
     });
   });
@@ -165,7 +187,11 @@ describe('useVegaTransactionManager', () => {
     mockTxWait.mockReturnValueOnce(undefined);
     mockTransactionStoreState.mockReturnValue({
       update,
-      transactions: [createTransaction()],
+      transactions: [
+        createTransaction({
+          withdrawal: { id: withdrawalId } as WithdrawalBusEventFieldsFragment,
+        }),
+      ],
     });
     renderHook(useEthTransactionManager);
     await waitForNextTick();
@@ -175,6 +201,11 @@ describe('useVegaTransactionManager', () => {
     expect(update.mock.calls[update.mock.calls.length - 1][1].status).toBe(
       EthTxStatus.Error
     );
+    expect(mockWriteFragment.mock.calls[1][0].data).toEqual({
+      __typename: 'Withdrawal',
+      pendingOnForeignChain: false,
+      txHash,
+    });
   });
 
   it('calls wait as many times as required confirmations', async () => {
@@ -190,13 +221,22 @@ describe('useVegaTransactionManager', () => {
   it('sets status to confirmed and updates receipt', async () => {
     mockTransactionStoreState.mockReturnValue({
       update,
-      transactions: [createTransaction()],
+      transactions: [
+        createTransaction({
+          withdrawal: { id: withdrawalId } as WithdrawalBusEventFieldsFragment,
+        }),
+      ],
     });
     renderHook(useEthTransactionManager);
     await waitForNextTick();
     expect(update.mock.calls[3][1]).toEqual({
       status: EthTxStatus.Confirmed,
       receipt,
+    });
+    expect(mockWriteFragment.mock.calls[1][0].data).toEqual({
+      __typename: 'Withdrawal',
+      pendingOnForeignChain: false,
+      txHash,
     });
   });
 

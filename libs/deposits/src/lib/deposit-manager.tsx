@@ -78,7 +78,7 @@ export const DepositManager = ({
         removeDecimal(args.amount, asset.decimals),
         prepend0x(args.vegaPublicKey),
       ],
-      asset.id,
+      { asset },
       config?.confirmations ?? 1,
       true
     );

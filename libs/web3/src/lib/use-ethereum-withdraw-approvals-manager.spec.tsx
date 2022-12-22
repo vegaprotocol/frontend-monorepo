@@ -292,13 +292,18 @@ describe('useEthWithdrawApprovalsManager', () => {
     mockEthTransactionStoreState.mockReturnValue({ create });
     render();
     await waitForNextTick();
-    expect(create).toBeCalledWith({}, 'withdraw_asset', [
-      erc20WithdrawalApproval.assetSource,
-      erc20WithdrawalApproval.amount,
-      erc20WithdrawalApproval.targetAddress,
-      erc20WithdrawalApproval.creation,
-      erc20WithdrawalApproval.nonce,
-      erc20WithdrawalApproval.signatures,
-    ]);
+    expect(create).toBeCalledWith(
+      {},
+      'withdraw_asset',
+      [
+        erc20WithdrawalApproval.assetSource,
+        erc20WithdrawalApproval.amount,
+        erc20WithdrawalApproval.targetAddress,
+        erc20WithdrawalApproval.creation,
+        erc20WithdrawalApproval.nonce,
+        erc20WithdrawalApproval.signatures,
+      ],
+      { withdrawal: transaction.withdrawal }
+    );
   });
 });
