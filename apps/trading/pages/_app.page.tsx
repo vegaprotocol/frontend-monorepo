@@ -23,6 +23,7 @@ import {
 } from '@vegaprotocol/environment';
 import { AppLoader, Web3Provider } from '../components/app-loader';
 import './styles.css';
+import './styles.scss';
 import { usePageTitleStore } from '../stores';
 import { Footer } from '../components/footer';
 import { useEffect, useMemo, useState } from 'react';
@@ -68,7 +69,7 @@ function AppBody({ Component }: AppProps) {
   const { VEGA_ENV } = useEnvironment();
 
   return (
-    <>
+    <div className="h-full dark:bg-black dark:text-white">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -93,7 +94,7 @@ function AppBody({ Component }: AppProps) {
           </Web3Provider>
         </AppLoader>
       </VegaWalletProvider>
-    </>
+    </div>
   );
 }
 
