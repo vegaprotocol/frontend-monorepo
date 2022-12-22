@@ -98,7 +98,7 @@ jobs:
           while read -r file; do
             mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
           done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
-
+         
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:

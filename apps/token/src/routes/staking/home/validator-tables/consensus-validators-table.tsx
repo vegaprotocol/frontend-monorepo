@@ -122,8 +122,7 @@ export const ConsensusValidatorsTable = ({
   const gridRef = useRef<AgGridReact | null>(null);
 
   const nodes = useMemo(() => {
-    if (!data) return [];
-
+    if (!data || !previousEpochData) return [];
     const canonisedNodes = data
       .sort((a, b) => {
         const aVotingPower = new BigNumber(a.rankingScore.votingPower);

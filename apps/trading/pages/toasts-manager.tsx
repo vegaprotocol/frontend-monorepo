@@ -5,7 +5,7 @@ import {
   ProgressBar,
   ToastsContainer,
 } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   useEthTransactionStore,
   useEthWithdrawApprovalsStore,
@@ -44,6 +44,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
+import { useUpdateNetworkParametersToasts } from '@vegaprotocol/governance';
 
 const intentMap = {
   Default: Intent.Primary,
@@ -137,6 +138,7 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
 };
 
 export const ToastsManager = () => {
+  const updateNetworkParametersToasts = useUpdateNetworkParametersToasts();
   const vegaTransactions = useVegaTransactionStore((state) =>
     state.transactions.filter((transaction) => transaction?.dialogOpen)
   );
@@ -450,28 +452,19 @@ export const ToastsManager = () => {
         ...compact(vegaTransactions).map(fromVegaTransaction),
         ...compact(ethTransactions).map(fromEthTransaction),
         ...compact(withdrawApprovals).map(fromWithdrawalApproval),
+        ...updateNetworkParametersToasts,
       ],
       ['createdBy']
     );
   }, [
-    fromEthTransaction,
-    fromVegaTransaction,
-    fromWithdrawalApproval,
-    ethTransactions,
     vegaTransactions,
+    fromVegaTransaction,
+    ethTransactions,
+    fromEthTransaction,
     withdrawApprovals,
+    fromWithdrawalApproval,
+    updateNetworkParametersToasts,
   ]);
-
-  useEffect(
-    () =>
-      console.log([
-        ...vegaTransactions,
-        ...ethTransactions,
-        ...withdrawApprovals,
-      ]),
-    [ethTransactions, vegaTransactions, withdrawApprovals]
-  );
-  useEffect(() => console.log(toasts), [toasts]);
 
   return <ToastsContainer order="desc" toasts={toasts} />;
 };
