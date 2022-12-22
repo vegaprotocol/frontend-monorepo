@@ -5,8 +5,9 @@ import type {
   MarketDataUpdateFieldsFragment,
   MarketDealTicket,
 } from '@vegaprotocol/market-list';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { marketDealTicketProvider } from '@vegaprotocol/market-list';
-import { DealTicketManager } from './deal-ticket-manager';
+import { DealTicket } from './deal-ticket';
 
 export interface DealTicketContainerProps {
   marketId: string;
@@ -27,6 +28,7 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
     variables,
     skip: !marketId,
   });
+  const create = useVegaTransactionStore((state) => state.create);
 
   return (
     <AsyncRenderer<MarketDealTicket>
@@ -35,7 +37,10 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
       error={error}
     >
       {data ? (
-        <DealTicketManager market={data} />
+        <DealTicket
+          market={data}
+          submit={(orderSubmission) => create({ orderSubmission })}
+        />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

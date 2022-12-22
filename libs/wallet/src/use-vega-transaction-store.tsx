@@ -5,6 +5,7 @@ import {
   isOrderSubmissionTransaction,
   isOrderCancellationTransaction,
   isOrderAmendmentTransaction,
+  isBatchMarketInstructionsTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -126,17 +127,43 @@ export const useVegaTransactionStore = create<VegaTransactionStore>(
     updateOrder: (order: OrderBusEventFieldsFragment) => {
       set(
         produce((state: VegaTransactionStore) => {
-          const transaction = state.transactions.find(
-            (transaction) =>
-              transaction &&
-              transaction.status === VegaTxStatus.Pending &&
+          const transaction = state.transactions.find((transaction) => {
+            if (!transaction || transaction.status !== VegaTxStatus.Pending) {
+              return false;
+            }
+            if (
+              isOrderSubmissionTransaction(transaction?.body) &&
               transaction.signature &&
-              (isOrderSubmissionTransaction(transaction?.body) ||
-                isOrderCancellationTransaction(transaction?.body) ||
-                isOrderAmendmentTransaction(transaction?.body)) &&
               order.id === determineId(transaction.signature)
-          );
+            ) {
+              return true;
+            }
+            if (
+              isOrderCancellationTransaction(transaction?.body) &&
+              // order.status === Schema.OrderStatus.STATUS_CANCELLED &&
+              order.id === transaction.body.orderCancellation.orderId
+            ) {
+              return true;
+            }
+            if (
+              isOrderAmendmentTransaction(transaction?.body) &&
+              order.id === transaction.body.orderAmendment.orderId
+            ) {
+              return true;
+            }
+            if (
+              isBatchMarketInstructionsTransaction(transaction?.body) &&
+              transaction.signature &&
+              order.id === determineId(transaction.signature)
+            ) {
+              return true;
+            }
+            return false;
+          });
           if (transaction) {
+            // TODO: handle multiple orders from batch market instructions
+            // Note: If multiple orders are submitted the first order ID is determined by hashing the signature of the transaction
+            // (see determineId function). For each subsequent order's ID, a hash of the previous orders ID is used
             transaction.order = order;
             transaction.status = VegaTxStatus.Complete;
             transaction.dialogOpen = true;

@@ -2,29 +2,21 @@ import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import {
-  VegaTxStatus,
   WalletError,
   useVegaWallet,
   useVegaWalletDialogStore,
   ClientErrors,
 } from '@vegaprotocol/wallet';
-import { DealTicket } from './deal-ticket';
-import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
 import * as Schema from '@vegaprotocol/types';
 import { Button, Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-
-export interface DealTicketManagerProps {
-  market: MarketDealTicket;
-  children?: ReactNode | ReactNode[];
-}
 
 interface ErrorContentProps {
   transaction: VegaTxState;
   reset: () => void;
 }
-const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
+
+export const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
@@ -61,41 +53,6 @@ const ErrorContent = ({ transaction, reset }: ErrorContentProps) => {
     }
     return null;
   }, [transaction, reconnect]);
-};
-
-export const DealTicketManager = ({
-  market,
-  children,
-}: DealTicketManagerProps) => {
-  const { submit, transaction, finalizedOrder, Dialog, reset } =
-    useOrderSubmit();
-  return (
-    <>
-      {children || (
-        <DealTicket
-          market={market}
-          submit={(order) => submit(order)}
-          transactionStatus={
-            transaction.status === VegaTxStatus.Requested ||
-            transaction.status === VegaTxStatus.Pending
-              ? 'pending'
-              : 'default'
-          }
-        />
-      )}
-      <Dialog
-        title={getOrderDialogTitle(finalizedOrder?.status)}
-        intent={getOrderDialogIntent(finalizedOrder?.status)}
-        icon={getOrderDialogIcon(finalizedOrder?.status)}
-        content={{
-          Complete: (
-            <OrderFeedback transaction={transaction} order={finalizedOrder} />
-          ),
-          Error: <ErrorContent transaction={transaction} reset={reset} />,
-        }}
-      />
-    </>
-  );
 };
 
 export const getOrderDialogTitle = (
