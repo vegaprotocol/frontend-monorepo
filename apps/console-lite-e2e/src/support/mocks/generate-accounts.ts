@@ -77,6 +77,21 @@ export const generateAccounts = (
           {
             __typename: 'AccountEdge',
             node: {
+              type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
+              asset: {
+                __typename: 'Asset',
+                id: 'asset-id-2',
+              },
+              balance: '265329',
+              market: {
+                id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
+                __typename: 'Market',
+              },
+            },
+          },
+          {
+            __typename: 'AccountEdge',
+            node: {
               __typename: 'AccountBalance',
               type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
               balance: '100000000',

@@ -1,3 +1,6 @@
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
+import { useEffect } from 'react';
 import '../src/styles.css';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -38,47 +41,50 @@ export const globalTypes = {
   },
 };
 
-const StoryWrapper = ({ children, className, style }) => (
-  <div style={style} className={className}>
-    <div className="p-4">
-      <div className="dark:bg-black dark:text-neutral-200 bg-white text-neutral-800">
-        {children}
-      </div>
-    </div>
-  </div>
-);
+const StoryWrapper = ({ children, fill }) => {
+  const classes = classNames(
+    'p-4',
+    'bg-white dark:bg-black',
+    'text-neutral-800 dark:text-neutral-200',
+    {
+      'w-screen h-screen': fill,
+    }
+  );
+  return <div className={classes}>{children}</div>;
+};
 
-const lightThemeClasses = 'bg-white text-black';
-const darkThemeClasses = 'dark bg-black text-white';
-
-const withTheme = (Story, context) => {
+const ThemeWrapper = (Story, context) => {
   const theme = context.parameters.theme || context.globals.theme;
-  const storyClasses = `h-[100vh] w-[100vw] ${
-    theme === 'dark' ? darkThemeClasses : lightThemeClasses
-  }`;
+  const { setTheme } = useThemeSwitcher();
 
-  document.body.classList.toggle('dark', theme === 'dark');
+  useEffect(() => {
+    // in side by side mode a 'dark' class on the html tag will interfere
+    // making the light 'side' dark, so remove it in that case
+    if (theme === 'sideBySide') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      setTheme(theme);
+    }
+  }, [setTheme, theme]);
 
   return theme === 'sideBySide' ? (
     <>
-      <div className={lightThemeClasses}>
+      <div className="bg-white text-black">
         <StoryWrapper>
           <Story />
         </StoryWrapper>
       </div>
-      <div className={darkThemeClasses}>
+      <div className="dark bg-black text-white">
         <StoryWrapper>
           <Story />
         </StoryWrapper>
       </div>
     </>
   ) : (
-    <div className={storyClasses}>
-      <StoryWrapper>
-        <Story />
-      </StoryWrapper>
-    </div>
+    <StoryWrapper fill={true}>
+      <Story />
+    </StoryWrapper>
   );
 };
 
-export const decorators = [withTheme];
+export const decorators = [ThemeWrapper];

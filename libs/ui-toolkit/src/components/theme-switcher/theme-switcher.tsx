@@ -1,19 +1,12 @@
-import React from 'react';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { SunIcon, MoonIcon } from './icons';
 
-export const ThemeSwitcher = ({
-  theme,
-  onToggle,
-  className,
-}: {
-  theme: 'light' | 'dark';
-  onToggle: () => void;
-  className?: string;
-}) => {
+export const ThemeSwitcher = ({ className }: { className?: string }) => {
+  const { theme, setTheme } = useThemeSwitcher();
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={() => setTheme()}
       className={className}
       data-testid="theme-switcher"
     >

@@ -88,7 +88,7 @@ describe('NestedDataList', () => {
 
     for (let i = 0; i < 8; i++) {
       const item = getByTestId(`T${i}`);
-      const expected = BORDER_COLOURS.dark[i % 5];
+      const expected = BORDER_COLOURS.light[i % 5];
       expect(item.style.borderColor.toUpperCase()).toBe(expected);
     }
   });

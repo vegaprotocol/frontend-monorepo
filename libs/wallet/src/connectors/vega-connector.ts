@@ -26,12 +26,12 @@ export interface OrderSubmission {
   expiresAt?: string;
 }
 
-interface OrderCancellation {
+export interface OrderCancellation {
   orderId?: string;
   marketId?: string;
 }
 
-interface OrderAmendment {
+export interface OrderAmendment {
   marketId: string;
   orderId: string;
   reference?: string;
@@ -282,6 +282,22 @@ export type Transaction =
   | OrderAmendmentBody
   | ProposalSubmissionBody
   | BatchMarketInstructionSubmissionBody;
+
+export const isWithdrawTransaction = (
+  transaction: Transaction
+): transaction is WithdrawSubmissionBody => 'withdrawSubmission' in transaction;
+
+export const isOrderSubmissionTransaction = (
+  transaction: Transaction
+): transaction is OrderSubmissionBody => 'orderSubmission' in transaction;
+
+export const isOrderCancellationTransaction = (
+  transaction: Transaction
+): transaction is OrderCancellationBody => 'orderCancellation' in transaction;
+
+export const isOrderAmendmentTransaction = (
+  transaction: Transaction
+): transaction is OrderAmendmentBody => 'orderAmendment' in transaction;
 
 export interface TransactionResponse {
   transactionHash: string;

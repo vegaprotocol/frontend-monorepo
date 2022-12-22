@@ -27,6 +27,7 @@ import { Header, HeaderStat } from '../../components/header';
 import type { AgGridReact } from 'ag-grid-react';
 import type { LiquidityProvisionData } from '@vegaprotocol/liquidity';
 import { Link, useParams } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 export const Liquidity = () => {
   const params = useParams();
@@ -227,7 +228,7 @@ export const LiquidityViewContainer = ({
           title={
             marketProvision?.market?.tradableInstrument.instrument.name &&
             marketId && (
-              <Link to={`/markets/${marketId}`}>
+              <Link to={Links[Routes.MARKET](marketId)}>
                 <UiToolkitLink className="sm:text-lg md:text-xl lg:text-2xl flex items-center gap-2 whitespace-nowrap hover:text-neutral-500 dark:hover:text-neutral-300">
                   {`${
                     marketProvision?.market?.tradableInstrument.instrument.name

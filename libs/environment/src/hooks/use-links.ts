@@ -74,6 +74,16 @@ export const useLinks = (dapp: DApp, network?: Net) => {
   return link;
 };
 
+export const useEtherscanLink = () => {
+  const { ETHERSCAN_URL } = useEnvironment();
+  const baseUrl = trim(ETHERSCAN_URL, '/');
+  const link = useCallback(
+    (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
+    [baseUrl]
+  );
+  return link;
+};
+
 // Vega blog
 export const BLOG = 'https://blog.vega.xyz/';
 
@@ -81,5 +91,18 @@ export const BLOG = 'https://blog.vega.xyz/';
 export const TOKEN_NEW_MARKET_PROPOSAL = '/governance/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
   '/governance/propose/network-parameter';
+export const TOKEN_GOVERNANCE = '/governance';
 export const TOKEN_PROPOSALS = '/governance';
 export const TOKEN_PROPOSAL = '/governance/:id';
+
+// Explorer pages
+export const EXPLORER_TX = '/txs/:hash';
+
+// Etherscan pages
+export const ETHERSCAN_TX = '/tx/:hash';
+
+// Console pages
+export const CONSOLE_MARKET = '/markets/:marketId';
+export const CONSOLE_MARKETS = '/markets/all';
+export const CONSOLE_PORTFOLIO = '/portfolio';
+export const CONSOLE_LIQUIDITY = 'liquidity/:marketId';

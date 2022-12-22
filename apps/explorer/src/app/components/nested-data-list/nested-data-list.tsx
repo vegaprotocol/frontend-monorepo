@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import isObject from 'lodash/isObject';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import { VegaColours } from '@vegaprotocol/tailwindcss-config';
@@ -65,7 +65,7 @@ const NestedDataListItem = ({
   );
   const hasChildren = isObject(value) && !!Object.keys(value).length;
   const title = useMemo(() => camelToTitle(label), [label]);
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
   const currentLevelBorder = useMemo(
     () => getBorderColour(index, theme),
     [index, theme]

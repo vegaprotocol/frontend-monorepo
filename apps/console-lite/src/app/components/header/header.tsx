@@ -11,8 +11,6 @@ const Header = () => {
   }));
   const {
     vegaWalletDialog: { setManage },
-    theme,
-    toggleTheme,
   } = useContext(LocalContext);
   return (
     <div
@@ -25,7 +23,7 @@ const Header = () => {
           setConnectDialog={updateVegaWalletDialog}
           setManageDialog={setManage}
         />
-        <ThemeSwitcher theme={theme} onToggle={toggleTheme} className="-my-4" />
+        <ThemeSwitcher className="-my-4" />
       </div>
     </div>
   );

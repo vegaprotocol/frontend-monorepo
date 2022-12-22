@@ -38,7 +38,7 @@ describe('AccountsTable', () => {
         <AccountTable rowData={singleRowData} onClickAsset={() => null} />
       );
     });
-    const expectedHeaders = ['Asset', 'Total', 'Used', '', ''];
+    const expectedHeaders = ['Asset', 'Total', 'Used', 'Available', '', ''];
     const headers = await screen.findAllByRole('columnheader');
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(
@@ -56,7 +56,8 @@ describe('AccountsTable', () => {
     const expectedValues = [
       'tBTC',
       '1,256.00',
-      '1,256.001,256.00',
+      '1,256.00',
+      '1,256.00',
       'Breakdown',
       'Deposit',
     ];

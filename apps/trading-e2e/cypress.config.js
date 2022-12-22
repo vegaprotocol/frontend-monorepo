@@ -1,19 +1,6 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
-  component: {
-    baseUrl: 'http://localhost:4200',
-    fileServerFolder: '.',
-    fixturesFolder: false,
-    specPattern: '**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: './src/support/index.js',
-    video: false,
-    videosFolder: '../../dist/cypress/apps/trading-e2e/videos',
-    screenshotsFolder: '../../dist/cypress/apps/trading-e2e/screenshots',
-    chromeWebSecurity: false,
-    projectId: 'et4snf',
-    defaultCommandTimeout: 10000,
-  },
   e2e: {
     setupNodeEvents(on, config) {
       require('@cypress/grep/src/plugin')(config);

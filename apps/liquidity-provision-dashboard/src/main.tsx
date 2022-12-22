@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 
 import App from './app/app';
@@ -36,11 +35,9 @@ root?.render(
   <StrictMode>
     <BrowserRouter>
       <EnvironmentProvider>
-        <ThemeContext.Provider value="light">
-          <NetworkLoader cache={cache}>
-            <App />
-          </NetworkLoader>
-        </ThemeContext.Provider>
+        <NetworkLoader cache={cache}>
+          <App />
+        </NetworkLoader>
       </EnvironmentProvider>
     </BrowserRouter>
   </StrictMode>

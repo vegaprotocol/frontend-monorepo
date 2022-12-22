@@ -18,7 +18,7 @@ context(
       });
 
       it('should have GOVERNANCE header visible', function () {
-        cy.verify_page_header('Governance');
+        cy.verify_page_header('Proposals');
       });
 
       it('should be able to see a working link for - find out more about Vega governance', function () {

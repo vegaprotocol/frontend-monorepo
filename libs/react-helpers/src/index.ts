@@ -1,5 +1,4 @@
 export * from './hooks';
-export * from './lib/context';
 export * from './lib/format';
 export * from './lib/generic-data-provider';
 export * from './lib/get-nodes';

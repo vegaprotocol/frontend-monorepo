@@ -31,6 +31,19 @@ describe('markets table', { tags: '@smoke' }, () => {
     cy.getByTestId('taker-fee').should('contain.text', '%');
     cy.getByTestId('market-volume').should('not.be.empty');
     cy.getByTestId('market-name').should('not.be.empty');
+
+    cy.getByTestId('trading-mode-col')
+      .contains('Monitoring auction - liquidity')
+      .eq(0)
+      .realHover();
+    cy.get('[data-testid="trading-mode-tooltip"] p').should('have.class', '');
+    cy.get(
+      '[data-testid="market-trading-mode"] [data-testid="item-value"]'
+    ).realHover();
+    cy.get('[data-testid="trading-mode-tooltip"] p').should(
+      'have.class',
+      'mb-4'
+    );
   });
 
   it('able to select market from dropdown', () => {
@@ -49,9 +62,9 @@ describe('markets table', { tags: '@smoke' }, () => {
       'SOLUSD',
     ];
     cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets')
+      .should('have.attr', 'href', '#/markets/all')
       .click();
-    cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets');
+    cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets/all');
     cy.contains('AAPL.MF21').should('be.visible');
     cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
     for (let i = 0; i < ExpectedSortedMarkets.length; i++) {
@@ -63,7 +76,7 @@ describe('markets table', { tags: '@smoke' }, () => {
 
   it('proposed markets tab should be rendered properly', () => {
     cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets')
+      .should('have.attr', 'href', '#/markets/all')
       .click();
     cy.get('[data-testid="Active markets"]').should(
       'have.attr',

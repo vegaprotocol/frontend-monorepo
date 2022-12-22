@@ -1,14 +1,7 @@
 import { useParams } from 'react-router-dom';
-import {
-  DealTicketManager,
-  usePartyBalanceQuery,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketManager } from '@vegaprotocol/deal-ticket';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  t,
-  useDataProvider,
-  removePaginationWrapper,
-} from '@vegaprotocol/react-helpers';
+import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DealTicketSteps } from './deal-ticket-steps';
 import { DealTicketBalance } from './deal-ticket-balance';
@@ -29,11 +22,6 @@ export const DealTicketContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const { pubKey } = useVegaWallet();
 
-  const { data: partyData } = usePartyBalanceQuery({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
-
   const variables = useMemo(
     () => ({
       marketId: marketId || '',
@@ -49,10 +37,6 @@ export const DealTicketContainer = () => {
     skip: !marketId,
   });
 
-  const accounts = removePaginationWrapper(
-    partyData?.party?.accountsConnection?.edges
-  );
-
   const loader = <Loader />;
   if (marketId && data) {
     const balance = (
@@ -61,7 +45,6 @@ export const DealTicketContainer = () => {
         settlementAsset={
           data.tradableInstrument.instrument.product?.settlementAsset
         }
-        accounts={accounts || []}
         isWalletConnected={!!pubKey}
       />
     );

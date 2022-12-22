@@ -8,7 +8,6 @@ import {
   useState,
   useMemo,
   useCallback,
-  useContext,
   Fragment,
 } from 'react';
 import classNames from 'classnames';
@@ -16,9 +15,9 @@ import classNames from 'classnames';
 import {
   addDecimalsFormatNumber,
   t,
-  ThemeContext,
   useResizeObserver,
   formatNumberFixed,
+  useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
@@ -281,7 +280,7 @@ export const Orderbook = ({
   fillGaps: initialFillGaps,
   onResolutionChange,
 }: OrderbookProps) => {
-  const theme = useContext(ThemeContext);
+  const { theme } = useThemeSwitcher();
   const scrollElement = useRef<HTMLDivElement>(null);
   const rootElement = useRef<HTMLDivElement>(null);
   const gridElement = useRef<HTMLDivElement>(null);

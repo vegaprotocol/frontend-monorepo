@@ -1,37 +1,32 @@
 import classNames from 'classnames';
-import { useCallback } from 'react';
 import { Toast } from './toast';
-import { useToasts } from './use-toasts';
 
 type ToastsContainerProps = {
+  toasts: Toast[];
   order: 'asc' | 'desc';
 };
 
-export const ToastsContainer = ({ order = 'asc' }: ToastsContainerProps) => {
-  const { toasts, remove } = useToasts();
-  const onClose = useCallback(
-    (id: string) => {
-      remove(id);
-    },
-    [remove]
-  );
-
+export const ToastsContainer = ({
+  toasts,
+  order = 'asc',
+}: ToastsContainerProps) => {
   return (
     <ul
       className={classNames(
-        'absolute top-2 right-2 overflow-hidden max-w-full',
+        'absolute top-0 right-0 pt-2 pr-2 max-w-full z-20 max-h-full overflow-auto',
         {
           'flex flex-col-reverse': order === 'desc',
         }
       )}
     >
-      {toasts.map((toast) => {
-        return (
-          <li key={toast.id}>
-            <Toast onClose={onClose} {...toast} />
-          </li>
-        );
-      })}
+      {toasts &&
+        toasts.map((toast) => {
+          return (
+            <li key={toast.id}>
+              <Toast {...toast} />
+            </li>
+          );
+        })}
     </ul>
   );
 };

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import type { OrderMargin } from './use-order-margin';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useOrderMargin } from './use-order-margin';
@@ -14,7 +13,7 @@ interface Props {
 
 export const useOrderMarginValidation = ({ market, order }: Props) => {
   const { pubKey } = useVegaWallet();
-  const estMargin: OrderMargin | null = useOrderMargin({
+  const estMargin = useOrderMargin({
     order,
     market,
     partyId: pubKey || '',

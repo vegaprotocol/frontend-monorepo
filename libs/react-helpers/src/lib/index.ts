@@ -1,4 +1,3 @@
-export * from './context';
 export * from './format';
 export * from './grid';
 export * from './storage';

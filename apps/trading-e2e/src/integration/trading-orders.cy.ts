@@ -1,8 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
+import type { OrderAmendment, OrderCancellation } from '@vegaprotocol/wallet';
 import {
   updateOrder,
   getSubscriptionMocks,
 } from '../support/mocks/generate-ws-order-update';
+import { cancelOrder, editOrder } from '../support/order-list';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
 const orderSize = 'size';
@@ -15,6 +17,7 @@ const orderCreatedAt = 'createdAt';
 const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
+const closePopUpBtn = 'dialog-close';
 
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
@@ -91,6 +94,7 @@ describe('orders list', { tags: '@smoke' }, () => {
   });
 
   it('orders are sorted by most recent order', () => {
+    //7003-MORD-002
     const expectedOrderList = ['BTCUSD.MF21', 'BTCUSD.MF21'];
 
     cy.getByTestId('tab-orders')
@@ -129,6 +133,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
   const orderId = '1234567890';
   //7002-SORD-053
   //7002-SORD-040
+  //7003-MORD-001
   it('must see an active order', () => {
     // 7002-SORD-041
     updateOrder({
@@ -215,5 +220,87 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_PARKED,
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
+  });
+});
+
+describe('amend and cancel order', { tags: '@smoke' }, () => {
+  beforeEach(() => {
+    const subscriptionMocks = getSubscriptionMocks();
+    cy.spy(subscriptionMocks, 'OrdersUpdate');
+    cy.mockTradingPage();
+    cy.mockGQLSubscription(subscriptionMocks);
+    cy.visit('/#/markets/market-0');
+    cy.getByTestId('Orders').click();
+    cy.connectVegaWallet();
+    cy.wait('@Orders').then(() => {
+      expect(subscriptionMocks.OrdersUpdate).to.be.calledOnce;
+    });
+    cy.mockVegaWalletTransaction();
+  });
+
+  const orderId = '1234567890';
+  it('must be able to amend the price of an order', () => {
+    //7003-MORD-012
+    //7003-MORD-014
+    //7003-MORD-015
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[data-testid="edit"]')
+      .should('have.text', 'Edit')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        cy.getByTestId('dialog-title').should('have.text', 'Edit order');
+        cy.get('#limitPrice').focus().clear().type('100');
+        cy.getByTestId('edit-order').find('[type="submit"]').click();
+        const order: OrderAmendment = {
+          orderId: orderId,
+          marketId: 'market-0',
+          price: '10000000',
+          timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+          sizeDelta: 0,
+        };
+        editOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
+  });
+  it('must be able to cancel an individual order', () => {
+    //7003-MORD-009
+    //7003-MORD-010
+    //7003-MORD-011
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('have.text', 'Cancel')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        const order: OrderCancellation = {
+          orderId: orderId,
+          marketId: 'market-0',
+        };
+        cancelOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
+  });
+  it('must be able to cancel all orders on a market', () => {
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[data-testid="cancelAll"]`)
+      .should('have.text', 'Cancel all')
+      .then(($btn) => {
+        cy.wrap($btn).click();
+        const order: OrderCancellation = {
+          marketId: 'market-0',
+        };
+        cancelOrder(order);
+        cy.getByTestId(closePopUpBtn).click();
+      });
   });
 });

@@ -15,8 +15,8 @@ const ethWalletDissociateButton = '[href="/validators/disassociate"]';
 const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
 const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
 const connectedVegaKey = '[data-testid="connected-vega-key"]';
-const associatedKey = '[data-test-id="associated-key"]';
-const associatedAmount = '[data-test-id="associated-amount"]';
+const associatedKey = '[data-testid="associated-key"]';
+const associatedAmount = '[data-testid="associated-amount"]';
 const associateCompleteText = '[data-testid="transaction-complete-body"]';
 const disassociationWarning = '[data-testid="disassociation-warning"]';
 const vegaWallet = '[data-testid="vega-wallet"]';
@@ -41,7 +41,6 @@ context(
           cy.ethereum_wallet_connect();
           cy.vega_wallet_teardown();
           cy.navigate_to('validators');
-          cy.wait_for_spinner();
         }
       );
 

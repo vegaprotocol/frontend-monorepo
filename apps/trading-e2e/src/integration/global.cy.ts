@@ -138,7 +138,7 @@ describe('Navbar', { tags: '@smoke' }, () => {
 
   it('should be properly rendered', () => {
     const links = ['Markets', 'Trading', 'Portfolio'];
-    const hashes = ['#/markets', '#/markets/market-0', '#/portfolio'];
+    const hashes = ['#/markets/all', '#/markets/market-0', '#/portfolio'];
     let i = 0;
     cy.getByTestId('navbar').within(() => {
       cy.get('a[data-testid]', { log: true })

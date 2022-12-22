@@ -59,7 +59,6 @@ export const ValidatorTables = ({
             case Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_PENDING:
               acc.pendingValidators.push(validator);
           }
-
           return acc;
         },
         {
@@ -95,7 +94,6 @@ export const ValidatorTables = ({
       2
     ).toString();
   }
-
   return (
     <div data-testid="validator-tables">
       {consensusValidators.length > 0 && (
