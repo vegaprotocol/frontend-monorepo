@@ -62,9 +62,9 @@ describe('markets table', { tags: '@smoke' }, () => {
       'SOLUSD',
     ];
     cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets')
+      .should('have.attr', 'href', '#/markets/all')
       .click();
-    cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets');
+    cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets/all');
     cy.contains('AAPL.MF21').should('be.visible');
     cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
     for (let i = 0; i < ExpectedSortedMarkets.length; i++) {
@@ -76,7 +76,7 @@ describe('markets table', { tags: '@smoke' }, () => {
 
   it('proposed markets tab should be rendered properly', () => {
     cy.getByTestId('view-market-list-link')
-      .should('have.attr', 'href', '#/markets')
+      .should('have.attr', 'href', '#/markets/all')
       .click();
     cy.get('[data-testid="Active markets"]').should(
       'have.attr',
