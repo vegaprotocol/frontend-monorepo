@@ -42,6 +42,64 @@ interface Props {
   scrolledToTop: RefObject<boolean>;
 }
 
+const filterOrders = (
+  orders: (OrderEdge | null)[] | null,
+  variables: OrdersQueryVariables & OrdersUpdateSubscriptionVariables
+) => {
+  if (!orders) {
+    return orders;
+  }
+  return orders.filter((order) => {
+    if (variables.marketId && order?.node.market?.id !== variables.marketId) {
+      return false;
+    }
+    if (
+      variables?.filter?.status &&
+      !(
+        order?.node?.status &&
+        variables.filter.status.includes(order.node.status)
+      )
+    ) {
+      return false;
+    }
+    if (
+      variables?.filter?.types &&
+      !(order?.node?.type && variables.filter.types.includes(order.node.type))
+    ) {
+      return false;
+    }
+    if (
+      variables?.filter?.timeInForce &&
+      !(
+        order?.node?.timeInForce &&
+        variables.filter.timeInForce.includes(order.node.timeInForce)
+      )
+    ) {
+      return false;
+    }
+    if (
+      variables?.dateRange?.start &&
+      !(
+        (order?.node?.updatedAt || order?.node?.createdAt) &&
+        variables.dateRange.start <
+          (order.node.updatedAt || order.node.createdAt)
+      )
+    ) {
+      return false;
+    }
+    if (
+      variables?.dateRange?.end &&
+      !(
+        (order?.node?.updatedAt || order?.node?.createdAt) &&
+        variables.dateRange.end > (order.node.updatedAt || order.node.createdAt)
+      )
+    ) {
+      return false;
+    }
+    return true;
+  });
+};
+
 export const useOrderListData = ({
   partyId,
   marketId,
@@ -57,7 +115,16 @@ export const useOrderListData = ({
   const variables = useMemo<
     OrdersQueryVariables & OrdersUpdateSubscriptionVariables
   >(
-    () => ({ partyId, dateRange: filter?.updatedAt?.value, marketId }),
+    () => ({
+      partyId,
+      dateRange: filter?.updatedAt?.value,
+      marketId,
+      filter: {
+        status: filter?.status?.value,
+        timeInForce: filter?.timeInForce?.value,
+        types: filter?.type?.value,
+      },
+    }),
     [partyId, marketId, filter]
   );
 
@@ -88,18 +155,15 @@ export const useOrderListData = ({
           ).length;
         }
       }
+      dataRef.current = filterOrders(data, variables);
       const avoidRerender = !!(
         (dataRef.current?.length && data?.length) ||
         (!dataRef.current?.length && !data?.length)
       );
-      dataRef.current =
-        !!marketId && !!data
-          ? data.filter((d) => d?.node.market?.id === marketId)
-          : data;
       gridRef.current?.api?.refreshInfiniteCache();
       return avoidRerender;
     },
-    [gridRef, scrolledToTop, marketId]
+    [gridRef, scrolledToTop, variables]
   );
 
   const insert = useCallback(
@@ -110,14 +174,11 @@ export const useOrderListData = ({
       data: (OrderEdge | null)[] | null;
       totalCount?: number;
     }) => {
-      dataRef.current =
-        !!marketId && !!data
-          ? data.filter((d) => d?.node.market?.id === marketId)
-          : data;
+      dataRef.current = filterOrders(data, variables);
       totalCountRef.current = totalCount;
       return true;
     },
-    [marketId]
+    [variables]
   );
 
   const { data, error, loading, load, totalCount } = useDataProvider({

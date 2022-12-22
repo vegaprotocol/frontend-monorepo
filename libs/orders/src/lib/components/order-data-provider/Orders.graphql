@@ -22,10 +22,19 @@ fragment OrderFields on Order {
   }
 }
 
-query Orders($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
+query Orders(
+  $partyId: ID!
+  $pagination: Pagination
+  $dateRange: DateRange
+  $filter: OrderFilter
+) {
   party(id: $partyId) {
     id
-    ordersConnection(pagination: $pagination, dateRange: $dateRange) {
+    ordersConnection(
+      pagination: $pagination
+      dateRange: $dateRange
+      filter: $filter
+    ) {
       edges {
         node {
           ...OrderFields
