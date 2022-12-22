@@ -1,9 +1,6 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
+import { proposalListQuery, marketUpdateProposal } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
-import {
-  generateProposals,
-  marketUpdateProposal,
-} from '../support/mocks/generate-proposals';
 
 const marketSummaryBlock = 'header-summary';
 const marketExpiry = 'market-expiry';
@@ -29,7 +26,11 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
       aliasQuery(
         req,
         'ProposalsList',
-        generateProposals([marketUpdateProposal])
+        proposalListQuery({
+          proposalsConnection: {
+            edges: [{ node: marketUpdateProposal }],
+          },
+        })
       );
     });
     cy.mockGQLSubscription();

@@ -1,9 +1,8 @@
 import * as Schema from '@vegaprotocol/types';
-import { generateEstimateOrder } from '../support/mocks/generate-fees';
 import { aliasQuery, mockConnectWallet } from '@vegaprotocol/cypress';
 import { testOrder } from '../support/deal-ticket-transaction';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import { generateAccounts } from '../support/mocks/generate-accounts';
+import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
 
 const orderSizeField = 'order-size';
 const orderPriceField = 'order-price';
@@ -626,7 +625,7 @@ describe('account validation', { tags: '@regression' }, () => {
         aliasQuery(
           req,
           'Accounts',
-          generateAccounts({
+          accountsQuery({
             party: {
               accountsConnection: {
                 edges: [
@@ -673,7 +672,7 @@ describe('account validation', { tags: '@regression' }, () => {
         aliasQuery(
           req,
           'EstimateOrder',
-          generateEstimateOrder({
+          estimateOrderQuery({
             estimateOrder: {
               marginLevels: {
                 __typename: 'MarginLevels',

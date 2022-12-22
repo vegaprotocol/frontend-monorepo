@@ -1,28 +1,85 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import { generateAccounts } from './mocks/generate-accounts';
-import { generateAsset, generateAssets } from './mocks/generate-assets';
-import { generateCandles } from './mocks/generate-candles';
-import { generateChart } from './mocks/generate-chart';
-import { generateMarket, generateMarketData } from './mocks/generate-market';
-import { generateMarketDepth } from './mocks/generate-market-depth';
-import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import {
-  generateMarkets,
-  generateMarketsData,
-  generateMarketsCandles,
-} from './mocks/generate-markets';
-import { generateNetworkParameters } from './mocks/generate-network-parameters';
-import { generateOrders } from './mocks/generate-orders';
-import { generateMargins, generatePositions } from './mocks/generate-positions';
-import { generateTrades } from './mocks/generate-trades';
-import { generateWithdrawals } from './mocks/generate-withdrawals';
-import { generateEstimateOrder } from './mocks/generate-fees';
-import { generateMarketProposals } from './mocks/generate-proposals';
-import { generateStatistics } from './mocks/generate-statistics';
-import { generateChainId } from './mocks/generate-chain-id';
-import { generateDeposits } from './mocks/generate-deposits';
+  accountsQuery,
+  assetQuery,
+  assetsQuery,
+  candlesQuery,
+  chainIdQuery,
+  chartQuery,
+  depositsQuery,
+  estimateOrderQuery,
+  marginsQuery,
+  marketCandlesQuery,
+  marketDataQuery,
+  marketDepthQuery,
+  marketInfoQuery,
+  marketQuery,
+  marketsCandlesQuery,
+  marketsDataQuery,
+  marketsQuery,
+  networkParamsQuery,
+  ordersQuery,
+  positionsQuery,
+  proposalListQuery,
+  statisticsQuery,
+  tradesQuery,
+  withdrawalsQuery,
+} from '@vegaprotocol/mock';
+import type { PartialDeep } from 'type-fest';
+import type { MarketDataQuery, MarketQuery } from '@vegaprotocol/market-list';
+import type { MarketInfoQuery } from '@vegaprotocol/market-info';
+
+type MarketPageMockData = {
+  state: Schema.MarketState;
+  tradingMode?: Schema.MarketTradingMode;
+  trigger?: Schema.AuctionTrigger;
+};
+
+const marketDataOverride = (
+  data: MarketPageMockData
+): PartialDeep<MarketDataQuery> => ({
+  marketsConnection: {
+    edges: [
+      {
+        node: {
+          data: {
+            trigger: data.trigger,
+            marketTradingMode: data.tradingMode,
+            marketState: data.state,
+          },
+        },
+      },
+    ],
+  },
+});
+
+const marketQueryOverride = (
+  data: MarketPageMockData
+): PartialDeep<MarketQuery> => ({
+  market: {
+    tradableInstrument: {
+      instrument: {
+        name: `${data.state?.toUpperCase()} MARKET`,
+      },
+    },
+    state: data.state,
+    tradingMode: data.tradingMode,
+  },
+});
+
+const marketInfoOverride = (
+  data: MarketPageMockData
+): PartialDeep<MarketInfoQuery> => ({
+  market: {
+    state: data.state,
+    tradingMode: data.tradingMode,
+    data: {
+      trigger: data.trigger,
+    },
+  },
+});
 
 const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
@@ -30,68 +87,42 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  // Skipped, to allow v2 wallet connection in tests
-  aliasQuery(req, 'ChainId', generateChainId());
-  aliasQuery(req, 'Statistics', generateStatistics());
+  aliasQuery(req, 'ChainId', chainIdQuery());
+  aliasQuery(req, 'Statistics', statisticsQuery());
   aliasQuery(
     req,
     'Market',
-    generateMarket({
-      market: {
-        tradableInstrument: {
-          instrument: {
-            name: `${state.toUpperCase()} MARKET`,
-          },
-        },
-        state: state,
-        tradingMode: tradingMode,
-      },
-    })
+    marketQuery(marketQueryOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'Markets', generateMarkets());
+  aliasQuery(req, 'Markets', marketsQuery());
   aliasQuery(
     req,
     'MarketData',
-    generateMarketData({
-      trigger: trigger,
-      marketTradingMode: tradingMode,
-      marketState: state,
-    })
+    marketDataQuery(marketDataOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'MarketsData', generateMarketsData());
-  aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
-  aliasQuery(req, 'MarketCandles', generateMarketsCandles());
-
-  aliasQuery(req, 'MarketDepth', generateMarketDepth());
-  aliasQuery(req, 'Orders', generateOrders());
-  aliasQuery(req, 'Accounts', generateAccounts());
-  aliasQuery(req, 'Positions', generatePositions());
-  aliasQuery(req, 'Margins', generateMargins());
-  aliasQuery(req, 'Assets', generateAssets());
-  aliasQuery(req, 'Asset', generateAsset());
-
+  aliasQuery(req, 'MarketsData', marketsDataQuery());
+  aliasQuery(req, 'MarketsCandles', marketsCandlesQuery());
+  aliasQuery(req, 'MarketCandles', marketCandlesQuery());
+  aliasQuery(req, 'MarketDepth', marketDepthQuery());
+  aliasQuery(req, 'Orders', ordersQuery());
+  aliasQuery(req, 'Accounts', accountsQuery());
+  aliasQuery(req, 'Positions', positionsQuery());
+  aliasQuery(req, 'Margins', marginsQuery());
+  aliasQuery(req, 'Assets', assetsQuery());
+  aliasQuery(req, 'Asset', assetQuery());
   aliasQuery(
     req,
     'MarketInfo',
-    generateMarketInfoQuery({
-      market: {
-        state,
-        tradingMode: tradingMode,
-        data: {
-          trigger: trigger,
-        },
-      },
-    })
+    marketInfoQuery(marketInfoOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'Trades', generateTrades());
-  aliasQuery(req, 'Chart', generateChart());
-  aliasQuery(req, 'Candles', generateCandles());
-  aliasQuery(req, 'Withdrawals', generateWithdrawals());
-  aliasQuery(req, 'NetworkParams', generateNetworkParameters());
-  aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
-  aliasQuery(req, 'MarketPositions', generatePositions());
-  aliasQuery(req, 'ProposalsList', generateMarketProposals());
-  aliasQuery(req, 'Deposits', generateDeposits());
+  aliasQuery(req, 'Trades', tradesQuery());
+  aliasQuery(req, 'Chart', chartQuery());
+  aliasQuery(req, 'Candles', candlesQuery());
+  aliasQuery(req, 'Withdrawals', withdrawalsQuery());
+  aliasQuery(req, 'NetworkParams', networkParamsQuery());
+  aliasQuery(req, 'EstimateOrder', estimateOrderQuery());
+  aliasQuery(req, 'ProposalsList', proposalListQuery());
+  aliasQuery(req, 'Deposits', depositsQuery());
 };
 
 declare global {

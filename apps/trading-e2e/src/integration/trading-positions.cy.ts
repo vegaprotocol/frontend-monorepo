@@ -1,6 +1,5 @@
 beforeEach(() => {
   cy.mockTradingPage();
-
   cy.mockGQLSubscription();
 });
 
@@ -46,7 +45,7 @@ describe('positions', { tags: '@smoke' }, () => {
 
       cy.get('[col-id="liquidationPrice"]').should('contain.text', '0'); // liquidation price
 
-      cy.get('[col-id="currentLeverage"]').should('contain.text', '0.8');
+      cy.get('[col-id="currentLeverage"]').should('contain.text', '138.446.1');
 
       cy.get('[col-id="marginAccountBalance"]') // margin allocated
         .should('contain.text', '1,000');
@@ -56,7 +55,7 @@ describe('positions', { tags: '@smoke' }, () => {
       });
 
       cy.get('[col-id="notional"]').should('contain.text', '276,761.40348'); // Total tDAI position
-      cy.get('[col-id="realisedPNL"]').should('contain.text', '0.001'); // Total Realised PNL
+      cy.get('[col-id="realisedPNL"]').should('contain.text', '2.30'); // Total Realised PNL
       cy.get('[col-id="unrealisedPNL"]').should('contain.text', '8.95'); // Total Unrealised PNL
 
       cy.get('.ag-header-row [col-id="notional"]')
@@ -65,6 +64,6 @@ describe('positions', { tags: '@smoke' }, () => {
       cy.get('.ag-popup').should('contain.text', 'Mark price x open volume');
     });
 
-    cy.getByTestId('close-position').should('be.visible').and('have.length', 3);
+    cy.getByTestId('close-position').should('be.visible').and('have.length', 2);
   }
 });

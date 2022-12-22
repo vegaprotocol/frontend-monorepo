@@ -1,9 +1,9 @@
-import type { MarketInfoQuery } from '@vegaprotocol/market-info';
+import type { MarketInfoQuery } from './__generated__/MarketInfo';
 import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateMarketInfoQuery = (
+export const marketInfoQuery = (
   override?: PartialDeep<MarketInfoQuery>
 ): MarketInfoQuery => {
   const defaultResult: MarketInfoQuery = {

@@ -1,14 +1,14 @@
-import type { StatisticsQuery } from '@vegaprotocol/environment';
+import type { StatisticsQuery } from './__generated__/Node';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateStatistics = (
+export const statisticsQuery = (
   override?: PartialDeep<StatisticsQuery>
 ): StatisticsQuery => {
-  const defaultResult = {
+  const defaultResult: StatisticsQuery = {
     statistics: {
       __typename: 'Statistics',
-      chainId: 'stagnet3',
+      chainId: 'chain-id',
       blockHeight: '11',
     },
   };

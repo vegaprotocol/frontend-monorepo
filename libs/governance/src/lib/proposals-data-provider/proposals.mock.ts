@@ -1,8 +1,24 @@
 import type {
   ProposalListFieldsFragment,
   ProposalsListQuery,
-} from '@vegaprotocol/governance';
+} from './__generated__/Proposals';
 import * as Schema from '@vegaprotocol/types';
+import type { PartialDeep } from 'type-fest';
+import merge from 'lodash/merge';
+
+export const proposalListQuery = (
+  override?: PartialDeep<ProposalsListQuery>
+): ProposalsListQuery => {
+  const defaultResult: ProposalsListQuery = {
+    proposalsConnection: {
+      edges: proposalListFields.map((node) => ({
+        __typename: 'ProposalEdge',
+        node,
+      })),
+    },
+  };
+  return merge(defaultResult, override);
+};
 
 export const marketUpdateProposal: ProposalListFieldsFragment = {
   id: '123',
@@ -27,43 +43,35 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
   terms: {
     __typename: 'ProposalTerms',
     closingDatetime: '',
-    enactmentDatetime: undefined,
     change: {
       __typename: 'UpdateMarket',
       marketId: 'market-0',
       updateMarketConfiguration: {
-        __typename: undefined,
         instrument: {
-          __typename: undefined,
           code: '',
           product: {
-            __typename: undefined,
             quoteName: '',
           },
         },
         priceMonitoringParameters: {
-          __typename: undefined,
           triggers: [],
         },
         liquidityMonitoringParameters: {
-          __typename: undefined,
           triggeringRatio: 0,
           targetStakeParameters: {
-            __typename: undefined,
             scalingFactor: 0,
             timeWindow: 0,
           },
         },
         riskParameters: {
           __typename: 'UpdateMarketLogNormalRiskModel',
-          logNormal: undefined,
         },
       },
     },
   },
 };
 
-const newMarketProposals: ProposalListFieldsFragment[] = [
+const proposalListFields: ProposalListFieldsFragment[] = [
   {
     id: 'e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829',
     reference: 'injected_at_runtime',
@@ -637,17 +645,3 @@ const newMarketProposals: ProposalListFieldsFragment[] = [
     __typename: 'Proposal',
   },
 ];
-
-export const generateProposals = (
-  proposals: ProposalListFieldsFragment[]
-): ProposalsListQuery => ({
-  proposalsConnection: {
-    edges: proposals.map((proposal) => ({
-      node: proposal,
-      __typename: 'ProposalEdge',
-    })),
-  },
-});
-
-export const generateMarketProposals = (): ProposalsListQuery =>
-  generateProposals(newMarketProposals);

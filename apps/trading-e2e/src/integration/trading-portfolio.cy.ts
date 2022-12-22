@@ -1,14 +1,16 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateLedgerEntries } from '../support/mocks/generate-ledger-entries';
-import { generateAssets } from '../support/mocks/generate-assets';
-import { generateMarkets } from '../support/mocks/generate-markets';
+import {
+  assetsQuery,
+  ledgerEntriesQuery,
+  marketsQuery,
+} from '@vegaprotocol/mock';
 
 describe('Portfolio page', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'LedgerEntries', generateLedgerEntries());
-      aliasQuery(req, 'Assets', generateAssets());
-      aliasQuery(req, 'Markets', generateMarkets());
+      aliasQuery(req, 'LedgerEntries', ledgerEntriesQuery());
+      aliasQuery(req, 'Assets', assetsQuery());
+      aliasQuery(req, 'Markets', marketsQuery());
     });
     cy.mockGQLSubscription();
   });
@@ -34,10 +36,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       });
       cy.get(
         '[data-testid="tab-ledger-entries"] .ag-center-cols-container .ag-row'
-      ).should(
-        'have.length',
-        generateLedgerEntries().ledgerEntries.edges.length
-      );
+      ).should('have.length', ledgerEntriesQuery().ledgerEntries.edges.length);
     });
   });
 });

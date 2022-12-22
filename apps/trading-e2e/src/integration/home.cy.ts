@@ -1,7 +1,7 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
+import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
-import { generateMarketsData } from '../support/mocks/generate-markets';
 
 const selectMarketOverlay = 'select-market-list';
 
@@ -119,7 +119,7 @@ describe('home', { tags: '@regression' }, () => {
           ],
         },
       };
-      const data = generateMarketsData(override);
+      const data = marketsDataQuery(override);
       cy.mockGQL((req) => {
         aliasQuery(req, 'MarketsData', data);
       });

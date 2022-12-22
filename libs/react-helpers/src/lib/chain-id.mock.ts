@@ -1,14 +1,14 @@
-import type { ChainIdQuery } from '@vegaprotocol/react-helpers';
+import type { ChainIdQuery } from './__generated__/ChainId';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
-export const generateChainId = (
+export const chainIdQuery = (
   override?: PartialDeep<ChainIdQuery>
 ): ChainIdQuery => {
   const defaultResult = {
     statistics: {
       __typename: 'Statistics',
-      chainId: 'stagnet3',
+      chainId: 'test-id',
     },
   };
 
