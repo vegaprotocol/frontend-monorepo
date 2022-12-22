@@ -17,7 +17,7 @@ type ToastsStore = {
   /**
    * Adds a new toast or updates if id already exists.
    */
-  addOrUpdate: (toast: Toast) => void;
+  setToast: (toast: Toast) => void;
   /**
    * Closes a toast
    */
@@ -55,7 +55,7 @@ export const useToasts = create<ToastsStore>((set) => ({
   toasts: [],
   add: (toast) => set(add(toast)),
   update: (id, toastData) => set(update(id, toastData)),
-  addOrUpdate: (toast: Toast) =>
+  setToast: (toast: Toast) =>
     set((store) => {
       if (store.toasts.find((t) => t.id === toast.id)) {
         return update(toast.id, toast)(store);
