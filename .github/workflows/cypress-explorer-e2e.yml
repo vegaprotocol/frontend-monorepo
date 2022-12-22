@@ -91,6 +91,14 @@ jobs:
       ## Upload logs
       ######
 
+      # Artifact path is not valid: /ganache-1/capsule-logscolletor.stderr-2022-12-22T10:20:30Z.log. Contains the following character:  Colon :
+      - name: Rename files to allow archive
+        if: ${{ always() }}
+        run: |
+          while read -r file; do
+            mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
+          done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
+         
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
