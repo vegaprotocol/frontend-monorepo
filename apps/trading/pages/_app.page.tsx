@@ -78,7 +78,7 @@ function AppBody({ Component }: AppProps) {
       <VegaWalletProvider>
         <AppLoader>
           <Web3Provider>
-            <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
+            <div className="h-full relative z-0 grid grid-rows-[min-content,1fr,min-content]">
               <Navbar
                 navbarTheme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'}
               />
