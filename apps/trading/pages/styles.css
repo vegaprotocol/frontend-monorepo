@@ -22,3 +22,42 @@ html.dark {
 .border-default {
   @apply border-neutral-300 dark:border-neutral-600;
 }
+
+.pre-loader {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.pre-loader-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.pre-loader-wrapper {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.loader-item {
+  width: 10px;
+  height: 10px;
+  background: black;
+  animation: flick 0.4s steps(2, jump-none) alternate infinite;
+}
+@keyframes flick {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+  }
+  26% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}

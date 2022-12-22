@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 import { Navbar } from '../components/navbar';
 import { t } from '@vegaprotocol/react-helpers';
@@ -96,6 +97,13 @@ function AppBody({ Component }: AppProps) {
   );
 }
 
+const DynamicLoader = dynamic(
+  () => import('../components/preloader/preloader'),
+  {
+    loading: () => <>Loading...</>,
+  }
+);
+
 function VegaTradingApp(props: AppProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -106,7 +114,9 @@ function VegaTradingApp(props: AppProps) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return <DynamicLoader />;
+  }
 
   return (
     <HashRouter>
