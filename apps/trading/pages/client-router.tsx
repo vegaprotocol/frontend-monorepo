@@ -1,8 +1,10 @@
 import { Suspense } from 'react';
+import type { RouteObject } from 'react-router-dom';
 import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import trimEnd from 'lodash/trimEnd';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -26,24 +28,24 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
 
 export enum Routes {
   HOME = '/',
-  SKELETON_MARKET = '/markets',
-  MARKET = '/markets/:marketId',
+  MARKET = '/markets',
   MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
   LIQUIDITY = 'liquidity/:marketId',
 }
 
-export const Links = {
-  HOME: () => Routes.HOME,
-  SKELETON_MARKET: () => Routes.SKELETON_MARKET,
-  MARKET: (marketId: string) => Routes.MARKET.replace(':marketId', marketId),
-  MARKETS: () => Routes.MARKETS,
-  PORTFOLIO: () => Routes.PORTFOLIO,
-  LIQUIDITY: (marketId: string) =>
+type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
+export const Links: ConsoleLinks = {
+  [Routes.HOME]: () => Routes.HOME,
+  [Routes.MARKET]: (marketId: string | null | undefined) =>
+    marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
+  [Routes.MARKETS]: () => Routes.MARKETS,
+  [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
+  [Routes.LIQUIDITY]: (marketId: string) =>
     Routes.LIQUIDITY.replace(':marketId', marketId),
 };
 
-const routerConfig = [
+const routerConfig: RouteObject[] = [
   {
     index: true,
     element: <LazyHome />,
@@ -53,12 +55,17 @@ const routerConfig = [
     element: <LazyMarkets />,
   },
   {
-    path: Routes.SKELETON_MARKET,
-    element: <LazyMarket skeleton={true} />,
-  },
-  {
     path: Routes.MARKET,
-    element: <LazyMarket />,
+    children: [
+      {
+        index: true,
+        element: <LazyMarket />,
+      },
+      {
+        path: ':marketId',
+        element: <LazyMarket />,
+      },
+    ],
   },
   {
     path: Routes.LIQUIDITY,

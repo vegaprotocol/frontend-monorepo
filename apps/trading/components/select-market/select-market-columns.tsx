@@ -22,7 +22,7 @@ import { MarketMarkPrice } from '../market-mark-price';
 import { Last24hPriceChange } from '../last-24h-price-change';
 import { MarketTradingMode } from '../market-trading-mode';
 import { Last24hVolume } from '../last-24h-volume';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 
 type Market = MarketWithData & MarketWithCandles;
 
@@ -195,7 +195,7 @@ export const columns = (
       kind: ColumnKind.Market,
       value: (
         <Link
-          to={Links.MARKET(market.id)}
+          to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {
@@ -383,7 +383,7 @@ export const columnsPositionMarkets = (
       kind: ColumnKind.Market,
       value: (
         <Link
-          to={Links.MARKET(market.id)}
+          to={Links[Routes.MARKET](market.id)}
           data-testid={`market-link-${market.id}`}
           onKeyPress={(event) => handleKeyPress(event, market.id)}
           onClick={(e) => {

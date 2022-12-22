@@ -5,7 +5,7 @@ import {
   useDataProvider,
 } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
@@ -39,7 +39,7 @@ export const Home = () => {
       const newPageTitle = titlefy([marketName, marketPrice]);
 
       if (marketId) {
-        navigate(Links.MARKET(marketId), {
+        navigate(Links[Routes.MARKET](marketId), {
           replace: true,
         });
         update({ marketId });
@@ -47,7 +47,7 @@ export const Home = () => {
           updateTitle(newPageTitle);
         }
       } else {
-        navigate(Links.SKELETON_MARKET());
+        navigate(Links[Routes.MARKET]());
       }
     }
   }, [data, navigate, update, pageTitle, updateTitle]);

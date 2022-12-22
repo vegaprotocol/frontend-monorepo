@@ -18,7 +18,7 @@ import { marketProvider, marketDataProvider } from '@vegaprotocol/market-list';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -31,15 +31,11 @@ export interface SingleMarketData extends SingleMarketFieldsFragment {
   data: MarketData;
 }
 
-type MarketProps = {
-  skeleton?: boolean;
-};
-
-export const Market = ({ skeleton }: MarketProps) => {
+export const Market = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const marketId = skeleton ? undefined : params.marketId;
+  const marketId = params.marketId;
 
   const { w } = useWindowSize();
   const { update } = useGlobalStore((store) => ({
@@ -55,7 +51,7 @@ export const Market = ({ skeleton }: MarketProps) => {
     (id: string) => {
       if (id && id !== marketId) {
         update({ marketId: id });
-        navigate(Links.MARKET(id));
+        navigate(Links[Routes.MARKET](id));
       }
     },
     [marketId, update, navigate]
@@ -109,7 +105,7 @@ export const Market = ({ skeleton }: MarketProps) => {
     return <TradePanels market={data} onSelect={onSelect} />;
   }, [w, data, onSelect]);
 
-  if (!marketId && !skeleton) {
+  if (!data && marketId) {
     return (
       <Splash>
         <p>{t('Not found')}</p>
@@ -124,7 +120,7 @@ export const Market = ({ skeleton }: MarketProps) => {
       data={data || undefined}
       noDataCondition={(data) => false}
       render={(data) => {
-        if (!data && !skeleton) {
+        if (!data && marketId) {
           return <Splash>{t('Market not found')}</Splash>;
         }
         return <>{tradeView}</>;

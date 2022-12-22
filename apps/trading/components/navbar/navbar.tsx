@@ -12,7 +12,7 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { NewTab, ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Vega } from '../icons/vega';
 import type { HTMLAttributeAnchorTarget } from 'react';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 import {
   getNavLinkClassNames,
   getActiveNavLinkClassNames,
@@ -30,8 +30,8 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     marketId: store.marketId,
   }));
   const tradingPath = marketId
-    ? Links.MARKET(marketId)
-    : Links.SKELETON_MARKET();
+    ? Links[Routes.MARKET](marketId)
+    : Links[Routes.MARKET]();
   return (
     <Nav
       navbarTheme={navbarTheme}
@@ -45,7 +45,7 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
     >
       <AppNavLink
         name={t('Markets')}
-        path={Links.MARKETS()}
+        path={Links[Routes.MARKETS]()}
         navbarTheme={navbarTheme}
         end
       />
@@ -53,10 +53,11 @@ export const Navbar = ({ navbarTheme = 'inherit' }: NavbarProps) => {
         name={t('Trading')}
         path={tradingPath}
         navbarTheme={navbarTheme}
+        end
       />
       <AppNavLink
         name={t('Portfolio')}
-        path={Links.PORTFOLIO()}
+        path={Links[Routes.PORTFOLIO]()}
         navbarTheme={navbarTheme}
       />
       <a

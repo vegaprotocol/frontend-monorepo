@@ -14,7 +14,7 @@ import { WelcomeDialogHeader } from './welcome-dialog-header';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useGlobalStore } from '../../stores';
 import { ProposedMarkets } from './proposed-markets';
-import { Links } from '../../pages/client-router';
+import { Links, Routes } from '../../pages/client-router';
 
 export const SelectMarketLandingTable = ({
   markets,
@@ -35,7 +35,7 @@ export const SelectMarketLandingTable = ({
     (id: string) => {
       if (id && id !== marketId) {
         update({ marketId: id });
-        navigate(Links.MARKET(id));
+        navigate(Links[Routes.MARKET](id));
       }
     },
     [marketId, update, navigate]
@@ -86,7 +86,7 @@ export const SelectMarketLandingTable = ({
       </div>
       <div className="mt-4 text-md">
         <Link
-          to={Links.MARKETS()}
+          to={Links[Routes.MARKETS]()}
           data-testid="view-market-list-link"
           onClick={() => onClose()}
         >

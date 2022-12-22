@@ -102,7 +102,6 @@ export const EXPLORER_TX = '/txs/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
 
 // Console pages
-export const CONSOLE_SKELETON_MARKET = '/markets';
 export const CONSOLE_MARKET = '/markets/:marketId';
 export const CONSOLE_MARKETS = '/markets/all';
 export const CONSOLE_PORTFOLIO = '/portfolio';
