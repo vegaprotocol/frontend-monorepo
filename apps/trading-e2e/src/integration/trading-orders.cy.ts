@@ -3,8 +3,11 @@ import type { OrderAmendment, OrderCancellation } from '@vegaprotocol/wallet';
 import {
   updateOrder,
   getSubscriptionMocks,
-} from '../support/mocks/order-update-subscription';
-import { cancelOrder, editOrder } from '../support/order-list';
+} from '../support/order-update-subscription';
+import {
+  testOrderCancellation,
+  testOrderAmendment,
+} from '../support/order-validation';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
 const orderSize = 'size';
@@ -261,7 +264,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
           sizeDelta: 0,
         };
-        editOrder(order);
+        testOrderAmendment(order);
       });
   });
   it('must be able to cancel an individual order', () => {
@@ -281,7 +284,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           orderId: orderId,
           marketId: 'market-0',
         };
-        cancelOrder(order);
+        testOrderCancellation(order);
       });
   });
   it('must be able to cancel all orders on a market', () => {
@@ -296,7 +299,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
         const order: OrderCancellation = {
           marketId: 'market-0',
         };
-        cancelOrder(order);
+        testOrderCancellation(order);
       });
   });
 });

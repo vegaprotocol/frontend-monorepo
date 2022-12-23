@@ -27,7 +27,7 @@ export const testOrderSubmission = (
   vegaWalletTransaction(transaction);
 };
 
-export const editOrder = (
+export const testOrderAmendment = (
   order: OrderAmendment,
   expected?: Partial<OrderAmendment>
 ) => {
@@ -45,7 +45,7 @@ export const editOrder = (
   vegaWalletTransaction(transaction);
 };
 
-export const cancelOrder = (
+export const testOrderCancellation = (
   order: OrderCancellation,
   expected?: Partial<OrderCancellation>
 ) => {

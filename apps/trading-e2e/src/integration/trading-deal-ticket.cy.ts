@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { aliasGQLQuery, mockConnectWallet } from '@vegaprotocol/cypress';
-import { testOrderSubmission } from '../support/order-list';
+import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { accountsQuery, estimateOrderQuery } from '@vegaprotocol/mock';
 
