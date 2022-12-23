@@ -1,20 +1,16 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
-  generatePositions,
-  emptyPositions,
-  generateMargins,
-} from '../support/mocks/generate-positions';
-import { generateAccounts } from '../support/mocks/generate-accounts';
-import { generateAssets } from '../support/mocks/generate-assets';
-import { generateOrders } from '../support/mocks/generate-orders';
-import { generateFills } from '../support/mocks/generate-fills';
-import {
-  generateFillsMarkets,
-  generateMarketsData,
-  generatePositionsMarkets,
-} from '../support/mocks/generate-markets';
-import { generateChainId } from '../support/mocks/generate-chain-id';
-import { generateStatistics } from '../support/mocks/generate-statistics';
+  accountsQuery,
+  assetsQuery,
+  chainIdQuery,
+  fillsQuery,
+  marginsQuery,
+  marketsDataQuery,
+  marketsQuery,
+  ordersQuery,
+  positionsQuery,
+  statisticsQuery,
+} from '@vegaprotocol/mock';
 
 describe('Portfolio page - wallet', { tags: '@smoke' }, () => {
   it('button for wallet connect should work', () => {
@@ -29,14 +25,14 @@ describe('Portfolio page - wallet', { tags: '@smoke' }, () => {
 describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'ChainId', generateChainId());
-      aliasQuery(req, 'Statistics', generateStatistics());
-      aliasQuery(req, 'Positions', generatePositions());
-      aliasQuery(req, 'Margins', generateMargins());
-      aliasQuery(req, 'Markets', generatePositionsMarkets());
-      aliasQuery(req, 'MarketsData', generateMarketsData());
-      aliasQuery(req, 'Accounts', generateAccounts());
-      aliasQuery(req, 'Assets', generateAssets());
+      aliasGQLQuery(req, 'ChainId', chainIdQuery());
+      aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      aliasGQLQuery(req, 'Positions', positionsQuery());
+      aliasGQLQuery(req, 'Margins', marginsQuery());
+      aliasGQLQuery(req, 'Markets', marketsQuery());
+      aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+      aliasGQLQuery(req, 'Accounts', accountsQuery());
+      aliasGQLQuery(req, 'Assets', assetsQuery());
     });
   });
 
@@ -63,21 +59,21 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Assets view', () => {
     before(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', generateChainId());
-        aliasQuery(req, 'Statistics', generateStatistics());
-        aliasQuery(req, 'Positions', generatePositions());
-        aliasQuery(req, 'Margins', generateMargins());
-        aliasQuery(req, 'Markets', generatePositionsMarkets());
-        aliasQuery(req, 'MarketsData', generateMarketsData());
-        aliasQuery(req, 'Accounts', generateAccounts());
-        aliasQuery(req, 'Assets', generateAssets());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', positionsQuery());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+        aliasGQLQuery(req, 'Accounts', accountsQuery());
+        aliasGQLQuery(req, 'Assets', assetsQuery());
       });
       cy.visit('/portfolio/assets');
       cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
-      cy.get('.ag-center-cols-container .ag-row').should('have.length', 3);
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 5);
       cy.get(
         '.ag-center-cols-container [row-id="ACCOUNT_TYPE_GENERAL-asset-id-null"]'
       )
@@ -94,31 +90,31 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Positions view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', generateChainId());
-        aliasQuery(req, 'Statistics', generateStatistics());
-        aliasQuery(req, 'Positions', generatePositions());
-        aliasQuery(req, 'Accounts', generateAccounts());
-        aliasQuery(req, 'Margins', generateMargins());
-        aliasQuery(req, 'Markets', generatePositionsMarkets());
-        aliasQuery(req, 'MarketsData', generateMarketsData());
-        aliasQuery(req, 'Assets', generateAssets());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', positionsQuery());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+        aliasGQLQuery(req, 'Accounts', accountsQuery());
+        aliasGQLQuery(req, 'Assets', assetsQuery());
       });
       cy.visit('/portfolio/positions');
       cy.connectVegaWallet();
     });
 
     it('data should be properly rendered', () => {
-      cy.get('.ag-center-cols-container .ag-row').should('have.length', 1);
+      cy.get('.ag-center-cols-container .ag-row').should('have.length', 2);
     });
   });
 
   describe('Orders view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', generateChainId());
-        aliasQuery(req, 'Statistics', generateStatistics());
-        aliasQuery(req, 'Orders', generateOrders());
-        aliasQuery(req, 'Markets', generateFillsMarkets());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Orders', ordersQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
       });
       cy.visit('/portfolio/orders');
       cy.connectVegaWallet();
@@ -132,10 +128,11 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Fills view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', generateChainId());
-        aliasQuery(req, 'Statistics', generateStatistics());
-        aliasQuery(req, 'Fills', generateFills());
-        aliasQuery(req, 'Markets', generateFillsMarkets());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Orders', ordersQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'Fills', fillsQuery());
       });
       cy.visit('/portfolio/fills');
       cy.connectVegaWallet();
@@ -149,20 +146,20 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Empty views', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', generateChainId());
-        aliasQuery(req, 'Statistics', generateStatistics());
-        aliasQuery(req, 'Positions', emptyPositions());
-        aliasQuery(req, 'Accounts', { party: null });
-        aliasQuery(req, 'Orders', { party: null });
-        aliasQuery(req, 'Fills', { party: null });
-        aliasQuery(req, 'Markets', {
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', { party: null });
+        aliasGQLQuery(req, 'Accounts', { party: null });
+        aliasGQLQuery(req, 'Orders', { party: null });
+        aliasGQLQuery(req, 'Fills', { party: null });
+        aliasGQLQuery(req, 'Markets', {
           marketsConnection: { edges: [], __typename: 'MarketConnection' },
         });
-        aliasQuery(req, 'Assets', {
+        aliasGQLQuery(req, 'Assets', {
           assetsConnection: { edges: null, __typename: 'AssetsConnection' },
         });
-        aliasQuery(req, 'Margins', generateMargins());
-        aliasQuery(req, 'MarketsData', generateMarketsData());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
       });
       cy.visit('/portfolio');
       cy.connectVegaWallet();

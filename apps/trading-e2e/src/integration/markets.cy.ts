@@ -7,7 +7,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/');
     cy.wait('@Market');
     cy.wait('@Markets');

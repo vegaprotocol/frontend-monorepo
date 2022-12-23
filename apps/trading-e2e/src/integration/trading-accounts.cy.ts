@@ -1,7 +1,7 @@
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockWeb3Provider();
-  cy.mockGQLSubscription();
+  cy.mockSubscription();
   cy.visit('/#/markets/market-0');
 });
 
