@@ -1,15 +1,6 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
-import {
-  generateSimpleMarkets,
-  generateMarketsCandles,
-} from '../support/mocks/generate-markets';
-
 describe('simple trading app', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.mockGQL((req) => {
-      aliasQuery(req, 'Markets', generateSimpleMarkets());
-      aliasQuery(req, 'MarketsCandles', generateMarketsCandles());
-    });
+    cy.mockConsole();
     cy.visit('/');
   });
 

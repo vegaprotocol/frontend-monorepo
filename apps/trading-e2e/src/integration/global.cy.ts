@@ -12,7 +12,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
@@ -25,7 +25,7 @@ describe('vega wallet v1', { tags: '@smoke' }, () => {
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    cy.wait('@walletGQL');
+    cy.wait('@walletReq');
     cy.getByTestId(manageVegaBtn).should('exist');
   });
 
@@ -63,7 +63,7 @@ describe('vega wallet v2', { tags: '@smoke' }, () => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.get('main[data-testid="/portfolio"]').should('exist');
   });
 
@@ -73,7 +73,7 @@ describe('vega wallet v2', { tags: '@smoke' }, () => {
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
       .click();
-    cy.wait('@walletGQL');
+    cy.wait('@walletReq');
     cy.getByTestId(dialogContent).should('not.exist');
     cy.getByTestId(manageVegaBtn).should('exist');
   });
@@ -98,7 +98,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
     // Using portfolio withdrawals tab is it requires Ethereum wallet connection
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.connectVegaWallet();
     cy.getByTestId('Withdrawals').click();
@@ -131,7 +131,7 @@ describe('ethereum wallet', { tags: '@smoke' }, () => {
 describe('Navbar', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/');
     cy.getByTestId('dialog-close').click();
   });

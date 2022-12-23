@@ -1,5 +1,5 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateFills } from '../support/mocks/generate-fills';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { fillsQuery } from '@vegaprotocol/mock';
 
 describe('fills', { tags: '@regression' }, () => {
   beforeEach(() => {
@@ -13,12 +13,14 @@ describe('fills', { tags: '@regression' }, () => {
       );
     });
     cy.mockTradingPage();
-    const fills = generateFills();
-    console.log(fills);
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Fills', fills);
+      aliasGQLQuery(
+        req,
+        'Fills',
+        fillsQuery({}, Cypress.env('VEGA_PUBLIC_KEY'))
+      );
     });
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
   });
 
   it('renders fills on portfolio page', () => {
