@@ -223,6 +223,52 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
   });
+
+  it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a liquidity, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
 });
 
 describe('amend and cancel order', { tags: '@smoke' }, () => {
@@ -248,6 +294,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[data-testid="edit"]')
@@ -274,6 +322,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[data-testid="cancel"]`)
@@ -288,9 +338,14 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       });
   });
   it('must be able to cancel all orders on a market', () => {
+    // 7003-MORD-009
+    // 7003-MORD-010
+    // 7003-MORD-011
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[data-testid="cancelAll"]`)
       .should('have.text', 'Cancel all')
