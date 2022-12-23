@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import type { MarketsQuery } from '@vegaprotocol/market-list';
 import { marketCandlesQuery, marketsQuery } from '@vegaprotocol/mock';
 
@@ -98,12 +98,12 @@ describe('market list', { tags: '@smoke' }, () => {
         .fill('')
         .map(() => Object.assign({}, market));
       cy.mockGQL((req) => {
-        aliasQuery(
+        aliasGQLQuery(
           req,
           'Markets',
           marketsQuery({ marketsConnection: { edges } })
         );
-        aliasQuery(req, 'MarketsCandles', marketCandlesQuery());
+        aliasGQLQuery(req, 'MarketsCandles', marketCandlesQuery());
       });
       performance.mark('start-1k');
       cy.visit('/markets');

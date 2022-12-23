@@ -1,6 +1,6 @@
 beforeEach(() => {
   cy.mockTradingPage();
-  cy.mockGQLSubscription();
+  cy.mockSubscription();
 });
 
 describe('positions', { tags: '@smoke' }, () => {

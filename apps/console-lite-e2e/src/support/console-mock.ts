@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import {
   accountsQuery,
@@ -29,24 +29,24 @@ declare global {
 }
 
 const mockPage = (req: CyHttpMessages.IncomingHttpRequest) => {
-  aliasQuery(req, 'ChainId', chainIdQuery());
-  aliasQuery(req, 'Statistics', statisticsQuery());
-  aliasQuery(req, 'Markets', marketsQuery());
-  aliasQuery(req, 'MarketsCandles', marketsCandlesQuery());
-  aliasQuery(req, 'MarketsData', marketsDataQuery());
-  aliasQuery(req, 'MarketData', marketDataQuery());
-  aliasQuery(req, 'Market', marketQuery());
-  aliasQuery(req, 'MarketTags', {});
-  aliasQuery(req, 'EstimateOrder', estimateOrderQuery());
-  aliasQuery(req, 'MarketNames', {});
-  aliasQuery(req, 'MarketDepth', marketDepthQuery());
-  aliasQuery(req, 'Positions', positionsQuery());
-  aliasQuery(req, 'Margins', marginsQuery());
-  aliasQuery(req, 'Accounts', accountsQuery());
-  aliasQuery(req, 'Assets', assetsQuery());
-  aliasQuery(req, 'SimpleMarkets', marketsQuery());
-  aliasQuery(req, 'Orders', ordersQuery());
-  aliasQuery(req, 'Fills', fillsQuery());
+  aliasGQLQuery(req, 'ChainId', chainIdQuery());
+  aliasGQLQuery(req, 'Statistics', statisticsQuery());
+  aliasGQLQuery(req, 'Markets', marketsQuery());
+  aliasGQLQuery(req, 'MarketsCandles', marketsCandlesQuery());
+  aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+  aliasGQLQuery(req, 'MarketData', marketDataQuery());
+  aliasGQLQuery(req, 'Market', marketQuery());
+  aliasGQLQuery(req, 'MarketTags', {});
+  aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
+  aliasGQLQuery(req, 'MarketNames', {});
+  aliasGQLQuery(req, 'MarketDepth', marketDepthQuery());
+  aliasGQLQuery(req, 'Positions', positionsQuery());
+  aliasGQLQuery(req, 'Margins', marginsQuery());
+  aliasGQLQuery(req, 'Accounts', accountsQuery());
+  aliasGQLQuery(req, 'Assets', assetsQuery());
+  aliasGQLQuery(req, 'SimpleMarkets', marketsQuery());
+  aliasGQLQuery(req, 'Orders', ordersQuery());
+  aliasGQLQuery(req, 'Fills', fillsQuery());
 };
 
 export const addMockConsole = () => {

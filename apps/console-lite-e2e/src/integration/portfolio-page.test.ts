@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
   accountsQuery,
   assetsQuery,
@@ -25,14 +25,14 @@ describe('Portfolio page - wallet', { tags: '@smoke' }, () => {
 describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'ChainId', chainIdQuery());
-      aliasQuery(req, 'Statistics', statisticsQuery());
-      aliasQuery(req, 'Positions', positionsQuery());
-      aliasQuery(req, 'Margins', marginsQuery());
-      aliasQuery(req, 'Markets', marketsQuery());
-      aliasQuery(req, 'MarketsData', marketsDataQuery());
-      aliasQuery(req, 'Accounts', accountsQuery());
-      aliasQuery(req, 'Assets', assetsQuery());
+      aliasGQLQuery(req, 'ChainId', chainIdQuery());
+      aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      aliasGQLQuery(req, 'Positions', positionsQuery());
+      aliasGQLQuery(req, 'Margins', marginsQuery());
+      aliasGQLQuery(req, 'Markets', marketsQuery());
+      aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+      aliasGQLQuery(req, 'Accounts', accountsQuery());
+      aliasGQLQuery(req, 'Assets', assetsQuery());
     });
   });
 
@@ -59,14 +59,14 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Assets view', () => {
     before(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', chainIdQuery());
-        aliasQuery(req, 'Statistics', statisticsQuery());
-        aliasQuery(req, 'Positions', positionsQuery());
-        aliasQuery(req, 'Margins', marginsQuery());
-        aliasQuery(req, 'Markets', marketsQuery());
-        aliasQuery(req, 'MarketsData', marketsDataQuery());
-        aliasQuery(req, 'Accounts', accountsQuery());
-        aliasQuery(req, 'Assets', assetsQuery());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', positionsQuery());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+        aliasGQLQuery(req, 'Accounts', accountsQuery());
+        aliasGQLQuery(req, 'Assets', assetsQuery());
       });
       cy.visit('/portfolio/assets');
       cy.connectVegaWallet();
@@ -90,14 +90,14 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Positions view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', chainIdQuery());
-        aliasQuery(req, 'Statistics', statisticsQuery());
-        aliasQuery(req, 'Positions', positionsQuery());
-        aliasQuery(req, 'Margins', marginsQuery());
-        aliasQuery(req, 'Markets', marketsQuery());
-        aliasQuery(req, 'MarketsData', marketsDataQuery());
-        aliasQuery(req, 'Accounts', accountsQuery());
-        aliasQuery(req, 'Assets', assetsQuery());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', positionsQuery());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+        aliasGQLQuery(req, 'Accounts', accountsQuery());
+        aliasGQLQuery(req, 'Assets', assetsQuery());
       });
       cy.visit('/portfolio/positions');
       cy.connectVegaWallet();
@@ -111,10 +111,10 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Orders view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', chainIdQuery());
-        aliasQuery(req, 'Statistics', statisticsQuery());
-        aliasQuery(req, 'Orders', ordersQuery());
-        aliasQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Orders', ordersQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
       });
       cy.visit('/portfolio/orders');
       cy.connectVegaWallet();
@@ -128,11 +128,11 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Fills view', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', chainIdQuery());
-        aliasQuery(req, 'Statistics', statisticsQuery());
-        aliasQuery(req, 'Orders', ordersQuery());
-        aliasQuery(req, 'Markets', marketsQuery());
-        aliasQuery(req, 'Fills', fillsQuery());
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Orders', ordersQuery());
+        aliasGQLQuery(req, 'Markets', marketsQuery());
+        aliasGQLQuery(req, 'Fills', fillsQuery());
       });
       cy.visit('/portfolio/fills');
       cy.connectVegaWallet();
@@ -146,20 +146,20 @@ describe('Portfolio page tabs', { tags: '@smoke' }, () => {
   describe('Empty views', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ChainId', chainIdQuery());
-        aliasQuery(req, 'Statistics', statisticsQuery());
-        aliasQuery(req, 'Positions', { party: null });
-        aliasQuery(req, 'Accounts', { party: null });
-        aliasQuery(req, 'Orders', { party: null });
-        aliasQuery(req, 'Fills', { party: null });
-        aliasQuery(req, 'Markets', {
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+        aliasGQLQuery(req, 'Positions', { party: null });
+        aliasGQLQuery(req, 'Accounts', { party: null });
+        aliasGQLQuery(req, 'Orders', { party: null });
+        aliasGQLQuery(req, 'Fills', { party: null });
+        aliasGQLQuery(req, 'Markets', {
           marketsConnection: { edges: [], __typename: 'MarketConnection' },
         });
-        aliasQuery(req, 'Assets', {
+        aliasGQLQuery(req, 'Assets', {
           assetsConnection: { edges: null, __typename: 'AssetsConnection' },
         });
-        aliasQuery(req, 'Margins', marginsQuery());
-        aliasQuery(req, 'MarketsData', marketsDataQuery());
+        aliasGQLQuery(req, 'Margins', marginsQuery());
+        aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
       });
       cy.visit('/portfolio');
       cy.connectVegaWallet();

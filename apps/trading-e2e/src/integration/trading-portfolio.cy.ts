@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
   assetsQuery,
   ledgerEntriesQuery,
@@ -8,11 +8,11 @@ import {
 describe('Portfolio page', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.mockGQL((req) => {
-      aliasQuery(req, 'LedgerEntries', ledgerEntriesQuery());
-      aliasQuery(req, 'Assets', assetsQuery());
-      aliasQuery(req, 'Markets', marketsQuery());
+      aliasGQLQuery(req, 'LedgerEntries', ledgerEntriesQuery());
+      aliasGQLQuery(req, 'Assets', assetsQuery());
+      aliasGQLQuery(req, 'Markets', marketsQuery());
     });
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
   });
   describe('Ledger entries', () => {
     it('List should be properly rendered', () => {

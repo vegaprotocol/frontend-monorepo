@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { proposalListQuery, marketUpdateProposal } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
@@ -23,7 +23,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
     cy.mockGQL((req) => {
-      aliasQuery(
+      aliasGQLQuery(
         req,
         'ProposalsList',
         proposalListQuery({
@@ -33,7 +33,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
         })
       );
     });
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');
@@ -63,7 +63,7 @@ describe('Market trading page', () => {
       Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY
     );
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');
@@ -234,7 +234,7 @@ describe('market states not accepting orders', { tags: '@smoke' }, function () {
     describe(marketState, function () {
       beforeEach(function () {
         cy.mockTradingPage(marketState);
-        cy.mockGQLSubscription();
+        cy.mockSubscription();
         cy.visit('/#/markets/market-0');
         cy.wait('@Market');
         cy.connectVegaWallet();

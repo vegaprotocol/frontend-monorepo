@@ -3,7 +3,7 @@ import type { OrderAmendment, OrderCancellation } from '@vegaprotocol/wallet';
 import {
   updateOrder,
   getSubscriptionMocks,
-} from '../support/mocks/generate-ws-order-update';
+} from '../support/mocks/order-update-subscription';
 import { cancelOrder, editOrder } from '../support/order-list';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
@@ -17,14 +17,13 @@ const orderCreatedAt = 'createdAt';
 const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
-const closePopUpBtn = 'dialog-close';
 
 describe('orders list', { tags: '@smoke' }, () => {
   before(() => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -122,7 +121,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -228,7 +227,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
     const subscriptionMocks = getSubscriptionMocks();
     cy.spy(subscriptionMocks, 'OrdersUpdate');
     cy.mockTradingPage();
-    cy.mockGQLSubscription(subscriptionMocks);
+    cy.mockSubscription(subscriptionMocks);
     cy.visit('/#/markets/market-0');
     cy.getByTestId('Orders').click();
     cy.connectVegaWallet();
@@ -263,7 +262,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           sizeDelta: 0,
         };
         editOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
       });
   });
   it('must be able to cancel an individual order', () => {
@@ -284,7 +282,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           marketId: 'market-0',
         };
         cancelOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
       });
   });
   it('must be able to cancel all orders on a market', () => {
@@ -300,7 +297,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
           marketId: 'market-0',
         };
         cancelOrder(order);
-        cy.getByTestId(closePopUpBtn).click();
       });
   });
 });

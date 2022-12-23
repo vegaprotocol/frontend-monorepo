@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketQuery, marketsQuery } from '@vegaprotocol/mock';
 
 const marketId =
@@ -49,7 +49,7 @@ describe('Market trade', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockConsole();
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Market', marketQuery(marketOverride));
+      aliasGQLQuery(req, 'Market', marketQuery(marketOverride));
     });
     cy.visit(`/trading/${marketId}`);
     cy.connectVegaWallet();

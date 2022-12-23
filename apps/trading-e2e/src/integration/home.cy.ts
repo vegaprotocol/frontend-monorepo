@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import type { ProposalListFieldsFragment } from '@vegaprotocol/governance';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
@@ -52,7 +52,7 @@ const generateProposal = (code: string): ProposalListFieldsFragment => ({
 describe('home', { tags: '@regression' }, () => {
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
   });
 
   describe('default market found', () => {
@@ -121,7 +121,7 @@ describe('home', { tags: '@regression' }, () => {
       };
       const data = marketsDataQuery(override);
       cy.mockGQL((req) => {
-        aliasQuery(req, 'MarketsData', data);
+        aliasGQLQuery(req, 'MarketsData', data);
       });
       cy.visit('/');
       cy.wait('@Market');
@@ -146,9 +146,9 @@ describe('home', { tags: '@regression' }, () => {
         const proposalA: ProposalListFieldsFragment =
           generateProposal('AAAZZZ');
 
-        aliasQuery(req, 'Markets', data);
-        aliasQuery(req, 'MarketsData', data);
-        aliasQuery(req, 'ProposalsList', {
+        aliasGQLQuery(req, 'Markets', data);
+        aliasGQLQuery(req, 'MarketsData', data);
+        aliasGQLQuery(req, 'ProposalsList', {
           proposalsConnection: {
             __typename: 'ProposalsConnection',
             edges: [{ __typename: 'ProposalEdge', node: proposalA }],
@@ -173,7 +173,7 @@ describe('home', { tags: '@regression' }, () => {
   describe('no proposal found', () => {
     it('there is a link to propose market', () => {
       cy.mockGQL((req) => {
-        aliasQuery(req, 'ProposalsList', {
+        aliasGQLQuery(req, 'ProposalsList', {
           proposalsConnection: {
             __typename: 'ProposalsConnection',
             edges: null,
@@ -203,9 +203,9 @@ describe('home', { tags: '@regression' }, () => {
             edges: [],
           },
         };
-        aliasQuery(req, 'Markets', data);
-        aliasQuery(req, 'MarketsData', data);
-        aliasQuery(req, 'ProposalsList', {
+        aliasGQLQuery(req, 'Markets', data);
+        aliasGQLQuery(req, 'MarketsData', data);
+        aliasGQLQuery(req, 'ProposalsList', {
           proposalsConnection: {
             __typename: 'ProposalsConnection',
             edges: null,

@@ -14,7 +14,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockWeb3Provider();
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
 
     cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();
@@ -71,7 +71,7 @@ describe('withdraw actions', { tags: '@regression' }, () => {
   before(() => {
     cy.mockWeb3Provider();
     cy.mockTradingPage();
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
 
     cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();

@@ -3,9 +3,29 @@ import type {
   OrderAmendmentBody,
   OrderCancellation,
   OrderCancellationBody,
+  OrderSubmission,
+  OrderSubmissionBody,
   Transaction,
 } from '@vegaprotocol/wallet';
 import { encodeTransaction } from './encode-transaction';
+
+export const testOrderSubmission = (
+  order: OrderSubmission,
+  expected?: Partial<OrderSubmission>
+) => {
+  const expectedOrder = {
+    ...order,
+    ...expected,
+  };
+
+  expectedOrder.expiresAt = expectedOrder.expiresAt || undefined;
+  expectedOrder.price = expectedOrder.price || undefined;
+
+  const transaction: OrderSubmissionBody = {
+    orderSubmission: expectedOrder,
+  };
+  vegaWalletTransaction(transaction);
+};
 
 export const editOrder = (
   order: OrderAmendment,
@@ -41,6 +61,8 @@ export const cancelOrder = (
 };
 
 const vegaWalletTransaction = (transaction: Transaction) => {
+  const dialogTitle = 'dialog-title';
+  const orderTransactionHash = 'tx-block-explorer';
   cy.wait('@VegaWalletTransaction')
     .its('request.body.params')
     .should('deep.equal', {
@@ -50,4 +72,12 @@ const vegaWalletTransaction = (transaction: Transaction) => {
       sendingMode: 'TYPE_SYNC',
       encodedTransaction: encodeTransaction(transaction),
     });
+  cy.getByTestId(dialogTitle).should(
+    'have.text',
+    'Awaiting network confirmation'
+  );
+  cy.getByTestId(orderTransactionHash)
+    .invoke('attr', 'href')
+    .should('include', `${Cypress.env('EXPLORER_URL')}/txs/0xtest-tx-hash`);
+  cy.getByTestId('dialog-close').click();
 };

@@ -1,41 +1,27 @@
-import type { RouteHandler } from 'cypress/types/net-stubbing';
 import { Server, WebSocket } from 'mock-socket';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface onMessage<T = any, V = any> {
   (send: (data: T) => void, variables: V): void;
 }
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      mockGQL(handler: RouteHandler): void;
-      mockGQLSubscription(mocks?: Record<string, onMessage>): void;
-      mockWalletGQL(handler: RouteHandler): void;
+      mockSubscription(mocks?: Record<string, onMessage>): void;
     }
   }
-}
-
-export function addMockWalletGQLCommand() {
-  Cypress.Commands.add('mockWalletGQL', (handler: RouteHandler): void => {
-    cy.intercept('POST', '**/api/v2/requests', handler).as('walletGQL');
-  });
-}
-
-export function addMockGQLCommand() {
-  Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
-    cy.intercept('POST', '**/graphql', handler).as('GQL');
-  });
 }
 
 const mockSocketServer = Cypress.env('VEGA_URL')
   ? new Server(Cypress.env('VEGA_URL').replace('http', 'ws'))
   : null;
 
-export function addMockGQLSubscriptionCommand() {
+export function addMockSubscription() {
   Cypress.Commands.add(
-    'mockGQLSubscription',
+    'mockSubscription',
     (mocks?: Record<string, onMessage>) => {
       cy.on('window:before:load', (win) => {
         if (!mockSocketServer) {

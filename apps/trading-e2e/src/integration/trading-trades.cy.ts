@@ -1,6 +1,6 @@
 beforeEach(() => {
   cy.mockTradingPage();
-  cy.mockGQLSubscription();
+  cy.mockSubscription();
   cy.visit('/#/markets/market-0');
 });
 

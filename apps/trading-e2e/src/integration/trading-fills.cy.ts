@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { fillsQuery } from '@vegaprotocol/mock';
 
 describe('fills', { tags: '@regression' }, () => {
@@ -14,9 +14,13 @@ describe('fills', { tags: '@regression' }, () => {
     });
     cy.mockTradingPage();
     cy.mockGQL((req) => {
-      aliasQuery(req, 'Fills', fillsQuery({}, Cypress.env('VEGA_PUBLIC_KEY')));
+      aliasGQLQuery(
+        req,
+        'Fills',
+        fillsQuery({}, Cypress.env('VEGA_PUBLIC_KEY'))
+      );
     });
-    cy.mockGQLSubscription();
+    cy.mockSubscription();
   });
 
   it('renders fills on portfolio page', () => {

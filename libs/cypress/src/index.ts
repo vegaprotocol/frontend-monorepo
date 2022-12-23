@@ -1,9 +1,7 @@
 import { addGetTestIdcommand } from './lib/commands/get-by-test-id';
-import {
-  addMockGQLCommand,
-  addMockGQLSubscriptionCommand,
-  addMockWalletGQLCommand,
-} from './lib/commands/mock-gql';
+import { addMockGQLCommand } from './lib/mock-gql';
+import { addMockSubscription } from './lib/mock-ws';
+import { addMockWalletCommand } from './lib/mock-rest';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
 import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
@@ -18,8 +16,8 @@ import { addMockTransactionResponse } from './lib/commands/mock-transaction-resp
 addGetTestIdcommand();
 addSlackCommand();
 addMockGQLCommand();
-addMockGQLSubscriptionCommand();
-addMockWalletGQLCommand();
+addMockSubscription();
+addMockWalletCommand();
 addMockWeb3ProviderCommand();
 addHighlightLog();
 addVegaWalletReceiveFaucetedAsset();
@@ -30,9 +28,10 @@ addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
 addMockTransactionResponse();
 
-export * from './lib/graphql-test-utils';
 export { mockConnectWallet } from './lib/commands/vega-wallet-connect';
-export type { onMessage } from './lib/commands/mock-gql';
+export type { onMessage } from './lib/mock-ws';
+export { aliasGQLQuery } from './lib/mock-gql';
+export { aliasWalletQuery } from './lib/mock-rest';
 
 Cypress.on(
   'uncaught:exception',

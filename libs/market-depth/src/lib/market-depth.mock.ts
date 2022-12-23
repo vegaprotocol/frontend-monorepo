@@ -242,4 +242,3 @@ const buy: PriceLevelFieldsFragment[] = [
     __typename: 'PriceLevel',
   },
 ];
-// sequenceNumber: '1661773865550746910',

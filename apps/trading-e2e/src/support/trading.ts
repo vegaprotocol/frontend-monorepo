@@ -1,4 +1,4 @@
-import { aliasQuery } from '@vegaprotocol/cypress';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import {
@@ -87,42 +87,42 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  aliasQuery(req, 'ChainId', chainIdQuery());
-  aliasQuery(req, 'Statistics', statisticsQuery());
-  aliasQuery(
+  aliasGQLQuery(req, 'ChainId', chainIdQuery());
+  aliasGQLQuery(req, 'Statistics', statisticsQuery());
+  aliasGQLQuery(
     req,
     'Market',
     marketQuery(marketQueryOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'Markets', marketsQuery());
-  aliasQuery(
+  aliasGQLQuery(req, 'Markets', marketsQuery());
+  aliasGQLQuery(
     req,
     'MarketData',
     marketDataQuery(marketDataOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'MarketsData', marketsDataQuery());
-  aliasQuery(req, 'MarketsCandles', marketsCandlesQuery());
-  aliasQuery(req, 'MarketCandles', marketCandlesQuery());
-  aliasQuery(req, 'MarketDepth', marketDepthQuery());
-  aliasQuery(req, 'Orders', ordersQuery());
-  aliasQuery(req, 'Accounts', accountsQuery());
-  aliasQuery(req, 'Positions', positionsQuery());
-  aliasQuery(req, 'Margins', marginsQuery());
-  aliasQuery(req, 'Assets', assetsQuery());
-  aliasQuery(req, 'Asset', assetQuery());
-  aliasQuery(
+  aliasGQLQuery(req, 'MarketsData', marketsDataQuery());
+  aliasGQLQuery(req, 'MarketsCandles', marketsCandlesQuery());
+  aliasGQLQuery(req, 'MarketCandles', marketCandlesQuery());
+  aliasGQLQuery(req, 'MarketDepth', marketDepthQuery());
+  aliasGQLQuery(req, 'Orders', ordersQuery());
+  aliasGQLQuery(req, 'Accounts', accountsQuery());
+  aliasGQLQuery(req, 'Positions', positionsQuery());
+  aliasGQLQuery(req, 'Margins', marginsQuery());
+  aliasGQLQuery(req, 'Assets', assetsQuery());
+  aliasGQLQuery(req, 'Asset', assetQuery());
+  aliasGQLQuery(
     req,
     'MarketInfo',
     marketInfoQuery(marketInfoOverride({ state, tradingMode, trigger }))
   );
-  aliasQuery(req, 'Trades', tradesQuery());
-  aliasQuery(req, 'Chart', chartQuery());
-  aliasQuery(req, 'Candles', candlesQuery());
-  aliasQuery(req, 'Withdrawals', withdrawalsQuery());
-  aliasQuery(req, 'NetworkParams', networkParamsQuery());
-  aliasQuery(req, 'EstimateOrder', estimateOrderQuery());
-  aliasQuery(req, 'ProposalsList', proposalListQuery());
-  aliasQuery(req, 'Deposits', depositsQuery());
+  aliasGQLQuery(req, 'Trades', tradesQuery());
+  aliasGQLQuery(req, 'Chart', chartQuery());
+  aliasGQLQuery(req, 'Candles', candlesQuery());
+  aliasGQLQuery(req, 'Withdrawals', withdrawalsQuery());
+  aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());
+  aliasGQLQuery(req, 'EstimateOrder', estimateOrderQuery());
+  aliasGQLQuery(req, 'ProposalsList', proposalListQuery());
+  aliasGQLQuery(req, 'Deposits', depositsQuery());
 };
 
 declare global {
