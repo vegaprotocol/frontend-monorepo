@@ -23,6 +23,12 @@ export const ClientErrors = {
   ),
 } as const;
 
+class NoClientError extends Error {
+  constructor() {
+    super(t('No client found. The connector needs to be initialized with a url.'))
+  }
+}
+
 export class JsonRpcConnector implements VegaConnector {
   version = VERSION;
   url: string | null = null;
@@ -36,18 +42,16 @@ export class JsonRpcConnector implements VegaConnector {
     if (cfg && cfg.url) {
       this.token = cfg.token;
       this.url = cfg.url;
-      this.client = new WalletClient({
-        hostname: cfg.url,
-        token: cfg.token ?? undefined,
-      });
+      // this.client = new WalletClient({
+      //   hostname: cfg.url,
+      //   token: cfg.token ?? undefined,
+      // });
     }
   }
 
   async getChainId() {
     if (!this.client) {
-      throw new Error(
-        'No client found. The connector needs to be initialized with a url.'
-      );
+      throw new NoClientError();
     }
     try {
       const { result } = await this.client.GetChainId();
@@ -59,9 +63,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async connectWallet() {
     if (!this.client) {
-      throw new Error(
-        'No client found. The connector needs to be initialized with a url.'
-      );
+      throw new NoClientError();
     }
 
     try {
@@ -81,9 +83,7 @@ export class JsonRpcConnector implements VegaConnector {
   // which retrieves the session token
   async connect() {
     if (!this.client) {
-      throw new Error(
-        'No client found. The connector needs to be initialized with a url.'
-      );
+      throw new NoClientError();
     }
 
     try {
@@ -96,9 +96,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async disconnect() {
     if (!this.client) {
-      throw new Error(
-        'No client found. The connector needs to be initialized with a url.'
-      );
+      throw new NoClientError();
     }
 
     await this.client.DisconnectWallet({});
@@ -107,9 +105,7 @@ export class JsonRpcConnector implements VegaConnector {
 
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.client) {
-      throw new Error(
-        'No client found. The connector needs to be initialized with a url.'
-      );
+      throw new NoClientError();
     }
 
     try {
