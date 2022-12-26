@@ -25,7 +25,9 @@ export const ClientErrors = {
 
 class NoClientError extends Error {
   constructor() {
-    super(t('No client found. The connector needs to be initialized with a url.'))
+    super(
+      t('No client found. The connector needs to be initialized with a url.')
+    );
   }
 }
 
@@ -42,10 +44,10 @@ export class JsonRpcConnector implements VegaConnector {
     if (cfg && cfg.url) {
       this.token = cfg.token;
       this.url = cfg.url;
-      // this.client = new WalletClient({
-      //   hostname: cfg.url,
-      //   token: cfg.token ?? undefined,
-      // });
+      this.client = new WalletClient({
+        hostname: cfg.url,
+        token: cfg.token ?? undefined,
+      });
     }
   }
 
@@ -87,7 +89,7 @@ export class JsonRpcConnector implements VegaConnector {
     }
 
     try {
-      const { result } = await this.client.ListKeys({});
+      const { result } = await this.client.ListKeys();
       return result.keys;
     } catch (err) {
       throw ClientErrors.INVALID_RESPONSE;
@@ -99,7 +101,7 @@ export class JsonRpcConnector implements VegaConnector {
       throw new NoClientError();
     }
 
-    await this.client.DisconnectWallet({});
+    await this.client.DisconnectWallet();
     clearConfig();
   }
 
