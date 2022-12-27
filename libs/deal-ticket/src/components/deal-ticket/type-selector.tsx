@@ -1,9 +1,9 @@
 import { FormGroup, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { DataGrid, t } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { MarketDealTicket } from '@vegaprotocol/market-list';
-import { compileGridData, MarketDataGrid } from '../trading-mode-tooltip';
+import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 
 interface TypeSelectorProps {
@@ -33,9 +33,7 @@ export const TypeSelector = ({
       return (
         <span>
           {t('This market is in auction until it reaches')}{' '}
-          <Tooltip
-            description={<MarketDataGrid grid={compileGridData(market)} />}
-          >
+          <Tooltip description={<DataGrid grid={compileGridData(market)} />}>
             <span>{t('sufficient liquidity')}</span>
           </Tooltip>
           {'. '}
@@ -48,9 +46,7 @@ export const TypeSelector = ({
       return (
         <span>
           {t('This market is in auction due to')}{' '}
-          <Tooltip
-            description={<MarketDataGrid grid={compileGridData(market)} />}
-          >
+          <Tooltip description={<DataGrid grid={compileGridData(market)} />}>
             <span>{t('high price volatility')}</span>
           </Tooltip>
           {'. '}

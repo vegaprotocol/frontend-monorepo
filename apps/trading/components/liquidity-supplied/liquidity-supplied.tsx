@@ -17,7 +17,7 @@ import { HeaderStat } from '../header';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
-import { MarketDataGrid } from '@vegaprotocol/deal-ticket';
+import { DataGrid } from '@vegaprotocol/react-helpers';
 
 interface Props {
   marketId?: string;
@@ -109,7 +109,7 @@ export const MarketLiquiditySupplied = ({
 
   const description = (
     <section>
-      {compiledGrid && <MarketDataGrid grid={compiledGrid} />}
+      {compiledGrid && <DataGrid grid={compiledGrid} />}
       <br />
       <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
         {t('View liquidity provision table')}
