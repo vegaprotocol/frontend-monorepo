@@ -4,18 +4,25 @@ import { useEffect, useState } from 'react';
 export interface LoaderProps {
   size?: 'small' | 'large';
   forceTheme?: 'dark' | 'light';
+  preloader?: boolean;
 }
 
-export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
+export const Loader = ({
+  size = 'large',
+  forceTheme,
+  preloader,
+}: LoaderProps) => {
   const [, forceRender] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      forceRender((x) => !x);
-    }, 100);
+    const interval = preloader
+      ? undefined
+      : setInterval(() => {
+          forceRender((x) => !x);
+        }, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [preloader]);
 
   const itemClasses = classNames('loader-item', {
     'dark:bg-white bg-black': !forceTheme,
