@@ -49,7 +49,7 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
         cy.getByTestId('external-link').should(
           'have.attr',
           'href',
-          'https://stagnet3.token.vega.xyz/governance/123'
+          'https://stagnet3.token.vega.xyz/proposals/123'
         );
       });
     });
