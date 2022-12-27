@@ -14,7 +14,7 @@ import type {
 } from '@vegaprotocol/market-list';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/market-list';
 import { HeaderStat } from '../header';
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Link, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 
@@ -108,6 +108,9 @@ export const MarketLiquiditySupplied = ({
       <p>{suppliedStake}</p>
       <p>{targetStake}</p>
       <p>{stakeToCcyVolume}</p>
+      <Link href={`/liquidity/${marketId}`} data-testid="view-liquidity-link">
+        {t('View liquidity provision table')}
+      </Link>
     </>
   );
 
