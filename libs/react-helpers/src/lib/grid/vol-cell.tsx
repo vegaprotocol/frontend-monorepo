@@ -20,8 +20,8 @@ export interface IVolCellProps extends ICellRendererParams {
   valueFormatted: Omit<VolProps, 'value'>;
 }
 
-export const BID_COLOR = tailwind.theme.colors.vega['pink-dark']; // vega-green with 30% opacity
-export const ASK_COLOR = tailwind.theme.colors.vega['green-dark']; //vega-pink with 60% opacity
+export const BID_COLOR = tailwind.theme.colors.vega['green-30']; // vega-green with 30% opacity
+export const ASK_COLOR = tailwind.theme.colors.vega['pink-60']; //vega-pink with 60% opacity
 
 export const Vol = React.memo(
   ({ value, valueFormatted, relativeValue, type, testId }: VolProps) => {
