@@ -8,7 +8,7 @@ import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import classnames from 'classnames';
 
-type ButtonVariant = 'default' | 'primary' | 'secondary';
+export type ButtonVariant = 'default' | 'primary' | 'secondary' | 'ternary';
 type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 const base = 'inline-block uppercase border rounded-md disabled:opacity-60';
@@ -37,6 +37,13 @@ const secondary = [
   'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
   'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark',
 ];
+const ternary = [
+  'text-white',
+  'border-vega-green',
+  'bg-vega-green',
+  'enabled:hover:bg-vega-green-dark enabled:hover:border-vega-green-dark',
+  'enabled:active:bg-vega-green-dark enabled:active:border-vega-green-dark',
+];
 
 const getClassname = ({
   variant,
@@ -53,6 +60,7 @@ const getClassname = ({
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
+    [ternary.join(' ')]: variant === 'ternary',
 
     [lg]: size === 'lg',
     [md]: size === 'md',
