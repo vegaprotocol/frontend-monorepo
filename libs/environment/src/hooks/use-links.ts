@@ -88,12 +88,12 @@ export const useEtherscanLink = () => {
 export const BLOG = 'https://blog.vega.xyz/';
 
 // Token pages
-export const TOKEN_NEW_MARKET_PROPOSAL = '/governance/propose/new-market';
+export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
-  '/governance/propose/network-parameter';
-export const TOKEN_GOVERNANCE = '/governance';
-export const TOKEN_PROPOSALS = '/governance';
-export const TOKEN_PROPOSAL = '/governance/:id';
+  '/proposals/propose/network-parameter';
+export const TOKEN_GOVERNANCE = '/proposals';
+export const TOKEN_PROPOSALS = '/proposals';
+export const TOKEN_PROPOSAL = '/proposals/:id';
 
 // Explorer pages
 export const EXPLORER_TX = '/txs/:hash';

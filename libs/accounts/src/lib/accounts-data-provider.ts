@@ -66,6 +66,7 @@ const update = (
           balance: delta.balance,
           market: delta.marketId ? { id: delta.marketId } : null,
           asset: { id: delta.assetId },
+          party: { id: delta.partyId },
         });
       }
     });
@@ -182,6 +183,7 @@ export const accountsDataProvider = makeDerivedDataProvider<Account[], never>(
             if (asset) {
               return {
                 ...account,
+                partyId: account.party?.id,
                 asset: {
                   ...asset,
                 },

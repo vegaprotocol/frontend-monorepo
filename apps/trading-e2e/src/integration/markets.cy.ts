@@ -106,7 +106,7 @@ describe('markets table', { tags: '@smoke' }, () => {
       .and(
         'have.attr',
         'href',
-        'https://stagnet3.token.vega.xyz/governance/propose/new-market'
+        'https://stagnet3.token.vega.xyz/proposals/propose/new-market'
       );
   });
 });
