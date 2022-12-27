@@ -40,11 +40,13 @@ const getBlockDisplayValue = (
   return '-';
 };
 
-const getSslDisplayValue = (ssl?: NodeData['ssl']) => {
-  if (ssl?.value) {
+const getSubscriptionDisplayValue = (
+  subscription?: NodeData['subscription']
+) => {
+  if (subscription?.value) {
     return t('Yes');
   }
-  if (ssl?.hasError) {
+  if (subscription?.hasError) {
     return t('No');
   }
   return '-';
@@ -81,12 +83,12 @@ const NodeStatsContent = ({
         {getBlockDisplayValue(data.block, setBlock)}
       </LayoutCell>
       <LayoutCell
-        label={t('SSL')}
-        isLoading={data.ssl?.isLoading}
-        hasError={data.ssl?.hasError}
-        dataTestId="ssl-cell"
+        label={t('Subscription')}
+        isLoading={data.subscription?.isLoading}
+        hasError={data.subscription?.hasError}
+        dataTestId="subscription-cell"
       >
-        {getSslDisplayValue(data.ssl)}
+        {getSubscriptionDisplayValue(data.subscription)}
       </LayoutCell>
     </LayoutRow>
   );

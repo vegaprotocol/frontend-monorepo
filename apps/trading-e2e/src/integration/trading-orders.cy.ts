@@ -96,7 +96,7 @@ describe('orders list', { tags: '@smoke' }, () => {
   });
 
   it('orders are sorted by most recent order', () => {
-    //7003-MORD-002
+    // 7003-MORD-002
     const expectedOrderList = ['BTCUSD.MF21', 'BTCUSD.MF21'];
 
     cy.getByTestId('tab-orders')
@@ -133,9 +133,9 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
   });
   const orderId = '1234567890';
-  //7002-SORD-053
-  //7002-SORD-040
-  //7003-MORD-001
+  // 7002-SORD-053
+  // 7002-SORD-040
+  // 7003-MORD-001
   it('must see an active order', () => {
     // 7002-SORD-041
     updateOrder({
@@ -223,6 +223,116 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Parked');
   });
+
+  it('must see the size of the order and direction/side -', () => {
+    // 7003-MORD-003
+    // 7003-MORD-004
+    updateOrder({
+      id: orderId,
+      size: '15',
+      side: Schema.Side.SIDE_SELL,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="size"]')
+      .should('have.text', '-15');
+  });
+
+  it('must see the size of the order and direction/side +', () => {
+    // 7003-MORD-003
+    // 7003-MORD-004
+    updateOrder({
+      id: orderId,
+      size: '5',
+      side: Schema.Side.SIDE_BUY,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="size"]')
+      .should('have.text', '+5');
+  });
+
+  it('for limit typy must see the Limit price that was set on the order', () => {
+    // 7003-MORD-005
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="price"]')
+      .should('have.text', '200.00');
+  });
+
+  it('for market typy must not see a price for active or parked orders', () => {
+    // 7003-MORD-005
+    updateOrder({
+      id: orderId,
+      type: Schema.OrderType.TYPE_MARKET,
+      status: Schema.OrderStatus.STATUS_PARKED,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find('[col-id="price"]')
+      .should('have.text', '200.00');
+  });
+
+  it('must see the time in force applied to the order', () => {
+    // 7003-MORD-006
+    updateOrder({
+      id: orderId,
+      type: Schema.OrderType.TYPE_MARKET,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[col-id='${orderTimeInForce}']`)
+      .should('have.text', "Good 'til Cancelled (GTC)");
+  });
+
+  it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a liquidity, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      liquidityProvisionId: '6536',
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
+
+  it('for Active order when is part of a peg shape, must not see an option to amend the individual order ', () => {
+    // 7003-MORD-008
+    updateOrder({
+      id: orderId,
+      status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: {},
+    });
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="cancel"]`)
+      .should('not.exist');
+    cy.get(`[row-id=${orderId}]`)
+      .find(`[data-testid="edit"]`)
+      .should('not.exist');
+  });
 });
 
 describe('amend and cancel order', { tags: '@smoke' }, () => {
@@ -242,12 +352,15 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
 
   const orderId = '1234567890';
   it('must be able to amend the price of an order', () => {
-    //7003-MORD-012
-    //7003-MORD-014
-    //7003-MORD-015
+    // 7003-MORD-007
+    // 7003-MORD-012
+    // 7003-MORD-014
+    // 7003-MORD-015
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find('[data-testid="edit"]')
@@ -268,12 +381,15 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       });
   });
   it('must be able to cancel an individual order', () => {
-    //7003-MORD-009
-    //7003-MORD-010
-    //7003-MORD-011
+    // 7003-MORD-007
+    // 7003-MORD-009
+    // 7003-MORD-010
+    // 7003-MORD-011
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[data-testid="cancel"]`)
@@ -288,9 +404,14 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       });
   });
   it('must be able to cancel all orders on a market', () => {
+    // 7003-MORD-009
+    // 7003-MORD-010
+    // 7003-MORD-011
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_ACTIVE,
+      peggedOrder: null,
+      liquidityProvisionId: null,
     });
     cy.get(`[data-testid="cancelAll"]`)
       .should('have.text', 'Cancel all')
